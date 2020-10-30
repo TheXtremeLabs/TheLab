@@ -2,6 +2,7 @@ package com.riders.thelab;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.riders.thelab.data.DataModule;
+import com.riders.thelab.di.component.DaggerComponentInjector;
 import com.riders.thelab.di.module.ApplicationModule;
 
 import dagger.android.AndroidInjector;

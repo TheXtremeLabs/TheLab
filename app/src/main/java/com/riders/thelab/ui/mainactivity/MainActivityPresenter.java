@@ -12,21 +12,18 @@ import com.riders.thelab.ui.base.BasePresenterImpl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
         implements MainActivityContract.Presenter {
 
+    @Inject
     MainActivity activity;
 
-    public MainActivityPresenter(MainActivity activity) {
-        this.activity = activity;
-    }
-
-
-    public MainActivityPresenter getPresenter() {
-        return MainActivityPresenter.this;
-    }
+    @Inject
+    MainActivityPresenter() {}
 
 
     /**
