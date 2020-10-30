@@ -77,17 +77,29 @@ dependencies {
     implementation rootProject.ext.generalDependencies.cardView
 
     //Room
+    implementation rootProject.ext.generalDependencies.roomRuntime
+    implementation rootProject.ext.generalDependencies.roomRX
+    annotationProcessor rootProject.ext.generalDependencies.roomCompiler
 
     // Google Play
-    implementation platform('com.google.firebase:firebase-bom:26.0.0')
-    //implementation 'com.google.firebase:firebase-analytics'
-    //implementation 'com.google.android.gms:play-services-ads:19.5.0'
-    implementation 'com.google.firebase:firebase-crashlytics'
-    //implementation 'com.google.firebase:firebase-messaging'
+    implementation platform(rootProject.ext.generalDependencies.firebasePlatform)
+    implementation rootProject.ext.generalDependencies.firebaseAnalitycs
+    implementation rootProject.ext.generalDependencies.firebaseCraslytics
+    implementation rootProject.ext.generalDependencies.firebaseMessaging
+    //implementation rootProject.ext.generalDependencies.firebaseAds
 
     // RxJava / RxAndroid
     implementation rootProject.ext.generalDependencies.rxjava
     implementation rootProject.ext.generalDependencies.rxandroid
+
+    /* Dagger2 - We are going to use dagger.android which includes
+     * support for Activity and fragment injection so we need to include
+     * the following dependencies */
+    api rootProject.ext.generalDependencies.dagger
+    annotationProcessor rootProject.ext.generalDependencies.daggerCompiler
+    api rootProject.ext.generalDependencies.daggerAndroid
+    api rootProject.ext.generalDependencies.daggerAndroidSupport // if you use the support libraries
+    annotationProcessor rootProject.ext.generalDependencies.daggerAndroidProcessor
 
 
     // Butterknife : Views binding
@@ -96,6 +108,13 @@ dependencies {
     annotationProcessor rootProject.ext.generalDependencies.butterknifeAnnotation
 
     implementation rootProject.ext.generalDependencies.glide
+
+    /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
+    implementation rootProject.ext.generalDependencies.retrofit
+    implementation rootProject.ext.generalDependencies.retrofitConverterGson
+    implementation rootProject.ext.generalDependencies.retrofitRxJava
+    implementation rootProject.ext.generalDependencies.okhttp3Logging
+
 
     // Dexter : permissions
     implementation rootProject.ext.generalDependencies.dexter
