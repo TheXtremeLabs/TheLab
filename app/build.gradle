@@ -2,6 +2,17 @@ plugins {
     id 'com.android.application'
 }
 
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.google.gms.google-services'
+// Apply the Crashlytics Gradle plugin
+apply plugin: 'com.google.firebase.crashlytics'
+
+// version information
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 1
+
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -10,8 +21,18 @@ android {
         applicationId "com.riders.thelab"
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+
+        versionCode 10 * (versionMajor * 1000 + versionMinor * 100 + versionPatch)
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath false
+            }
+        }
+
+        // Enabling multidex support.
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -22,6 +43,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    // Increase build gradle time
+    // https://medium.com/@AthorNZ/how-to-speed-up-your-slow-gradle-builds-5d9a9545f91a
+
+    // Disable multi-APK (in development)
+    if (project.hasProperty('devBuild')) {
+        splits.abi.enable = false
+        splits.density.enable = false
+    }
+
+    // Watch the memory
+    dexOptions {
+        javaMaxHeapSize = '4g'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -30,10 +66,72 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    // AndroidX
+    implementation rootProject.ext.generalDependencies.multidex
+    implementation rootProject.ext.generalDependencies.appcompat
+    implementation rootProject.ext.generalDependencies.material
+    implementation rootProject.ext.generalDependencies.constraintLayout
+    implementation rootProject.ext.generalDependencies.navigationFragment
+    implementation rootProject.ext.generalDependencies.navigationUi
+    implementation rootProject.ext.generalDependencies.recyclerView
+    implementation rootProject.ext.generalDependencies.cardView
+
+    //Room
+    implementation rootProject.ext.generalDependencies.roomRuntime
+    implementation rootProject.ext.generalDependencies.roomRX
+    annotationProcessor rootProject.ext.generalDependencies.roomCompiler
+
+    // Google Play
+    implementation platform(rootProject.ext.generalDependencies.firebasePlatform)
+    implementation rootProject.ext.generalDependencies.firebaseAnalitycs
+    implementation rootProject.ext.generalDependencies.firebaseCraslytics
+    implementation rootProject.ext.generalDependencies.firebaseMessaging
+    //implementation rootProject.ext.generalDependencies.firebaseAds
+
+    // RxJava / RxAndroid
+    implementation rootProject.ext.generalDependencies.rxjava
+    implementation rootProject.ext.generalDependencies.rxandroid
+
+    /* Dagger2 - We are going to use dagger.android which includes
+     * support for Activity and fragment injection so we need to include
+     * the following dependencies */
+    api rootProject.ext.generalDependencies.dagger
+    annotationProcessor rootProject.ext.generalDependencies.daggerCompiler
+    api rootProject.ext.generalDependencies.daggerAndroid
+    api rootProject.ext.generalDependencies.daggerAndroidSupport // if you use the support libraries
+    annotationProcessor rootProject.ext.generalDependencies.daggerAndroidProcessor
+
+
+    // Butterknife : Views binding
+    //noinspection AnnotationProcessorOnCompilePath
+    implementation rootProject.ext.generalDependencies.butterknife
+    annotationProcessor rootProject.ext.generalDependencies.butterknifeAnnotation
+
+    implementation rootProject.ext.generalDependencies.glide
+
+    /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
+    implementation rootProject.ext.generalDependencies.retrofit
+    implementation rootProject.ext.generalDependencies.retrofitConverterGson
+    implementation rootProject.ext.generalDependencies.retrofitRxJava
+    implementation rootProject.ext.generalDependencies.okhttp3Logging
+
+
+    // Dexter : permissions
+    implementation rootProject.ext.generalDependencies.dexter
+
+    //ThreeTen : Alternative to Android Calendar API
+    implementation rootProject.ext.generalDependencies.threeten
+
+    // Timber : Logging library
+    implementation rootProject.ext.generalDependencies.timber
+
+    // Lombok
+    compileOnly rootProject.ext.generalDependencies.lombok
+    annotationProcessor rootProject.ext.generalDependencies.lombokAnnotation
+
+
     testImplementation 'junit:junit:4.+'
+
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
