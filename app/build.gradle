@@ -2,8 +2,10 @@ plugins {
     id 'com.android.application'
 }
 
-//apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.google.gms.google-services'
+// Apply the Crashlytics Gradle plugin
+apply plugin: 'com.google.firebase.crashlytics'
 
 // version information
 def versionMajor = 1
@@ -23,6 +25,15 @@ android {
         versionCode 10 * (versionMajor * 1000 + versionMinor * 100 + versionPatch)
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath false
+            }
+        }
+
+        // Enabling multidex support.
+        multiDexEnabled true
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -32,6 +43,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    // Increase build gradle time
+    // https://medium.com/@AthorNZ/how-to-speed-up-your-slow-gradle-builds-5d9a9545f91a
+
+    // Disable multi-APK (in development)
+    if (project.hasProperty('devBuild')) {
+        splits.abi.enable = false
+        splits.density.enable = false
+    }
+
+    // Watch the memory
+    dexOptions {
+        javaMaxHeapSize = '4g'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -40,15 +66,50 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    // AndroidX
+    implementation rootProject.ext.generalDependencies.multidex
+    implementation rootProject.ext.generalDependencies.appcompat
+    implementation rootProject.ext.generalDependencies.material
+    implementation rootProject.ext.generalDependencies.constraintLayout
+    implementation rootProject.ext.generalDependencies.navigationFragment
+    implementation rootProject.ext.generalDependencies.navigationUi
+    implementation rootProject.ext.generalDependencies.recyclerView
+    implementation rootProject.ext.generalDependencies.cardView
 
+    //Room
+
+    // Google Play
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.android.gms:play-services-ads:19.5.0'
+    //implementation 'com.google.firebase:firebase-analytics'
+    //implementation 'com.google.android.gms:play-services-ads:19.5.0'
     implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-messaging'
+    //implementation 'com.google.firebase:firebase-messaging'
+
+    // RxJava / RxAndroid
+    implementation rootProject.ext.generalDependencies.rxjava
+    implementation rootProject.ext.generalDependencies.rxandroid
+
+
+    // Butterknife : Views binding
+    //noinspection AnnotationProcessorOnCompilePath
+    implementation rootProject.ext.generalDependencies.butterknife
+    annotationProcessor rootProject.ext.generalDependencies.butterknifeAnnotation
+
+    implementation rootProject.ext.generalDependencies.glide
+
+    // Dexter : permissions
+    implementation rootProject.ext.generalDependencies.dexter
+
+    //ThreeTen : Alternative to Android Calendar API
+    implementation rootProject.ext.generalDependencies.threeten
+
+    // Timber : Logging library
+    implementation rootProject.ext.generalDependencies.timber
+
+    // Lombok
+    compileOnly rootProject.ext.generalDependencies.lombok
+    annotationProcessor rootProject.ext.generalDependencies.lombokAnnotation
+
 
     testImplementation 'junit:junit:4.+'
 
