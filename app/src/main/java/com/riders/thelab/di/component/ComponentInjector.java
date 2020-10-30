@@ -15,7 +15,6 @@ import dagger.android.AndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
 
 @Singleton
-
 @Component(modules = {
         AndroidSupportInjectionModule.class,
         ApplicationModule.class,
