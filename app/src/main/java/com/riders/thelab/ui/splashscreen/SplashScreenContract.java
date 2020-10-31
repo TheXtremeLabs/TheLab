@@ -16,6 +16,6 @@ public interface SplashScreenContract {
     }
 
     interface Presenter {
-        boolean hasPermissions(Context context);
+        void hasPermissions(Context context);
     }
 }
