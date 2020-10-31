@@ -36,28 +36,22 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
 
         getPresenter().hasPermissions(context);
 
-        /*new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (context != null && navigator != null) {
-                    navigator.callMainActivity();
-                    context.finish();
-                }
-            }
-        }, 3000);*/
-
     }
 
 
     @Override
     public void onPermissionsGranted() {
-        Completable.fromAction(() -> {
-            if (context != null && navigator != null) {
-                navigator.callMainActivity();
-                context.finish();
-            }
-        })
-                .delay(3, TimeUnit.SECONDS)
+        Completable
+                .complete()
+                .delay(5, TimeUnit.SECONDS)
+                .doOnComplete(() -> {
+                    if (context != null && navigator != null) {
+                        navigator.callMainActivity();
+                        context.finish();
+                    }
+
+                })
+                .doOnError(Timber::e)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
