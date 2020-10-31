@@ -1,18 +1,44 @@
 package com.riders.thelab;
 
-import android.app.Application;
-
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.riders.thelab.data.DataModule;
+import com.riders.thelab.di.component.DaggerComponentInjector;
+import com.riders.thelab.di.module.ApplicationModule;
 
-public class TheLabApplication extends Application {
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerApplication;
+import timber.log.Timber;
 
+public class TheLabApplication extends DaggerApplication {
+
+    public static String HUB_PACKAGE_NAME = "";
+    FirebaseCrashlytics mCrashlytics;
+
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        return DaggerComponentInjector.builder()
+                .application(this)
+                .applicationModule(new ApplicationModule(this))
+                .dataModule(new DataModule(this))
+                .build();
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-        crashlytics.setCrashlyticsCollectionEnabled(true);
-        crashlytics.setUserId("myAppUserId");
+        init();
+
+        HUB_PACKAGE_NAME = getPackageName();
+    }
+
+    private void init() {
+        Timber.plant(new Timber.DebugTree());
+
+        // Firebase Crashlytics
+        mCrashlytics = FirebaseCrashlytics.getInstance();
+        mCrashlytics.setCrashlyticsCollectionEnabled(true);
+        mCrashlytics.setUserId("wayne");
+
     }
 }
