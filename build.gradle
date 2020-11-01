@@ -59,11 +59,12 @@ ext {
             recyclerView          : "androidx.recyclerview:recyclerview:$recyclerViewVersion",
             cardView              : "androidx.cardview:cardview:$cardViewVersion",
 
-            firebasePlatform : "com.google.firebase:firebase-bom:$firebaseBomVersion",
-            firebaseAnalitycs : "com.google.firebase:firebase-analytics",
-            firebaseCraslytics : "com.google.firebase:firebase-crashlytics",
-            firebaseMessaging : "com.google.firebase:firebase-messaging",
-            firebaseAds : "com.google.android.gms:play-services-ads:$adsVersion",
+            firebasePlatform      : "com.google.firebase:firebase-bom:$firebaseBomVersion",
+            firebaseAnalitycs     : "com.google.firebase:firebase-analytics",
+            firebaseCraslytics    : "com.google.firebase:firebase-crashlytics",
+            firebaseMessaging     : "com.google.firebase:firebase-messaging",
+            firebasePerf          : "com.google.firebase:firebase-perf",
+            firebaseAds           : "com.google.android.gms:play-services-ads:$adsVersion",
 
             /* Android Architecture Component - Room Persistance Lib  */
             roomRuntime           : "androidx.room:room-runtime:$roomVersion",
@@ -149,6 +150,9 @@ buildscript {
         // Add the Crashlytics Gradle plugin (be sure to add version
         // 2.0.0 or later if you built your app with Android Studio 4.1).
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
+
+        // Add the dependency for the Performance Monitoring plugin
+        classpath 'com.google.firebase:perf-plugin:1.3.3'  // Performance Monitoring plugin
     }
 }
 

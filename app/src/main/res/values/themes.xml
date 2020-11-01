@@ -14,8 +14,6 @@
         <!-- Customize your theme here. -->
     </style>
 
-
-
     <style name="Theme.TheLab.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -27,7 +25,7 @@
 
 
     <!-- Splash Theme -->
-    <style name="SplashTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="SplashTheme">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
