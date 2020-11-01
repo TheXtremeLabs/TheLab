@@ -38,7 +38,7 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
         List<App> appList = new ArrayList<>();
 
         // Get constants activities
-        appList.addAll(Constants.getActivities());
+        appList.addAll(Constants.getInstance().getActivityList());
         appList.addAll(getPackageList());
 
         if (appList.isEmpty()) {
