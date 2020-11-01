@@ -25,7 +25,7 @@
 
 
     <!-- Splash Theme -->
-    <style name="SplashTheme">
+    <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
