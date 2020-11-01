@@ -9,6 +9,7 @@ import com.riders.thelab.TheLabApplication;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenterImpl;
+import com.riders.thelab.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,20 +32,38 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
     }
 
 
+    @Override
+    public void getApplications() {
+
+        List<App> appList = new ArrayList<>();
+
+        // Get constants activities
+        appList.addAll(Constants.getActivities());
+        appList.addAll(getPackageList());
+
+        if (appList.isEmpty()) {
+            getView().hideLoading();
+            getView().onErrorPackageList();
+        } else {
+            getView().hideLoading();
+            getView().onSuccessPackageList(appList);
+        }
+
+    }
+
     /**
      * Get all packages and check if the returned list contains the target package
      */
-    @Override
-    public void getPackageList() {
+    public List<App> getPackageList() {
 
         final String TARGET_PACKAGE = "com.riders";
         List<ApplicationInfo> installedAppList = new ArrayList<>();
 
+        List<App> appList = new ArrayList<>();
+
         getView().showLoading();
 
         if (isPackageExists(installedAppList, TARGET_PACKAGE)) {
-
-            List<App> appList = new ArrayList<>();
 
             for (ApplicationInfo appInfo : installedAppList) {
                 Timber.e("package found : %s", appInfo.packageName);
@@ -64,16 +83,15 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
                     e.printStackTrace();
                 }
             }
-            getView().hideLoading();
 
             getView().onSuccessPackageList(appList);
         } else {
             Timber.e("package " + TARGET_PACKAGE + " not found.");
             //installPackage(directory, targetApkFile);
             getView().hideLoading();
-
-            getView().onErrorPackageList();
         }
+
+        return appList;
     }
 
 
@@ -109,6 +127,7 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
         }
 
         return isPackageFound;
+
         // Second method
         /*try {
             PackageInfo info = packageManager
