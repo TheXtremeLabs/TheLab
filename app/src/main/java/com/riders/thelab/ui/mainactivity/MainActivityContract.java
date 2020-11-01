@@ -40,8 +40,8 @@ public interface MainActivityContract {
     interface Presenter {
 
         /**
-         * Fetch movies data from external API
+         * Retrieve applications from both compiled classes and packages installed on the devices
          */
-        void getPackageList();
+        void getApplications();
     }
 }

@@ -73,7 +73,7 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
 
         // Call presenter to fetch data
-        getPresenter().getPackageList();
+        getPresenter().getApplications();
     }
 
     @Override

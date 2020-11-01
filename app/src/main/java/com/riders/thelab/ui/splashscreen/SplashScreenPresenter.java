@@ -58,69 +58,6 @@ public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
                         if (report.isAnyPermissionPermanentlyDenied()) {
                             // permission is denied permanently, navigate user to app settings
                         }
-                        /*
-
-                        try {
-
-                            if (isNetworkEnabled) {
-                                        */
-                        /*if (Build.VERSION_CODES.M < Build.VERSION.SDK_INT) {
-                                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                                                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                                // TODO: Consider calling
-                                                //    ActivityCompat#requestPermissions
-                                                // here to request the missing permissions, and then overriding
-                                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                                //                                          int[] grantResults)
-                                                // to handle the case where the user grants the permission. See the documentation
-                                                // for ActivityCompat#requestPermissions for more details.
-                                                return null;
-                                            }
-                                        }*/
-                        /*
-
-                                locationManager.requestLocationUpdates(
-                                        LocationManager.NETWORK_PROVIDER,
-                                        MIN_TIME_BW_UPDATES,
-                                        MIN_DISTANCE_CHANGE_FOR_UPDATES,
-                                        mLocationListener);
-                                Log.d("Network", "Network Enabled");
-                                if (locationManager != null) {
-                                    location = locationManager
-                                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                                    if (location != null) {
-                                        latitude = location.getLatitude();
-                                        longitude = location.getLongitude();
-                                    }
-                                }
-                            }
-
-
-                            // if GPS Enabled get lat/long using GPS Services
-                            if (isGPSEnabled) {
-                                if (location == null) {
-                                    locationManager.requestLocationUpdates(
-                                            LocationManager.GPS_PROVIDER,
-                                            MIN_TIME_BW_UPDATES,
-                                            MIN_DISTANCE_CHANGE_FOR_UPDATES,
-                                            mLocationListener);
-                                    Log.d("GPS", "GPS Enabled");
-                                    if (locationManager != null) {
-                                        location = locationManager
-                                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                        if (location != null) {
-                                            latitude = location.getLatitude();
-                                            longitude = location.getLongitude();
-                                        }
-                                    }
-                                }
-                            }
-
-                            EventBus.getDefault().post(new LocationFetchedEvent(location));
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }*/
                     }
 
                     @Override
