@@ -7,8 +7,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.riders.thelab.R;
@@ -26,6 +26,8 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
 
+import static com.riders.thelab.R.string.version_placeholder;
+
 @SuppressLint("NonConstantResourceId")
 public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         implements SplashScreenContract.View, MediaPlayer.OnPreparedListener,
@@ -36,6 +38,9 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
 
     @BindView(R.id.splash_video)
     VideoView splashVideoView;
+
+    @BindView(R.id.tv_app_version)
+    TextView tvAppVersion;
 
     @Inject
     Navigator navigator;
@@ -56,12 +61,20 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     }
 
 
+
+    /////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    /////////////////////////////////
     @Override
     public void onCreate() {
 
         getPresenter().attachView(this);
 
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
+
+        getPresenter().getAppVersion();
 
         // Retrieve and cache the system's default "short" animation time.
         shortAnimationDuration =
@@ -107,7 +120,17 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
 
     }
 
+    @Override
+    public void onDestroy() {
+        getPresenter().detachView();
+        context = null;
+    }
 
+    /////////////////////////////////
+    //
+    // PRESENTER
+    //
+    /////////////////////////////////
     @Override
     public void onPermissionsGranted() {
 
@@ -123,6 +146,48 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         closeApp();
     }
 
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void displayAppVersion(String appVersion) {
+        tvAppVersion.setText(context.getString(version_placeholder) + appVersion);
+    }
+
+
+    @Override
+    public void closeApp() {
+        context.finish();
+    }
+
+
+    /////////////////////////////////
+    //
+    // IMPLEMENTS
+    //
+    /////////////////////////////////
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        //if we have a position on savedInstanceState, the video playback should start from here
+        splashVideoView.seekTo(position);
+        if (position == 0) {
+            splashVideoView.start();
+        } else {
+            //if we come from a resumed activity, video playback will be paused
+            splashVideoView.pause();
+        }
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        Timber.e("Video completed");
+        crossFadeViews();
+    }
+
+
+    /////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    /////////////////////////////////
     private void startVideo() {
         Timber.i("startVideo()");
 
@@ -152,24 +217,6 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
             context.finish();
         }
 
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        //if we have a position on savedInstanceState, the video playback should start from here
-        splashVideoView.seekTo(position);
-        if (position == 0) {
-            splashVideoView.start();
-        } else {
-            //if we come from a resumed activity, video playback will be paused
-            splashVideoView.pause();
-        }
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        Timber.e("Video completed");
-        crossFadeViews();
     }
 
 
@@ -216,17 +263,5 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
                                 .subscribe();
                     }
                 });
-    }
-
-
-    @Override
-    public void closeApp() {
-        context.finish();
-    }
-
-    @Override
-    public void onDestroy() {
-        getPresenter().detachView();
-        context = null;
     }
 }
