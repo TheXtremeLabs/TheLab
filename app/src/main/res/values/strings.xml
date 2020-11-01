@@ -1,3 +1,189 @@
 <resources>
     <string name="app_name">The Lab</string>
+
+
+    <string name="action_settings">Settings</string>
+    <string name="force_crash">Force Crash</string>
+
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur ipsum in placerat molestie. Fusce quis mauris a enim sollicitudin ultrices non eget velit. Aliquam eu pulvinar enim. Praesent libero nisl, ultricies vel maximus eu, maximus et nisi. Phasellus pharetra nec ligula vitae mollis. Quisque porttitor ornare magna, quis dignissim libero aliquam id. Donec sollicitudin ultrices ante, a semper erat tristique in. Vivamus sodales in ligula at sodales. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla tempus bibendum nibh, ac tincidunt quam convallis non. Proin dolor nunc, egestas et tortor consequat, dignissim lacinia odio. Ut ut aliquet erat.  Ut non scelerisque elit. Morbi dolor neque, iaculis eu justo rutrum, aliquet dictum mauris. Phasellus quis massa ut ligula feugiat congue a et dolor. Etiam a dui a sapien ornare accumsan ac ut lorem. Suspendisse vehicula lorem dapibus nibh rhoncus ultricies. Proin sem nulla, elementum quis pharetra quis, commodo vitae nisi. Donec urna orci, posuere et iaculis sit amet, fringilla quis sapien. Pellentesque nec posuere felis. Praesent malesuada tellus nisi, non dictum justo interdum eget. Quisque mollis euismod libero, non aliquam lorem interdum vitae. Aliquam vehicula efficitur purus eget rutrum. Sed pulvinar fermentum risus ac viverra. Cras laoreet ligula quam, ac lacinia nisl elementum in. Aenean velit arcu, euismod a venenatis non, pulvinar pulvinar massa. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur ipsum in placerat molestie. Fusce quis mauris a enim sollicitudin ultrices non eget velit. Aliquam eu pulvinar enim. Praesent libero nisl, ultricies vel maximus eu, maximus et nisi. Phasellus pharetra nec ligula vitae mollis. Quisque porttitor ornare magna, quis dignissim libero aliquam id. Donec sollicitudin ultrices ante, a semper erat tristique in. Vivamus sodales in ligula at sodales. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla tempus bibendum nibh, ac tincidunt quam convallis non. Proin dolor nunc, egestas et tortor consequat, dignissim lacinia odio. Ut ut aliquet erat.  Ut non scelerisque elit. Morbi dolor neque, iaculis eu justo rutrum, aliquet dictum mauris. Phasellus quis massa ut ligula feugiat congue a et dolor. Etiam a dui a sapien ornare accumsan ac ut lorem. Suspendisse vehicula lorem dapibus nibh rhoncus ultricies. Proin sem nulla, elementum quis pharetra quis, commodo vitae nisi. Donec urna orci, posuere et iaculis sit amet, fringilla quis sapien. Pellentesque nec posuere felis. Praesent malesuada tellus nisi, non dictum justo interdum eget. Quisque mollis euismod libero, non aliquam lorem interdum vitae. Aliquam vehicula efficitur purus eget rutrum. Sed pulvinar fermentum risus ac viverra. Cras laoreet ligula quam, ac lacinia nisl elementum in. Aenean velit arcu, euismod a venenatis non, pulvinar pulvinar massa.</string>
+
+    <string name="title_main_page">Choose your testing app</string>
+
+    <string name="load_new_data">Load new random data</string>
+    <string name="exit">Quit</string>
+
+    <string name="service_started">007</string>
+    <string name="service_stopped">Service stopped</string>
+    <string name="service_connected">Service is connected</string>
+    <string name="service_disconnected">Service is disconnected</string>
+
+
+    <string name="activity_in_vehicle">In Vehicle</string>
+    <string name="activity_on_bicycle">On Bicycle</string>
+    <string name="activity_on_foot">On Foot</string>
+    <string name="activity_running">Running</string>
+    <string name="activity_still">Still</string>
+    <string name="activity_tilting">Tilting</string>
+    <string name="activity_walking">walking</string>
+    <string name="activity_unknown">Unknown</string>
+
+
+    <string name="pas_de_connexion">Not connected to the Internet :(</string>
+    <string name="verifiez_votre_connexion">Please check your cellular network or Wi-Fi network</string>
+
+    <string name="hint_content_title">Video\'s title</string>
+    <string name="hint_content_description">Video\'s description link</string>
+
+    <string name="lire">Play</string>
+    <string name="ajouter_aux_favoris">Add to favorite</string>
+    <string name="error_audio_error">audio error</string>
+    <string name="error_client">client error</string>
+    <string name="error_permission">error permission</string>
+    <string name="error_network">network error cannot connect</string>
+    <string name="error_timeout">timout error</string>
+    <string name="error_no_match">no match</string>
+    <string name="error_busy">busy</string>
+    <string name="error_server">servere side error</string>
+    <string name="error_understand">do\'t understand</string>
+    <string name="speech_recording">Recording...</string>
+
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+
+    <!-- Tabs Fragments -->
+    <string name="one">ONE</string>
+    <string name="two">TWO</string>
+    <string name="three">THREE</string>
+    <string name="four">FOUR</string>
+    <string name="five">FIVE</string>
+    <string name="six">SIX</string>
+    <string name="seven">SEVEN</string>
+    <string name="eight">EIGHT</string>
+    <string name="nine">NINE</string>
+    <string name="ten">TEN</string>
+
+    <!-- Floating Labels-->
+    <string name="hint_name">Full Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_sign_up">Sign Up</string>
+    <string name="err_msg_name">Enter your full name</string>
+    <string name="err_msg_email">Enter valid email address</string>
+    <string name="err_msg_password">Enter the password</string>
+
+    <!-- Location -->
+    <string name="lbl_you_are_at">YOU ARE AT</string>
+    <string name="btn_get_location">GET MY LOCATION</string>
+    <string name="btn_start_location_updates">START LOCATION UPDATES</string>
+    <string name="btn_stop_location_updates">STOP LOCATION UPDATES</string>
+
+    <!-- Schedule Jobs -->
+    <string name="start_job">Start Schedule</string>
+
+    <!-- Device Informations -->
+    <string name="device_infos_device">Device :</string>
+    <string name="device_infos_model">Model :</string>
+    <string name="device_infos_brand">Brand :</string>
+    <string name="device_infos_screen_height">Screen Height :</string>
+    <string name="device_infos_screen_width">Screen Width :</string>
+    <string name="device_infos_hardware">Hardware :</string>
+    <string name="device_infos_product">Product :</string>
+    <string name="device_infos_manufacturer">Manufacturer :</string>
+    <string name="device_infos_serial">Serial :</string>
+    <string name="device_infos_board">Board :</string>
+    <string name="device_infos_bootloader">Bootloader :</string>
+    <string name="device_infos_display">Display :</string>
+    <string name="device_infos_fingerprint">Fingerprint :</string>
+    <string name="device_infos_id">ID :</string>
+    <string name="device_infos_tags">Tags :</string>
+    <string name="device_infos_type">Type :</string>
+
+
+    <!-- Filter ListView -->
+    <string name="ranklabel">"Rank : "</string>
+    <string name="countrylabel">"Country : "</string>
+    <string name="populationlabel">"Population : "</string>
+
+
+    <!-- Contacts Database -->
+    <string name="action_add_contact">Add Contact</string>
+
+    <string name="button_update">Update</string>
+    <string name="button_add">Add</string>
+    <string name="button_reset">Reset</string>
+    <string name="button_cancel">Cancel</string>
+
+    <string name="contact_add_name">Name : </string>
+    <string name="contact_add_firstname">Firstname : </string>
+    <string name="contact_add_phone">Phone : </string>
+    <string name="contact_add_email">E-mail : </string>
+    <string name="contact_add_address">Address : </string>
+
+    <string name="contact_add_hint_name">Your Name </string>
+    <string name="contact_add_hint_firstname">Your Firstname </string>
+    <string name="contact_add_hint_phone">Ex : 0614759326 </string>
+    <string name="contact_add_hint_email">Ex : yourmail@gmail.com </string>
+    <string name="contact_add_hint_address">Your address </string>
+
+    <string name="hint_contact_search">Search an contact</string>
+
+    <!-- Search box -->
+    <string name="search_box_today_we_are">Aujourd\'hui nous sommes le</string>
+
+    <!-- Admin Splash -->
+    <string name="admin_security_co">Security and Co. Ltd</string>
+
+    <!-- Admin Dashboard -->
+    <string name="admin_header_powered_by">Powered by</string>
+    <string name="admin_header_security_and_co">Security And Co. Ltd</string>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_home</item>
+        <item>@string/title_device_usage</item>
+        <item>@string/title_space_available</item>
+        <item>@string/title_device_info</item>
+        <item>@string/title_visit_us</item>
+        <item>@string/title_about</item>
+    </string-array>
+
+    <string name="nav_item_home">Home</string>
+    <string name="nav_item_device_usage">Device Usage</string>
+    <string name="nav_item_space_available">Space Available</string>
+    <string name="nav_item_device_info">Device Info</string>
+    <string name="nav_item_visit_us">Visit Us</string>
+    <string name="nav_item_about">About</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_device_usage">Device Usage</string>
+    <string name="title_space_available">Space Available</string>
+    <string name="title_device_info">Device Info</string>
+    <string name="title_visit_us">Visit Us</string>
+    <string name="title_about">About</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Built-in WebView -->
+    <string name="action_back">Back</string>
+    <string name="action_forward">Forward</string>
+    <string name="action_bookmark">Bookmark</string>
+    <string name="info_settings">Device info</string>
+    <string name="connection_settings">Connection info</string>
+
+    <!-- Weather -->
+    <string name="weather_data_provided_by">Weather data provided by</string>
+    <string name="separator_placeholder">,</string>
+    <string name="degree_placeholder">°C</string>
+    <string name="cloudness_placeholder">Cloudness :</string>
+    <string name="humidity_placeholder">Humidity :</string>
+    <string name="pressure_placeholder">Pressure :</string>
+    <string name="pressure_unit_placeholder">inHg</string>
+    <string name="wind_placeholder">Wind :</string>
+    <string name="percent_placeholder">%</string>
+    <string name="kilometer_unit_placeholder">km/h</string>
+    <string name="form_hint_search_city">Looking for a city…</string>
+    <string name="use_my_current_location">Use my current location</string>
+
 </resources>
