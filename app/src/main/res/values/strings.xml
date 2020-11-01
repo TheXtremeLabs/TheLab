@@ -98,6 +98,7 @@
     <string name="device_infos_id">ID :</string>
     <string name="device_infos_tags">Tags :</string>
     <string name="device_infos_type">Type :</string>
+    <string name="device_infos_version">Version :</string>
 
 
     <!-- Filter ListView -->

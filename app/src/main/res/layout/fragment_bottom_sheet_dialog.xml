@@ -1,61 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingTop="@dimen/medium_margin"
+    android:paddingBottom="@dimen/medium_margin">
 
     <!-- NOTE: This list should be displayed in a list
     instead of nested layouts -->
 
+    <!-- Brand -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:paddingBottom="8dp"
         android:paddingLeft="@dimen/activity_margin"
+        android:paddingTop="@dimen/medium_margin"
         android:paddingRight="@dimen/activity_margin"
-        android:paddingTop="8dp">
+        android:paddingBottom="@dimen/medium_margin">
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginRight="32dp"
-            tools:src="@drawable/ic_baseline_settings_24"
-            />
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:text="@string/device_infos_brand"
+            android:textColor="#737373"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_bottom_brand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="Preview"
             android:textColor="#737373"
             android:textSize="16sp" />
-
     </LinearLayout>
 
+
+    <!-- Model -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:paddingBottom="8dp"
         android:paddingLeft="@dimen/activity_margin"
+        android:paddingTop="8dp"
         android:paddingRight="@dimen/activity_margin"
-        android:paddingTop="8dp">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginRight="32dp"
-            tools:src="@drawable/ic_baseline_settings_24" />
+        android:paddingBottom="8dp"
+        android:focusable="true">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/device_infos_model"
+            android:textColor="#737373"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_bottom_model"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -65,24 +79,32 @@
 
     </LinearLayout>
 
+
+    <!-- Screen Height -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:paddingBottom="8dp"
         android:paddingLeft="@dimen/activity_margin"
+        android:paddingTop="8dp"
         android:paddingRight="@dimen/activity_margin"
-        android:paddingTop="8dp">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginRight="32dp"
-            tools:src="@drawable/ic_baseline_settings_24" />
+        android:paddingBottom="8dp"
+        android:focusable="true">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/device_infos_screen_height"
+            android:textColor="#737373"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_bottom_screen_height"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -92,24 +114,32 @@
 
     </LinearLayout>
 
+
+    <!-- Screen Width -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:paddingBottom="8dp"
         android:paddingLeft="@dimen/activity_margin"
+        android:paddingTop="8dp"
         android:paddingRight="@dimen/activity_margin"
-        android:paddingTop="8dp">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginRight="32dp"
-            tools:src="@drawable/ic_baseline_settings_24" />
+        android:paddingBottom="8dp"
+        android:focusable="true">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/device_infos_screen_width"
+            android:textColor="#737373"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_bottom_screen_width"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -119,24 +149,31 @@
 
     </LinearLayout>
 
+    <!-- Version SDK -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:paddingBottom="8dp"
         android:paddingLeft="@dimen/activity_margin"
+        android:paddingTop="8dp"
         android:paddingRight="@dimen/activity_margin"
-        android:paddingTop="8dp">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginRight="32dp"
-            tools:src="@drawable/ic_baseline_settings_24" />
+        android:paddingBottom="8dp"
+        android:focusable="true">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/device_infos_version"
+            android:textColor="#737373"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_bottom_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
