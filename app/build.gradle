@@ -6,11 +6,13 @@ apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.google.gms.google-services'
 // Apply the Crashlytics Gradle plugin
 apply plugin: 'com.google.firebase.crashlytics'
+// Apply the Performance Monitoring plugin
+apply plugin: 'com.google.firebase.firebase-perf'
 
 // version information
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 2
+def versionPatch = 3
 
 
 android {
@@ -38,6 +40,10 @@ android {
     }
 
     buildTypes {
+        buildFeatures {
+            dataBinding  true
+            viewBinding  true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -52,6 +58,7 @@ android {
         splits.abi.enable = false
         splits.density.enable = false
     }
+
 
     // Watch the memory
     dexOptions {
@@ -86,6 +93,7 @@ dependencies {
     implementation rootProject.ext.generalDependencies.firebaseAnalitycs
     implementation rootProject.ext.generalDependencies.firebaseCraslytics
     implementation rootProject.ext.generalDependencies.firebaseMessaging
+    implementation rootProject.ext.generalDependencies.firebasePerf
     //implementation rootProject.ext.generalDependencies.firebaseAds
 
     // RxJava / RxAndroid
@@ -95,10 +103,11 @@ dependencies {
     /* Dagger2 - We are going to use dagger.android which includes
      * support for Activity and fragment injection so we need to include
      * the following dependencies */
-    api rootProject.ext.generalDependencies.dagger
+    implementation rootProject.ext.generalDependencies.dagger
     annotationProcessor rootProject.ext.generalDependencies.daggerCompiler
-    api rootProject.ext.generalDependencies.daggerAndroid
-    api rootProject.ext.generalDependencies.daggerAndroidSupport // if you use the support libraries
+    implementation rootProject.ext.generalDependencies.daggerAndroid
+    implementation rootProject.ext.generalDependencies.daggerAndroidSupport
+    // if you use the support libraries
     annotationProcessor rootProject.ext.generalDependencies.daggerAndroidProcessor
 
 
