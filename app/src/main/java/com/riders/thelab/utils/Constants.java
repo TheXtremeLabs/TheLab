@@ -8,7 +8,9 @@ import java.util.List;
 
 public class Constants {
 
-    public static ArrayList<App> activityItems;
+    private static Constants instance;
+
+    public final List<App> activityItems;
     static ArrayList<RecyclerItem> recyclerItems;
 
     //REST client Base URL
@@ -32,18 +34,17 @@ public class Constants {
     public static final int CONFIDENCE = 70;
 
     private Constants() {
+        this.activityItems = new ArrayList<>(loadActivities());
     }
 
+    public static Constants getInstance() {
+        if (null == instance)
+            instance = new Constants();
+        return instance;
+    }
 
-    /**
-     * Return app testing list
-     * <p>
-     * [Add here new app object]
-     *
-     * @return
-     */
-    public static List<App> getActivities() {
-        activityItems = new ArrayList<>();
+    public List<App> loadActivities() {
+        List<App> list = new ArrayList<>();
         /*activityItems.add(new ActivityItem("Highcharts API", "Testing Highcharts API for Android ...",
                 R.drawable.logo_highcharts, HighChartsActivity.class));
 
@@ -124,6 +125,18 @@ public class Constants {
         activityItems.add(new ActivityItem("WIP", "Coming soon...",
                 R.drawable.ic_warning, null));*/
 
+        return list;
+    }
+
+
+    /**
+     * Return app testing list
+     * <p>
+     * [Add here new app object]
+     *
+     * @return
+     */
+    public List<App> getActivityList() {
         return activityItems;
     }
 

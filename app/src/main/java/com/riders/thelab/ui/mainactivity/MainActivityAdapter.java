@@ -47,11 +47,7 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
         final App item = appList.get(position);
 
         holder.bindData(item.getName(), item.getVersion(), item.getDrawableIcon());
-        holder.itemCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onAppItemCLickListener(view, item, holder.getAdapterPosition());
-            }
-        });
+        holder.itemCardView.setOnClickListener(
+                view -> listener.onAppItemCLickListener(view, item, holder.getAdapterPosition()));
     }
 }
