@@ -1,18 +1,15 @@
 package com.riders.thelab.ui.splashscreen;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.location.LocationManager;
-import android.util.Log;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.widget.Toast;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.riders.thelab.ui.base.BasePresenterImpl;
 
@@ -20,9 +17,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 
 public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
         implements SplashScreenContract.Presenter {
+
+    @Inject
+    SplashScreenActivity activity;
 
     @Inject
     SplashScreenPresenter() {
@@ -129,8 +131,21 @@ public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
                 .withErrorListener(error -> {
                     Toast.makeText(context, "Error occurred! " + error.toString(), Toast.LENGTH_SHORT).show();
                     getView().onPermissionsDenied();
-                } )
+                })
                 .onSameThread()
                 .check();
+    }
+
+    @Override
+    public void getAppVersion() {
+        try {
+            PackageInfo pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
+            String version = pInfo.versionName;
+
+            getView().displayAppVersion(version);
+
+        } catch (PackageManager.NameNotFoundException error) {
+            Timber.e(error);
+        }
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 
 import com.riders.thelab.TheLabApplication;
 import com.riders.thelab.data.local.model.App;
+import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenterImpl;
 
 import java.util.ArrayList;
@@ -23,7 +24,11 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
     MainActivity activity;
 
     @Inject
-    MainActivityPresenter() {}
+    Navigator navigator;
+
+    @Inject
+    MainActivityPresenter() {
+    }
 
 
     /**
@@ -114,5 +119,9 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
         }
         return true;
         */
+    }
+
+    public void launchIntentForPackage(String packageName) {
+        navigator.callIntentForPackageActivity(packageName);
     }
 }
