@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.mainactivity;
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
 
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.ui.base.BaseViewImpl;
@@ -60,6 +61,36 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
         // Call presenter to fetch data
         getPresenter().getPackageList();
+    }
+
+    @Override
+    public void onActivityCreated() {
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onPause() {
+
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onDetach() {
+
     }
 
     public void onDestroy() {

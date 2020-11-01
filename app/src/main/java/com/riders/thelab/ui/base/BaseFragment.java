@@ -16,12 +16,12 @@ public class BaseFragment<V extends BaseView> extends DaggerFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        view.onCreate();
+        view.onActivityCreated();
     }
 
     @Override
     public void onDetach() {
-        view.onDestroy();
+        view.onDetach();
         super.onDetach();
     }
 }
