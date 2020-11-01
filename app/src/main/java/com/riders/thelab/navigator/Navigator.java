@@ -25,4 +25,11 @@ public class Navigator {
     public void callMainActivity() {
         context.startActivity(new Intent(context, MainActivity.class));
     }
+
+    public void callIntentForPackageActivity(String intentPackageName) {
+        context.startActivity(
+                context
+                        .getPackageManager()
+                        .getLaunchIntentForPackage(intentPackageName));
+    }
 }

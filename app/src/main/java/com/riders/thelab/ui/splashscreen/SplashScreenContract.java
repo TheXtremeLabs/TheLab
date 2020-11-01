@@ -12,10 +12,14 @@ public interface SplashScreenContract {
 
         void onPermissionsDenied();
 
+        void displayAppVersion(String appVersion);
+
         void closeApp();
     }
 
     interface Presenter {
         void hasPermissions(Context context);
+
+        void getAppVersion();
     }
 }

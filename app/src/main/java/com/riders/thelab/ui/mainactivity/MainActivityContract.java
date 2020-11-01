@@ -2,6 +2,7 @@ package com.riders.thelab.ui.mainactivity;
 
 
 import com.riders.thelab.data.local.model.App;
+import com.riders.thelab.ui.base.BasePresenter;
 import com.riders.thelab.ui.base.BaseView;
 
 import java.util.List;
@@ -39,8 +40,8 @@ public interface MainActivityContract {
     interface Presenter {
 
         /**
-         * Fetch movies data from external API
+         * Retrieve applications from both compiled classes and packages installed on the devices
          */
-        void getPackageList();
+        void getApplications();
     }
 }
