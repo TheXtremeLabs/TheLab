@@ -1,171 +1,118 @@
 package com.riders.thelab.ui.mainactivity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 import com.riders.thelab.R;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import timber.log.Timber;
 
 
+@SuppressLint("NonConstantResourceId")
 public class BottomSheetFragment extends BottomSheetDialogFragment {
 
-    // TAG
-    private static final String TAG = BottomSheetDialogFragment.class.getSimpleName();
+    @BindView(R.id.tv_bottom_brand)
+    TextView tvBrand;
+    @BindView(R.id.tv_bottom_model)
+    TextView tvModel;
+    @BindView(R.id.tv_bottom_screen_height)
+    TextView tvScreenHeight;
+    @BindView(R.id.tv_bottom_screen_width)
+    TextView tvScreenWidth;
+    @BindView(R.id.tv_bottom_version)
+    TextView tvVersion;
+
 
     //Variables
-    private String deviceDevice = null,
-            deviceModel = null,
-            deviceBrand = null,
-            deviceHardware = null,
-            deviceProduct = null,
-            deviceManufact = null,
-            deviceSerial = null,
-            deviceIMEI = null,
-            deviceBoard = null,
-            deviceBootlaoder = null,
-            deviceDisplay = null,
-            deviceFingerprint = null,
-            deviceID = null,
-            deviceTags = null,
-            deviceType = null;
-
-    private int deviceScreenHeight = 0,
-            deviceScreenWidth = 0,
-            deviceVersionSDK = 0;
+    private String deviceModel;
+    private String deviceBrand;
+    private int deviceScreenHeight = 0;
+    private int deviceScreenWidth = 0;
+    private int deviceVersionSDK = 0;
+    private Field[] fields;
+    private String OSName = "UNKNOWN";
 
     public BottomSheetFragment() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bottom_sheet_dialog, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_bottom_sheet_dialog, container, false);
+        ButterKnife.bind(this, rootView);
+        return rootView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.i(TAG, "onViewCreated()");
+        Timber.i("onViewCreated()");
 
         //Retrieve data
         getDeviceInfo();
+        setViews();
     }
 
     private void getDeviceInfo() {
-        Log.i(TAG, "getDeviceInfo");
+        Timber.i("getDeviceInfo()");
 
-        deviceDevice = Build.DEVICE;
-        deviceModel = Build.MODEL;
         deviceBrand = Build.BRAND;
+        deviceModel = Build.MODEL;
 
         //Retrieve Screen's height and width
         DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        getActivity()
+                .getWindowManager()
+                .getDefaultDisplay()
+                .getMetrics(metrics);
 
         deviceScreenHeight = metrics.heightPixels;
         deviceScreenWidth = metrics.widthPixels;
 
-        deviceHardware = Build.HARDWARE;
-        deviceProduct = Build.PRODUCT;
-        deviceManufact = Build.MANUFACTURER;
-
-        try {
-            Class<?> c = Class.forName("android.os.SystemProperties");
-            Method get = c.getMethod("get", String.class, String.class);
-            deviceSerial = (String) get.invoke(c, "ril.serialnumber", "unknown");
-        } catch (Exception e) {
-            Log.e(TAG, "Some error occured : " + e.getMessage());
-        }
-
-
-        /**
-         * http://stackoverflow.com/questions/1972381/how-to-get-the-devices-imei-esn-programmatically-in-android
-         */
-        final TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-
-        Dexter.withActivity(getActivity())
-                .withPermission(Manifest.permission.READ_PHONE_STATE)
-                .withListener(new PermissionListener() {
-                    @SuppressLint("MissingPermission")
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        deviceIMEI = tm.getDeviceId();
-
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-                        Log.e(TAG, "android.permission.read_phone_state : access not granted");
-
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-
-                    }
-                });
-
-        if (deviceIMEI == null || deviceIMEI.length() == 0)
-            deviceIMEI = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        deviceBoard = Build.BOARD;
-        deviceBootlaoder = Build.BOOTLOADER;
-        deviceDisplay = Build.DISPLAY;
-        deviceFingerprint = Build.FINGERPRINT;
-        deviceID = Build.ID;
-        deviceTags = Build.TAGS;
-        deviceType = Build.TYPE;
         deviceVersionSDK = Build.VERSION.SDK_INT;
 
-        String logDeviceInfo =
-                "Model : " + deviceModel + " \n" +
-                        "Product : " + deviceProduct + "(don't need) \n" +
-                        "Manufacturer : " + deviceManufact + "(not necessary) \n" +
-                        "Serial : " + deviceSerial + " \n" +
-                        "Brand : " + deviceBrand + " \n" +
-                        "Display : " + deviceDisplay + "(don't need) \n" +
-                        "Screen Width : " + deviceScreenWidth + " \n" +
-                        "Screen Height : " + deviceScreenHeight + " \n" +
-                        "Hardware : " + deviceHardware + " \n" +
-                        "Version SDK : API " + deviceVersionSDK + " \n" +
-                        "IMEI : " + deviceIMEI + "\n" +
-                        "Fingerprint : " + deviceFingerprint + "\n";
+        fields = Build.VERSION_CODES.class.getFields();
+        for (Field field : fields) {
+            Timber.i(field.toString());
+            try {
+                if (field.getInt(Build.VERSION_CODES.class) == Build.VERSION.SDK_INT) {
+                    OSName = field.getName();
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-        Log.i(TAG, "\n" + logDeviceInfo);
-
+    @SuppressLint("SetTextI18n")
+    private void setViews() {
+        tvBrand.setText(deviceBrand);
+        tvModel.setText(deviceModel);
+        tvScreenHeight.setText(deviceScreenHeight + "");
+        tvScreenWidth.setText(deviceScreenWidth + "");
+        tvVersion.setText(deviceVersionSDK + " " + OSName);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.e(TAG, "DestroyView()");
+        Timber.e("DestroyView()");
     }
 }
