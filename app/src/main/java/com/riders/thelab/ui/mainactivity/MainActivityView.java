@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.mainactivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.riders.thelab.R;
@@ -173,11 +175,16 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
         MainActivityAdapter adapter = new MainActivityAdapter(context, applications, this);
 
-        GridLayoutManager gridLayoutManager
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        appRecyclerView.setLayoutManager(linearLayoutManager);
+        appRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        appRecyclerView.setAdapter(adapter);
+
+        /*GridLayoutManager gridLayoutManager
                 = new GridLayoutManager(context, 2);
         appRecyclerView.setLayoutManager(gridLayoutManager);
         appRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        appRecyclerView.setAdapter(adapter);
+        appRecyclerView.setAdapter(adapter);*/
     }
 
     @Override
