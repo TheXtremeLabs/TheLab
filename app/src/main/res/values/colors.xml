@@ -12,7 +12,7 @@
 
     <color name="transparent">#00000000</color>
 
-    // Palette
+    <!-- Palette -->
     <color name="black">#000000</color>
     <color name="jet">#222222</color>
     <color name="oil">#333333</color>
