@@ -11,7 +11,7 @@ import timber.log.Timber;
 
 public class TheLabApplication extends DaggerApplication {
 
-    public static String HUB_PACKAGE_NAME = "";
+    public static String LAB_PACKAGE_NAME = "";
     FirebaseCrashlytics mCrashlytics;
 
     @Override
@@ -29,7 +29,7 @@ public class TheLabApplication extends DaggerApplication {
 
         init();
 
-        HUB_PACKAGE_NAME = getPackageName();
+        LAB_PACKAGE_NAME = getPackageName();
     }
 
     private void init() {

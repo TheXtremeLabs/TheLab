@@ -11,18 +11,18 @@ apply plugin: 'com.google.firebase.firebase-perf'
 
 // version information
 def versionMajor = 1
-def versionMinor = 0
-def versionPatch = 5
+def versionMinor = 1
+def versionPatch = 0
 
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.riders.thelab"
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
 
         versionCode 10 * (versionMajor * 1000 + versionMinor * 100 + versionPatch)
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
@@ -82,6 +82,8 @@ dependencies {
     implementation rootProject.ext.generalDependencies.navigationUi
     implementation rootProject.ext.generalDependencies.recyclerView
     implementation rootProject.ext.generalDependencies.cardView
+
+    implementation rootProject.ext.generalDependencies.autoFill
 
     //Room
     implementation rootProject.ext.generalDependencies.roomRuntime

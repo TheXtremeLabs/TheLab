@@ -199,7 +199,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
                                     ANDROID_RES_PATH +
                                             context.getPackageName() +
                                             SEPARATOR +
-                                            R.raw.splash_intro_testing_sound));
+                                            R.raw.splash_intro_testing_sound_2));
 
         } catch (Exception e) {
             Timber.e(e);
