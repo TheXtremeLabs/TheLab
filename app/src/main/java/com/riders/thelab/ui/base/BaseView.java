@@ -6,7 +6,7 @@ public interface BaseView<T> {
 
     void onCreate();
 
-    void onActivityCreated();
+    /*void onActivityCreated();
 
     void onSaveInstanceState(Bundle savedInstanceState);
 
@@ -16,7 +16,7 @@ public interface BaseView<T> {
 
     void onResume();
 
-    void onDetach();
+    void onDetach();*/
 
     void onDestroy();
 }

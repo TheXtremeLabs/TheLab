@@ -61,7 +61,6 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     }
 
 
-
     /////////////////////////////////
     //
     // OVERRIDE
@@ -83,11 +82,6 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
                         .getInteger(android.R.integer.config_shortAnimTime);
 
         getPresenter().hasPermissions(context);
-    }
-
-    @Override
-    public void onActivityCreated() {
-
     }
 
     @Override
@@ -115,10 +109,6 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         Timber.i("onResume()");
     }
 
-    @Override
-    public void onDetach() {
-
-    }
 
     @Override
     public void onDestroy() {
@@ -210,7 +200,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         splashVideoView.setOnCompletionListener(this);
     }
 
-    private void goToMainActivity() {
+    protected void goToMainActivity() {
         Timber.i("goToMainActivity()");
         if (context != null && navigator != null) {
             navigator.callMainActivity();
@@ -252,9 +242,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
                         Completable
                                 .complete()
                                 .delay(3, TimeUnit.SECONDS)
-                                .doOnComplete(() -> {
-                                    goToMainActivity();
-                                })
+                                .doOnComplete(() -> context.view.goToMainActivity())
                                 .doOnError(Timber::e)
                                 .subscribeOn(Schedulers.io())
                                 //Caused by: android.util.AndroidRuntimeException:

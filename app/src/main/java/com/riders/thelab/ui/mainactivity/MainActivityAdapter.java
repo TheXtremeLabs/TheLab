@@ -2,7 +2,6 @@ package com.riders.thelab.ui.mainactivity;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -46,7 +45,7 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
     public void onBindViewHolder(@NonNull MainActivityViewHolder holder, int position) {
         final App item = appList.get(position);
 
-        holder.bindData(item.getName(), item.getVersion(), item.getDrawableIcon());
+        holder.bindData(item);
         holder.itemCardView.setOnClickListener(
                 view -> listener.onAppItemCLickListener(view, item, holder.getAdapterPosition()));
     }

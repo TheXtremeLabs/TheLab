@@ -129,6 +129,10 @@
 
     <string name="hint_contact_search">Search an contact</string>
 
+
+    <string name="title_activity_palette">Palette</string>
+
+
     <!-- Search box -->
     <string name="search_box_today_we_are">Aujourd\'hui nous sommes le</string>
 
