@@ -75,8 +75,10 @@ dependencies {
 
     // AndroidX
     implementation rootProject.ext.generalDependencies.multidex
+    implementation rootProject.ext.generalDependencies.core
     implementation rootProject.ext.generalDependencies.appcompat
     implementation rootProject.ext.generalDependencies.material
+    implementation rootProject.ext.generalDependencies.palette
     implementation rootProject.ext.generalDependencies.constraintLayout
     implementation rootProject.ext.generalDependencies.navigationFragment
     implementation rootProject.ext.generalDependencies.navigationUi
@@ -118,7 +120,12 @@ dependencies {
     implementation rootProject.ext.generalDependencies.butterknife
     annotationProcessor rootProject.ext.generalDependencies.butterknifeAnnotation
 
+    // Picasso
+    implementation rootProject.ext.generalDependencies.picasso
+
+    // Glide
     implementation rootProject.ext.generalDependencies.glide
+    annotationProcessor rootProject.ext.generalDependencies.glideAnnotation
 
     /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
     implementation rootProject.ext.generalDependencies.retrofit

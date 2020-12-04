@@ -28,6 +28,7 @@
     <color name="white">#ffffff</color>
 
 
+    <color name="list_divider">#dedede</color>
 
     <!-- Splash Layout -->
     <color name="ball1">#FFD91C</color>
@@ -128,6 +129,11 @@
     <color name="green">#00A424</color>
     <color name="orange">#D95C00</color>
     <color name="red">#A60000</color>
+
+
+    <color name="good">#43A047</color>
+    <color name="warning">#FB8C00</color>
+    <color name="error">#d32f2f</color>
 
     <color name="login_connection_button">#20adbc</color>
 

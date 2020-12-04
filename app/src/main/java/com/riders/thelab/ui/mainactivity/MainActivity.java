@@ -1,12 +1,14 @@
 package com.riders.thelab.ui.mainactivity;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
 
 import com.riders.thelab.R;
 import com.riders.thelab.ui.base.BaseActivity;
@@ -29,6 +31,29 @@ public class MainActivity extends BaseActivity<MainActivityView> {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        view.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        view.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        view.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        view.onResume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -38,6 +63,7 @@ public class MainActivity extends BaseActivity<MainActivityView> {
     }
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

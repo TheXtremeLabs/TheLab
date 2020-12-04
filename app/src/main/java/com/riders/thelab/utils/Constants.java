@@ -1,10 +1,14 @@
 package com.riders.thelab.utils;
 
+import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.data.local.model.RecyclerItem;
+import com.riders.thelab.ui.palette.PaletteActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class Constants {
 
@@ -33,10 +37,14 @@ public class Constants {
     public static final long DETECTION_INTERVAL_IN_MILLISECONDS = 30 * 1000;
     public static final int CONFIDENCE = 70;
 
+
+    // private constructor can't be accessed outside the class
     private Constants() {
+        Timber.d("Constructor constants()");
         this.activityItems = new ArrayList<>(loadActivities());
     }
 
+    // Factory method to provide the users with instances
     public static Constants getInstance() {
         if (null == instance)
             instance = new Constants();
@@ -82,12 +90,12 @@ public class Constants {
                 R.drawable.ic_schedule_black_48dp, ScheduleJobActivity.class));
 
         activityItems.add(new ActivityItem("Devices Informations", "Display device info...",
-                R.drawable.ic_perm_device_information_black_48dp, DeviceInformationsActivity.class));
+                R.drawable.ic_perm_device_information_black_48dp, DeviceInformationsActivity.class));*/
 
-        activityItems.add(new ActivityItem("Palette", "Get different color from an image",
-                R.drawable.ic_palette_black_48dp, PaletteActivity.class));
+        list.add(new App("Palette", "Get different color from an image",
+                R.drawable.ic_palette_72, PaletteActivity.class));
 
-        activityItems.add(new ActivityItem("Filter ListView", "ListView with filter...",
+        /*activityItems.add(new ActivityItem("Filter ListView", "ListView with filter...",
                 R.drawable.ic_filter_list_black_48dp, FilterListViewActivity.class));
 
         activityItems.add(new ActivityItem("Multi Pane", "Display content on split screen...",

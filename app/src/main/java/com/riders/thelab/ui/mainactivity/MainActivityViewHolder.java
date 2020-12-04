@@ -2,7 +2,6 @@ package com.riders.thelab.ui.mainactivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.riders.thelab.R;
+import com.riders.thelab.data.local.model.App;
+import com.riders.thelab.utils.Validator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,13 +45,22 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void bindData(@NonNull String title, @NonNull String version, @NonNull Drawable icon) {
+    public void bindData(App app) {
 
         Glide.with(context)
-                .load(icon)
+                .load(
+                        (0 != app.getIcon())
+                                ? app.getIcon()
+                                : app.getDrawableIcon())
                 .into(iconImageView);
 
-        titleTextView.setText(title);
-        descriptionTextView.setText(version);
+        titleTextView.setText(!Validator.isEmpty(app.getTitle())
+                ? app.getTitle()
+                : app.getName());
+
+        descriptionTextView.setText(
+                !Validator.isEmpty(app.getVersion())
+                        ? app.getVersion()
+                        : app.getDescription());
     }
 }
