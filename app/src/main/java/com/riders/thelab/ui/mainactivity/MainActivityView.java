@@ -1,14 +1,12 @@
 package com.riders.thelab.ui.mainactivity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -78,10 +76,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         getPresenter().getApplications();
     }
 
-    @Override
-    public void onActivityCreated() {
-
-    }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -100,11 +94,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
     @Override
     public void onResume() {
-
-    }
-
-    @Override
-    public void onDetach() {
 
     }
 
@@ -203,9 +192,17 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
         Timber.d("Clicked item : " + item + ", at position : " + position);
 
-        // Just use these following two lines,
-        // so you can launch any installed application whose package name is known:
-        getPresenter().launchIntentForPackage(item.getPackageName());
+        if (null != item.getPackageName()) {
+            Timber.d("launchIntentForPackage(%s)", item.getPackageName());
+
+            // Just use these following two lines,
+            // so you can launch any installed application whose package name is known:
+            getPresenter().launchIntentForPackage(item.getPackageName());
+        } else {
+            Timber.d("launchActivity(%s)", item.getActivity().getSimpleName());
+
+            getPresenter().launchActivity(item.getActivity());
+        }
     }
     /////////////////////////////////////
     //

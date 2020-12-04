@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.mainactivity;
 
+import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -56,10 +57,10 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
      */
     public List<App> getPackageList() {
 
-        final String[] TARGET_PACKAGES = new String[] {
-            "com.riders",
-            "com.reepling",
-            "com.praeter"
+        final String[] TARGET_PACKAGES = new String[]{
+                "com.riders",
+                "com.reepling",
+                "com.praeter"
         };
         List<ApplicationInfo> installedAppList = new ArrayList<>();
 
@@ -146,7 +147,13 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
         */
     }
 
+    @Override
     public void launchIntentForPackage(String packageName) {
         navigator.callIntentForPackageActivity(packageName);
+    }
+
+    @Override
+    public void launchActivity(Class<? extends Activity> activity) {
+        navigator.callIntentActivity(activity);
     }
 }

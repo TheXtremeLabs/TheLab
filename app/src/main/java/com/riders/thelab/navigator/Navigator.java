@@ -26,6 +26,11 @@ public class Navigator {
         context.startActivity(new Intent(context, MainActivity.class));
     }
 
+
+    public void callIntentActivity(Class<? extends Activity> targetClass) {
+        context.startActivity(new Intent(context, targetClass));
+    }
+
     public void callIntentForPackageActivity(String intentPackageName) {
         context.startActivity(
                 context

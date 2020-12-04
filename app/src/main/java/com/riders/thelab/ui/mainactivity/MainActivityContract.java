@@ -1,8 +1,10 @@
 package com.riders.thelab.ui.mainactivity;
 
 
+import android.app.Activity;
+import android.os.Bundle;
+
 import com.riders.thelab.data.local.model.App;
-import com.riders.thelab.ui.base.BasePresenter;
 import com.riders.thelab.ui.base.BaseView;
 
 import java.util.List;
@@ -10,6 +12,14 @@ import java.util.List;
 public interface MainActivityContract {
 
     interface View extends BaseView {
+
+        void onSaveInstanceState(Bundle savedInstanceState);
+
+        void onRestoreInstanceState(Bundle savedInstanceState);
+
+        void onPause();
+
+        void onResume();
 
         /**
          * Shows loader progressBar
@@ -43,5 +53,9 @@ public interface MainActivityContract {
          * Retrieve applications from both compiled classes and packages installed on the devices
          */
         void getApplications();
+
+        void launchIntentForPackage(String targetPackage);
+
+        void launchActivity(Class <? extends Activity> targetActivity);
     }
 }
