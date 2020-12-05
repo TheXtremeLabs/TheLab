@@ -18,11 +18,6 @@ public class SimpleActivity extends AppCompatActivity {
             ab.setTitle(title);
             if (subTitle != null) ab.setSubtitle(subTitle);
         }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 }

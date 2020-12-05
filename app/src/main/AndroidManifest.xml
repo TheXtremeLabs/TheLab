@@ -82,6 +82,11 @@
             android:theme="@style/Theme.TheLab" />
 
         <activity
+            android:name=".ui.colors.ColorActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+
+        <activity
             android:name=".ui.palette.PaletteActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/PaletteTheme" />
