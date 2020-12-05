@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.bean.SnackBarType;
+
+import timber.log.Timber;
 
 public class UIManager {
 
@@ -138,5 +141,39 @@ public class UIManager {
                 .setActionTextColor()
                 .setAction("Action", null).show();
                 */
+    }
+
+
+    // Showing the status in Snackbar
+    public static void showConnectionStatusInSnackBar(Activity context, boolean isConnected) {
+        Timber.d("showConnectionStatusInSnackBar()");
+
+        String message;
+        int backgroundColor;
+        int textColor;
+
+        if (isConnected) {
+            message = "Good! Connected to Internet";
+            backgroundColor = context.getResources().getColor(R.color.contactsDatabaseColorPrimaryDark);
+            textColor = Color.WHITE;
+        } else {
+            message = "Sorry! Not connected to internet";
+            backgroundColor = context.getResources().getColor(R.color.locationColorPrimaryDark);
+            textColor = Color.WHITE;
+        }
+
+        Snackbar snackbar =
+                Snackbar
+                        .make(
+                                context.findViewById(android.R.id.content),
+                                message,
+                                Snackbar.LENGTH_LONG);
+
+        snackbar.setBackgroundTint(backgroundColor);
+
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(com.google.android.material.R.id.snackbar_text);
+        textView.setTextColor(textColor);
+        snackbar.show();
     }
 }
