@@ -13,10 +13,10 @@ import lombok.ToString;
 public class App {
 
     // From Packages
-    String name;
-    Drawable drawableIcon;
-    String version;
-    String packageName;
+    private String name;
+    private Drawable drawableIcon;
+    private String version;
+    private String packageName;
 
     // From activities
     private String title;
