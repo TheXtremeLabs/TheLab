@@ -9,14 +9,19 @@ import android.view.MenuItem;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 
 import com.riders.thelab.R;
+import com.riders.thelab.core.broadcast.ConnectivityReceiver;
+import com.riders.thelab.core.utils.LabNetworkManager;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.ui.base.BaseActivity;
 
+import timber.log.Timber;
+
 public class MainActivity extends BaseActivity<MainActivityView> {
 
-    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,33 +38,39 @@ public class MainActivity extends BaseActivity<MainActivityView> {
     }
 
     @Override
+    protected void onStart() {
+        view.onStart();
+        super.onStart();
+    }
+
+    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
         view.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
         view.onRestoreInstanceState(savedInstanceState);
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         view.onPause();
+        super.onPause();
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
         view.onResume();
+        super.onResume();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        this.menu = menu;
+        view.onCreateOptionsMenu(menu);
         return true;
     }
 
