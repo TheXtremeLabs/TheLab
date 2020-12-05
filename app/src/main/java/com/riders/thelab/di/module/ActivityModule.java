@@ -9,6 +9,8 @@ import com.riders.thelab.ui.palette.PaletteActivity;
 import com.riders.thelab.ui.palette.PaletteModule;
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity;
 import com.riders.thelab.ui.splashscreen.SplashScreenModule;
+import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity;
+import com.riders.thelab.ui.youtubelike.YoutubeLikeModule;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -32,6 +34,12 @@ public abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = FilterListViewModule.class)
     abstract FilterListViewActivity filterListViewActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = YoutubeLikeModule.class)
+    abstract YoutubeLikeActivity youtubeLikeActivity();
+
+
 }
 
 
