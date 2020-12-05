@@ -43,4 +43,15 @@
         <item name="colorAccent">@color/tabColorAccent</item>
     </style>
 
+
+    <!-- Filter ListView Theme -->
+    <style name="FilterListViewTheme" parent="FilterListViewStyleTheme.Base" />
+
+    <style name="FilterListViewStyleTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="colorPrimary">@color/filterListViewColorPrimary</item>
+        <item name="colorPrimaryDark">@color/filterListViewColorPrimaryDark</item>
+        <item name="colorAccent">@color/filterListViewColorAccent</item>
+    </style>
 </resources>

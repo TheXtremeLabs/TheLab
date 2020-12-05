@@ -4,6 +4,7 @@ import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.data.local.model.RecyclerItem;
 import com.riders.thelab.ui.colors.ColorActivity;
+import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
 
 import java.util.ArrayList;
@@ -97,10 +98,10 @@ public class Constants {
         list.add(new App("Palette", "Get different color from an image...",
                 R.drawable.ic_palette_72, PaletteActivity.class));
 
-        /*list.add(new App("Filter ListView", "ListView with filter...",
-                R.drawable.ic_filter_list_black_48dp, FilterListViewActivity.class));
+        list.add(new App("Filter ListView", "ListView with filter...",
+                R.drawable.ic_filter_list, FilterListViewActivity.class));
 
-        list.add(new App("Multi Pane", "Display content on split screen...",
+        /*list.add(new App("Multi Pane", "Display content on split screen...",
                 R.drawable.ic_aspect_ratio_black_48dp, MultiPaneActivity.class));*/
 /*
         listActivities.add( new ItemActivity("Contacts Database Activity", R.drawable.ic_perm_contact_calendar_black_48dp, ContactsDatabaseActivity.class) );
