@@ -56,7 +56,7 @@ public class PaletteView extends BaseViewImpl<PalettePresenter>
         getPresenter().attachView(this);
 
         context.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        context.getSupportActionBar().setTitle(context.getString(R.string.title_activity_palette));
+        context.getSupportActionBar().setTitle(context.getString(R.string.activity_title_palette));
 
         // InitViews
         ButterKnife.bind(this, context.findViewById(android.R.id.content));

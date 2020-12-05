@@ -11,6 +11,7 @@ import android.view.Window;
 import androidx.annotation.NonNull;
 
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.ui.base.BaseActivity;
 
 public class MainActivity extends BaseActivity<MainActivityView> {
@@ -67,6 +68,15 @@ public class MainActivity extends BaseActivity<MainActivityView> {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.connection_icon:
+                UIManager.showActionInToast(this, "Wifi clicked");
+                // TODO : Modify wifi state
+                break;
+
+            case R.id.action_settings:
+                UIManager.showActionInToast(this, "Settings clicked");
+                break;
+
             case R.id.info_icon:
                 showBottomSheetDialogFragment();
                 break;

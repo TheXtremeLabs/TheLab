@@ -1,6 +1,8 @@
 package com.riders.thelab.di.module;
 
 import com.riders.thelab.di.scopes.ActivityScope;
+import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
+import com.riders.thelab.ui.filterlistview.FilterListViewModule;
 import com.riders.thelab.ui.mainactivity.MainActivity;
 import com.riders.thelab.ui.mainactivity.MainActivityModule;
 import com.riders.thelab.ui.palette.PaletteActivity;
@@ -26,4 +28,10 @@ public abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = PaletteModule.class)
     abstract PaletteActivity paletteActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = FilterListViewModule.class)
+    abstract FilterListViewActivity filterListViewActivity();
 }
+
+

@@ -52,6 +52,7 @@
 
 
     <!-- Tabs Fragments -->
+    <string name="activity_title_working_tabs">Working Tabs</string>
     <string name="one">ONE</string>
     <string name="two">TWO</string>
     <string name="three">THREE</string>
@@ -64,6 +65,7 @@
     <string name="ten">TEN</string>
 
     <!-- Floating Labels-->
+    <string name="activity_title_floating_labels">Floating Labels</string>
     <string name="hint_name">Full Name</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -73,12 +75,14 @@
     <string name="err_msg_password">Enter the password</string>
 
     <!-- Location -->
+    <string name="activity_title_location">Location</string>
     <string name="lbl_you_are_at">YOU ARE AT</string>
     <string name="btn_get_location">GET MY LOCATION</string>
     <string name="btn_start_location_updates">START LOCATION UPDATES</string>
     <string name="btn_stop_location_updates">STOP LOCATION UPDATES</string>
 
     <!-- Schedule Jobs -->
+    <string name="activity_title_schedule_jobs">Schedule Jobs</string>
     <string name="start_job">Start Schedule</string>
 
     <!-- Device Informations -->
@@ -101,13 +105,8 @@
     <string name="device_infos_version">Version :</string>
 
 
-    <!-- Filter ListView -->
-    <string name="ranklabel">"Rank : "</string>
-    <string name="countrylabel">"Country : "</string>
-    <string name="populationlabel">"Population : "</string>
-
-
     <!-- Contacts Database -->
+    <string name="activity_title_database_contacts">Database Contacts</string>
     <string name="action_add_contact">Add Contact</string>
 
     <string name="button_update">Update</string>
@@ -130,7 +129,15 @@
     <string name="hint_contact_search">Search an contact</string>
 
 
-    <string name="title_activity_palette">Palette</string>
+    <!-- Palette -->
+    <string name="activity_title_palette">Palette</string>
+
+    <!-- Filter ListView -->
+    <string name="activity_title_filter_list_view">Filter ListView</string>
+    <string name="activity_title_filter_list_view_detail">Filter ListView Detail</string>
+    <string name="ranklabel">"Rank : "</string>
+    <string name="countrylabel">"Country : "</string>
+    <string name="populationlabel">"Population : "</string>
 
 
     <!-- Search box -->
@@ -171,6 +178,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Built-in WebView -->
+    <string name="activity_title_built_in_web_view">Built-in WebView</string>
     <string name="action_back">Back</string>
     <string name="action_forward">Forward</string>
     <string name="action_bookmark">Bookmark</string>
@@ -178,6 +186,7 @@
     <string name="connection_settings">Connection info</string>
 
     <!-- Weather -->
+    <string name="activity_title_weather">Weather</string>
     <string name="weather_data_provided_by">Weather data provided by</string>
     <string name="separator_placeholder">,</string>
     <string name="degree_placeholder">°C</string>
