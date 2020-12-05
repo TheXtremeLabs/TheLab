@@ -201,4 +201,7 @@
     <string name="use_my_current_location">Use my current location</string>
     <string name="version_placeholder">"v "</string>
 
+    <!-- Youtube -->
+    <string name="activity_title_youtube_like">Youtube Like Activity</string>
+
 </resources>

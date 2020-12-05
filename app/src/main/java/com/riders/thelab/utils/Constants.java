@@ -6,6 +6,7 @@ import com.riders.thelab.data.local.model.RecyclerItem;
 import com.riders.thelab.ui.colors.ColorActivity;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
+import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,9 +120,11 @@ public class Constants {
 
         list.add(new App("Songs Player (Work In Progress)", "Display content on split screen...",
                 R.mipmap.ic_launcher_round, SongPlayerActivity.class));
-
+*/
         list.add(new App("Youtube", "Youtube look like...",
-                R.drawable.youtube_icon_like, YoutubeActivity.class));
+                R.drawable.youtube_icon_like, YoutubeLikeActivity.class));
+
+                /*
 
         list.add(new App("My Speech To Text", "Own speech to text implementation...",
                 R.drawable.ic_mic, SpeechToTextActivity.class));

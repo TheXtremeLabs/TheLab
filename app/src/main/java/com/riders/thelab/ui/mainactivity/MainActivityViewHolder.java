@@ -81,12 +81,6 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
                             Bitmap newBitmap = addGradient(myBitmap);
                             iconImageView.setImageDrawable(new BitmapDrawable(context.getResources(), newBitmap));
-//                            iconImageView.setBackgroundDrawable( ResourcesCompat.getDrawable(context.getResources(),R.drawable.item_palette_icon_gradient, null));
-                            //iconImageView.setImageTintList(new ColorStateList() ResourcesCompat.getDrawable(context.getResources(),R.drawable.item_palette_icon_gradient, null));
-
-//                            iconImageView.setForeground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.item_palette_icon_gradient, null));
-
-
                             return true;
                         }
 

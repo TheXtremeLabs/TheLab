@@ -100,6 +100,16 @@
             android:parentActivityName=".ui.filterlistview.FilterListViewActivity"
             android:theme="@style/FilterListViewTheme" />
 
+        <activity
+            android:name=".ui.youtubelike.YoutubeLikeActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/YoutubeTheme" />
+
+        <activity
+            android:name=".ui.youtubelike.YoutubeLikeDetailActivity"
+            android:parentActivityName=".ui.youtubelike.YoutubeLikeActivity"
+            android:theme="@style/YoutubeTheme" />
+
     </application>
 
 </manifest>

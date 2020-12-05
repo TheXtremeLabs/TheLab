@@ -134,6 +134,10 @@ dependencies {
     implementation rootProject.ext.generalDependencies.okhttp3Logging
 
 
+    // Parceler
+    implementation rootProject.ext.generalDependencies.parceler
+    annotationProcessor rootProject.ext.generalDependencies.parcelerAnnotation
+
     // Dexter : permissions
     implementation rootProject.ext.generalDependencies.dexter
 
