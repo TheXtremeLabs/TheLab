@@ -3,6 +3,7 @@ package com.riders.thelab.ui.mainactivity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
 
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.ui.base.BaseView;
@@ -17,9 +18,13 @@ public interface MainActivityContract {
 
         void onRestoreInstanceState(Bundle savedInstanceState);
 
+        void onStart();
+
         void onPause();
 
         void onResume();
+
+        void onCreateOptionsMenu(Menu menu);
 
         /**
          * Shows loader progressBar
@@ -56,6 +61,6 @@ public interface MainActivityContract {
 
         void launchIntentForPackage(String targetPackage);
 
-        void launchActivity(Class <? extends Activity> targetActivity);
+        void launchActivity(Class<? extends Activity> targetActivity);
     }
 }
