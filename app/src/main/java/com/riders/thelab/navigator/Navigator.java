@@ -2,6 +2,7 @@ package com.riders.thelab.navigator;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.riders.thelab.ui.mainactivity.MainActivity;
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity;
@@ -26,6 +27,14 @@ public class Navigator {
         context.startActivity(new Intent(context, MainActivity.class));
     }
 
+    public void callYoutubeDetailActivity(Intent intent) {
+        context.startActivity(intent);
+    }
+
+    public void callYoutubeDetailActivityWithTransition(Intent intent, Bundle optionsCompat) {
+        context.startActivity(intent, optionsCompat);
+    }
+
 
     public void callIntentActivity(Class<? extends Activity> targetClass) {
         context.startActivity(new Intent(context, targetClass));
@@ -37,4 +46,5 @@ public class Navigator {
                         .getPackageManager()
                         .getLaunchIntentForPackage(intentPackageName));
     }
+
 }

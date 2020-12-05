@@ -7,6 +7,9 @@ import androidx.room.Room;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.riders.thelab.data.remote.LabService;
+import com.riders.thelab.data.remote.api.YoutubeApiService;
+import com.riders.thelab.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -95,6 +98,17 @@ public class DataModule {
                 .build();
     }
 
+    @Provides
+    @Singleton
+    @NotNull YoutubeApiService provideYoutubeApiService() {
+        return provideRetrofit(Constants.BASE_ENDPOINT_YOUTUBE).create(YoutubeApiService.class);
+    }
+
+    @Provides
+    @Singleton
+    LabService providesLabService() {
+        return new LabService(provideYoutubeApiService());
+    }
 
 
     enum TimeOut {
