@@ -65,6 +65,8 @@ public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
 
     @Override
     public void onDestroy() {
+        getPresenter().detachView();
+
         context = null;
     }
 

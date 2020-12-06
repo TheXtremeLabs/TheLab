@@ -12,7 +12,7 @@ apply plugin: 'com.google.firebase.firebase-perf'
 // version information
 def versionMajor = 1
 def versionMinor = 1
-def versionPatch = 4
+def versionPatch = 5
 
 
 android {

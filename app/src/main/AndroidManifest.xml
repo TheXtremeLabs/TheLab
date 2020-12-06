@@ -109,6 +109,11 @@
             android:name=".ui.youtubelike.YoutubeLikeDetailActivity"
             android:parentActivityName=".ui.youtubelike.YoutubeLikeActivity"
             android:theme="@style/YoutubeTheme" />
+
+        <activity
+            android:name=".ui.weather.WeatherActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
