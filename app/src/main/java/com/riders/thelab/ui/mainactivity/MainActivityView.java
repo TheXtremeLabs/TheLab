@@ -98,7 +98,9 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         mConnectivityManager =
                 (ConnectivityManager) context.getSystemService(Activity.CONNECTIVITY_SERVICE);
 
-        networkManager = new LabNetworkManager(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            networkManager = new LabNetworkManager(this);
+        }
 
     }
 
@@ -272,9 +274,16 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
             // so you can launch any installed application whose package name is known:
             getPresenter().launchIntentForPackage(item.getPackageName());
         } else {
-            Timber.d("launchActivity(%s)", item.getActivity().getSimpleName());
 
-            getPresenter().launchActivity(item.getActivity());
+            // Prevent app from crashing if you click on WIP item
+            if (null != item.getActivity()) {
+                Timber.d("launchActivity(%s)", item.getActivity().getSimpleName());
+
+                getPresenter().launchActivity(item.getActivity());
+            } else {
+                // Just Log wip item
+                Timber.e("Cannot launch this activity : %s", item.toString());
+            }
         }
     }
 
