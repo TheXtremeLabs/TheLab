@@ -32,6 +32,17 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <!-- SwipeDown Theme -->
+    <style name="SwipeDownTheme" parent="SwipeDownStyleTheme.Base" />
+
+    <style name="SwipeDownStyleTheme.Base" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="colorPrimary">@color/swipeDownColorPrimary</item>
+        <item name="colorPrimaryDark">@color/swipeDownColorPrimaryDark</item>
+        <item name="colorAccent">@color/swipeDownColorAccent</item>
+    </style>
+
     <!-- Palette Theme -->
     <style name="PaletteTheme" parent="PaletteStyleTheme.Base" />
 

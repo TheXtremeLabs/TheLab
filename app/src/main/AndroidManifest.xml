@@ -102,6 +102,13 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
+
+        <activity
+            android:name=".ui.floatinglabels.FloatingLabelsActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/SwipeDownTheme" />
+
+
         <activity
             android:name=".ui.palette.PaletteActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
