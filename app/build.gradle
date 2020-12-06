@@ -138,6 +138,9 @@ dependencies {
     implementation rootProject.ext.generalDependencies.parceler
     annotationProcessor rootProject.ext.generalDependencies.parcelerAnnotation
 
+    // EventBus
+    implementation rootProject.ext.generalDependencies.eventBus
+
     // Dexter : permissions
     implementation rootProject.ext.generalDependencies.dexter
 

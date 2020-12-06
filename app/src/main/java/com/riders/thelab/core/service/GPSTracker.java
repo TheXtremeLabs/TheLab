@@ -27,19 +27,18 @@ import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.riders.testing.bus.LocationFetchedEvent;
+import com.riders.thelab.core.bus.LocationFetchedEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Created by michael on 12/09/2016.
  */
 public class GPSTracker extends Service implements LocationListener {
-
-    // Tag & Context
-    private static final String TAG = com.riders.testing.services.GPSTracker.class.getSimpleName();
 
     private final Context mContext;
     private Activity mActivity;
@@ -86,7 +85,7 @@ public class GPSTracker extends Service implements LocationListener {
 
         if (!isGPSEnabled && !isNetworkEnabled) {
             // no network provider is enabled
-            Log.e(TAG, "no network provider is enabled");
+            Timber.e("no network provider is enabled");
         } else {
             this.canGetLocation = true;
 
@@ -155,7 +154,7 @@ public class GPSTracker extends Service implements LocationListener {
                                                 MIN_TIME_BW_UPDATES,
                                                 MIN_DISTANCE_CHANGE_FOR_UPDATES,
                                                 mLocationListener);
-                                        Log.d("GPS", "GPS Enabled");
+                                        Timber.d("GPS Enabled");
                                         if (locationManager != null) {
                                             location = locationManager
                                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -210,7 +209,7 @@ public class GPSTracker extends Service implements LocationListener {
                 // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-            locationManager.removeUpdates(com.riders.testing.services.GPSTracker.this);
+            locationManager.removeUpdates(GPSTracker.this);
         }
     }
 
@@ -273,11 +272,7 @@ public class GPSTracker extends Service implements LocationListener {
 
         // on pressing cancel button
         alertDialog.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                (dialog, which) -> dialog.cancel());
 
         // Showing Alert Message
         alertDialog.show();
