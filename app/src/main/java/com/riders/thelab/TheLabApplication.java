@@ -1,6 +1,7 @@
 package com.riders.thelab;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -22,6 +23,8 @@ public class TheLabApplication extends DaggerApplication {
     public static String LAB_PACKAGE_NAME = "";
     private FirebaseCrashlytics mFirebaseCrashlytics;
 
+
+    public TheLabApplication(){}
 
     public static synchronized TheLabApplication getInstance() {
         if (null == mInstance)
