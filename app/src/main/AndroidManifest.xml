@@ -49,12 +49,28 @@
         android:required="false" />
 
 
+    <!--
+    Android:java.lang.OutOfMemoryError: Failed to allocate a 23970828 byte allocation with 2097152 free bytes and 2MB until OOM
+
+    Source : https://stackoverflow.com/questions/32244851/androidjava-lang-outofmemoryerror-failed-to-allocate-a-23970828-byte-allocatio
+
+    OutOfMemoryError is the most common problem that occurs in android while especially dealing with bitmaps.
+    This error is thrown by the Java Virtual Machine (JVM) when an object cannot be allocated due to lack of memory space
+    and also, the garbage collector cannot free some space.
+
+    As mentioned by Aleksey, you can add the below entities in your manifest file
+    android:hardwareAccelerated="false" , android:largeHeap="true"
+     it will work for some environments.
+
+    -->
+
     <application
         android:name=".TheLabApplication"
         android:allowBackup="true"
-        android:hardwareAccelerated="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher_lab_icon"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_lab_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TheLab"

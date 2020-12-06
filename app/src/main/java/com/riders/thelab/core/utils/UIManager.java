@@ -5,11 +5,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
@@ -28,7 +31,8 @@ public class UIManager {
      * @param view
      */
     public static void hideKeyboard(Context context, View view) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm =
+                (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
@@ -42,6 +46,7 @@ public class UIManager {
      * @param negativeMessage
      * @param positiveMessage
      */
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void showAlertDialog(final Activity activity,
                                        final Context context,
                                        String title,
@@ -56,17 +61,13 @@ public class UIManager {
 
         // Setting Dialog Message
         alertDialog.setMessage(message);
-        alertDialog.setNegativeButton(negativeMessage, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                UIManager.showActionInToast(context, negativeMessage);
-                if (negativeMessage.equalsIgnoreCase("Réessayer")) {
-                    //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
-                }
-                if (negativeMessage.equalsIgnoreCase("Réessayer") && LabNetworkManager.isConnected(context)) {
-                    dialog.dismiss();
-                }
+        alertDialog.setNegativeButton(negativeMessage, (dialog, which) -> {
+            UIManager.showActionInToast(context, negativeMessage);
+            if (negativeMessage.equalsIgnoreCase("Réessayer")) {
+                //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
+            }
+            if (negativeMessage.equalsIgnoreCase("Réessayer") && LabNetworkManager.isConnected(context)) {
+                dialog.dismiss();
             }
         });
         alertDialog.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
@@ -90,11 +91,11 @@ public class UIManager {
     }
 
 
-    public static void showActionInToast(Context context, String textToShow) {
+    public static void showActionInToast(final Context context, final String textToShow) {
         Toast.makeText(context, textToShow, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showActionInSnackBar(Context context, View view, String message, SnackBarType type) {
+    public static void showActionInSnackBar(final Context context,final  View view,final  String message, SnackBarType type) {
         // create instance
         Snackbar snackBar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
 

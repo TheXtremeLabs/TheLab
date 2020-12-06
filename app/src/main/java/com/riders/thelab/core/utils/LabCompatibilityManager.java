@@ -35,7 +35,7 @@ public class LabCompatibilityManager {
 
     /** Determine if the device is running API level 19 or higher. */
     public static boolean isKitkat(){
-        return getSdkVersion() <= Build.VERSION_CODES.KITKAT;
+        return getSdkVersion() >= Build.VERSION_CODES.KITKAT;
     }
 
     /** Determine if the device is running API level 21 or higher. */

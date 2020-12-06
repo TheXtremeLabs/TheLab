@@ -2,24 +2,19 @@ package com.riders.thelab.ui.mainactivity;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 
 import com.riders.thelab.R;
-import com.riders.thelab.core.broadcast.ConnectivityReceiver;
-import com.riders.thelab.core.utils.LabNetworkManager;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.ui.base.BaseActivity;
 
-import timber.log.Timber;
-
+@SuppressLint("NewApi")
 public class MainActivity extends BaseActivity<MainActivityView> {
 
 
@@ -27,7 +22,7 @@ public class MainActivity extends BaseActivity<MainActivityView> {
     protected void onCreate(Bundle savedInstanceState) {
         // In Activity's onCreate() for instance
         // make fully Android Transparent Status bar
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (LabCompatibilityManager.isLollipop()) {
             Window w = getWindow();
             /*w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);*/
