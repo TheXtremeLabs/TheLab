@@ -5,6 +5,7 @@ import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.data.local.model.RecyclerItem;
 import com.riders.thelab.ui.colors.ColorActivity;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
+import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
 import com.riders.thelab.ui.weather.WeatherActivity;
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity;
@@ -63,8 +64,7 @@ public class Constants {
         list.add(new App("Android Services", "Android Services for any action...",
                 R.drawable.logo_service, ServiceActivity.class));
 
-        list.add(new App("Fabric", "You can test crash of app and have a detailed notification...",
-                R.drawable.logo_fabric, FabricActivity.class));*/
+         */
 
         list.add(new App("Colors", "Change color programmatically...",
                 R.drawable.logo_colors, ColorActivity.class));
@@ -78,10 +78,11 @@ public class Constants {
 
         list.add(new App("Tabs", "ViewPager Fragments Tabs...",
                 R.drawable.ic_tab_black_48dp, WorkingTabsActivity.class));
-
+*/
         list.add(new App("Floating Labels", "Floating Labels Form...",
-                R.drawable.ic_label_outline_black_48dp, FloatingLabelsActivity.class));
+                R.drawable.ic_outline_label, FloatingLabelsActivity.class));
 
+/*
         list.add(new App("Location Google API", "Find user location and display coordinates...",
                 R.drawable.ic_location_on_black_24dp, LocationGoogleAPIActivity.class));
 
