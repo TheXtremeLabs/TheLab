@@ -1,9 +1,10 @@
 package com.riders.thelab.ui.weather;
 
-import com.riders.thelab.data.local.model.Video;
+import com.riders.thelab.data.local.model.weather.City;
+import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 import com.riders.thelab.ui.base.BaseView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface WeatherContract {
 
@@ -17,19 +18,24 @@ public interface WeatherContract {
 
         void hideLoader();
 
-        void updateUI();
+        void updateUI(WeatherResponse weatherResponse);
 
         void onNoConnectionDetected();
 
-        void onFetchedSuccessful(ArrayList<Video> youtubeList);
+        void onFetchCitySuccessful(List<City> cityList);
 
-        void onFetchError();
+        void onFetchCityError();
 
+        void onFetchDataFromFileError(String errorMessage);
     }
 
     interface Presenter {
 
         void getCityDataFromFile();
+
+        void getWeather(String city);
+
+        void clearDisposables();
 
     }
 }

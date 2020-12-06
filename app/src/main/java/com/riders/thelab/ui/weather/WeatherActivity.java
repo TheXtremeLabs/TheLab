@@ -16,6 +16,12 @@ public class WeatherActivity extends BaseActivity<WeatherView> {
     }
 
     @Override
+    protected void onStart() {
+        view.onStart();
+        super.onStart();
+    }
+
+    @Override
     protected void onDestroy() {
         view.onDestroy();
         super.onDestroy();

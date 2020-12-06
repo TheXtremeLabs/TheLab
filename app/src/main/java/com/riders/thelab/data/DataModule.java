@@ -1,26 +1,34 @@
 package com.riders.thelab.data;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
-import android.util.Log;
-
-import androidx.room.Room;
+import android.content.res.AssetManager;
+import android.os.Build;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.riders.thelab.TheLabApplication;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.data.local.bean.TimeOut;
+import com.riders.thelab.data.local.model.weather.WeatherKey;
 import com.riders.thelab.data.remote.LabService;
+import com.riders.thelab.data.remote.api.WeatherApiService;
 import com.riders.thelab.data.remote.api.YoutubeApiService;
 import com.riders.thelab.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
-import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.Interceptor;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -44,36 +52,50 @@ public class DataModule {
     }
 
 
+    /*  GENERAL */
+    @Provides
+    @Singleton
+    @NotNull Gson provideGsonFactory() {
+        return new GsonBuilder()
+                .disableHtmlEscaping()
+                .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
+                .setLenient()
+                .create();
+    }
+
+
+    @Provides
+    @Singleton
+    @NotNull HttpLoggingInterceptor provideOkHttpLogger() {
+        return new HttpLoggingInterceptor(message -> Timber.tag("OkHttp").d(message))
+                .setLevel(HttpLoggingInterceptor.Level.BODY);
+    }
+
+
     /* Provide OkHttp for the app */
     @Provides
     @Singleton
     @NotNull OkHttpClient provideOkHttp(int readTimeOut, long connectTimeOut) {
 
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(message -> Timber.tag("OkHttp").d(message));
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
         return new OkHttpClient.Builder()
                 .readTimeout(readTimeOut, TimeUnit.SECONDS)
                 .connectTimeout(connectTimeOut, TimeUnit.SECONDS)
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        Request original = chain.request();
-                        // Customize the request
-                        Request request = original.newBuilder()
-                                .header("Content-Type", "application/json; charset=utf-8")
-                                .header("Connection", "close")
-                                //.header("Content-Type", "application/json")
-                                .header("Accept-Encoding", "Identity")
-                                .build();
+                .addInterceptor(chain -> {
+                    Request original = chain.request();
+                    // Customize the request
+                    Request request = original.newBuilder()
+                            .header("Content-Type", "application/json; charset=utf-8")
+                            .header("Connection", "close")
+                            //.header("Content-Type", "application/json")
+                            .header("Accept-Encoding", "Identity")
+                            .build();
 
-                        Response response = chain.proceed(request);
-                        response.cacheResponse();
-                        // Customize or return the response
-                        return response;
-                    }
+                    Response response = chain.proceed(request);
+                    response.cacheResponse();
+                    // Customize or return the response
+                    return response;
                 })
-                .addInterceptor(logging)
+                .addInterceptor(provideOkHttpLogger())
                 .build();
     }
 
@@ -98,31 +120,114 @@ public class DataModule {
                 .build();
     }
 
+
+    /* WEATHER */
+    /* Provide OkHttp for the app */
+    @SuppressLint("NewApi")
+    @Provides
+    @Singleton
+    @NotNull OkHttpClient provideWeatherOkHttp(int readTimeOut, long connectTimeOut) {
+
+        return new OkHttpClient.Builder()
+                .readTimeout(readTimeOut, TimeUnit.SECONDS)
+                .connectTimeout(connectTimeOut, TimeUnit.SECONDS)
+                .addInterceptor(chain -> {
+
+                    Request original = chain.request();
+                    HttpUrl originalHttpUrl = original.url();
+
+                    HttpUrl url = null;
+                    String json;
+
+                    WeatherKey model;
+
+                    JSONObject obj = new JSONObject();
+
+                    AssetManager mAssetManager =
+                            TheLabApplication.getContext()
+                                    .getResources()
+                                    .getAssets();
+
+                    try {
+
+                        InputStream is = mAssetManager
+                                .open("weather_api.json");
+
+                        int size = is.available();
+                        byte[] buffer = new byte[size];
+                        is.read(buffer);
+                        is.close();
+
+                        if (LabCompatibilityManager.isKitkat()) {
+                            json = new String(buffer, StandardCharsets.UTF_8);
+                            obj = new JSONObject(json);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Timber.e(Objects.requireNonNull(e.getMessage()));
+                    }
+
+
+                    try {
+                        url = originalHttpUrl.newBuilder()
+                                .addQueryParameter("appid", (String) obj.get("appid"))
+                                .addQueryParameter("units", "metric")
+                                .build();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Timber.e(Objects.requireNonNull(e.getMessage()));
+                    }
+
+                    // Request customization: add request headers
+                    Request.Builder requestBuilder =
+                            original.newBuilder()
+                                    .url(url)
+                                    .header("Content-Type", "application/json; charset=utf-8")
+                                    .header("Connection", "close")
+                                    //.header("Content-Type", "application/json")
+                                    .header("Accept-Encoding", "Identity");
+                    Request request = requestBuilder.build();
+
+                    return chain.proceed(request);
+                })
+                .addInterceptor(provideOkHttpLogger())
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    @NotNull Retrofit provideWeatherRetrofit(String url) {
+        return new Retrofit.Builder()
+                .baseUrl(url)
+                .client(provideWeatherOkHttp(
+                        TimeOut.TIME_OUT_READ.getValue(),
+                        TimeOut.TIME_OUT_CONNECTION.getValue()
+                ))
+                .addConverterFactory(GsonConverterFactory.create(provideGsonFactory()))
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .build();
+    }
+
     @Provides
     @Singleton
     @NotNull YoutubeApiService provideYoutubeApiService() {
         return provideRetrofit(Constants.BASE_ENDPOINT_YOUTUBE).create(YoutubeApiService.class);
     }
 
+
+    @Provides
+    @Singleton
+    @NotNull WeatherApiService provideWeatherApiService() {
+        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER).create(WeatherApiService.class);
+    }
+
     @Provides
     @Singleton
     LabService providesLabService() {
-        return new LabService(provideYoutubeApiService());
-    }
-
-
-    enum TimeOut {
-        TIME_OUT_READ(60),
-        TIME_OUT_CONNECTION(60);
-        private final int value;
-
-        TimeOut(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
+        return new LabService(
+                provideYoutubeApiService(),
+                provideWeatherApiService());
     }
 
 }
