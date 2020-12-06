@@ -181,6 +181,8 @@ public class PaletteView extends BaseViewImpl<PalettePresenter>
 
     @Override
     public void onDestroy() {
+
+        getPresenter().detachView();
         context = null;
     }
 }

@@ -70,6 +70,8 @@ public class FilterListViewView extends BaseViewImpl<FilterListViewPresenter>
 
     @Override
     public void onDestroy() {
+        getPresenter().detachView();
+
         context = null;
     }
 

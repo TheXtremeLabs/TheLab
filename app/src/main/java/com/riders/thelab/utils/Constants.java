@@ -6,6 +6,7 @@ import com.riders.thelab.data.local.model.RecyclerItem;
 import com.riders.thelab.ui.colors.ColorActivity;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
+import com.riders.thelab.ui.weather.WeatherActivity;
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity;
 
 import java.util.ArrayList;
@@ -130,14 +131,14 @@ public class Constants {
                 R.drawable.ic_mic, SpeechToTextActivity.class));
 
         list.add(new App("Activity Recognition", "Display user activity...",
-                R.drawable.ic_walking, ActivityRecognitionActivity.class));
+                R.drawable.ic_walking, ActivityRecognitionActivity.class));*/
 
         list.add(new App("Weather App", "Current weather forecast.. in your city...",
                 R.drawable.openweathermap, WeatherActivity.class));
 
 
         list.add(new App("WIP", "Coming soon...",
-                R.drawable.ic_warning, null));*/
+                R.drawable.ic_warning, null));
 
         return list;
     }

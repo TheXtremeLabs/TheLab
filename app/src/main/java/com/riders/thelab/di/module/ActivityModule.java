@@ -9,6 +9,8 @@ import com.riders.thelab.ui.palette.PaletteActivity;
 import com.riders.thelab.ui.palette.PaletteModule;
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity;
 import com.riders.thelab.ui.splashscreen.SplashScreenModule;
+import com.riders.thelab.ui.weather.WeatherActivity;
+import com.riders.thelab.ui.weather.WeatherModule;
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity;
 import com.riders.thelab.ui.youtubelike.YoutubeLikeModule;
 
@@ -39,6 +41,9 @@ public abstract class ActivityModule {
     @ContributesAndroidInjector(modules = YoutubeLikeModule.class)
     abstract YoutubeLikeActivity youtubeLikeActivity();
 
+    @ActivityScope
+    @ContributesAndroidInjector(modules = WeatherModule.class)
+    abstract WeatherActivity weatherActivity();
 
 }
 
