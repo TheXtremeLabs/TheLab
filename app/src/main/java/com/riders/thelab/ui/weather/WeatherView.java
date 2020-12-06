@@ -22,25 +22,33 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 
 import com.bumptech.glide.Glide;
 import com.riders.thelab.R;
+import com.riders.thelab.core.bus.LocationFetchedEvent;
+import com.riders.thelab.core.utils.LabLocationManager;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.model.weather.City;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 import com.riders.thelab.ui.base.BaseViewImpl;
 import com.riders.thelab.utils.Constants;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
 public class WeatherView extends BaseViewImpl<WeatherPresenter>
-        implements WeatherContract.View, TextView.OnEditorActionListener, AdapterView.OnItemClickListener,
-        LocationListener {
+        implements WeatherContract.View, TextView.OnEditorActionListener,
+        AdapterView.OnItemClickListener, LocationListener {
 
     private WeatherActivity context;
 
@@ -90,54 +98,25 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         setListeners();
     }
 
-
-
-    /////////////////////////////////////
-    //
-    // BUTTERKNIFE
-    //
-    /////////////////////////////////////
-    @OnClick(R.id.btn_current_location)
-    void onCurrentLocationButtonClicked() {
-
-        new GPSTracker(context, this);
-    }
-
-
-    /////////////////////////////////////
-    //
-    // CLASS METHODS
-    //
-    /////////////////////////////////////
-    private void setListeners() {
-        Timber.d("setListeners()");
-//        spinner.setOnItemSelectedListener(this);
-        autoCompleteCityName.setOnItemClickListener(this);
-        autoCompleteCityName.setOnEditorActionListener(this);
-    }
-
-
     @Override
     public void onStart() {
         Timber.d("onStart()");
 
         getPresenter().getCityDataFromFile();
-
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onStop() {
         Timber.d("onStop()");
-
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
     public void onDestroy() {
         Timber.e("onDestroy()");
         getPresenter().detachView();
-
         context = null;
-
     }
 
     @Override
@@ -175,9 +154,9 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         long sunriseMillis = weatherResponse.getSys().getSunrise();
         long sunsetMillis = weatherResponse.getSys().getSunset();
 
-        Timber.d("sunrise time : " + getPresenter().formatMillisToTimeHoursMinutesSeconds(sunriseMillis));
+        Timber.d("sunrise time : %s", getPresenter().formatMillisToTimeHoursMinutesSeconds(sunriseMillis));
 
-        Timber.d("cloudiness : " + weatherResponse.getClouds().getCloudiness());
+        Timber.d("cloudiness : %s", weatherResponse.getClouds().getCloudiness());
 
         String cloudiness = weatherResponse.getClouds().getCloudiness() + " " +
                 context.getResources().getString(R.string.percent_placeholder);
@@ -194,14 +173,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         String wind = weatherResponse.getMain().getHumidity() + " " +
                 context.getResources().getString(R.string.kilometer_unit_placeholder);
         tvWeatherExtraWind.setText(wind);
-
     }
-
-
-    public String getWeatherIconFromApi(String weatherIconId) {
-        return Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX;
-    }
-
 
     @Override
     public void onNoConnectionDetected() {
@@ -241,6 +213,73 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         autoCompleteCityName.setEnabled(false);
     }
 
+
+    /////////////////////////////////////
+    //
+    // BUTTERKNIFE
+    //
+    /////////////////////////////////////
+    @OnClick(R.id.btn_current_location)
+    void onCurrentLocationButtonClicked() {
+
+        new LabLocationManager(context, context);
+    }
+
+    /////////////////////////////////////
+    //
+    // BUS
+    //
+    /////////////////////////////////////
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLocationFetchedEventResult(LocationFetchedEvent event) {
+        Timber.e("onLocationFetchedEvent()");
+
+        Location location = event.getLocation();
+
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        Timber.e(latitude + ", " + longitude);
+
+        LabLocationManager
+                .getDeviceLocationWithRX(location, context)
+                .subscribe(new DisposableSingleObserver<String>() {
+                    @Override
+                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull String city) {
+                        Timber.e("final string city returned : %s", city);
+
+                        getPresenter().getWeather(city);
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                        Timber.e(Objects.requireNonNull(e.getMessage()));
+                    }
+                });
+    }
+
+    /////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    /////////////////////////////////////
+    private void setListeners() {
+        Timber.d("setListeners()");
+        autoCompleteCityName.setOnItemClickListener(this);
+        autoCompleteCityName.setOnEditorActionListener(this);
+    }
+
+
+    public String getWeatherIconFromApi(String weatherIconId) {
+        return Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX;
+    }
+
+
+    /////////////////////////////////////
+    //
+    // IMPLEMENTS
+    //
+    /////////////////////////////////////
     @Override
     public void onLocationChanged(@NonNull Location location) {
 
