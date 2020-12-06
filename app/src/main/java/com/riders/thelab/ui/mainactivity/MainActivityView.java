@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.riders.thelab.R;
 import com.riders.thelab.core.interfaces.ConnectivityListener;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabNetworkManager;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.model.App;
@@ -34,7 +35,7 @@ import timber.log.Timber;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 
-@SuppressLint("NonConstantResourceId")
+@SuppressLint({"NonConstantResourceId", "NewApi"})
 public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         implements MainActivityContract.View, MainActivityAppClickListener,
         ConnectivityListener {
@@ -118,7 +119,7 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     public void onPause() {
         Timber.e("onPause()");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (LabCompatibilityManager.isLollipop()) {
             mConnectivityManager.unregisterNetworkCallback(networkManager);
         }
     }
@@ -154,9 +155,9 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     public void onDestroy() {
         Timber.d("onDestroy()");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (LabCompatibilityManager.isLollipop()) {
             Timber.d("unregister network callback()");
-            mConnectivityManager.unregisterNetworkCallback(networkManager);
+            //mConnectivityManager.unregisterNetworkCallback(networkManager);
         }
 
         getPresenter().detachView();
@@ -307,15 +308,20 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     private void updateToolbarConnectionIcon(boolean isConnected) {
         Timber.e("updateToolbarConnectionIcon, is connected : %s", isConnected);
 
-        if (null != menu)
-            menu
-                    .getItem(0)
-                    .setIcon(
-                            ContextCompat.getDrawable(
-                                    context,
-                                    isConnected
-                                            ? R.drawable.ic_wifi
-                                            : R.drawable.ic_wifi_off));
+        context.runOnUiThread(() -> {
+
+            if (null != menu)
+                menu
+                        .getItem(0)
+                        .setIcon(
+                                ContextCompat.getDrawable(
+                                        context,
+                                        isConnected
+                                                ? R.drawable.ic_wifi
+                                                : R.drawable.ic_wifi_off));
+
+        });
+
     }
     /////////////////////////////////////
     //
