@@ -7,6 +7,8 @@ import com.riders.thelab.ui.mainactivity.MainActivity;
 import com.riders.thelab.ui.mainactivity.MainActivityModule;
 import com.riders.thelab.ui.palette.PaletteActivity;
 import com.riders.thelab.ui.palette.PaletteModule;
+import com.riders.thelab.ui.schedule.ScheduleActivity;
+import com.riders.thelab.ui.schedule.ScheduleModule;
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity;
 import com.riders.thelab.ui.splashscreen.SplashScreenModule;
 import com.riders.thelab.ui.weather.WeatherActivity;
@@ -28,6 +30,9 @@ public abstract class ActivityModule {
     @ContributesAndroidInjector(modules = MainActivityModule.class)
     abstract MainActivity mainActivity();
 
+    @ActivityScope
+    @ContributesAndroidInjector(modules = ScheduleModule.class)
+    abstract ScheduleActivity scheduleActivity();
 
     @ActivityScope
     @ContributesAndroidInjector(modules = PaletteModule.class)
