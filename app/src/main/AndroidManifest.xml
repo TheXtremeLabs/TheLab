@@ -109,6 +109,13 @@
             android:theme="@style/SwipeDownTheme" />
 
 
+
+        <activity
+            android:name=".ui.schedule.ScheduleActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+
+
         <activity
             android:name=".ui.palette.PaletteActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
@@ -161,8 +168,26 @@
                     tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
+
+        <!-- Alarm -->
+        <receiver
+            android:name=".core.broadcast.ScheduleAlarmReceiver"
+            android:exported="true" />
         <!-- ////////////// BROADCAST RECEIVER ////////////// -->
 
+
+        <!-- ////////////// SERVICES ////////////// -->
+        <!-- Service that provides activity recognition data. Setting the android:exported attribute
+        to "false" stops other apps from starting this service, even when using an explicit
+        intent. -->
+        <!--<service
+            android:name=".services.DetectedActivitiesIntentService"
+            android:exported="false" />
+
+        <service android:name=".services.BackgroundDetectedActivitiesService" />-->
+
+        <service android:name=".core.service.ScheduleAlarmService" />
+        <!-- ////////////// SERVICES ////////////// -->
 
     </application>
 

@@ -7,6 +7,7 @@ import com.riders.thelab.ui.colors.ColorActivity;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
+import com.riders.thelab.ui.schedule.ScheduleActivity;
 import com.riders.thelab.ui.weather.WeatherActivity;
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity;
 
@@ -91,10 +92,12 @@ public class Constants {
 
         list.add(new App("Location On Maps", "Display User location on map...",
                 R.drawable.ic_location_on_black_48dp, LocationOnMapsActivity.class));
+                */
+
 
         list.add(new App("Schedule Job", "Own alarm to remind user...",
-                R.drawable.ic_schedule_black_48dp, ScheduleJobActivity.class));
-
+                R.drawable.ic_schedule, ScheduleActivity.class));
+        /*
         list.add(new App("Devices Informations", "Display device info...",
                 R.drawable.ic_perm_device_information_black_48dp, DeviceInformationsActivity.class));*/
 
