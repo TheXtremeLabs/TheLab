@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">The Lab</string>
 
 
@@ -86,7 +86,23 @@
     <string name="start_job">Start Schedule</string>
 
     <!-- Device Informations -->
-    <string name="device_infos_device">Device :</string>
+    <string name="activity_title_device_information">Device Information</string>
+    <string name="device_specification_header">Device Specs</string>
+    <string name="device_info_device_name_placeholder">Device Name</string>
+    <string name="device_info_device_brand_placeholder">Brand</string>
+    <string name="device_info_device_model_placeholder">Model</string>
+    <string name="device_info_device_processor_placeholder">Processor</string>
+    <string name="device_info_device_hardware_placeholder">Hardware</string>
+    <string name="device_info_device_screen_dimensions_placeholder">Screen Dimensions</string>
+    <string name="device_info_device_serial_placeholder">Serial</string>
+    <string name="device_info_device_fingerprint_placeholder">Fingerprint</string>
+
+    <string name="device_android_specification_header">Android Specs</string>
+    <string name="device_android_version_placeholder">Android Version</string>
+    <string name="device_android_release_placeholder">Release</string>
+    <string name="device_android_rooted_placeholder">Rooted</string>
+
+    <string name="device_infos_device" tools:ignore="ExtraTranslation">Device :</string>
     <string name="device_infos_model">Model :</string>
     <string name="device_infos_brand">Brand :</string>
     <string name="device_infos_screen_height">Screen Height :</string>
