@@ -31,7 +31,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
-            android:text="@string/device_infos_brand"
+            android:text="@string/device_info_device_brand_placeholder"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
@@ -65,7 +65,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
-            android:text="@string/device_infos_model"
+            android:text="@string/device_info_device_model_placeholder"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
@@ -100,7 +100,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
-            android:text="@string/device_infos_screen_height"
+            android:text="@string/device_info_device_screen_height_placeholder"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
@@ -135,7 +135,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
-            android:text="@string/device_infos_screen_width"
+            android:text="@string/device_info_device_screen_width_placeholder"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
@@ -169,7 +169,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
-            android:text="@string/device_infos_version"
+            android:text="@string/device_android_sdk_version_placeholder"
             android:textColor="@color/white"
             android:textSize="16sp" />
 

@@ -9,12 +9,19 @@
 
     <dimen name="activity_margin">16dp</dimen>
 
+    <dimen name="ultra_small_margin">2dp</dimen>
     <dimen name="extra_small_margin">4dp</dimen>
     <dimen name="small_margin">8dp</dimen>
     <dimen name="medium_margin">16dp</dimen>
     <dimen name="big_margin">24dp</dimen>
+    <dimen name="big_medium_margin">32dp</dimen>
+    <dimen name="extra_big_margin">48dp</dimen>
+    <dimen name="ultra_big_margin">56dp</dimen>
 
+    <!-- CardView -->
     <dimen name="card_elevation">8dp</dimen>
+    <dimen name="max_card_image_width">344dp</dimen>
+    <dimen name="max_card_image_height">194dp</dimen>
 
     <dimen name="activity_section_title">20sp</dimen>
 
