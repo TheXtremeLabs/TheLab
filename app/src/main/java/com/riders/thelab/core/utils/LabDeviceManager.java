@@ -2,6 +2,8 @@ package com.riders.thelab.core.utils;
 
 import android.os.Build;
 
+import java.io.File;
+
 import timber.log.Timber;
 
 public class LabDeviceManager {
@@ -64,8 +66,8 @@ public class LabDeviceManager {
         return Build.VERSION.INCREMENTAL;
     }
 
-    public static String getSdkVersion() {
-        return Build.VERSION.SDK;
+    public static int getSdkVersion() {
+        return Build.VERSION.SDK_INT;
     }
 
     public static String getBoard() {
@@ -84,5 +86,53 @@ public class LabDeviceManager {
         return Build.VERSION.RELEASE;
     }
 
+    public static String getHardware() {
+        return Build.HARDWARE;
+    }
 
+    public static String getRelease() {
+        return Build.VERSION.RELEASE;
+    }
+
+
+    /**
+     * Checks if the device is rooted.
+     *
+     * @return <code>true</code> if the device is rooted, <code>false</code> otherwise.
+     */
+    public static boolean isRooted() {
+
+        // get from build info
+        String buildTags = android.os.Build.TAGS;
+        if (buildTags != null && buildTags.contains("test-keys")) {
+            return true;
+        }
+
+        // check if /system/app/Superuser.apk is present
+        try {
+            File file = new File("/system/app/Superuser.apk");
+            if (file.exists()) {
+                return true;
+            }
+        } catch (Exception e1) {
+            // ignore
+        }
+
+        // try executing commands
+        return canExecuteCommand("/system/xbin/which su")
+                || canExecuteCommand("/system/bin/which su") || canExecuteCommand("which su");
+    }
+
+    // executes a command on the system
+    private static boolean canExecuteCommand(String command) {
+        boolean executedSuccesfully;
+        try {
+            Runtime.getRuntime().exec(command);
+            executedSuccesfully = true;
+        } catch (Exception e) {
+            executedSuccesfully = false;
+        }
+
+        return executedSuccesfully;
+    }
 }

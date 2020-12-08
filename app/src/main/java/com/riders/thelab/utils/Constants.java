@@ -4,6 +4,7 @@ import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.data.local.model.RecyclerItem;
 import com.riders.thelab.ui.colors.ColorActivity;
+import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
@@ -97,9 +98,9 @@ public class Constants {
 
         list.add(new App("Schedule Job", "Own alarm to remind user...",
                 R.drawable.ic_schedule, ScheduleActivity.class));
-        /*
+
         list.add(new App("Devices Informations", "Display device info...",
-                R.drawable.ic_perm_device_information_black_48dp, DeviceInformationsActivity.class));*/
+                R.drawable.ic_device_information, DeviceInformationActivity.class));
 
         list.add(new App("Palette", "Get different color from an image...",
                 R.drawable.ic_palette_72, PaletteActivity.class));
