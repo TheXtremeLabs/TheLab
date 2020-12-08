@@ -109,12 +109,15 @@
             android:theme="@style/SwipeDownTheme" />
 
 
-
         <activity
             android:name=".ui.schedule.ScheduleActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
+        <activity
+            android:name=".ui.deviceinformation.DeviceInformationActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/SwipeDownTheme" />
 
         <activity
             android:name=".ui.palette.PaletteActivity"
