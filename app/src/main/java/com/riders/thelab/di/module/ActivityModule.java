@@ -5,6 +5,8 @@ import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity;
 import com.riders.thelab.ui.deviceinformation.DeviceInformationModule;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
 import com.riders.thelab.ui.filterlistview.FilterListViewModule;
+import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity;
+import com.riders.thelab.ui.locationonmaps.LocationOnMapsModule;
 import com.riders.thelab.ui.mainactivity.MainActivity;
 import com.riders.thelab.ui.mainactivity.MainActivityModule;
 import com.riders.thelab.ui.palette.PaletteActivity;
@@ -31,6 +33,10 @@ public abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = MainActivityModule.class)
     abstract MainActivity mainActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = LocationOnMapsModule.class)
+    abstract LocationOnMapsActivity locationOnMapsActivity();
 
     @ActivityScope
     @ContributesAndroidInjector(modules = ScheduleModule.class)
