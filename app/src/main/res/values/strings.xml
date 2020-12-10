@@ -139,6 +139,10 @@
 
     <string name="hint_contact_search">Search an contact</string>
 
+    <!-- Location on Maps -->
+    <string name="google_maps_key">AIzaSyDuywb98tO1xXHb9lflC2iTLs_67jgihgQ</string>
+    <string name="activity_title_location_on_maps">Location On Maps</string>
+
 
     <!-- Palette -->
     <string name="activity_title_palette">Palette</string>
@@ -214,5 +218,6 @@
 
     <!-- Youtube -->
     <string name="activity_title_youtube_like">Youtube Like Activity</string>
+
 
 </resources>
