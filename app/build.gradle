@@ -12,7 +12,7 @@ apply plugin: 'com.google.firebase.firebase-perf'
 // version information
 def versionMajor = 1
 def versionMinor = 1
-def versionPatch = 7
+def versionPatch = 8
 
 
 android {
@@ -41,8 +41,8 @@ android {
 
     buildTypes {
         buildFeatures {
-            dataBinding  true
-            viewBinding  true
+            dataBinding true
+            viewBinding true
         }
         release {
             minifyEnabled false
@@ -59,6 +59,15 @@ android {
         splits.density.enable = false
     }
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+//        exclude 'META-INF/androidx.versionedparcelable_versionedparcelable.version'
+//        exclude 'META-INF/androidx.core_core.version'
+//            exclude 'META-INF/NOTICE'
+//              exclude 'META-INF/LICENSE'
+//              exclude 'META-INF/LICENSE.txt'
+//              exclude 'META-INF/NOTICE.txt'
+    }
 
     // Watch the memory
     dexOptions {
@@ -84,6 +93,9 @@ dependencies {
     implementation rootProject.ext.generalDependencies.navigationUi
     implementation rootProject.ext.generalDependencies.recyclerView
     implementation rootProject.ext.generalDependencies.cardView
+    // https://developer.android.com/guide/fragments/create#java
+    // Fragments require a dependency on the AndroidX Fragment library.
+    implementation rootProject.ext.generalDependencies.fragment
 
     implementation rootProject.ext.generalDependencies.autoFill
 
@@ -93,6 +105,11 @@ dependencies {
     annotationProcessor rootProject.ext.generalDependencies.roomCompiler
 
     // Google Play
+    // Maps
+    implementation rootProject.ext.generalDependencies.googleAPIClient
+    implementation rootProject.ext.generalDependencies.maps
+    implementation rootProject.ext.generalDependencies.location
+    // Firebase
     implementation platform(rootProject.ext.generalDependencies.firebasePlatform)
     implementation rootProject.ext.generalDependencies.firebaseAnalitycs
     implementation rootProject.ext.generalDependencies.firebaseCraslytics

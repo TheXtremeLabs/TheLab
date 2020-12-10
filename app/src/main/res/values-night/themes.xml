@@ -44,6 +44,20 @@
         <item name="colorAccent">@color/swipeDownColorAccent</item>
     </style>
 
+    <!--Location Theme-->
+    <style name="LocationTheme" parent="LocationStyleTheme.Base"/>
+
+    <style name="LocationStyleTheme.Base" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+
+        <item name="colorPrimary">@color/swipeDownColorPrimary</item>
+        <item name="colorPrimaryDark">@color/swipeDownColorPrimaryDark</item>
+        <item name="colorAccent">@color/swipeDownColorAccent</item>
+    </style>
+
+
     <!-- Palette Theme -->
     <style name="PaletteTheme" parent="PaletteStyleTheme.Base" />
 
