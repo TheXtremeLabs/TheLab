@@ -66,6 +66,8 @@
         <item name="colorPrimary">@color/tabColorPrimary</item>
         <item name="colorPrimaryDark">@color/tabColorPrimaryDark</item>
         <item name="colorAccent">@color/tabColorAccent</item>
+        <item name="textAppearanceBody1">@color/black</item>
+
     </style>
 
 
@@ -93,6 +95,4 @@
         <!-- enable window content transitions -->
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
     </style>
-
-
 </resources>

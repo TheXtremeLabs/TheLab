@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="NewApi">
+
+    <!-- Colored rectangle-->
+    <item>
+        <shape android:shape="rectangle">
+            <size
+                android:width="170dp"
+                android:height="104dp" />
+<!--            <solid tools:color="#13a89e" />-->
+        </shape>
+    </item>
+    <!-- Darker colored line-->
+    <!--<item>
+        <shape android:shape="line">
+            <size android:width="100dp" />
+            <stroke
+                android:width="4dp"
+                android:color="#123456" />
+        </shape>
+    </item>-->
+
+
+    <!-- This rectangle for the right side -->
+    <!-- Their color should be the same as layout's background -->
+    <!--<item
+        android:bottom="-200dp"
+        android:left="200dp"
+        android:right="-200dp"
+        android:top="-200dp">
+        <rotate android:fromDegrees="45">
+            <shape android:shape="rectangle">
+                <padding android:top="-35dp" />
+                <solid android:color="?android:attr/colorBackground" />
+            </shape>
+        </rotate>
+    </item>-->
+    <!-- This rectangle for the left side -->
+    <item
+        android:bottom="-80dp"
+        android:left="0dp"
+        android:right="100dp"
+        android:top="-150dp">
+        <rotate android:fromDegrees="45">
+            <shape android:shape="rectangle">
+                <solid android:color="?android:attr/colorBackground" />
+                <!--                <solid android:color="@color/red" />-->
+            </shape>
+        </rotate>
+    </item>
+</layer-list>
