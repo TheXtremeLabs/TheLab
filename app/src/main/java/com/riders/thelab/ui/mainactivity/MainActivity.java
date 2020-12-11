@@ -1,7 +1,9 @@
 package com.riders.thelab.ui.mainactivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,9 +16,12 @@ import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.ui.base.BaseActivity;
 
+import timber.log.Timber;
+
 @SuppressLint("NewApi")
 public class MainActivity extends BaseActivity<MainActivityView> {
 
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +35,8 @@ public class MainActivity extends BaseActivity<MainActivityView> {
         }
         setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
+
+        context = this;
     }
 
     @Override
@@ -76,7 +83,16 @@ public class MainActivity extends BaseActivity<MainActivityView> {
         switch (item.getItemId()) {
             case R.id.connection_icon:
                 UIManager.showActionInToast(this, "Wifi clicked");
-                // TODO : Modify wifi state
+
+                WifiManager wifiManager =
+                        (WifiManager) this.context.getSystemService(Context.WIFI_SERVICE);
+
+                if (!LabCompatibilityManager.isAndroid10()) {
+                    boolean isWifi = wifiManager.isWifiEnabled();
+                    wifiManager.setWifiEnabled(!isWifi);
+                } else {
+                    Timber.e("For applications targeting android.os.Build.VERSION_CODES Q or above, this API will always fail and return false");
+                }
                 break;
 
             case R.id.action_settings:
