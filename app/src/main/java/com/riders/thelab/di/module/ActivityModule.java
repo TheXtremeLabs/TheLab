@@ -1,6 +1,8 @@
 package com.riders.thelab.di.module;
 
 import com.riders.thelab.di.scopes.ActivityScope;
+import com.riders.thelab.ui.contacts.ContactsActivity;
+import com.riders.thelab.ui.contacts.ContactsModule;
 import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity;
 import com.riders.thelab.ui.deviceinformation.DeviceInformationModule;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
@@ -33,6 +35,10 @@ public abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = MainActivityModule.class)
     abstract MainActivity mainActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = ContactsModule.class)
+    abstract ContactsActivity contactsActivity();
 
     @ActivityScope
     @ContributesAndroidInjector(modules = LocationOnMapsModule.class)
