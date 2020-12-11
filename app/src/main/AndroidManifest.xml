@@ -176,6 +176,11 @@
             android:theme="@style/YoutubeTheme" />
 
         <activity
+            android:name=".ui.speechtotext.SpeechToTextActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+
+        <activity
             android:name=".ui.weather.WeatherActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />

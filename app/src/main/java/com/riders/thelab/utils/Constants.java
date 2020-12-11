@@ -10,6 +10,7 @@ import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity;
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
 import com.riders.thelab.ui.schedule.ScheduleActivity;
+import com.riders.thelab.ui.speechtotext.SpeechToTextActivity;
 import com.riders.thelab.ui.weather.WeatherActivity;
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity;
 
@@ -130,11 +131,11 @@ public class Constants {
         list.add(new App("Youtube", "Youtube look like...",
                 R.drawable.youtube_icon_like, YoutubeLikeActivity.class));
 
-                /*
 
         list.add(new App("My Speech To Text", "Own speech to text implementation...",
                 R.drawable.ic_mic, SpeechToTextActivity.class));
 
+                /*
         list.add(new App("Activity Recognition", "Display user activity...",
                 R.drawable.ic_walking, ActivityRecognitionActivity.class));*/
 
