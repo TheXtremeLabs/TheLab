@@ -16,6 +16,7 @@ import com.riders.thelab.data.local.model.weather.City;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /*
 public class WeatherCityAdapter extends RecyclerView.Adapter<WeatherCityViewHolder>
@@ -133,9 +134,9 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
 
     private final Context context;
     private final int viewResourceId;
-    private final List<City> items;
-    private final List<City> itemsAll;
-    private final List<City> suggestions;
+    private List<City> items;
+    private List<City> itemsAll;
+    private List<City> suggestions;
 
     private final Filter mFilter = new Filter() {
         @Override
@@ -175,13 +176,15 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
     };
 
 
-    public WeatherCityAdapter(@NonNull Context context, int viewResourceId, @NonNull List<City> items) {
+    public WeatherCityAdapter(@NonNull Context context,
+                              int viewResourceId,
+                              @NonNull ArrayList<City> items) {
         super(context, viewResourceId, items);
 
         this.context = context;
 
         this.items = items;
-        this.itemsAll = items;
+        this.itemsAll = (List<City>) items.clone();
         this.suggestions = new ArrayList<>();
         this.viewResourceId = viewResourceId;
     }

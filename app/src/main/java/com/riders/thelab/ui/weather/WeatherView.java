@@ -34,6 +34,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -190,7 +191,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
 //        spinner.setAdapter(mSpinnerAdapter);
 
         WeatherCityAdapter mSpinnerAdapter =
-                new WeatherCityAdapter(context, R.layout.row_city_spinner, cityList);
+                new WeatherCityAdapter(context, R.layout.row_city_spinner, (ArrayList<City>) cityList);
         // Set the minimum number of characters, to show suggestions
         autoCompleteCityName.setThreshold(1);
         autoCompleteCityName.setAdapter(mSpinnerAdapter);
@@ -326,6 +327,9 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
                 || (actionId == EditorInfo.IME_ACTION_DONE)) {
             Timber.e("Done pressed");
+
+            String cityEntered = autoCompleteCityName.getText().toString();
+            getPresenter().getWeather(cityEntered);
         }
         return false;
     }

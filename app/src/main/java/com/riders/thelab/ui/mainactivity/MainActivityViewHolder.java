@@ -41,12 +41,14 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.row_item_cardView)
     public CardView itemCardView;
 
+    @BindView(R.id.iv_row_item_background)
+    AppCompatImageView backgroundImageView;
+
     @BindView(R.id.row_icon_imageView)
     AppCompatImageView iconImageView;
 
     @BindView(R.id.row_title_textView)
     TextView titleTextView;
-
 
     @BindView(R.id.row_description_textView)
     TextView descriptionTextView;
@@ -62,6 +64,7 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
     public void bindData(App app) {
 
+        // Load left icon drawable
         Glide.with(context)
                 .load(
                         (0 != app.getIcon())
@@ -98,6 +101,14 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
                         ? app.getVersion()
                         : app.getDescription());
 
+
+        // Load background image
+        Glide.with(context)
+                .load(
+                        null != app.getActivity()
+                                ? app.getIcon()
+                                : app.getDrawableIcon())
+                .into(backgroundImageView);
 
     }
 
