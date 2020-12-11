@@ -67,6 +67,7 @@
         <item name="colorPrimary">@color/tabColorPrimary</item>
         <item name="colorPrimaryDark">@color/tabColorPrimaryDark</item>
         <item name="colorAccent">@color/tabColorAccent</item>
+        <item name="textAppearanceBody1">@color/white</item>
     </style>
 
 
