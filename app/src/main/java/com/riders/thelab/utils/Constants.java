@@ -4,6 +4,7 @@ import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.data.local.model.RecyclerItem;
 import com.riders.thelab.ui.colors.ColorActivity;
+import com.riders.thelab.ui.contacts.ContactsActivity;
 import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity;
@@ -90,9 +91,9 @@ public class Constants {
         list.add(new App("Location Google API", "Find user location and display coordinates...",
                 R.drawable.ic_location_on_black_24dp, LocationGoogleAPIActivity.class));
 
-        list.add(new App("Contact List", "Contact List...",
-                R.drawable.ic_contacts_black_48dp, ContactListActivity.class));
  */
+        list.add(new App("Contact List", "Fetch contacts from database, add one and more...",
+                R.drawable.ic_contacts, ContactsActivity.class));
 
         list.add(new App("Location On Maps", "Display User location on map...",
                 R.drawable.ic_location_on, LocationOnMapsActivity.class));

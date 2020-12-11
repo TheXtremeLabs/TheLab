@@ -131,6 +131,15 @@
             android:theme="@style/SwipeDownTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <activity
+            android:name=".ui.contacts.ContactsActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+        <activity
+            android:name=".ui.contacts.ContactDetailActivity"
+            android:parentActivityName=".ui.contacts.ContactsActivity"
+            android:theme="@style/Theme.TheLab" />
+
 
         <activity
             android:name=".ui.locationonmaps.LocationOnMapsActivity"
