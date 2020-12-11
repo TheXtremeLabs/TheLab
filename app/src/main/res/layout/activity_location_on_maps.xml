@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.locationonmaps.LocationOnMapsActivity">
 
     <RelativeLayout
@@ -68,15 +67,16 @@
         android:layout_height="96dp"
         android:layout_gravity="bottom|center_horizontal"
         android:background="@drawable/maps_loading_gradient">
+
         <ProgressBar
             android:layout_width="@dimen/big_medium_margin"
             android:layout_height="@dimen/big_medium_margin"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/medium_margin"
             android:indeterminate="true"
             android:indeterminateOnly="true"
             android:indeterminateTint="@color/white"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="@dimen/medium_margin"
             tools:ignore="RtlCompat" />
     </RelativeLayout>
 

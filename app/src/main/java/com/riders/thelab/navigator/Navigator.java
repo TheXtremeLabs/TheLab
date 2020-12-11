@@ -19,6 +19,7 @@ public class Navigator {
         this.context = context;
     }
 
+
     public void callSplashActivity() {
         context.startActivity(new Intent(context, SplashScreenActivity.class));
     }
