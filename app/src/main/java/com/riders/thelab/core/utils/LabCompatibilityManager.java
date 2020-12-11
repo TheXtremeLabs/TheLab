@@ -59,13 +59,6 @@ public class LabCompatibilityManager {
     }
 
     /**
-     * Determine if the device is running API level 23 or higher.
-     */
-    public static boolean isMarshmallow() {
-        return getSdkVersion() >= Build.VERSION_CODES.M;
-    }
-
-    /**
      * Determine if the device is running API level is higher than 21.
      */
     public static boolean isLollipopPlus() {
@@ -73,10 +66,32 @@ public class LabCompatibilityManager {
     }
 
     /**
+     * Determine if the device is running API level 23 or higher.
+     */
+    public static boolean isMarshmallow() {
+        return getSdkVersion() >= Build.VERSION_CODES.M;
+    }
+
+    /**
      * Determine if the device is running API level 26 or higher.
      */
     public static boolean isOreo() {
         return getSdkVersion() >= Build.VERSION_CODES.O;
+    }
+
+    /**
+     * Determine if the device is running API level 28 or higher.
+     */
+    public static boolean isPie() {
+        return getSdkVersion() >= Build.VERSION_CODES.P;
+    }
+
+
+    /**
+     * Determine if the device is running API level 29 or higher.
+     */
+    public static boolean isAndroid10() {
+        return getSdkVersion() >= Build.VERSION_CODES.Q;
     }
 
 
