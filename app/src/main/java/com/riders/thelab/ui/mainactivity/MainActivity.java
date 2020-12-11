@@ -2,9 +2,11 @@ package com.riders.thelab.ui.mainactivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -92,6 +94,15 @@ public class MainActivity extends BaseActivity<MainActivityView> {
                     wifiManager.setWifiEnabled(!isWifi);
                 } else {
                     Timber.e("For applications targeting android.os.Build.VERSION_CODES Q or above, this API will always fail and return false");
+
+                    /*
+                        ACTION_INTERNET_CONNECTIVITY Shows settings related to internet connectivity, such as Airplane mode, Wi-Fi, and Mobile Data.
+                        ACTION_WIFI Shows Wi-Fi settings, but not the other connectivity settings. This is useful for apps that need a Wi-Fi connection to perform large uploads or downloads.
+                        ACTION_NFC Shows all settings related to near-field communication (NFC).
+                        ACTION_VOLUME Shows volume settings for all audio streams.
+                     */
+                    Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
+                    this.startActivityForResult(panelIntent, 955);
                 }
                 break;
 
@@ -113,6 +124,14 @@ public class MainActivity extends BaseActivity<MainActivityView> {
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+
+        Timber.e("startActivityForResult()");
+
+    }
 
     public void showBottomSheetDialogFragment() {
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
