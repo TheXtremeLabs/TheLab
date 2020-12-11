@@ -3,13 +3,17 @@ package com.riders.thelab.data;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.res.AssetManager;
-import android.os.Build;
+
+import androidx.room.Room;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.riders.thelab.TheLabApplication;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.data.local.LabDatabase;
+import com.riders.thelab.data.local.LabRepository;
 import com.riders.thelab.data.local.bean.TimeOut;
+import com.riders.thelab.data.local.dao.ContactDao;
 import com.riders.thelab.data.local.model.weather.WeatherKey;
 import com.riders.thelab.data.remote.LabService;
 import com.riders.thelab.data.remote.api.WeatherApiService;
@@ -42,13 +46,30 @@ import timber.log.Timber;
 public class DataModule {
 
     private Application application;
+    private LabDatabase database;
 
     public DataModule(Application application) {
         this.application = application;
-        /*database = Room
-                .databaseBuilder(application, DaggerDatabase.class, DaggerDatabase.DATABASE_NAME)
+        database = Room
+                .databaseBuilder(
+                        application,
+                        LabDatabase.class,
+                        LabDatabase.DATABASE_NAME)
                 .fallbackToDestructiveMigration()
-                .build();*/
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    ContactDao providesContactDao() {
+        return database.getContactDao();
+    }
+
+
+    @Provides
+    @Singleton
+    LabRepository providesLabRepository() {
+        return new LabRepository(providesContactDao());
     }
 
 

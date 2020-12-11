@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.riders.thelab.ui.contacts.ContactDetailActivity;
 import com.riders.thelab.ui.mainactivity.MainActivity;
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity;
 
@@ -20,12 +21,18 @@ public class Navigator {
     }
 
 
+    /* Activities */
     public void callSplashActivity() {
         context.startActivity(new Intent(context, SplashScreenActivity.class));
     }
 
     public void callMainActivity() {
         context.startActivity(new Intent(context, MainActivity.class));
+    }
+
+    /* Detail Activities */
+    public void callContactDetailActivity() {
+        context.startActivity(new Intent(context, ContactDetailActivity.class));
     }
 
     public void callYoutubeDetailActivity(Intent intent) {
@@ -37,10 +44,12 @@ public class Navigator {
     }
 
 
+    /* Activities */
     public void callIntentActivity(Class<? extends Activity> targetClass) {
         context.startActivity(new Intent(context, targetClass));
     }
 
+    /* Packages */
     public void callIntentForPackageActivity(String intentPackageName) {
         context.startActivity(
                 context
