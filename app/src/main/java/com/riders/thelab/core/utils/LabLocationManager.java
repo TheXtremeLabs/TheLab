@@ -314,32 +314,32 @@ public class LabLocationManager extends Service
         double longitude = location.getLongitude();
 
         //get the address
-        StringBuilder builderAddr = new StringBuilder();
-        StringBuilder builderCity = new StringBuilder();
+        StringBuilder addressStringbuilder = new StringBuilder();
 
         try {
-            List<Address> address = geocoder.getFromLocation(latitude, longitude, 1);
-            Timber.e("addresses : %s", address);
-            int maxLines = address.get(0).getMaxAddressLineIndex();
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            Timber.e("addresses : %s", addresses);
 
-            for (int i = 0; i < maxLines; i++) {
-                String addressStr = address.get(0).getAddressLine(i);
-                Timber.d("addressStr : %s", addressStr);
+            Address address = addresses.get(0);
 
-                String cityStr = address.get(0).getLocality();
-                Timber.d("cityStr : %s", cityStr);
+            String street = address.getFeatureName() + ", " + address.getThoroughfare();
+            String locality = address.getLocality();
+            String postalCode = address.getPostalCode();
+            String departmentName = address.getSubAdminArea();
+            String regionName = address.getAdminArea();
+            String countryName = address.getCountryName();
 
-                builderAddr.append(addressStr);
-                builderAddr.append(" ");
+            addressStringbuilder
+                    .append(street).append(" - ")
+                    .append(locality).append(" - ")
+                    .append(postalCode).append(" - ")
+                    .append(departmentName).append(" - ")
+                    .append(regionName).append(" - ")
+                    .append(countryName);
 
-                builderCity.append(cityStr);
-                builderCity.append(" ");
-            }
+            finalAddress = addressStringbuilder.toString(); //This is the complete address.
 
-            finalAddress = builderAddr.toString(); //This is the complete address.
-            finalCity = builderCity.toString(); //This is the complete address.
-
-            Timber.e("Adresse : " + finalAddress + " | " + "City : " + finalCity); //This will display the final address.
+            Timber.e("Address : %s", finalAddress); //This will display the final address.
 
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();

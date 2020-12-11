@@ -18,6 +18,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,8 +36,8 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.karumi.dexter.Dexter;
@@ -77,14 +78,14 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
 
     private final LocationOnMapsActivity context;
 
-    /*@BindView(R.id.)
-    RelativeLayout rlMapsLoading;*/
+    @BindView(R.id.rl_maps_laoding)
+    RelativeLayout rlMapsLoading;
     @BindView(R.id.tv_location)
     TextView tvLocation;
 
     Unbinder unbinder;
 
-    SupportMapFragment mapFragment;
+    MapFragment mapFragment;
     private GoogleMap mMap;
 
     Geocoder geocoder;
@@ -272,7 +273,7 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
         mMap.animateCamera(CameraUpdateFactory.zoomTo(750), 2000, null);
         mMap.getUiSettings().setScrollGesturesEnabled(true);
 
-        tvLocation.setText("Latitude:" + latitude + ", Longitude:" + longitude);
+        tvLocation.setText("Latitude:" + latitude + "\nLongitude:" + longitude);
     }
 
     @Override
@@ -333,7 +334,7 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
         Timber.i("setupMap()");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment =
-                (SupportMapFragment) context.getSupportFragmentManager()
+                (MapFragment) context.getFragmentManager()
                         .findFragmentById(R.id.google_maps_fragment);
 
         if (mapFragment != null) {
@@ -370,9 +371,9 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
     }
 
     private void hideLoading() {
-        /*if (null != rlMapsLoading
+        if (null != rlMapsLoading
                 && rlMapsLoading.getVisibility() == View.VISIBLE)
-            startAnimation(rlMapsLoading);*/
+            startAnimation(rlMapsLoading);
     }
 
     public void startAnimation(final View view) {
