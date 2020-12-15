@@ -9,6 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -30,6 +31,10 @@ public class LabRepository {
     /////////////////////////////////////
     public void insertContact(final Contact contact) {
         contactDao.insert(contact);
+    }
+
+    public Maybe<Long> insertContactRX(final Contact contact) {
+        return contactDao.insertRX(contact);
     }
 
     public void insertAllContacts(final List<Contact> contactDetails) {

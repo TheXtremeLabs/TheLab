@@ -7,12 +7,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.riders.thelab.R;
 import com.riders.thelab.ui.base.SimpleActivity;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
 public class ContactDetailActivity extends SimpleActivity {
@@ -44,5 +47,42 @@ public class ContactDetailActivity extends SimpleActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts_detail);
+
+        mContext = this;
+
+        ButterKnife.bind(this);
+
+        getBundle();
+
+        ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), String.valueOf(R.drawable.image5));
+        supportPostponeEnterTransition();
+
+        //setSupportActionBar((Toolbar) findViewById(R.id.contact_detail_toolbar));
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mCollapsingToolbar.setTitle(itemNameDetail);
+        mCollapsingToolbar.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+//        getSupportActionBar().setTitle(itemNameDetail);
+
+    }
+
+    private void getBundle() {
+        Bundle bundle = getIntent().getExtras();
+
+        if (null == bundle) {
+            Timber.e("bundle is null");
+            return;
+        }
+
+        itemNameDetail = bundle.getString(CONTACT_NAME);
+        itemEmailDetail = bundle.getString(CONTACT_EMAIL);
+        itemImage = bundle.getString(CONTACT_IMAGE);
+
+        setViews();
+    }
+
+    private void setViews() {
+        mNameTextView.setText(itemNameDetail);
+        mEmailTextView.setText(itemEmailDetail);
     }
 }

@@ -20,6 +20,18 @@ public class ContactsActivity extends BaseActivity<ContactsView> {
 
 
     @Override
+    protected void onPause() {
+        view.onPause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        view.onResume();
+        super.onResume();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         view.onCreateOptionsMenu(menu);
         return true;

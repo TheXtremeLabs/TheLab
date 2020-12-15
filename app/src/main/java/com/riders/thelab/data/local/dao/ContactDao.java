@@ -8,6 +8,7 @@ import com.riders.thelab.data.local.model.Contact;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
@@ -17,6 +18,9 @@ public interface ContactDao {
 
     @Insert(onConflict = REPLACE)
     void insert(Contact contact);
+
+    @Insert(onConflict = REPLACE)
+    Maybe<Long> insertRX(Contact contact);
 
     /* Method to insert contacts fetched from api to room */
     @Insert(onConflict = REPLACE)

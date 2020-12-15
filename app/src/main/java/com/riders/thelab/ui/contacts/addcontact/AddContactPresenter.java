@@ -9,7 +9,6 @@ import com.riders.thelab.ui.contacts.ContactsActivity;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -42,7 +41,8 @@ public class AddContactPresenter extends BasePresenterImpl<AddContactView>
         Contact contactToSave = getView().getEnteredFormData();
 
         Disposable disposable =
-                Maybe.fromAction(() -> repository.insertContact(contactToSave))
+                repository
+                        .insertContactRX(contactToSave)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
