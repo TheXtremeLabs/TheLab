@@ -9,12 +9,19 @@
 
     <dimen name="activity_margin">16dp</dimen>
 
+    <dimen name="ultra_small_margin">2dp</dimen>
     <dimen name="extra_small_margin">4dp</dimen>
     <dimen name="small_margin">8dp</dimen>
     <dimen name="medium_margin">16dp</dimen>
     <dimen name="big_margin">24dp</dimen>
+    <dimen name="big_medium_margin">32dp</dimen>
+    <dimen name="extra_big_margin">48dp</dimen>
+    <dimen name="ultra_big_margin">56dp</dimen>
 
+    <!-- CardView -->
     <dimen name="card_elevation">8dp</dimen>
+    <dimen name="max_card_image_width">344dp</dimen>
+    <dimen name="max_card_image_height">194dp</dimen>
 
     <dimen name="activity_section_title">20sp</dimen>
 
@@ -56,6 +63,14 @@
     <dimen name="elevation_low">9dp</dimen>
     <dimen name="elevation_high">12dp</dimen>
     <dimen name="status_bar_height">25dp</dimen>
+
+
+    <!-- Contacts -->
+    <dimen name="thumbnail">40dp</dimen>
+    <dimen name="row_padding">10dp</dimen>
+    <dimen name="ic_delete">30dp</dimen>
+    <dimen name="contact_name">15dp</dimen>
+    <dimen name="contact_number">12dp</dimen>
 
     <!-- Built-in WebView -->
     <dimen name="detail_backdrop_height">270dp</dimen>

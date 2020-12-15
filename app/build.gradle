@@ -9,22 +9,27 @@ apply plugin: 'com.google.firebase.crashlytics'
 // Apply the Performance Monitoring plugin
 apply plugin: 'com.google.firebase.firebase-perf'
 
+def buildDateTime =
+        project.hasProperty('devBuild')
+                ? 100
+                : new Date().format('yyMMddHHmm').toInteger()
+
 // version information
 def versionMajor = 1
-def versionMinor = 0
-def versionPatch = 5
+def versionMinor = 2
+def versionPatch = 3
 
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.riders.thelab"
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
 
-        versionCode 10 * (versionMajor * 1000 + versionMinor * 100 + versionPatch)
+        versionCode buildDateTime
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
         javaCompileOptions {
@@ -41,8 +46,8 @@ android {
 
     buildTypes {
         buildFeatures {
-            dataBinding  true
-            viewBinding  true
+            dataBinding true
+            viewBinding true
         }
         release {
             minifyEnabled false
@@ -57,8 +62,18 @@ android {
     if (project.hasProperty('devBuild')) {
         splits.abi.enable = false
         splits.density.enable = false
+        aaptOptions.cruncherEnabled = false
     }
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+//        exclude 'META-INF/androidx.versionedparcelable_versionedparcelable.version'
+//        exclude 'META-INF/androidx.core_core.version'
+//            exclude 'META-INF/NOTICE'
+//              exclude 'META-INF/LICENSE'
+//              exclude 'META-INF/LICENSE.txt'
+//              exclude 'META-INF/NOTICE.txt'
+    }
 
     // Watch the memory
     dexOptions {
@@ -75,13 +90,20 @@ dependencies {
 
     // AndroidX
     implementation rootProject.ext.generalDependencies.multidex
+    implementation rootProject.ext.generalDependencies.core
     implementation rootProject.ext.generalDependencies.appcompat
     implementation rootProject.ext.generalDependencies.material
+    implementation rootProject.ext.generalDependencies.palette
     implementation rootProject.ext.generalDependencies.constraintLayout
     implementation rootProject.ext.generalDependencies.navigationFragment
     implementation rootProject.ext.generalDependencies.navigationUi
     implementation rootProject.ext.generalDependencies.recyclerView
     implementation rootProject.ext.generalDependencies.cardView
+    // https://developer.android.com/guide/fragments/create#java
+    // Fragments require a dependency on the AndroidX Fragment library.
+    implementation rootProject.ext.generalDependencies.fragment
+
+    implementation rootProject.ext.generalDependencies.autoFill
 
     //Room
     implementation rootProject.ext.generalDependencies.roomRuntime
@@ -89,6 +111,11 @@ dependencies {
     annotationProcessor rootProject.ext.generalDependencies.roomCompiler
 
     // Google Play
+    // Maps
+    implementation rootProject.ext.generalDependencies.googleAPIClient
+    implementation rootProject.ext.generalDependencies.maps
+    implementation rootProject.ext.generalDependencies.location
+    // Firebase
     implementation platform(rootProject.ext.generalDependencies.firebasePlatform)
     implementation rootProject.ext.generalDependencies.firebaseAnalitycs
     implementation rootProject.ext.generalDependencies.firebaseCraslytics
@@ -116,7 +143,12 @@ dependencies {
     implementation rootProject.ext.generalDependencies.butterknife
     annotationProcessor rootProject.ext.generalDependencies.butterknifeAnnotation
 
+    // Picasso
+    implementation rootProject.ext.generalDependencies.picasso
+
+    // Glide
     implementation rootProject.ext.generalDependencies.glide
+    annotationProcessor rootProject.ext.generalDependencies.glideAnnotation
 
     /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
     implementation rootProject.ext.generalDependencies.retrofit
@@ -124,6 +156,13 @@ dependencies {
     implementation rootProject.ext.generalDependencies.retrofitRxJava
     implementation rootProject.ext.generalDependencies.okhttp3Logging
 
+
+    // Parceler
+    implementation rootProject.ext.generalDependencies.parceler
+    annotationProcessor rootProject.ext.generalDependencies.parcelerAnnotation
+
+    // EventBus
+    implementation rootProject.ext.generalDependencies.eventBus
 
     // Dexter : permissions
     implementation rootProject.ext.generalDependencies.dexter

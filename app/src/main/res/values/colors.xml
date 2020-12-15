@@ -12,7 +12,7 @@
 
     <color name="transparent">#00000000</color>
 
-    // Palette
+    <!-- Palette -->
     <color name="black">#000000</color>
     <color name="jet">#222222</color>
     <color name="oil">#333333</color>
@@ -28,6 +28,7 @@
     <color name="white">#ffffff</color>
 
 
+    <color name="list_divider">#dedede</color>
 
     <!-- Splash Layout -->
     <color name="ball1">#FFD91C</color>
@@ -98,6 +99,7 @@
     <color name="contactsDatabase_view_bg">#EEEEEE</color>
     <color name="first_name">#999999</color>
     <color name="name">#222222</color>
+    <color name="bg_row_background">#fa315b</color>
 
     <!-- Admin Splash Activity -->
     <color name="admin_splash_bg">#0C5DA5</color>
@@ -128,6 +130,11 @@
     <color name="green">#00A424</color>
     <color name="orange">#D95C00</color>
     <color name="red">#A60000</color>
+
+
+    <color name="good">#43A047</color>
+    <color name="warning">#FB8C00</color>
+    <color name="error">#d32f2f</color>
 
     <color name="login_connection_button">#20adbc</color>
 
