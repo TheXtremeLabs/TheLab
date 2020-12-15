@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.mainactivity;
 
+import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -56,14 +57,18 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
      */
     public List<App> getPackageList() {
 
-        final String TARGET_PACKAGE = "com.riders";
+        final String[] TARGET_PACKAGES = new String[]{
+                "com.riders",
+                "com.reepling",
+                "com.praeter"
+        };
         List<ApplicationInfo> installedAppList = new ArrayList<>();
 
         List<App> appList = new ArrayList<>();
 
         getView().showLoading();
 
-        if (isPackageExists(installedAppList, TARGET_PACKAGE)) {
+        if (isPackageExists(installedAppList, TARGET_PACKAGES)) {
 
             for (ApplicationInfo appInfo : installedAppList) {
                 Timber.e("package found : %s", appInfo.packageName);
@@ -86,7 +91,7 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
 
             getView().onSuccessPackageList(appList);
         } else {
-            Timber.e("package " + TARGET_PACKAGE + " not found.");
+            Timber.e("package " + TARGET_PACKAGES + " not found.");
             //installPackage(directory, targetApkFile);
             getView().hideLoading();
         }
@@ -98,10 +103,10 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
     /**
      * Returns true if the target package has been found
      *
-     * @param targetPackage
+     * @param targetPackages
      * @return
      */
-    public boolean isPackageExists(final List<ApplicationInfo> installedAppList, String targetPackage) {
+    public boolean isPackageExists(final List<ApplicationInfo> installedAppList, String... targetPackages) {
 
         boolean isPackageFound = false;
 
@@ -113,16 +118,18 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
         packages = packageManager.getInstalledApplications(0);
 
         for (ApplicationInfo packageInfo : packages) {
-            if (packageInfo.packageName.contains(targetPackage)) {
+            for (String packageItem : targetPackages) {
+                if (packageInfo.packageName.contains(packageItem)) {
 
-                // Store found app package name
-                String appToAdd = packageInfo.packageName;
+                    // Store found app package name
+                    String appToAdd = packageInfo.packageName;
 
-                // Check if it does equal to the hub package
-                // because we don't don't want to display it
-                if (!appToAdd.equals(TheLabApplication.HUB_PACKAGE_NAME))
-                    installedAppList.add(packageInfo);
-                isPackageFound = true;
+                    // Check if it does equal to the hub package
+                    // because we don't don't want to display it
+                    if (!appToAdd.equals(TheLabApplication.LAB_PACKAGE_NAME))
+                        installedAppList.add(packageInfo);
+                    isPackageFound = true;
+                }
             }
         }
 
@@ -140,7 +147,13 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
         */
     }
 
+    @Override
     public void launchIntentForPackage(String packageName) {
         navigator.callIntentForPackageActivity(packageName);
+    }
+
+    @Override
+    public void launchActivity(Class<? extends Activity> activity) {
+        navigator.callIntentActivity(activity);
     }
 }

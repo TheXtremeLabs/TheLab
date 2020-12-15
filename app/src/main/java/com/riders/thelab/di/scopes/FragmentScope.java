@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 
 import javax.inject.Scope;
 
-@Scope
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
+@Scope
 public @interface FragmentScope {
 }

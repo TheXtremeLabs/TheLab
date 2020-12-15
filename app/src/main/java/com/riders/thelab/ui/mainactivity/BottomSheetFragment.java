@@ -1,9 +1,7 @@
 package com.riders.thelab.ui.mainactivity;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,10 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.core.utils.LabDeviceManager;
+import com.riders.thelab.data.local.model.Contact;
+import com.riders.thelab.ui.contacts.ContactDetailActivity;
 
 import java.lang.reflect.Field;
 
@@ -50,6 +52,17 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         // Required empty public constructor
     }
 
+    public static BottomSheetFragment newInstance(Contact contact) {
+
+        Bundle args = new Bundle();
+
+        args.putString(ContactDetailActivity.CONTACT_NAME, contact.toString());
+
+        BottomSheetFragment fragment = new BottomSheetFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,49 +78,22 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
         Timber.i("onViewCreated()");
 
-        //Retrieve data
-        getDeviceInfo();
-        setViews();
-    }
+        //setViews();
 
-    private void getDeviceInfo() {
-        Timber.i("getDeviceInfo()");
+        String szBundle = getArguments().getString(ContactDetailActivity.CONTACT_NAME);
 
-        deviceBrand = Build.BRAND;
-        deviceModel = Build.MODEL;
+        Timber.d(szBundle);
 
-        //Retrieve Screen's height and width
-        DisplayMetrics metrics = new DisplayMetrics();
-        getActivity()
-                .getWindowManager()
-                .getDefaultDisplay()
-                .getMetrics(metrics);
 
-        deviceScreenHeight = metrics.heightPixels;
-        deviceScreenWidth = metrics.widthPixels;
-
-        deviceVersionSDK = Build.VERSION.SDK_INT;
-
-        fields = Build.VERSION_CODES.class.getFields();
-        for (Field field : fields) {
-            Timber.i(field.toString());
-            try {
-                if (field.getInt(Build.VERSION_CODES.class) == Build.VERSION.SDK_INT) {
-                    OSName = field.getName();
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @SuppressLint("SetTextI18n")
     private void setViews() {
-        tvBrand.setText(deviceBrand);
-        tvModel.setText(deviceModel);
-        tvScreenHeight.setText(deviceScreenHeight + "");
-        tvScreenWidth.setText(deviceScreenWidth + "");
-        tvVersion.setText(deviceVersionSDK + " " + OSName);
+        tvBrand.setText(LabDeviceManager.getBrand());
+        tvModel.setText(LabDeviceManager.getModel());
+        tvScreenHeight.setText(LabDeviceManager.getScreenHeight(getActivity()) + "");
+        tvScreenWidth.setText(LabDeviceManager.getScreenWidth(getActivity()) + "");
+        tvVersion.setText(LabDeviceManager.getSdkVersion() + " " + LabCompatibilityManager.getOSName());
     }
 
     @Override

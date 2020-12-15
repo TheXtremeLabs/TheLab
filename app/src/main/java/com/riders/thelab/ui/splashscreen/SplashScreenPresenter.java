@@ -40,6 +40,7 @@ public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_NETWORK_STATE,
                         Manifest.permission.RECORD_AUDIO
                 )
                 .withListener(new MultiplePermissionsListener() {
@@ -48,7 +49,7 @@ public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
                         // check if all permissions are granted
                         if (report.areAllPermissionsGranted()) {
                             // do you work now
-                            Toast.makeText(context, "All permissions are granted!", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(context, "All permissions are granted!", Toast.LENGTH_SHORT).show();
 
                             getView().onPermissionsGranted();
 
