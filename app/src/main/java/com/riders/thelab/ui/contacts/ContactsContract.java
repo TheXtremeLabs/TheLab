@@ -12,6 +12,12 @@ public interface ContactsContract {
 
     interface View extends BaseView {
 
+        void onStart();
+
+        void onPause();
+
+        void onResume();
+
         void onCreateOptionsMenu(Menu menu);
 
         void onOptionsItemSelected(MenuItem item);

@@ -74,6 +74,23 @@ public class ContactsView extends BaseViewImpl<ContactsPresenter>
         context.getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         context.getSupportActionBar().setTitle(context.getString(R.string.activity_title_database_contacts));
+    }
+
+
+    @Override
+    public void onStart() {
+        Timber.e("onStart()");
+    }
+
+    @Override
+    public void onPause() {
+        Timber.e("onPause()");
+
+    }
+
+    @Override
+    public void onResume() {
+        Timber.d("onResume()");
 
         getPresenter().getContactList();
     }

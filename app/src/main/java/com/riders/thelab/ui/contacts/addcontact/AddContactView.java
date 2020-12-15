@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -58,6 +57,11 @@ public class AddContactView extends BaseViewImpl<AddContactPresenter>
         getPresenter().attachView(this);
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
 
+        context.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        context.getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        context.getSupportActionBar().setTitle(context.getString(R.string.activity_title_add_new_contact));
+
         inputName.addTextChangedListener(new AddContactView.MyTextWatcher(inputName));
         inputEmail.addTextChangedListener(new AddContactView.MyTextWatcher(inputEmail));
         inputPassword.addTextChangedListener(new AddContactView.MyTextWatcher(inputPassword));
@@ -95,13 +99,12 @@ public class AddContactView extends BaseViewImpl<AddContactPresenter>
     @Override
     public void onAddContactSuccess() {
         Timber.d("onAddContactSuccess()");
-
+        context.finish();
     }
 
     @Override
     public void onAddContactError() {
         Timber.e("onAddContactError()");
-
     }
 
 
