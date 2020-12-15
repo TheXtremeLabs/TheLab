@@ -1,6 +1,9 @@
 package com.riders.thelab.ui.contacts;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
 
@@ -13,6 +16,28 @@ public class ContactsActivity extends BaseActivity<ContactsView> {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_contacts);
         super.onCreate(savedInstanceState);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        view.onCreateOptionsMenu(menu);
+        return true;
+    }
+
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        view.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        view.onBackPressed();
+        super.onBackPressed();
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.content.Context;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.riders.thelab.core.broadcast.ConnectivityReceiver;
 import com.riders.thelab.data.DataModule;
+import com.riders.thelab.di.component.ComponentInjector;
 import com.riders.thelab.di.component.DaggerComponentInjector;
 import com.riders.thelab.di.module.ApplicationModule;
 

@@ -118,7 +118,14 @@
 
     <!-- Contacts Database -->
     <string name="activity_title_database_contacts">Database Contacts</string>
+    <string name="toolbar_title">Contacts</string>
     <string name="action_add_contact">Add Contact</string>
+    <string name="action_search">Search</string>
+    <string name="action_supervise">Supervisor</string>
+    <string name="search_hint">Type name…</string>
+    <string name="activity_title_detail_contacts">Detail Contact</string>
+    <string name="activity_title_add_new_contact">Add Contact</string>
+    <string name="delete">DELETE</string>
 
     <string name="button_update">Update</string>
     <string name="button_add">Add</string>
