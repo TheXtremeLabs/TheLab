@@ -99,6 +99,7 @@
     <color name="contactsDatabase_view_bg">#EEEEEE</color>
     <color name="first_name">#999999</color>
     <color name="name">#222222</color>
+    <color name="bg_row_background">#fa315b</color>
 
     <!-- Admin Splash Activity -->
     <color name="admin_splash_bg">#0C5DA5</color>

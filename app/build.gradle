@@ -9,10 +9,15 @@ apply plugin: 'com.google.firebase.crashlytics'
 // Apply the Performance Monitoring plugin
 apply plugin: 'com.google.firebase.firebase-perf'
 
+def buildDateTime =
+        project.hasProperty('devBuild')
+                ? 100
+                : new Date().format('yyMMddHHmm').toInteger()
+
 // version information
 def versionMajor = 1
 def versionMinor = 2
-def versionPatch = 2
+def versionPatch = 3
 
 
 android {
@@ -24,7 +29,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 
-        versionCode 10 * (versionMajor * 1000 + versionMinor * 100 + versionPatch)
+        versionCode buildDateTime
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
         javaCompileOptions {
@@ -57,6 +62,7 @@ android {
     if (project.hasProperty('devBuild')) {
         splits.abi.enable = false
         splits.density.enable = false
+        aaptOptions.cruncherEnabled = false
     }
 
     packagingOptions {
