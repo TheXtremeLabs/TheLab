@@ -1,6 +1,9 @@
 package com.riders.thelab.ui.contacts;
 
+import android.content.Intent;
+
 import com.riders.thelab.data.local.LabRepository;
+import com.riders.thelab.data.local.model.Contact;
 import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenterImpl;
 
@@ -12,6 +15,9 @@ import timber.log.Timber;
 
 public class ContactsPresenter extends BasePresenterImpl<ContactsView>
         implements ContactsContract.Presenter {
+
+    @Inject
+    ContactsActivity activity;
 
     @Inject
     Navigator navigator;
@@ -30,6 +36,8 @@ public class ContactsPresenter extends BasePresenterImpl<ContactsView>
     public void getContactList() {
         Timber.d("getContactList()");
 
+        getView().showLoader();
+
         Disposable disposable =
                 repository
                         .getAllContacts()
@@ -38,17 +46,21 @@ public class ContactsPresenter extends BasePresenterImpl<ContactsView>
                                     if (contacts.isEmpty()) {
                                         Timber.e("Contact list is empty");
                                         getView().hideLoader();
-                                        getView().onContactsFetchedError();
+                                        getView().hideContactsLayout();
+                                        getView().onNoContactRecordFound();
                                     } else {
 
                                         Timber.d("contacts  : %s", contacts);
                                         getView().hideLoader();
-                                        getView().onContactsFetchedSuccess();
+                                        getView().hideNoContactFoundLayout();
+                                        getView().showContactsLayout();
+                                        getView().onContactsFetchedSuccess(contacts);
                                     }
 
                                 }, throwable -> {
                                     Timber.e(throwable);
                                     getView().hideLoader();
+                                    getView().hideContactsLayout();
                                     getView().onContactsFetchedError();
                                 });
 
@@ -56,23 +68,22 @@ public class ContactsPresenter extends BasePresenterImpl<ContactsView>
     }
 
     @Override
-    public void callDetailActivity() {
-        Timber.d("callDetailActivity()");
-        navigator.callContactDetailActivity();
-
-    }
-
-    @Override
-    public void callAddNewContactActivity() {
-        Timber.d("callAddNewContactActivity()");
-
-    }
-
-    @Override
     public void addNewContact() {
         Timber.d("addNewContact()");
+        Timber.d("callAddNewContactActivity()");
+        navigator.callAddContactActivity();
+    }
 
-        callAddNewContactActivity();
+    @Override
+    public void showDetailContact(Contact contact) {
+        Timber.d("showDetailContact()");
+        Intent intent = new Intent(activity, ContactDetailActivity.class);
+
+        intent.putExtra(ContactDetailActivity.CONTACT_NAME, contact.getName());
+        intent.putExtra(ContactDetailActivity.CONTACT_EMAIL, contact.getEmail());
+        intent.putExtra(ContactDetailActivity.CONTACT_IMAGE, "");
+
+        navigator.callContactDetailActivity(intent);
     }
 
     @Override

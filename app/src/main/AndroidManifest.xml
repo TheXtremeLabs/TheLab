@@ -131,14 +131,29 @@
             android:theme="@style/SwipeDownTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+
         <activity
             android:name=".ui.contacts.ContactsActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
+            android:theme="@style/Theme.TheLab.NoActionBar">
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.contacts.ContactDetailActivity"
             android:parentActivityName=".ui.contacts.ContactsActivity"
             android:theme="@style/Theme.TheLab" />
+        <activity
+            android:name=".ui.contacts.addcontact.AddContactActivity"
+            android:parentActivityName=".ui.contacts.ContactsActivity"
+            android:theme="@style/Theme.TheLab"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
 
         <activity
