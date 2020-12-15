@@ -7,7 +7,7 @@ import com.riders.thelab.data.local.dao.ContactDao;
 import com.riders.thelab.data.local.model.Contact;
 
 @Database(entities = {Contact.class},
-        version = 1,
+        version = 2,
         exportSchema = false)
 public abstract class LabDatabase extends RoomDatabase {
 

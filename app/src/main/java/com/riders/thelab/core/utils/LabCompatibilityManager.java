@@ -5,11 +5,16 @@ package com.riders.thelab.core.utils;
  */
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
+
+import java.lang.reflect.Field;
+
+import timber.log.Timber;
 
 /**
  * Class that check compatibility, SDK's version and stuff to be sure that your device can handle the actions
@@ -114,6 +119,65 @@ public class LabCompatibilityManager {
         return isHoneycomb() && isTablet(context);
     }
 
+
+    @SuppressLint("NewApi")
+    public static String getOSName() {
+
+        Field[] fields;
+        fields = Build.VERSION_CODES.class.getFields();
+        String OSName = "UNKNOWN";
+
+        for (Field field : fields) {
+            try {
+                if (field.getInt(Build.VERSION_CODES.class) == (Build.VERSION.SDK_INT - 1)) {
+
+                    OSName = field.getName();
+                    Timber.e("code name %s", OSName);
+
+                    if (LabCompatibilityManager.isOreo()) {
+                        OSName = LabCompatibilityManager.getOsVersionName(OSName);
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // TEST
+        fields = null;
+        StringBuilder builder = new StringBuilder();
+        builder.append("android : ").append(Build.VERSION.RELEASE);
+
+        fields = Build.VERSION_CODES.class.getFields();
+        for (Field field : fields) {
+            String fieldName = field.getName();
+            int fieldValue = -1;
+
+            try {
+                fieldValue = field.getInt(new Object());
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+
+            if (fieldValue == Build.VERSION.SDK_INT) {
+                builder.append(" : ")
+                        .append(fieldName).append(" : ")
+                        .append("sdk=").append(fieldValue);
+            }
+        }
+        fields = null;
+
+        Timber.e("OS: %s", builder.toString());
+        // TEST
+
+        return OSName;
+    }
+
+
     /**
      * Gets the version name from version code. Note! Needs to be updated
      * when new versions arrive, or will return a single letter. Like Android 8.0 - Oreo
@@ -139,39 +203,36 @@ public class LabCompatibilityManager {
 
 /**
  * Android version table
- *
+ * <p>
  * SDK_INT value        Build.VERSION_CODES        Human Version Name
- *     1                  BASE                      Android 1.0 (no codename)
- *     2                  BASE_1_1                  Android 1.1 Petit Four
- *     3                  CUPCAKE                   Android 1.5 Cupcake
- *     4                  DONUT                     Android 1.6 Donut
- *     5                  ECLAIR                    Android 2.0 Eclair
- *     6                  ECLAIR_0_1                Android 2.0.1 Eclair
- *     7                  ECLAIR_MR1                Android 2.1 Eclair
- *     8                  FROYO                     Android 2.2 Froyo
- *     9                  GINGERBREAD               Android 2.3 Gingerbread
- *    10                  GINGERBREAD_MR1           Android 2.3.3 Gingerbread
- *    11                  HONEYCOMB                 Android 3.0 Honeycomb
- *    12                  HONEYCOMB_MR1             Android 3.1 Honeycomb
- *    13                  HONEYCOMB_MR2             Android 3.2 Honeycomb
- *    14                  ICE_CREAM_SANDWICH        Android 4.0 Ice Cream Sandwich
- *    15                  ICE_CREAM_SANDWICH_MR1    Android 4.0.3 Ice Cream Sandwich
- *    16                  JELLY_BEAN                Android 4.1 Jellybean
- *    17                  JELLY_BEAN_MR1            Android 4.2 Jellybean
- *    18                  JELLY_BEAN_MR2            Android 4.3 Jellybean
- *    19                  KITKAT                    Android 4.4 KitKat
- *    20                  KITKAT_WATCH              Android 4.4 KitKat Watch
- *    21                  LOLLIPOP                  Android 5.0 Lollipop
- *    22                  LOLLIPOP_MR1              Android 5.1 Lollipop
- *    23                  M                         Android 6.0 Marshmallow
- *    24                  N                         Android 7.0 Nougat
- *    25                  N_MR1                     Android 7.1.1 Nougat
- *    26                  O                         Android 8.0 Oreo
- *    27                  O_MR1                     Android 8 Oreo MR1
- *    28                  P                         Android 9 Pie
- *    29                  Q                         Android 10
- *   10000                CUR_DEVELOPMENT           Current Development Version
- *
- *
- *
+ * 1                  BASE                      Android 1.0 (no codename)
+ * 2                  BASE_1_1                  Android 1.1 Petit Four
+ * 3                  CUPCAKE                   Android 1.5 Cupcake
+ * 4                  DONUT                     Android 1.6 Donut
+ * 5                  ECLAIR                    Android 2.0 Eclair
+ * 6                  ECLAIR_0_1                Android 2.0.1 Eclair
+ * 7                  ECLAIR_MR1                Android 2.1 Eclair
+ * 8                  FROYO                     Android 2.2 Froyo
+ * 9                  GINGERBREAD               Android 2.3 Gingerbread
+ * 10                  GINGERBREAD_MR1           Android 2.3.3 Gingerbread
+ * 11                  HONEYCOMB                 Android 3.0 Honeycomb
+ * 12                  HONEYCOMB_MR1             Android 3.1 Honeycomb
+ * 13                  HONEYCOMB_MR2             Android 3.2 Honeycomb
+ * 14                  ICE_CREAM_SANDWICH        Android 4.0 Ice Cream Sandwich
+ * 15                  ICE_CREAM_SANDWICH_MR1    Android 4.0.3 Ice Cream Sandwich
+ * 16                  JELLY_BEAN                Android 4.1 Jellybean
+ * 17                  JELLY_BEAN_MR1            Android 4.2 Jellybean
+ * 18                  JELLY_BEAN_MR2            Android 4.3 Jellybean
+ * 19                  KITKAT                    Android 4.4 KitKat
+ * 20                  KITKAT_WATCH              Android 4.4 KitKat Watch
+ * 21                  LOLLIPOP                  Android 5.0 Lollipop
+ * 22                  LOLLIPOP_MR1              Android 5.1 Lollipop
+ * 23                  M                         Android 6.0 Marshmallow
+ * 24                  N                         Android 7.0 Nougat
+ * 25                  N_MR1                     Android 7.1.1 Nougat
+ * 26                  O                         Android 8.0 Oreo
+ * 27                  O_MR1                     Android 8 Oreo MR1
+ * 28                  P                         Android 9 Pie
+ * 29                  Q                         Android 10
+ * 10000                CUR_DEVELOPMENT           Current Development Version
  */
