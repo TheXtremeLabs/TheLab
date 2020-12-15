@@ -1,0 +1,17 @@
+name: CI
+on:
+  pull_request:
+    branches:
+      - 'master'
+      - 'develop'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build Android application
+        run: ./gradlew clean build
