@@ -19,19 +19,18 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.DayNight.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight" />
 
 
     <!-- Splash Theme -->
-    <style name="SplashTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
-
 
     <!-- SwipeDown Theme -->
     <style name="SwipeDownTheme" parent="SwipeDownStyleTheme.Base" />
@@ -67,7 +66,8 @@
         <item name="colorPrimary">@color/tabColorPrimary</item>
         <item name="colorPrimaryDark">@color/tabColorPrimaryDark</item>
         <item name="colorAccent">@color/tabColorAccent</item>
-        <item name="textAppearanceBody1">@color/white</item>
+        <item name="textAppearanceBody1">@color/black</item>
+
     </style>
 
 
@@ -80,6 +80,18 @@
         <item name="colorPrimary">@color/filterListViewColorPrimary</item>
         <item name="colorPrimaryDark">@color/filterListViewColorPrimaryDark</item>
         <item name="colorAccent">@color/filterListViewColorAccent</item>
+    </style>
+
+
+    <!-- Built-in WebView Theme -->
+    <style name="BuiltInWebViewTheme" parent="BuiltInWebViewStyleTheme.Base"/>
+
+    <style name="BuiltInWebViewStyleTheme.Base" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/builtInWebViewColorPrimary</item>
+        <item name="colorPrimaryDark">@color/builtInWebViewColorPrimaryDark</item>
+        <item name="colorAccent">@color/builtInWebViewColorAccent</item>
     </style>
 
 
