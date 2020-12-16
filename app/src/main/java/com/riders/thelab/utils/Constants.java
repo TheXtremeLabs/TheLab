@@ -13,6 +13,7 @@ import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
 import com.riders.thelab.ui.schedule.ScheduleActivity;
 import com.riders.thelab.ui.speechtotext.SpeechToTextActivity;
+import com.riders.thelab.ui.tabs.WorkingTabsActivity;
 import com.riders.thelab.ui.weather.WeatherActivity;
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity;
 
@@ -81,10 +82,10 @@ public class Constants {
 
         list.add(new App("Transition", "Transition, shared elements...",
                 R.drawable.transition_fade, TransitionActivity.class));
-
-        list.add(new App("Tabs", "ViewPager Fragments Tabs...",
-                R.drawable.ic_tab_black_48dp, WorkingTabsActivity.class));
 */
+        list.add(new App("Tabs", "ViewPager Fragments Tabs...",
+                R.drawable.ic_tab, WorkingTabsActivity.class));
+
         list.add(new App("Floating Labels", "Floating Labels Form...",
                 R.drawable.ic_outline_label, FloatingLabelsActivity.class));
 
