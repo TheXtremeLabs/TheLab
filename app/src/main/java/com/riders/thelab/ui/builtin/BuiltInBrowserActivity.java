@@ -15,19 +15,19 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.BrowserUtils;
+import com.riders.thelab.ui.base.SimpleActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 @SuppressLint("NonConstantResourceId")
-public class BuiltInBrowserActivity extends AppCompatActivity {
+public class BuiltInBrowserActivity extends SimpleActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;

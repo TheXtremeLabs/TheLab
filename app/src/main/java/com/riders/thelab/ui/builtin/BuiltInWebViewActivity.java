@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
@@ -20,12 +19,13 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.BrowserUtils;
+import com.riders.thelab.ui.base.SimpleActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 @SuppressLint("NonConstantResourceId")
-public class BuiltInWebViewActivity extends AppCompatActivity {
+public class BuiltInWebViewActivity extends SimpleActivity {
 
     public static final String EXTRA_POST_URL = "postUrl";
 
@@ -37,7 +37,6 @@ public class BuiltInWebViewActivity extends AppCompatActivity {
     ProgressBar mProgressBar;
     @BindView(R.id.backdrop)
     ImageView imgHeader;
-
 
     private String postUrl = "http://api.androidhive.info/webview/index.html";
     private float m_downX;
