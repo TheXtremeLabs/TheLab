@@ -102,7 +102,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             networkManager = new LabNetworkManager(this);
         }
-
     }
 
     @Override
