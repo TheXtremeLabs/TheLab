@@ -3,6 +3,7 @@ package com.riders.thelab.utils;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.data.local.model.RecyclerItem;
+import com.riders.thelab.ui.builtin.BuiltInWebViewActivity;
 import com.riders.thelab.ui.colors.ColorActivity;
 import com.riders.thelab.ui.contacts.ContactsActivity;
 import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity;
@@ -121,11 +122,11 @@ public class Constants {
         */
 
         /*list.add(new App("RxJava", "Reactive Android...",
-                R.drawable.logo_rx_java, RxJavaActivity.class));
+                R.drawable.logo_rx_java, RxJavaActivity.class));*/
 
         list.add(new App("Built-in Web View", "Display web view in activity directly...",
-                R.drawable.ic_aspect_ratio_black_48dp, BuiltInWebViewActivity.class));
-
+                R.drawable.ic_aspect_ratio, BuiltInWebViewActivity.class));
+/*
         list.add(new App("Songs Player (Work In Progress)", "Display content on split screen...",
                 R.mipmap.ic_launcher_round, SongPlayerActivity.class));
 */

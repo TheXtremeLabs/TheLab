@@ -1,13 +1,9 @@
 package com.riders.thelab.core.broadcast;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 
 import com.riders.thelab.core.utils.LabNetworkManager;
 
@@ -39,6 +35,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
         this.connectivityReceiverListener = connectivityReceiverListener;
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onReceive(Context context, Intent arg1) {
 
