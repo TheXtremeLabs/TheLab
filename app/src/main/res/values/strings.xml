@@ -225,6 +225,7 @@
 
     <!-- Youtube -->
     <string name="activity_title_youtube_like">Youtube Like Activity</string>
+    <string name="activty_title_tabs">Tabs</string>
 
 
 </resources>
