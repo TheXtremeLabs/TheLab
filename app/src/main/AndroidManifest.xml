@@ -189,6 +189,18 @@
             android:parentActivityName=".ui.filterlistview.FilterListViewActivity"
             android:theme="@style/FilterListViewTheme" />
 
+
+        <activity
+            android:name=".ui.builtin.BuiltInWebViewActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/BuiltInWebViewTheme" />
+
+        <activity
+            android:name=".ui.builtin.BuiltInBrowserActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/BuiltInWebViewTheme" />
+
+
         <activity
             android:name=".ui.youtubelike.YoutubeLikeActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
