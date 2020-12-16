@@ -126,6 +126,11 @@
 
 
         <activity
+            android:name=".ui.tabs.WorkingTabsActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/TabTheme" />
+
+        <activity
             android:name=".ui.floatinglabels.FloatingLabelsActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/SwipeDownTheme"
