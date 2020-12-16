@@ -10,6 +10,7 @@ import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity;
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity;
+import com.riders.thelab.ui.multipane.MultipaneActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
 import com.riders.thelab.ui.schedule.ScheduleActivity;
 import com.riders.thelab.ui.speechtotext.SpeechToTextActivity;
@@ -112,8 +113,8 @@ public class Constants {
         list.add(new App("Filter ListView", "ListView with filter...",
                 R.drawable.ic_filter_list, FilterListViewActivity.class));
 
-        /*list.add(new App("Multi Pane", "Display content on split screen...",
-                R.drawable.ic_aspect_ratio_black_48dp, MultiPaneActivity.class));*/
+        list.add(new App("Multi Pane", "Display content on split screen...",
+                R.drawable.ic_aspect_ratio, MultipaneActivity.class));
 /*
         listActivities.add( new ItemActivity("Contacts Database Activity", R.drawable.ic_perm_contact_calendar_black_48dp, ContactsDatabaseActivity.class) );
         listActivities.add( new ItemActivity("Search Box Activity", R.drawable.ic_alarm_black_48dp, SearchBoxActivity.class) );
@@ -124,9 +125,6 @@ public class Constants {
 
         /*list.add(new App("RxJava", "Reactive Android...",
                 R.drawable.logo_rx_java, RxJavaActivity.class));*/
-
-        list.add(new App("Built-in Web View", "Display web view in activity directly...",
-                R.drawable.ic_aspect_ratio, BuiltInWebViewActivity.class));
 /*
         list.add(new App("Songs Player (Work In Progress)", "Display content on split screen...",
                 R.mipmap.ic_launcher_round, SongPlayerActivity.class));
@@ -141,6 +139,9 @@ public class Constants {
                 /*
         list.add(new App("Activity Recognition", "Display user activity...",
                 R.drawable.ic_walking, ActivityRecognitionActivity.class));*/
+
+        list.add(new App("Built-in Web View", "Display web view in activity directly...",
+                R.drawable.ic_aspect_ratio, BuiltInWebViewActivity.class));
 
         list.add(new App("Weather App", "Current weather forecast.. in your city...",
                 R.drawable.openweathermap, WeatherActivity.class));
