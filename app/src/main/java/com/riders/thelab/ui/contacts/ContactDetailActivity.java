@@ -63,9 +63,12 @@ public class ContactDetailActivity extends SimpleActivity {
         ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), String.valueOf(R.drawable.image5));
         supportPostponeEnterTransition();
 
+        /*setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);*/
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mCollapsingToolbar.setTitle(itemNameDetail);
         mCollapsingToolbar.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
