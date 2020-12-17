@@ -37,7 +37,7 @@ public class WorkingTabsActivity extends AppCompatActivity {
 
         setSupportActionBar(mTabToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.activty_title_tabs));
+        getSupportActionBar().setTitle(getString(R.string.activity_title_tabs));
 
         mViewPager = (ViewPager) findViewById(R.id.tabViewPager);
         setupViewPager(mViewPager);

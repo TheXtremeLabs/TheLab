@@ -194,6 +194,14 @@
             android:parentActivityName=".ui.filterlistview.FilterListViewActivity"
             android:theme="@style/FilterListViewTheme" />
 
+        <activity
+            android:name=".ui.multipane.MultipaneActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/MultiPaneTheme" />
+        <activity
+            android:name=".ui.multipane.MultipaneDetailActivity"
+            android:parentActivityName=".ui.multipane.MultipaneActivity"
+            android:theme="@style/MultiPaneTheme" />
 
         <activity
             android:name=".ui.builtin.BuiltInWebViewActivity"
