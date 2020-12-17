@@ -24,5 +24,7 @@ public interface MultipaneContract {
 
     interface Presenter {
         void fetchMovies();
+
+        void getMovieDetail(Movie movie);
     }
 }

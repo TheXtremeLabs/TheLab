@@ -108,7 +108,7 @@ public class Constants {
                 R.drawable.ic_device_information, DeviceInformationActivity.class));
 
         list.add(new App("Palette", "Get different color from an image...",
-                R.drawable.ic_palette_72, PaletteActivity.class));
+                R.drawable.ic_palette, PaletteActivity.class));
 
         list.add(new App("Filter ListView", "ListView with filter...",
                 R.drawable.ic_filter_list, FilterListViewActivity.class));

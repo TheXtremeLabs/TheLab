@@ -14,10 +14,10 @@ import lombok.ToString;
 @Parcel
 public class Movie {
 
-    private String title;
-    private String genre;
-    private String year;
-    private String urlThumbnail;
+    String title;
+    String genre;
+    String year;
+    String urlThumbnail;
 
     public Movie() {
     }

@@ -13,6 +13,7 @@ public class MultipaneActivity extends BaseActivity<MultipaneView> {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_multi_pane);
+//        view.onCreate();
         super.onCreate(savedInstanceState);
     }
 

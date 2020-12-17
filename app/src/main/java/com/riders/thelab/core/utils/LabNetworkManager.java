@@ -74,7 +74,7 @@ public class LabNetworkManager extends ConnectivityManager.NetworkCallback {
      */
     public static boolean isConnected(Context context) {
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+        if (!LabCompatibilityManager.isLollipop()) {
             ConnectivityManager connMgr =
                     (ConnectivityManager) context.getSystemService(Activity.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
