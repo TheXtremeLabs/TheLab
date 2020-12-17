@@ -34,7 +34,10 @@ public class YoutubeLikeListAdapter extends RecyclerView.Adapter<YoutubeLikeView
 
     @Override
     public int getItemCount() {
-        return youtubeList.size();
+        if (null != youtubeList) {
+            return youtubeList.size();
+        }
+        return 0;
     }
 
     @Override

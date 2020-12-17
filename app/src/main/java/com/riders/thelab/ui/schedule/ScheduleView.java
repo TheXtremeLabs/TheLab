@@ -51,11 +51,9 @@ public class ScheduleView extends BaseViewImpl<SchedulePresenter>
     @BindView(R.id.tv_delay_time)
     TextView tvDelayTime;
 
-    private Intent mBroadcastIntent;
     private PendingIntent mPendingIntent;
     private ServiceConnection mServiceConnection;
     private ScheduleAlarmReceiver mAlarmBroadcast;
-    private ScheduleAlarmService mAlarmService;
     private AlarmManager mAlarmManager;
 
 
@@ -116,6 +114,7 @@ public class ScheduleView extends BaseViewImpl<SchedulePresenter>
         llDelayTimeContainer.setVisibility(View.GONE);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void updateContDownUI(long millisUntilFinished) {
 

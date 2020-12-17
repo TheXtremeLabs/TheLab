@@ -1,5 +1,10 @@
 package com.riders.thelab.data.local.bean;
 
+import com.riders.thelab.data.local.model.Movie;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public enum MovieEnum {
 
     MAD_MAX("Mad Max: Fury Road", "Action & Adventure", "2015", "http://www.lyricis.fr/wp-content/uploads/2015/04/Mad-Max-Fury-Road-Affiche-Finale-US.jpg"),
@@ -46,5 +51,15 @@ public enum MovieEnum {
 
     public String getUrl() {
         return url;
+    }
+
+    public static List<Movie> getMovies() {
+        List<Movie> list = new ArrayList<>();
+
+        for (MovieEnum item : values()) {
+            list.add(new Movie(item));
+        }
+
+        return list;
     }
 }
