@@ -13,6 +13,8 @@ import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity;
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsModule;
 import com.riders.thelab.ui.mainactivity.MainActivity;
 import com.riders.thelab.ui.mainactivity.MainActivityModule;
+import com.riders.thelab.ui.multipane.MultipaneActivity;
+import com.riders.thelab.ui.multipane.MultipaneModule;
 import com.riders.thelab.ui.palette.PaletteActivity;
 import com.riders.thelab.ui.palette.PaletteModule;
 import com.riders.thelab.ui.schedule.ScheduleActivity;
@@ -65,6 +67,12 @@ public abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = FilterListViewModule.class)
     abstract FilterListViewActivity filterListViewActivity();
+
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = MultipaneModule.class)
+    abstract MultipaneActivity multipaneActivity();
+
 
     @ActivityScope
     @ContributesAndroidInjector(modules = YoutubeLikeModule.class)

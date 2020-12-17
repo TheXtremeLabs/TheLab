@@ -3,10 +3,8 @@ package com.riders.thelab.core.utils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -53,7 +51,7 @@ public class UIManager {
                                        String message,
                                        final String negativeMessage,
                                        final String positiveMessage) {
-        Log.i("Activity - AlertDialog", "Show alert dialog");
+        Timber.i("Show alert dialog");
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
         // Setting Dialog Title
@@ -70,18 +68,14 @@ public class UIManager {
                 dialog.dismiss();
             }
         });
-        alertDialog.setPositiveButton(positiveMessage, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                UIManager.showActionInToast(context, positiveMessage);
-                if (activity != null)
-                    activity.onBackPressed();
-                if (negativeMessage.equalsIgnoreCase("Quitter")) {
-                    activity.finish();
-                }
-
+        alertDialog.setPositiveButton(positiveMessage, (dialog, which) -> {
+            UIManager.showActionInToast(context, positiveMessage);
+            if (activity != null)
+                activity.onBackPressed();
+            if (negativeMessage.equalsIgnoreCase("Quitter")) {
+                activity.finish();
             }
+
         });
 
         alertDialog.setCancelable(false);
@@ -95,7 +89,7 @@ public class UIManager {
         Toast.makeText(context, textToShow, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showActionInSnackBar(final Context context,final  View view,final  String message, SnackBarType type) {
+    public static void showActionInSnackBar(final Context context, final View view, final String message, SnackBarType type) {
         // create instance
         Snackbar snackBar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
 
@@ -164,11 +158,10 @@ public class UIManager {
         }
 
         Snackbar snackbar =
-                Snackbar
-                        .make(
-                                context.findViewById(android.R.id.content),
-                                message,
-                                Snackbar.LENGTH_LONG);
+                Snackbar.make(
+                        context.findViewById(android.R.id.content),
+                        message,
+                        Snackbar.LENGTH_LONG);
 
         snackbar.setBackgroundTint(backgroundColor);
 

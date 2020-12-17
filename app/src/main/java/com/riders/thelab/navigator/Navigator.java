@@ -38,6 +38,9 @@ public class Navigator {
     public void callAddContactActivity() {
         context.startActivity(new Intent(context, AddContactActivity.class));
     }
+    public void callMultipaneDetailActivity(Intent intent) {
+        context.startActivity(intent);
+    }
 
     public void callYoutubeDetailActivity(Intent intent) {
         context.startActivity(intent);
