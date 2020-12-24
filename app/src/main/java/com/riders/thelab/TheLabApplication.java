@@ -65,6 +65,25 @@ public class TheLabApplication extends DaggerApplication {
         mFirebaseCrashlytics.setUserId("wayne");
     }
 
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        if (level == TRIM_MEMORY_UI_HIDDEN) {
+            notifyAppInBackground();
+        }
+
+        if (level == TRIM_MEMORY_RUNNING_LOW) {
+            Timber.e(
+                    "The device is running much lower on memory. " +
+                            "Your app is running and not killable," +
+                            " but please release unused resources to improve system performance");
+        }
+    }
+
+    private void notifyAppInBackground() {
+        Timber.e("App went in background");
+    }
+
     public static Context getContext() {
         return context;
     }
