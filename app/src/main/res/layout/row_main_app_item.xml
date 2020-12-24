@@ -91,7 +91,6 @@
                             android:layout_height="wrap_content"
                             android:gravity="center|start"
                             android:textAppearance="@android:style/TextAppearance.Material.Title"
-                            android:textColor="@color/white"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             tools:ignore="NewApi"
@@ -103,7 +102,6 @@
                             android:layout_height="wrap_content"
                             android:gravity="center|start"
                             android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                            android:textColor="@color/white"
                             android:textStyle="normal"
                             tools:ignore="NewApi"
                             tools:text="App description" />
