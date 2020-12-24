@@ -3,6 +3,7 @@ package com.riders.thelab.ui.mainactivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -27,18 +28,33 @@ public class MainActivity extends BaseActivity<MainActivityView> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        context = this;
+
         // In Activity's onCreate() for instance
         // make fully Android Transparent Status bar
         if (LabCompatibilityManager.isLollipop()) {
-            Window w = getWindow();
-            /*w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);*/
-            w.setStatusBarColor(Color.TRANSPARENT);
+
+            int nightModeFlags =
+                    context.getResources().getConfiguration().uiMode &
+                            Configuration.UI_MODE_NIGHT_MASK;
+            switch (nightModeFlags) {
+                case Configuration.UI_MODE_NIGHT_YES:
+                    Window w = getWindow();
+                    /*w.setFlags(
+                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);*/
+                    w.setStatusBarColor(Color.TRANSPARENT);
+                    break;
+
+                case Configuration.UI_MODE_NIGHT_NO:
+                case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                    break;
+            }
+
         }
         setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
-
-        context = this;
     }
 
     @Override
