@@ -2,7 +2,6 @@ package com.riders.thelab.utils;
 
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
-import com.riders.thelab.data.local.model.RecyclerItem;
 import com.riders.thelab.ui.biometric.BiometricActivity;
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity;
 import com.riders.thelab.ui.colors.ColorActivity;
@@ -10,6 +9,7 @@ import com.riders.thelab.ui.contacts.ContactsActivity;
 import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity;
+import com.riders.thelab.ui.floatingview.FloatingViewActivity;
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity;
 import com.riders.thelab.ui.multipane.MultipaneActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
@@ -132,11 +132,13 @@ public class Constants {
                 R.drawable.ic_walking, ActivityRecognitionActivity.class));*/
 
         list.add(new App("Built-in Web View", "Display web view in activity directly...",
-                R.drawable.ic_aspect_ratio, BuiltInWebViewActivity.class));
+                R.drawable.ic_alternate_email, BuiltInWebViewActivity.class));
 
-        list.add(new App("Weather App", "Current weather forecast.. in your city...",
+        list.add(new App("Weather App", "Current weather forecast in your city...",
                 R.drawable.openweathermap, WeatherActivity.class));
 
+        list.add(new App("Floating Widget", "Create a floating widget that you can move around on the screen...",
+                R.drawable.ic_flip_to_back, FloatingViewActivity.class));
 
         list.add(new App("WIP", "Coming soon...",
                 R.drawable.ic_warning, null));
