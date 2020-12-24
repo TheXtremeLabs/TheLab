@@ -12,6 +12,7 @@ import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity;
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity;
 import com.riders.thelab.ui.multipane.MultipaneActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
+import com.riders.thelab.ui.recycler.RecyclerViewActivity;
 import com.riders.thelab.ui.schedule.ScheduleActivity;
 import com.riders.thelab.ui.speechtotext.SpeechToTextActivity;
 import com.riders.thelab.ui.tabs.WorkingTabsActivity;
@@ -28,7 +29,6 @@ public class Constants {
     private static Constants instance;
 
     private final List<App> activityItems;
-    static ArrayList<RecyclerItem> recyclerItems;
 
     //REST client Base URL
     public static final String BASE_ENDPOINT_YOUTUBE = "https://raw.githubusercontent.com";
@@ -77,24 +77,15 @@ public class Constants {
         list.add(new App("Colors", "Change color programmatically...",
                 R.drawable.logo_colors, ColorActivity.class));
 
-        /*
         list.add(new App("Recycler", "Recycler Basics and best practices...",
-                R.drawable.ic_launcher_background, RecyclerViewActivity.class));
+                R.drawable.ic_filter_list, RecyclerViewActivity.class));
 
-        list.add(new App("Transition", "Transition, shared elements...",
-                R.drawable.transition_fade, TransitionActivity.class));
-*/
         list.add(new App("Tabs", "ViewPager Fragments Tabs...",
                 R.drawable.ic_tab, WorkingTabsActivity.class));
 
         list.add(new App("Floating Labels", "Floating Labels Form...",
                 R.drawable.ic_outline_label, FloatingLabelsActivity.class));
 
-/*
-        list.add(new App("Location Google API", "Find user location and display coordinates...",
-                R.drawable.ic_location_on_black_24dp, LocationGoogleAPIActivity.class));
-
- */
         list.add(new App("Contact List", "Fetch contacts from database, add one and more...",
                 R.drawable.ic_contacts, ContactsActivity.class));
 
@@ -165,30 +156,4 @@ public class Constants {
         return activityItems;
     }
 
-
-    public static ArrayList<RecyclerItem> getRecyclerItems() {
-
-        recyclerItems = new ArrayList<>();
-
-        recyclerItems.add(new RecyclerItem("Dwayne Johnson"));
-        recyclerItems.add(new RecyclerItem("Majd Bayassi"));
-        recyclerItems.add(new RecyclerItem("Nesrine"));
-        recyclerItems.add(new RecyclerItem("Mourad"));
-        recyclerItems.add(new RecyclerItem("Mike Tyson"));
-        recyclerItems.add(new RecyclerItem("Lyes"));
-        recyclerItems.add(new RecyclerItem("Cedric"));
-        recyclerItems.add(new RecyclerItem("Michael B. J."));
-        recyclerItems.add(new RecyclerItem("Ken Iverson"));
-        recyclerItems.add(new RecyclerItem("Max"));
-        recyclerItems.add(new RecyclerItem("Halley Becksmann"));
-        recyclerItems.add(new RecyclerItem("Carol Danvers"));
-        recyclerItems.add(new RecyclerItem("Steph Dann"));
-        recyclerItems.add(new RecyclerItem("Danny Walter"));
-        recyclerItems.add(new RecyclerItem("Carlos Esposito"));
-        recyclerItems.add(new RecyclerItem("Wilmer"));
-        recyclerItems.add(new RecyclerItem("Gilles"));
-        recyclerItems.add(new RecyclerItem("Yohan"));
-
-        return recyclerItems;
-    }
 }

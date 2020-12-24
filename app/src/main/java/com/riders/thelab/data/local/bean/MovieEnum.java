@@ -24,7 +24,6 @@ public enum MovieEnum {
     GOLD_FINGER("Goldfinger", "Action & Adventure", "1965", "http://images.commeaucinema.com/news/560_123.jpg"),
     GUARDIANS_OF_THE_GALAXY("Guardians of the Galaxy", "Science Fiction & Fantasy", "2014", "http://img.filmsactu.net/datas/films/l/e/les-gardiens-de-la-galaxie/xl/les-gardiens-de-la-galaxie-affiche-53b28a79becd7.jpg");
 
-
     private final String title;
     private final String genre;
     private final String year;
