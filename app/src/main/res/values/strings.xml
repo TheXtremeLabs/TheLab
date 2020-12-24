@@ -245,5 +245,7 @@
     <string name="activity_title_youtube_like">Youtube Like Activity</string>
     <string name="recycler_detail_btn_placeholder">DETAIL</string>
 
-
+    <!-- Floating View -->
+    <string name="activity_title_floating_view">Floating Widget</string>
+    <string name="notify_me">Notify Me !</string>
 </resources>
