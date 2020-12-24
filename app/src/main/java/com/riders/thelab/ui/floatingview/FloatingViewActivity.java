@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -58,12 +57,9 @@ public class FloatingViewActivity extends SimpleActivity {
      */
     private void initializeView() {
         Timber.d("initializeView()");
-        findViewById(R.id.notify_me).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startService(new Intent(FloatingViewActivity.this, FloatingViewService.class));
-                finish();
-            }
+        findViewById(R.id.notify_me).setOnClickListener(view -> {
+            startService(new Intent(FloatingViewActivity.this, FloatingViewService.class));
+            moveAppInBackground();
         });
     }
 
@@ -71,7 +67,16 @@ public class FloatingViewActivity extends SimpleActivity {
     public void onNotifyMeClicked() {
         Timber.d("onNotifyMeClicked()");
         startService(new Intent(FloatingViewActivity.this, FloatingViewService.class));
-        finish();
+        moveAppInBackground();
+    }
+
+    /**
+     * Move the app in background
+     *
+     * Source : https://stackoverflow.com/questions/10461095/moving-application-in-background-on-back-button-event/10461254
+     */
+    private void moveAppInBackground() {
+        moveTaskToBack(true);
     }
 
     @Override

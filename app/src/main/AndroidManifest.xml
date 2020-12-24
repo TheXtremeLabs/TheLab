@@ -295,6 +295,11 @@
         <service android:name=".services.BackgroundDetectedActivitiesService" />-->
 
         <service android:name=".core.service.ScheduleAlarmService" />
+
+        <service
+            android:name=".core.service.FloatingViewService"
+            android:enabled="true"
+            android:exported="false" />
         <!-- ////////////// SERVICES ////////////// -->
 
     </application>
