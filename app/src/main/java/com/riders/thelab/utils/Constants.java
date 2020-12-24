@@ -3,6 +3,7 @@ package com.riders.thelab.utils;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.data.local.model.RecyclerItem;
+import com.riders.thelab.ui.biometric.BiometricActivity;
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity;
 import com.riders.thelab.ui.colors.ColorActivity;
 import com.riders.thelab.ui.contacts.ContactsActivity;
@@ -77,6 +78,9 @@ public class Constants {
         list.add(new App("Colors", "Change color programmatically...",
                 R.drawable.logo_colors, ColorActivity.class));
 
+        list.add(new App("Biometric", "Check biometric hardware and test it...",
+                R.drawable.ic_fingerprint, BiometricActivity.class));
+
         list.add(new App("Recycler", "Recycler Basics and best practices...",
                 R.drawable.ic_filter_list, RecyclerViewActivity.class));
 
@@ -107,15 +111,11 @@ public class Constants {
         list.add(new App("Multi Pane", "Display content on split screen...",
                 R.drawable.ic_aspect_ratio, MultipaneActivity.class));
 /*
-        listActivities.add( new ItemActivity("Contacts Database Activity", R.drawable.ic_perm_contact_calendar_black_48dp, ContactsDatabaseActivity.class) );
         listActivities.add( new ItemActivity("Search Box Activity", R.drawable.ic_alarm_black_48dp, SearchBoxActivity.class) );
         listActivities.add( new ItemActivity("Bandeau Pictures Activity", R.drawable.ic_picture_in_picture_black_48dp, BandeauPicturesActivity.class) );
         listActivities.add( new ItemActivity("Send Email Activity", R.drawable.ic_email_black_48dp, SendMailActivity.class) );
-        listActivities.add( new ItemActivity("RecyclerView Basics Activity", R.drawable.ic_filter_list_black_48dp, RecyclerBasicsActivity.class) );
         */
 
-        /*list.add(new App("RxJava", "Reactive Android...",
-                R.drawable.logo_rx_java, RxJavaActivity.class));*/
 /*
         list.add(new App("Songs Player (Work In Progress)", "Display content on split screen...",
                 R.mipmap.ic_launcher_round, SongPlayerActivity.class));

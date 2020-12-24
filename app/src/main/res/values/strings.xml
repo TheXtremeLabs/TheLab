@@ -61,8 +61,15 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
+    <!-- Colors -->
+    <string name="activity_title_colors">Colors</string>
+
     <!-- Recycler -->
     <string name="activity_title_recycler_view">Recycler View</string>
+
+
+    <!-- Biometric -->
+    <string name="activity_title_biometric">Biometric</string>
 
     <!-- Tabs Fragments -->
     <string name="activity_title_working_tabs">Working Tabs</string>
@@ -237,7 +244,6 @@
     <!-- Youtube -->
     <string name="activity_title_youtube_like">Youtube Like Activity</string>
     <string name="recycler_detail_btn_placeholder">DETAIL</string>
-    <string name="activity_title_colors">Colors</string>
 
 
 </resources>
