@@ -40,6 +40,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHold
         super.onAttachedToRecyclerView(recyclerView);
 
         this.recyclerView = recyclerView;
+
+        // fancy animations can skip if like
+        TransitionManager.beginDelayedTransition(recyclerView);
     }
 
     @Override
@@ -86,9 +89,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHold
             // if the clicked item is already expanded then return -1
             //else return the position (this works with notifyDataSetChanged )
             mExpandedPosition = isExpanded ? -1 : position;
-
-            // fancy animations can skip if like
-            TransitionManager.beginDelayedTransition(recyclerView);
 
             //This will call the onBindViewHolder for all the itemViews on Screen
             notifyDataSetChanged();
