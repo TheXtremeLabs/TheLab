@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.youtubelike;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.widget.ImageView;
@@ -40,6 +41,7 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
     YoutubeLikePresenter() {
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void fetchContent() {
         Timber.d("fetchContent()");
