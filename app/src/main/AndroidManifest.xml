@@ -39,6 +39,8 @@
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- Use for floating widget -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <!-- Hardware -->
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -243,6 +245,11 @@
 
         <activity
             android:name=".ui.weather.WeatherActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+
+        <activity
+            android:name=".ui.floatingview.FloatingViewActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
         <!-- ////////////// ACTIVITIES ////////////// -->
