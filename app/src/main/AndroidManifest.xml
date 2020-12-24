@@ -124,6 +124,14 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
+        <activity
+            android:name=".ui.recycler.RecyclerViewActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+        <activity
+            android:name=".ui.recycler.RecyclerViewDetailActivity"
+            android:parentActivityName=".ui.recycler.RecyclerViewActivity"
+            android:theme="@style/Theme.TheLab" />
 
         <activity
             android:name=".ui.tabs.WorkingTabsActivity"
@@ -153,7 +161,7 @@
         <activity
             android:name=".ui.contacts.ContactDetailActivity"
             android:parentActivityName=".ui.contacts.ContactsActivity"
-            android:theme="@style/Theme.TheLab.NoActionBar"/>
+            android:theme="@style/Theme.TheLab.NoActionBar" />
         <activity
             android:name=".ui.contacts.addcontact.AddContactActivity"
             android:parentActivityName=".ui.contacts.ContactsActivity"

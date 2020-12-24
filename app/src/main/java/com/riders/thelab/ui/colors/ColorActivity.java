@@ -42,6 +42,9 @@ public class ColorActivity extends SimpleActivity {
 
         ButterKnife.bind(this);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getString(R.string.activity_title_colors));
+
         String baseColor = "rgb(33,214,9)";
         String baseColor2 = "rgb(255,156,0)";
         String baseColor3 = "rgb(255,0,0)";
