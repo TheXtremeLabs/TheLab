@@ -13,6 +13,7 @@ import android.view.View;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -239,8 +240,13 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
         MainActivityAdapter adapter = new MainActivityAdapter(context, applications, this);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         appRecyclerView.setLayoutManager(linearLayoutManager);
+
+        DividerItemDecoration divider =  new DividerItemDecoration(context,DividerItemDecoration.VERTICAL);
+        divider.setDrawable(ContextCompat.getDrawable(context, R.drawable.item_separator_view_gradient));
+        appRecyclerView.addItemDecoration(divider);
         appRecyclerView.setItemAnimator(new DefaultItemAnimator());
         appRecyclerView.setAdapter(adapter);
 
