@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -53,7 +54,7 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
 
         if (LabCompatibilityManager.isLollipop()) {
             String imageTransitionName = extras.getString(EXTRA_TRANSITION_ICON_NAME);
-            transitionImageView.setTransitionName(imageTransitionName);
+            ViewCompat.setTransitionName(transitionImageView, imageTransitionName);
         }
 
         loadWithPicasso();
