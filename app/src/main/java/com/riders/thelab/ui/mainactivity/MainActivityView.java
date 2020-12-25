@@ -2,21 +2,32 @@ package com.riders.thelab.ui.mainactivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.riders.thelab.R;
 import com.riders.thelab.core.interfaces.ConnectivityListener;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
@@ -24,7 +35,11 @@ import com.riders.thelab.core.utils.LabNetworkManager;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.ui.base.BaseViewImpl;
+import com.riders.thelab.ui.mainactivity.fragment.news.NewsFragment;
+import com.riders.thelab.ui.mainactivity.fragment.time.TimeFragment;
+import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,6 +60,14 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     private MainActivity context;
 
     //Views
+    @BindView(R.id.view_pager)
+    ViewPager2 viewPager2;
+    /**
+     * The pager adapter, which provides the pages to the view pager widget.
+     */
+    private FragmentStateAdapter pagerAdapter;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.app_recyclerView)
     RecyclerView appRecyclerView;
 
@@ -53,29 +76,15 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
     private Menu menu;
 
-    /*@BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.progressBar_api)
-    ProgressBar progressBar;
-    @BindView(R.id.linear_fetching_data)
-    LinearLayout linearFetchData;
-    @BindView(R.id.rv_movie)
-    RecyclerView rvMovie;
-    @BindView(R.id.btn_quit_app)
-    Button btnExitApp;*/
-
-    //@Inject
-    //MoviesApiListAdapter apiAdapter;
-
-    //@Inject
-    //MovieDatabaseListAdapter databaseAdapter;
+    TimeFragment timeFragment;
+    WeatherFragment weatherFragment;
+    NewsFragment newsFragment;
 
 
     @Inject
     MainActivityView(MainActivity context) {
         this.context = context;
     }
-
 
     /////////////////////////////////////
     //
@@ -89,6 +98,8 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
         // Butterknife view binding
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
+
+        initViews();
 
         // Call presenter to fetch data
         getPresenter().getApplications();
@@ -146,10 +157,60 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     @Override
     public void onCreateOptionsMenu(Menu menu) {
         Timber.d("onCreateOptionsMenu()");
+
+        context.getMenuInflater().inflate(R.menu.menu_main, menu);
+
         this.menu = menu;
 
         // Manually checking internet connection
         checkConnection();
+    }
+
+    @Override
+    public void onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.connection_icon:
+                UIManager.showActionInToast(context, "Wifi clicked");
+
+                WifiManager wifiManager =
+                        (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+                if (!LabCompatibilityManager.isAndroid10()) {
+                    boolean isWifi = wifiManager.isWifiEnabled();
+                    wifiManager.setWifiEnabled(!isWifi);
+                } else {
+                    Timber.e("For applications targeting android.os.Build.VERSION_CODES Q or above, this API will always fail and return false");
+
+                    /*
+                        ACTION_INTERNET_CONNECTIVITY Shows settings related to internet connectivity, such as Airplane mode, Wi-Fi, and Mobile Data.
+                        ACTION_WIFI Shows Wi-Fi settings, but not the other connectivity settings. This is useful for apps that need a Wi-Fi connection to perform large uploads or downloads.
+                        ACTION_NFC Shows all settings related to near-field communication (NFC).
+                        ACTION_VOLUME Shows volume settings for all audio streams.
+                     */
+                    Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
+                    this.startActivityForResult(panelIntent, 955);
+                }
+                break;
+
+            case R.id.action_settings:
+                UIManager.showActionInToast(context, "Settings clicked");
+                break;
+
+            case R.id.info_icon:
+                showBottomSheetDialogFragment();
+                break;
+
+            case R.id.action_force_crash:
+                throw new RuntimeException("This is a crash");
+
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        Timber.e("startActivityForResult()");
     }
 
     public void onDestroy() {
@@ -196,19 +257,67 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         updateToolbarConnectionIcon(isConnected);
     }
 
+
+    public void showBottomSheetDialogFragment() {
+        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+        bottomSheetFragment.show(
+                context.getSupportFragmentManager(),
+                bottomSheetFragment.getTag());
+    }
+
     /**
      * Set up views (recyclerviews, spinner, etc...)
      */
     private void initViews() {
 
-        /*rvMovie.setLayoutManager(new LinearLayoutManager(
-                context,
-                LinearLayoutManager.HORIZONTAL,
-                false
-        ));
-        rvMovie.setAdapter(apiAdapter);*/
+        initCollapsingToolbar();
+
+        // Instantiate a ViewPager2 and a PagerAdapter.
+        List<Fragment> fragmentList = new ArrayList<>();
+
+        // add Fragments in your ViewPagerFragmentAdapter class
+        fragmentList.add(new TimeFragment());
+        fragmentList.add(new WeatherFragment());
+        fragmentList.add(new NewsFragment());
+
+        pagerAdapter = new ViewPager2Adapter(context.getSupportFragmentManager(), context.getLifecycle(), fragmentList);
+        // set Orientation in your ViewPager2
+        viewPager2.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+
+        viewPager2.setAdapter(pagerAdapter);
     }
 
+    /**
+     * Initializing collapsing toolbar
+     * Will show and hide the toolbar txtPostTitle on scroll
+     */
+    private void initCollapsingToolbar() {
+        final CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) context.findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle(" ");
+        AppBarLayout appBarLayout = (AppBarLayout) context.findViewById(R.id.appbar);
+        appBarLayout.setExpanded(true);
+        // hiding & showing the txtPostTitle when toolbar expanded & collapsed
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbar.setTitle(context.getResources().getString(R.string.app_name));
+                    isShow = true;
+
+                } else if (isShow) {
+                    collapsingToolbar.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
+    }
 
     /////////////////////////////////////
     //
@@ -244,7 +353,7 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
                 new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         appRecyclerView.setLayoutManager(linearLayoutManager);
 
-        DividerItemDecoration divider =  new DividerItemDecoration(context,DividerItemDecoration.VERTICAL);
+        DividerItemDecoration divider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         divider.setDrawable(ContextCompat.getDrawable(context, R.drawable.item_separator_view_gradient));
         appRecyclerView.addItemDecoration(divider);
         appRecyclerView.setItemAnimator(new DefaultItemAnimator());

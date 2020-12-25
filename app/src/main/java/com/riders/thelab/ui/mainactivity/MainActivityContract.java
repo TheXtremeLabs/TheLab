@@ -2,8 +2,10 @@ package com.riders.thelab.ui.mainactivity;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.ui.base.BaseView;
@@ -25,6 +27,10 @@ public interface MainActivityContract {
         void onResume();
 
         void onCreateOptionsMenu(Menu menu);
+
+        void onOptionsItemSelected(MenuItem item);
+
+        void startActivityForResult(Intent intent, int requestCode);
 
         /**
          * Shows loader progressBar

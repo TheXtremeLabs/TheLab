@@ -17,6 +17,7 @@ ext {
     recyclerViewVersion = "1.1.0"
     cardViewVersion = "1.0.0"
     fragmentVersion = "1.2.5"
+    viewPager2Version = '1.0.0'
 
     autoFillVersion = "1.0.0"
 
@@ -78,6 +79,8 @@ ext {
             recyclerView          : "androidx.recyclerview:recyclerview:$recyclerViewVersion",
             cardView              : "androidx.cardview:cardview:$cardViewVersion",
             fragment              : "androidx.fragment:fragment:$fragmentVersion",
+
+            viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2Version",
 
             autoFill              : "androidx.autofill:autofill:$autoFillVersion",
 

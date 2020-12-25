@@ -9,7 +9,6 @@
     android:paddingTop="@dimen/medium_margin"
     android:paddingBottom="@dimen/medium_margin">
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/app_recyclerView"
         android:layout_width="match_parent"

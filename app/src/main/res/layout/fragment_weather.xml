@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/detail_backdrop_height"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:layout_height="@dimen/detail_backdrop_height">
+
+    <!-- Weather Data Linear -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Weather icon container -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginLeft="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/extra_small_margin"
+            android:layout_marginRight="@dimen/extra_small_margin"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <!-- Weather icon -->
+            <ImageView
+                android:id="@+id/iv_weather_icon"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:adjustViewBounds="true"
+                android:scaleType="center"
+                tools:src="@drawable/weather_cloudy" />
+            <!-- Weather icon -->
+        </LinearLayout>
+        <!-- Weather icon container -->
+
+        <!-- Weather city info container -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margin"
+            android:layout_weight="2"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <!-- City Country Container -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/extra_small_margin"
+                android:layout_marginBottom="@dimen/extra_small_margin"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_weather_city_name"
+                    style="@style/TextAppearance.AppCompat.Headline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Paris, " />
+
+                <TextView
+                    android:id="@+id/tv_weather_city_country"
+                    style="@style/TextAppearance.AppCompat.Headline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="FR" />
+            </LinearLayout>
+            <!-- City Country Container -->
+
+            <!-- Weather info Container -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/extra_small_margin"
+                android:layout_marginBottom="@dimen/extra_small_margin"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_weather_main_description"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="light rain, " />
+
+                <TextView
+                    android:id="@+id/tv_weather_city_temperature"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/extra_small_margin"
+                    android:layout_marginLeft="@dimen/extra_small_margin"
+                    tools:text="2°C" />
+            </LinearLayout>
+            <!-- Weather info Container -->
+        </LinearLayout>
+        <!-- Weather city info container -->
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.riders.thelab.core.broadcast.ConnectivityReceiver;
 import com.riders.thelab.data.DataModule;
 import com.riders.thelab.di.component.ComponentInjector;
@@ -58,6 +59,8 @@ public class TheLabApplication extends DaggerApplication {
 
     private void init() {
         Timber.plant(new Timber.DebugTree());
+
+        AndroidThreeTen.init(this);
 
         // Firebase Crashlytics
         mFirebaseCrashlytics = FirebaseCrashlytics.getInstance();
