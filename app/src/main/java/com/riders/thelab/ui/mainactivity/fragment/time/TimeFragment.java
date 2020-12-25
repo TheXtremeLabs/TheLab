@@ -36,6 +36,8 @@ public class TimeFragment extends Fragment {
 
     Unbinder unbinder;
 
+    private Thread mThread;
+
 
     public TimeFragment() {
     }
@@ -55,12 +57,16 @@ public class TimeFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        //view.onCreate();
-        super.onViewCreated(view, savedInstanceState);
-        Timber.d("onViewCreated()");
+    public void onPause() {
+        if (null != mThread && !mThread.isInterrupted())
+            mThread.interrupt();
+        super.onPause();
+    }
 
-        Thread mThread = new Thread() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        mThread = new Thread() {
             @Override
             public void run() {
                 try {
@@ -87,6 +93,11 @@ public class TimeFragment extends Fragment {
         Timber.d("onDestroyView()");
         if (null != unbinder)
             unbinder.unbind();
+
+        if (null != mThread) {
+            mThread.interrupt();
+            mThread = null;
+        }
         super.onDestroyView();
     }
 }
