@@ -5,24 +5,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
 
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
-import com.riders.thelab.core.utils.UIManager;
+import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.ui.base.BaseActivity;
 
-import timber.log.Timber;
-
 @SuppressLint("NewApi")
-public class MainActivity extends BaseActivity<MainActivityView> {
+public class MainActivity extends BaseActivity<MainActivityView>
+        implements MainActivityAppClickListener {
 
     Context context;
 
@@ -89,7 +87,6 @@ public class MainActivity extends BaseActivity<MainActivityView> {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
         view.onCreateOptionsMenu(menu);
         return true;
     }
@@ -98,65 +95,26 @@ public class MainActivity extends BaseActivity<MainActivityView> {
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.connection_icon:
-                UIManager.showActionInToast(this, "Wifi clicked");
-
-                WifiManager wifiManager =
-                        (WifiManager) this.context.getSystemService(Context.WIFI_SERVICE);
-
-                if (!LabCompatibilityManager.isAndroid10()) {
-                    boolean isWifi = wifiManager.isWifiEnabled();
-                    wifiManager.setWifiEnabled(!isWifi);
-                } else {
-                    Timber.e("For applications targeting android.os.Build.VERSION_CODES Q or above, this API will always fail and return false");
-
-                    /*
-                        ACTION_INTERNET_CONNECTIVITY Shows settings related to internet connectivity, such as Airplane mode, Wi-Fi, and Mobile Data.
-                        ACTION_WIFI Shows Wi-Fi settings, but not the other connectivity settings. This is useful for apps that need a Wi-Fi connection to perform large uploads or downloads.
-                        ACTION_NFC Shows all settings related to near-field communication (NFC).
-                        ACTION_VOLUME Shows volume settings for all audio streams.
-                     */
-                    Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
-                    this.startActivityForResult(panelIntent, 955);
-                }
-                break;
-
-            case R.id.action_settings:
-                UIManager.showActionInToast(this, "Settings clicked");
-                break;
-
-            case R.id.info_icon:
-                showBottomSheetDialogFragment();
-                break;
-
-            case R.id.action_force_crash:
-                throw new RuntimeException("This is a crash");
-
-            default:
-                break;
-        }
-
+        view.onOptionsItemSelected(item);
         return super.onOptionsItemSelected(item);
     }
 
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
+        view.startActivityForResult(intent, requestCode);
         super.startActivityForResult(intent, requestCode);
-
-        Timber.e("startActivityForResult()");
-
     }
 
-    public void showBottomSheetDialogFragment() {
-        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
-        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-    }
 
     @Override
     protected void onDestroy() {
         view.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void onAppItemCLickListener(View rootView, App item, int position) {
+        view.onAppItemCLickListener(rootView, item, position);
     }
 }

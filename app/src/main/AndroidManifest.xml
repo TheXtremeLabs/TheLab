@@ -119,7 +119,7 @@
 
         <activity
             android:name=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
+            android:theme="@style/Theme.TheLab.NoActionBar" />
 
         <activity
             android:name=".ui.colors.ColorActivity"

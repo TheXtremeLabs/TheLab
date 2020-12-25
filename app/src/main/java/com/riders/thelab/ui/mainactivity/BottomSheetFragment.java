@@ -80,11 +80,12 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
         //setViews();
 
-        String szBundle = getArguments().getString(ContactDetailActivity.CONTACT_NAME);
-
-        Timber.d(szBundle);
-
-
+        if (null != getArguments()) {
+            String szBundle = getArguments().getString(ContactDetailActivity.CONTACT_NAME);
+            Timber.d(szBundle);
+        } else {
+            setViews();
+        }
     }
 
     @SuppressLint("SetTextI18n")
