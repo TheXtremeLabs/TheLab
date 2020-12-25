@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
+import com.riders.thelab.ui.mainactivity.MainActivityAppClickListener;
 
 import java.util.List;
 
@@ -18,10 +19,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
     private final Context context;
     private final List<App> appList;
+    private MainActivityAppClickListener listener;
 
-    public NewsAdapter(Context context, List<App> appList) {
+    public NewsAdapter(Context context, List<App> appList, MainActivityAppClickListener listener) {
         this.context = context;
         this.appList = appList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -38,6 +41,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
         final App item = appList.get(position);
 
         holder.bind(item);
+
+        holder.cardView.setOnClickListener(view ->
+                listener.onAppItemCLickListener(view, item, position));
     }
 
     @Override

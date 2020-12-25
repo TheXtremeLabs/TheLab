@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,6 +22,9 @@ import timber.log.Timber;
 public class NewsViewHolder extends RecyclerView.ViewHolder {
 
     private final Context context;
+
+    @BindView(R.id.row_news_card_view)
+    public CardView cardView;
 
     @BindView(R.id.row_news_image_view)
     ImageView ivNews;

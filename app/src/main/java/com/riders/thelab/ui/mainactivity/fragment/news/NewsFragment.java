@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
+import com.riders.thelab.ui.mainactivity.MainActivityAppClickListener;
 import com.riders.thelab.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +44,10 @@ public class NewsFragment extends Fragment {
     private List<App> recentApps;
     private String[] recentAppsNames = new String[]{"Recycler", "Biometric", "Widget"};
 
+    /**
+     * passing data between fragments
+     */
+    private MainActivityAppClickListener listener;
 
     @Inject
     public NewsFragment() {
@@ -52,6 +57,13 @@ public class NewsFragment extends Fragment {
     public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         AndroidSupportInjection.inject(this);
+
+        if (context instanceof MainActivityAppClickListener) {
+            listener = (MainActivityAppClickListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + " must implement MainActivityAppClickListener");
+        }
     }
 
     @Override
@@ -103,7 +115,7 @@ public class NewsFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
         rvNews.setLayoutManager(linearLayoutManager);
-        NewsAdapter adapter = new NewsAdapter(context, recentApps);
+        NewsAdapter adapter = new NewsAdapter(context, recentApps, listener);
         rvNews.setAdapter(adapter);
     }
 
