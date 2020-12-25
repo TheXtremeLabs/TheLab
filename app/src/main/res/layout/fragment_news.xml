@@ -17,22 +17,26 @@
         <TextView
             style="@style/TextAppearance.AppCompat.Large"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/big_margin"
+            android:layout_weight=".5"
             android:gravity="center"
             android:text="Discover the last 3 features"
             tools:textColor="@color/white" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_News"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/small_margin"
+            android:layout_weight="2"
             android:orientation="horizontal"
             android:scrollbarAlwaysDrawHorizontalTrack="true"
             android:scrollbarFadeDuration="@integer/config_navAnimTime"
             android:scrollbarStyle="insideOverlay"
             android:scrollbars="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:reverseLayout="false"
-            tools:listitem="@layout/row_main_app_item" />
+            tools:listitem="@layout/row_news_item" />
 
     </LinearLayout>
 

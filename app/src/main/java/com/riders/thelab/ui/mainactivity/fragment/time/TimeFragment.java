@@ -84,7 +84,6 @@ public class TimeFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-//        view.onDestroy();
         Timber.d("onDestroyView()");
         if (null != unbinder)
             unbinder.unbind();
