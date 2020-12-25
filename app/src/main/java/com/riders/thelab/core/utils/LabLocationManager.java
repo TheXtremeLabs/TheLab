@@ -129,19 +129,6 @@ public class LabLocationManager extends Service
                             try {
 
                                 if (isNetworkEnabled) {
-                                        /*if (Build.VERSION_CODES.M < Build.VERSION.SDK_INT) {
-                                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                                                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                                // TODO: Consider calling
-                                                //    ActivityCompat#requestPermissions
-                                                // here to request the missing permissions, and then overriding
-                                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                                //                                          int[] grantResults)
-                                                // to handle the case where the user grants the permission. See the documentation
-                                                // for ActivityCompat#requestPermissions for more details.
-                                                return null;
-                                            }
-                                        }*/
 
                                     locationManager.requestLocationUpdates(
                                             LocationManager.NETWORK_PROVIDER,
@@ -314,7 +301,7 @@ public class LabLocationManager extends Service
         double longitude = location.getLongitude();
 
         //get the address
-        StringBuilder addressStringbuilder = new StringBuilder();
+        StringBuilder addressStringBuilder = new StringBuilder();
 
         try {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
@@ -329,7 +316,7 @@ public class LabLocationManager extends Service
             String regionName = address.getAdminArea();
             String countryName = address.getCountryName();
 
-            addressStringbuilder
+            addressStringBuilder
                     .append(street).append(" - ")
                     .append(locality).append(" - ")
                     .append(postalCode).append(" - ")
@@ -337,7 +324,7 @@ public class LabLocationManager extends Service
                     .append(regionName).append(" - ")
                     .append(countryName);
 
-            finalAddress = addressStringbuilder.toString(); //This is the complete address.
+            finalAddress = addressStringBuilder.toString(); //This is the complete address.
 
             Timber.e("Address : %s", finalAddress); //This will display the final address.
 
@@ -353,10 +340,10 @@ public class LabLocationManager extends Service
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
 
+        final String[] finalCity = new String[1]; //This is the complete address.
         //get the address
         Geocoder geoCoder = new Geocoder(context, Locale.getDefault());
-        StringBuilder builderAddr = new StringBuilder();
-        StringBuilder builderCity = new StringBuilder();
+        StringBuilder addressStringBuilder = new StringBuilder();
 
         return new Single<String>() {
             @Override
@@ -365,36 +352,33 @@ public class LabLocationManager extends Service
                         .subscribe(new DisposableSingleObserver<List<Address>>() {
                             @Override
                             public void onSuccess(@NonNull List<Address> addresses) {
-                                List<Address> address = addresses;
 
-                                for (Address element : address) {
+                                for (Address element : addresses) {
                                     Timber.e("element : %s", element.toString());
                                 }
 
-                                int maxLines = address.size();
+                                Address address = addresses.get(0);
 
-                                for (int i = 0; i < maxLines; i++) {
-                                    Timber.e("1 -- : %s", address.get(0).getAddressLine(i));
-                                    Timber.e("2 -- : %s", address.get(0).getLocality());
+                                String street = address.getFeatureName() + ", " + address.getThoroughfare();
+                                String locality = address.getLocality();
+                                String postalCode = address.getPostalCode();
+                                String departmentName = address.getSubAdminArea();
+                                String regionName = address.getAdminArea();
+                                String countryName = address.getCountryName();
 
-                                    String addressStr = address.get(0).getAddressLine(i);
-                                    String cityStr = address.get(0).getLocality();
+                                addressStringBuilder
+                                        .append(street).append(" - ")
+                                        .append(locality).append(" - ")
+                                        .append(postalCode).append(" - ")
+                                        .append(departmentName).append(" - ")
+                                        .append(regionName).append(" - ")
+                                        .append(countryName);
 
-                                    //This will display the final address.
-                                    // Log.e(TAG, "Address : " + addressStr + " | " + "City : " + cityStr);
+                                finalCity[0] = address.getLocality(); //This is the complete address.
 
-                                    builderAddr.append(addressStr);
-                                    builderAddr.append(" ");
 
-                                    builderCity.append(cityStr);
-                                    builderCity.append(" ");
-                                }
-
-                                String finalAddress = builderAddr.toString(); //This is the complete address.
-                                String finalCity = builderCity.toString(); //This is the complete address.
-
-                                if (!finalCity.isEmpty()) {
-                                    observer.onSuccess(finalCity);
+                                if (!finalCity[0].isEmpty()) {
+                                    observer.onSuccess(finalCity[0]);
                                 } else {
                                     Timber.e("value are empty");
                                 }

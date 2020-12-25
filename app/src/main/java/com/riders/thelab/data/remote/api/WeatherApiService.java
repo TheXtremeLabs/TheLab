@@ -65,8 +65,12 @@ public interface WeatherApiService {
      * @param lon
      * @return
      */
-    @GET("/data/2.5/weather?")
+    /*@GET("/data/2.5/weather?")
     Call<Weather> getCurrentWeatherByGeographicCoordinates(
+            @Query("lat") int lat,
+            @Query("lon") int lon);*/
+    @GET("/data/2.5/weather?")
+    Single<Weather> getCurrentWeatherByGeographicCoordinates(
             @Query("lat") int lat,
             @Query("lon") int lon);
 

@@ -4,8 +4,10 @@
 
     <gradient
         android:angle="45"
-        android:startColor="@color/purple_700"
         android:centerColor="@color/bg_gradient_end"
         android:endColor="@color/transparent"
+        android:startColor="@color/purple_700"
         android:type="linear" />
+
+    <size android:height="@dimen/extra_small_margin" />
 </shape>
