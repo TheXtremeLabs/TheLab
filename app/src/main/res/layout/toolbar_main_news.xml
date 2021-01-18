@@ -12,13 +12,32 @@
     app:expandedTitleTextAppearance="@android:color/transparent"
     app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/detail_backdrop_height"
         android:fitsSystemWindows="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_collapseMode="parallax" />
+        app:layout_collapseMode="parallax">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true" />
+
+        <LinearLayout
+            android:id="@+id/layoutDots"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dots_height"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/ultra_big_margin"
+            android:layout_marginEnd="@dimen/ultra_big_margin"
+            android:layout_marginBottom="@dimen/small_margin"
+            android:gravity="center"
+            android:orientation="horizontal"
+            tools:background="@color/teal_700" />
+    </RelativeLayout>
+
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

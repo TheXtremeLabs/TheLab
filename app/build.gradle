@@ -15,9 +15,9 @@ def buildDateTime =
                 : new Date().format('yyMMddHHmm').toInteger()
 
 // version information
-def versionMajor = 2
-def versionMinor = 5
-def versionPatch = 1
+def versionMajor = 3
+def versionMinor = 0
+def versionPatch = 0
 
 
 android {
@@ -124,9 +124,11 @@ dependencies {
     // Firebase
     implementation platform(rootProject.ext.generalDependencies.firebasePlatform)
     implementation rootProject.ext.generalDependencies.firebaseAnalitycs
+    implementation rootProject.ext.generalDependencies.firebaseAuth
     implementation rootProject.ext.generalDependencies.firebaseCraslytics
     implementation rootProject.ext.generalDependencies.firebaseMessaging
     implementation rootProject.ext.generalDependencies.firebasePerf
+    implementation rootProject.ext.generalDependencies.firebaseCloudstorage
     //implementation rootProject.ext.generalDependencies.firebaseAds
 
     // RxJava / RxAndroid
