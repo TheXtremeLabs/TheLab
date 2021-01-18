@@ -11,10 +11,13 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -68,6 +71,9 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     private FragmentStateAdapter pagerAdapter;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.layoutDots)
+    LinearLayout layoutDots;
+
     @BindView(R.id.app_recyclerView)
     RecyclerView appRecyclerView;
 
@@ -76,6 +82,7 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
     private Menu menu;
 
+    private List<Fragment> fragmentList;
     TimeFragment timeFragment;
     WeatherFragment weatherFragment;
     NewsFragment newsFragment;
@@ -273,7 +280,7 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         initCollapsingToolbar();
 
         // Instantiate a ViewPager2 and a PagerAdapter.
-        List<Fragment> fragmentList = new ArrayList<>();
+        fragmentList = new ArrayList<>();
 
         // add Fragments in your ViewPagerFragmentAdapter class
         fragmentList.add(new TimeFragment());
@@ -285,7 +292,54 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         viewPager2.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
 
         viewPager2.setAdapter(pagerAdapter);
+        viewPager2.registerOnPageChangeCallback(pageChangeCallback);
     }
+
+    private TextView[] dots;
+
+    /*
+     * Adds bottom dots indicator
+     * */
+    private void addBottomDots(int currentPage) {
+        dots = new TextView[fragmentList.size()];
+
+        int[] colorsActive = context.getResources().getIntArray(R.array.array_dot_active);
+        int[] colorsInactive = context.getResources().getIntArray(R.array.array_dot_inactive);
+
+        layoutDots.removeAllViews();
+        for (int i = 0; i < dots.length; i++) {
+            dots[i] = new TextView(context);
+            dots[i].setText(Html.fromHtml("&#8226;"));
+            dots[i].setTextSize(35);
+            dots[i].setTextColor(colorsInactive[currentPage]);
+            layoutDots.addView(dots[i]);
+        }
+
+        if (dots.length > 0)
+            dots[currentPage].setTextColor(colorsActive[currentPage]);
+    }
+
+    /*
+     * ViewPager page change listener
+     */
+    ViewPager2.OnPageChangeCallback pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
+        @Override
+        public void onPageSelected(int position) {
+            super.onPageSelected(position);
+            addBottomDots(position);
+
+            // changing the next button text 'NEXT' / 'GOT IT'
+            /*if (position == layouts.length - 1) {
+                // last page. make button text to GOT IT
+                binding.btnNext.setText(getString(R.string.start));
+                binding.btnSkip.setVisibility(View.GONE);
+            } else {
+                // still pages are left
+                binding.btnNext.setText(getString(R.string.next));
+                binding.btnSkip.setVisibility(View.VISIBLE);
+            }*/
+        }
+    };
 
     /**
      * Initializing collapsing toolbar

@@ -21,7 +21,7 @@ ext {
 
     autoFillVersion = "1.0.0"
 
-    googleApiClientVersion = "1.31.1"
+    googleApiClientVersion = '1.31.2'
     mapsVersion = '17.0.0'
     locationVersion = "17.1.0"
 
@@ -31,11 +31,11 @@ ext {
 //    roomVersion = "2.2.5"
     roomVersion = '2.3.0-alpha04'
 
-    daggerVersion = '2.30.1'
+    daggerVersion = '2.31'
 
     parcelerVersion = '1.1.13'
 
-    rxjavaVersion = '3.0.8'
+    rxjavaVersion = '3.0.9'
     rxandroidVersion = "3.0.0"
 
     butterknifeVersion = '10.2.3'
@@ -93,9 +93,11 @@ ext {
 
             firebasePlatform      : "com.google.firebase:firebase-bom:$firebaseBomVersion",
             firebaseAnalitycs     : "com.google.firebase:firebase-analytics",
+            firebaseAuth          : "com.google.firebase:firebase-auth",
             firebaseCraslytics    : "com.google.firebase:firebase-crashlytics",
             firebaseMessaging     : "com.google.firebase:firebase-messaging",
             firebasePerf          : "com.google.firebase:firebase-perf",
+            firebaseCloudstorage  : "com.google.firebase:firebase-storage",
             firebaseAds           : "com.google.android.gms:play-services-ads:$adsVersion",
 
             /* Android Architecture Component - Room Persistance Lib  */
