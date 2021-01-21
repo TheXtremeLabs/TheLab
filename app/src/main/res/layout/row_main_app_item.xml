@@ -90,8 +90,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center|start"
-                            android:textAppearance="@android:style/TextAppearance.Material.Title"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
                             tools:ignore="NewApi"
                             tools:text="Title app" />
@@ -101,7 +100,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center|start"
-                            android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                             android:textStyle="normal"
                             tools:ignore="NewApi"
                             tools:text="App description" />

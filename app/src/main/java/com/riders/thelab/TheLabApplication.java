@@ -1,14 +1,13 @@
 package com.riders.thelab;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Context;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.riders.thelab.core.broadcast.ConnectivityReceiver;
+import com.riders.thelab.core.utils.LabTypefaceManager;
 import com.riders.thelab.data.DataModule;
-import com.riders.thelab.di.component.ComponentInjector;
 import com.riders.thelab.di.component.DaggerComponentInjector;
 import com.riders.thelab.di.module.ApplicationModule;
 
@@ -26,7 +25,8 @@ public class TheLabApplication extends DaggerApplication {
     private FirebaseCrashlytics mFirebaseCrashlytics;
 
 
-    public TheLabApplication(){}
+    public TheLabApplication() {
+    }
 
     public static synchronized TheLabApplication getInstance() {
         if (null == mInstance)
@@ -58,8 +58,16 @@ public class TheLabApplication extends DaggerApplication {
     }
 
     private void init() {
+        // Timber : logging
         Timber.plant(new Timber.DebugTree());
 
+        // Set Font for the entire application
+        /*LabTypefaceManager.overrideFont(
+                getApplicationContext(),
+                "serif",
+                "fonts/SamsungSans-LightItalic.ttf");*/
+
+        // ThreeTen Date Time Library
         AndroidThreeTen.init(this);
 
         // Firebase Crashlytics
