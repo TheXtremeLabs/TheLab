@@ -80,8 +80,10 @@ public class TimeFragment extends Fragment {
 
     @Override
     public void onPause() {
-        if (null != mThread && !mThread.isInterrupted())
+        if (null != mThread && !mThread.isInterrupted()) {
             mThread.interrupt();
+            mThread = null;
+        }
         super.onPause();
     }
 

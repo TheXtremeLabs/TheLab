@@ -346,10 +346,9 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
      * Will show and hide the toolbar txtPostTitle on scroll
      */
     private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) context.findViewById(R.id.collapsing_toolbar);
+        final CollapsingToolbarLayout collapsingToolbar = context.findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) context.findViewById(R.id.appbar);
+        AppBarLayout appBarLayout = context.findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
         // hiding & showing the txtPostTitle when toolbar expanded & collapsed
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -362,15 +361,49 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
+                    // Toolbar is collapsed
+                    Timber.d("Toolbar is collapsed");
                     collapsingToolbar.setTitle(context.getResources().getString(R.string.app_name));
+                    showMenuButtons();
                     isShow = true;
 
                 } else if (isShow) {
+                    // Toolbar is expanded
+                    Timber.d("Toolbar is expanded");
                     collapsingToolbar.setTitle(" ");
+                    hideMenuButtons();
                     isShow = false;
                 }
             }
         });
+
+        toolbar.inflateMenu(R.menu.menu_main);
+        this.menu = toolbar.getMenu();
+        hideMenuButtons();
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                // TODO: Write your logic here
+                Timber.d("Click on button");
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Display menu buttons when collapsing toolbar is collapsed
+     */
+    public void showMenuButtons() {
+        if (menu != null)
+            menu.setGroupVisible(R.id.menu_main_group, true); // Or true to be visible
+    }
+
+    /**
+     * Hide menu buttons when collapse toolbar is expanded
+     */
+    public void hideMenuButtons() {
+        if (menu != null)
+            menu.setGroupVisible(R.id.menu_main_group, false); // Or true to be visible
     }
 
     /////////////////////////////////////
