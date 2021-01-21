@@ -75,6 +75,7 @@ public class LabLocationManager extends Service
     // Constructors
     public LabLocationManager(Context context) {
         this.mContext = context;
+        locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
     }
 
     public LabLocationManager(Context context, Activity activity) {
@@ -89,6 +90,14 @@ public class LabLocationManager extends Service
         return null;
     }
 
+
+    public void setActivity(Activity activity) {
+        this.mActivity = activity;
+    }
+
+    public void setLocationListener() {
+        mLocationListener = this;
+    }
 
     public Location getLocation() {
 
@@ -240,6 +249,22 @@ public class LabLocationManager extends Service
      * @return boolean
      */
     public boolean canGetLocation() {
+        Timber.d("canGetLocation()");
+
+        try {
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) {
+            Timber.e(ex);
+        }
+
+        try {
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception ex) {
+            Timber.e(ex);
+        }
+
+        this.canGetLocation = isGPSEnabled && isNetworkEnabled;
+
         return this.canGetLocation;
     }
 
@@ -275,18 +300,22 @@ public class LabLocationManager extends Service
 
     @Override
     public void onLocationChanged(Location location) {
+        Timber.d("onLocationChanged");
     }
 
     @Override
     public void onProviderDisabled(String provider) {
+        Timber.e("onProviderDisabled");
     }
 
     @Override
     public void onProviderEnabled(String provider) {
+        Timber.d("onProviderEnabled");
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
+        Timber.w("onStatusChanged");
     }
 
 

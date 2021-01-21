@@ -106,7 +106,17 @@ public class WeatherFragment extends Fragment {
         Timber.d("onResume()");
         EventBus.getDefault().register(this);
 
-        new LabLocationManager(context, getActivity());
+        LabLocationManager labLocationManager = new LabLocationManager(context);
+
+        if (!labLocationManager.canGetLocation()) {
+
+            Timber.e("Cannot get location please enable position");
+            labLocationManager.showSettingsAlert();
+        } else {
+            labLocationManager.setActivity(getActivity());
+            labLocationManager.setLocationListener();
+            labLocationManager.getLocation();
+        }
     }
 
     /////////////////////////////////////
