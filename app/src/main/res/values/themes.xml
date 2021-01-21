@@ -16,11 +16,23 @@
         <!-- enable window content transitions -->
         <item name="android:windowContentTransitions" tools:ignore="NewApi">true</item>
         <item name="android:textColor">@color/black</item>
+
+        <!-- Font overriding -->
+        <!--        <item name="android:typeface">serif</item>-->
+
+        <item name="android:fontFamily">@font/samsungsans_thin</item>
+        <item name="fontFamily">@font/samsungsans_thin</item> <!-- target android sdk versions < 26 and > 14 if theme other than AppCompat -->
     </style>
 
     <style name="Theme.TheLab.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <!-- Font overriding -->
+        <!--        <item name="android:typeface">serif</item>-->
+
+        <item name="android:fontFamily">@font/samsungsans_thin</item>
+        <item name="fontFamily">@font/samsungsans_thin</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.DayNight.ActionBar" />
