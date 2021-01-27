@@ -188,9 +188,7 @@ public class WeatherFragment extends Fragment {
         tvWeatherCityCountry.setText(weatherResponse.getSys().getCountry());
         tvWeatherDescription.setText(weatherResponse.getWeather().get(0).getDescription());
 
-        String temperature = (int) Math.round(weatherResponse.getMain().getTemperature()) +
-                context.getResources().getString(R.string.degree_placeholder);
-        tvWeatherCityTemperature.setText(temperature);
+        tvWeatherCityTemperature.setText((int) Math.round(weatherResponse.getMain().getTemperature()) +"");
     }
 
     public String getWeatherIconFromApi(String weatherIconId) {

@@ -57,7 +57,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 @SuppressLint({"NonConstantResourceId", "NewApi"})
 public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         implements MainActivityContract.View, MainActivityAppClickListener,
-        ConnectivityListener {
+        ConnectivityListener, MenuItem.OnMenuItemClickListener {
 
     // TAG & Context
     private MainActivity context;
@@ -278,6 +278,7 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     private void initViews() {
 
         initCollapsingToolbar();
+        initToolbar();
 
         // Instantiate a ViewPager2 and a PagerAdapter.
         fragmentList = new ArrayList<>();
@@ -377,17 +378,20 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
             }
         });
 
+    }
+
+    /**
+     * Setup Toolbar menu icon differently than the basic way because of the collapsing toolbar
+     * <p>
+     * We want the button to show up only when the tollbar is collapsed
+     * <p>
+     * https://stackoverflow.com/questions/10692755/how-do-i-hide-a-menu-item-in-the-actionbar#:~:text=The%20best%20way%20to%20hide,menu%20inside%20the%20same%20group.&text=Then%2C%20on%20your%20activity%20(preferable,visibility%20to%20false%20or%20true.
+     */
+    private void initToolbar() {
         toolbar.inflateMenu(R.menu.menu_main);
         this.menu = toolbar.getMenu();
         hideMenuButtons();
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                // TODO: Write your logic here
-                Timber.d("Click on button");
-                return true;
-            }
-        });
+        toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
     }
 
     /**
@@ -523,6 +527,50 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
         });
 
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.connection_icon:
+                UIManager.showActionInToast(context, "Wifi clicked");
+
+                WifiManager wifiManager =
+                        (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+                if (!LabCompatibilityManager.isAndroid10()) {
+                    boolean isWifi = wifiManager.isWifiEnabled();
+                    wifiManager.setWifiEnabled(!isWifi);
+                } else {
+                    Timber.e("For applications targeting android.os.Build.VERSION_CODES Q or above, this API will always fail and return false");
+
+                    /*
+                        ACTION_INTERNET_CONNECTIVITY Shows settings related to internet connectivity, such as Airplane mode, Wi-Fi, and Mobile Data.
+                        ACTION_WIFI Shows Wi-Fi settings, but not the other connectivity settings. This is useful for apps that need a Wi-Fi connection to perform large uploads or downloads.
+                        ACTION_NFC Shows all settings related to near-field communication (NFC).
+                        ACTION_VOLUME Shows volume settings for all audio streams.
+                     */
+                    Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
+                    this.startActivityForResult(panelIntent, 955);
+                }
+                break;
+
+            case R.id.action_settings:
+                UIManager.showActionInToast(context, "Settings clicked");
+                break;
+
+            case R.id.info_icon:
+                showBottomSheetDialogFragment();
+                break;
+
+            case R.id.action_force_crash:
+                throw new RuntimeException("This is a crash");
+
+            default:
+                break;
+        }
+        return true;
     }
     /////////////////////////////////////
     //

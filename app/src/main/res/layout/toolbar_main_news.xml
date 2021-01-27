@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    app:contentScrim="@color/black"
+    app:contentScrim="?android:attr/colorBackground"
     app:expandedTitleMarginEnd="64dp"
     app:expandedTitleMarginStart="48dp"
     app:expandedTitleTextAppearance="@android:color/transparent"
@@ -23,7 +23,8 @@
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            tools:background="@color/red" />
 
         <LinearLayout
             android:id="@+id/layoutDots"
@@ -45,6 +46,6 @@
         android:layout_height="?attr/actionBarSize"
         app:layout_collapseMode="pin"
         app:popupTheme="@style/AppTheme.PopupOverlay"
-        tools:background="@color/purple_700" />
+        tools:background="@color/adminDashboardSelectedItemAccent" />
 
 </com.google.android.material.appbar.CollapsingToolbarLayout>

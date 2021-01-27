@@ -18,8 +18,8 @@
         <item name="android:textColor">@color/white</item>
 
         <!-- Font overriding -->
+        <!-- https://stackoverflow.com/questions/16404820/how-to-set-default-font-family-for-entire-android-app -->
         <!--        <item name="android:typeface">serif</item>-->
-
         <item name="android:fontFamily">@font/samsungsans_thin</item>
         <item name="fontFamily">@font/samsungsans_thin
         </item> <!-- target android sdk versions < 26 and > 14 if theme other than AppCompat -->
@@ -30,8 +30,8 @@
         <item name="windowNoTitle">true</item>
 
         <!-- Font overriding -->
+        <!-- https://stackoverflow.com/questions/16404820/how-to-set-default-font-family-for-entire-android-app -->
         <!--        <item name="android:typeface">serif</item>-->
-
         <item name="android:fontFamily">@font/samsungsans_thin</item>
         <item name="fontFamily">@font/samsungsans_thin</item>
     </style>
