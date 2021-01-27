@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -169,5 +171,22 @@ public class UIManager {
         TextView textView = sbView.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setTextColor(textColor);
         snackbar.show();
+    }
+
+    /**
+     * Returns the background color of a view (mostly requested the background of the root view)
+     * <p>
+     * source : https://stackoverflow.com/questions/14779259/get-background-color-of-a-layout
+     *
+     * @param xmlRootView
+     * @return
+     */
+    public static int getDefaultBackgroundColor(View xmlRootView) {
+        int color = Color.TRANSPARENT;
+        Drawable background = xmlRootView.getBackground();
+        if (background instanceof ColorDrawable)
+            color = ((ColorDrawable) background).getColor();
+
+        return color;
     }
 }

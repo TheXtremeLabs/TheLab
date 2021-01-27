@@ -6,7 +6,6 @@ import android.content.Context;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.riders.thelab.core.broadcast.ConnectivityReceiver;
-import com.riders.thelab.core.utils.LabTypefaceManager;
 import com.riders.thelab.data.DataModule;
 import com.riders.thelab.di.component.DaggerComponentInjector;
 import com.riders.thelab.di.module.ApplicationModule;
@@ -51,6 +50,9 @@ public class TheLabApplication extends DaggerApplication {
         super.onCreate();
 
         context = this;
+
+        /*if (!LabCompatibilityManager.isOreo())
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);*/
 
         init();
 

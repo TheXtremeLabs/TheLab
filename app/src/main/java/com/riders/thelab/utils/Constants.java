@@ -31,6 +31,8 @@ public class Constants {
 
     private final List<App> activityItems;
 
+    public static final String EMULATOR_DEVICE_TAG = "sdk";
+
     //REST client Base URL
     public static final String BASE_ENDPOINT_YOUTUBE = "https://raw.githubusercontent.com";
     public static final String BASE_ENDPOINT_SEARCH = "https://ajax.googleapis.com";
