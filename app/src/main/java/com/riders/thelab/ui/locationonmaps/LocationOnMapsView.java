@@ -39,7 +39,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -52,6 +60,8 @@ import com.riders.thelab.ui.base.BaseViewImpl;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -117,6 +127,13 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
     private static final int REQUEST_CHECK_SETTINGS = 100;
 
+    // Directions
+    private ArrayList<Marker> mRouteMarkerList;
+    private Polyline mRoutePolyline;
+
+    // Places
+    // The entry point to the Places API.
+    private PlacesClient mPlacesClient;
 
     @Inject
     LocationOnMapsView(LocationOnMapsActivity context) {
@@ -210,6 +227,8 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
     public void onDestroy() {
 
     }
+
+
     /////////////////////////////////////
     //
     // IMPLEMENTS
@@ -226,10 +245,35 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Timber.i("onMapReady()");
         mMap = googleMap;
+
+        // Used for finding current location with button
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        /*
+            source :  https://stackoverflow.com/questions/36785542/how-to-change-the-position-of-my-location-button-in-google-maps-using-android-st
+         */
+        if (mapFragment.getView() != null) {
+            Timber.d("Get the button view");
+            // Get the button view
+            View locationButton =
+                    ((View) mapFragment.getView().findViewById(Integer.parseInt("1")).getParent())
+                            .findViewById(Integer.parseInt("2"));
+            Timber.d("and next place it, on bottom right (as Google Maps app)");
+            // and next place it, on bottom right (as Google Maps app)
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
+                    locationButton.getLayoutParams();
+            Timber.d("position on right bottom");
+            // position on right bottom
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            layoutParams.setMargins(0, 0, 30, 260);
+        }
 
         // Set a preference for minimum and maximum zoom.
         mMap.setMinZoomPreference(MapsEnum.WORLD.getDistance());
@@ -301,6 +345,11 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
     private void initLocationSettings() {
         Timber.i("initLocationSettings()");
 
+        // Construct a PlacesClient
+        Places.initialize(context, context.getString(R.string.google_maps_key));
+        mPlacesClient = Places.createClient(context);
+
+        // Construct a FusedLocationProviderClient.
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         mSettingsClient = LocationServices.getSettingsClient(context);
 
@@ -374,6 +423,78 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
         if (null != rlMapsLoading
                 && rlMapsLoading.getVisibility() == View.VISIBLE)
             startAnimation(rlMapsLoading);
+
+        getPresenter().getDirections();
+
+        // Places
+        getPlaces();
+
+        /// Poly lines
+        getPolyLines();
+
+    }
+
+    private void getPlaces() {
+        Timber.i("getPlaces()");
+        // Define a Place ID.
+        String placeId = "Sydney";
+
+        // Specify the fields to return.
+        List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+
+        // Construct a request object, passing the place ID and fields array.
+        FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields)
+                .build();
+
+        // Add a listener to handle the response.
+        mPlacesClient
+                .fetchPlace(request)
+                .addOnSuccessListener((response) -> {
+                    Place place = response.getPlace();
+                    Timber.d("Place found: " + place.getName());
+                })
+                .addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        ApiException apiException = (ApiException) exception;
+                        int statusCode = apiException.getStatusCode();
+                        // Handle error with given status code.
+                        Timber.e("Place not found: " + exception.getMessage());
+                    }
+                });
+    }
+
+    private void getPolyLines() {
+        Timber.i("getPolyLines()");
+
+        // Add polylines and polygons to the map. This section shows just
+        // a single polyline. Read the rest of the tutorial to learn more.
+        Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
+                .clickable(true)
+                .add(
+                        new LatLng(-35.016, 143.321),
+                        new LatLng(-34.747, 145.592),
+                        new LatLng(-34.364, 147.891),
+                        new LatLng(-33.501, 150.217),
+                        new LatLng(-32.306, 149.248),
+                        new LatLng(-32.491, 147.309)));
+
+        // Position the map's camera near Alice Springs in the center of Australia,
+        // and set the zoom factor so most of Australia shows on the screen.
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-23.684, 133.903), 4));
+
+        // Set listeners for click events.
+        mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
+            @Override
+            public void onPolylineClick(Polyline polyline) {
+
+            }
+        });
+        mMap.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
+            @Override
+            public void onPolygonClick(Polygon polygon) {
+
+            }
+        });
     }
 
     public void startAnimation(final View view) {

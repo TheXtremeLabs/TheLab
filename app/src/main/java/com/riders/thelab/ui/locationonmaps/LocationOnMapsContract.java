@@ -17,5 +17,6 @@ public interface LocationOnMapsContract {
     }
 
     interface Presenter {
+        void getDirections();
     }
 }

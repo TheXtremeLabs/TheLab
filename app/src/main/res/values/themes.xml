@@ -14,14 +14,17 @@
         <!-- Customize your theme here. -->
 
         <!-- enable window content transitions -->
-        <item name="android:windowContentTransitions" tools:ignore="NewApi">true</item>
+        <!--<item name="android:windowActivityTransitions" tools:ignore="NewApi">true</item>
+
+        <item name="android:windowContentTransitions" tools:ignore="NewApi">true</item>-->
         <item name="android:textColor">@color/black</item>
 
         <!-- Font overriding -->
         <!-- https://stackoverflow.com/questions/16404820/how-to-set-default-font-family-for-entire-android-app -->
         <!--        <item name="android:typeface">serif</item>-->
         <item name="android:fontFamily">@font/samsungsans_thin</item>
-        <item name="fontFamily">@font/samsungsans_thin</item> <!-- target android sdk versions < 26 and > 14 if theme other than AppCompat -->
+        <item name="fontFamily">@font/samsungsans_thin
+        </item> <!-- target android sdk versions < 26 and > 14 if theme other than AppCompat -->
     </style>
 
     <style name="Theme.TheLab.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -143,5 +146,32 @@
 
         <!-- enable window content transitions -->
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
+    </style>
+
+
+    <!-- Transition Theme -->
+    <style name="TransitionTheme" parent="TransitionStyleTheme.Base" />
+
+    <style name="TransitionStyleTheme.Base" parent="Theme.TheLab">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/adminDashboardColorPrimary</item>
+        <item name="colorPrimaryDark">@color/adminDashboardColorPrimaryDark</item>
+        <item name="colorAccent">@color/adminDashboardSelectedItemAccent</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions" tools:ignore="NewApi">true</item>
+
+        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition" tools:ignore="NewApi">@transition/explode</item>
+        <item name="android:windowExitTransition" tools:ignore="NewApi">@transition/explode</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition" tools:ignore="NewApi">
+            @transition/change_image_transform
+        </item>
+        <item name="android:windowSharedElementExitTransition" tools:ignore="NewApi">
+            @transition/change_image_transform
+        </item>
     </style>
 </resources>

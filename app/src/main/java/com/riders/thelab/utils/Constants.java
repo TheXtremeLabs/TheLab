@@ -17,6 +17,7 @@ import com.riders.thelab.ui.recycler.RecyclerViewActivity;
 import com.riders.thelab.ui.schedule.ScheduleActivity;
 import com.riders.thelab.ui.speechtotext.SpeechToTextActivity;
 import com.riders.thelab.ui.tabs.WorkingTabsActivity;
+import com.riders.thelab.ui.transition.TransitionActivity;
 import com.riders.thelab.ui.weather.WeatherActivity;
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity;
 
@@ -36,6 +37,7 @@ public class Constants {
     //REST client Base URL
     public static final String BASE_ENDPOINT_YOUTUBE = "https://raw.githubusercontent.com";
     public static final String BASE_ENDPOINT_SEARCH = "https://ajax.googleapis.com";
+    public static final String BASE_ENDPOINT_GOOGLE_MAPS_API = "https://maps.googleapis.com/maps/api/";
     public static final String BASE_ENDPOINT_GOOGLE_PLACES = "https://maps.googleapis.com/maps/api/place/";
     public static final String BASE_ENDPOINT_WEATHER = "http://api.openweathermap.org";
     public static final String BASE_ENDPOINT_WEATHER_ICON = "http://openweathermap.org/img/wn/";
@@ -89,6 +91,11 @@ public class Constants {
         list.add(new App("Tabs", "ViewPager Fragments Tabs...",
                 R.drawable.ic_tab, WorkingTabsActivity.class));
 
+
+        list.add(new App("Transitions", "Start a new activity with awesome animations...",
+                R.drawable.ic_flip_to_back, TransitionActivity.class));
+
+
         list.add(new App("Floating Labels", "Floating Labels Form...",
                 R.drawable.ic_outline_label, FloatingLabelsActivity.class));
 
@@ -141,6 +148,8 @@ public class Constants {
 
         list.add(new App("Floating Widget", "Create a floating widget that you can move around on the screen...",
                 R.drawable.ic_flip_to_back, FloatingViewActivity.class));
+
+
 
         list.add(new App("WIP", "Coming soon...",
                 R.drawable.ic_warning, null));

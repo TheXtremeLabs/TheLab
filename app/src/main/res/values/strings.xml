@@ -248,4 +248,8 @@
     <!-- Floating View -->
     <string name="activity_title_floating_view">Floating Widget</string>
     <string name="notify_me">Notify Me !</string>
+
+    <!-- Transition -->
+    <string name="button_next_activity">Next Activity</string>
+    <string name="logo_transition_name">logo_transition</string>
 </resources>

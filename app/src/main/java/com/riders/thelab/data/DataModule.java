@@ -16,6 +16,7 @@ import com.riders.thelab.data.local.bean.TimeOut;
 import com.riders.thelab.data.local.dao.ContactDao;
 import com.riders.thelab.data.local.model.weather.WeatherKey;
 import com.riders.thelab.data.remote.LabService;
+import com.riders.thelab.data.remote.api.GoogleAPIService;
 import com.riders.thelab.data.remote.api.WeatherApiService;
 import com.riders.thelab.data.remote.api.YoutubeApiService;
 import com.riders.thelab.utils.Constants;
@@ -232,6 +233,13 @@ public class DataModule {
 
     @Provides
     @Singleton
+    @NotNull GoogleAPIService provideGoogleAPIService() {
+        return provideRetrofit(Constants.BASE_ENDPOINT_GOOGLE_MAPS_API).create(GoogleAPIService.class);
+    }
+
+
+    @Provides
+    @Singleton
     @NotNull YoutubeApiService provideYoutubeApiService() {
         return provideRetrofit(Constants.BASE_ENDPOINT_YOUTUBE).create(YoutubeApiService.class);
     }
@@ -247,6 +255,7 @@ public class DataModule {
     @Singleton
     LabService providesLabService() {
         return new LabService(
+                provideGoogleAPIService(),
                 provideYoutubeApiService(),
                 provideWeatherApiService());
     }
