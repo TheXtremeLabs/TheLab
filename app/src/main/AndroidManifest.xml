@@ -252,6 +252,15 @@
             android:name=".ui.floatingview.FloatingViewActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
+
+        <activity
+            android:name=".ui.transition.TransitionActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/TransitionTheme" />
+        <activity
+            android:name=".ui.transition.TransitionDetailActivity"
+            android:parentActivityName=".ui.transition.TransitionActivity"
+            android:theme="@style/TransitionTheme" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 

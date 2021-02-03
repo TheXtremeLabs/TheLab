@@ -16,8 +16,8 @@ def buildDateTime =
 
 // version information
 def versionMajor = 3
-def versionMinor = 0
-def versionPatch = 1
+def versionMinor = 1
+def versionPatch = 0
 
 
 android {
@@ -120,7 +120,9 @@ dependencies {
     // Maps
     implementation rootProject.ext.generalDependencies.googleAPIClient
     implementation rootProject.ext.generalDependencies.maps
+    implementation rootProject.ext.generalDependencies.mapsUtils
     implementation rootProject.ext.generalDependencies.location
+    implementation rootProject.ext.generalDependencies.places
     // Firebase
     implementation platform(rootProject.ext.generalDependencies.firebasePlatform)
     implementation rootProject.ext.generalDependencies.firebaseAnalitycs

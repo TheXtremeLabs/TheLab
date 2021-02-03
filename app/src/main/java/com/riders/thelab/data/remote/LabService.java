@@ -1,8 +1,10 @@
 package com.riders.thelab.data.remote;
 
 import com.riders.thelab.data.local.model.Video;
+import com.riders.thelab.data.remote.api.GoogleAPIService;
 import com.riders.thelab.data.remote.api.WeatherApiService;
 import com.riders.thelab.data.remote.api.YoutubeApiService;
+import com.riders.thelab.data.remote.dto.directions.Directions;
 import com.riders.thelab.data.remote.dto.weather.Weather;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 
@@ -18,12 +20,14 @@ import timber.log.Timber;
 public class LabService {
 
 
+    GoogleAPIService googleAPIService;
     YoutubeApiService youtubeApiService;
     WeatherApiService weatherApiService;
 
     @Inject
-    public LabService(YoutubeApiService youtubeApiService, WeatherApiService weatherApiService) {
+    public LabService(GoogleAPIService googleAPIService, YoutubeApiService youtubeApiService, WeatherApiService weatherApiService) {
         Timber.d("LabService()");
+        this.googleAPIService = googleAPIService;
         this.youtubeApiService = youtubeApiService;
         this.weatherApiService = weatherApiService;
     }
@@ -40,6 +44,17 @@ public class LabService {
      * GET
      * *********************
      */
+    public Single<Directions> getRoutes(String origin, String destination, String key) {
+        Timber.e("getRoutes()");
+        return googleAPIService
+                .getDirections(
+                        origin,
+                        destination,
+                        key)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public Single<List<Video>> getVideos() {
         Timber.e("getVideos()");
         return youtubeApiService
