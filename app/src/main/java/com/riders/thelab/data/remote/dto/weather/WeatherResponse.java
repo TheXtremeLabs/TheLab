@@ -38,8 +38,8 @@ public class WeatherResponse {
     @Expose
     long dt;
 
-    @Expose
-    Sys sys;
+    @SerializedName("sys")
+    Sys system;
 
     @Expose
     int timezone;

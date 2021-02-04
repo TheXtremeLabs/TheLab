@@ -250,6 +250,13 @@
     <string name="notify_me">Notify Me !</string>
 
     <!-- Transition -->
+    <string name="activity_title_transition">Transitions</string>
     <string name="button_next_activity">Next Activity</string>
     <string name="logo_transition_name">logo_transition</string>
+    <string name="activity_title_transition_detail">Transitions Detail</string>
+
+    <!-- Custom Toast -->
+    <string name="activity_title_custom_toast">Custom Toast</string>
+    <string name="click_on_display_button_message">Click on button to display custom toast</string>
+    <string name="display_toast">Display custom Toast</string>
 </resources>

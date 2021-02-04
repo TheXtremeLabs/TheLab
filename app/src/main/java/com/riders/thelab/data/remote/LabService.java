@@ -72,7 +72,7 @@ public class LabService {
     }
 
 
-    public Single<Weather> getWeather(int lat, int lon) {
+    public Single<WeatherResponse> getWeather(double lat, double lon) {
         Timber.e("getWeather()");
         return weatherApiService
                 .getCurrentWeatherByGeographicCoordinates(lat, lon)

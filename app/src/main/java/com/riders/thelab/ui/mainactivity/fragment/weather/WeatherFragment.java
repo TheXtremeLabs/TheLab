@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,8 +29,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -37,7 +37,6 @@ import butterknife.Unbinder;
 import dagger.android.support.AndroidSupportInjection;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
@@ -45,6 +44,10 @@ public class WeatherFragment extends Fragment {
 
     private Context context;
 
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    @BindView(R.id.weather_data_container)
+    LinearLayout weatherDataContainer;
     @BindView(R.id.iv_weather_icon)
     ImageView ivWeatherIcon;
     @BindView(R.id.tv_weather_city_name)
@@ -58,7 +61,7 @@ public class WeatherFragment extends Fragment {
 
     Unbinder unbinder;
 
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final CompositeDisposable compositeDisposable;
 
     @Inject
     LabService service;
@@ -66,6 +69,7 @@ public class WeatherFragment extends Fragment {
 
     @Inject
     public WeatherFragment() {
+        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
@@ -135,63 +139,69 @@ public class WeatherFragment extends Fragment {
 
         Timber.e(latitude + ", " + longitude);
 
-        LabLocationManager
-                .getDeviceLocationWithRX(location, context)
-                .subscribe(new DisposableSingleObserver<String>() {
-                    @Override
-                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull String city) {
-                        Timber.e("final string city returned : %s", city);
-
-                        getWeather(city);
-                    }
-
-                    @Override
-                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                        Timber.e(Objects.requireNonNull(e.getMessage()));
-                    }
-                });
+        getWeather(location);
     }
 
-    public void getWeather(String city) {
+    public void getWeather(Location location) {
 
-//        getView().showLoader();
+        showLoader();
+
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
 
         Disposable disposable =
-                service.getWeather(city)
+                service.getWeather(latitude, longitude)
                         .subscribe(
                                 weatherResponse -> {
 
                                     if (200 != weatherResponse.getCode()) {
                                         Timber.e("error code : %s", weatherResponse.getCode());
+                                        hideLoader();
                                     } else {
-//                                        getView().hideLoader();
+
+                                        hideLoader();
                                         updateUI(weatherResponse);
                                     }
-                                },
-                                Timber::e);
+                                }, throwable -> {
+                                    Timber.e(throwable);
+                                    hideLoader();
+                                });
 
         compositeDisposable.add(disposable);
+    }
+
+
+    private void showLoader() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoader() {
+        progressBar.setVisibility(View.GONE);
     }
 
     public void updateUI(WeatherResponse weatherResponse) {
         Timber.d("updateUI()");
 
+        if (weatherDataContainer.getVisibility() == View.GONE) {
+            weatherDataContainer.setVisibility(View.VISIBLE);
+        }
+
         // Load weather icon
         Glide.with(context)
-                .load(getWeatherIconFromApi(weatherResponse.getWeather().get(0).getIcon()))
+                .load(getWeatherIconUrl(weatherResponse.getWeather().get(0).getIcon()))
                 .into(ivWeatherIcon);
 
         // Load city name
         String cityName = weatherResponse.getName() +
                 context.getResources().getString(R.string.separator_placeholder);
         tvWeatherCityName.setText(cityName);
-        tvWeatherCityCountry.setText(weatherResponse.getSys().getCountry());
+        tvWeatherCityCountry.setText(weatherResponse.getSystem().getCountry());
         tvWeatherDescription.setText(weatherResponse.getWeather().get(0).getDescription());
 
-        tvWeatherCityTemperature.setText((int) Math.round(weatherResponse.getMain().getTemperature()) +"");
+        tvWeatherCityTemperature.setText((int) Math.round(weatherResponse.getMain().getTemperature()) + "");
     }
 
-    public String getWeatherIconFromApi(String weatherIconId) {
+    public String getWeatherIconUrl(String weatherIconId) {
         return Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX;
     }
 

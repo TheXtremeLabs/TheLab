@@ -6,6 +6,7 @@ import com.riders.thelab.ui.biometric.BiometricActivity;
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity;
 import com.riders.thelab.ui.colors.ColorActivity;
 import com.riders.thelab.ui.contacts.ContactsActivity;
+import com.riders.thelab.ui.customtoast.CustomToastActivity;
 import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity;
@@ -149,6 +150,8 @@ public class Constants {
         list.add(new App("Floating Widget", "Create a floating widget that you can move around on the screen...",
                 R.drawable.ic_flip_to_back, FloatingViewActivity.class));
 
+        list.add(new App("Custom Toast", "Custom Toast Layout...",
+                R.drawable.ic_announcement, CustomToastActivity.class));
 
 
         list.add(new App("WIP", "Coming soon...",
