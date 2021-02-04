@@ -363,14 +363,12 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
                 }
                 if (scrollRange + verticalOffset == 0) {
                     // Toolbar is collapsed
-                    Timber.d("Toolbar is collapsed");
                     collapsingToolbar.setTitle(context.getResources().getString(R.string.app_name));
                     showMenuButtons();
                     isShow = true;
 
                 } else if (isShow) {
                     // Toolbar is expanded
-                    Timber.d("Toolbar is expanded");
                     collapsingToolbar.setTitle(" ");
                     hideMenuButtons();
                     isShow = false;

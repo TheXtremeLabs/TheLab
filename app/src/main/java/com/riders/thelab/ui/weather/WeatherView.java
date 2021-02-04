@@ -145,15 +145,15 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         String cityName = weatherResponse.getName() +
                 context.getResources().getString(R.string.separator_placeholder);
         tvWeatherCityName.setText(cityName);
-        tvWeatherCityCountry.setText(weatherResponse.getSys().getCountry());
+        tvWeatherCityCountry.setText(weatherResponse.getSystem().getCountry());
         tvWeatherDescription.setText(weatherResponse.getWeather().get(0).getDescription());
 
         String temperature = (int) Math.round(weatherResponse.getMain().getTemperature()) +
                 context.getResources().getString(R.string.degree_placeholder);
         tvWeatherCityTemperature.setText(temperature);
 
-        long sunriseMillis = weatherResponse.getSys().getSunrise();
-        long sunsetMillis = weatherResponse.getSys().getSunset();
+        long sunriseMillis = weatherResponse.getSystem().getSunrise();
+        long sunsetMillis = weatherResponse.getSystem().getSunset();
 
         Timber.d("sunrise time : %s", getPresenter().formatMillisToTimeHoursMinutesSeconds(sunriseMillis));
 

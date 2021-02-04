@@ -70,9 +70,9 @@ public interface WeatherApiService {
             @Query("lat") int lat,
             @Query("lon") int lon);*/
     @GET("/data/2.5/weather?")
-    Single<Weather> getCurrentWeatherByGeographicCoordinates(
-            @Query("lat") int lat,
-            @Query("lon") int lon);
+    Single<WeatherResponse> getCurrentWeatherByGeographicCoordinates(
+            @Query("lat") double lat,
+            @Query("lon") double lon);
 
 
     /**
