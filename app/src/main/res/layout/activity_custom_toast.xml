@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,14 +18,81 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/button_custom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_corners"
+        android:backgroundTint="@color/purple_500"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/small_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/display_toast"
+            android:textAlignment="center"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progressIndicator"
+            android:layout_width="@dimen/extra_small_margin"
+            android:layout_height="@dimen/extra_small_margin"
+            android:layout_margin="@dimen/small_margin"
+            android:indeterminate="true"
+            android:indeterminateDuration="3000"
+            android:indeterminateOnly="true"
+            android:visibility="gone"
+            app:indicatorSize="@dimen/big_medium_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/right_guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:indicatorColor="@color/white"
+            app:trackCornerRadius="4dp"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/display_toast_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/display_toast"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_guideline"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@id/display_toast_btn" />
+
+
+    <!--<com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressIndicator"
+        style="@style/Widget.MaterialComponents.CircularProgressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/medium_margin"
+        android:indeterminate="true"
+        android:indeterminateDuration="3000"
+        android:indeterminateOnly="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/right_guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:indeterminateTint="@color/black" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

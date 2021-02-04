@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:backgroundTint="@color/adminDashboardSelectedItemAccentTranslucent"
-    android:padding="8dp">
+    android:padding="8dp"
+    tools:backgroundTint="@color/adminDashboardSelectedItemAccentTranslucent">
 
     <LinearLayout
         android:id="@+id/custom_toast_container"
@@ -18,24 +18,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:backgroundTint="@color/adminDashboardSelectedItemAccentTranslucent">
+        tools:backgroundTint="@color/success">
 
         <ImageView
             android:id="@+id/ivLol"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginRight="8dp"
-            android:src="@drawable/ic_open_in_new"
-            tools:foregroundTint="@color/black"
-            tools:tint="@color/black" />
+            android:layout_width="@dimen/extra_big_margin"
+            android:layout_height="@dimen/extra_big_margin"
+            android:layout_margin="8dp"
+            tools:src="@drawable/ic_check_circle" />
 
         <TextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textColor="#FFF"
-            tools:text="This is a custom toast"
-            tools:textColor="@color/adminDashboardColorPrimaryDark" />
+            android:textColor="@color/white"
+            tools:text="This is a custom toast" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
