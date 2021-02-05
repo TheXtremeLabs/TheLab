@@ -152,4 +152,22 @@
 
     <color name="background_row_root_cause">#5d56aa</color>
     <color name="background_row_action_selected">#12798a</color>
+
+
+    <!-- Vector drawables -->
+
+    <!-- Handwriting -->
+    <color name="indigo_400">#5C6BC0</color>
+    <color name="cyan_a100">#84FFFF</color>
+    <color name="pink_500">#E91E63</color>
+    <color name="cyan_300">#4DD0E1</color>
+
+
+    <!-- Screens background color-->
+    <color name="bg_screen1">#f64c73</color>
+    <color name="bg_screen2">#20d2bb</color>
+    <color name="bg_screen3">#3395ff</color>
+    <color name="bg_screen4">#c873f4</color>
+
+
 </resources>

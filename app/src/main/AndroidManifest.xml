@@ -266,6 +266,10 @@
             android:name=".ui.customtoast.CustomToastActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/TransitionTheme" />
+        <activity
+            android:name=".ui.vectordrawables.VectorDrawablesActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
