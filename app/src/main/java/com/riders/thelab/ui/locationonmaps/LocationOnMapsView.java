@@ -427,11 +427,10 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
         getPresenter().getDirections();
 
         // Places
-        getPlaces();
+        // getPlaces();
 
         /// Poly lines
-        getPolyLines();
-
+        // getPolyLines();
     }
 
     private void getPlaces() {

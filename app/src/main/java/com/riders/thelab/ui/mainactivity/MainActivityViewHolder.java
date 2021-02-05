@@ -113,6 +113,12 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
     }
 
 
+    /**
+     * Reference : https://stackoverflow.com/questions/37775675/imageview-set-color-filter-to-gradient
+     *
+     * @param originalBitmap
+     * @return
+     */
     public Bitmap addGradient(Bitmap originalBitmap) {
         int width = originalBitmap.getWidth();
         int height = originalBitmap.getHeight();

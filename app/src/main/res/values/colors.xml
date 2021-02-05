@@ -43,6 +43,13 @@
         <item>@color/ball4</item>
     </integer-array>
 
+    <array name="hello_google_custom">
+        <item>@color/ball1</item>
+        <item>@color/ball2</item>
+        <item>@color/ball3</item>
+        <item>@color/ball4</item>
+    </array>
+
     <color name="splashProgressbarTint">#2750FF</color>
 
 

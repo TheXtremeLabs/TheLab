@@ -16,14 +16,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
-import com.google.android.material.animation.AnimationUtils;
 import com.riders.thelab.R;
 
 import timber.log.Timber;
+
+
+/**
+ * Reference : https://developer.android.com/guide/topics/ui/notifiers/toasts#CustomToastView
+ */
 
 public class TheLabToast extends Toast {
 
@@ -54,6 +57,7 @@ public class TheLabToast extends Toast {
         imageView = (ImageView) layout.findViewById(R.id.ivLol);
         textView = (TextView) layout.findViewById(R.id.text);
 
+        // Ref : https://developer.android.com/reference/android/widget/Toast#setGravity(int,%20int,%20int)
         this.setGravity(Gravity.BOTTOM, 0, 250);
         this.setDuration(Toast.LENGTH_LONG);
         this.setView(layout);
@@ -75,6 +79,10 @@ public class TheLabToast extends Toast {
         imageView.setImageDrawable(ContextCompat.getDrawable(context, drawableResourceID));
     }
 
+    /**
+     * Reference : https://stackoverflow.com/questions/47837460/how-to-set-layout-background-tint-from-string-programmatically
+     * @param color
+     */
     public void setBackgroundColor(int color) {
         container.getBackground().setColorFilter(
                 ContextCompat.getColor(context, color),
@@ -86,7 +94,7 @@ public class TheLabToast extends Toast {
         Timber.d("show()");
 
         TranslateAnimation translateAnimation =
-                new TranslateAnimation(0, 0, 180,container.getTop() );
+                new TranslateAnimation(0, 0, 180, container.getTop());
 
         translateAnimation.setDuration(800);
         translateAnimation.setInterpolator(new LinearOutSlowInInterpolator());
