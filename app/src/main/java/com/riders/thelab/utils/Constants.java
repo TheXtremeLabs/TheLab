@@ -19,6 +19,7 @@ import com.riders.thelab.ui.schedule.ScheduleActivity;
 import com.riders.thelab.ui.speechtotext.SpeechToTextActivity;
 import com.riders.thelab.ui.tabs.WorkingTabsActivity;
 import com.riders.thelab.ui.transition.TransitionActivity;
+import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity;
 import com.riders.thelab.ui.weather.WeatherActivity;
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity;
 
@@ -152,6 +153,9 @@ public class Constants {
 
         list.add(new App("Custom Toast", "Custom Toast Layout...",
                 R.drawable.ic_announcement, CustomToastActivity.class));
+
+        list.add(new App("Vector Drawables", "Animated, scale, transform vector drawables...",
+                R.drawable.ic_aspect_ratio, VectorDrawablesActivity.class));
 
 
         list.add(new App("WIP", "Coming soon...",

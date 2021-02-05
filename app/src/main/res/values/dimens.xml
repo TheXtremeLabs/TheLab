@@ -78,4 +78,8 @@
     <!-- Built-in WebView -->
     <dimen name="detail_backdrop_height">270dp</dimen>
 
+    <!-- Vector Drawables -->
+    <item name="hashtag_stroke_width" format="float" type="dimen">5</item>
+
+
 </resources>
