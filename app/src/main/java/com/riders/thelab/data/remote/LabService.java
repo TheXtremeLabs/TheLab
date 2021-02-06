@@ -3,6 +3,7 @@ package com.riders.thelab.data.remote;
 import com.riders.thelab.data.local.model.Video;
 import com.riders.thelab.data.remote.api.GoogleAPIService;
 import com.riders.thelab.data.remote.api.WeatherApiService;
+import com.riders.thelab.data.remote.api.WeatherBulkApiService;
 import com.riders.thelab.data.remote.api.YoutubeApiService;
 import com.riders.thelab.data.remote.dto.directions.Directions;
 import com.riders.thelab.data.remote.dto.weather.Weather;
@@ -15,6 +16,7 @@ import javax.inject.Inject;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 import timber.log.Timber;
 
 public class LabService {
@@ -23,13 +25,18 @@ public class LabService {
     GoogleAPIService googleAPIService;
     YoutubeApiService youtubeApiService;
     WeatherApiService weatherApiService;
+    WeatherBulkApiService weatherBulkApiService;
 
     @Inject
-    public LabService(GoogleAPIService googleAPIService, YoutubeApiService youtubeApiService, WeatherApiService weatherApiService) {
+    public LabService(GoogleAPIService googleAPIService,
+                      YoutubeApiService youtubeApiService,
+                      WeatherApiService weatherApiService,
+                      WeatherBulkApiService weatherBulkApiService) {
         Timber.d("LabService()");
         this.googleAPIService = googleAPIService;
         this.youtubeApiService = youtubeApiService;
         this.weatherApiService = weatherApiService;
+        this.weatherBulkApiService = weatherBulkApiService;
     }
 
 
@@ -76,6 +83,15 @@ public class LabService {
         Timber.e("getWeather()");
         return weatherApiService
                 .getCurrentWeatherByGeographicCoordinates(lat, lon)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    public Single<ResponseBody> getBulkWeatherCitiesFile() {
+        Timber.e("get cities bulk file()");
+        return weatherBulkApiService
+                .getCitiesGZipFile()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

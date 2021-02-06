@@ -31,7 +31,7 @@ public interface WeatherContract {
 
     interface Presenter {
 
-        void getCityDataFromFile();
+        void getCityData();
 
         void getWeather(String city);
 

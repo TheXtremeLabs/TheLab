@@ -165,6 +165,7 @@ dependencies {
     implementation rootProject.ext.generalDependencies.retrofitConverterGson
     implementation rootProject.ext.generalDependencies.retrofitRxJava
     implementation rootProject.ext.generalDependencies.okhttp3Logging
+    implementation rootProject.ext.generalDependencies.moshi
 
 
     // Parceler
