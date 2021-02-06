@@ -20,7 +20,7 @@
         android:gravity="center"
         android:layout_weight="0.7">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_row_item_background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

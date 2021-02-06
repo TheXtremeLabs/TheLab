@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
@@ -23,7 +23,7 @@
             android:src="@drawable/ic_no_connection"
             tools:ignore="HardcodedText" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/pas_de_connexion"

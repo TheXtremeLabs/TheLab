@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,13 +47,13 @@ import timber.log.Timber;
 public class TimeFragment extends Fragment {
 
     @BindView(R.id.iv_time_background)
-    AppCompatImageView ivBackground;
+    ShapeableImageView ivBackground;
 
     @BindView(R.id.tv_time)
-    TextView tvTime;
+    MaterialTextView tvTime;
 
     @BindView(R.id.tv_date)
-    TextView tvDate;
+    MaterialTextView tvDate;
 
     Unbinder unbinder;
 

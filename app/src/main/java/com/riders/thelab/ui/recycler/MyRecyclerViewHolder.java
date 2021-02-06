@@ -5,14 +5,17 @@ import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.RecyclerItem;
 
@@ -25,12 +28,12 @@ import timber.log.Timber;
 public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.row_card_view)
-    public CardView cardView;
+    public MaterialCardView cardView;
 
     @BindView(R.id.transition_imageView)
-    ImageView transitionImageView;
+    ShapeableImageView transitionImageView;
     @BindView(R.id.row_name_text_view)
-    TextView nameTextView;
+    MaterialTextView nameTextView;
 
     @BindView(R.id.row_details_linear_layout)
     public RelativeLayout detailsLinearLayout;

@@ -4,11 +4,11 @@ import android.annotation.SuppressLint;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
 
 import butterknife.BindView;
@@ -18,10 +18,10 @@ import butterknife.ButterKnife;
 public class VectorDrawablesActivity extends AppCompatActivity {
 
     @BindView(R.id.iv_avd_google_io16)
-    ImageView ivGoogleIO16;
+    ShapeableImageView ivGoogleIO16;
 
     @BindView(R.id.iv_avd_progress_bar)
-    ImageView ivProgressBar;
+    ShapeableImageView ivProgressBar;
 
     AnimatedVectorDrawable googleIOAnimatedVectorDrawable;
     AnimatedVectorDrawable progressBarAnimatedVectorDrawable;

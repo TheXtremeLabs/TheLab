@@ -6,10 +6,11 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+
 
 import androidx.annotation.Nullable;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.ui.base.SimpleActivity;
 
@@ -27,7 +28,7 @@ public class ColorActivity extends SimpleActivity {
 
 
     @BindView(R.id.target_color_textView)
-    TextView targetColorTextView;
+    MaterialTextView targetColorTextView;
 
     @BindView(R.id.change_color_button)
     Button changeColorButton;

@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.views.toast.TheLabToast;
 import com.riders.thelab.core.views.toast.ToastTypeEnum;
@@ -167,7 +168,7 @@ public class CustomToastActivity extends AppCompatActivity {
                 R.layout.custom_toast_layout,
                 (ViewGroup) findViewById(R.id.custom_toast_container));
 
-        TextView text = (TextView) layout.findViewById(R.id.text);
+        MaterialTextView text = (MaterialTextView) layout.findViewById(R.id.text);
         text.setText("This is a custom toast");
 
         Toast toast = new Toast(getApplicationContext());

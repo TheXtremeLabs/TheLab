@@ -20,14 +20,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:backgroundTint="@color/success">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivLol"
             android:layout_width="@dimen/extra_big_margin"
             android:layout_height="@dimen/extra_big_margin"
             android:layout_margin="8dp"
             tools:src="@drawable/ic_check_circle" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

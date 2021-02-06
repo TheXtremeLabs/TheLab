@@ -12,7 +12,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +26,9 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.utils.Validator;
@@ -39,19 +42,19 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
     private Context context;
 
     @BindView(R.id.row_item_cardView)
-    public CardView itemCardView;
+    public MaterialCardView itemCardView;
 
     @BindView(R.id.iv_row_item_background)
-    AppCompatImageView backgroundImageView;
+    ShapeableImageView backgroundImageView;
 
     @BindView(R.id.row_icon_imageView)
-    AppCompatImageView iconImageView;
+    ShapeableImageView iconImageView;
 
     @BindView(R.id.row_title_textView)
-    TextView titleTextView;
+    MaterialTextView titleTextView;
 
     @BindView(R.id.row_description_textView)
-    TextView descriptionTextView;
+    MaterialTextView descriptionTextView;
 
 
     public MainActivityViewHolder(@NonNull Context context, @NonNull View itemView) {

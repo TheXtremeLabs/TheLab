@@ -3,14 +3,17 @@ package com.riders.thelab.ui.youtubelike;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
-import android.widget.ImageView;
+;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.Video;
 
@@ -25,16 +28,16 @@ public class YoutubeLikeViewHolder extends RecyclerView.ViewHolder {
 
     // Views
     @BindView(R.id.card_view_item)
-    public CardView itemCardView;
+    public MaterialCardView itemCardView;
 
     @BindView(R.id.loader_item)
     ProgressBar itemLoader;
     @BindView(R.id.image_item)
-    ImageView imageThumb;
+    ShapeableImageView imageThumb;
     @BindView(R.id.name_item)
-    TextView nameTextView;
+    MaterialTextView nameTextView;
     @BindView(R.id.description_item)
-    TextView descriptionTextView;
+    MaterialTextView descriptionTextView;
 
 
     public YoutubeLikeViewHolder(Context context, View itemView) {
@@ -44,7 +47,7 @@ public class YoutubeLikeViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public ImageView getImageView() {
+    public ShapeableImageView getImageView() {
         return this.imageThumb;
     }
 

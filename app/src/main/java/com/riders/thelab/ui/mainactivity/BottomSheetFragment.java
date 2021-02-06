@@ -5,12 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabDeviceManager;
@@ -28,15 +29,15 @@ import timber.log.Timber;
 public class BottomSheetFragment extends BottomSheetDialogFragment {
 
     @BindView(R.id.tv_bottom_brand)
-    TextView tvBrand;
+    MaterialTextView tvBrand;
     @BindView(R.id.tv_bottom_model)
-    TextView tvModel;
+    MaterialTextView tvModel;
     @BindView(R.id.tv_bottom_screen_height)
-    TextView tvScreenHeight;
+    MaterialTextView tvScreenHeight;
     @BindView(R.id.tv_bottom_screen_width)
-    TextView tvScreenWidth;
+    MaterialTextView tvScreenWidth;
     @BindView(R.id.tv_bottom_version)
-    TextView tvVersion;
+    MaterialTextView tvVersion;
 
 
     //Variables

@@ -32,7 +32,7 @@
             android:orientation="vertical">
 
             <!-- Weather icon -->
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_weather_icon"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
@@ -50,7 +50,7 @@
             android:gravity="center_vertical|end"
             android:orientation="horizontal">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_weather_city_temperature"
                 style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
@@ -61,7 +61,7 @@
                 tools:text="2"
                 tools:textColor="@color/white" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,14 +91,14 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_weather_city_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="Paris, "
                     tools:textColor="@color/white" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_weather_city_country"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_weather_main_description"
                     style="@style/TextAppearance.AppCompat.Title"
                     android:layout_width="wrap_content"

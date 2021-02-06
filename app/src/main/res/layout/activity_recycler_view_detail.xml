@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/transition_imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -22,7 +22,7 @@
             android:transitionName="icon"
             tools:src="@drawable/logo_colors" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_name_detail"
             style="@style/TextAppearance.AppCompat.Display1"
             android:layout_width="wrap_content"

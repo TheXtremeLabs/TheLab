@@ -1,8 +1,9 @@
 package com.riders.thelab.ui.deviceinformation;
 
 import android.annotation.SuppressLint;
-import android.widget.TextView;
 
+
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.DeviceInformation;
 import com.riders.thelab.ui.base.BaseViewImpl;
@@ -22,27 +23,27 @@ public class DeviceInformationView extends BaseViewImpl<DeviceInformationPresent
 
     //Views
     @BindView(R.id.tv_device_name)
-    TextView tvDeviceName;
+    MaterialTextView tvDeviceName;
     @BindView(R.id.tv_device_brand)
-    TextView tvDeviceBrand;
+    MaterialTextView tvDeviceBrand;
     @BindView(R.id.tv_device_model)
-    TextView tvDeviceModel;
+    MaterialTextView tvDeviceModel;
     @BindView(R.id.tv_device_hardware)
-    TextView tvDeviceHardware;
+    MaterialTextView tvDeviceHardware;
     @BindView(R.id.tv_device_screen_dimensions)
-    TextView tvDeviceScreenDimensions;
+    MaterialTextView tvDeviceScreenDimensions;
     @BindView(R.id.tv_device_serial)
-    TextView tvDeviceSerial;
+    MaterialTextView tvDeviceSerial;
     @BindView(R.id.tv_device_fingerprint)
-    TextView tvDeviceFingerPrint;
+    MaterialTextView tvDeviceFingerPrint;
     @BindView(R.id.tv_device_android_name)
-    TextView tvDeviceAndroidName;
+    MaterialTextView tvDeviceAndroidName;
     @BindView(R.id.tv_device_android_sdk)
-    TextView tvDeviceAndroidSdk;
+    MaterialTextView tvDeviceAndroidSdk;
     @BindView(R.id.tv_device_android_release)
-    TextView tvDeviceAndroidRelease;
+    MaterialTextView tvDeviceAndroidRelease;
     @BindView(R.id.tv_device_android_rooted)
-    TextView tvDeviceRooted;
+    MaterialTextView tvDeviceRooted;
 
 
     @Inject

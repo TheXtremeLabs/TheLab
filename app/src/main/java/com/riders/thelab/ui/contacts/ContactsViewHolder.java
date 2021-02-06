@@ -3,14 +3,16 @@ package com.riders.thelab.ui.contacts;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.Contact;
 
@@ -23,13 +25,13 @@ public class ContactsViewHolder extends RecyclerView.ViewHolder {
     private Context context;
 
     @BindView(R.id.cv_contact_item)
-    public CardView cardView;
+    public MaterialCardView cardView;
     @BindView(R.id.tv_contact_name)
-    TextView tvContactName;
+    MaterialTextView tvContactName;
     @BindView(R.id.tv_contact_mail)
-    TextView tvContactEmail;
+    MaterialTextView tvContactEmail;
     @BindView(R.id.iv_contact_thumbnail)
-    ImageView ivContactThumbnail;
+    ShapeableImageView ivContactThumbnail;
 
     @BindView(R.id.view_background)
     public RelativeLayout viewBackground;

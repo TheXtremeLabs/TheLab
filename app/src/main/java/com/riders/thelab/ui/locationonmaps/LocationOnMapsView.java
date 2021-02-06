@@ -19,7 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -48,6 +48,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.material.textview.MaterialTextView;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -91,7 +92,7 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
     @BindView(R.id.rl_maps_laoding)
     RelativeLayout rlMapsLoading;
     @BindView(R.id.tv_location)
-    TextView tvLocation;
+    MaterialTextView tvLocation;
 
     Unbinder unbinder;
 

@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:background="@color/bg_row_background">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/delete_icon"
             android:layout_width="@dimen/ic_delete"
             android:layout_height="@dimen/ic_delete"
@@ -22,7 +22,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/row_padding" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/cv_contact_item"
             android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                 android:paddingRight="@dimen/activity_margin"
                 android:paddingBottom="@dimen/row_padding">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_contact_thumbnail"
                     android:layout_width="@dimen/thumbnail"
                     android:layout_height="@dimen/thumbnail"
@@ -68,7 +68,7 @@
                     android:layout_marginRight="@dimen/row_padding"
                     android:src="@mipmap/ic_launcher_lab_icon_round" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_contact_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
                     android:textSize="@dimen/contact_name"
                     tools:ignore="SpUsage" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_contact_mail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                     android:textSize="@dimen/contact_number"
                     tools:ignore="SpUsage" />
             </RelativeLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
     </RelativeLayout>
 </FrameLayout>

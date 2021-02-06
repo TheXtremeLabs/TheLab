@@ -6,11 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.weather.City;
 
@@ -225,7 +226,7 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
         City cityItem = items.get(position);
 
         if (cityItem != null) {
-            TextView tvCityName = view.findViewById(R.id.row_city_name_textView);
+            MaterialTextView tvCityName = view.findViewById(R.id.row_city_name_textView);
             if (tvCityName != null) {
 
                 String szCity = items.get(position).getName() +

@@ -7,16 +7,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.bus.LocationFetchedEvent;
 import com.riders.thelab.core.utils.LabLocationManager;
@@ -49,15 +50,15 @@ public class WeatherFragment extends Fragment {
     @BindView(R.id.weather_data_container)
     LinearLayout weatherDataContainer;
     @BindView(R.id.iv_weather_icon)
-    ImageView ivWeatherIcon;
+    ShapeableImageView ivWeatherIcon;
     @BindView(R.id.tv_weather_city_name)
-    TextView tvWeatherCityName;
+    MaterialTextView tvWeatherCityName;
     @BindView(R.id.tv_weather_city_country)
-    TextView tvWeatherCityCountry;
+    MaterialTextView tvWeatherCityCountry;
     @BindView(R.id.tv_weather_main_description)
-    TextView tvWeatherDescription;
+    MaterialTextView tvWeatherDescription;
     @BindView(R.id.tv_weather_city_temperature)
-    TextView tvWeatherCityTemperature;
+    MaterialTextView tvWeatherCityTemperature;
 
     Unbinder unbinder;
 
