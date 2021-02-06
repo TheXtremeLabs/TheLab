@@ -1,26 +1,24 @@
 package com.riders.thelab.ui.weather;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.res.AssetManager;
 import android.os.Build;
+import android.os.Looper;
 
 import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
-import com.riders.thelab.TheLabApplication;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.core.utils.LabFileManager;
+import com.riders.thelab.data.local.LabRepository;
+import com.riders.thelab.data.local.model.CitiesEventJson;
+import com.riders.thelab.data.local.model.CitiesEventJsonAdapter;
 import com.riders.thelab.data.local.model.weather.City;
 import com.riders.thelab.data.remote.LabService;
 import com.riders.thelab.ui.base.BasePresenterImpl;
 import com.riders.thelab.utils.Constants;
+import com.riders.thelab.utils.Validator;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,15 +30,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.Timer;
 
 import javax.inject.Inject;
 
+import io.reactivex.annotations.NonNull;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 import timber.log.Timber;
 
 public class WeatherPresenter extends BasePresenterImpl<WeatherView>
@@ -48,6 +51,12 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
 
     @Inject
     WeatherActivity activity;
+
+    @Inject
+    LabRepository repository;
+
+    @Inject
+    LabService service;
 
     /* RxJava / RxAndroid */
 
@@ -62,70 +71,110 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     // Disposing them in Destroy one bye one is a tedious task and it can be error
     // prone as you might forgot to dispose.
     // In this case we can use CompositeDisposable.
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final CompositeDisposable compositeDisposable;
     private Observable<List<City>> mCityListObservable;
 
-    private final AssetManager mAssetManager;
 
     private ArrayList<City> cities;
     private Gson mGson;
 
-    @Inject
-    LabService service;
-
 
     @Inject
     WeatherPresenter() {
-        mAssetManager = TheLabApplication.getContext().getAssets();
+        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
-    public void getCityDataFromFile() {
+    public void getCityData() {
 
-        // Check sdk version
-        if (LabCompatibilityManager.isMarshmallow()) {
+        // First step check si t'as des données dans ta db
+        Disposable disposable =
+                repository.getAllCities()
+                        .subscribe(
+                                cityList -> {
 
-            Timber.d("device's sdk version is above 6.0+");
+                                    if (Validator.isNullOrEmpty(cityList)) {
+                                        // Si , non call le ws -> save dans la db
+                                        Timber.e("List is empty. No Record found in database");
 
-            //Verify permission for Android 6.0+
-            Dexter.withContext(activity)
-                    .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    .withListener(new PermissionListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                        @Override
-                        public void onPermissionGranted(PermissionGrantedResponse response) {
+                                        final ResponseBody[] fileToUnzip = new ResponseBody[1];
 
-                            try {
-                                mCityListObservable = getDataFromJson("city_list.json");
+                                        Timber.e("Call web service...");
+                                        // Call web service
+                                        getCitiesFromWS()
+                                                .subscribe(
+                                                        responseBody -> {
 
-                                Disposable disposable =
-                                        mCityListObservable
-                                                .subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribeWith(getCitiesObserver());
+                                                            fileToUnzip[0] = responseBody;
 
-                                compositeDisposable.add(disposable);
-                            } catch (Exception exception) {
-                                exception.printStackTrace();
-                            }
-                        }
+                                                            try {
 
-                        @Override
-                        public void onPermissionDenied(PermissionDeniedResponse response) {
-                            Timber.e("Permission denied");
-                        }
+                                                                Timber.d("Unzipped downloaded file...");
+                                                                // Step 1 : Unzip
+                                                                String unzippedGZipResult = LabFileManager.unzipGzip(fileToUnzip[0]);
+                                                                Timber.d("Unzip result : %s", unzippedGZipResult);
 
-                        @Override
-                        public void onPermissionRationaleShouldBeShown(
-                                PermissionRequest permission,
-                                PermissionToken token) {
-                            token.continuePermissionRequest();
-                        }
-                    })
-                    .check();
-        } else {
-            Timber.e("device's sdk version is : %s", Build.VERSION.SDK_INT);
+
+                                                                if (Validator.isEmpty(unzippedGZipResult)){
+                                                                    Timber.e("Result is empty");
+                                                                    return;
+                                                                }
+
+                                                                Timber.d("Build Moshi adapter and build object...");
+                                                                // Step 2 convert to class object
+                                                                Moshi moshi =
+                                                                        new Moshi.Builder()
+                                                                                .add(new CitiesEventJsonAdapter())
+                                                                                .build();
+                                                                JsonAdapter<CitiesEventJson> jsonAdapter = moshi.adapter(CitiesEventJson.class);
+
+                                                                List<com.riders.thelab.data.remote.dto.weather.City> cities =
+                                                                        jsonAdapter.fromJson(unzippedGZipResult).getCitiesList();
+
+                                                                Timber.d("Save in database...");
+                                                                // Step 3 save in database
+                                                                repository.insertAllCities(cities)
+                                                                        .subscribe(aLong -> {
+                                                                            Timber.d("long inserted :%S", aLong);
+                                                                        }, throwable -> {
+                                                                            Timber.e(throwable);
+                                                                        });
+                                                            } catch (Exception e) {
+                                                                Timber.e(e);
+                                                            }
+
+                                                        },
+                                                        throwable -> {
+                                                            Timber.e("Error while downloading zip file");
+                                                            Timber.e(throwable);
+                                                        });
+
+                                    } else {
+                                        // Si , oui tu recuperes de la db
+                                        Timber.d("Record found in database. Continue...");
+                                    }
+                                }, throwable -> {
+                                    Timber.e("Error while fetching records in database");
+                                    Timber.e(throwable);
+                                });
+
+        compositeDisposable.add(disposable);
+
+    }
+
+
+    public Single<ResponseBody> getCitiesFromWS() {
+        return new Single<ResponseBody>() {
+            @Override
+            protected void subscribeActual(@NonNull SingleObserver<? super ResponseBody> observer) {
+                service.getBulkWeatherCitiesFile()
+                        .subscribe(
+                                observer::onSuccess,
+                                observer::onError
+                        );
+            }
         }
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -171,7 +220,7 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
             mGson = new Gson();
             String json;
 
-            InputStream is = mAssetManager.open(fileName);
+            InputStream is = null /*mAssetManager.open(fileName)*/;
 
             int size = is.available();
             byte[] buffer = new byte[size];
@@ -226,7 +275,8 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     @SuppressLint("SimpleDateFormat")
     public String formatMillisToTimeHoursMinutesSeconds(long millis) {
 
-        Date date = new Date(millis); DateFormat formatter = new SimpleDateFormat("HH:mm");
+        Date date = new Date(millis);
+        DateFormat formatter = new SimpleDateFormat("HH:mm");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         return formatter.format(date);
     }

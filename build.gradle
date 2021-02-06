@@ -45,11 +45,13 @@ ext {
     retrofit2Version = "2.9.0"
     okhttp3LoggingVersion = '5.0.0-alpha.2'
 
+    moshiVersion = '1.11.0'
+
     picassoVersion = '2.71828'
 
     glideVersion = '4.12.0'
-    blurryVersion = "3.0.0"
-    glideTransformationVersion = "4.0.0"
+    blurryVersion = '3.0.0'
+    glideTransformationVersion = '4.0.0'
 
     eventBusVersion = '3.2.0'
 
@@ -136,6 +138,7 @@ ext {
             retrofitConverterGson : "com.squareup.retrofit2:converter-gson:$retrofit2Version",
             retrofitRxJava        : "com.squareup.retrofit2:adapter-rxjava3:$retrofit2Version",
             okhttp3Logging        : "com.squareup.okhttp3:logging-interceptor:$okhttp3LoggingVersion",
+            moshi                 : "com.squareup.moshi:moshi:$moshiVersion",
 
             // EventBus
             eventBus              : "org.greenrobot:eventbus:$eventBusVersion",

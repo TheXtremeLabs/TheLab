@@ -14,10 +14,12 @@ import com.riders.thelab.data.local.LabDatabase;
 import com.riders.thelab.data.local.LabRepository;
 import com.riders.thelab.data.local.bean.TimeOut;
 import com.riders.thelab.data.local.dao.ContactDao;
+import com.riders.thelab.data.local.dao.WeatherDao;
 import com.riders.thelab.data.local.model.weather.WeatherKey;
 import com.riders.thelab.data.remote.LabService;
 import com.riders.thelab.data.remote.api.GoogleAPIService;
 import com.riders.thelab.data.remote.api.WeatherApiService;
+import com.riders.thelab.data.remote.api.WeatherBulkApiService;
 import com.riders.thelab.data.remote.api.YoutubeApiService;
 import com.riders.thelab.utils.Constants;
 
@@ -66,11 +68,17 @@ public class DataModule {
         return database.getContactDao();
     }
 
+    @Provides
+    @Singleton
+    WeatherDao providesWeatherDao() {
+        return database.getWeatherDao();
+    }
+
 
     @Provides
     @Singleton
     LabRepository providesLabRepository() {
-        return new LabRepository(providesContactDao());
+        return new LabRepository(providesContactDao(), providesWeatherDao());
     }
 
 
@@ -190,25 +198,54 @@ public class DataModule {
                         Timber.e(Objects.requireNonNull(e.getMessage()));
                     }
 
+                    // Request customization: add request headers
+                    Request.Builder requestBuilder;
 
-                    try {
+                    // Avoid key and metrics when requesting for bulk download
+                    if (!originalHttpUrl.toString().contains("sample")) {
+                        try {
+                            url = originalHttpUrl.newBuilder()
+                                    .addQueryParameter("appid", (String) obj.get("appid"))
+                                    .addQueryParameter("units", "metric")
+                                    .build();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Timber.e(Objects.requireNonNull(e.getMessage()));
+                        }
+
+                        // Request customization: add request headers
+                         requestBuilder =
+                                original.newBuilder()
+                                        .url(url)
+                                        .header("Content-Type", "application/json; charset=utf-8")
+                                        .header("Connection", "close")
+                                        //.header("Content-Type", "application/json")
+                                        .header("Accept-Encoding", "Identity");
+                    } else {
                         url = originalHttpUrl.newBuilder()
-                                .addQueryParameter("appid", (String) obj.get("appid"))
-                                .addQueryParameter("units", "metric")
                                 .build();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Timber.e(Objects.requireNonNull(e.getMessage()));
+
+                        // Request customization: add request headers
+                        requestBuilder =
+                                original.newBuilder()
+                                        .url(url)
+                                        .header("Content-Type", "text/plain")
+                                        .header("Connection", "close")
+                                        .header("Cache-Control", "max-age=60")
+                                        .header("Accept-Ranges", "bytes")
+                                        .header("Accept-Encoding", "Identity");
                     }
 
+
                     // Request customization: add request headers
-                    Request.Builder requestBuilder =
+                    /*Request.Builder requestBuilder =
                             original.newBuilder()
                                     .url(url)
                                     .header("Content-Type", "application/json; charset=utf-8")
                                     .header("Connection", "close")
                                     //.header("Content-Type", "application/json")
-                                    .header("Accept-Encoding", "Identity");
+                                    .header("Accept-Encoding", "Identity");*/
+
                     Request request = requestBuilder.build();
 
                     return chain.proceed(request);
@@ -253,11 +290,19 @@ public class DataModule {
 
     @Provides
     @Singleton
+    @NotNull WeatherBulkApiService proWeatherBulkApiService() {
+        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD).create(WeatherBulkApiService.class);
+    }
+
+
+    @Provides
+    @Singleton
     LabService providesLabService() {
         return new LabService(
                 provideGoogleAPIService(),
                 provideYoutubeApiService(),
-                provideWeatherApiService());
+                provideWeatherApiService(),
+                proWeatherBulkApiService());
     }
 
 }

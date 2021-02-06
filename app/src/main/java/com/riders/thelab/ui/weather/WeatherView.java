@@ -103,7 +103,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     public void onStart() {
         Timber.d("onStart()");
 
-        getPresenter().getCityDataFromFile();
+        getPresenter().getCityData();
         EventBus.getDefault().register(this);
     }
 

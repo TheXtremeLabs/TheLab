@@ -11,10 +11,10 @@ import lombok.ToString;
 @ToString
 public class City {
 
-    int id;
-    String name;
-    String state;
-    String country;
+    private int id;
+    private String name;
+    private String state;
+    private String country;
     @SerializedName("coord")
-    Coordinates coordinates;
+    private Coordinates coordinates;
 }
