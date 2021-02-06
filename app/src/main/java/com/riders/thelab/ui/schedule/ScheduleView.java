@@ -11,10 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+
 
 import androidx.annotation.Nullable;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver;
 import com.riders.thelab.core.bus.AlarmEvent;
@@ -49,7 +50,7 @@ public class ScheduleView extends BaseViewImpl<SchedulePresenter>
     @BindView(R.id.ll_delay_time_container)
     LinearLayout llDelayTimeContainer;
     @BindView(R.id.tv_delay_time)
-    TextView tvDelayTime;
+    MaterialTextView tvDelayTime;
 
     private PendingIntent mPendingIntent;
     private ServiceConnection mServiceConnection;

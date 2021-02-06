@@ -3,8 +3,7 @@ package com.riders.thelab.ui.contacts;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.widget.ImageView;
-import android.widget.TextView;
+
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -12,6 +11,8 @@ import androidx.core.view.ViewCompat;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.ui.base.SimpleActivity;
 
@@ -31,13 +32,13 @@ public class ContactDetailActivity extends SimpleActivity {
     @BindView(R.id.contact_detail_toolbar)
     Toolbar toolbar;
     @BindView(R.id.iv_image_detail_toolbar)
-    ImageView mImageDetailToolbar;
+    ShapeableImageView mImageDetailToolbar;
     @BindView(R.id.tv_name_detail)
-    TextView mNameTextView;
+    MaterialTextView mNameTextView;
     @BindView(R.id.tv_surname_detail)
-    TextView mSurnameTextView;
+    MaterialTextView mSurnameTextView;
     @BindView(R.id.tv_email_detail)
-    TextView mEmailTextView;
+    MaterialTextView mEmailTextView;
 
     public static final String CONTACT_NAME = "contact_name";
     public static final String CONTACT_SURNAME = "contact_surname";

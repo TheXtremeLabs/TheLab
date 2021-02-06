@@ -18,7 +18,7 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/multi_pane_movie_item_image_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
             android:paddingEnd="@dimen/medium_margin"
             android:paddingBottom="@dimen/big_margin">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/multi_pane_movie_item_title_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                 tools:text="@string/multipane_row_title_placeholder"
                 tools:textColor="@color/white" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/multi_pane_movie_item_genre_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                 android:textSize="24sp"
                 tools:text="@string/multipane_row_genre_placeholder" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/multi_pane_movie_item_year_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

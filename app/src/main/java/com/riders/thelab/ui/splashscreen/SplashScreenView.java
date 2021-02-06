@@ -8,9 +8,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+
 import android.widget.VideoView;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BaseViewImpl;
@@ -40,7 +41,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     VideoView splashVideoView;
 
     @BindView(R.id.tv_app_version)
-    TextView tvAppVersion;
+    MaterialTextView tvAppVersion;
 
     @Inject
     Navigator navigator;

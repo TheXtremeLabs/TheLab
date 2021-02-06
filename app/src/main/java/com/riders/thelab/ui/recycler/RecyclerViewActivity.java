@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.ImageView;
+;
 
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
@@ -79,7 +80,7 @@ public class RecyclerViewActivity extends SimpleActivity
     }
 
     @Override
-    public void onDetailClick(RecyclerItem item, ImageView sharedImageView, int position) {
+    public void onDetailClick(RecyclerItem item, ShapeableImageView sharedImageView, int position) {
         Timber.d("onDetailClick(item, sharedImageView, position)");
 
         Intent intent = new Intent(this, RecyclerViewDetailActivity.class);

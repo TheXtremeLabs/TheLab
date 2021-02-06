@@ -43,7 +43,7 @@ public class Constants {
     public static final String BASE_ENDPOINT_GOOGLE_PLACES = "https://maps.googleapis.com/maps/api/place/";
     public static final String BASE_ENDPOINT_WEATHER = "http://api.openweathermap.org";
     public static final String BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD = "http://bulk.openweathermap.org/";
-    public static final String WEATHER_BULK_DOWNLOAD_URL = "/sample/city.list.json.gz";
+    public static final String WEATHER_BULK_DOWNLOAD_URL = "sample/city.list.json.gz";
     public static final String BASE_ENDPOINT_WEATHER_ICON = "http://openweathermap.org/img/wn/";
     public static final String WEATHER_ICON_SUFFIX = "@2x.png";
 

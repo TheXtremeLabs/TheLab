@@ -3,7 +3,7 @@ package com.riders.thelab.ui.recycler;
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.ImageView;
+;
 
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
@@ -13,6 +13,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.RecyclerItem;
@@ -32,7 +33,7 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
     public static final String EXTRA_TRANSITION_ICON_NAME = "icon";
 
     @BindView(R.id.transition_imageView)
-    ImageView transitionImageView;
+    ShapeableImageView transitionImageView;
 
     RecyclerItem item;
 

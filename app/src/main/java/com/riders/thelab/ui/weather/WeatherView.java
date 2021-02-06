@@ -12,8 +12,9 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
+;
 import android.widget.ProgressBar;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.bus.LocationFetchedEvent;
 import com.riders.thelab.core.utils.LabLocationManager;
@@ -48,7 +51,7 @@ import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
 public class WeatherView extends BaseViewImpl<WeatherPresenter>
-        implements WeatherContract.View, TextView.OnEditorActionListener,
+        implements WeatherContract.View, MaterialTextView.OnEditorActionListener,
         AdapterView.OnItemClickListener, LocationListener {
 
     private WeatherActivity context;
@@ -61,23 +64,23 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     /*@BindView(R.id.sp_city_list)
     AppCompatSpinner spinner;*/
     @BindView(R.id.iv_weather_icon)
-    ImageView ivWeatherIcon;
+    ShapeableImageView ivWeatherIcon;
     @BindView(R.id.tv_weather_city_name)
-    TextView tvWeatherCityName;
+    MaterialTextView tvWeatherCityName;
     @BindView(R.id.tv_weather_city_country)
-    TextView tvWeatherCityCountry;
+    MaterialTextView tvWeatherCityCountry;
     @BindView(R.id.tv_weather_main_description)
-    TextView tvWeatherDescription;
+    MaterialTextView tvWeatherDescription;
     @BindView(R.id.tv_weather_city_temperature)
-    TextView tvWeatherCityTemperature;
+    MaterialTextView tvWeatherCityTemperature;
     @BindView(R.id.tv_weather_extra_cloudiness)
-    TextView tvWeatherExtraCloudiness;
+    MaterialTextView tvWeatherExtraCloudiness;
     @BindView(R.id.tv_weather_extra_humidity)
-    TextView tvWeatherExtraHumidity;
+    MaterialTextView tvWeatherExtraHumidity;
     @BindView(R.id.tv_weather_extra_pressure)
-    TextView tvWeatherExtraPressure;
+    MaterialTextView tvWeatherExtraPressure;
     @BindView(R.id.tv_weather_extra_wind)
-    TextView tvWeatherExtraWind;
+    MaterialTextView tvWeatherExtraWind;
     @BindView(R.id.btn_current_location)
     Button currentLocationButton;
 

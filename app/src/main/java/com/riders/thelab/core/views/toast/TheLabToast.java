@@ -11,14 +11,15 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 
 import timber.log.Timber;
@@ -33,8 +34,8 @@ public class TheLabToast extends Toast {
     private final Context context;
 
     private final LinearLayout container;
-    private final ImageView imageView;
-    private TextView textView;
+    private final ShapeableImageView imageView;
+    private MaterialTextView textView;
 
     /**
      * Construct an empty Toast object.  You must call {@link #setView} before you
@@ -54,8 +55,8 @@ public class TheLabToast extends Toast {
                 (ViewGroup) ((Activity) context).findViewById(R.id.custom_toast_container));
 
         container = (LinearLayout) layout.findViewById(R.id.custom_toast_container);
-        imageView = (ImageView) layout.findViewById(R.id.ivLol);
-        textView = (TextView) layout.findViewById(R.id.text);
+        imageView =  layout.findViewById(R.id.ivLol);
+        textView =  layout.findViewById(R.id.text);
 
         // Ref : https://developer.android.com/reference/android/widget/Toast#setGravity(int,%20int,%20int)
         this.setGravity(Gravity.BOTTOM, 0, 250);

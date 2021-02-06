@@ -3,12 +3,14 @@ package com.riders.thelab.ui.multipane;
 
 import android.annotation.SuppressLint;
 import android.view.View;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.Movie;
 
@@ -19,13 +21,13 @@ import butterknife.ButterKnife;
 public class MultiPaneViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.cv_multi_pane_item)
-    public CardView cardView;
+    public MaterialCardView cardView;
     @BindView(R.id.multi_pane_movie_item_title)
-    TextView titleTextView;
+    MaterialTextView titleTextView;
     @BindView(R.id.multi_pane_movie_item_genre)
-    TextView genreTextView;
+    MaterialTextView genreTextView;
     @BindView(R.id.multi_pane_movie_item_year)
-    TextView yearTextView;
+    MaterialTextView yearTextView;
 
     public MultiPaneViewHolder(@NonNull View itemView) {
         super(itemView);

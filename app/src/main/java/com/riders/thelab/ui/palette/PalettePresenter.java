@@ -2,8 +2,8 @@ package com.riders.thelab.ui.palette;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.widget.ImageView;
 
+import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenterImpl;
 import com.squareup.picasso.Callback;
@@ -28,7 +28,7 @@ public class PalettePresenter extends BasePresenterImpl<PaletteView>
 
 
     @Override
-    public void loadImage(ImageView targetImageView, String imageURL) {
+    public void loadImage(ShapeableImageView targetImageView, String imageURL) {
         Picasso.get()
                 .load(imageURL)
                 //.load(R.drawable.image1)

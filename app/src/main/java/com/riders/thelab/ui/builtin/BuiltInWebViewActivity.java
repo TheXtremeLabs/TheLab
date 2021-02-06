@@ -8,7 +8,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
@@ -17,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.BrowserUtils;
 import com.riders.thelab.ui.base.SimpleActivity;
@@ -36,7 +36,7 @@ public class BuiltInWebViewActivity extends SimpleActivity {
     @BindView(R.id.built_in_progressBar)
     ProgressBar mProgressBar;
     @BindView(R.id.backdrop)
-    ImageView imgHeader;
+    ShapeableImageView imgHeader;
 
     private String postUrl = "http://api.androidhive.info/webview/index.html";
     private float m_downX;

@@ -55,7 +55,7 @@
             app:layout_constraintTop_toTopOf="parent" />-->
 
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_main_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
                         android:orientation="vertical">
 
                         <!-- Weather icon -->
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/iv_weather_icon"
                             android:layout_width="64dp"
                             android:layout_height="64dp"
@@ -124,7 +124,7 @@
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/tv_weather_city_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
                                 android:textSize="12sp"
                                 tools:text="Paris, " />
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/tv_weather_city_country"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/tv_weather_main_description"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -159,7 +159,7 @@
                                 android:textSize="16sp"
                                 tools:text="light rain, " />
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/tv_weather_city_temperature"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -187,14 +187,14 @@
                             android:gravity="center|end"
                             android:orientation="vertical">
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/cloudness_placeholder"
                                 android:textColor="@color/iron"
                                 android:textSize="12sp" />
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/humidity_placeholder"
@@ -202,14 +202,14 @@
                                 android:textSize="12sp" />
 
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/pressure_placeholder"
                                 android:textColor="@color/iron"
                                 android:textSize="12sp" />
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/wind_placeholder"
@@ -227,7 +227,7 @@
                             android:orientation="vertical">
 
                             <!-- Cloudiness -->
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/tv_weather_extra_cloudiness"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -237,7 +237,7 @@
                             <!-- Cloudiness -->
 
                             <!-- Humidity -->
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/tv_weather_extra_humidity"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -247,7 +247,7 @@
                             <!-- Humidity -->
 
                             <!-- Pressure -->
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/tv_weather_extra_pressure"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -257,7 +257,7 @@
                             <!-- Humidity -->
 
                             <!-- Wind -->
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/tv_weather_extra_wind"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -289,14 +289,14 @@
                         android:gravity="start|center"
                         android:orientation="horizontal">
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
                             android:scaleType="centerInside"
                             tools:src="@drawable/ic_location_on" />
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:adjustViewBounds="true"
@@ -314,7 +314,7 @@
                         android:gravity="end|center"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/small_margin"
@@ -322,7 +322,7 @@
                             android:text="@string/weather_data_provided_by"
                             android:textColor="@color/white" />
 
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:layout_width="wrap_content"
                             android:layout_height="48dp"
                             android:adjustViewBounds="true"
@@ -337,7 +337,7 @@
             </LinearLayout>
             <!-- Main Linear Layout -->
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
 
         <Button

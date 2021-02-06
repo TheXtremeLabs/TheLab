@@ -9,13 +9,15 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+;
+
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -43,16 +45,16 @@ public class SpeechToTextActivity extends SimpleActivity
 
     // Views
     @BindView(R.id.speech_input_textView)
-    TextView inputTextView;
+    MaterialTextView inputTextView;
 
     @BindView(R.id.speech_button)
     AppCompatImageButton speechButton;
 
     @BindView(R.id.recording_textView)
-    TextView recordingPlaceholderTextView;
+    MaterialTextView recordingPlaceholderTextView;
 
     @BindView(R.id.eq_imageView)
-    ImageView eqImageView;
+    ShapeableImageView eqImageView;
 
     // Speech
     SpeechRecognizer speech;

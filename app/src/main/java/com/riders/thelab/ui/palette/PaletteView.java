@@ -3,11 +3,13 @@ package com.riders.thelab.ui.palette;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.widget.ImageView;
-import android.widget.TextView;
+;
+
 
 import androidx.palette.graphics.Palette;
 
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.ui.base.BaseViewImpl;
 import com.squareup.picasso.Callback;
@@ -30,20 +32,20 @@ public class PaletteView extends BaseViewImpl<PalettePresenter>
 
     //Views
     @BindView(R.id.palette_image)
-    ImageView imageView;
+    ShapeableImageView imageView;
 
     @BindView(R.id.textVibrant)
-    TextView textVibrant;
+    MaterialTextView textVibrant;
     @BindView(R.id.textVibrantLight)
-    TextView textVibrantLight;
+    MaterialTextView textVibrantLight;
     @BindView(R.id.textVibrantDark)
-    TextView textVibrantDark;
+    MaterialTextView textVibrantDark;
     @BindView(R.id.textMuted)
-    TextView textMuted;
+    MaterialTextView textMuted;
     @BindView(R.id.textMutedLight)
-    TextView textMutedLight;
+    MaterialTextView textMutedLight;
     @BindView(R.id.textMutedDark)
-    TextView textMutedDark;
+    MaterialTextView textMutedDark;
 
 
     @Inject

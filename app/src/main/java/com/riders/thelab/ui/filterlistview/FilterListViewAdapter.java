@@ -6,8 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
+
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.WorldPopulation;
 
@@ -107,9 +108,9 @@ public class FilterListViewAdapter extends BaseAdapter {
     }
 
     public class ViewHolder {
-        TextView rank;
-        TextView country;
-        TextView population;
+        MaterialTextView rank;
+        MaterialTextView country;
+        MaterialTextView population;
     }
 
 }
