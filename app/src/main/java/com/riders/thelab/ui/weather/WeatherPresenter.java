@@ -109,8 +109,6 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                                                                 Timber.d("Unzipped downloaded file...");
                                                                 // Step 1 : Unzip
                                                                 String unzippedGZipResult = LabFileManager.unzipGzip(responseBody);
-                                                                Timber.d("Unzip result : %s", unzippedGZipResult);
-
 
                                                                 if (Validator.isEmpty(unzippedGZipResult)){
                                                                     Timber.e("Result is empty");

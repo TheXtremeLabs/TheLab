@@ -159,6 +159,8 @@ dependencies {
     // Glide
     implementation rootProject.ext.generalDependencies.glide
     annotationProcessor rootProject.ext.generalDependencies.glideAnnotation
+    implementation rootProject.ext.generalDependencies.blurry
+    implementation rootProject.ext.generalDependencies.glideTransformation
 
     /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
     implementation rootProject.ext.generalDependencies.retrofit

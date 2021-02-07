@@ -29,7 +29,10 @@ import com.riders.thelab.ui.base.SimpleActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import timber.log.Timber;
+
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 @SuppressLint("NonConstantResourceId")
 public class YoutubeLikeDetailActivity extends SimpleActivity {
@@ -100,6 +103,7 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
         //Load the background  thumb image
         Glide.with(this)
                 .load(item.getImageThumb())
+                .apply(bitmapTransform(new BlurTransformation(25, 3)))
                 .into(imageThumbBlurred);
 
 //        ImageManagerUtils.setBlurredImage(this, imageThumbBlurred, 5);
