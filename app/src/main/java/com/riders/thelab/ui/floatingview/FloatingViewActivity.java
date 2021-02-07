@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.riders.thelab.R;
 import com.riders.thelab.core.service.FloatingViewService;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
@@ -22,7 +22,7 @@ import timber.log.Timber;
 public class FloatingViewActivity extends SimpleActivity {
 
     @BindView(R.id.notify_me)
-    Button btnNotifyMe;
+    MaterialButton btnNotifyMe;
 
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
 

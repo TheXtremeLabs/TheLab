@@ -7,9 +7,9 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.riders.thelab.R;
@@ -44,7 +44,7 @@ public class AddContactView extends BaseViewImpl<AddContactPresenter>
     @BindView(R.id.input_layout_password)
     TextInputLayout inputLayoutPassword;
     @BindView(R.id.floating_labels_btn_signup)
-    Button btnSignUp;
+    MaterialButton btnSignUp;
 
     @Inject
     AddContactView(AddContactActivity context) {

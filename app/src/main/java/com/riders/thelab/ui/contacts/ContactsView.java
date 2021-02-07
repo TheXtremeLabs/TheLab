@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.UIManager;
@@ -304,7 +304,7 @@ public class ContactsView extends BaseViewImpl<ContactsPresenter>
     //     hold this. In this example, there is only one TextView.
     static class NoContactIncludedLayout {
         @BindView(R.id.btn_add_new_contact)
-        Button btnAddNewContact;
+        MaterialButton btnAddNewContact;
 
     }
 

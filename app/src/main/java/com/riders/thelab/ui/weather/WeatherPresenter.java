@@ -97,7 +97,6 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                                         // Si , non call le ws -> save dans la db
                                         Timber.e("List is empty. No Record found in database");
 
-                                        final ResponseBody[] fileToUnzip = new ResponseBody[1];
 
                                         Timber.e("Call web service...");
                                         // Call web service
@@ -105,13 +104,11 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                                                 .subscribe(
                                                         responseBody -> {
 
-                                                            fileToUnzip[0] = responseBody;
-
                                                             try {
 
                                                                 Timber.d("Unzipped downloaded file...");
                                                                 // Step 1 : Unzip
-                                                                String unzippedGZipResult = LabFileManager.unzipGzip(fileToUnzip[0]);
+                                                                String unzippedGZipResult = LabFileManager.unzipGzip(responseBody);
                                                                 Timber.d("Unzip result : %s", unzippedGZipResult);
 
 
@@ -150,7 +147,7 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                                                         });
 
                                     } else {
-                                        // Si , oui tu recuperes de la db
+                                        // Si, oui tu recuperes de la db
                                         Timber.d("Record found in database. Continue...");
                                     }
                                 }, throwable -> {
