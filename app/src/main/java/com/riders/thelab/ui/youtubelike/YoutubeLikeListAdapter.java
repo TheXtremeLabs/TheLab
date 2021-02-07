@@ -3,6 +3,8 @@ package com.riders.thelab.ui.youtubelike;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +23,10 @@ public class YoutubeLikeListAdapter extends RecyclerView.Adapter<YoutubeLikeView
     private final Context context;
     private final List<Video> youtubeList;
     private final YoutubeListClickListener listener;
+
+    // Allows to remember the last item shown on screen
+    private int lastPosition = -1;
+
 
     public YoutubeLikeListAdapter(Context context, List<Video> youtubeList,
                                   YoutubeListClickListener listener) {
@@ -70,5 +76,12 @@ public class YoutubeLikeListAdapter extends RecyclerView.Adapter<YoutubeLikeView
                         holder.getImageView(),
                         itemYoutubeVideo,
                         holder.getAdapterPosition()));
+
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+            holder.itemCardView.startAnimation(animation);
+            lastPosition = position;
+        }
     }
 }
