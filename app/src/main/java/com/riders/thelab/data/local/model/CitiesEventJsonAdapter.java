@@ -1,9 +1,9 @@
 package com.riders.thelab.data.local.model;
 
 import com.riders.thelab.data.remote.dto.weather.City;
+import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 import com.squareup.moshi.FromJson;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +16,7 @@ import java.util.List;
 public class CitiesEventJsonAdapter {
 
     @FromJson
-    List<City> citiesFromJson(CitiesEventJson citiesEventJson) {
-        return citiesEventJson.citiesList;
+    List<City> citiesFromJson(List<City> citiesEventJson) {
+        return citiesEventJson;
     }
 }

@@ -15,7 +15,6 @@ import lombok.ToString;
  * Reference : https://github.com/square/moshi
  */
 @Getter
-@ToString
 public class CitiesEventJson {
 
     List<City> citiesList;

@@ -21,19 +21,23 @@ ext {
 
     autoFillVersion = '1.1.0'
 
+    // Worker
+    workerVersion = '2.5.0'
+    concurrentVersion = '1.1.0'
+
+//    roomVersion = "2.2.5"
+    roomVersion = '2.3.0-beta01'
+
+    daggerVersion = '2.31.2'
+
     googleApiClientVersion = '1.31.2'
     mapsVersion = '17.0.0'
     mapsUtilsVersion = '2.2.0'
     locationVersion = "17.1.0"
     placesVersion = "2.4.0"
 
-    firebaseBomVersion = "26.0.0"
-    adsVersion = "19.5.0"
-
-//    roomVersion = "2.2.5"
-    roomVersion = '2.3.0-beta01'
-
-    daggerVersion = '2.31.2'
+    firebaseBomVersion = '26.0.0'
+    adsVersion = '19.5.0'
 
     parcelerVersion = '1.1.13'
 
@@ -42,9 +46,10 @@ ext {
 
     butterknifeVersion = '10.2.3'
 
-    retrofit2Version = "2.9.0"
-    okhttp3LoggingVersion = '5.0.0-alpha.2'
+    retrofit2Version = '2.9.0'
+    okhttpBomVersion = '5.0.0-alpha.2'
 
+    gsonVersion = '2.8.6'
     moshiVersion = '1.11.0'
 
     picassoVersion = '2.71828'
@@ -88,23 +93,12 @@ ext {
 
             autoFill              : "androidx.autofill:autofill:$autoFillVersion",
 
+            // Worker
+            workerRuntime         : "androidx.work:work-runtime:$workerVersion",
+            workerRxJava3         : "androidx.work:work-rxjava3:$workerVersion",
+            workerMultiprocess    : "androidx.work:work-multiprocess:$workerVersion",
+            concurrent            : "androidx.concurrent:concurrent-futures:$concurrentVersion",
 
-            // Maps
-            googleAPIClient       : "com.google.api-client:google-api-client:$googleApiClientVersion",
-            maps                  : "com.google.android.gms:play-services-maps:$mapsVersion",
-            mapsUtils             : "com.google.maps.android:android-maps-utils:$mapsUtilsVersion",
-            location              : "com.google.android.gms:play-services-location:$locationVersion",
-            places                : "com.google.android.libraries.places:places:$placesVersion",
-
-
-            firebasePlatform      : "com.google.firebase:firebase-bom:$firebaseBomVersion",
-            firebaseAnalitycs     : "com.google.firebase:firebase-analytics",
-            firebaseAuth          : "com.google.firebase:firebase-auth",
-            firebaseCraslytics    : "com.google.firebase:firebase-crashlytics",
-            firebaseMessaging     : "com.google.firebase:firebase-messaging",
-            firebasePerf          : "com.google.firebase:firebase-perf",
-            firebaseCloudstorage  : "com.google.firebase:firebase-storage",
-            firebaseAds           : "com.google.android.gms:play-services-ads:$adsVersion",
 
             /* Android Architecture Component - Room Persistance Lib  */
             roomRuntime           : "androidx.room:room-runtime:$roomVersion",
@@ -119,6 +113,23 @@ ext {
             daggerAndroid         : "com.google.dagger:dagger-android:$daggerVersion",
             daggerAndroidSupport  : "com.google.dagger:dagger-android-support:$daggerVersion",// if you use the support libraries
             daggerAndroidProcessor: "com.google.dagger:dagger-android-processor:$daggerVersion",
+
+            // Maps
+            googleAPIClient       : "com.google.api-client:google-api-client:$googleApiClientVersion",
+            maps                  : "com.google.android.gms:play-services-maps:$mapsVersion",
+            mapsUtils             : "com.google.maps.android:android-maps-utils:$mapsUtilsVersion",
+            location              : "com.google.android.gms:play-services-location:$locationVersion",
+            places                : "com.google.android.libraries.places:places:$placesVersion",
+
+            firebasePlatform      : "com.google.firebase:firebase-bom:$firebaseBomVersion",
+            firebaseAnalitycs     : "com.google.firebase:firebase-analytics",
+            firebaseAuth          : "com.google.firebase:firebase-auth",
+            firebaseCraslytics    : "com.google.firebase:firebase-crashlytics",
+            firebaseMessaging     : "com.google.firebase:firebase-messaging",
+            firebasePerf          : "com.google.firebase:firebase-perf",
+            firebaseCloudstorage  : "com.google.firebase:firebase-storage",
+            firebaseAds           : "com.google.android.gms:play-services-ads:$adsVersion",
+
 
             // Parceler
             parceler              : "org.parceler:parceler-api:$parcelerVersion",
@@ -137,7 +148,15 @@ ext {
             retrofit              : "com.squareup.retrofit2:retrofit:$retrofit2Version",
             retrofitConverterGson : "com.squareup.retrofit2:converter-gson:$retrofit2Version",
             retrofitRxJava        : "com.squareup.retrofit2:adapter-rxjava3:$retrofit2Version",
-            okhttp3Logging        : "com.squareup.okhttp3:logging-interceptor:$okhttp3LoggingVersion",
+
+            // OkHttp
+            okHttpBom             : "com.squareup.okhttp3:okhttp-bom:$okhttpBomVersion",
+            okHttp                : "com.squareup.okhttp3:okhttp",
+            okHttpLogging         : "com.squareup.okhttp3:logging-interceptor",
+
+            // Gson
+            gson                  : "com.google.code.gson:gson:$gsonVersion",
+            // Moshi
             moshi                 : "com.squareup.moshi:moshi:$moshiVersion",
 
             // EventBus
@@ -178,7 +197,9 @@ ext {
 
             junit    : "junit:junit:$junitVersion",
             testJUnit: "androidx.test.ext:junit:$testJUnitVersion",
-            espresso : "androidx.test.espresso:espresso-core:$testEspressoVersion"
+            espresso : "androidx.test.espresso:espresso-core:$testEspressoVersion",
+
+            workTest : "androidx.work:work-testing:$workerVersion"
     ]
 }
 

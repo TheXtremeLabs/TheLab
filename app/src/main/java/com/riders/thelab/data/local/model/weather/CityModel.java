@@ -6,6 +6,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.riders.thelab.data.remote.dto.weather.City;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,7 +16,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class City {
+public class CityModel {
 
     @PrimaryKey
     @NonNull
@@ -31,11 +33,11 @@ public class City {
     @ColumnInfo(name = "latitude")
     public double latitude;
 
-    public City() {
+    public CityModel() {
     }
 
     @Ignore
-    public City(com.riders.thelab.data.remote.dto.weather.City dtoCity) {
+    public CityModel(City dtoCity) {
         // TODO create mapper
         setId(dtoCity.getId());
         setName(dtoCity.getName());

@@ -1,6 +1,6 @@
 package com.riders.thelab.ui.weather;
 
-import com.riders.thelab.data.local.model.weather.City;
+import com.riders.thelab.data.local.model.weather.CityModel;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 import com.riders.thelab.ui.base.BaseView;
 
@@ -22,7 +22,7 @@ public interface WeatherContract {
 
         void onNoConnectionDetected();
 
-        void onFetchCitySuccessful(List<City> cityList);
+        void onFetchCitySuccessful(List<CityModel> cityList);
 
         void onFetchCityError();
 

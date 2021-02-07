@@ -25,7 +25,7 @@ import com.riders.thelab.R;
 import com.riders.thelab.core.bus.LocationFetchedEvent;
 import com.riders.thelab.core.utils.LabLocationManager;
 import com.riders.thelab.core.utils.UIManager;
-import com.riders.thelab.data.local.model.weather.City;
+import com.riders.thelab.data.local.model.weather.CityModel;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 import com.riders.thelab.ui.base.BaseViewImpl;
 import com.riders.thelab.utils.Constants;
@@ -182,7 +182,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     }
 
     @Override
-    public void onFetchCitySuccessful(List<City> cityList) {
+    public void onFetchCitySuccessful(List<CityModel> cityList) {
         Timber.d("onFetchCitySuccessful()");
 
 //        mSpinnerAdapter = new WeatherCityAdapter(context, cityList, this);
@@ -191,7 +191,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
 //        spinner.setAdapter(mSpinnerAdapter);
 
         WeatherCityAdapter mSpinnerAdapter =
-                new WeatherCityAdapter(context, R.layout.row_city_spinner, (ArrayList<City>) cityList);
+                new WeatherCityAdapter(context, R.layout.row_city_spinner, (ArrayList<CityModel>) cityList);
         // Set the minimum number of characters, to show suggestions
         autoCompleteCityName.setThreshold(1);
         autoCompleteCityName.setAdapter(mSpinnerAdapter);
@@ -313,7 +313,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
             inputManager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
 
-        City city = (City) parent.getItemAtPosition(position);
+        CityModel city = (CityModel) parent.getItemAtPosition(position);
 
         String szCity = city.getName() + "," + city.getCountry();
         Timber.d("position selected, with value of %s", city);
