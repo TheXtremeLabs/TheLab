@@ -4,7 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.riders.thelab.data.local.model.weather.City;
+import com.riders.thelab.data.local.model.weather.CityModel;
 
 import java.util.List;
 
@@ -17,18 +17,18 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 public interface WeatherDao {
 
     @Insert(onConflict = REPLACE)
-    Maybe<Long> insertRX(City city);
+    Maybe<Long> insertRX(CityModel city);
 
     /* Method to insert contacts fetched from api to room */
     @Insert(onConflict = REPLACE)
-    void insert(City city);
+    void insert(CityModel city);
 
     @Insert(onConflict = REPLACE)
-    Maybe<List<Long>> insertAllRX(List<City> cities);
+    Maybe<List<Long>> insertAllRX(List<CityModel> cities);
 
     /* Method to fetch contacts stored locally */
     @Query("SELECT * FROM city")
-    Single<List<City>> getCities();
+    Single<List<CityModel>> getCities();
 
 
     @Query("DELETE FROM city")

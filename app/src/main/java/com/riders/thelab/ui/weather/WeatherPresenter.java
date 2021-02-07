@@ -2,7 +2,6 @@ package com.riders.thelab.ui.weather;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
-import android.os.Looper;
 
 import androidx.annotation.RequiresApi;
 
@@ -10,19 +9,21 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.riders.thelab.core.utils.LabFileManager;
 import com.riders.thelab.data.local.LabRepository;
-import com.riders.thelab.data.local.model.CitiesEventJson;
 import com.riders.thelab.data.local.model.CitiesEventJsonAdapter;
-import com.riders.thelab.data.local.model.weather.City;
+import com.riders.thelab.data.local.model.weather.CityModel;
 import com.riders.thelab.data.remote.LabService;
+import com.riders.thelab.data.remote.dto.weather.City;
 import com.riders.thelab.ui.base.BasePresenterImpl;
 import com.riders.thelab.utils.Constants;
 import com.riders.thelab.utils.Validator;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,12 +31,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.Timer;
 
 import javax.inject.Inject;
 
 import io.reactivex.annotations.NonNull;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleObserver;
@@ -72,10 +71,10 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     // prone as you might forgot to dispose.
     // In this case we can use CompositeDisposable.
     private final CompositeDisposable compositeDisposable;
-    private Observable<List<City>> mCityListObservable;
+    private Observable<List<CityModel>> mCityListObservable;
 
 
-    private ArrayList<City> cities;
+    private ArrayList<CityModel> citiesModel;
     private Gson mGson;
 
 
@@ -110,7 +109,7 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                                                                 // Step 1 : Unzip
                                                                 String unzippedGZipResult = LabFileManager.unzipGzip(responseBody);
 
-                                                                if (Validator.isEmpty(unzippedGZipResult)){
+                                                                if (Validator.isEmpty(unzippedGZipResult)) {
                                                                     Timber.e("Result is empty");
                                                                     return;
                                                                 }
@@ -121,19 +120,15 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                                                                         new Moshi.Builder()
                                                                                 .add(new CitiesEventJsonAdapter())
                                                                                 .build();
-                                                                JsonAdapter<CitiesEventJson> jsonAdapter = moshi.adapter(CitiesEventJson.class);
 
-                                                                List<com.riders.thelab.data.remote.dto.weather.City> cities =
-                                                                        jsonAdapter.fromJson(unzippedGZipResult).getCitiesList();
+                                                                Type type = Types.newParameterizedType(List.class, City.class);
+                                                                JsonAdapter<List<City>> jsonAdapter = moshi.adapter(type);
+
+                                                                List<City> dtoCities = jsonAdapter.fromJson(unzippedGZipResult);
 
                                                                 Timber.d("Save in database...");
                                                                 // Step 3 save in database
-                                                                repository.insertAllCities(cities)
-                                                                        .subscribe(aLong -> {
-                                                                            Timber.d("long inserted :%S", aLong);
-                                                                        }, throwable -> {
-                                                                            Timber.e(throwable);
-                                                                        });
+                                                                saveCities(dtoCities);
                                                             } catch (Exception e) {
                                                                 Timber.e(e);
                                                             }
@@ -172,6 +167,17 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                 .subscribeOn(Schedulers.io());
     }
 
+
+    public void saveCities(List<City> dtoCities) {
+        repository.insertAllCities(dtoCities)
+                .subscribe(aLong -> {
+                    Timber.d("long inserted :%S", aLong);
+                }, throwable -> {
+                    Timber.e(throwable);
+                });
+    }
+
+
     @Override
     public void getWeather(String city) {
 
@@ -208,7 +214,7 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     //
     /////////////////////////////////////
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public Observable<List<City>> getDataFromJson(String fileName) {
+    public Observable<List<CityModel>> getDataFromJson(String fileName) {
 
         return Observable.fromCallable(() -> {
 
@@ -226,27 +232,27 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
 
             mGson.toJson(json);
 
-            return mGson.fromJson(json, new TypeToken<List<City>>() {
+            return mGson.fromJson(json, new TypeToken<List<CityModel>>() {
             }.getType());
         });
     }
 
-    public DisposableObserver<List<City>> getCitiesObserver() {
+    public DisposableObserver<List<CityModel>> getCitiesObserver() {
 
-        cities = new ArrayList<>();
+        citiesModel = new ArrayList<>();
 
-        return new DisposableObserver<List<City>>() {
+        return new DisposableObserver<List<CityModel>>() {
             @Override
-            public void onNext(@NotNull List<City> cityList) {
+            public void onNext(@NotNull List<CityModel> cityList) {
 
-                for (City element : cityList) {
+                for (CityModel element : cityList) {
 
                     if (element.getCountry().equals(Constants.WEATHER_COUNTRY_CODE_FRANCE)
                             || element.getCountry().equals(Constants.WEATHER_COUNTRY_CODE_GUADELOUPE)
                             || element.getCountry().equals(Constants.WEATHER_COUNTRY_CODE_MARTINIQUE)
                             || element.getCountry().equals(Constants.WEATHER_COUNTRY_CODE_GUYANE)
                             || element.getCountry().equals(Constants.WEATHER_COUNTRY_CODE_REUNION))
-                        cities.add(element);
+                        citiesModel.add(element);
                 }
             }
 
@@ -262,7 +268,7 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
             public void onComplete() {
 
                 getView().hideLoader();
-                getView().onFetchCitySuccessful(cities);
+                getView().onFetchCitySuccessful(citiesModel);
             }
         };
     }

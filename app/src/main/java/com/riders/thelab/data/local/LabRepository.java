@@ -3,7 +3,9 @@ package com.riders.thelab.data.local;
 import com.riders.thelab.data.local.dao.ContactDao;
 import com.riders.thelab.data.local.dao.WeatherDao;
 import com.riders.thelab.data.local.model.Contact;
-import com.riders.thelab.data.local.model.weather.City;
+import com.riders.thelab.data.local.model.weather.CityMapper;
+import com.riders.thelab.data.local.model.weather.CityModel;
+import com.riders.thelab.data.remote.dto.weather.City;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +52,9 @@ public class LabRepository {
         contactDao.insert(contactListToDatabase);
     }
 
-    public Maybe<List<Long>> insertAllCities(final List<com.riders.thelab.data.remote.dto.weather.City> dtoCities) {
+    public Maybe<List<Long>> insertAllCities(final List<City> dtoCities) {
 
-        List<City> citiesToDatabase = new ArrayList<>();
-        for (com.riders.thelab.data.remote.dto.weather.City city  : dtoCities) {
-            citiesToDatabase.add(new com.riders.thelab.data.local.model.weather.City(city));
-        }
-
+        List<CityModel> citiesToDatabase = new ArrayList<>(CityMapper.getCityList(dtoCities));
         return weatherDao.insertAllRX(citiesToDatabase)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -78,7 +76,7 @@ public class LabRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<List<com.riders.thelab.data.local.model.weather.City>> getAllCities() {
+    public Single<List<CityModel>> getAllCities() {
         return weatherDao.getCities()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

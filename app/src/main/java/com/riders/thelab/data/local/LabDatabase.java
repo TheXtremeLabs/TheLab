@@ -6,10 +6,10 @@ import androidx.room.RoomDatabase;
 import com.riders.thelab.data.local.dao.ContactDao;
 import com.riders.thelab.data.local.dao.WeatherDao;
 import com.riders.thelab.data.local.model.Contact;
-import com.riders.thelab.data.local.model.weather.City;
+import com.riders.thelab.data.local.model.weather.CityModel;
 
 @Database(
-        entities = {Contact.class, City.class},
+        entities = {Contact.class, CityModel.class},
         version = 3,
         exportSchema = false)
 public abstract class LabDatabase extends RoomDatabase {

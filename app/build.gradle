@@ -92,6 +92,9 @@ android {
 
 dependencies {
 
+    /////////////////////////////
+    // General Dependencies
+    /////////////////////////////
     // AndroidX
     implementation rootProject.ext.generalDependencies.multidex
     implementation rootProject.ext.generalDependencies.core
@@ -110,6 +113,13 @@ dependencies {
     implementation rootProject.ext.generalDependencies.viewPager2
 
     implementation rootProject.ext.generalDependencies.autoFill
+
+    // Worker
+    implementation rootProject.ext.generalDependencies.workerRuntime
+    implementation rootProject.ext.generalDependencies.workerRxJava3
+    implementation rootProject.ext.generalDependencies.workerMultiprocess
+    androidTestImplementation rootProject.ext.testDependencies.workTest
+    implementation rootProject.ext.generalDependencies.concurrent
 
     //Room
     implementation rootProject.ext.generalDependencies.roomRuntime
@@ -166,9 +176,20 @@ dependencies {
     implementation rootProject.ext.generalDependencies.retrofit
     implementation rootProject.ext.generalDependencies.retrofitConverterGson
     implementation rootProject.ext.generalDependencies.retrofitRxJava
-    implementation rootProject.ext.generalDependencies.okhttp3Logging
     implementation rootProject.ext.generalDependencies.moshi
 
+    // OkHttp
+    // define a BOM and its version
+    implementation(platform(rootProject.ext.generalDependencies.okHttpBom))
+
+    // define any required OkHttp artifacts without version
+    implementation rootProject.ext.generalDependencies.okHttp
+    implementation rootProject.ext.generalDependencies.okHttpLogging
+
+    // Gson
+    implementation rootProject.ext.generalDependencies.gson
+    // Moshi
+    implementation rootProject.ext.generalDependencies.moshi
 
     // Parceler
     implementation rootProject.ext.generalDependencies.parceler
@@ -196,8 +217,13 @@ dependencies {
     implementation rootProject.ext.generalDependencies.timber
 
 
-    testImplementation 'junit:junit:4.13.1'
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    /////////////////////////////
+    // Tests Dependencies
+    /////////////////////////////
+    testImplementation rootProject.ext.testDependencies.junit
+
+
+    androidTestImplementation rootProject.ext.testDependencies.testJUnit
+    androidTestImplementation rootProject.ext.testDependencies.espresso
 }

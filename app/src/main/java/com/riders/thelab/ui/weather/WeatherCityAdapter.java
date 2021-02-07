@@ -13,11 +13,10 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
-import com.riders.thelab.data.local.model.weather.City;
+import com.riders.thelab.data.local.model.weather.CityModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /*
 public class WeatherCityAdapter extends RecyclerView.Adapter<WeatherCityViewHolder>
@@ -131,25 +130,25 @@ public class WeatherCityAdapter extends RecyclerView.Adapter<WeatherCityViewHold
 /*
 FOR SPINNER
 */
-public class WeatherCityAdapter extends ArrayAdapter<City> {
+public class WeatherCityAdapter extends ArrayAdapter<CityModel> {
 
     private final Context context;
     private final int viewResourceId;
-    private List<City> items;
-    private List<City> itemsAll;
-    private List<City> suggestions;
+    private List<CityModel> items;
+    private List<CityModel> itemsAll;
+    private List<CityModel> suggestions;
 
     private final Filter mFilter = new Filter() {
         @Override
         public String convertResultToString(Object resultValue) {
-            return ((City) (resultValue)).getName();
+            return ((CityModel) (resultValue)).getName();
         }
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             if (constraint != null) {
                 suggestions.clear();
-                for (City City : itemsAll) {
+                for (CityModel City : itemsAll) {
                     if (City.getName().toLowerCase().startsWith(constraint.toString().toLowerCase())) {
                         suggestions.add(City);
                     }
@@ -165,10 +164,10 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            ArrayList<City> filteredList = (ArrayList<City>) results.values;
+            ArrayList<CityModel> filteredList = (ArrayList<CityModel>) results.values;
             if (results != null && results.count > 0) {
                 clear();
-                for (City c : filteredList) {
+                for (CityModel c : filteredList) {
                     add(c);
                 }
                 notifyDataSetChanged();
@@ -179,13 +178,13 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
 
     public WeatherCityAdapter(@NonNull Context context,
                               int viewResourceId,
-                              @NonNull ArrayList<City> items) {
+                              @NonNull ArrayList<CityModel> items) {
         super(context, viewResourceId, items);
 
         this.context = context;
 
         this.items = items;
-        this.itemsAll = (List<City>) items.clone();
+        this.itemsAll = (List<CityModel>) items.clone();
         this.suggestions = new ArrayList<>();
         this.viewResourceId = viewResourceId;
     }
@@ -199,7 +198,7 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
 
     @Nullable
     @Override
-    public City getItem(int position) {
+    public CityModel getItem(int position) {
         return items.get(position);
     }
 
@@ -208,7 +207,7 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
         return position;
     }
 
-    public void populateItem(City item) {
+    public void populateItem(CityModel item) {
         items.add(item);
         notifyDataSetChanged();
     }
@@ -223,7 +222,7 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
             view = inflater.inflate(viewResourceId, null);
         }
 
-        City cityItem = items.get(position);
+        CityModel cityItem = items.get(position);
 
         if (cityItem != null) {
             MaterialTextView tvCityName = view.findViewById(R.id.row_city_name_textView);
