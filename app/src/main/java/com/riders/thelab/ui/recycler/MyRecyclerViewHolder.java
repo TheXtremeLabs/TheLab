@@ -3,16 +3,13 @@ package com.riders.thelab.ui.recycler;
 
 import android.annotation.SuppressLint;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-;
 import android.widget.RelativeLayout;
 
-
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
@@ -38,9 +35,9 @@ public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.row_details_linear_layout)
     public RelativeLayout detailsLinearLayout;
     @BindView(R.id.row_detail_btn)
-    public Button btnDetail;
+    public MaterialButton btnDetail;
     @BindView(R.id.row_delete_btn)
-    public ImageButton btnDelete;
+    public AppCompatImageButton btnDelete;
 
     private static RecyclerItem itemSelection;
     private static int position;

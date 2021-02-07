@@ -5,16 +5,12 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.Button;
-;
 import android.widget.ProgressBar;
-
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
@@ -82,7 +79,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     @BindView(R.id.tv_weather_extra_wind)
     MaterialTextView tvWeatherExtraWind;
     @BindView(R.id.btn_current_location)
-    Button currentLocationButton;
+    MaterialButton currentLocationButton;
 
     @Inject
     WeatherView(WeatherActivity context) {

@@ -43,6 +43,20 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight" />
 
 
+    <style name="AppItemImageViewShape" parent="">
+        <!-- Top Left -->
+        <item name="cornerSizeTopLeft">56dp</item>
+        <item name="cornerFamilyTopLeft">cut</item>
+        <!-- Top Right -->
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerFamilyTopRight">rounded</item>
+        <!-- Bottom Right-->
+        <item name="cornerSizeBottomRight">16dp</item>
+        <item name="cornerFamilyBottomRight">rounded</item>
+    </style>
+
+
+
     <!-- Splash Theme -->
     <style name="SplashTheme" parent="Theme.TheLab">
         <item name="android:windowNoTitle">true</item>

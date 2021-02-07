@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -15,6 +14,7 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver;
@@ -46,7 +46,7 @@ public class ScheduleView extends BaseViewImpl<SchedulePresenter>
     @BindView(R.id.time)
     EditText mEditText;
     @BindView(R.id.button)
-    Button start;
+    MaterialButton start;
     @BindView(R.id.ll_delay_time_container)
     LinearLayout llDelayTimeContainer;
     @BindView(R.id.tv_delay_time)
