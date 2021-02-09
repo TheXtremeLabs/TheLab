@@ -1,25 +1,29 @@
 package com.riders.thelab.ui.weather;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+import androidx.appcompat.widget.SearchView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.bus.LocationFetchedEvent;
@@ -29,6 +33,7 @@ import com.riders.thelab.data.local.model.weather.CityModel;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 import com.riders.thelab.ui.base.BaseViewImpl;
 import com.riders.thelab.utils.Constants;
+import com.riders.thelab.utils.DateTimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -42,7 +47,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import timber.log.Timber;
 
@@ -54,32 +58,53 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     private WeatherActivity context;
 
     // Views
+    @BindView(R.id.weather_root_view)
+    CoordinatorLayout rootView;
+    // Loading
     @BindView(R.id.progressBar)
-    ProgressBar progressBar;
-    @BindView(R.id.autocompleteTV_city)
-    AppCompatAutoCompleteTextView autoCompleteCityName;
-    /*@BindView(R.id.sp_city_list)
-    AppCompatSpinner spinner;*/
-    @BindView(R.id.iv_weather_icon)
-    ShapeableImageView ivWeatherIcon;
+    LinearProgressIndicator progressBar;
+    @BindView(R.id.tvDownloadStatus)
+    MaterialTextView tvDownloadStatus;
+
+    // Weather container
+    @BindView(R.id.weather_data_container)
+    RelativeLayout weatherDataContainer;
+    // City
     @BindView(R.id.tv_weather_city_name)
     MaterialTextView tvWeatherCityName;
     @BindView(R.id.tv_weather_city_country)
     MaterialTextView tvWeatherCityCountry;
+    // Icon / Temperatures
+    @BindView(R.id.iv_weather_icon)
+    ShapeableImageView ivWeatherIcon;
     @BindView(R.id.tv_weather_main_description)
     MaterialTextView tvWeatherDescription;
     @BindView(R.id.tv_weather_city_temperature)
     MaterialTextView tvWeatherCityTemperature;
+    @BindView(R.id.tv_weather_city_real_feels)
+    MaterialTextView tvWeatherRealFeels;
+    // Sunrise / Sunset
+    @BindView(R.id.tv_sunrise)
+    MaterialTextView tvWeatherSunrise;
+    @BindView(R.id.tv_sunset)
+    MaterialTextView tvWeatherSunset;
+    // Extras
     @BindView(R.id.tv_weather_extra_cloudiness)
     MaterialTextView tvWeatherExtraCloudiness;
-    @BindView(R.id.tv_weather_extra_humidity)
-    MaterialTextView tvWeatherExtraHumidity;
     @BindView(R.id.tv_weather_extra_pressure)
     MaterialTextView tvWeatherExtraPressure;
-    @BindView(R.id.tv_weather_extra_wind)
-    MaterialTextView tvWeatherExtraWind;
-    @BindView(R.id.btn_current_location)
-    MaterialButton currentLocationButton;
+    @BindView(R.id.tv_weather_extra_wind_speed)
+    MaterialTextView tvWeatherExtraWindSpeed;
+    @BindView(R.id.tv_weather_extra_wind_direction)
+    MaterialTextView tvWeatherExtraWindDirection;
+    @BindView(R.id.tv_weather_extra_humidity)
+    MaterialTextView tvWeatherExtraHumidity;
+
+
+    private SearchView searchView;
+
+    private List<CityModel> citiesList;
+    private WeatherCityAdapter mAdapter;
 
     @Inject
     WeatherView(WeatherActivity context) {
@@ -95,16 +120,76 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         context.getSupportActionBar().setTitle(context.getString(R.string.activity_title_weather));
 
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
-
-        setListeners();
     }
 
     @Override
     public void onStart() {
         Timber.d("onStart()");
 
-        getPresenter().getCityData();
+        getPresenter().getCitiesData();
         EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu) {
+        context.getMenuInflater()
+                .inflate(R.menu.menu_weather, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(context.getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        // listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (query.length() >= 3)
+                    // filter recycler view when query submitted
+                    mAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                if (query.length() >= 3)
+                    // filter recycler view when text is changed
+                    mAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            //noinspection SimplifiableIfStatement
+            case R.id.action_search:
+                Timber.d("noinspection SimplifiableIfStatement");
+                break;
+
+            case R.id.action_position:
+                getPresenter().getCurrentWeather();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        // close search view on back button pressed
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+            return;
+        }
     }
 
     @Override
@@ -129,7 +214,13 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     @Override
     public void hideLoader() {
         Timber.d("hideLoader()");
-        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
+        tvDownloadStatus.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void updateDownloadStatus(String statusMessage) {
+        tvDownloadStatus.setText(statusMessage);
     }
 
     @Override
@@ -148,16 +239,20 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         tvWeatherCityCountry.setText(weatherResponse.getSystem().getCountry());
         tvWeatherDescription.setText(weatherResponse.getWeather().get(0).getDescription());
 
+        // Temperatures
         String temperature = (int) Math.round(weatherResponse.getMain().getTemperature()) +
                 context.getResources().getString(R.string.degree_placeholder);
         tvWeatherCityTemperature.setText(temperature);
+        String realFeels = (int) Math.round(weatherResponse.getMain().getFeelsLike()) +
+                context.getResources().getString(R.string.degree_placeholder);
+        tvWeatherRealFeels.setText(realFeels);
 
         long sunriseMillis = weatherResponse.getSystem().getSunrise();
         long sunsetMillis = weatherResponse.getSystem().getSunset();
 
-        Timber.d("sunrise time : %s", getPresenter().formatMillisToTimeHoursMinutesSeconds(sunriseMillis));
+        tvWeatherSunrise.setText(DateTimeUtils.formatMillisToTimeHoursMinutes(sunriseMillis));
+        tvWeatherSunset.setText(DateTimeUtils.formatMillisToTimeHoursMinutes(sunsetMillis));
 
-        Timber.d("cloudiness : %s", weatherResponse.getClouds().getCloudiness());
 
         String cloudiness = weatherResponse.getClouds().getCloudiness() + " " +
                 context.getResources().getString(R.string.percent_placeholder);
@@ -171,30 +266,34 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
                 context.getResources().getString(R.string.pressure_unit_placeholder);
         tvWeatherExtraPressure.setText(pressure);
 
-        String wind = weatherResponse.getMain().getHumidity() + " " +
+        String wind = weatherResponse.getWind().getSpeed() + " " +
                 context.getResources().getString(R.string.kilometer_unit_placeholder);
-        tvWeatherExtraWind.setText(wind);
+        tvWeatherExtraWindSpeed.setText(wind);
+
+        String windDirection = weatherResponse.getWind().getDegree() + " " +
+                weatherResponse.getWind().getMetrics();
+        tvWeatherExtraWindDirection.setText(windDirection);
     }
 
     @Override
     public void onNoConnectionDetected() {
-
+        context
+                .getLayoutInflater()
+                .inflate(R.layout.no_internet_connection, rootView, true);
     }
 
     @Override
     public void onFetchCitySuccessful(List<CityModel> cityList) {
         Timber.d("onFetchCitySuccessful()");
 
-//        mSpinnerAdapter = new WeatherCityAdapter(context, cityList, this);
-//        autoCompleteCityName.setAdapter(mSpinnerAdapter);
-//        mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinner.setAdapter(mSpinnerAdapter);
+        weatherDataContainer.setVisibility(View.VISIBLE);
 
-        WeatherCityAdapter mSpinnerAdapter =
-                new WeatherCityAdapter(context, R.layout.row_city_spinner, (ArrayList<CityModel>) cityList);
-        // Set the minimum number of characters, to show suggestions
-        autoCompleteCityName.setThreshold(1);
-        autoCompleteCityName.setAdapter(mSpinnerAdapter);
+        this.citiesList = cityList;
+
+        mAdapter = new WeatherCityAdapter(
+                context,
+                R.layout.row_city_spinner,
+                (ArrayList<CityModel>) citiesList);
     }
 
     @Override
@@ -210,21 +309,8 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
                 context,
                 "Unable to find file : " + errorMessage
         );
-
-        autoCompleteCityName.setEnabled(false);
     }
 
-
-    /////////////////////////////////////
-    //
-    // BUTTERKNIFE
-    //
-    /////////////////////////////////////
-    @OnClick(R.id.btn_current_location)
-    void onCurrentLocationButtonClicked() {
-
-        new LabLocationManager(context, context);
-    }
 
     /////////////////////////////////////
     //
@@ -264,13 +350,6 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     // CLASS METHODS
     //
     /////////////////////////////////////
-    private void setListeners() {
-        Timber.d("setListeners()");
-        autoCompleteCityName.setOnItemClickListener(this);
-        autoCompleteCityName.setOnEditorActionListener(this);
-    }
-
-
     public String getWeatherIconFromApi(String weatherIconId) {
         return Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX;
     }
@@ -328,8 +407,8 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
                 || (actionId == EditorInfo.IME_ACTION_DONE)) {
             Timber.e("Done pressed");
 
-            String cityEntered = autoCompleteCityName.getText().toString();
-            getPresenter().getWeather(cityEntered);
+            /*String cityEntered = autoCompleteCityName.getText().toString();
+            getPresenter().getWeather(cityEntered);*/
         }
         return false;
     }

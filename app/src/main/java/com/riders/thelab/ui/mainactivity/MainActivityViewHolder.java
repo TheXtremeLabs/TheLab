@@ -13,11 +13,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,18 +40,16 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.row_item_cardView)
     public MaterialCardView itemCardView;
-
     @BindView(R.id.iv_row_item_background)
     ShapeableImageView backgroundImageView;
-
     @BindView(R.id.row_icon_imageView)
     ShapeableImageView iconImageView;
-
     @BindView(R.id.row_title_textView)
     MaterialTextView titleTextView;
-
     @BindView(R.id.row_description_textView)
     MaterialTextView descriptionTextView;
+    @BindView(R.id.arrow_icon)
+    ShapeableImageView ivArrow;
 
 
     public MainActivityViewHolder(@NonNull Context context, @NonNull View itemView) {
@@ -87,6 +82,12 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
                             Bitmap newBitmap = addGradient(myBitmap);
                             iconImageView.setImageDrawable(new BitmapDrawable(context.getResources(), newBitmap));
+                            return true;
+                        }
+
+                        if (0 != app.getIcon() && app.getTitle().equals("WIP")) {
+                            iconImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.logo_testing));
+                            ivArrow.setVisibility(View.GONE);
                             return true;
                         }
 

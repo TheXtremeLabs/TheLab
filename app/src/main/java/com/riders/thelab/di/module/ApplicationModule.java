@@ -13,7 +13,7 @@ public class ApplicationModule {
 
     private Application mApplication;
 
-    public  ApplicationModule(Application mApplication) {
+    public ApplicationModule(Application mApplication) {
         this.mApplication = mApplication;
     }
 
@@ -28,4 +28,15 @@ public class ApplicationModule {
     Context provideContext() {
         return mApplication;
     }
+
+    /*@Singleton
+    @Provides
+    Configuration provideWorkManagerConfiguration(LabDelegatingWorkerFactory labDelegatingWorkerFactory) {
+        return new Configuration.Builder()
+                .setMinimumLoggingLevel(android.util.Log.DEBUG)
+                .setWorkerFactory(labDelegatingWorkerFactory)
+                .build();
+    }*/
 }
+
+

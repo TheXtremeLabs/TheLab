@@ -1,5 +1,8 @@
 package com.riders.thelab.ui.weather;
 
+import android.view.Menu;
+import android.view.MenuItem;
+
 import com.riders.thelab.data.local.model.weather.CityModel;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 import com.riders.thelab.ui.base.BaseView;
@@ -14,9 +17,17 @@ public interface WeatherContract {
 
         void onStop();
 
+        void onCreateOptionsMenu(Menu menu);
+
+        void onOptionsItemSelected(MenuItem item);
+
+        void onBackPressed();
+
         void showLoader();
 
         void hideLoader();
+
+        void updateDownloadStatus(String statusMessage);
 
         void updateUI(WeatherResponse weatherResponse);
 
@@ -31,7 +42,9 @@ public interface WeatherContract {
 
     interface Presenter {
 
-        void getCityData();
+        void getCitiesData();
+
+        void getCurrentWeather();
 
         void getWeather(String city);
 

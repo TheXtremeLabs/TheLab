@@ -59,7 +59,10 @@ public class TransitionDetailActivity extends SimpleActivity {
                         .addTarget(R.id.iv_logo)
                         .setDuration(250L));*/
 
+
         super.onCreate(savedInstanceState);
+        // Tell the framework to wait.
+        postponeEnterTransition();
         setContentView(R.layout.activity_transition_detail);
 
         ButterKnife.bind(this);

@@ -10,8 +10,11 @@
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+<!--        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>-->
         <!-- Customize your theme here. -->
+
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/dark_grey</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/dark_grey</item>
 
         <!-- enable window content transitions -->
         <!--<item name="android:windowActivityTransitions" tools:ignore="NewApi">true</item>
@@ -38,9 +41,11 @@
         <item name="fontFamily">@font/samsungsans_thin</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.DayNight.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:statusBarColor" tools:ignore="NewApi">@color/default_dark</item>
+    </style>
 
 
     <!-- Main App Item -->

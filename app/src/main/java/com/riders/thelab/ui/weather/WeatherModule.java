@@ -27,4 +27,8 @@ public abstract class WeatherModule {
     @Binds
     abstract BasePresenter providePresenter(WeatherPresenter presenter);
 
+
+    /*@ActivityScope
+    @Binds
+    abstract LabDelegatingWorkerFactory provideWeatherDownloadWorker(LabDelegatingWorkerFactory worker);*/
 }

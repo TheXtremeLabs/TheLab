@@ -49,7 +49,9 @@ import timber.log.Timber;
 public class DataModule {
 
     private Application application;
-    private LabDatabase database;
+    private final LabDatabase database;
+
+    private static DataModule mInstance;
 
     public DataModule(Application application) {
         this.application = application;
@@ -60,7 +62,19 @@ public class DataModule {
                         LabDatabase.DATABASE_NAME)
                 .fallbackToDestructiveMigration()
                 .build();
+
+        mInstance = this;
     }
+
+
+    public static DataModule getInstance() {
+        return mInstance;
+    }
+
+    public LabDatabase getDatabase() {
+        return database;
+    }
+
 
     @Provides
     @Singleton
@@ -214,7 +228,7 @@ public class DataModule {
                         }
 
                         // Request customization: add request headers
-                         requestBuilder =
+                        requestBuilder =
                                 original.newBuilder()
                                         .url(url)
                                         .header("Content-Type", "application/json; charset=utf-8")

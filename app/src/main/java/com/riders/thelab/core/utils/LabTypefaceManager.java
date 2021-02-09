@@ -30,7 +30,7 @@ public class LabTypefaceManager {
         final Typeface customFontTypeface =
                 Typeface.createFromAsset(context.getAssets(), customFontFileNameInAssets);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (LabCompatibilityManager.isLollipop()) {
             Map<String, Typeface> newMap = new HashMap<String, Typeface>();
             newMap.put("serif", customFontTypeface);
             try {

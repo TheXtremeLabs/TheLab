@@ -10,6 +10,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 
 import androidx.annotation.Nullable;
+import androidx.transition.TransitionSet;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -78,6 +79,9 @@ public class TransitionActivity extends SimpleActivity {
             String transitionName = getString(R.string.logo_transition_name);
 
             Pair<View, String> p1 = Pair.create((View) imageView, transitionName);
+
+            TransitionSet transitionSet = new TransitionSet();
+            transitionSet.addTarget(imageView);
             // create the transition animation - the images in the layouts
             // of both activities are defined with android:transitionName="robot"
             ActivityOptions options = ActivityOptions

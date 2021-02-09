@@ -18,7 +18,7 @@ public class LabPreferenceManager {
     int PRIVATE_MODE = 0;
 
     // Sharedpref file name
-    private static final String PREF_NAME = "realtime_chat";
+    private static final String PREF_NAME = "lab_pref";
 
     // All Shared Preferences Keys
     private static final String KEY_USER_ID = "user_id";

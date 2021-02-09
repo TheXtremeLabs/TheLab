@@ -33,6 +33,9 @@ public class WeatherResponse {
     Rain rain;
 
     @Expose
+    Wind wind;
+
+    @Expose
     Clouds clouds;
 
     @Expose

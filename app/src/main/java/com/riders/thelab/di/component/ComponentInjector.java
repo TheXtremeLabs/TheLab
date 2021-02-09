@@ -1,6 +1,7 @@
 package com.riders.thelab.di.component;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.riders.thelab.TheLabApplication;
 import com.riders.thelab.data.DataModule;
@@ -22,6 +23,12 @@ import dagger.android.support.AndroidSupportInjectionModule;
         ActivityModule.class
 })
 public interface ComponentInjector extends AndroidInjector<TheLabApplication> {
+
+    /*@Component.Factory
+    interface Factory {
+        @BindsInstance
+        ComponentInjector create(Context context);
+    }*/
 
     @Component.Builder
     interface Builder {
