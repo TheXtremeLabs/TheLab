@@ -3,7 +3,6 @@ package com.riders.thelab.core.utils;
 import org.xml.sax.InputSource;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
@@ -31,35 +30,14 @@ public class LabFileManager {
         String json = null;
 
         try {
+            Timber.d("Build stream objects with json file received ...");
             InputStream compressedInputStream = new GZIPInputStream(responseBody.byteStream());
             InputSource inputSource = new InputSource(compressedInputStream);
             InputStream inputStream = new BufferedInputStream(inputSource.getByteStream());
 
-            Timber.d("Create destination file optional... in our case : no");
-
-            // TODO : unzip file and sav it somewhere
-            /*
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(inputStream.available());
-
-            File outputFile = new File("cities");
-            outputFile.getParentFile().mkdirs();
-            OutputStream outputStream = new FileOutputStream(outputFile.getAbsoluteFile());
-
-            byte[] buffer = new byte[4096];
-            int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(json, 0, length);
-            }
-            String tmp = new String(baos.toByteArray(), StandardCharsets.UTF_8);
-            Timber.d("String tmp value : %s", tmp);
-            Timber.d("String tmp value : %s", tmp);
-
-            outputStream.flush();
-            outputStream.close();
-            */
-
+            Timber.d("Build buffer and string builder ...");
             StringBuilder sb = new StringBuilder();
-            try (Source fileSource = Okio.source(inputSource.getByteStream());
+            try (Source fileSource = Okio.source(inputStream);
                  BufferedSource bufferedSource = Okio.buffer(fileSource)) {
 
                 while (true) {
@@ -68,18 +46,23 @@ public class LabFileManager {
 
                     sb.append(line);
                 }
+
+                Timber.d("File read, build json target variable ...");
+                json = sb.toString();
+
+                return json;
             } catch (Exception e) {
+                Timber.e(e);
                 e.printStackTrace();
             } finally {
+                compressedInputStream.close();
                 inputStream.close();
             }
-
-            json = sb.toString();
-            return json;
-        } catch (IOException e) {
+        } catch (Exception e) {
+            Timber.e(e);
             e.printStackTrace();
-            return "";
         }
+        return json;
     }
 
 }

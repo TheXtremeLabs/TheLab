@@ -51,15 +51,17 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MainActivityViewHolder holder, int position) {
-
-
-        final App item = appList.get(position);
-
         /*
          *
          * Reference : https://levelup.gitconnected.com/android-recyclerview-animations-in-kotlin-1e323ffd39be
          *
          * */
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+            holder.itemCardView.startAnimation(animation);
+            lastPosition = position;
+        }
         /*ObjectAnimator animator =
                 ObjectAnimator.ofObject(
                         holder.itemCardView,
@@ -71,28 +73,10 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
         animator.setInterpolator(new DecelerateInterpolator());
         animator.start();*/
 
+        final App item = appList.get(position);
+
         holder.bindData(item);
         holder.itemCardView.setOnClickListener(
                 view -> listener.onAppItemCLickListener(view, item, holder.getAdapterPosition()));
-
-        // If the bound view wasn't previously displayed on screen, it's animated
-        if (position > lastPosition) {
-            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
-            holder.itemCardView.startAnimation(animation);
-            lastPosition = position;
-        }/*
-        holder.itemCardView.animate()
-                .setDuration(800)
-                .translationY(0f)
-                .translationYBy(1f)
-                .scaleX(0)
-                .scaleXBy(1)
-                .scaleY(0)
-                .scaleYBy(1)
-                .alpha(0f)
-                .alphaBy(1f)
-                .setInterpolator(new DecelerateInterpolator())
-                .setListener(null)
-                .start();*/
     }
 }

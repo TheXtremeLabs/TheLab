@@ -18,13 +18,13 @@ public interface WeatherDao {
 
     @Insert(onConflict = REPLACE)
     Maybe<Long> insertRX(CityModel city);
+    @Insert(onConflict = REPLACE)
+    Maybe<List<Long>> insertAllRX(List<CityModel> cities);
 
     /* Method to insert contacts fetched from api to room */
     @Insert(onConflict = REPLACE)
     void insert(CityModel city);
 
-    @Insert(onConflict = REPLACE)
-    Maybe<List<Long>> insertAllRX(List<CityModel> cities);
 
     /* Method to fetch contacts stored locally */
     @Query("SELECT * FROM city")

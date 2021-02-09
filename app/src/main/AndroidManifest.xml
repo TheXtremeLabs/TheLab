@@ -89,9 +89,9 @@
         tools:targetApi="m">
 
         <!-- Firebase Perf -->
-        <meta-data
+        <!--<meta-data
             android:name="firebase_performance_logcat_enabled"
-            android:value="false" />
+            android:value="false" />-->
 
         <!-- Google Maps -->
         <meta-data
@@ -320,6 +320,17 @@
             android:exported="false" />
         <!-- ////////////// SERVICES ////////////// -->
 
+
+        <!--
+            Disable the default initialization
+            As described in WorkManager’s documentation,
+             disabling has to be done in your AndroidManifest.xml file,
+              removing the node that is merged automatically from the WorkManager library by default.
+         -->
+        <!--<provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove" />-->
     </application>
 
 </manifest>

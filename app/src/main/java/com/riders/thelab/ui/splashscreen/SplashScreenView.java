@@ -8,11 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
-
 import android.widget.VideoView;
 
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
+import com.riders.thelab.TheLabApplication;
 import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BaseViewImpl;
 
@@ -73,6 +73,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         getPresenter().attachView(this);
 
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
+        TheLabApplication.getInstance();
 
         getPresenter().getAppVersion();
 

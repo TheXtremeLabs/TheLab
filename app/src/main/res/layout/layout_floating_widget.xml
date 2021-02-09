@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!--Root container-->
     <RelativeLayout
@@ -34,7 +35,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginLeft="40dp"
-                android:src="@drawable/ic_close"
+                app:srcCompat="@drawable/ic_close"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>
 
@@ -64,7 +65,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="20dp"
                 android:layout_marginLeft="20dp"
-                android:src="@drawable/ic_skip_previous"
+                app:srcCompat="@drawable/ic_skip_previous"
                 tools:ignore="ContentDescription" />
 
             <!--Play button-->
@@ -75,7 +76,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_play"
+                app:srcCompat="@drawable/ic_play"
                 tools:ignore="ContentDescription" />
 
             <!--Next button-->
@@ -86,7 +87,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_skip_next"
+                app:srcCompat="@drawable/ic_skip_next"
                 tools:ignore="ContentDescription" />
 
             <RelativeLayout
@@ -98,14 +99,14 @@
                     android:id="@+id/close_button"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_close" />
+                    app:srcCompat="@drawable/ic_close" />
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/open_button"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentBottom="true"
-                    android:src="@drawable/ic_open_in_new" />
+                    app:srcCompat="@drawable/ic_open_in_new" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>

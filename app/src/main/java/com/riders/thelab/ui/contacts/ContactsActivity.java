@@ -38,7 +38,6 @@ public class ContactsActivity extends BaseActivity<ContactsView> {
     }
 
 
-    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         view.onOptionsItemSelected(item);

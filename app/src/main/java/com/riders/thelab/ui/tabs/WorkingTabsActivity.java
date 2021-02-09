@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.tabs;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,31 +19,36 @@ import com.riders.thelab.ui.tabs.fragment.TwoFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Michaël on 07/03/2017.
  */
 
+@SuppressLint("NonConstantResourceId")
 public class WorkingTabsActivity extends AppCompatActivity {
 
-    private Toolbar mTabToolbar;
-    private TabLayout mTabLayout;
-    private ViewPager mViewPager;
+    @BindView(R.id.tabToolbar)
+    Toolbar mTabToolbar;
+    @BindView(R.id.tabViewPager)
+    ViewPager mViewPager;
+    @BindView(R.id.tabs)
+    TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabs);
 
-        mTabToolbar = (Toolbar) findViewById(R.id.tabToolbar);
+        ButterKnife.bind(this);
 
         setSupportActionBar(mTabToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.activity_title_tabs));
 
-        mViewPager = (ViewPager) findViewById(R.id.tabViewPager);
         setupViewPager(mViewPager);
 
-        mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
@@ -88,6 +94,4 @@ public class WorkingTabsActivity extends AppCompatActivity {
             return mFragmentTitleList.get(position);
         }
     }
-
-
 }

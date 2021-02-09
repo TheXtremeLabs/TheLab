@@ -8,13 +8,11 @@
     android:layout_marginTop="@dimen/extra_small_margin"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="?android:attr/colorBackground"
     app:cardCornerRadius="@dimen/small_margin"
-    app:cardElevation="@dimen/small_margin"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true"
-    tools:cardBackgroundColor="@color/oil">
+    tools:rippleColor="@color/oil">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -48,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/right_background_gradient"
+            android:gravity="center"
             android:orientation="vertical">
             <!--android:background="?android:attr/colorBackground"-->
 
@@ -115,10 +114,11 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/arrow_icon"
                         android:layout_width="@dimen/big_margin"
                         android:layout_height="@dimen/big_margin"
                         android:fitsSystemWindows="true"
-                        android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+                        app:srcCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

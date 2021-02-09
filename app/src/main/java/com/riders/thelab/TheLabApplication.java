@@ -7,6 +7,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.riders.thelab.core.broadcast.ConnectivityReceiver;
 import com.riders.thelab.data.DataModule;
+import com.riders.thelab.data.remote.rest.WeatherRestClient;
 import com.riders.thelab.di.component.DaggerComponentInjector;
 import com.riders.thelab.di.module.ApplicationModule;
 
@@ -14,24 +15,39 @@ import dagger.android.AndroidInjector;
 import dagger.android.DaggerApplication;
 import timber.log.Timber;
 
-@SuppressLint("StaticFieldLeak")
-public class TheLabApplication extends DaggerApplication {
+//import com.riders.thelab.di.component.DaggerComponentInjector;
 
+@SuppressLint("StaticFieldLeak")
+public class TheLabApplication extends DaggerApplication
+        /*implements Configuration.Provider */ {
+
+    // Context
     private static Context context;
     private static TheLabApplication mInstance;
 
-    public static String LAB_PACKAGE_NAME = "";
+    // Firebase
     private FirebaseCrashlytics mFirebaseCrashlytics;
 
+    public static String LAB_PACKAGE_NAME = "";
 
-    public TheLabApplication() {
-    }
+    // Workers with dagger
+    /*@Inject
+    LabWorkerFactory mLabWorkerFactory;
+    @Inject
+    Configuration workerConfiguration;*/
+
+    // Only for workers purposes
+    private static WeatherRestClient client;
+
 
     public static synchronized TheLabApplication getInstance() {
         if (null == mInstance)
             mInstance = new TheLabApplication();
 
         return mInstance;
+    }
+
+    public TheLabApplication() {
     }
 
 
@@ -48,15 +64,21 @@ public class TheLabApplication extends DaggerApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        context = this;
-
         /*if (!LabCompatibilityManager.isOreo())
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);*/
+        /*DaggerComponentInjector.
+
+        componentInjector = new ComponentInjector.Factory().create(context);
+        componentInjector.inject(this);*/
+
+
+        context = this;
 
         init();
 
         LAB_PACKAGE_NAME = getPackageName();
+
+        client = new WeatherRestClient();
     }
 
     private void init() {
@@ -101,9 +123,20 @@ public class TheLabApplication extends DaggerApplication {
         return context;
     }
 
+    public static WeatherRestClient getWeatherRestClient() {
+        return client;
+    }
+
+
     public void setConnectivityListener(ConnectivityReceiver.ConnectivityReceiverListener listener) {
         Timber.d("setConnectivityListener(listener)");
         if (null == ConnectivityReceiver.getInstance().getConnectivityReceiverListener())
             new ConnectivityReceiver(listener);
     }
+
+
+    // Setup custom configuration for WorkManager with a DelegatingWorkerFactory
+    /*public Configuration getWorkManagerConfiguration() {
+        return workerConfiguration;
+    }*/
 }

@@ -6,7 +6,6 @@ import com.riders.thelab.data.remote.api.WeatherApiService;
 import com.riders.thelab.data.remote.api.WeatherBulkApiService;
 import com.riders.thelab.data.remote.api.YoutubeApiService;
 import com.riders.thelab.data.remote.dto.directions.Directions;
-import com.riders.thelab.data.remote.dto.weather.Weather;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 
 import java.util.List;

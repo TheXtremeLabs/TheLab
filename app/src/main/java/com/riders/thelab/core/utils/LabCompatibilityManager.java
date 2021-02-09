@@ -78,6 +78,13 @@ public class LabCompatibilityManager {
     }
 
     /**
+     * Determine if the device is running API level 24 or higher.
+     */
+    public static boolean isNougat() {
+        return getSdkVersion() >= Build.VERSION_CODES.N;
+    }
+
+    /**
      * Determine if the device is running API level 26 or higher.
      */
     public static boolean isOreo() {

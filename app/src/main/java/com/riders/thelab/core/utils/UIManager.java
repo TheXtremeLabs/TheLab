@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +16,8 @@ import androidx.annotation.RequiresApi;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
+import com.riders.thelab.core.views.toast.TheLabToast;
+import com.riders.thelab.core.views.toast.ToastTypeEnum;
 import com.riders.thelab.data.local.bean.SnackBarType;
 
 import timber.log.Timber;
@@ -91,6 +92,14 @@ public class UIManager {
     public static void showActionInToast(final Context context, final String textToShow) {
         Toast.makeText(context, textToShow, Toast.LENGTH_SHORT).show();
     }
+
+    public static void showCustomToast(final Context context, ToastTypeEnum type, String message) {
+        new TheLabToast.Builder(context)
+                .setType(type)
+                .setText(message)
+                .show();
+    }
+
 
     public static void showActionInSnackBar(final Context context, final View view, final String message, SnackBarType type) {
         // create instance
