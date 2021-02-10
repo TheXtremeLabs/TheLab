@@ -12,6 +12,7 @@
     app:cardCornerRadius="@dimen/small_margin"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true"
+    tools:cardBackgroundColor="@color/dark_grey"
     tools:rippleColor="@color/oil">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -92,7 +93,8 @@
                             android:textSize="20sp"
                             android:textStyle="bold"
                             tools:ignore="NewApi"
-                            tools:text="Title app" />
+                            tools:text="Title app"
+                            tools:textColor="@color/white" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/row_description_textView"
@@ -101,7 +103,8 @@
                             android:gravity="center|start"
                             android:textStyle="normal"
                             tools:ignore="NewApi"
-                            tools:text="App description" />
+                            tools:text="App description"
+                            tools:textColor="@color/white" />
                     </LinearLayout>
 
                 </LinearLayout>

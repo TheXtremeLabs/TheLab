@@ -137,7 +137,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:textSize="16sp"
-                        tools:text="broken clouds... " />
+                        tools:text="@string/weather_main_description_placeholder" />
 
                 </LinearLayout>
                 <!-- Description Container -->
@@ -167,7 +167,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:textSize="16sp"
-                        tools:text="Temperature : " />
+                        tools:text="@string/temperature_placeholder" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_weather_city_temperature"
@@ -208,7 +208,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:textSize="16sp"
-                        tools:text="Real Feels : " />
+                        tools:text="@string/temperature_real_feels_placeholder" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_weather_city_real_feels"
@@ -377,7 +377,7 @@
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/cloudness_placeholder"
+                                android:text="@string/cloudiness_placeholder"
                                 android:textColor="@color/iron"
                                 android:textSize="12sp" />
 
@@ -400,7 +400,7 @@
                         android:id="@+id/container_pressure_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="top|start"
+                        android:layout_gravity="top|end"
                         android:layout_marginVertical="@dimen/small_margin"
                         android:orientation="horizontal">
 
@@ -415,7 +415,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:srcCompat="@drawable/ic_cloud" />
+                            app:srcCompat="@drawable/ic_pressure" />
                         <!-- Pressure icon -->
 
 
@@ -495,7 +495,7 @@
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Wind Speed :"
+                                android:text="@string/wind_speed_placeholder"
                                 android:textColor="@color/iron"
                                 android:textSize="12sp" />
 
@@ -535,8 +535,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/white"
-                                android:textSize="16sp"
-                                tools:text="Direction : " />
+                                android:textSize="12sp"
+                                tools:text="@string/wind_direction_placeholder" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/tv_weather_extra_wind_direction"
@@ -562,7 +562,7 @@
                         android:layout_height="wrap_content"
                         android:layout_row="1"
                         android:layout_column="1"
-                        android:layout_gravity="top|start"
+                        android:layout_gravity="top|end"
                         android:layout_marginVertical="@dimen/small_margin"
                         android:gravity="center"
                         android:orientation="horizontal">
@@ -578,7 +578,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:srcCompat="@drawable/ic_cloud" />
+                            tools:srcCompat="@drawable/ic_humidity" />
                         <!-- Cloud icon -->
 
                         <androidx.constraintlayout.widget.Guideline

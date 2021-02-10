@@ -10,6 +10,10 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.motion.widget.TransitionBuilder;
+import androidx.transition.Scene;
+import androidx.transition.TransitionInflater;
+import androidx.transition.TransitionManager;
 import androidx.transition.TransitionSet;
 
 import com.google.android.material.button.MaterialButton;
@@ -36,6 +40,7 @@ public class TransitionActivity extends SimpleActivity {
     @BindView(R.id.button_next_activity)
     MaterialButton materialButton;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -54,18 +59,6 @@ public class TransitionActivity extends SimpleActivity {
         setContentView(R.layout.activity_transition);
 
         ButterKnife.bind(this);
-/*
-        supportPostponeEnterTransition();
-        imageView.getViewTreeObserver().addOnPreDrawListener(
-                new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                        supportStartPostponedEnterTransition();
-                        return true;
-                    }
-                }
-        );*/
     }
 
     @SuppressLint("NewApi")

@@ -7,17 +7,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -131,6 +128,7 @@ public class TimeFragment extends Fragment {
                 .addOnCompleteListener(
                         getActivity(),
                         new OnCompleteListener<AuthResult>() {
+                            @SuppressLint("ThrowableNotAtBeginning")
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
@@ -146,7 +144,7 @@ public class TimeFragment extends Fragment {
 
                                     // Create a child reference
                                     // imagesRef now points to "images"
-                                    StorageReference imagesRef = storageRef.child("images");
+                                    StorageReference imagesRef = storageRef.child("images/dark_theme");
 
                                     imagesRef.list(5)
                                             .addOnSuccessListener(new OnSuccessListener<ListResult>() {
@@ -210,18 +208,8 @@ public class TimeFragment extends Fragment {
                                                     });
                                                 }
                                             })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Timber.e(e);
-                                                }
-                                            })
-                                            .addOnCompleteListener(new OnCompleteListener<ListResult>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<ListResult> task) {
-                                                    Timber.d("onComplete() - " + task.getResult().getItems().size());
-                                                }
-                                            });
+                                            .addOnFailureListener(Timber::e)
+                                            .addOnCompleteListener(task1 -> Timber.d("onComplete() - %d ", task1.getResult().getItems().size()));
 
                                 } else {
                                     // If sign in fails, display a message to the user.

@@ -61,6 +61,9 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
+    <!-- Splash Screen -->
+    <string name="version_placeholder">"v "</string>
+
     <!-- Colors -->
     <string name="activity_title_colors">Colors</string>
 
@@ -84,6 +87,12 @@
     <string name="eight">EIGHT</string>
     <string name="nine">NINE</string>
     <string name="ten">TEN</string>
+
+    <!-- Transition -->
+    <string name="activity_title_transition">Transitions</string>
+    <string name="button_next_activity">Next Activity</string>
+    <string name="logo_transition_name">logo_transition</string>
+    <string name="activity_title_transition_detail">Transitions Detail</string>
 
     <!-- Floating Labels-->
     <string name="activity_title_floating_labels">Floating Labels</string>
@@ -230,16 +239,19 @@
     <string name="weather_data_provided_by">Weather data provided by</string>
     <string name="separator_placeholder">,</string>
     <string name="degree_placeholder">°C</string>
-    <string name="cloudness_placeholder">Cloudness :</string>
+    <string name="weather_main_description_placeholder">Broken clouds</string>
+    <string name="temperature_placeholder">Temperature :</string>
+    <string name="temperature_real_feels_placeholder">Real Feels :</string>
+    <string name="cloudiness_placeholder">Cloudiness :</string>
     <string name="humidity_placeholder">Humidity :</string>
     <string name="pressure_placeholder">Pressure :</string>
     <string name="pressure_unit_placeholder">inHg</string>
-    <string name="wind_placeholder">Wind :</string>
+    <string name="wind_speed_placeholder">Wind Speed:</string>
+    <string name="wind_direction_placeholder">Wind Direction :</string>
     <string name="percent_placeholder">%</string>
     <string name="kilometer_unit_placeholder">km/h</string>
     <string name="form_hint_search_city">Looking for a city…</string>
     <string name="use_my_current_location">Use my current location</string>
-    <string name="version_placeholder">"v "</string>
 
     <!-- Youtube -->
     <string name="activity_title_youtube_like">Youtube Like Activity</string>
@@ -249,11 +261,6 @@
     <string name="activity_title_floating_view">Floating Widget</string>
     <string name="notify_me">Notify Me !</string>
 
-    <!-- Transition -->
-    <string name="activity_title_transition">Transitions</string>
-    <string name="button_next_activity">Next Activity</string>
-    <string name="logo_transition_name">logo_transition</string>
-    <string name="activity_title_transition_detail">Transitions Detail</string>
 
     <!-- Custom Toast -->
     <string name="activity_title_custom_toast">Custom Toast</string>
