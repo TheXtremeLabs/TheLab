@@ -49,13 +49,26 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">
 
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/ac_tv_Weather"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:hint="@string/form_hint_search_city"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxEms="40"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textColorHint="@color/iron_light" />
 
             <!-- City Country Container -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/container_city_country"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/extra_small_margin"
+                android:layout_below="@id/ac_tv_Weather"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:layout_marginBottom="@dimen/extra_small_margin"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -304,7 +317,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/iv_sunset"
-                            tools:text="06:30"
+                            tools:text="17:30"
                             tools:textColor="@color/white" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>

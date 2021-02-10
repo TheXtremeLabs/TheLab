@@ -61,7 +61,7 @@ public class RecyclerViewActivity extends SimpleActivity
 
         adapter =
                 new RecyclerViewAdapter(
-                        (ArrayList<RecyclerItem>) RecyclerEnum.getRecyclerItems(),
+                        RecyclerEnum.getRecyclerItems(),
                         this);
 
         LinearLayoutManager layoutManager

@@ -24,6 +24,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.bus.LocationFetchedEvent;
@@ -69,6 +70,8 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     // Weather container
     @BindView(R.id.weather_data_container)
     RelativeLayout weatherDataContainer;
+    @BindView(R.id.ac_tv_Weather)
+    MaterialAutoCompleteTextView acTvWeather;
     // City
     @BindView(R.id.tv_weather_city_name)
     MaterialTextView tvWeatherCityName;
@@ -120,6 +123,8 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         context.getSupportActionBar().setTitle(context.getString(R.string.activity_title_weather));
 
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
+
+        setListeners();
     }
 
     @Override
@@ -250,8 +255,11 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         long sunriseMillis = weatherResponse.getSystem().getSunrise();
         long sunsetMillis = weatherResponse.getSystem().getSunset();
 
-        tvWeatherSunrise.setText(DateTimeUtils.formatMillisToTimeHoursMinutes(sunriseMillis));
-        tvWeatherSunset.setText(DateTimeUtils.formatMillisToTimeHoursMinutes(sunsetMillis));
+        String szSunriseMillis = DateTimeUtils.formatMillisToTimeHoursMinutes(sunriseMillis);
+        String szSunsetMillis = DateTimeUtils.formatMillisToTimeHoursMinutes(sunsetMillis);
+
+        tvWeatherSunrise.setText(szSunriseMillis);
+        tvWeatherSunset.setText(szSunsetMillis);
 
 
         String cloudiness = weatherResponse.getClouds().getCloudiness() + " " +
@@ -268,7 +276,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
 
         String wind =
                 weatherResponse.getWind().getSpeed() + " " +
-                context.getResources().getString(R.string.kilometer_unit_placeholder);
+                        context.getResources().getString(R.string.kilometer_unit_placeholder);
         tvWeatherExtraWindSpeed.setText(wind);
 
         String windDirection =
@@ -295,6 +303,10 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
                 context,
                 R.layout.row_city_spinner,
                 (ArrayList<CityModel>) citiesList);
+
+        // Set the minimum number of characters, to show suggestions
+        acTvWeather.setThreshold(3);
+        acTvWeather.setAdapter(mAdapter);
     }
 
     @Override
@@ -351,6 +363,12 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     // CLASS METHODS
     //
     /////////////////////////////////////
+    private void setListeners() {
+        Timber.d("setListeners()");
+        acTvWeather.setOnItemClickListener(this);
+        acTvWeather.setOnEditorActionListener(this);
+    }
+
     public String getWeatherIconFromApi(String weatherIconId) {
         return Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX;
     }
@@ -390,7 +408,9 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
             // Dismiss keyboard
             InputMethodManager inputManager =
                     (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            inputManager.hideSoftInputFromWindow(
+                    v.getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
         }
 
         CityModel city = (CityModel) parent.getItemAtPosition(position);
@@ -408,8 +428,8 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
                 || (actionId == EditorInfo.IME_ACTION_DONE)) {
             Timber.e("Done pressed");
 
-            /*String cityEntered = autoCompleteCityName.getText().toString();
-            getPresenter().getWeather(cityEntered);*/
+            String cityEntered = acTvWeather.getText().toString();
+            getPresenter().getWeather(cityEntered);
         }
         return false;
     }

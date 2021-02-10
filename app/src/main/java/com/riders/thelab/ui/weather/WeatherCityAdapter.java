@@ -219,7 +219,8 @@ public class WeatherCityAdapter extends ArrayAdapter<CityModel> {
         View view = convertView;
 
         if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater =
+                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(viewResourceId, null);
         }
 

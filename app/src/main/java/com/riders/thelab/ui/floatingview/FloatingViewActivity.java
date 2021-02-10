@@ -58,7 +58,10 @@ public class FloatingViewActivity extends SimpleActivity {
     private void initializeView() {
         Timber.d("initializeView()");
         findViewById(R.id.notify_me).setOnClickListener(view -> {
-            startService(new Intent(FloatingViewActivity.this, FloatingViewService.class));
+            startService(
+                    new Intent(
+                            FloatingViewActivity.this,
+                            FloatingViewService.class));
             moveAppInBackground();
         });
     }
@@ -66,13 +69,16 @@ public class FloatingViewActivity extends SimpleActivity {
     @OnClick(R.id.notify_me)
     public void onNotifyMeClicked() {
         Timber.d("onNotifyMeClicked()");
-        startService(new Intent(FloatingViewActivity.this, FloatingViewService.class));
+        startService(
+                new Intent(
+                        FloatingViewActivity.this,
+                        FloatingViewService.class));
         moveAppInBackground();
     }
 
     /**
      * Move the app in background
-     *
+     * <p>
      * Source : https://stackoverflow.com/questions/10461095/moving-application-in-background-on-back-button-event/10461254
      */
     private void moveAppInBackground() {

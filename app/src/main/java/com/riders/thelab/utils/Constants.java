@@ -53,6 +53,9 @@ public class Constants {
     public static final String WEATHER_COUNTRY_CODE_GUYANE = "GF";
     public static final String WEATHER_COUNTRY_CODE_REUNION = "RE";
 
+    // Palette
+    public static final String PALETTE_URL = "http://i.ytimg.com/vi/aNHOfJCphwk/maxresdefault.jpg";
+
 
     // Activity Recognition
     public static final String BROADCAST_DETECTED_ACTIVITY = "activity_intent";

@@ -16,7 +16,6 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.android.material.transition.platform.MaterialContainerTransform;
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 import com.riders.thelab.R;
 import com.riders.thelab.ui.base.SimpleActivity;
@@ -29,7 +28,6 @@ public class TransitionDetailActivity extends SimpleActivity {
 
     @BindView(R.id.iv_logo)
     ShapeableImageView ivTarget;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,28 +64,7 @@ public class TransitionDetailActivity extends SimpleActivity {
         setContentView(R.layout.activity_transition_detail);
 
         ButterKnife.bind(this);
-/*
-        supportPostponeEnterTransition();
 
-        Glide.with(this)
-                .load(R.drawable.logo_colors)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        supportStartPostponedEnterTransition();
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        //scheduleStartPostponedTransition(ivTarget);
-
-                        supportStartPostponedEnterTransition();
-                        return false;
-                    }
-                })
-                .into(ivTarget);*/
-        supportPostponeEnterTransition();
         ivTarget
                 .getViewTreeObserver()
                 .addOnPreDrawListener(
@@ -127,6 +104,30 @@ public class TransitionDetailActivity extends SimpleActivity {
                         return true;
                     }
                 });
+    }
+
+    private void loadImage() {
+        Glide.with(this)
+                .load(R.drawable.logo_colors)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<Drawable> target, boolean isFirstResource) {
+                        supportStartPostponedEnterTransition();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource,
+                                                   boolean isFirstResource) {
+                        //scheduleStartPostponedTransition(ivTarget);
+
+                        supportStartPostponedEnterTransition();
+                        return false;
+                    }
+                })
+                .into(ivTarget);
     }
 
     @Override

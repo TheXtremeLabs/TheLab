@@ -29,14 +29,6 @@ public class ApplicationModule {
         return mApplication;
     }
 
-    /*@Singleton
-    @Provides
-    Configuration provideWorkManagerConfiguration(LabDelegatingWorkerFactory labDelegatingWorkerFactory) {
-        return new Configuration.Builder()
-                .setMinimumLoggingLevel(android.util.Log.DEBUG)
-                .setWorkerFactory(labDelegatingWorkerFactory)
-                .build();
-    }*/
 }
 
 

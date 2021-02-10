@@ -31,7 +31,7 @@ public class LabService {
                       YoutubeApiService youtubeApiService,
                       WeatherApiService weatherApiService,
                       WeatherBulkApiService weatherBulkApiService) {
-        Timber.d("LabService()");
+
         this.googleAPIService = googleAPIService;
         this.youtubeApiService = youtubeApiService;
         this.weatherApiService = weatherApiService;
