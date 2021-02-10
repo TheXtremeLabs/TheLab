@@ -5,27 +5,21 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.riders.thelab.core.bus.LocationFetchedEvent;
 
@@ -89,7 +83,7 @@ public class GPSTracker extends Service implements LocationListener {
         } else {
             this.canGetLocation = true;
 
-            Dexter.withActivity(mActivity)
+            Dexter.withContext(mActivity)
                     .withPermissions(
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION
@@ -101,8 +95,11 @@ public class GPSTracker extends Service implements LocationListener {
                             // check if all permissions are granted
                             if (report.areAllPermissionsGranted()) {
                                 // do you work now
-                                Toast.makeText(mActivity, "All permissions are granted!", Toast.LENGTH_SHORT).show();
-
+                                Toast.makeText(
+                                        mActivity,
+                                        "All permissions are granted!",
+                                        Toast.LENGTH_SHORT)
+                                        .show();
 
                             }
 
@@ -115,26 +112,16 @@ public class GPSTracker extends Service implements LocationListener {
                             try {
 
                                 if (isNetworkEnabled) {
-                                        /*if (Build.VERSION_CODES.M < Build.VERSION.SDK_INT) {
-                                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                                                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                                // TODO: Consider calling
-                                                //    ActivityCompat#requestPermissions
-                                                // here to request the missing permissions, and then overriding
-                                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                                //                                          int[] grantResults)
-                                                // to handle the case where the user grants the permission. See the documentation
-                                                // for ActivityCompat#requestPermissions for more details.
-                                                return null;
-                                            }
-                                        }*/
 
-                                    locationManager.requestLocationUpdates(
-                                            LocationManager.NETWORK_PROVIDER,
-                                            MIN_TIME_BW_UPDATES,
-                                            MIN_DISTANCE_CHANGE_FOR_UPDATES,
-                                            mLocationListener);
-                                    Log.d("Network", "Network Enabled");
+                                    locationManager
+                                            .requestLocationUpdates(
+                                                    LocationManager.NETWORK_PROVIDER,
+                                                    MIN_TIME_BW_UPDATES,
+                                                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                                                    mLocationListener);
+
+                                    Timber.d("Network Enabled");
+
                                     if (locationManager != null) {
                                         location = locationManager
                                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -154,7 +141,9 @@ public class GPSTracker extends Service implements LocationListener {
                                                 MIN_TIME_BW_UPDATES,
                                                 MIN_DISTANCE_CHANGE_FOR_UPDATES,
                                                 mLocationListener);
+
                                         Timber.d("GPS Enabled");
+
                                         if (locationManager != null) {
                                             location = locationManager
                                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -174,16 +163,18 @@ public class GPSTracker extends Service implements LocationListener {
                         }
 
                         @Override
-                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        public void onPermissionRationaleShouldBeShown(
+                                List<PermissionRequest> permissions,
+                                PermissionToken token) {
                             token.continuePermissionRequest();
                         }
                     })
-                    .withErrorListener(new PermissionRequestErrorListener() {
-                        @Override
-                        public void onError(DexterError error) {
-                            Toast.makeText(mActivity, "Error occurred! " + error.toString(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
+                    .withErrorListener(
+                            error ->
+                                    Toast.makeText(
+                                            mActivity,
+                                            "Error occurred! " + error.toString(),
+                                            Toast.LENGTH_SHORT).show())
                     .onSameThread()
                     .check();
         }
@@ -199,16 +190,6 @@ public class GPSTracker extends Service implements LocationListener {
      */
     public void stopUsingGPS() {
         if (locationManager != null) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
             locationManager.removeUpdates(GPSTracker.this);
         }
     }
@@ -262,12 +243,10 @@ public class GPSTracker extends Service implements LocationListener {
 
         // On pressing Settings button
         alertDialog.setPositiveButton("Settings",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(
-                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        mContext.startActivity(intent);
-                    }
+                (dialog, which) -> {
+                    Intent intent = new Intent(
+                            Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    mContext.startActivity(intent);
                 });
 
         // on pressing cancel button

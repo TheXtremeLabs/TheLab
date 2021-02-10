@@ -59,7 +59,8 @@ public class FilterListViewView extends BaseViewImpl<FilterListViewPresenter>
 
     private void setAdapter() {
 
-        mWorldPopulationList = (ArrayList<WorldPopulation>) getPresenter().generatePopulationList();
+        mWorldPopulationList =
+                (ArrayList<WorldPopulation>) getPresenter().generatePopulationList();
 
         // Pass results to ListViewAdapter Class
         adapter = new FilterListViewAdapter(context, mWorldPopulationList);

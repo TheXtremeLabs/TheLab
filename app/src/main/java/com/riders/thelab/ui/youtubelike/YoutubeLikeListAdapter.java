@@ -79,7 +79,8 @@ public class YoutubeLikeListAdapter extends RecyclerView.Adapter<YoutubeLikeView
 
         // If the bound view wasn't previously displayed on screen, it's animated
         if (position > lastPosition) {
-            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+            Animation animation =
+                    AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
             holder.itemCardView.startAnimation(animation);
             lastPosition = position;
         }

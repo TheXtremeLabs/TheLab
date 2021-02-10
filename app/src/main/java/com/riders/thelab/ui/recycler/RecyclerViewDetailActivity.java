@@ -59,18 +59,6 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
         }
 
         loadWithPicasso();
-/*
-        supportPostponeEnterTransition();
-        transitionImageView.getViewTreeObserver().addOnPreDrawListener(
-                new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        transitionImageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                        supportStartPostponedEnterTransition();
-                        return true;
-                    }
-                }
-        );*/
     }
 
     private void loadWithPicasso() {
@@ -89,27 +77,6 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
 
                     }
                 });
-
-    }
-
-    private void loadWithGlide() {
-        Glide.with(this)
-                .load(R.drawable.logo_colors)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        supportStartPostponedEnterTransition();
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        supportStartPostponedEnterTransition();
-                        return true;
-                    }
-                })
-                .into(transitionImageView);
-
 
     }
 }

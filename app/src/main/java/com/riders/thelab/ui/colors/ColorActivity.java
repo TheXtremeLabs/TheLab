@@ -71,42 +71,6 @@ public class ColorActivity extends SimpleActivity {
     @OnClick(R.id.change_color_button)
     public void changeColor(View view) {
 
-            /*
-        Pattern c = Pattern.compile("rgb *\\( *([0-9]+), *([0-9]+), *([0-9]+) *\\)");
-        Matcher m = c.matcher("1");
-
-        if (m.matches()) {
-
-            int red = Integer.parseInt(m.group(1).trim());
-            int green = Integer.parseInt(m.group(2).trim());
-            int blue = Integer.parseInt(m.group(3).trim());
-
-
-            Timber.e("int value of red : " + red + ", green : " + green + " blue : " + blue);
-
-//            String hex = "0x" + Integer.toHexString(Color.rgb(red, green, blue)).toUpperCase().substring(2);
-
-            int R = (red >> 16) & 0xff;
-            int G = (green >> 8) & 0xff;
-            int B = (blue) & 0xff;
-
-            Timber.e("hex value of R : " + R + ", G : " + G + " B : " + B);
-
-            int color = (R & 0xff) << 16 | (G & 0xff) << 8 | (B & 0xff);
-
-
-            Timber.e("value of color variable : %s ", color);
-
-            GradientDrawable gd = new GradientDrawable(
-                    GradientDrawable.Orientation.LEFT_RIGHT,
-                    new int[]{color, 0x00000000});
-            gd.setCornerRadius(0f);
-
-            targetColorTextView.setTextColor(Color.rgb(red, green, blue));
-
-        }
- */
-
         randomColor = colors[new Random().nextInt(colors.length)];
 
         Timber.d("color : %d ", randomColor);

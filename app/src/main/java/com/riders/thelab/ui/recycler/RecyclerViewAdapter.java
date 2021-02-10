@@ -4,7 +4,6 @@ package com.riders.thelab.ui.recycler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +16,8 @@ import com.riders.thelab.data.local.model.RecyclerItem;
 import java.util.List;
 
 import timber.log.Timber;
+
+;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHolder> {

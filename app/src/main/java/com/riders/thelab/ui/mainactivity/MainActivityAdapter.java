@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -62,16 +61,6 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
             holder.itemCardView.startAnimation(animation);
             lastPosition = position;
         }
-        /*ObjectAnimator animator =
-                ObjectAnimator.ofObject(
-                        holder.itemCardView,
-                        "alpha",
-                        new FloatEvaluator(),
-                        0f, // Beginning color
-                        1f); // Target Color
-        animator.setDuration(800);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.start();*/
 
         final App item = appList.get(position);
 

@@ -10,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.core.views.toast.TheLabToast;
+import com.riders.thelab.core.views.toast.ToastTypeEnum;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,9 +38,18 @@ public class VectorDrawablesActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("NewApi")
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (!LabCompatibilityManager.isLollipop()) {
+            new TheLabToast.Builder(this)
+                    .setType(ToastTypeEnum.ERROR)
+                    .setText("Your device's API cannot run this animation. Requires target API 21 (Lollipop)")
+                    .show();
+            return;
+        }
 
         Drawable drawableGoogleIO16 = ivGoogleIO16.getDrawable();
         Drawable drawableProgressBar = ivProgressBar.getDrawable();

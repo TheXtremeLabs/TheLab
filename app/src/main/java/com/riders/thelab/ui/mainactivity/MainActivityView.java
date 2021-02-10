@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -329,17 +328,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         public void onPageSelected(int position) {
             super.onPageSelected(position);
             addBottomDots(position);
-
-            // changing the next button text 'NEXT' / 'GOT IT'
-            /*if (position == layouts.length - 1) {
-                // last page. make button text to GOT IT
-                binding.btnNext.setText(getString(R.string.start));
-                binding.btnSkip.setVisibility(View.GONE);
-            } else {
-                // still pages are left
-                binding.btnNext.setText(getString(R.string.next));
-                binding.btnSkip.setVisibility(View.VISIBLE);
-            }*/
         }
     };
 
@@ -536,7 +524,9 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
                 UIManager.showActionInToast(context, "Wifi clicked");
 
                 WifiManager wifiManager =
-                        (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                        (WifiManager) context
+                                .getApplicationContext()
+                                .getSystemService(Context.WIFI_SERVICE);
 
                 if (!LabCompatibilityManager.isAndroid10()) {
                     boolean isWifi = wifiManager.isWifiEnabled();

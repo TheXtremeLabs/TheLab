@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -69,7 +68,11 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_bottom_sheet_dialog, container, false);
+        View rootView =
+                inflater.inflate(
+                        R.layout.fragment_bottom_sheet_dialog,
+                        container,
+                        false);
         ButterKnife.bind(this, rootView);
         return rootView;
     }

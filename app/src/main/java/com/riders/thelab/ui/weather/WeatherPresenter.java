@@ -292,7 +292,6 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
         Timber.e("cancelWorker()");
 
         Timber.d("Worker is about to be cancelled");
-        Timber.e("Cancel all workers");
         WorkManager
                 .getInstance(activity)
                 .cancelAllWork();

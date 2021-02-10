@@ -19,7 +19,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
-
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -172,7 +171,9 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
                     }
 
                     @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                    public void onPermissionRationaleShouldBeShown(
+                            List<PermissionRequest> list,
+                            PermissionToken permissionToken) {
                         permissionToken.continuePermissionRequest();
                     }
                 })
@@ -537,7 +538,10 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
                 .addOnSuccessListener((Activity) context, locationSettingsResponse -> {
                     Timber.i("All location settings are satisfied.");
 
-                    Toast.makeText(context.getApplicationContext(), "Started location updates!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            context.getApplicationContext(),
+                            "Started location updates!",
+                            Toast.LENGTH_SHORT).show();
 
                     //noinspection MissingPermission
                     mFusedLocationClient.requestLocationUpdates(
@@ -558,7 +562,7 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
                             // Show the dialog by calling startResolutionForResult(), and check the
                             // result in onActivityResult().
                             ResolvableApiException rae = (ResolvableApiException) e;
-                            rae.startResolutionForResult((Activity) context, REQUEST_CHECK_SETTINGS);
+                            rae.startResolutionForResult(context, REQUEST_CHECK_SETTINGS);
 
                         } catch (IntentSender.SendIntentException sie) {
                             Timber.i("PendingIntent unable to execute request.");

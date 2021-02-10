@@ -48,11 +48,7 @@ public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         // check if all permissions are granted
                         if (report.areAllPermissionsGranted()) {
-                            // do you work now
-//                            Toast.makeText(context, "All permissions are granted!", Toast.LENGTH_SHORT).show();
-
                             getView().onPermissionsGranted();
-
                         }
 
                         // check for permanent denial of any permission
@@ -62,12 +58,17 @@ public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
                     }
 
                     @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                    public void onPermissionRationaleShouldBeShown(
+                            List<PermissionRequest> permissions,
+                            PermissionToken token) {
                         token.continuePermissionRequest();
                     }
                 })
                 .withErrorListener(error -> {
-                    Toast.makeText(context, "Error occurred! " + error.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            context,
+                            "Error occurred! " + error.toString(),
+                            Toast.LENGTH_SHORT).show();
                     getView().onPermissionsDenied();
                 })
                 .onSameThread()
@@ -77,7 +78,10 @@ public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
     @Override
     public void getAppVersion() {
         try {
-            PackageInfo pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
+            PackageInfo pInfo =
+                    activity
+                            .getPackageManager()
+                            .getPackageInfo(activity.getPackageName(), 0);
             String version = pInfo.versionName;
 
             getView().displayAppVersion(version);

@@ -12,6 +12,7 @@ import com.riders.thelab.R;
 
 
 public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
+
     private Drawable mDivider;
 
     public SimpleDividerItemDecoration(Context context) {

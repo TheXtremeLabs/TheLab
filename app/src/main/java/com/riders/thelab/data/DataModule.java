@@ -250,16 +250,6 @@ public class DataModule {
                                         .header("Accept-Encoding", "Identity");
                     }
 
-
-                    // Request customization: add request headers
-                    /*Request.Builder requestBuilder =
-                            original.newBuilder()
-                                    .url(url)
-                                    .header("Content-Type", "application/json; charset=utf-8")
-                                    .header("Connection", "close")
-                                    //.header("Content-Type", "application/json")
-                                    .header("Accept-Encoding", "Identity");*/
-
                     Request request = requestBuilder.build();
 
                     return chain.proceed(request);
@@ -292,20 +282,23 @@ public class DataModule {
     @Provides
     @Singleton
     @NotNull YoutubeApiService provideYoutubeApiService() {
-        return provideRetrofit(Constants.BASE_ENDPOINT_YOUTUBE).create(YoutubeApiService.class);
+        return provideRetrofit(Constants.BASE_ENDPOINT_YOUTUBE)
+                .create(YoutubeApiService.class);
     }
 
 
     @Provides
     @Singleton
     @NotNull WeatherApiService provideWeatherApiService() {
-        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER).create(WeatherApiService.class);
+        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER)
+                .create(WeatherApiService.class);
     }
 
     @Provides
     @Singleton
     @NotNull WeatherBulkApiService proWeatherBulkApiService() {
-        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD).create(WeatherBulkApiService.class);
+        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
+                .create(WeatherBulkApiService.class);
     }
 
 

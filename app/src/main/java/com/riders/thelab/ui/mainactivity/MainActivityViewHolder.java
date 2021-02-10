@@ -70,23 +70,29 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
                                 : app.getDrawableIcon())
                 .listener(new RequestListener<Drawable>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
 
 
                     @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource,
+                                                   boolean isFirstResource) {
+
                         if (0 != app.getIcon() && app.getTitle().equals("Palette")) {
                             Bitmap myBitmap = ((BitmapDrawable) resource).getBitmap();
 
                             Bitmap newBitmap = addGradient(myBitmap);
-                            iconImageView.setImageDrawable(new BitmapDrawable(context.getResources(), newBitmap));
+                            iconImageView.setImageDrawable(
+                                    new BitmapDrawable(context.getResources(), newBitmap));
                             return true;
                         }
 
                         if (0 != app.getIcon() && app.getTitle().equals("WIP")) {
-                            iconImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.logo_testing));
+                            iconImageView.setImageDrawable(
+                                    ContextCompat.getDrawable(context, R.drawable.logo_testing));
                             ivArrow.setVisibility(View.GONE);
                             return true;
                         }

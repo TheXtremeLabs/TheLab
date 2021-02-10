@@ -68,7 +68,8 @@ public class UIManager {
             if (negativeMessage.equalsIgnoreCase("Réessayer")) {
                 //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
             }
-            if (negativeMessage.equalsIgnoreCase("Réessayer") && LabNetworkManager.isConnected(context)) {
+            if (negativeMessage.equalsIgnoreCase("Réessayer")
+                    && LabNetworkManager.isConnected(context)) {
                 dialog.dismiss();
             }
         });
