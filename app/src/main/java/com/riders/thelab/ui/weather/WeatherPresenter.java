@@ -72,8 +72,6 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     // prone as you might forgot to dispose.
     // In this case we can use CompositeDisposable.
     private final CompositeDisposable compositeDisposable;
-    private Observable<List<CityModel>> mCityListObservable;
-
 
     private List<CityModel> citiesModel;
     private Gson mGson;
@@ -117,49 +115,6 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                                         Timber.e("Use worker to make long job operation in background...");
                                         startWork();
 
-/*
-                                        Timber.e("Call web service...");
-                                        // Call web service
-                                        getCitiesFromWS()
-                                                .subscribe(
-                                                        responseBody -> {
-
-                                                            try {
-
-                                                                Timber.d("Unzipped downloaded file...");
-                                                                // Step 1 : Unzip
-                                                                String unzippedGZipResult = LabFileManager.unzipGzip(responseBody);
-
-                                                                if (Validator.isEmpty(unzippedGZipResult)) {
-                                                                    Timber.e("Result is empty");
-                                                                    return;
-                                                                }
-
-                                                                Timber.d("Build Moshi adapter and build object...");
-                                                                // Step 2 convert to class object
-                                                                Moshi moshi =
-                                                                        new Moshi.Builder()
-                                                                                .add(new CitiesEventJsonAdapter())
-                                                                                .build();
-
-                                                                Type type = Types.newParameterizedType(List.class, City.class);
-                                                                JsonAdapter<List<City>> jsonAdapter = moshi.adapter(type);
-
-                                                                List<City> dtoCities = jsonAdapter.fromJson(unzippedGZipResult);
-
-                                                                Timber.d("Save in database...");
-                                                                // Step 3 save in database
-                                                                saveCities(dtoCities);
-                                                            } catch (Exception e) {
-                                                                Timber.e(e);
-                                                            }
-
-                                                        },
-                                                        throwable -> {
-                                                            Timber.e("Error while downloading zip file");
-                                                            Timber.e(throwable);
-                                                        });*/
-
                                     } else {
                                         // In this case data already exists in database
                                         // Load data then let the the user perform his request
@@ -176,7 +131,6 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                                 });
 
         compositeDisposable.add(disposable);
-
     }
 
 
@@ -186,6 +140,11 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     }
 
 
+    /////////////////////////////////////
+    //
+    // WORKER
+    //
+    /////////////////////////////////////
     /**
      * Launch Worker that will manage download and extraction of the cities zip file from bulk openweather server
      */
@@ -252,14 +211,6 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                                     break;
 
                                 case SUCCEEDED:
-                                    Timber.d("Worker SUCCEEDED");
-                                    /*Snackbar
-                                            .make(
-                                                    findViewById(android.R.id.content),
-                                                    R.string.succeed,
-                                                    BaseTransientBottomBar.LENGTH_LONG)
-                                            .show();*/
-
                                     Disposable disposable =
                                             repository.getAllCities()
                                                     .subscribe(
@@ -302,6 +253,12 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                         });
     }
 
+
+    /////////////////////////////////////
+    //
+    // RX
+    //
+    /////////////////////////////////////
     @Override
     public void getWeather(String city) {
         getView().showLoader();
@@ -342,78 +299,11 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     }
 
 
-    /////////////////////////////////////
-    //
-    // RX
-    //
-    /////////////////////////////////////
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public Observable<List<CityModel>> getDataFromJson(String fileName) {
-
-        return Observable.fromCallable(() -> {
-
-            mGson = new Gson();
-            String json;
-
-            InputStream is = null /*mAssetManager.open(fileName)*/;
-
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-
-            json = new String(buffer, StandardCharsets.UTF_8);
-
-            mGson.toJson(json);
-
-            return mGson.fromJson(json, new TypeToken<List<CityModel>>() {
-            }.getType());
-        });
-    }
-
-    public DisposableObserver<List<CityModel>> getCitiesObserver() {
-
-        citiesModel = new ArrayList<>();
-
-        return new DisposableObserver<List<CityModel>>() {
-            @Override
-            public void onNext(@NotNull List<CityModel> cityList) {
-
-                for (CityModel element : cityList) {
-
-                    if (element.getCountry().equals(Constants.WEATHER_COUNTRY_CODE_FRANCE)
-                            || element.getCountry().equals(Constants.WEATHER_COUNTRY_CODE_GUADELOUPE)
-                            || element.getCountry().equals(Constants.WEATHER_COUNTRY_CODE_MARTINIQUE)
-                            || element.getCountry().equals(Constants.WEATHER_COUNTRY_CODE_GUYANE)
-                            || element.getCountry().equals(Constants.WEATHER_COUNTRY_CODE_REUNION))
-                        citiesModel.add(element);
-                }
-            }
-
-            @Override
-            public void onError(@NotNull Throwable e) {
-                Timber.e("Cannot find file : %s", e.getMessage());
-
-                getView().hideLoader();
-                getView().onFetchDataFromFileError(e.getMessage());
-            }
-
-            @Override
-            public void onComplete() {
-
-                getView().hideLoader();
-                getView().onFetchCitySuccessful(citiesModel);
-            }
-        };
-    }
-
-
     @Override
     public void detachView() {
         super.detachView();
 
         clearDisposables();
-
         cancelWorker();
     }
 }

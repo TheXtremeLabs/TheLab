@@ -165,9 +165,9 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/temperature_placeholder"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
-                        tools:text="@string/temperature_placeholder" />
+                        android:textSize="16sp" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_weather_city_temperature"
@@ -206,9 +206,9 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/temperature_real_feels_placeholder"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
-                        tools:text="@string/temperature_real_feels_placeholder" />
+                        android:textSize="16sp" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_weather_city_real_feels"
@@ -312,6 +312,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
+                    android:layout_marginTop="@dimen/small_margin"
                     android:background="@drawable/separator_view_gradient"
                     app:layout_constraintBottom_toTopOf="@id/grid_layout"
                     app:layout_constraintTop_toBottomOf="@id/container_sun_data" />
@@ -534,9 +535,9 @@
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:textSize="12sp"
-                                tools:text="@string/wind_direction_placeholder" />
+                                android:text="@string/wind_direction_placeholder"
+                                android:textColor="@color/iron"
+                                android:textSize="12sp" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/tv_weather_extra_wind_direction"
@@ -567,7 +568,7 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <!-- Cloud icon -->
+                        <!-- humidity icon -->
                         <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/iv_humidity"
                             android:layout_width="64dp"
@@ -578,8 +579,8 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:srcCompat="@drawable/ic_humidity" />
-                        <!-- Cloud icon -->
+                            app:srcCompat="@drawable/ic_humidity" />
+                        <!-- humidity icon -->
 
                         <androidx.constraintlayout.widget.Guideline
                             android:id="@+id/guideline_image_humidity_separator"
