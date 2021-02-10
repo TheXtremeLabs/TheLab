@@ -234,7 +234,11 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
 
         // Load weather icon
         Glide.with(context)
-                .load(getWeatherIconFromApi(weatherResponse.getWeather().get(0).getIcon()))
+                .load(getWeatherIconFromApi(
+                        weatherResponse
+                                .getWeather()
+                                .get(0)
+                                .getIcon()))
                 .into(ivWeatherIcon);
 
         // Load city name
@@ -252,15 +256,17 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
                 context.getResources().getString(R.string.degree_placeholder);
         tvWeatherRealFeels.setText(realFeels);
 
-        long sunriseMillis = weatherResponse.getSystem().getSunrise();
-        long sunsetMillis = weatherResponse.getSystem().getSunset();
+        tvWeatherSunrise.setText(
+                DateTimeUtils.formatMillisToTimeHoursMinutes(
+                        weatherResponse
+                                .getSystem()
+                                .getSunrise()));
 
-        String szSunriseMillis = DateTimeUtils.formatMillisToTimeHoursMinutes(sunriseMillis);
-        String szSunsetMillis = DateTimeUtils.formatMillisToTimeHoursMinutes(sunsetMillis);
-
-        tvWeatherSunrise.setText(szSunriseMillis);
-        tvWeatherSunset.setText(szSunsetMillis);
-
+        tvWeatherSunset.setText(
+                DateTimeUtils.formatMillisToTimeHoursMinutes(
+                        weatherResponse
+                                .getSystem()
+                                .getSunset()));
 
         String cloudiness = weatherResponse.getClouds().getCloudiness() + " " +
                 context.getResources().getString(R.string.percent_placeholder);

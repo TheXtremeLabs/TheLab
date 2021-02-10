@@ -59,7 +59,6 @@ public class YoutubeLikeViewHolder extends RecyclerView.ViewHolder {
 
     public void setName(String name) {
         nameTextView.setText(name);
-
     }
 
     public void setDescription(String description) {
@@ -67,34 +66,9 @@ public class YoutubeLikeViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Video itemYoutubeVideo) {
-
         if (itemLoader != null) {
             itemLoader.setVisibility(View.VISIBLE);
         }
-
-        //Call Picasso to display the correct image in each row view item
-        /*Picasso.with(context)
-                .load(itemYoutubeVideo.getImageThumb())
-                .into(imageThumb, new ImageLoadedCallback(itemLoader) {
-                    @Override
-                    public void onSuccess() {
-                        if (itemLoader != null) {
-                            itemLoader.setVisibility(View.GONE);
-                        }
-                    }
-
-                    @Override
-                    public void onError() {
-
-                        imageThumb.setImageResource(R.mipmap.ic_launcher);
-
-                        Log.e(TAG, "bandeau pictures - OOOOOOOHHH CA VA PAAAAAS LAAAAA !!!");
-
-                        if (itemLoader != null) {
-                            itemLoader.setVisibility(View.GONE);
-                        }
-                    }
-                });*/
     }
 
 }

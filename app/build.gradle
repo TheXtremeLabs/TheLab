@@ -17,7 +17,7 @@ def buildDateTime =
 // version information
 def versionMajor = 3
 def versionMinor = 7
-def versionPatch = 2
+def versionPatch = 3
 
 
 android {

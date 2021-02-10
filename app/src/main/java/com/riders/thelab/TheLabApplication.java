@@ -15,11 +15,9 @@ import dagger.android.AndroidInjector;
 import dagger.android.DaggerApplication;
 import timber.log.Timber;
 
-//import com.riders.thelab.di.component.DaggerComponentInjector;
 
 @SuppressLint("StaticFieldLeak")
-public class TheLabApplication extends DaggerApplication
-        /*implements Configuration.Provider */ {
+public class TheLabApplication extends DaggerApplication {
 
     // Context
     private static Context context;
@@ -29,12 +27,6 @@ public class TheLabApplication extends DaggerApplication
     private FirebaseCrashlytics mFirebaseCrashlytics;
 
     public static String LAB_PACKAGE_NAME = "";
-
-    // Workers with dagger
-    /*@Inject
-    LabWorkerFactory mLabWorkerFactory;
-    @Inject
-    Configuration workerConfiguration;*/
 
     // Only for workers purposes
     private static WeatherRestClient client;
@@ -64,13 +56,6 @@ public class TheLabApplication extends DaggerApplication
     @Override
     public void onCreate() {
         super.onCreate();
-        /*if (!LabCompatibilityManager.isOreo())
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);*/
-        /*DaggerComponentInjector.
-
-        componentInjector = new ComponentInjector.Factory().create(context);
-        componentInjector.inject(this);*/
-
 
         context = this;
 
@@ -84,12 +69,6 @@ public class TheLabApplication extends DaggerApplication
     private void init() {
         // Timber : logging
         Timber.plant(new Timber.DebugTree());
-
-        // Set Font for the entire application
-        /*LabTypefaceManager.overrideFont(
-                getApplicationContext(),
-                "serif",
-                "fonts/SamsungSans-LightItalic.ttf");*/
 
         // ThreeTen Date Time Library
         AndroidThreeTen.init(this);
@@ -134,9 +113,4 @@ public class TheLabApplication extends DaggerApplication
             new ConnectivityReceiver(listener);
     }
 
-
-    // Setup custom configuration for WorkManager with a DelegatingWorkerFactory
-    /*public Configuration getWorkManagerConfiguration() {
-        return workerConfiguration;
-    }*/
 }
