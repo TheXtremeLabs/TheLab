@@ -34,6 +34,14 @@
     <color name="white">#ffffff</color>
 
 
+    <color name="red">#CF3B0A</color>
+    <color name="blue">#0A9ECF</color>
+    <color name="green">#00A424</color>
+    <color name="orange">#D95C00</color>
+    <color name="purple">#650ACF</color>
+    <color name="yellow">#FFEB3B</color>
+
+
     <color name="list_divider">#dedede</color>
 
     <!-- Splash Layout -->
@@ -138,11 +146,6 @@
 
     <color name="bg_gradient_start">#31244e</color>
     <color name="bg_gradient_end">#6b394c</color>
-
-
-    <color name="green">#00A424</color>
-    <color name="orange">#D95C00</color>
-    <color name="red">#A60000</color>
 
 
     <color name="success">#43A047</color>

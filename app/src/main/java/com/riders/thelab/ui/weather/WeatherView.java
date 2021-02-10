@@ -266,12 +266,13 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
                 context.getResources().getString(R.string.pressure_unit_placeholder);
         tvWeatherExtraPressure.setText(pressure);
 
-        String wind = weatherResponse.getWind().getSpeed() + " " +
+        String wind =
+                weatherResponse.getWind().getSpeed() + " " +
                 context.getResources().getString(R.string.kilometer_unit_placeholder);
         tvWeatherExtraWindSpeed.setText(wind);
 
-        String windDirection = weatherResponse.getWind().getDegree() + " " +
-                weatherResponse.getWind().getMetrics();
+        String windDirection =
+                weatherResponse.getWind().getDegree() + " ";
         tvWeatherExtraWindDirection.setText(windDirection);
     }
 

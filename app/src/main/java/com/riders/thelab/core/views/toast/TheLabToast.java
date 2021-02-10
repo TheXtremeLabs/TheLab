@@ -55,8 +55,8 @@ public class TheLabToast extends Toast {
                 (ViewGroup) ((Activity) context).findViewById(R.id.custom_toast_container));
 
         container = (LinearLayout) layout.findViewById(R.id.custom_toast_container);
-        imageView =  layout.findViewById(R.id.ivLol);
-        textView =  layout.findViewById(R.id.text);
+        imageView = layout.findViewById(R.id.ivLol);
+        textView = layout.findViewById(R.id.text);
 
         // Ref : https://developer.android.com/reference/android/widget/Toast#setGravity(int,%20int,%20int)
         this.setGravity(Gravity.BOTTOM, 0, 250);
@@ -82,12 +82,15 @@ public class TheLabToast extends Toast {
 
     /**
      * Reference : https://stackoverflow.com/questions/47837460/how-to-set-layout-background-tint-from-string-programmatically
+     *
      * @param color
      */
     public void setBackgroundColor(int color) {
-        container.getBackground().setColorFilter(
-                ContextCompat.getColor(context, color),
-                PorterDuff.Mode.SRC_IN);
+        container
+                .getBackground()
+                .setColorFilter(
+                        ContextCompat.getColor(context, color),
+                        PorterDuff.Mode.SRC_IN);
     }
 
     @Override
