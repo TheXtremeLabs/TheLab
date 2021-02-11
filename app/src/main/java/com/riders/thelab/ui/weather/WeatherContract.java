@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.weather;
 
+import android.location.Location;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,8 +21,6 @@ public interface WeatherContract {
         void onCreateOptionsMenu(Menu menu);
 
         void onOptionsItemSelected(MenuItem item);
-
-        void onBackPressed();
 
         void showLoader();
 
@@ -47,6 +46,8 @@ public interface WeatherContract {
         void getCurrentWeather();
 
         void getWeather(String city);
+
+        void getWeather(Location location);
 
         void clearDisposables();
 

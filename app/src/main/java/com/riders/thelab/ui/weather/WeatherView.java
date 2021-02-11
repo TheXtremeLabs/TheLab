@@ -1,11 +1,8 @@
 package com.riders.thelab.ui.weather;
 
 import android.annotation.SuppressLint;
-import android.app.SearchManager;
 import android.content.Context;
 import android.location.Location;
-import android.location.LocationListener;
-import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,10 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.bumptech.glide.Glide;
@@ -40,9 +34,12 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -54,7 +51,7 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class WeatherView extends BaseViewImpl<WeatherPresenter>
         implements WeatherContract.View, MaterialTextView.OnEditorActionListener,
-        AdapterView.OnItemClickListener, LocationListener {
+        AdapterView.OnItemClickListener {
 
     private WeatherActivity context;
 
@@ -104,11 +101,6 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     MaterialTextView tvWeatherExtraHumidity;
 
 
-    private SearchView searchView;
-
-    private List<CityModel> citiesList;
-    private WeatherCityAdapter mAdapter;
-
     @Inject
     WeatherView(WeatherActivity context) {
         this.context = context;
@@ -139,61 +131,12 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     public void onCreateOptionsMenu(Menu menu) {
         context.getMenuInflater()
                 .inflate(R.menu.menu_weather, menu);
-
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
-                (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(context.getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-        // listening to search query text change
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (query.length() >= 3)
-                    // filter recycler view when query submitted
-                    mAdapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                if (query.length() >= 3)
-                    // filter recycler view when text is changed
-                    mAdapter.getFilter().filter(query);
-                return false;
-            }
-        });
     }
 
     @Override
     public void onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            //noinspection SimplifiableIfStatement
-            case R.id.action_search:
-                Timber.d("noinspection SimplifiableIfStatement");
-                break;
-
-            case R.id.action_position:
-                getPresenter().getCurrentWeather();
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        // close search view on back button pressed
-        if (!searchView.isIconified()) {
-            searchView.setIconified(true);
-            return;
+        if (item.getItemId() == R.id.action_position) {
+            getPresenter().getCurrentWeather();
         }
     }
 
@@ -303,12 +246,10 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
 
         weatherDataContainer.setVisibility(View.VISIBLE);
 
-        this.citiesList = cityList;
-
-        mAdapter = new WeatherCityAdapter(
+        WeatherCityAdapter mAdapter = new WeatherCityAdapter(
                 context,
                 R.layout.row_city_spinner,
-                (ArrayList<CityModel>) citiesList);
+                (ArrayList<CityModel>) cityList);
 
         // Set the minimum number of characters, to show suggestions
         acTvWeather.setThreshold(3);
@@ -385,26 +326,6 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     // IMPLEMENTS
     //
     /////////////////////////////////////
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-        Toast.makeText(context, "Enabled new provider " + provider, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Toast.makeText(context, "Disabled provider " + provider, Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 

@@ -252,6 +252,7 @@
     <string name="kilometer_unit_placeholder">km/h</string>
     <string name="form_hint_search_city">Looking for a city…</string>
     <string name="use_my_current_location">Use my current location</string>
+    <string name="action_weather_my_location">Weather for my location</string>
 
     <!-- Youtube -->
     <string name="activity_title_youtube_like">Youtube Like Activity</string>

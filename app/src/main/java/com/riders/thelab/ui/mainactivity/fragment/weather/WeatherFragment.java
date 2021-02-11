@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -147,16 +146,15 @@ public class WeatherFragment extends Fragment {
 
         showLoader();
 
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-
         Disposable disposable =
-                service.getWeather(latitude, longitude)
+                service.getWeather(location)
                         .subscribe(
                                 weatherResponse -> {
 
                                     if (200 != weatherResponse.getCode()) {
-                                        Timber.e("error code : %s", weatherResponse.getCode());
+                                        Timber.e(
+                                                "error code : %s",
+                                                weatherResponse.getCode());
                                         hideLoader();
                                     } else {
 
