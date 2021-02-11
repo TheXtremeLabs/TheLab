@@ -1,9 +1,8 @@
 package com.riders.thelab.ui.weather;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
+import android.location.Location;
 
-import androidx.annotation.RequiresApi;
 import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.NetworkType;
@@ -14,32 +13,22 @@ import androidx.work.WorkRequest;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.riders.thelab.core.parser.LabParser;
 import com.riders.thelab.core.utils.LabLocationManager;
 import com.riders.thelab.core.utils.LabNetworkManager;
 import com.riders.thelab.data.local.LabRepository;
 import com.riders.thelab.data.local.model.weather.CityModel;
 import com.riders.thelab.data.remote.LabService;
-import com.riders.thelab.data.remote.dto.weather.City;
 import com.riders.thelab.ui.base.BasePresenterImpl;
 import com.riders.thelab.utils.Constants;
 import com.riders.thelab.utils.Validator;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.observers.DisposableObserver;
 import timber.log.Timber;
 
 public class WeatherPresenter extends BasePresenterImpl<WeatherView>
@@ -88,8 +77,7 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
 
         if (!LabNetworkManager.isConnected(activity)) {
             getView().hideLoader();
-            // TODO : refactor contract
-            getView().onFetchCityError();
+            getView().onNoConnectionDetected();
             return;
         }
 
@@ -145,6 +133,7 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     // WORKER
     //
     /////////////////////////////////////
+
     /**
      * Launch Worker that will manage download and extraction of the cities zip file from bulk openweather server
      */
@@ -263,8 +252,22 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     public void getWeather(String city) {
         getView().showLoader();
 
+        makeWeatherCall(city);
+    }
+
+    @Override
+    public void getWeather(Location location) {
+        getView().showLoader();
+
+        makeWeatherCall(location);
+    }
+
+
+    public void makeWeatherCall(Object object) {
+        getView().showLoader();
+
         Disposable disposable =
-                service.getWeather(city)
+                service.getWeather(object)
                         .subscribe(
                                 weatherResponse -> {
 
@@ -279,7 +282,6 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
 
         compositeDisposable.add(disposable);
     }
-
 
     @Override
     public void clearDisposables() {
