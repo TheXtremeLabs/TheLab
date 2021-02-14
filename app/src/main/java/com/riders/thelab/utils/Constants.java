@@ -71,13 +71,6 @@ public class Constants {
 
     public List<App> loadActivities() {
         List<App> list = new ArrayList<>();
-        /*list.add(new App("Highcharts API", "Testing Highcharts API for Android ...",
-                R.drawable.logo_highcharts, HighChartsActivity.class));
-
-        list.add(new App("Android Services", "Android Services for any action...",
-                R.drawable.logo_service, ServiceActivity.class));
-
-         */
 
         list.add(new App("Colors", "Change color programmatically...",
                 R.drawable.logo_colors, ColorActivity.class));
@@ -91,10 +84,8 @@ public class Constants {
         list.add(new App("Tabs", "ViewPager Fragments Tabs...",
                 R.drawable.ic_tab, WorkingTabsActivity.class));
 
-
         list.add(new App("Transitions", "Start a new activity with awesome animations...",
                 R.drawable.ic_flip_to_back, TransitionActivity.class));
-
 
         list.add(new App("Floating Labels", "Floating Labels Form...",
                 R.drawable.ic_outline_label, FloatingLabelsActivity.class));
@@ -120,18 +111,11 @@ public class Constants {
         list.add(new App("Multi Pane", "Display content on split screen...",
                 R.drawable.ic_aspect_ratio, MultipaneActivity.class));
 /*
-        listActivities.add( new ItemActivity("Search Box Activity", R.drawable.ic_alarm_black_48dp, SearchBoxActivity.class) );
-        listActivities.add( new ItemActivity("Bandeau Pictures Activity", R.drawable.ic_picture_in_picture_black_48dp, BandeauPicturesActivity.class) );
-        listActivities.add( new ItemActivity("Send Email Activity", R.drawable.ic_email_black_48dp, SendMailActivity.class) );
-        */
-
-/*
         list.add(new App("Songs Player (Work In Progress)", "Display content on split screen...",
                 R.mipmap.ic_launcher_round, SongPlayerActivity.class));
 */
         list.add(new App("Youtube", "Youtube look like...",
                 R.drawable.youtube_icon_like, YoutubeLikeActivity.class));
-
 
         list.add(new App("My Speech To Text", "Own speech to text implementation...",
                 R.drawable.ic_mic, SpeechToTextActivity.class));
