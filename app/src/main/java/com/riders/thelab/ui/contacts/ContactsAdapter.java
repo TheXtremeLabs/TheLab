@@ -20,10 +20,10 @@ import timber.log.Timber;
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsViewHolder>
         implements Filterable {
 
-    private Context context;
-    private List<Contact> contactList;
+    private final Context context;
+    private final List<Contact> contactList;
+    private final ContactsClickListener listener;
     private List<Contact> contactListFiltered;
-    private ContactsClickListener listener;
 
 
     public ContactsAdapter(@NonNull Context context,

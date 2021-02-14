@@ -1,7 +1,6 @@
 package com.riders.thelab.ui.mainactivity.fragment.time;
 
 import com.riders.thelab.ui.base.BaseView;
-import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment;
 
 import javax.inject.Inject;
 

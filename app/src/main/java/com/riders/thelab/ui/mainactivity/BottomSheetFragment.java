@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabDeviceManager;
@@ -27,26 +27,24 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class BottomSheetFragment extends BottomSheetDialogFragment {
 
+    private final int deviceScreenHeight = 0;
+    private final int deviceScreenWidth = 0;
+    private final int deviceVersionSDK = 0;
+    private final String OSName = "UNKNOWN";
     @BindView(R.id.tv_bottom_brand)
-    TextView tvBrand;
+    MaterialTextView tvBrand;
     @BindView(R.id.tv_bottom_model)
-    TextView tvModel;
+    MaterialTextView tvModel;
     @BindView(R.id.tv_bottom_screen_height)
-    TextView tvScreenHeight;
+    MaterialTextView tvScreenHeight;
     @BindView(R.id.tv_bottom_screen_width)
-    TextView tvScreenWidth;
+    MaterialTextView tvScreenWidth;
     @BindView(R.id.tv_bottom_version)
-    TextView tvVersion;
-
-
+    MaterialTextView tvVersion;
     //Variables
     private String deviceModel;
     private String deviceBrand;
-    private int deviceScreenHeight = 0;
-    private int deviceScreenWidth = 0;
-    private int deviceVersionSDK = 0;
     private Field[] fields;
-    private String OSName = "UNKNOWN";
 
     public BottomSheetFragment() {
         // Required empty public constructor
@@ -68,7 +66,11 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_bottom_sheet_dialog, container, false);
+        View rootView =
+                inflater.inflate(
+                        R.layout.fragment_bottom_sheet_dialog,
+                        container,
+                        false);
         ButterKnife.bind(this, rootView);
         return rootView;
     }

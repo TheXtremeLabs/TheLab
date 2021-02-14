@@ -21,7 +21,6 @@ public class BaseActivity<V extends BaseView> extends DaggerAppCompatActivity {
     }
 
 
-
     @Override
     protected void onDestroy() {
         view.onDestroy();

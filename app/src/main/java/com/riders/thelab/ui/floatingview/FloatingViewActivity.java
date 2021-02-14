@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.riders.thelab.R;
 import com.riders.thelab.core.service.FloatingViewService;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
@@ -21,10 +21,9 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class FloatingViewActivity extends SimpleActivity {
 
-    @BindView(R.id.notify_me)
-    Button btnNotifyMe;
-
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
+    @BindView(R.id.notify_me)
+    MaterialButton btnNotifyMe;
 
     @SuppressLint("NewApi")
     @Override
@@ -58,7 +57,10 @@ public class FloatingViewActivity extends SimpleActivity {
     private void initializeView() {
         Timber.d("initializeView()");
         findViewById(R.id.notify_me).setOnClickListener(view -> {
-            startService(new Intent(FloatingViewActivity.this, FloatingViewService.class));
+            startService(
+                    new Intent(
+                            FloatingViewActivity.this,
+                            FloatingViewService.class));
             moveAppInBackground();
         });
     }
@@ -66,13 +68,16 @@ public class FloatingViewActivity extends SimpleActivity {
     @OnClick(R.id.notify_me)
     public void onNotifyMeClicked() {
         Timber.d("onNotifyMeClicked()");
-        startService(new Intent(FloatingViewActivity.this, FloatingViewService.class));
+        startService(
+                new Intent(
+                        FloatingViewActivity.this,
+                        FloatingViewService.class));
         moveAppInBackground();
     }
 
     /**
      * Move the app in background
-     *
+     * <p>
      * Source : https://stackoverflow.com/questions/10461095/moving-application-in-background-on-back-button-event/10461254
      */
     private void moveAppInBackground() {

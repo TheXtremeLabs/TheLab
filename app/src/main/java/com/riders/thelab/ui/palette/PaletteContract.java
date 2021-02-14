@@ -1,8 +1,8 @@
 package com.riders.thelab.ui.palette;
 
 import android.graphics.Bitmap;
-import android.widget.ImageView;
 
+import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.ui.base.BaseView;
 
 public interface PaletteContract {
@@ -15,6 +15,6 @@ public interface PaletteContract {
     }
 
     interface Presenter {
-        void loadImage(ImageView targetImageView, String imageURL);
+        void loadImage(ShapeableImageView targetImageView, String imageURL);
     }
 }

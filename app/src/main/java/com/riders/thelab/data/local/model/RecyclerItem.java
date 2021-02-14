@@ -16,7 +16,8 @@ public class RecyclerItem {
 
     String name;
 
-    public RecyclerItem(){}
+    public RecyclerItem() {
+    }
 
     public RecyclerItem(RecyclerEnum item) {
         this.name = item.getName();

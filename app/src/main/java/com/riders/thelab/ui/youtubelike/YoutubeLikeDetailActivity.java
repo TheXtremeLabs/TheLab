@@ -9,8 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
@@ -21,31 +19,33 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.Video;
 import com.riders.thelab.ui.base.SimpleActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import timber.log.Timber;
+
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 @SuppressLint("NonConstantResourceId")
 public class YoutubeLikeDetailActivity extends SimpleActivity {
 
-    private Context mContext;
-
     //Bundle Arguments
     public static final String VIDEO_OBJECT_ARG = "content_video";
-
     @BindView(R.id.content_image_thumb)
-    ImageView imageThumb;
+    ShapeableImageView imageThumb;
     @BindView(R.id.content_image_thumb_blurred)
-    ImageView imageThumbBlurred;
+    ShapeableImageView imageThumbBlurred;
     @BindView(R.id.content_text_name)
-    TextView titleTextView;
+    MaterialTextView titleTextView;
     @BindView(R.id.content_text_description)
-    TextView descriptionTextView;
-
+    MaterialTextView descriptionTextView;
+    private Context mContext;
     private Video item;
 
     @Override
@@ -98,6 +98,7 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
         //Load the background  thumb image
         Glide.with(this)
                 .load(item.getImageThumb())
+                .apply(bitmapTransform(new BlurTransformation(25, 3)))
                 .into(imageThumbBlurred);
 
 //        ImageManagerUtils.setBlurredImage(this, imageThumbBlurred, 5);
@@ -110,12 +111,15 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
                 .load(item.getImageThumb())
                 .listener(new RequestListener<Drawable>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource,
+                                                   boolean isFirstResource) {
 
                         //retrouver le bitmap téléchargé par Picasso
                         Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();

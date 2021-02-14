@@ -1,6 +1,8 @@
 package com.riders.thelab.ui.weather;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
 
@@ -19,6 +21,18 @@ public class WeatherActivity extends BaseActivity<WeatherView> {
     protected void onStart() {
         view.onStart();
         super.onStart();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        view.onCreateOptionsMenu(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        view.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

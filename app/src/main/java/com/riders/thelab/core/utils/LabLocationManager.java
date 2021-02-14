@@ -45,36 +45,30 @@ import timber.log.Timber;
 public class LabLocationManager extends Service
         implements LocationListener {
 
-    private Activity mActivity;
+    // The minimum distance to change Updates in meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+    // The minimum time between updates in milliseconds
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
     private final Context mContext;
-
+    // Declaring a Location Manager
+    protected LocationManager locationManager;
     // flag for GPS status
     boolean isGPSEnabled = false;
-
     // flag for network status
     boolean isNetworkEnabled = false;
-
     // flag for GPS status
     boolean canGetLocation = false;
-
     Location location = null; // location
     double latitude; // latitude
     double longitude; // longitude
-
-    // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
-
-    // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
-
-    // Declaring a Location Manager
-    protected LocationManager locationManager;
+    private Activity mActivity;
     private LocationListener mLocationListener;
 
 
     // Constructors
     public LabLocationManager(Context context) {
         this.mContext = context;
+        locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
     }
 
     public LabLocationManager(Context context, Activity activity) {
@@ -84,11 +78,141 @@ public class LabLocationManager extends Service
         getLocation();
     }
 
+    public static String getDeviceLocationToString(final Geocoder geocoder, final Location location, final Context context) {
+
+        Timber.i("getDeviceLocationToString");
+
+        String finalAddress = ""; //This is the complete address.
+        String finalCity = ""; //This is the complete address.
+
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        //get the address
+        StringBuilder addressStringBuilder = new StringBuilder();
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            Timber.e("addresses : %s", addresses);
+
+            Address address = addresses.get(0);
+
+            String street = address.getFeatureName() + ", " + address.getThoroughfare();
+            String locality = address.getLocality();
+            String postalCode = address.getPostalCode();
+            String departmentName = address.getSubAdminArea();
+            String regionName = address.getAdminArea();
+            String countryName = address.getCountryName();
+
+            addressStringBuilder
+                    .append(street).append(" - ")
+                    .append(locality).append(" - ")
+                    .append(postalCode).append(" - ")
+                    .append(departmentName).append(" - ")
+                    .append(regionName).append(" - ")
+                    .append(countryName);
+
+            finalAddress = addressStringBuilder.toString(); //This is the complete address.
+
+            Timber.e("Address : %s", finalAddress); //This will display the final address.
+
+        } catch (IOException | NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return finalAddress;
+    }
+
+    public static Single<String> getDeviceLocationWithRX(final Location location, final Context context) {
+
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        final String[] finalCity = new String[1]; //This is the complete address.
+        //get the address
+        Geocoder geoCoder = new Geocoder(context, Locale.getDefault());
+        StringBuilder addressStringBuilder = new StringBuilder();
+
+        return new Single<String>() {
+            @Override
+            protected void subscribeActual(SingleObserver<? super String> observer) {
+                getRXAddress(geoCoder, latitude, longitude)
+                        .subscribe(new DisposableSingleObserver<List<Address>>() {
+                            @Override
+                            public void onSuccess(@NonNull List<Address> addresses) {
+
+                                for (Address element : addresses) {
+                                    Timber.e("element : %s", element.toString());
+                                }
+
+                                Address address = addresses.get(0);
+
+                                String street = address.getFeatureName() + ", " + address.getThoroughfare();
+                                String locality = address.getLocality();
+                                String postalCode = address.getPostalCode();
+                                String departmentName = address.getSubAdminArea();
+                                String regionName = address.getAdminArea();
+                                String countryName = address.getCountryName();
+
+                                addressStringBuilder
+                                        .append(street).append(" - ")
+                                        .append(locality).append(" - ")
+                                        .append(postalCode).append(" - ")
+                                        .append(departmentName).append(" - ")
+                                        .append(regionName).append(" - ")
+                                        .append(countryName);
+
+                                finalCity[0] = address.getLocality(); //This is the complete address.
+
+
+                                if (!finalCity[0].isEmpty()) {
+                                    observer.onSuccess(finalCity[0]);
+                                } else {
+                                    Timber.e("value are empty");
+                                }
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+                                observer.onError(e);
+                            }
+                        });
+            }
+        }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    static Single<List<Address>> getRXAddress(final Geocoder geoCoder, final double latitude, final double longitude) {
+        return new Single<List<Address>>() {
+            @SneakyThrows
+            @Override
+            protected void subscribeActual(@NonNull SingleObserver<? super List<Address>> observer) {
+                List<Address> addressList = geoCoder.getFromLocation(latitude, longitude, 1);
+
+                if (!addressList.isEmpty()) {
+                    observer.onSuccess(addressList);
+                } else {
+                    observer.onError(new Throwable());
+                }
+            }
+        }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
     }
 
+    public void setActivity(Activity activity) {
+        this.mActivity = activity;
+    }
+
+    public void setLocationListener() {
+        mLocationListener = this;
+    }
 
     public Location getLocation() {
 
@@ -240,6 +364,22 @@ public class LabLocationManager extends Service
      * @return boolean
      */
     public boolean canGetLocation() {
+        Timber.d("canGetLocation()");
+
+        try {
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) {
+            Timber.e(ex);
+        }
+
+        try {
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception ex) {
+            Timber.e(ex);
+        }
+
+        this.canGetLocation = isGPSEnabled && isNetworkEnabled;
+
         return this.canGetLocation;
     }
 
@@ -275,142 +415,21 @@ public class LabLocationManager extends Service
 
     @Override
     public void onLocationChanged(Location location) {
+        Timber.d("onLocationChanged");
     }
 
     @Override
     public void onProviderDisabled(String provider) {
+        Timber.e("onProviderDisabled");
     }
 
     @Override
     public void onProviderEnabled(String provider) {
+        Timber.d("onProviderEnabled");
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
-
-
-    public static String getDeviceLocationToString(final Geocoder geocoder, final Location location, final Context context) {
-
-        Timber.i("getDeviceLocationToString");
-
-        String finalAddress = ""; //This is the complete address.
-        String finalCity = ""; //This is the complete address.
-
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-
-        //get the address
-        StringBuilder addressStringBuilder = new StringBuilder();
-
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            Timber.e("addresses : %s", addresses);
-
-            Address address = addresses.get(0);
-
-            String street = address.getFeatureName() + ", " + address.getThoroughfare();
-            String locality = address.getLocality();
-            String postalCode = address.getPostalCode();
-            String departmentName = address.getSubAdminArea();
-            String regionName = address.getAdminArea();
-            String countryName = address.getCountryName();
-
-            addressStringBuilder
-                    .append(street).append(" - ")
-                    .append(locality).append(" - ")
-                    .append(postalCode).append(" - ")
-                    .append(departmentName).append(" - ")
-                    .append(regionName).append(" - ")
-                    .append(countryName);
-
-            finalAddress = addressStringBuilder.toString(); //This is the complete address.
-
-            Timber.e("Address : %s", finalAddress); //This will display the final address.
-
-        } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        return finalAddress;
-    }
-
-    public static Single<String> getDeviceLocationWithRX(final Location location, final Context context) {
-
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-
-        final String[] finalCity = new String[1]; //This is the complete address.
-        //get the address
-        Geocoder geoCoder = new Geocoder(context, Locale.getDefault());
-        StringBuilder addressStringBuilder = new StringBuilder();
-
-        return new Single<String>() {
-            @Override
-            protected void subscribeActual(SingleObserver<? super String> observer) {
-                getRXAddress(geoCoder, latitude, longitude)
-                        .subscribe(new DisposableSingleObserver<List<Address>>() {
-                            @Override
-                            public void onSuccess(@NonNull List<Address> addresses) {
-
-                                for (Address element : addresses) {
-                                    Timber.e("element : %s", element.toString());
-                                }
-
-                                Address address = addresses.get(0);
-
-                                String street = address.getFeatureName() + ", " + address.getThoroughfare();
-                                String locality = address.getLocality();
-                                String postalCode = address.getPostalCode();
-                                String departmentName = address.getSubAdminArea();
-                                String regionName = address.getAdminArea();
-                                String countryName = address.getCountryName();
-
-                                addressStringBuilder
-                                        .append(street).append(" - ")
-                                        .append(locality).append(" - ")
-                                        .append(postalCode).append(" - ")
-                                        .append(departmentName).append(" - ")
-                                        .append(regionName).append(" - ")
-                                        .append(countryName);
-
-                                finalCity[0] = address.getLocality(); //This is the complete address.
-
-
-                                if (!finalCity[0].isEmpty()) {
-                                    observer.onSuccess(finalCity[0]);
-                                } else {
-                                    Timber.e("value are empty");
-                                }
-                            }
-
-                            @Override
-                            public void onError(@NonNull Throwable e) {
-                                observer.onError(e);
-                            }
-                        });
-            }
-        }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-
-    static Single<List<Address>> getRXAddress(final Geocoder geoCoder, final double latitude, final double longitude) {
-        return new Single<List<Address>>() {
-            @SneakyThrows
-            @Override
-            protected void subscribeActual(@NonNull SingleObserver<? super List<Address>> observer) {
-                List<Address> addressList = geoCoder.getFromLocation(latitude, longitude, 1);
-
-                if (!addressList.isEmpty()) {
-                    observer.onSuccess(addressList);
-                } else {
-                    observer.onError(new Throwable());
-                }
-            }
-        }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        Timber.w("onStatusChanged");
     }
 }

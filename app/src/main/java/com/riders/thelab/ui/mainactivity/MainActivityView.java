@@ -11,10 +11,13 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -54,32 +57,41 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 @SuppressLint({"NonConstantResourceId", "NewApi"})
 public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         implements MainActivityContract.View, MainActivityAppClickListener,
-        ConnectivityListener {
-
-    // TAG & Context
-    private MainActivity context;
+        ConnectivityListener, MenuItem.OnMenuItemClickListener {
 
     //Views
     @BindView(R.id.view_pager)
     ViewPager2 viewPager2;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.layoutDots)
+    LinearLayout layoutDots;
+    @BindView(R.id.app_recyclerView)
+    RecyclerView appRecyclerView;
+    TimeFragment timeFragment;
+    WeatherFragment weatherFragment;
+    NewsFragment newsFragment;
+    // TAG & Context
+    private MainActivity context;
     /**
      * The pager adapter, which provides the pages to the view pager widget.
      */
     private FragmentStateAdapter pagerAdapter;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.app_recyclerView)
-    RecyclerView appRecyclerView;
-
     private ConnectivityManager mConnectivityManager;
     private LabNetworkManager networkManager;
-
     private Menu menu;
-
-    TimeFragment timeFragment;
-    WeatherFragment weatherFragment;
-    NewsFragment newsFragment;
-
+    private List<Fragment> fragmentList;
+    private TextView[] dots;
+    /*
+     * ViewPager page change listener
+     */
+    ViewPager2.OnPageChangeCallback pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
+        @Override
+        public void onPageSelected(int position) {
+            super.onPageSelected(position);
+            addBottomDots(position);
+        }
+    };
 
     @Inject
     MainActivityView(MainActivity context) {
@@ -208,23 +220,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         }
     }
 
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        Timber.e("startActivityForResult()");
-    }
-
-    public void onDestroy() {
-        Timber.d("onDestroy()");
-
-        if (LabCompatibilityManager.isLollipop()) {
-            Timber.d("unregister network callback()");
-            //mConnectivityManager.unregisterNetworkCallback(networkManager);
-        }
-
-        getPresenter().detachView();
-        context = null;
-    }
-
 
     /////////////////////////////////////
     //
@@ -243,6 +238,23 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     //
     /////////////////////////////////////
 
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        Timber.e("startActivityForResult()");
+    }
+
+    public void onDestroy() {
+        Timber.d("onDestroy()");
+
+        if (LabCompatibilityManager.isLollipop()) {
+            Timber.d("unregister network callback()");
+            //mConnectivityManager.unregisterNetworkCallback(networkManager);
+        }
+
+        getPresenter().detachView();
+        context = null;
+    }
+
     // Method to manually check connection status
     private void checkConnection() {
         Timber.d("checkConnection()");
@@ -257,7 +269,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         updateToolbarConnectionIcon(isConnected);
     }
 
-
     public void showBottomSheetDialogFragment() {
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
         bottomSheetFragment.show(
@@ -271,9 +282,10 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     private void initViews() {
 
         initCollapsingToolbar();
+        initToolbar();
 
         // Instantiate a ViewPager2 and a PagerAdapter.
-        List<Fragment> fragmentList = new ArrayList<>();
+        fragmentList = new ArrayList<>();
 
         // add Fragments in your ViewPagerFragmentAdapter class
         fragmentList.add(new TimeFragment());
@@ -285,6 +297,29 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         viewPager2.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
 
         viewPager2.setAdapter(pagerAdapter);
+        viewPager2.registerOnPageChangeCallback(pageChangeCallback);
+    }
+
+    /*
+     * Adds bottom dots indicator
+     * */
+    private void addBottomDots(int currentPage) {
+        dots = new TextView[fragmentList.size()];
+
+        int[] colorsActive = context.getResources().getIntArray(R.array.array_dot_active);
+        int[] colorsInactive = context.getResources().getIntArray(R.array.array_dot_inactive);
+
+        layoutDots.removeAllViews();
+        for (int i = 0; i < dots.length; i++) {
+            dots[i] = new TextView(context);
+            dots[i].setText(Html.fromHtml("&#8226;"));
+            dots[i].setTextSize(35);
+            dots[i].setTextColor(colorsInactive[currentPage]);
+            layoutDots.addView(dots[i]);
+        }
+
+        if (dots.length > 0)
+            dots[currentPage].setTextColor(colorsActive[currentPage]);
     }
 
     /**
@@ -292,10 +327,9 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
      * Will show and hide the toolbar txtPostTitle on scroll
      */
     private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) context.findViewById(R.id.collapsing_toolbar);
+        final CollapsingToolbarLayout collapsingToolbar = context.findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) context.findViewById(R.id.appbar);
+        AppBarLayout appBarLayout = context.findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
         // hiding & showing the txtPostTitle when toolbar expanded & collapsed
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -308,15 +342,50 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
+                    // Toolbar is collapsed
                     collapsingToolbar.setTitle(context.getResources().getString(R.string.app_name));
+                    showMenuButtons();
                     isShow = true;
 
                 } else if (isShow) {
+                    // Toolbar is expanded
                     collapsingToolbar.setTitle(" ");
+                    hideMenuButtons();
                     isShow = false;
                 }
             }
         });
+
+    }
+
+    /**
+     * Setup Toolbar menu icon differently than the basic way because of the collapsing toolbar
+     * <p>
+     * We want the button to show up only when the tollbar is collapsed
+     * <p>
+     * https://stackoverflow.com/questions/10692755/how-do-i-hide-a-menu-item-in-the-actionbar#:~:text=The%20best%20way%20to%20hide,menu%20inside%20the%20same%20group.&text=Then%2C%20on%20your%20activity%20(preferable,visibility%20to%20false%20or%20true.
+     */
+    private void initToolbar() {
+        toolbar.inflateMenu(R.menu.menu_main);
+        this.menu = toolbar.getMenu();
+        hideMenuButtons();
+        toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
+    }
+
+    /**
+     * Display menu buttons when collapsing toolbar is collapsed
+     */
+    public void showMenuButtons() {
+        if (menu != null)
+            menu.setGroupVisible(R.id.menu_main_group, true); // Or true to be visible
+    }
+
+    /**
+     * Hide menu buttons when collapse toolbar is expanded
+     */
+    public void hideMenuButtons() {
+        if (menu != null)
+            menu.setGroupVisible(R.id.menu_main_group, false); // Or true to be visible
     }
 
     /////////////////////////////////////
@@ -436,6 +505,52 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
         });
 
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.connection_icon:
+                UIManager.showActionInToast(context, "Wifi clicked");
+
+                WifiManager wifiManager =
+                        (WifiManager) context
+                                .getApplicationContext()
+                                .getSystemService(Context.WIFI_SERVICE);
+
+                if (!LabCompatibilityManager.isAndroid10()) {
+                    boolean isWifi = wifiManager.isWifiEnabled();
+                    wifiManager.setWifiEnabled(!isWifi);
+                } else {
+                    Timber.e("For applications targeting android.os.Build.VERSION_CODES Q or above, this API will always fail and return false");
+
+                    /*
+                        ACTION_INTERNET_CONNECTIVITY Shows settings related to internet connectivity, such as Airplane mode, Wi-Fi, and Mobile Data.
+                        ACTION_WIFI Shows Wi-Fi settings, but not the other connectivity settings. This is useful for apps that need a Wi-Fi connection to perform large uploads or downloads.
+                        ACTION_NFC Shows all settings related to near-field communication (NFC).
+                        ACTION_VOLUME Shows volume settings for all audio streams.
+                     */
+                    Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
+                    this.startActivityForResult(panelIntent, 955);
+                }
+                break;
+
+            case R.id.action_settings:
+                UIManager.showActionInToast(context, "Settings clicked");
+                break;
+
+            case R.id.info_icon:
+                showBottomSheetDialogFragment();
+                break;
+
+            case R.id.action_force_crash:
+                throw new RuntimeException("This is a crash");
+
+            default:
+                break;
+        }
+        return true;
     }
     /////////////////////////////////////
     //

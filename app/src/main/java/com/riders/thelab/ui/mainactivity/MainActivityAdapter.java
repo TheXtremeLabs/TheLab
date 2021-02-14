@@ -3,6 +3,8 @@ package com.riders.thelab.ui.mainactivity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,9 +16,12 @@ import java.util.List;
 
 public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHolder> {
 
-    private Context context;
-    private List<App> appList;
-    private MainActivityAppClickListener listener;
+    private final Context context;
+    private final List<App> appList;
+    private final MainActivityAppClickListener listener;
+
+    // Allows to remember the last item shown on screen
+    private int lastPosition = -1;
 
     public MainActivityAdapter(@NonNull Context context,
                                @NonNull List<App> appList,
@@ -45,6 +50,18 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MainActivityViewHolder holder, int position) {
+        /*
+         *
+         * Reference : https://levelup.gitconnected.com/android-recyclerview-animations-in-kotlin-1e323ffd39be
+         *
+         * */
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+            holder.itemCardView.startAnimation(animation);
+            lastPosition = position;
+        }
+
         final App item = appList.get(position);
 
         holder.bindData(item);

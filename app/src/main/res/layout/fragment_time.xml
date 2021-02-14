@@ -4,9 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/detail_backdrop_height"
+    android:background="?android:attr/colorBackground"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:background="@color/teal_700"
     tools:layout_height="@dimen/detail_backdrop_height">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_time_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:fitsSystemWindows="true"
+        android:scaleType="centerCrop"
+        tools:background="@drawable/logo_colors" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,17 +24,17 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_time"
-            style="@style/TextAppearance.AppCompat.Display3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="52sp"
+            android:textStyle="bold"
             tools:text="15:20" />
 
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_date"
-            style="@style/TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="jeu. 24 Décembre 2020" />

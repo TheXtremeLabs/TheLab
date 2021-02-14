@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/TextAppearance.AppCompat.Display1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -66,14 +66,14 @@
                         android:paddingTop="@dimen/small_margin"
                         android:paddingBottom="@dimen/small_margin">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/device_info_device_name_placeholder"
                             android:textColor="@color/white" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_name"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -89,14 +89,14 @@
                         android:paddingTop="@dimen/small_margin"
                         android:paddingBottom="@dimen/small_margin">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/device_info_device_brand_placeholder"
                             android:textColor="@color/white" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_brand"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -112,14 +112,14 @@
                         android:paddingTop="@dimen/small_margin"
                         android:paddingBottom="@dimen/small_margin">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/device_info_device_model_placeholder"
                             android:textColor="@color/white" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_model"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -135,14 +135,14 @@
                         android:paddingTop="@dimen/small_margin"
                         android:paddingBottom="@dimen/small_margin">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/device_info_device_hardware_placeholder"
                             android:textColor="@color/white" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_hardware"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -158,14 +158,14 @@
                         android:paddingTop="@dimen/small_margin"
                         android:paddingBottom="@dimen/small_margin">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/device_info_device_screen_dimensions_placeholder"
                             android:textColor="@color/white" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_screen_dimensions"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -181,14 +181,14 @@
                         android:paddingTop="@dimen/small_margin"
                         android:paddingBottom="@dimen/small_margin">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/device_info_device_serial_placeholder"
                             android:textColor="@color/white" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_serial"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -204,14 +204,14 @@
                         android:paddingTop="@dimen/small_margin"
                         android:paddingBottom="@dimen/small_margin">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/device_info_device_fingerprint_placeholder"
                             android:textColor="@color/white" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_fingerprint"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -260,7 +260,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/TextAppearance.AppCompat.Display1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -283,14 +283,14 @@
                         android:paddingTop="@dimen/small_margin"
                         android:paddingBottom="@dimen/small_margin">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/device_android_name_placeholder"
                             android:textColor="@color/white" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_android_name"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -306,14 +306,14 @@
                         android:paddingTop="@dimen/small_margin"
                         android:paddingBottom="@dimen/small_margin">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/device_android_sdk_version_placeholder"
                             android:textColor="@color/white" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_android_sdk"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -329,14 +329,14 @@
                         android:paddingTop="@dimen/small_margin"
                         android:paddingBottom="@dimen/small_margin">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/device_android_release_placeholder"
                             android:textColor="@color/white" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_android_release"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -352,14 +352,14 @@
                         android:paddingTop="@dimen/small_margin"
                         android:paddingBottom="@dimen/small_margin">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/device_android_rooted_placeholder"
                             android:textColor="@color/white" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_android_rooted"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"

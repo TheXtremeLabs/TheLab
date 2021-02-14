@@ -3,8 +3,6 @@ package com.riders.thelab.ui.contacts;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -12,6 +10,8 @@ import androidx.core.view.ViewCompat;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.ui.base.SimpleActivity;
 
@@ -22,8 +22,10 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class ContactDetailActivity extends SimpleActivity {
 
-    private Context mContext;
-
+    public static final String CONTACT_NAME = "contact_name";
+    public static final String CONTACT_SURNAME = "contact_surname";
+    public static final String CONTACT_EMAIL = "contact_email";
+    public static final String CONTACT_IMAGE = "contact_image";
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
     @BindView(R.id.contact_detail_collapsing_toolbar)
@@ -31,23 +33,18 @@ public class ContactDetailActivity extends SimpleActivity {
     @BindView(R.id.contact_detail_toolbar)
     Toolbar toolbar;
     @BindView(R.id.iv_image_detail_toolbar)
-    ImageView mImageDetailToolbar;
+    ShapeableImageView mImageDetailToolbar;
     @BindView(R.id.tv_name_detail)
-    TextView mNameTextView;
+    MaterialTextView mNameTextView;
     @BindView(R.id.tv_surname_detail)
-    TextView mSurnameTextView;
+    MaterialTextView mSurnameTextView;
     @BindView(R.id.tv_email_detail)
-    TextView mEmailTextView;
-
-    public static final String CONTACT_NAME = "contact_name";
-    public static final String CONTACT_SURNAME = "contact_surname";
-    public static final String CONTACT_EMAIL = "contact_email";
-    public static final String CONTACT_IMAGE = "contact_image";
-
+    MaterialTextView mEmailTextView;
     String itemNameDetail;
     String itemSurnameDetail;
     String itemEmailDetail;
     String itemImage;
+    private Context mContext;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

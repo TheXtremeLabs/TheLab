@@ -3,7 +3,6 @@ package com.riders.thelab.ui.youtubelike;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -13,6 +12,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.Video;
 import com.riders.thelab.ui.base.BaseViewImpl;
@@ -29,17 +29,13 @@ import timber.log.Timber;
 public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
         implements YoutubeLikeContract.View, YoutubeListClickListener {
 
-    private YoutubeLikeActivity context;
-
     @BindView(R.id.no_connection_linear_container)
     LinearLayout mLinearNoConnectionContainer;
-
     @BindView(R.id.youtube_content_loader)
     ProgressBar mLoader;
-
     @BindView(R.id.youtube_content_recyclerView)
     RecyclerView contentRecyclerView;
-
+    private YoutubeLikeActivity context;
     private YoutubeLikeListAdapter contentAdapter;
 
 
@@ -132,7 +128,7 @@ public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
     }
 
     @Override
-    public void onYoutubeItemClicked(@NonNull ImageView view, Video video, int position) {
+    public void onYoutubeItemClicked(@NonNull ShapeableImageView view, Video video, int position) {
         getPresenter().onYoutubeItemClicked(view, video, position);
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -20,7 +21,7 @@
             android:visibility="visible">
 
             <!--Icon of floating widget -->
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/collapsed_iv"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -29,12 +30,12 @@
                 tools:ignore="ContentDescription" />
 
             <!--Close button-->
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/close_btn"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginLeft="40dp"
-                android:src="@drawable/ic_close"
+                app:srcCompat="@drawable/ic_close"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>
 
@@ -50,43 +51,43 @@
             tools:visibility="visible">
 
             <!--Album image for the song currently playing.-->
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@mipmap/ic_launcher_lab_icon_round"
                 tools:ignore="ContentDescription" />
 
             <!--Previous button-->
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/prev_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="20dp"
                 android:layout_marginLeft="20dp"
-                android:src="@drawable/ic_skip_previous"
+                app:srcCompat="@drawable/ic_skip_previous"
                 tools:ignore="ContentDescription" />
 
             <!--Play button-->
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/play_btn"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_play"
+                app:srcCompat="@drawable/ic_play"
                 tools:ignore="ContentDescription" />
 
             <!--Next button-->
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/next_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_skip_next"
+                app:srcCompat="@drawable/ic_skip_next"
                 tools:ignore="ContentDescription" />
 
             <RelativeLayout
@@ -94,18 +95,18 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/close_button"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_close" />
+                    app:srcCompat="@drawable/ic_close" />
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/open_button"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentBottom="true"
-                    android:src="@drawable/ic_open_in_new" />
+                    app:srcCompat="@drawable/ic_open_in_new" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>

@@ -8,8 +8,9 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
 
+import com.riders.thelab.utils.Constants;
+
 import java.io.File;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import timber.log.Timber;
@@ -145,7 +146,8 @@ public class LabDeviceManager {
 
         int screenHeight = 0;
 
-        if (LabCompatibilityManager.isAndroid10()) {
+        if (LabCompatibilityManager.isAndroid10()
+                && LabDeviceManager.getModel().trim().toLowerCase().contains(Constants.EMULATOR_DEVICE_TAG)) {
             WindowMetrics metrics = getDisplayMetricsAndroid10(activity);
             screenHeight = metrics.getBounds().height();
         } else {
@@ -160,7 +162,8 @@ public class LabDeviceManager {
     public static int getScreenWidth(Activity activity) {
         int screenWidth = 0;
 
-        if (LabCompatibilityManager.isAndroid10()) {
+        if (LabCompatibilityManager.isAndroid10()
+                && LabDeviceManager.getModel().trim().toLowerCase().contains(Constants.EMULATOR_DEVICE_TAG)) {
             WindowMetrics metrics = getDisplayMetricsAndroid10(activity);
             screenWidth = metrics.getBounds().width();
         } else {

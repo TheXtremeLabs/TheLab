@@ -3,15 +3,14 @@ package com.riders.thelab.ui.palette;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.palette.graphics.Palette;
 
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.ui.base.BaseViewImpl;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.riders.thelab.utils.Constants;
 
 import javax.inject.Inject;
 
@@ -23,27 +22,23 @@ import timber.log.Timber;
 public class PaletteView extends BaseViewImpl<PalettePresenter>
         implements PaletteContract.View {
 
-    // TAG & Context
-    private PaletteActivity context;
-
-    private static String IMAGE_URL = "http://i.ytimg.com/vi/aNHOfJCphwk/maxresdefault.jpg";
-
     //Views
     @BindView(R.id.palette_image)
-    ImageView imageView;
-
+    ShapeableImageView imageView;
     @BindView(R.id.textVibrant)
-    TextView textVibrant;
+    MaterialTextView textVibrant;
     @BindView(R.id.textVibrantLight)
-    TextView textVibrantLight;
+    MaterialTextView textVibrantLight;
     @BindView(R.id.textVibrantDark)
-    TextView textVibrantDark;
+    MaterialTextView textVibrantDark;
     @BindView(R.id.textMuted)
-    TextView textMuted;
+    MaterialTextView textMuted;
     @BindView(R.id.textMutedLight)
-    TextView textMutedLight;
+    MaterialTextView textMutedLight;
     @BindView(R.id.textMutedDark)
-    TextView textMutedDark;
+    MaterialTextView textMutedDark;
+    // TAG & Context
+    private PaletteActivity context;
 
 
     @Inject
@@ -64,48 +59,9 @@ public class PaletteView extends BaseViewImpl<PalettePresenter>
 
         //getImage();
 
-        getPresenter().loadImage(imageView, IMAGE_URL);
+        getPresenter().loadImage(imageView, Constants.PALETTE_URL);
     }
 
-    public void getImage() {
-        //j'utilise picasso afin de récupérer l'image
-        Picasso.get()
-                .load(IMAGE_URL)
-                //.load(R.drawable.image1)
-                .fit()
-                .centerCrop()
-                .into(imageView,
-                        //j'écoute le chargement via picasso
-                        new Callback() {
-                            @Override
-
-                            //puis lorsque l'image a bien été chargée
-                            public void onSuccess() {
-
-                                Timber.i("Image is correctly downloaded");
-
-                                //retrouver le bitmap téléchargé par Picasso
-                                Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-
-                                //demande à la palette de générer ses coleurs, de façon asynchrone
-                                //afin de ne pas bloquer l'interface graphique
-                                new Palette.Builder(bitmap).generate(new Palette.PaletteAsyncListener() {
-                                    @Override
-                                    public void onGenerated(Palette palette) {
-
-                                        //lorsque la palette est générée, je l'utilise sur mes textViews
-                                        appliquerPalette(palette);
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                Timber.e(e);
-                                e.printStackTrace();
-                            }
-                        });
-    }
 
     @Override
     public void onLoadingImageSuccessful(Bitmap bitmap) {

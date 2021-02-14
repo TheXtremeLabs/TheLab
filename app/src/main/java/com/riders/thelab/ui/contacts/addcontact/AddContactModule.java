@@ -3,7 +3,6 @@ package com.riders.thelab.ui.contacts.addcontact;
 import com.riders.thelab.di.scopes.ActivityScope;
 import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenter;
-import com.riders.thelab.ui.contacts.ContactsActivity;
 
 import dagger.Binds;
 import dagger.Module;

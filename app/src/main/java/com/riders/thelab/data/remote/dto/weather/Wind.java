@@ -17,4 +17,7 @@ public class Wind {
 
     @SerializedName("deg")
     int degree;
+
+    @SerializedName("gust")
+    String metrics;
 }

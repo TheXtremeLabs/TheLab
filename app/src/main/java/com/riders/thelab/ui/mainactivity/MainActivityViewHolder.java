@@ -12,12 +12,9 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +23,9 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.utils.Validator;
@@ -36,22 +36,20 @@ import butterknife.ButterKnife;
 @SuppressLint({"UnknownNullness", "NonConstantResourceId"})
 public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
-    private Context context;
+    private final Context context;
 
     @BindView(R.id.row_item_cardView)
-    public CardView itemCardView;
-
+    public MaterialCardView itemCardView;
     @BindView(R.id.iv_row_item_background)
-    AppCompatImageView backgroundImageView;
-
+    ShapeableImageView backgroundImageView;
     @BindView(R.id.row_icon_imageView)
-    AppCompatImageView iconImageView;
-
+    ShapeableImageView iconImageView;
     @BindView(R.id.row_title_textView)
-    TextView titleTextView;
-
+    MaterialTextView titleTextView;
     @BindView(R.id.row_description_textView)
-    TextView descriptionTextView;
+    MaterialTextView descriptionTextView;
+    @BindView(R.id.arrow_icon)
+    ShapeableImageView ivArrow;
 
 
     public MainActivityViewHolder(@NonNull Context context, @NonNull View itemView) {
@@ -72,18 +70,30 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
                                 : app.getDrawableIcon())
                 .listener(new RequestListener<Drawable>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
 
 
                     @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource,
+                                                   boolean isFirstResource) {
+
                         if (0 != app.getIcon() && app.getTitle().equals("Palette")) {
                             Bitmap myBitmap = ((BitmapDrawable) resource).getBitmap();
 
                             Bitmap newBitmap = addGradient(myBitmap);
-                            iconImageView.setImageDrawable(new BitmapDrawable(context.getResources(), newBitmap));
+                            iconImageView.setImageDrawable(
+                                    new BitmapDrawable(context.getResources(), newBitmap));
+                            return true;
+                        }
+
+                        if (0 != app.getIcon() && app.getTitle().equals("WIP")) {
+                            iconImageView.setImageDrawable(
+                                    ContextCompat.getDrawable(context, R.drawable.logo_testing));
+                            ivArrow.setVisibility(View.GONE);
                             return true;
                         }
 
@@ -113,6 +123,12 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
     }
 
 
+    /**
+     * Reference : https://stackoverflow.com/questions/37775675/imageview-set-color-filter-to-gradient
+     *
+     * @param originalBitmap
+     * @return
+     */
     public Bitmap addGradient(Bitmap originalBitmap) {
         int width = originalBitmap.getWidth();
         int height = originalBitmap.getHeight();

@@ -1,9 +1,8 @@
 package com.riders.thelab.ui.youtubelike;
 
-import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 
+import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.data.local.model.Video;
 import com.riders.thelab.ui.base.BaseView;
 
@@ -32,6 +31,6 @@ public interface YoutubeLikeContract {
 
         void fetchContent();
 
-        void onYoutubeItemClicked(@NonNull ImageView view, Video video, int position);
+        void onYoutubeItemClicked(@NonNull ShapeableImageView view, Video video, int position);
     }
 }

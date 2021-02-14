@@ -6,149 +6,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
-import com.riders.thelab.data.local.model.weather.City;
+import com.riders.thelab.data.local.model.weather.CityModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-/*
-public class WeatherCityAdapter extends RecyclerView.Adapter<WeatherCityViewHolder>
-        implements Filterable {
-
-    private Context context;
-
-    private List<City> mCityList;
-    private List<City> mCityListFiltered;
-
-    private CitiesAdapterListener listener;
-
-    public interface CitiesAdapterListener {
-        void onCitySelected(City city);
-    }
-
-
-    public WeatherCityAdapter(Context context, List<City> cityList, CitiesAdapterListener listener) {
-        sortList(cityList);
-
-        this.context = context;
-        this.mCityList = cityList;
-        this.mCityListFiltered = cityList;
-        this.listener = listener;
-    }
-
-
-    @Override
-    public int getItemCount() {
-        if (mCityListFiltered != null) {
-            return mCityListFiltered.size();
-        }
-        return 0;
-    }
-
-
-    @NonNull
-    @Override
-    public WeatherCityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new WeatherCityViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_city_spinner, parent, false));
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull WeatherCityViewHolder holder, final int position) {
-
-        City city = mCityListFiltered.get(position);
-
-        holder.bindName(city.getName() + "," + city.getCountry());
-
-        holder.itemCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // send selected contact in callback
-                listener.onCitySelected(mCityListFiltered.get(position));
-            }
-        });
-
-    }
-
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-
-                String charString = charSequence.toString();
-                if (charString.isEmpty()) {
-                    mCityListFiltered = mCityList;
-                } else {
-                    List<City> filteredList = new ArrayList<>();
-                    for (City row : mCityList) {
-
-                        // name match condition. this might differ depending on your requirement
-                        // here we are looking for name match
-                        if (row.getName().toLowerCase().contains(charString.toLowerCase())) {
-                            filteredList.add(row);
-                        }
-                    }
-
-                    mCityListFiltered = filteredList;
-                }
-
-                // Sort by name
-                sortList(mCityListFiltered);
-
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = mCityListFiltered;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                mCityListFiltered = (ArrayList<City>) filterResults.values;
-                notifyDataSetChanged();
-            }
-        };
-    }
-
-    private void sortList(List<City> list) {
-        Collections.sort(list, new Comparator<City>() {
-            @Override
-            public int compare(City leftItem, City rightItem) {
-                return leftItem.getName().compareTo(rightItem.getName());
-            }
-        });
-    }
-}
-*/
-
-/*
-FOR SPINNER
-*/
-public class WeatherCityAdapter extends ArrayAdapter<City> {
+public class WeatherCityAdapter extends ArrayAdapter<CityModel> {
 
     private final Context context;
     private final int viewResourceId;
-    private List<City> items;
-    private List<City> itemsAll;
-    private List<City> suggestions;
+    private final List<CityModel> items;
+    private final List<CityModel> itemsAll;
+    private final List<CityModel> suggestions;
 
     private final Filter mFilter = new Filter() {
         @Override
         public String convertResultToString(Object resultValue) {
-            return ((City) (resultValue)).getName();
+            return ((CityModel) (resultValue)).getName();
         }
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             if (constraint != null) {
                 suggestions.clear();
-                for (City City : itemsAll) {
+                for (CityModel City : itemsAll) {
                     if (City.getName().toLowerCase().startsWith(constraint.toString().toLowerCase())) {
                         suggestions.add(City);
                     }
@@ -164,10 +51,10 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            ArrayList<City> filteredList = (ArrayList<City>) results.values;
+            ArrayList<CityModel> filteredList = (ArrayList<CityModel>) results.values;
             if (results != null && results.count > 0) {
                 clear();
-                for (City c : filteredList) {
+                for (CityModel c : filteredList) {
                     add(c);
                 }
                 notifyDataSetChanged();
@@ -178,13 +65,13 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
 
     public WeatherCityAdapter(@NonNull Context context,
                               int viewResourceId,
-                              @NonNull ArrayList<City> items) {
+                              @NonNull ArrayList<CityModel> items) {
         super(context, viewResourceId, items);
 
         this.context = context;
 
         this.items = items;
-        this.itemsAll = (List<City>) items.clone();
+        this.itemsAll = (List<CityModel>) items.clone();
         this.suggestions = new ArrayList<>();
         this.viewResourceId = viewResourceId;
     }
@@ -198,7 +85,7 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
 
     @Nullable
     @Override
-    public City getItem(int position) {
+    public CityModel getItem(int position) {
         return items.get(position);
     }
 
@@ -207,7 +94,7 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
         return position;
     }
 
-    public void populateItem(City item) {
+    public void populateItem(CityModel item) {
         items.add(item);
         notifyDataSetChanged();
     }
@@ -218,14 +105,15 @@ public class WeatherCityAdapter extends ArrayAdapter<City> {
         View view = convertView;
 
         if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater =
+                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(viewResourceId, null);
         }
 
-        City cityItem = items.get(position);
+        CityModel cityItem = items.get(position);
 
         if (cityItem != null) {
-            TextView tvCityName = view.findViewById(R.id.row_city_name_textView);
+            MaterialTextView tvCityName = view.findViewById(R.id.row_city_name_textView);
             if (tvCityName != null) {
 
                 String szCity = items.get(position).getName() +

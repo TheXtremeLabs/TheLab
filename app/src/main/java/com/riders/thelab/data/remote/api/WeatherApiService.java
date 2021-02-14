@@ -11,8 +11,6 @@ import retrofit2.http.Query;
 
 public interface WeatherApiService {
 
-    //Method to retrieve the youtube content
-
     /**
      * Description: You can call by city name or city name, state and country code.
      * API responds with a list of results that match a searching word.
@@ -70,9 +68,9 @@ public interface WeatherApiService {
             @Query("lat") int lat,
             @Query("lon") int lon);*/
     @GET("/data/2.5/weather?")
-    Single<Weather> getCurrentWeatherByGeographicCoordinates(
-            @Query("lat") int lat,
-            @Query("lon") int lon);
+    Single<WeatherResponse> getCurrentWeatherByGeographicCoordinates(
+            @Query("lat") double lat,
+            @Query("lon") double lon);
 
 
     /**
@@ -86,4 +84,5 @@ public interface WeatherApiService {
      */
     @GET("/data/2.5/weather?")
     Call<Weather> getCurrentWeatherByZipCode(@Query("zip") String zipCodeAndCountryCode);
+
 }

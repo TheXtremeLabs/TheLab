@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
@@ -49,6 +50,10 @@ public class MainActivity extends BaseActivity<MainActivityView>
                 case Configuration.UI_MODE_NIGHT_UNDEFINED:
                     break;
             }
+
+            getWindow()
+                    .setNavigationBarColor(ContextCompat.getColor(this, R.color.default_dark));
+
 
         }
         setContentView(R.layout.activity_main);

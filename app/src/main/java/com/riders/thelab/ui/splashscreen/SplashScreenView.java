@@ -8,10 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
+import com.riders.thelab.TheLabApplication;
 import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BaseViewImpl;
 
@@ -33,23 +34,17 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         implements SplashScreenContract.View, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener {
 
-    @BindView(R.id.ll_splash_content)
-    RelativeLayout rlContent;
-
-    @BindView(R.id.splash_video)
-    VideoView splashVideoView;
-
-    @BindView(R.id.tv_app_version)
-    TextView tvAppVersion;
-
-    @Inject
-    Navigator navigator;
-
-    private SplashScreenActivity context;
-
     private static final String ANDROID_RES_PATH = "android.resource://";
     private static final String SEPARATOR = "/";
-
+    @BindView(R.id.ll_splash_content)
+    RelativeLayout rlContent;
+    @BindView(R.id.splash_video)
+    VideoView splashVideoView;
+    @BindView(R.id.tv_app_version)
+    MaterialTextView tvAppVersion;
+    @Inject
+    Navigator navigator;
+    private SplashScreenActivity context;
     private int position = 0;
 
     private int shortAnimationDuration;
@@ -72,6 +67,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         getPresenter().attachView(this);
 
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
+        TheLabApplication.getInstance();
 
         getPresenter().getAppVersion();
 

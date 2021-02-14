@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -14,6 +16,8 @@ import androidx.annotation.RequiresApi;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
+import com.riders.thelab.core.views.toast.TheLabToast;
+import com.riders.thelab.core.views.toast.ToastTypeEnum;
 import com.riders.thelab.data.local.bean.SnackBarType;
 
 import timber.log.Timber;
@@ -64,7 +68,8 @@ public class UIManager {
             if (negativeMessage.equalsIgnoreCase("Réessayer")) {
                 //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
             }
-            if (negativeMessage.equalsIgnoreCase("Réessayer") && LabNetworkManager.isConnected(context)) {
+            if (negativeMessage.equalsIgnoreCase("Réessayer")
+                    && LabNetworkManager.isConnected(context)) {
                 dialog.dismiss();
             }
         });
@@ -88,6 +93,14 @@ public class UIManager {
     public static void showActionInToast(final Context context, final String textToShow) {
         Toast.makeText(context, textToShow, Toast.LENGTH_SHORT).show();
     }
+
+    public static void showCustomToast(final Context context, ToastTypeEnum type, String message) {
+        new TheLabToast.Builder(context)
+                .setType(type)
+                .setText(message)
+                .show();
+    }
+
 
     public static void showActionInSnackBar(final Context context, final View view, final String message, SnackBarType type) {
         // create instance
@@ -169,5 +182,22 @@ public class UIManager {
         TextView textView = sbView.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setTextColor(textColor);
         snackbar.show();
+    }
+
+    /**
+     * Returns the background color of a view (mostly requested the background of the root view)
+     * <p>
+     * source : https://stackoverflow.com/questions/14779259/get-background-color-of-a-layout
+     *
+     * @param xmlRootView
+     * @return
+     */
+    public static int getDefaultBackgroundColor(View xmlRootView) {
+        int color = Color.TRANSPARENT;
+        Drawable background = xmlRootView.getBackground();
+        if (background instanceof ColorDrawable)
+            color = ((ColorDrawable) background).getColor();
+
+        return color;
     }
 }

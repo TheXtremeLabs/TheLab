@@ -1,7 +1,5 @@
 package com.riders.thelab.ui.base;
 
-import android.view.View;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;

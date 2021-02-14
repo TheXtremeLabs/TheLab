@@ -9,10 +9,10 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
@@ -44,8 +44,12 @@ public class FloatingLabelsActivity extends SimpleActivity {
     @BindView(R.id.input_layout_password)
     TextInputLayout inputLayoutPassword;
     @BindView(R.id.floating_labels_btn_signup)
-    Button btnSignUp;
+    MaterialButton btnSignUp;
 
+    private static boolean isValidEmail(String email) {
+        return !TextUtils.isEmpty(email)
+                && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,20 +146,17 @@ public class FloatingLabelsActivity extends SimpleActivity {
         return true;
     }
 
-    private static boolean isValidEmail(String email) {
-        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
     private void requestFocus(View view) {
         if (view.requestFocus()) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            getWindow()
+                    .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
 
 
     private class MyTextWatcher implements TextWatcher {
 
-        private View view;
+        private final View view;
 
         private MyTextWatcher(View view) {
             this.view = view;

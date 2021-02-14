@@ -3,12 +3,12 @@ package com.riders.thelab.ui.multipane;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.Movie;
 import com.riders.thelab.ui.base.SimpleActivity;
@@ -25,18 +25,16 @@ import timber.log.Timber;
 public class MultipaneDetailActivity extends SimpleActivity {
 
     public static final String EXTRA_MOVIE = "MOVIE";
-
-    private Context mContext;
-
     //Views
     @BindView(R.id.multi_pane_movie_item_image_detail)
-    ImageView ivMovieImage;
+    ShapeableImageView ivMovieImage;
     @BindView(R.id.multi_pane_movie_item_title_detail)
-    TextView tvTitleDetail;
+    MaterialTextView tvTitleDetail;
     @BindView(R.id.multi_pane_movie_item_genre_detail)
-    TextView tvGenreDetail;
+    MaterialTextView tvGenreDetail;
     @BindView(R.id.multi_pane_movie_item_year_detail)
-    TextView tvYearDetail;
+    MaterialTextView tvYearDetail;
+    private Context mContext;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -9,6 +9,7 @@ public class Validator {
 
     /**
      * Verify if String is null or empty
+     *
      * @param s String to verify
      * @return The result of test
      */
@@ -24,8 +25,9 @@ public class Validator {
 
     /**
      * Verify if List is null or empty
+     *
      * @param list List to verify
-     * @param <T> Generic list Object
+     * @param <T>  Generic list Object
      * @return The result of test
      */
     public static <T> boolean isNullOrEmpty(final Collection<T> list) {
@@ -34,6 +36,7 @@ public class Validator {
 
     /**
      * Verify if String is full numeric
+     *
      * @param s String to verify
      * @return The result of test
      */
@@ -43,6 +46,7 @@ public class Validator {
 
     /**
      * Verify if String is full Alpha
+     *
      * @param s String to verify
      * @return The result of test
      */

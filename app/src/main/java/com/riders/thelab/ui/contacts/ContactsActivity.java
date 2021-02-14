@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.contacts;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +37,6 @@ public class ContactsActivity extends BaseActivity<ContactsView> {
     }
 
 
-    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         view.onOptionsItemSelected(item);

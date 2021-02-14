@@ -18,6 +18,9 @@
     <dimen name="extra_big_margin">48dp</dimen>
     <dimen name="ultra_big_margin">56dp</dimen>
 
+    <dimen name="dots_height">30dp</dimen>
+    <dimen name="dots_margin_bottom">20dp</dimen>
+
     <!-- CardView -->
     <dimen name="card_elevation">8dp</dimen>
     <dimen name="max_card_image_width">344dp</dimen>
@@ -74,5 +77,9 @@
 
     <!-- Built-in WebView -->
     <dimen name="detail_backdrop_height">270dp</dimen>
+
+    <!-- Vector Drawables -->
+    <item name="hashtag_stroke_width" format="float" type="dimen">5</item>
+
 
 </resources>

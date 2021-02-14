@@ -15,9 +15,9 @@ def buildDateTime =
                 : new Date().format('yyMMddHHmm').toInteger()
 
 // version information
-def versionMajor = 2
-def versionMinor = 5
-def versionPatch = 1
+def versionMajor = 3
+def versionMinor = 7
+def versionPatch = 5
 
 
 android {
@@ -40,6 +40,8 @@ android {
 
         // Enabling multidex support.
         multiDexEnabled true
+
+        vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -74,7 +76,7 @@ android {
 //              exclude 'META-INF/LICENSE.txt'
 //              exclude 'META-INF/NOTICE.txt'
     }
-    
+
     lintOptions {
         abortOnError false
     }
@@ -92,6 +94,9 @@ android {
 
 dependencies {
 
+    /////////////////////////////
+    // General Dependencies
+    /////////////////////////////
     // AndroidX
     implementation rootProject.ext.generalDependencies.multidex
     implementation rootProject.ext.generalDependencies.core
@@ -111,6 +116,13 @@ dependencies {
 
     implementation rootProject.ext.generalDependencies.autoFill
 
+    // Worker
+    implementation rootProject.ext.generalDependencies.workerRuntime
+    implementation rootProject.ext.generalDependencies.workerRxJava3
+    implementation rootProject.ext.generalDependencies.workerMultiprocess
+    androidTestImplementation rootProject.ext.testDependencies.workTest
+    implementation rootProject.ext.generalDependencies.concurrent
+
     //Room
     implementation rootProject.ext.generalDependencies.roomRuntime
     implementation rootProject.ext.generalDependencies.roomRX
@@ -120,14 +132,18 @@ dependencies {
     // Maps
     implementation rootProject.ext.generalDependencies.googleAPIClient
     implementation rootProject.ext.generalDependencies.maps
+    implementation rootProject.ext.generalDependencies.mapsUtils
     implementation rootProject.ext.generalDependencies.location
+    implementation rootProject.ext.generalDependencies.places
     // Firebase
     implementation platform(rootProject.ext.generalDependencies.firebasePlatform)
     implementation rootProject.ext.generalDependencies.firebaseAnalitycs
+    implementation rootProject.ext.generalDependencies.firebaseAuth
     implementation rootProject.ext.generalDependencies.firebaseCraslytics
     implementation rootProject.ext.generalDependencies.firebaseMessaging
     implementation rootProject.ext.generalDependencies.firebasePerf
-    //implementation rootProject.ext.generalDependencies.firebaseAds
+    implementation rootProject.ext.generalDependencies.firebaseCloudstorage
+    implementation rootProject.ext.generalDependencies.firebaseAds
 
     // RxJava / RxAndroid
     implementation rootProject.ext.generalDependencies.rxjava
@@ -155,13 +171,27 @@ dependencies {
     // Glide
     implementation rootProject.ext.generalDependencies.glide
     annotationProcessor rootProject.ext.generalDependencies.glideAnnotation
+    implementation rootProject.ext.generalDependencies.blurry
+    implementation rootProject.ext.generalDependencies.glideTransformation
 
     /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
     implementation rootProject.ext.generalDependencies.retrofit
     implementation rootProject.ext.generalDependencies.retrofitConverterGson
     implementation rootProject.ext.generalDependencies.retrofitRxJava
-    implementation rootProject.ext.generalDependencies.okhttp3Logging
+    implementation rootProject.ext.generalDependencies.moshi
 
+    // OkHttp
+    // define a BOM and its version
+    implementation(platform(rootProject.ext.generalDependencies.okHttpBom))
+
+    // define any required OkHttp artifacts without version
+    implementation rootProject.ext.generalDependencies.okHttp
+    implementation rootProject.ext.generalDependencies.okHttpLogging
+
+    // Gson
+    implementation rootProject.ext.generalDependencies.gson
+    // Moshi
+    implementation rootProject.ext.generalDependencies.moshi
 
     // Parceler
     implementation rootProject.ext.generalDependencies.parceler
@@ -189,8 +219,12 @@ dependencies {
     implementation rootProject.ext.generalDependencies.timber
 
 
-    testImplementation 'junit:junit:4.13.1'
+    /////////////////////////////
+    // Tests Dependencies
+    /////////////////////////////
+    testImplementation rootProject.ext.testDependencies.junit
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    androidTestImplementation rootProject.ext.testDependencies.testJUnit
+    androidTestImplementation rootProject.ext.testDependencies.espresso
 }

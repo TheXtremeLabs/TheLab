@@ -19,7 +19,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
     private final Context context;
     private final List<App> appList;
-    private MainActivityAppClickListener listener;
+    private final MainActivityAppClickListener listener;
 
     public NewsAdapter(Context context, List<App> appList, MainActivityAppClickListener listener) {
         this.context = context;

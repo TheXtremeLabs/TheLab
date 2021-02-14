@@ -33,13 +33,16 @@ public class WeatherResponse {
     Rain rain;
 
     @Expose
+    Wind wind;
+
+    @Expose
     Clouds clouds;
 
     @Expose
     long dt;
 
-    @Expose
-    Sys sys;
+    @SerializedName("sys")
+    Sys system;
 
     @Expose
     int timezone;
