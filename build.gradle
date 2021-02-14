@@ -16,7 +16,7 @@ ext {
     navigationUiVersion = '2.3.3'
     recyclerViewVersion = "1.1.0"
     cardViewVersion = "1.0.0"
-    fragmentVersion = "1.2.5"
+    fragmentVersion = '1.3.0'
     viewPager2Version = '1.0.0'
 
     autoFillVersion = '1.1.0'
@@ -28,7 +28,7 @@ ext {
 //    roomVersion = "2.2.5"
     roomVersion = '2.3.0-beta01'
 
-    daggerVersion = '2.31.2'
+    daggerVersion = '2.32'
 
     googleApiClientVersion = '1.31.2'
     mapsVersion = '17.0.0'
@@ -37,7 +37,7 @@ ext {
     placesVersion = "2.4.0"
 
     firebaseBomVersion = '26.0.0'
-    adsVersion = '19.5.0'
+    adsVersion = '19.7.0'
 
     parcelerVersion = '1.1.13'
 
@@ -71,9 +71,9 @@ ext {
     timberVersion = "4.7.1"
 
     //Tests
-    junitVersion = "4.12"
-    testJUnitVersion = "1.1.1"
-    testEspressoVersion = "3.2.0"
+    junitVersion = '4.13.2'
+    testJUnitVersion = '1.1.2'
+    testEspressoVersion = '3.3.0'
 
     generalDependencies = [
 
