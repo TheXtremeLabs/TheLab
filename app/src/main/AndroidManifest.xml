@@ -101,6 +101,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/google_ads_key"/>
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -252,6 +257,24 @@
             android:name=".ui.floatingview.FloatingViewActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
+
+        <activity
+            android:name=".ui.transition.TransitionActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/TransitionTheme" />
+        <activity
+            android:name=".ui.transition.TransitionDetailActivity"
+            android:parentActivityName=".ui.transition.TransitionActivity"
+            android:theme="@style/TransitionTheme" />
+
+        <activity
+            android:name=".ui.customtoast.CustomToastActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/TransitionTheme" />
+        <activity
+            android:name=".ui.vectordrawables.VectorDrawablesActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
@@ -302,6 +325,17 @@
             android:exported="false" />
         <!-- ////////////// SERVICES ////////////// -->
 
+
+        <!--
+            Disable the default initialization
+            As described in WorkManager’s documentation,
+             disabling has to be done in your AndroidManifest.xml file,
+              removing the node that is merged automatically from the WorkManager library by default.
+         -->
+        <!--<provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove" />-->
     </application>
 
 </manifest>

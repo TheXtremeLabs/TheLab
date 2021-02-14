@@ -11,9 +11,9 @@ import dagger.Provides;
 @Module
 public class ApplicationModule {
 
-    private Application mApplication;
+    private final Application mApplication;
 
-    public  ApplicationModule(Application mApplication) {
+    public ApplicationModule(Application mApplication) {
         this.mApplication = mApplication;
     }
 
@@ -28,4 +28,7 @@ public class ApplicationModule {
     Context provideContext() {
         return mApplication;
     }
+
 }
+
+

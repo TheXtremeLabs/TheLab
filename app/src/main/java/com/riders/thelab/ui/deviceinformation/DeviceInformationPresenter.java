@@ -1,16 +1,12 @@
 package com.riders.thelab.ui.deviceinformation;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
 import android.util.DisplayMetrics;
 
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabDeviceManager;
 import com.riders.thelab.data.local.model.DeviceInformation;
 import com.riders.thelab.ui.base.BasePresenterImpl;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import javax.inject.Inject;
 

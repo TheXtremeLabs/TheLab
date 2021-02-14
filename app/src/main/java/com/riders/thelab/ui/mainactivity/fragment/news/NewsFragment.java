@@ -34,16 +34,13 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class NewsFragment extends Fragment {
 
-    private Context context;
-
+    private final String[] recentAppsNames = new String[]{"Recycler", "Biometric", "Widget"};
     @BindView(R.id.rv_News)
     RecyclerView rvNews;
 
     Unbinder unbinder;
-
+    private Context context;
     private List<App> recentApps;
-    private String[] recentAppsNames = new String[]{"Recycler", "Biometric", "Widget"};
-
     /**
      * passing data between fragments
      */

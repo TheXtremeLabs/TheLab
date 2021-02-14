@@ -23,10 +23,6 @@ public enum RecyclerEnum {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public static List<RecyclerItem> getRecyclerItems() {
         List<RecyclerItem> list = new ArrayList<>();
 
@@ -34,5 +30,9 @@ public enum RecyclerEnum {
             list.add(new RecyclerItem(item));
         }
         return list;
+    }
+
+    public String getName() {
+        return name;
     }
 }

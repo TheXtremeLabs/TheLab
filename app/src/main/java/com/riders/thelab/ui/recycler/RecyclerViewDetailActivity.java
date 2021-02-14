@@ -1,18 +1,12 @@
 package com.riders.thelab.ui.recycler;
 
 import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.RecyclerItem;
@@ -32,7 +26,7 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
     public static final String EXTRA_TRANSITION_ICON_NAME = "icon";
 
     @BindView(R.id.transition_imageView)
-    ImageView transitionImageView;
+    ShapeableImageView transitionImageView;
 
     RecyclerItem item;
 
@@ -58,18 +52,6 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
         }
 
         loadWithPicasso();
-/*
-        supportPostponeEnterTransition();
-        transitionImageView.getViewTreeObserver().addOnPreDrawListener(
-                new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        transitionImageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                        supportStartPostponedEnterTransition();
-                        return true;
-                    }
-                }
-        );*/
     }
 
     private void loadWithPicasso() {
@@ -88,27 +70,6 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
 
                     }
                 });
-
-    }
-
-    private void loadWithGlide() {
-        Glide.with(this)
-                .load(R.drawable.logo_colors)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        supportStartPostponedEnterTransition();
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        supportStartPostponedEnterTransition();
-                        return true;
-                    }
-                })
-                .into(transitionImageView);
-
 
     }
 }

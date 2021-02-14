@@ -16,18 +16,25 @@ import lombok.ToString;
 @Parcel
 public class Video implements Parcelable {
 
-    Integer db_id;
+    public static final Creator<Video> CREATOR = new Creator<Video>() {
+        @Override
+        public Video createFromParcel(android.os.Parcel source) {
+            return new Video(source);
+        }
 
+        @Override
+        public Video[] newArray(int size) {
+            return new Video[size];
+        }
+    };
+    Integer db_id;
     @SerializedName("id")
     String fav_id;
     String name;
     String description;
-
     @SerializedName("imageUrl")
     String imageThumb;
-
     String videoUrl;
-
 
     public Video() {
     }
@@ -55,6 +62,7 @@ public class Video implements Parcelable {
 
     }
 
+
     public Video(Integer db_id, String fav_id, String name, String description, String imageThumb, String videoUrl) {
 
         this.db_id = db_id;
@@ -67,7 +75,6 @@ public class Video implements Parcelable {
 
     }
 
-
     public Video(android.os.Parcel source) {
 
         this.fav_id = source.readString();
@@ -77,18 +84,6 @@ public class Video implements Parcelable {
         this.videoUrl = source.readString();
 
     }
-
-    public static final Creator<Video> CREATOR = new Creator<Video>() {
-        @Override
-        public Video createFromParcel(android.os.Parcel source) {
-            return new Video(source);
-        }
-
-        @Override
-        public Video[] newArray(int size) {
-            return new Video[size];
-        }
-    };
 
     @Override
     public int describeContents() {

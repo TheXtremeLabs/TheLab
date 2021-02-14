@@ -10,9 +10,11 @@ import java.util.List;
 
 public class ViewPager2Adapter extends FragmentStateAdapter {
 
-    private List<Fragment> fragmentList;
+    private final List<Fragment> fragmentList;
 
-    public ViewPager2Adapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, List<Fragment> fragmentList) {
+    public ViewPager2Adapter(@NonNull FragmentManager fragmentManager,
+                             @NonNull Lifecycle lifecycle,
+                             List<Fragment> fragmentList) {
         super(fragmentManager, lifecycle);
 
         this.fragmentList = fragmentList;

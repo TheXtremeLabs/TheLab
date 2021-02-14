@@ -3,13 +3,13 @@ package com.riders.thelab.ui.youtubelike;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.ViewCompat;
 
+import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabNetworkManager;
 import com.riders.thelab.core.utils.UIManager;
@@ -85,7 +85,7 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
     }
 
     @Override
-    public void onYoutubeItemClicked(@NonNull ImageView view, Video video, int position) {
+    public void onYoutubeItemClicked(@NonNull ShapeableImageView view, Video video, int position) {
         Timber.d("onYoutubeItemClicked()");
 
         Timber.e("Click on : " + position + ", " + video.getName());

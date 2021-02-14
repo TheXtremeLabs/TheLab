@@ -1,14 +1,16 @@
 package com.riders.thelab;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Context;
 
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.riders.thelab.core.broadcast.ConnectivityReceiver;
 import com.riders.thelab.data.DataModule;
-import com.riders.thelab.di.component.ComponentInjector;
+import com.riders.thelab.data.remote.rest.WeatherRestClient;
 import com.riders.thelab.di.component.DaggerComponentInjector;
 import com.riders.thelab.di.module.ApplicationModule;
 
@@ -16,17 +18,22 @@ import dagger.android.AndroidInjector;
 import dagger.android.DaggerApplication;
 import timber.log.Timber;
 
+
 @SuppressLint("StaticFieldLeak")
 public class TheLabApplication extends DaggerApplication {
 
+    public static String LAB_PACKAGE_NAME = "";
+    // Context
     private static Context context;
     private static TheLabApplication mInstance;
-
-    public static String LAB_PACKAGE_NAME = "";
+    // Only for workers purposes
+    private static WeatherRestClient client;
+    // Firebase
     private FirebaseCrashlytics mFirebaseCrashlytics;
 
 
-    public TheLabApplication(){}
+    public TheLabApplication() {
+    }
 
     public static synchronized TheLabApplication getInstance() {
         if (null == mInstance)
@@ -35,6 +42,13 @@ public class TheLabApplication extends DaggerApplication {
         return mInstance;
     }
 
+    public static Context getContext() {
+        return context;
+    }
+
+    public static WeatherRestClient getWeatherRestClient() {
+        return client;
+    }
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
@@ -45,7 +59,6 @@ public class TheLabApplication extends DaggerApplication {
                 .build();
     }
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -55,17 +68,28 @@ public class TheLabApplication extends DaggerApplication {
         init();
 
         LAB_PACKAGE_NAME = getPackageName();
+
+        client = new WeatherRestClient();
     }
 
     private void init() {
+        // Timber : logging
         Timber.plant(new Timber.DebugTree());
 
+        // ThreeTen Date Time Library
         AndroidThreeTen.init(this);
 
         // Firebase Crashlytics
         mFirebaseCrashlytics = FirebaseCrashlytics.getInstance();
         mFirebaseCrashlytics.setCrashlyticsCollectionEnabled(true);
         mFirebaseCrashlytics.setUserId("wayne");
+
+
+        // Mobile ADS
+        MobileAds.initialize(
+                this,
+                initializationStatus -> {
+                });
     }
 
     @Override
@@ -85,10 +109,6 @@ public class TheLabApplication extends DaggerApplication {
 
     private void notifyAppInBackground() {
         Timber.e("App went in background");
-    }
-
-    public static Context getContext() {
-        return context;
     }
 
     public void setConnectivityListener(ConnectivityReceiver.ConnectivityReceiverListener listener) {

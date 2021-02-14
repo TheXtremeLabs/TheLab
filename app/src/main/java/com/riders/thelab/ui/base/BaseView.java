@@ -1,7 +1,5 @@
 package com.riders.thelab.ui.base;
 
-import android.os.Bundle;
-
 public interface BaseView<T> {
 
     void onCreate();

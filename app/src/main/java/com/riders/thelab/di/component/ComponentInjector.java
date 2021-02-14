@@ -23,6 +23,12 @@ import dagger.android.support.AndroidSupportInjectionModule;
 })
 public interface ComponentInjector extends AndroidInjector<TheLabApplication> {
 
+    /*@Component.Factory
+    interface Factory {
+        @BindsInstance
+        ComponentInjector create(Context context);
+    }*/
+
     @Component.Builder
     interface Builder {
         @BindsInstance

@@ -3,10 +3,10 @@ package com.riders.thelab.ui.filterlistview;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.ui.base.SimpleActivity;
 
@@ -17,11 +17,11 @@ import butterknife.ButterKnife;
 public class FilterListViewDetailActivity extends SimpleActivity {
 
     @BindView(R.id.rank)
-    TextView tvRank;
+    MaterialTextView tvRank;
     @BindView(R.id.country)
-    TextView tvCountry;
+    MaterialTextView tvCountry;
     @BindView(R.id.population)
-    TextView tvPopulation;
+    MaterialTextView tvPopulation;
 
     String rank;
     String country;

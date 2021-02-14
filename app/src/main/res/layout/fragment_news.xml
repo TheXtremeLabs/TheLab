@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/detail_backdrop_height"
-    android:background="@color/purple_700"
+    android:background="?android:attr/colorBackground"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:layout_height="@dimen/detail_backdrop_height">
 
@@ -14,7 +14,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             style="@style/TextAppearance.AppCompat.Large"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -28,7 +28,9 @@
             android:id="@+id/rv_News"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_margin="@dimen/small_margin"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:layout_marginBottom="@dimen/big_medium_margin"
             android:layout_weight="2"
             android:orientation="horizontal"
             android:scrollbarAlwaysDrawHorizontalTrack="true"

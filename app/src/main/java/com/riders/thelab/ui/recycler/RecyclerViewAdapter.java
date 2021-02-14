@@ -4,12 +4,12 @@ package com.riders.thelab.ui.recycler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.TransitionManager;
 
+import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.RecyclerItem;
 
@@ -20,14 +20,11 @@ import timber.log.Timber;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHolder> {
 
-    private RecyclerView recyclerView = null;
-
-    private List<RecyclerItem> recyclerItemArrayList;
+    private static ShapeableImageView transitionImageView;
+    private final List<RecyclerItem> recyclerItemArrayList;
     private final RecyclerClickListener listener;
-
+    private RecyclerView recyclerView = null;
     private int mExpandedPosition = -1;
-
-    private static ImageView transitionImageView;
 
     public RecyclerViewAdapter(List<RecyclerItem> recyclerItemArrayList,
                                RecyclerClickListener listener) {
