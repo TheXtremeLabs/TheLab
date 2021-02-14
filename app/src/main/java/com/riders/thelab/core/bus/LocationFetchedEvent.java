@@ -4,13 +4,13 @@ import android.location.Location;
 
 public class LocationFetchedEvent {
 
-    private Location location;
+    private final Location location;
 
-    public LocationFetchedEvent(Location location){
+    public LocationFetchedEvent(Location location) {
         this.location = location;
     }
 
-    public Location getLocation(){
+    public Location getLocation() {
         return location;
     }
 }

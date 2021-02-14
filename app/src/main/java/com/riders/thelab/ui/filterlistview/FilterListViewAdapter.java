@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.WorldPopulation;
@@ -18,10 +17,10 @@ import java.util.Locale;
 
 public class FilterListViewAdapter extends BaseAdapter {
 
+    private final List<WorldPopulation> mWorldPopulationList;
+    private final ArrayList<WorldPopulation> arraylist;
     Context mContext;
     LayoutInflater mInflater;
-    private List<WorldPopulation> mWorldPopulationList;
-    private ArrayList<WorldPopulation> arraylist;
 
     public FilterListViewAdapter(Context context, List<WorldPopulation> worldPopulationList) {
         mContext = context;

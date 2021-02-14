@@ -6,19 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.motion.widget.TransitionBuilder;
-import androidx.transition.Scene;
-import androidx.transition.TransitionInflater;
-import androidx.transition.TransitionManager;
 import androidx.transition.TransitionSet;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.android.material.transition.platform.MaterialContainerTransform;
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;

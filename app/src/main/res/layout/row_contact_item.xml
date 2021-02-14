@@ -15,24 +15,24 @@
             android:id="@+id/delete_icon"
             android:layout_width="@dimen/ic_delete"
             android:layout_height="@dimen/ic_delete"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/row_padding"
             android:layout_marginRight="@dimen/row_padding"
-            android:src="@drawable/ic_delete"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/row_padding" />
+            android:src="@drawable/ic_delete" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/row_padding"
             android:layout_marginRight="@dimen/row_padding"
+            android:layout_toStartOf="@id/delete_icon"
             android:layout_toLeftOf="@id/delete_icon"
             android:text="@string/delete"
             android:textColor="#fff"
-            android:textSize="13sp"
-            android:layout_marginEnd="@dimen/row_padding"
-            android:layout_toStartOf="@id/delete_icon" />
+            android:textSize="13sp" />
     </RelativeLayout>
 
 
@@ -41,8 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.card.MaterialCardView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.google.android.material.card.MaterialCardView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/cv_contact_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -87,10 +86,10 @@
                     android:layout_below="@id/tv_contact_name"
                     android:layout_toEndOf="@id/iv_contact_thumbnail"
                     android:layout_toRightOf="@id/iv_contact_thumbnail"
-                    tools:text="+596 123 520 14"
                     android:textColor="@color/base"
                     android:textSize="@dimen/contact_number"
-                    tools:ignore="SpUsage" />
+                    tools:ignore="SpUsage"
+                    tools:text="+596 123 520 14" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
 

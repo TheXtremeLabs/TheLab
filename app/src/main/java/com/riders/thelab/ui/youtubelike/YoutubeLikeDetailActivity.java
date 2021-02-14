@@ -9,8 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
-;
-
 
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
@@ -37,11 +35,8 @@ import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 @SuppressLint("NonConstantResourceId")
 public class YoutubeLikeDetailActivity extends SimpleActivity {
 
-    private Context mContext;
-
     //Bundle Arguments
     public static final String VIDEO_OBJECT_ARG = "content_video";
-
     @BindView(R.id.content_image_thumb)
     ShapeableImageView imageThumb;
     @BindView(R.id.content_image_thumb_blurred)
@@ -50,7 +45,7 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
     MaterialTextView titleTextView;
     @BindView(R.id.content_text_description)
     MaterialTextView descriptionTextView;
-
+    private Context mContext;
     private Video item;
 
     @Override

@@ -86,24 +86,26 @@ import static com.google.android.gms.location.LocationSettingsStatusCodes.SETTIN
 public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
         implements LocationOnMapsContract.View, OnMapReadyCallback, LocationListener {
 
+    // location updates interval - 10sec
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    // fastest updates interval - 5 sec
+    // location updates will be received if another app is requesting the locations
+    // than your app can handle
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
+    private static final int REQUEST_CHECK_SETTINGS = 100;
     private final LocationOnMapsActivity context;
-
     @BindView(R.id.rl_maps_laoding)
     RelativeLayout rlMapsLoading;
     @BindView(R.id.tv_location)
     MaterialTextView tvLocation;
-
     Unbinder unbinder;
-
     MapFragment mapFragment;
-    private GoogleMap mMap;
-
     Geocoder geocoder;
+    private GoogleMap mMap;
     private Location mLocation;
     private LocationManager mLocationManager;
     private Criteria mCriteria;
     private String mProvider = "";
-
     // bunch of location related apis
     private FusedLocationProviderClient mFusedLocationClient;
     private SettingsClient mSettingsClient;
@@ -111,22 +113,10 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
     private LocationSettingsRequest mLocationSettingsRequest;
     private LocationCallback mLocationCallback;
     private Location mCurrentLocation;
-
     // boolean flag to toggle the ui
     private Boolean mRequestingLocationUpdates;
-
     // location last updated time
     private String mLastUpdateTime;
-
-    // location updates interval - 10sec
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-
-    // fastest updates interval - 5 sec
-    // location updates will be received if another app is requesting the locations
-    // than your app can handle
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
-    private static final int REQUEST_CHECK_SETTINGS = 100;
-
     // Directions
     private ArrayList<Marker> mRouteMarkerList;
     private Polyline mRoutePolyline;

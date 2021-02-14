@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.ViewCompat;
@@ -23,8 +22,10 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class ContactDetailActivity extends SimpleActivity {
 
-    private Context mContext;
-
+    public static final String CONTACT_NAME = "contact_name";
+    public static final String CONTACT_SURNAME = "contact_surname";
+    public static final String CONTACT_EMAIL = "contact_email";
+    public static final String CONTACT_IMAGE = "contact_image";
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
     @BindView(R.id.contact_detail_collapsing_toolbar)
@@ -39,16 +40,11 @@ public class ContactDetailActivity extends SimpleActivity {
     MaterialTextView mSurnameTextView;
     @BindView(R.id.tv_email_detail)
     MaterialTextView mEmailTextView;
-
-    public static final String CONTACT_NAME = "contact_name";
-    public static final String CONTACT_SURNAME = "contact_surname";
-    public static final String CONTACT_EMAIL = "contact_email";
-    public static final String CONTACT_IMAGE = "contact_image";
-
     String itemNameDetail;
     String itemSurnameDetail;
     String itemEmailDetail;
     String itemImage;
+    private Context mContext;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

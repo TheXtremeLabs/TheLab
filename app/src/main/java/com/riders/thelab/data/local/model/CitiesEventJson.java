@@ -5,7 +5,6 @@ import com.riders.thelab.data.remote.dto.weather.City;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.ToString;
 
 /**
  * Moshi implementation (Gson library replacement)

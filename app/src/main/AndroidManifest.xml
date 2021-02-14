@@ -89,9 +89,9 @@
         tools:targetApi="m">
 
         <!-- Firebase Perf -->
-        <!--<meta-data
+        <meta-data
             android:name="firebase_performance_logcat_enabled"
-            android:value="false" />-->
+            android:value="false" />
 
         <!-- Google Maps -->
         <meta-data

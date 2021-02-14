@@ -20,6 +20,14 @@ import timber.log.Timber;
 
 
 public class LabInterceptors {
+    public static @NotNull Interceptor provideLoggingInterceptor() {
+        return new HttpLoggingInterceptor(
+                s -> Timber
+                        .tag("OKHttp")
+                        .d(s))
+                .setLevel(HttpLoggingInterceptor.Level.BODY);
+    }
+
     public static class LoggingRequestInterceptors implements Interceptor {
 
         @Override
@@ -69,16 +77,6 @@ public class LabInterceptors {
                     .build();
         }
     }
-
-
-    public static @NotNull Interceptor provideLoggingInterceptor() {
-        return new HttpLoggingInterceptor(
-                s -> Timber
-                        .tag("OKHttp")
-                        .d(s))
-                .setLevel(HttpLoggingInterceptor.Level.BODY);
-    }
-
 
     /**
      * https://stackoverflow.com/questions/51901333/okhttp-3-how-to-decompress-gzip-deflate-response-manually-using-java-android

@@ -19,18 +19,18 @@ import timber.log.Timber;
 @SuppressLint("StaticFieldLeak")
 public class TheLabApplication extends DaggerApplication {
 
+    public static String LAB_PACKAGE_NAME = "";
     // Context
     private static Context context;
     private static TheLabApplication mInstance;
-
+    // Only for workers purposes
+    private static WeatherRestClient client;
     // Firebase
     private FirebaseCrashlytics mFirebaseCrashlytics;
 
-    public static String LAB_PACKAGE_NAME = "";
 
-    // Only for workers purposes
-    private static WeatherRestClient client;
-
+    public TheLabApplication() {
+    }
 
     public static synchronized TheLabApplication getInstance() {
         if (null == mInstance)
@@ -39,9 +39,13 @@ public class TheLabApplication extends DaggerApplication {
         return mInstance;
     }
 
-    public TheLabApplication() {
+    public static Context getContext() {
+        return context;
     }
 
+    public static WeatherRestClient getWeatherRestClient() {
+        return client;
+    }
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
@@ -51,7 +55,6 @@ public class TheLabApplication extends DaggerApplication {
                 .dataModule(new DataModule(this))
                 .build();
     }
-
 
     @Override
     public void onCreate() {
@@ -98,19 +101,9 @@ public class TheLabApplication extends DaggerApplication {
         Timber.e("App went in background");
     }
 
-    public static Context getContext() {
-        return context;
-    }
-
-    public static WeatherRestClient getWeatherRestClient() {
-        return client;
-    }
-
-
     public void setConnectivityListener(ConnectivityReceiver.ConnectivityReceiverListener listener) {
         Timber.d("setConnectivityListener(listener)");
         if (null == ConnectivityReceiver.getInstance().getConnectivityReceiverListener())
             new ConnectivityReceiver(listener);
     }
-
 }

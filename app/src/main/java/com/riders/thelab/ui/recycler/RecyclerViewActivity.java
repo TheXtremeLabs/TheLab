@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-;
 
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -26,8 +25,6 @@ import com.riders.thelab.ui.base.SimpleActivity;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -37,14 +34,11 @@ import timber.log.Timber;
 public class RecyclerViewActivity extends SimpleActivity
         implements RecyclerClickListener {
 
-    private Context context;
-
     @BindView(R.id.coordinatorLayout)
     CoordinatorLayout coordinatorLayout;
-
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
-
+    private Context context;
     private RecyclerViewAdapter adapter;
 
     @Override

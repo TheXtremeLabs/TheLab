@@ -24,23 +24,20 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
 
+    private static RecyclerItem itemSelection;
+    private static int position;
     @BindView(R.id.row_card_view)
     public MaterialCardView cardView;
-
-    @BindView(R.id.transition_imageView)
-    ShapeableImageView transitionImageView;
-    @BindView(R.id.row_name_text_view)
-    MaterialTextView nameTextView;
-
     @BindView(R.id.row_details_linear_layout)
     public RelativeLayout detailsLinearLayout;
     @BindView(R.id.row_detail_btn)
     public MaterialButton btnDetail;
     @BindView(R.id.row_delete_btn)
     public AppCompatImageButton btnDelete;
-
-    private static RecyclerItem itemSelection;
-    private static int position;
+    @BindView(R.id.transition_imageView)
+    ShapeableImageView transitionImageView;
+    @BindView(R.id.row_name_text_view)
+    MaterialTextView nameTextView;
 
     public MyRecyclerViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -54,7 +51,7 @@ public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     public void storeItem(final RecyclerItem item, int position) {
         Timber.d("storeItem()");
-        this.itemSelection = item;
-        this.position = position;
+        itemSelection = item;
+        MyRecyclerViewHolder.position = position;
     }
 }

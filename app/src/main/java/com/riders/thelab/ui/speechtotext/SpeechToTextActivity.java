@@ -9,8 +9,6 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.view.View;
-;
-
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
@@ -40,28 +38,22 @@ import timber.log.Timber;
 public class SpeechToTextActivity extends SimpleActivity
         implements RecognitionListener {
 
-    // TAG & Context
-    private Context context;
-
     // Views
     @BindView(R.id.speech_input_textView)
     MaterialTextView inputTextView;
-
     @BindView(R.id.speech_button)
     AppCompatImageButton speechButton;
-
     @BindView(R.id.recording_textView)
     MaterialTextView recordingPlaceholderTextView;
-
     @BindView(R.id.eq_imageView)
     ShapeableImageView eqImageView;
-
     // Speech
     SpeechRecognizer speech;
     Intent recognizerIntent;
     String message;
     float currentFloatDB = 0;
-
+    // TAG & Context
+    private Context context;
 
     ///////////////////////////////////////////
     //

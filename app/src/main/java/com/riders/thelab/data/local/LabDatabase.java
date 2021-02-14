@@ -17,5 +17,6 @@ public abstract class LabDatabase extends RoomDatabase {
     public static final String DATABASE_NAME = "lab";
 
     public abstract ContactDao getContactDao();
+
     public abstract WeatherDao getWeatherDao();
 }

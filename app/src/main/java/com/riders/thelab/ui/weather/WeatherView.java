@@ -34,12 +34,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -53,8 +50,6 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         implements WeatherContract.View, MaterialTextView.OnEditorActionListener,
         AdapterView.OnItemClickListener {
 
-    private WeatherActivity context;
-
     // Views
     @BindView(R.id.weather_root_view)
     CoordinatorLayout rootView;
@@ -63,7 +58,6 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     LinearProgressIndicator progressBar;
     @BindView(R.id.tvDownloadStatus)
     MaterialTextView tvDownloadStatus;
-
     // Weather container
     @BindView(R.id.weather_data_container)
     RelativeLayout weatherDataContainer;
@@ -99,6 +93,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     MaterialTextView tvWeatherExtraWindDirection;
     @BindView(R.id.tv_weather_extra_humidity)
     MaterialTextView tvWeatherExtraHumidity;
+    private WeatherActivity context;
 
 
     @Inject

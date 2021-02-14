@@ -14,13 +14,11 @@ import androidx.core.app.NotificationCompat;
 // TODO : Check this class
 public class NotificationBuilderReceiver extends BroadcastReceiver {
 
+    public static final int NOTIFICATION_ID = 001;
     private static final String TAG = NotificationBuilderReceiver.class.getSimpleName();
     private static final String TAG_INFO = "BuilderReceiver";
-
     public NotificationCompat.Builder mBuilder;
     public NotificationManager mNotifyMgr;
-    public static final int NOTIFICATION_ID = 001;
-
     CharSequence NotificationTitle = "Material Design Features app is here!";
     CharSequence NotificationContent = "Click here to try it :D";
 

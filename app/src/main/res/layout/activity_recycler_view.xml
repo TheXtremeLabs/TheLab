@@ -11,6 +11,6 @@
         android:layout_height="wrap_content"
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="vertical"
-        tools:listitem="@layout/row_recycler_view"/>
+        tools:listitem="@layout/row_recycler_view" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

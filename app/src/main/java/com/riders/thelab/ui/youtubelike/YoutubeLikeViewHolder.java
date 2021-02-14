@@ -3,11 +3,8 @@ package com.riders.thelab.ui.youtubelike;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
-;
 import android.widget.ProgressBar;
 
-
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;

@@ -3,14 +3,11 @@ package com.riders.thelab.data.remote.api;
 
 import com.riders.thelab.data.remote.dto.weather.Weather;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
-import com.riders.thelab.utils.Constants;
 
 import io.reactivex.rxjava3.core.Single;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import retrofit2.http.Streaming;
 
 public interface WeatherApiService {
 

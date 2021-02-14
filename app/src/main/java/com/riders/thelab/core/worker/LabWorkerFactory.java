@@ -9,17 +9,13 @@ import androidx.work.WorkerFactory;
 import androidx.work.WorkerParameters;
 
 import com.riders.thelab.data.remote.LabService;
-import com.riders.thelab.ui.weather.WeatherDownloadWorker;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 //@Singleton
 public class LabWorkerFactory extends WorkerFactory {
 
     LabService service;
 
-//    @Inject
+    //    @Inject
     public LabWorkerFactory(LabService service) {
         this.service = service;
     }
@@ -34,7 +30,7 @@ public class LabWorkerFactory extends WorkerFactory {
 //            return new WeatherDownloadWorker(appContext, workerParameters, workerClassName, service);
 
 //        else
-            // Return null, so that the base class can delegate to the default WorkerFactory.
-            return null;
+        // Return null, so that the base class can delegate to the default WorkerFactory.
+        return null;
     }
 }

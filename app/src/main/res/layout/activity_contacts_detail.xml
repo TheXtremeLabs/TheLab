@@ -76,8 +76,8 @@
                         android:layout_marginLeft="@dimen/spacing_large"
                         android:layout_marginTop="@dimen/spacing_large"
                         android:layout_marginRight="@dimen/spacing_large"
-                        tools:text="John Doe"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                        tools:text="John Doe" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_surname_detail"
@@ -86,8 +86,8 @@
                         android:layout_marginLeft="@dimen/spacing_large"
                         android:layout_marginTop="@dimen/spacing_large"
                         android:layout_marginRight="@dimen/spacing_large"
-                        tools:text="The Shooter"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                        tools:text="The Shooter" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_email_detail"

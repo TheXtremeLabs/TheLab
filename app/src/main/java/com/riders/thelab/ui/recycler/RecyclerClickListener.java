@@ -1,7 +1,5 @@
 package com.riders.thelab.ui.recycler;
 
-;
-
 import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.data.local.model.RecyclerItem;
 

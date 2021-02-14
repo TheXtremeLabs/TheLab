@@ -5,9 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -22,21 +20,20 @@ import butterknife.ButterKnife;
 @SuppressLint("NonConstantResourceId")
 public class ContactsViewHolder extends RecyclerView.ViewHolder {
 
-    private Context context;
+    private final Context context;
 
     @BindView(R.id.cv_contact_item)
     public MaterialCardView cardView;
+    @BindView(R.id.view_background)
+    public RelativeLayout viewBackground;
+    @BindView(R.id.view_foreground)
+    public RelativeLayout viewForeground;
     @BindView(R.id.tv_contact_name)
     MaterialTextView tvContactName;
     @BindView(R.id.tv_contact_mail)
     MaterialTextView tvContactEmail;
     @BindView(R.id.iv_contact_thumbnail)
     ShapeableImageView ivContactThumbnail;
-
-    @BindView(R.id.view_background)
-    public RelativeLayout viewBackground;
-    @BindView(R.id.view_foreground)
-    public RelativeLayout viewForeground;
 
     public ContactsViewHolder(@NonNull Context context, @NonNull View itemView) {
         super(itemView);

@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -36,16 +35,13 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class CustomToastActivity extends AppCompatActivity {
 
-    private Context context;
-
     @BindView(R.id.display_toast_btn)
     MaterialButton displayToastButton;
-
     @BindView(R.id.progressIndicator)
     CircularProgressIndicator circularProgressIndicator;
-
     @BindView(R.id.button_custom)
     LinearLayout customButton;
+    private Context context;
 
     @SuppressLint("NewApi")
     @Override

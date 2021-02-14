@@ -29,9 +29,9 @@
                             android:centerY="12"
                             android:endX="50"
                             android:endY="20"
+                            android:gradientRadius="40"
                             android:startX="50"
                             android:startY="1"
-                            android:gradientRadius="40"
                             android:type="radial">
 
                             <item

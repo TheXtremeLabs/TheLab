@@ -34,23 +34,17 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         implements SplashScreenContract.View, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener {
 
-    @BindView(R.id.ll_splash_content)
-    RelativeLayout rlContent;
-
-    @BindView(R.id.splash_video)
-    VideoView splashVideoView;
-
-    @BindView(R.id.tv_app_version)
-    MaterialTextView tvAppVersion;
-
-    @Inject
-    Navigator navigator;
-
-    private SplashScreenActivity context;
-
     private static final String ANDROID_RES_PATH = "android.resource://";
     private static final String SEPARATOR = "/";
-
+    @BindView(R.id.ll_splash_content)
+    RelativeLayout rlContent;
+    @BindView(R.id.splash_video)
+    VideoView splashVideoView;
+    @BindView(R.id.tv_app_version)
+    MaterialTextView tvAppVersion;
+    @Inject
+    Navigator navigator;
+    private SplashScreenActivity context;
     private int position = 0;
 
     private int shortAnimationDuration;

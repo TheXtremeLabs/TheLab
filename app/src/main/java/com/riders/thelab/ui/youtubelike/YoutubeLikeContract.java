@@ -1,7 +1,5 @@
 package com.riders.thelab.ui.youtubelike;
 
-;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.material.imageview.ShapeableImageView;

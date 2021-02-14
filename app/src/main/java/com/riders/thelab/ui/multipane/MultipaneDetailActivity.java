@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
-
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
@@ -26,9 +25,6 @@ import timber.log.Timber;
 public class MultipaneDetailActivity extends SimpleActivity {
 
     public static final String EXTRA_MOVIE = "MOVIE";
-
-    private Context mContext;
-
     //Views
     @BindView(R.id.multi_pane_movie_item_image_detail)
     ShapeableImageView ivMovieImage;
@@ -38,6 +34,7 @@ public class MultipaneDetailActivity extends SimpleActivity {
     MaterialTextView tvGenreDetail;
     @BindView(R.id.multi_pane_movie_item_year_detail)
     MaterialTextView tvYearDetail;
+    private Context mContext;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

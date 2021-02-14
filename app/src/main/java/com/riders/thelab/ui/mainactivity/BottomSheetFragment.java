@@ -27,6 +27,10 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class BottomSheetFragment extends BottomSheetDialogFragment {
 
+    private final int deviceScreenHeight = 0;
+    private final int deviceScreenWidth = 0;
+    private final int deviceVersionSDK = 0;
+    private final String OSName = "UNKNOWN";
     @BindView(R.id.tv_bottom_brand)
     MaterialTextView tvBrand;
     @BindView(R.id.tv_bottom_model)
@@ -37,16 +41,10 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     MaterialTextView tvScreenWidth;
     @BindView(R.id.tv_bottom_version)
     MaterialTextView tvVersion;
-
-
     //Variables
     private String deviceModel;
     private String deviceBrand;
-    private int deviceScreenHeight = 0;
-    private int deviceScreenWidth = 0;
-    private int deviceVersionSDK = 0;
     private Field[] fields;
-    private String OSName = "UNKNOWN";
 
     public BottomSheetFragment() {
         // Required empty public constructor

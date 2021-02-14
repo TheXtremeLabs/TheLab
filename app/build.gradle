@@ -7,7 +7,7 @@ apply plugin: 'com.google.gms.google-services'
 // Apply the Crashlytics Gradle plugin
 apply plugin: 'com.google.firebase.crashlytics'
 // Apply the Performance Monitoring plugin
-//apply plugin: 'com.google.firebase.firebase-perf'
+apply plugin: 'com.google.firebase.firebase-perf'
 
 def buildDateTime =
         project.hasProperty('devBuild')
@@ -76,7 +76,7 @@ android {
 //              exclude 'META-INF/LICENSE.txt'
 //              exclude 'META-INF/NOTICE.txt'
     }
-    
+
     lintOptions {
         abortOnError false
     }
@@ -141,9 +141,9 @@ dependencies {
     implementation rootProject.ext.generalDependencies.firebaseAuth
     implementation rootProject.ext.generalDependencies.firebaseCraslytics
     implementation rootProject.ext.generalDependencies.firebaseMessaging
-//    implementation rootProject.ext.generalDependencies.firebasePerf
+    implementation rootProject.ext.generalDependencies.firebasePerf
     implementation rootProject.ext.generalDependencies.firebaseCloudstorage
-    //implementation rootProject.ext.generalDependencies.firebaseAds
+    implementation rootProject.ext.generalDependencies.firebaseAds
 
     // RxJava / RxAndroid
     implementation rootProject.ext.generalDependencies.rxjava
@@ -217,7 +217,6 @@ dependencies {
 
     // Timber : Logging library
     implementation rootProject.ext.generalDependencies.timber
-
 
 
     /////////////////////////////

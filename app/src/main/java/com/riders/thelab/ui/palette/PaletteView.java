@@ -18,19 +18,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-;
-
 @SuppressLint("NonConstantResourceId")
 public class PaletteView extends BaseViewImpl<PalettePresenter>
         implements PaletteContract.View {
 
-    // TAG & Context
-    private PaletteActivity context;
-
     //Views
     @BindView(R.id.palette_image)
     ShapeableImageView imageView;
-
     @BindView(R.id.textVibrant)
     MaterialTextView textVibrant;
     @BindView(R.id.textVibrantLight)
@@ -43,6 +37,8 @@ public class PaletteView extends BaseViewImpl<PalettePresenter>
     MaterialTextView textMutedLight;
     @BindView(R.id.textMutedDark)
     MaterialTextView textMutedDark;
+    // TAG & Context
+    private PaletteActivity context;
 
 
     @Inject

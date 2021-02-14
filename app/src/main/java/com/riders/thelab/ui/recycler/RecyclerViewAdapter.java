@@ -17,19 +17,14 @@ import java.util.List;
 
 import timber.log.Timber;
 
-;
-
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHolder> {
 
-    private RecyclerView recyclerView = null;
-
-    private List<RecyclerItem> recyclerItemArrayList;
-    private final RecyclerClickListener listener;
-
-    private int mExpandedPosition = -1;
-
     private static ShapeableImageView transitionImageView;
+    private final List<RecyclerItem> recyclerItemArrayList;
+    private final RecyclerClickListener listener;
+    private RecyclerView recyclerView = null;
+    private int mExpandedPosition = -1;
 
     public RecyclerViewAdapter(List<RecyclerItem> recyclerItemArrayList,
                                RecyclerClickListener listener) {

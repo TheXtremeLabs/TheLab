@@ -4,13 +4,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 public class WeatherLiveDataHelper {
-    
-    private WeatherLiveDataHelper() {
-    }
 
     private static WeatherLiveDataHelper liveDataHelper;
-    private MediatorLiveData<Integer> downloadPercent =
+    private final MediatorLiveData<Integer> downloadPercent =
             new MediatorLiveData<>();
+    private WeatherLiveDataHelper() {
+    }
 
     synchronized public static WeatherLiveDataHelper getInstance() {
         if (liveDataHelper == null)
