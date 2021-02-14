@@ -6,12 +6,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +16,6 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.views.toast.TheLabToast;
@@ -127,8 +123,6 @@ public class CustomToastActivity extends AppCompatActivity {
                 .start();
 
         displayCustomToastUsingClass();
-
-//        displayCustomToastGoogleDeveloperBasicImplementation();
     }
 
     private void displayCustomToastUsingClass() {
@@ -140,22 +134,5 @@ public class CustomToastActivity extends AppCompatActivity {
                 .setText("Testing a new text")
                 .setType(ToastTypeEnum.values()[random])
                 .show();
-    }
-
-    private void displayCustomToastGoogleDeveloperBasicImplementation() {
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(
-                R.layout.custom_toast_layout,
-                findViewById(R.id.custom_toast_container));
-
-        MaterialTextView text = layout.findViewById(R.id.text);
-        text.setText("This is a custom toast");
-
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.BOTTOM, 0, 250);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-        toast.show();
-
     }
 }
