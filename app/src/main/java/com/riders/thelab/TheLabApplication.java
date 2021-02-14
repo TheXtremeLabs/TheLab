@@ -3,6 +3,9 @@ package com.riders.thelab;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.riders.thelab.core.broadcast.ConnectivityReceiver;
@@ -80,6 +83,13 @@ public class TheLabApplication extends DaggerApplication {
         mFirebaseCrashlytics = FirebaseCrashlytics.getInstance();
         mFirebaseCrashlytics.setCrashlyticsCollectionEnabled(true);
         mFirebaseCrashlytics.setUserId("wayne");
+
+
+        // Mobile ADS
+        MobileAds.initialize(
+                this,
+                initializationStatus -> {
+                });
     }
 
     @Override
