@@ -8,13 +8,10 @@ import com.riders.thelab.utils.Constants;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
-import timber.log.Timber;
 
 public class WeatherRestClient {
 

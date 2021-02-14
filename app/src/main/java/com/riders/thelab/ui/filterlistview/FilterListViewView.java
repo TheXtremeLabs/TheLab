@@ -23,16 +23,13 @@ import timber.log.Timber;
 public class FilterListViewView extends BaseViewImpl<FilterListViewPresenter>
         implements FilterListViewContract.View, TextWatcher {
 
-    private FilterListViewActivity context;
-
     @BindView(R.id.lv_filter_listview)
     ListView list;
     @BindView(R.id.et_filter_listview_search)
     EditText filterEditText;
-
     FilterListViewAdapter adapter;
-
     ArrayList<WorldPopulation> mWorldPopulationList;
+    private FilterListViewActivity context;
 
 
     @Inject

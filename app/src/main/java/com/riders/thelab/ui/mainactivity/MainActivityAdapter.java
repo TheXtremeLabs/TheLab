@@ -16,9 +16,9 @@ import java.util.List;
 
 public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHolder> {
 
-    private Context context;
-    private List<App> appList;
-    private MainActivityAppClickListener listener;
+    private final Context context;
+    private final List<App> appList;
+    private final MainActivityAppClickListener listener;
 
     // Allows to remember the last item shown on screen
     private int lastPosition = -1;

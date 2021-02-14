@@ -26,9 +26,9 @@ import timber.log.Timber;
 @SuppressLint("RestrictedApi")
 public class WeatherDownloadWorker extends ListenableWorker {
 
-    private static final String WORK_RESULT = "work_result";
     public static final String WORK_SUCCESS = "Loading finished";
     public static final String WORK_DOWNLOAD_FAILED = "Error while downloading zip file";
+    private static final String WORK_RESULT = "work_result";
     ResolvableFuture<Result> future;
     Data taskData;
     String taskDataString;

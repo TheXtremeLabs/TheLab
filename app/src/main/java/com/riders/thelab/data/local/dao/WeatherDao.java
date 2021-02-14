@@ -18,6 +18,7 @@ public interface WeatherDao {
 
     @Insert(onConflict = REPLACE)
     Maybe<Long> insertRX(CityModel city);
+
     @Insert(onConflict = REPLACE)
     Maybe<List<Long>> insertAllRX(List<CityModel> cities);
 

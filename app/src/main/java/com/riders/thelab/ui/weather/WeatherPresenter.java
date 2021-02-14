@@ -37,15 +37,16 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     public static final String MESSAGE_STATUS = "message_status";
     public static final String URL_REQUEST = "url_request";
     private static final String WORK_RESULT = "work_result";
-
+    // CompositeDisposable can maintain list of subscriptions in  pool
+    // and can dispose them all at once
+    // Disposing them in Destroy one bye one is a tedious task and it can be error
+    // prone as you might forgot to dispose.
+    // In this case we can use CompositeDisposable.
+    private final CompositeDisposable compositeDisposable;
     @Inject
     WeatherActivity activity;
-
     @Inject
     LabRepository repository;
-
-    @Inject
-    LabService service;
 
     /* RxJava / RxAndroid */
 
@@ -54,14 +55,8 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     // To prevent memory leak, for example when a task is done
     // and the activity/fragment is already destroyed,
     // the observer try to update the activity/fragment's UI that has been destroyed
-
-    // CompositeDisposable can maintain list of subscriptions in  pool
-    // and can dispose them all at once
-    // Disposing them in Destroy one bye one is a tedious task and it can be error
-    // prone as you might forgot to dispose.
-    // In this case we can use CompositeDisposable.
-    private final CompositeDisposable compositeDisposable;
-
+    @Inject
+    LabService service;
     private List<CityModel> citiesModel;
     private Gson mGson;
 

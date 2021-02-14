@@ -25,11 +25,9 @@ import timber.log.Timber;
 public class MultipaneView extends BaseViewImpl<MultipanePresenter>
         implements MultipaneContract.View, MovieClickListener {
 
-    private MultipaneActivity context;
-
     @BindView(R.id.rv_multi_pane)
     RecyclerView recyclerView;
-
+    private MultipaneActivity context;
     //    private List<Movie> movieList;
     private MoviesAdapter mAdapter;
 

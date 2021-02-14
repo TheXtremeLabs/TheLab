@@ -3,7 +3,6 @@ package com.riders.thelab.ui.youtubelike;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.view.View;
-;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -30,17 +29,13 @@ import timber.log.Timber;
 public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
         implements YoutubeLikeContract.View, YoutubeListClickListener {
 
-    private YoutubeLikeActivity context;
-
     @BindView(R.id.no_connection_linear_container)
     LinearLayout mLinearNoConnectionContainer;
-
     @BindView(R.id.youtube_content_loader)
     ProgressBar mLoader;
-
     @BindView(R.id.youtube_content_recyclerView)
     RecyclerView contentRecyclerView;
-
+    private YoutubeLikeActivity context;
     private YoutubeLikeListAdapter contentAdapter;
 
 

@@ -36,6 +36,16 @@ public enum MovieEnum {
         this.url = url;
     }
 
+    public static List<Movie> getMovies() {
+        List<Movie> list = new ArrayList<>();
+
+        for (MovieEnum item : values()) {
+            list.add(new Movie(item));
+        }
+
+        return list;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -50,15 +60,5 @@ public enum MovieEnum {
 
     public String getUrl() {
         return url;
-    }
-
-    public static List<Movie> getMovies() {
-        List<Movie> list = new ArrayList<>();
-
-        for (MovieEnum item : values()) {
-            list.add(new Movie(item));
-        }
-
-        return list;
     }
 }

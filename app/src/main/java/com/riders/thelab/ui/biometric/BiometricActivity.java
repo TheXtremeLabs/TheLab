@@ -30,17 +30,14 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class BiometricActivity extends AppCompatActivity {
 
-    private Context context;
-
     @BindView(R.id.finger_print_btn)
     ImageButton fingerPrintButton;
-
     Goldfinger goldFinger;
     Goldfinger.PromptParams params;
-
     // RX approach
     RxGoldfinger rxGoldFinger;
     Goldfinger.PromptParams rxParams;
+    private Context context;
 
     @SuppressLint("NewApi")
     @Override

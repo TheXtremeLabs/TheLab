@@ -2,7 +2,6 @@ package com.riders.thelab.ui.deviceinformation;
 
 import android.annotation.SuppressLint;
 
-
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.DeviceInformation;
@@ -18,8 +17,6 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class DeviceInformationView extends BaseViewImpl<DeviceInformationPresenter>
         implements DeviceInformationContract.View {
-
-    private DeviceInformationActivity context;
 
     //Views
     @BindView(R.id.tv_device_name)
@@ -44,6 +41,7 @@ public class DeviceInformationView extends BaseViewImpl<DeviceInformationPresent
     MaterialTextView tvDeviceAndroidRelease;
     @BindView(R.id.tv_device_android_rooted)
     MaterialTextView tvDeviceRooted;
+    private DeviceInformationActivity context;
 
 
     @Inject

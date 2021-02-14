@@ -12,7 +12,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
-
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -35,7 +34,7 @@ public class TheLabToast extends Toast {
 
     private final LinearLayout container;
     private final ShapeableImageView imageView;
-    private MaterialTextView textView;
+    private final MaterialTextView textView;
 
     /**
      * Construct an empty Toast object.  You must call {@link #setView} before you

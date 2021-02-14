@@ -1,7 +1,6 @@
 package com.riders.thelab.data.local.model;
 
 import com.riders.thelab.data.remote.dto.weather.City;
-import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 import com.squareup.moshi.FromJson;
 
 import java.util.List;

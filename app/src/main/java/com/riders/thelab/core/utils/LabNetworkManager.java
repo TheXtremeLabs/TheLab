@@ -27,12 +27,29 @@ import timber.log.Timber;
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class LabNetworkManager extends ConnectivityManager.NetworkCallback {
 
-    ConnectivityListener listener;
-
     private static boolean isConnected = false;
+    ConnectivityListener listener;
 
     public LabNetworkManager(ConnectivityListener listener) {
         this.listener = listener;
+    }
+
+    /**
+     * Check the Internet connection
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isConnected(Context context) {
+
+        if (!LabCompatibilityManager.isLollipop()) {
+            ConnectivityManager connMgr =
+                    (ConnectivityManager) context.getSystemService(Activity.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            return networkInfo != null && networkInfo.isConnected();
+        }
+
+        return isConnected;
     }
 
     @Override
@@ -74,26 +91,6 @@ public class LabNetworkManager extends ConnectivityManager.NetworkCallback {
 
         isConnected = false;
     }
-
-
-    /**
-     * Check the Internet connection
-     *
-     * @param context
-     * @return
-     */
-    public static boolean isConnected(Context context) {
-
-        if (!LabCompatibilityManager.isLollipop()) {
-            ConnectivityManager connMgr =
-                    (ConnectivityManager) context.getSystemService(Activity.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            return networkInfo != null && networkInfo.isConnected();
-        }
-
-        return isConnected;
-    }
-
 
     private void createUrlConnectionCall(String targetUrl, boolean withProgressCallback, @Nullable WeatherLiveDataHelper liveDataHelper) {
         Timber.d("createUrlConnectionCall()");

@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-
 import androidx.annotation.Nullable;
 
 import com.google.android.material.button.MaterialButton;
@@ -19,7 +18,6 @@ import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver;
 import com.riders.thelab.core.bus.AlarmEvent;
-import com.riders.thelab.core.service.ScheduleAlarmService;
 import com.riders.thelab.ui.base.BaseViewImpl;
 import com.riders.thelab.utils.Validator;
 
@@ -38,9 +36,6 @@ import timber.log.Timber;
 public class ScheduleView extends BaseViewImpl<SchedulePresenter>
         implements ScheduleContract.View {
 
-    // TAG & Context
-    private ScheduleActivity context;
-
     @BindView(R.id.progressBar_loading_horizontal)
     ProgressBar mProgressBar;
     @BindView(R.id.time)
@@ -51,7 +46,8 @@ public class ScheduleView extends BaseViewImpl<SchedulePresenter>
     LinearLayout llDelayTimeContainer;
     @BindView(R.id.tv_delay_time)
     MaterialTextView tvDelayTime;
-
+    // TAG & Context
+    private ScheduleActivity context;
     private PendingIntent mPendingIntent;
     private ServiceConnection mServiceConnection;
     private ScheduleAlarmReceiver mAlarmBroadcast;

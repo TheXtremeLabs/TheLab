@@ -48,10 +48,9 @@ import timber.log.Timber;
 @Module
 public class DataModule {
 
-    private Application application;
-    private final LabDatabase database;
-
     private static DataModule mInstance;
+    private final Application application;
+    private final LabDatabase database;
 
     public DataModule(Application application) {
         this.application = application;

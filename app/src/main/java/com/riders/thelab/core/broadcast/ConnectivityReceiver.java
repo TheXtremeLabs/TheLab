@@ -14,8 +14,13 @@ public class ConnectivityReceiver extends BroadcastReceiver {
 
     private final ConnectivityReceiverListener connectivityReceiverListener;
 
-    public interface ConnectivityReceiverListener {
-        void onNetworkConnectionChanged(boolean isConnected);
+    public ConnectivityReceiver() {
+        connectivityReceiverListener = null;
+    }
+
+    public ConnectivityReceiver(ConnectivityReceiverListener connectivityReceiverListener) {
+        super();
+        this.connectivityReceiverListener = connectivityReceiverListener;
     }
 
     public static ConnectivityReceiver getInstance() {
@@ -24,15 +29,6 @@ public class ConnectivityReceiver extends BroadcastReceiver {
         }
 
         return mInstance;
-    }
-
-    public ConnectivityReceiver() {
-        connectivityReceiverListener = null;
-    }
-
-    public ConnectivityReceiver(ConnectivityReceiverListener connectivityReceiverListener) {
-        super();
-        this.connectivityReceiverListener = connectivityReceiverListener;
     }
 
     @SuppressLint("NewApi")
@@ -48,5 +44,9 @@ public class ConnectivityReceiver extends BroadcastReceiver {
 
     public ConnectivityReceiverListener getConnectivityReceiverListener() {
         return connectivityReceiverListener;
+    }
+
+    public interface ConnectivityReceiverListener {
+        void onNetworkConnectionChanged(boolean isConnected);
     }
 }

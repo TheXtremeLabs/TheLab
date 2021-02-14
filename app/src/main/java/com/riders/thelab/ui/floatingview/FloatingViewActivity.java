@@ -21,10 +21,9 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class FloatingViewActivity extends SimpleActivity {
 
+    private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
     @BindView(R.id.notify_me)
     MaterialButton btnNotifyMe;
-
-    private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
 
     @SuppressLint("NewApi")
     @Override

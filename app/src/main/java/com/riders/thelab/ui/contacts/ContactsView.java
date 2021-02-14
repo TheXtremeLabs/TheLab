@@ -37,8 +37,6 @@ public class ContactsView extends BaseViewImpl<ContactsPresenter>
         implements ContactsContract.View, ContactsClickListener,
         RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
-    private ContactsActivity context;
-
     @BindView(R.id.coordinator)
     CoordinatorLayout coordinatorLayout;
     @BindView(R.id.toolbar)
@@ -47,7 +45,7 @@ public class ContactsView extends BaseViewImpl<ContactsPresenter>
     View layoutNoContactFound;
     @BindView(R.id.contacts_layout_container)
     View layoutContacts;
-
+    private ContactsActivity context;
     private SearchView searchView;
 
     private List<Contact> contactList;

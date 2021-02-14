@@ -29,8 +29,6 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 public class AddContactView extends BaseViewImpl<AddContactPresenter>
         implements AddContactContract.View {
 
-    private AddContactActivity context;
-
     @BindView(R.id.input_name)
     TextInputEditText inputName;
     @BindView(R.id.input_email)
@@ -45,10 +43,15 @@ public class AddContactView extends BaseViewImpl<AddContactPresenter>
     TextInputLayout inputLayoutPassword;
     @BindView(R.id.floating_labels_btn_signup)
     MaterialButton btnSignUp;
+    private AddContactActivity context;
 
     @Inject
     AddContactView(AddContactActivity context) {
         this.context = context;
+    }
+
+    private static boolean isValidEmail(String email) {
+        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     @Override
@@ -73,7 +76,6 @@ public class AddContactView extends BaseViewImpl<AddContactPresenter>
         getPresenter().detachView();
         context = null;
     }
-
 
     @Override
     public void showLoading() {
@@ -106,7 +108,6 @@ public class AddContactView extends BaseViewImpl<AddContactPresenter>
     public void onAddContactError() {
         Timber.e("onAddContactError()");
     }
-
 
     @OnClick(R.id.floating_labels_btn_signup)
     void onButtonClicked() {
@@ -181,10 +182,6 @@ public class AddContactView extends BaseViewImpl<AddContactPresenter>
         return true;
     }
 
-    private static boolean isValidEmail(String email) {
-        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             context.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -194,7 +191,7 @@ public class AddContactView extends BaseViewImpl<AddContactPresenter>
 
     private class MyTextWatcher implements TextWatcher {
 
-        private View view;
+        private final View view;
 
         private MyTextWatcher(View view) {
             this.view = view;

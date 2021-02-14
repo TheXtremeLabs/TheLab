@@ -48,11 +48,7 @@ public class BrowserUtils {
         SharedPreferences.Editor editor = pref.edit();
 
         // if url is already bookmarked, unbookmark it
-        if (pref.getBoolean(url, false)) {
-            editor.putBoolean(url, false);
-        } else {
-            editor.putBoolean(url, true);
-        }
+        editor.putBoolean(url, !pref.getBoolean(url, false));
 
         editor.commit();
     }

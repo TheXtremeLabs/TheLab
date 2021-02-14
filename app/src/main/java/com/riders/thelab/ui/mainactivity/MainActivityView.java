@@ -59,34 +59,39 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         implements MainActivityContract.View, MainActivityAppClickListener,
         ConnectivityListener, MenuItem.OnMenuItemClickListener {
 
-    // TAG & Context
-    private MainActivity context;
-
     //Views
     @BindView(R.id.view_pager)
     ViewPager2 viewPager2;
-    /**
-     * The pager adapter, which provides the pages to the view pager widget.
-     */
-    private FragmentStateAdapter pagerAdapter;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.layoutDots)
     LinearLayout layoutDots;
-
     @BindView(R.id.app_recyclerView)
     RecyclerView appRecyclerView;
-
-    private ConnectivityManager mConnectivityManager;
-    private LabNetworkManager networkManager;
-
-    private Menu menu;
-
-    private List<Fragment> fragmentList;
     TimeFragment timeFragment;
     WeatherFragment weatherFragment;
     NewsFragment newsFragment;
-
+    // TAG & Context
+    private MainActivity context;
+    /**
+     * The pager adapter, which provides the pages to the view pager widget.
+     */
+    private FragmentStateAdapter pagerAdapter;
+    private ConnectivityManager mConnectivityManager;
+    private LabNetworkManager networkManager;
+    private Menu menu;
+    private List<Fragment> fragmentList;
+    private TextView[] dots;
+    /*
+     * ViewPager page change listener
+     */
+    ViewPager2.OnPageChangeCallback pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
+        @Override
+        public void onPageSelected(int position) {
+            super.onPageSelected(position);
+            addBottomDots(position);
+        }
+    };
 
     @Inject
     MainActivityView(MainActivity context) {
@@ -215,23 +220,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         }
     }
 
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        Timber.e("startActivityForResult()");
-    }
-
-    public void onDestroy() {
-        Timber.d("onDestroy()");
-
-        if (LabCompatibilityManager.isLollipop()) {
-            Timber.d("unregister network callback()");
-            //mConnectivityManager.unregisterNetworkCallback(networkManager);
-        }
-
-        getPresenter().detachView();
-        context = null;
-    }
-
 
     /////////////////////////////////////
     //
@@ -250,6 +238,23 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     //
     /////////////////////////////////////
 
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        Timber.e("startActivityForResult()");
+    }
+
+    public void onDestroy() {
+        Timber.d("onDestroy()");
+
+        if (LabCompatibilityManager.isLollipop()) {
+            Timber.d("unregister network callback()");
+            //mConnectivityManager.unregisterNetworkCallback(networkManager);
+        }
+
+        getPresenter().detachView();
+        context = null;
+    }
+
     // Method to manually check connection status
     private void checkConnection() {
         Timber.d("checkConnection()");
@@ -263,7 +268,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
         updateToolbarConnectionIcon(isConnected);
     }
-
 
     public void showBottomSheetDialogFragment() {
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
@@ -296,8 +300,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         viewPager2.registerOnPageChangeCallback(pageChangeCallback);
     }
 
-    private TextView[] dots;
-
     /*
      * Adds bottom dots indicator
      * */
@@ -319,17 +321,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         if (dots.length > 0)
             dots[currentPage].setTextColor(colorsActive[currentPage]);
     }
-
-    /*
-     * ViewPager page change listener
-     */
-    ViewPager2.OnPageChangeCallback pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
-        @Override
-        public void onPageSelected(int position) {
-            super.onPageSelected(position);
-            addBottomDots(position);
-        }
-    };
 
     /**
      * Initializing collapsing toolbar

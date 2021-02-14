@@ -13,9 +13,9 @@
             android:id="@+id/palette_image"
             android:layout_width="match_parent"
             android:layout_height="450dp"
+            android:layout_centerHorizontal="true"
             android:adjustViewBounds="true"
-            tools:background="#AAA"
-            android:layout_centerHorizontal="true" />
+            tools:background="#AAA" />
 
         <LinearLayout
             android:layout_width="match_parent"

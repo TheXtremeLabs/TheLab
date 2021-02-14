@@ -42,8 +42,7 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class WeatherFragment extends Fragment {
 
-    private Context context;
-
+    private final CompositeDisposable compositeDisposable;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
     @BindView(R.id.weather_data_container)
@@ -60,11 +59,9 @@ public class WeatherFragment extends Fragment {
     MaterialTextView tvWeatherCityTemperature;
 
     Unbinder unbinder;
-
-    private final CompositeDisposable compositeDisposable;
-
     @Inject
     LabService service;
+    private Context context;
 
 
     @Inject

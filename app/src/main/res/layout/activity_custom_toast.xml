@@ -52,11 +52,11 @@
             android:indeterminateDuration="3000"
             android:indeterminateOnly="true"
             android:visibility="gone"
+            app:indicatorColor="@color/white"
             app:indicatorSize="@dimen/big_medium_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/right_guideline"
             app:layout_constraintTop_toTopOf="parent"
-            app:indicatorColor="@color/white"
             app:trackCornerRadius="4dp"
             tools:visibility="visible" />
 

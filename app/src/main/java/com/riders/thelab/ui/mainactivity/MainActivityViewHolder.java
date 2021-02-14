@@ -36,7 +36,7 @@ import butterknife.ButterKnife;
 @SuppressLint({"UnknownNullness", "NonConstantResourceId"})
 public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
-    private Context context;
+    private final Context context;
 
     @BindView(R.id.row_item_cardView)
     public MaterialCardView itemCardView;

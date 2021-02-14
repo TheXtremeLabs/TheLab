@@ -4,9 +4,7 @@ package com.riders.thelab.ui.multipane;
 import android.annotation.SuppressLint;
 import android.view.View;
 
-
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
