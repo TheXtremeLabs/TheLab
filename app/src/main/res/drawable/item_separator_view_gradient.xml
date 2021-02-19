@@ -9,5 +9,5 @@
         android:startColor="@color/purple_700"
         android:type="linear" />
 
-    <size android:height="@dimen/extra_small_margin" />
+    <size android:height="@dimen/_4dp" />
 </shape>

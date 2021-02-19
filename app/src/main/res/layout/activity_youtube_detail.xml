@@ -42,9 +42,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:padding="@dimen/medium_margin"
+        android:padding="@dimen/_16dp"
         app:cardBackgroundColor="@color/oil"
-        app:cardElevation="@dimen/small_margin"
+        app:cardElevation="@dimen/_8dp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -57,15 +57,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
 
-            android:layout_marginTop="@dimen/big_margin"
+            android:layout_marginTop="@dimen/_24dp"
             android:orientation="vertical">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/content_text_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginHorizontal="@dimen/_16dp"
+                android:layout_marginTop="@dimen/_8dp"
                 android:maxLines="1"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -75,7 +75,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_margin="@dimen/small_margin"
+                android:layout_margin="@dimen/_8dp"
                 android:background="@color/jumbo" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -83,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:padding="@dimen/medium_margin"
+                android:padding="@dimen/_16dp"
                 tools:text="@string/lorem_ipsum"
                 tools:textColor="@color/white" />
         </LinearLayout>
@@ -100,11 +100,11 @@
         android:id="@+id/content_image_thumb"
         android:layout_width="@dimen/thumb_width_content"
         android:layout_height="@dimen/thumb_height_content"
-        android:layout_marginStart="@dimen/ultra_big_margin"
+        android:layout_marginStart="@dimen/_56dp"
         android:adjustViewBounds="true"
         android:background="@color/oil"
         android:contentDescription="thumb_icon"
-        android:elevation="@dimen/small_margin"
+        android:elevation="@dimen/_8dp"
         android:fitsSystemWindows="true"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@id/guideline_image_view"

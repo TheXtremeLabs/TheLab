@@ -10,9 +10,12 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.TheLabApplication;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BaseViewImpl;
 
@@ -36,7 +39,10 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
 
     private static final String ANDROID_RES_PATH = "android.resource://";
     private static final String SEPARATOR = "/";
-    @BindView(R.id.ll_splash_content)
+
+    //@BindView(R.id.cl_splash_content)
+    ConstraintLayout clContent;
+    //@BindView(R.id.ll_splash_content)
     RelativeLayout rlContent;
     @BindView(R.id.splash_video)
     VideoView splashVideoView;
@@ -67,6 +73,13 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         getPresenter().attachView(this);
 
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
+
+        if (LabCompatibilityManager.isTablet(context)) {
+            clContent = context.findViewById(R.id.cl_splash_content);
+        } else {
+            rlContent = context.findViewById(R.id.ll_splash_content);
+        }
+
         TheLabApplication.getInstance();
 
         getPresenter().getAppVersion();
@@ -120,8 +133,15 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     @Override
     public void onPermissionsGranted() {
 
-        // Initially hide the content view.
-        rlContent.setVisibility(View.GONE);
+        if (null != rlContent) { // For smartphone
+            // Initially hide the content view.
+            rlContent.setVisibility(View.GONE);
+        }
+
+        if (null != clContent) { // For tablet
+            // Initially hide the content view.
+            clContent.setVisibility(View.GONE);
+        }
 
         startVideo();
     }
@@ -165,7 +185,11 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     @Override
     public void onCompletion(MediaPlayer mp) {
         Timber.e("Video completed");
-        crossFadeViews();
+        crossFadeViews(
+                LabCompatibilityManager.isTablet(context)
+                        ? clContent
+                        : rlContent
+        );
     }
 
 
@@ -185,7 +209,10 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
                                     ANDROID_RES_PATH +
                                             context.getPackageName() +
                                             SEPARATOR +
-                                            R.raw.splash_intro_testing_sound_2));
+                                            (
+                                                    !LabCompatibilityManager.isTablet(context)
+                                                            ? R.raw.splash_intro_testing_sound_2 //Smartphone portrait video
+                                                            : R.raw.splash_intro_testing_no_sound_tablet)));//Tablet landscape video
 
         } catch (Exception e) {
             Timber.e(e);
@@ -206,19 +233,17 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     }
 
 
-    private void crossFadeViews() {
+    private void crossFadeViews(View view) {
         Timber.i("crossFadeViews()");
 
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
-        rlContent.setAlpha(1f);
-        rlContent.setVisibility(View.VISIBLE);
-
-        Timber.d("llContent.setVisibility(View.VISIBLE)");
+        view.setAlpha(1f);
+        view.setVisibility(View.VISIBLE);
 
         // Animate the content view to 100% opacity, and clear any animation
         // listener set on the view.
-        rlContent.animate()
+        view.animate()
                 .alpha(1f)
                 .setDuration(shortAnimationDuration)
                 .setListener(null);
