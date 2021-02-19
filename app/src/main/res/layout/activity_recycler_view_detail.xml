@@ -27,7 +27,7 @@
             style="@style/TextAppearance.AppCompat.Display1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/medium_margin"
+            android:padding="@dimen/_16dp"
             tools:text="@string/lorem_ipsum" />
 
     </LinearLayout>

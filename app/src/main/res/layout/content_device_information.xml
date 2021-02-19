@@ -24,10 +24,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:outlineSpotShadowColor="@color/purple_700"
-            app:cardCornerRadius="@dimen/small_margin"
+            app:cardCornerRadius="@dimen/_8dp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true"
-            app:elevation="@dimen/small_margin"
+            app:elevation="@dimen/_8dp"
             tools:cardBackgroundColor="@color/oil"
             tools:ignore="UnusedAttribute">
 
@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/medium_margin">
+                android:padding="@dimen/_16dp">
 
                 <!-- Device Specifications -->
                 <LinearLayout
@@ -63,8 +63,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/small_margin"
-                        android:paddingBottom="@dimen/small_margin">
+                        android:paddingTop="@dimen/_8dp"
+                        android:paddingBottom="@dimen/_8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
@@ -86,8 +86,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/small_margin"
-                        android:paddingBottom="@dimen/small_margin">
+                        android:paddingTop="@dimen/_8dp"
+                        android:paddingBottom="@dimen/_8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
@@ -109,8 +109,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/small_margin"
-                        android:paddingBottom="@dimen/small_margin">
+                        android:paddingTop="@dimen/_8dp"
+                        android:paddingBottom="@dimen/_8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
@@ -132,8 +132,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/small_margin"
-                        android:paddingBottom="@dimen/small_margin">
+                        android:paddingTop="@dimen/_8dp"
+                        android:paddingBottom="@dimen/_8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
@@ -155,8 +155,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/small_margin"
-                        android:paddingBottom="@dimen/small_margin">
+                        android:paddingTop="@dimen/_8dp"
+                        android:paddingBottom="@dimen/_8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
@@ -178,8 +178,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/small_margin"
-                        android:paddingBottom="@dimen/small_margin">
+                        android:paddingTop="@dimen/_8dp"
+                        android:paddingBottom="@dimen/_8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
@@ -201,8 +201,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/small_margin"
-                        android:paddingBottom="@dimen/small_margin">
+                        android:paddingTop="@dimen/_8dp"
+                        android:paddingBottom="@dimen/_8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
@@ -232,7 +232,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/_16dp"
         android:background="@drawable/device_information_card_gradient"
         android:orientation="vertical">
 
@@ -241,10 +241,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:outlineSpotShadowColor="@color/purple_700"
-            app:cardCornerRadius="@dimen/small_margin"
+            app:cardCornerRadius="@dimen/_8dp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true"
-            app:elevation="@dimen/small_margin"
+            app:elevation="@dimen/_8dp"
             tools:cardBackgroundColor="@color/oil"
             tools:ignore="UnusedAttribute">
 
@@ -252,7 +252,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/medium_margin">
+                android:padding="@dimen/_16dp">
 
                 <!-- Android Specifications -->
                 <LinearLayout
@@ -280,8 +280,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/small_margin"
-                        android:paddingBottom="@dimen/small_margin">
+                        android:paddingTop="@dimen/_8dp"
+                        android:paddingBottom="@dimen/_8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
@@ -303,8 +303,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/small_margin"
-                        android:paddingBottom="@dimen/small_margin">
+                        android:paddingTop="@dimen/_8dp"
+                        android:paddingBottom="@dimen/_8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
@@ -326,8 +326,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/small_margin"
-                        android:paddingBottom="@dimen/small_margin">
+                        android:paddingTop="@dimen/_8dp"
+                        android:paddingBottom="@dimen/_8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
@@ -349,8 +349,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/small_margin"
-                        android:paddingBottom="@dimen/small_margin">
+                        android:paddingTop="@dimen/_8dp"
+                        android:paddingBottom="@dimen/_8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"

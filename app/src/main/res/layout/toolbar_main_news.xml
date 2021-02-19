@@ -33,9 +33,9 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dots_height"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="@dimen/ultra_big_margin"
-            android:layout_marginEnd="@dimen/ultra_big_margin"
-            android:layout_marginBottom="@dimen/small_margin"
+            android:layout_marginStart="@dimen/_56dp"
+            android:layout_marginEnd="@dimen/_56dp"
+            android:layout_marginBottom="@dimen/_8dp"
             android:gravity="center"
             android:orientation="horizontal"
             tools:background="@color/teal_700" />

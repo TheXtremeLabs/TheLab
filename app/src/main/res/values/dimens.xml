@@ -9,14 +9,17 @@
 
     <dimen name="activity_margin">16dp</dimen>
 
-    <dimen name="ultra_small_margin">2dp</dimen>
-    <dimen name="extra_small_margin">4dp</dimen>
-    <dimen name="small_margin">8dp</dimen>
-    <dimen name="medium_margin">16dp</dimen>
-    <dimen name="big_margin">24dp</dimen>
-    <dimen name="big_medium_margin">32dp</dimen>
-    <dimen name="extra_big_margin">48dp</dimen>
-    <dimen name="ultra_big_margin">56dp</dimen>
+    <dimen name="_2dp">2dp</dimen>
+    <dimen name="_4dp">4dp</dimen>
+    <dimen name="_8dp">8dp</dimen>
+    <dimen name="_16dp">16dp</dimen>
+    <dimen name="_24dp">24dp</dimen>
+    <dimen name="_32dp">32dp</dimen>
+    <dimen name="_48dp">48dp</dimen>
+    <dimen name="_56dp">56dp</dimen>
+    <dimen name="_64dp">64dp</dimen>
+    <dimen name="_72dp">72dp</dimen>
+    <dimen name="_96dp">96dp</dimen>
 
     <dimen name="dots_height">30dp</dimen>
     <dimen name="dots_margin_bottom">20dp</dimen>
