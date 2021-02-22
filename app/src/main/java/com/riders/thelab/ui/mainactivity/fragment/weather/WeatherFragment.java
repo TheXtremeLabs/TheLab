@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -46,7 +47,7 @@ public class WeatherFragment extends Fragment {
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
     @BindView(R.id.weather_data_container)
-    LinearLayout weatherDataContainer;
+    ConstraintLayout weatherDataContainer;
     @BindView(R.id.iv_weather_icon)
     ShapeableImageView ivWeatherIcon;
     @BindView(R.id.tv_weather_city_name)

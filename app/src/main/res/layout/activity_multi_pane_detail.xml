@@ -25,7 +25,7 @@
                 android:layout_margin="@dimen/extra_big_margin"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                tools:src="@drawable/mission_impossible" />
+                tools:src="@drawable/logo_colors" />
 
         </LinearLayout>
 

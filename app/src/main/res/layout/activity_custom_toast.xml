@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/medium_margin"
-        android:layout_marginTop="@dimen/extra_big_margin"
+        android:layout_marginTop="@dimen/ultra_big_margin"
         android:layout_marginEnd="@dimen/medium_margin"
         android:text="@string/click_on_display_button_message"
         android:textAlignment="center"

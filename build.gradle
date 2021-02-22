@@ -33,7 +33,7 @@ ext {
     googleApiClientVersion = '1.31.2'
     mapsVersion = '17.0.0'
     mapsUtilsVersion = '2.2.0'
-    locationVersion = "17.1.0"
+    locationVersion = '18.0.0'
     placesVersion = "2.4.0"
 
     firebaseBomVersion = '26.0.0'
