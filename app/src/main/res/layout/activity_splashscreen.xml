@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -13,14 +14,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center" />
-
     </LinearLayout>
 
 
-    <RelativeLayout
-        android:id="@+id/ll_splash_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_splash_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:background="@color/black"
         android:paddingStart="96dp"
         android:paddingEnd="96dp">
@@ -29,7 +30,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <!-- Image -->
@@ -61,6 +66,9 @@
             android:layout_marginBottom="72dp"
             android:indeterminate="true"
             android:indeterminateOnly="true"
-            android:indeterminateTint="@color/splashProgressbarTint" />
-    </RelativeLayout>
+            android:indeterminateTint="@color/splashProgressbarTint"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
