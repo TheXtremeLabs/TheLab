@@ -26,8 +26,8 @@
             android:layout_height="50dp"
             android:focusable="false"
             android:gravity="center_vertical"
-            android:paddingStart="@dimen/_8dp"
-            android:paddingEnd="@dimen/_8dp"
+            android:paddingStart="@dimen/small_margin"
+            android:paddingEnd="@dimen/small_margin"
             tools:text="Paris, FR" />
 
         <!--<View

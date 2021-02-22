@@ -28,10 +28,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/_24dp"
+            android:layout_marginBottom="@dimen/big_margin"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="@dimen/_16dp">
+            android:padding="@dimen/medium_margin">
 
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -40,7 +40,7 @@
                 android:layout_height="90dp"
                 android:layout_marginBottom="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="@dimen/_16dp"
+                android:padding="@dimen/medium_margin"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_mic_none"
                 android:tint="@color/white" />

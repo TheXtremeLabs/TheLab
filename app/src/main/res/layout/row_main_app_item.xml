@@ -5,11 +5,11 @@
     android:id="@+id/row_item_cardView"
     android:layout_width="match_parent"
     android:layout_height="120dp"
-    android:layout_marginTop="@dimen/_4dp"
+    android:layout_marginTop="@dimen/extra_small_margin"
     android:clickable="true"
     android:focusable="true"
     app:cardBackgroundColor="?android:attr/colorBackground"
-    app:cardCornerRadius="@dimen/_8dp"
+    app:cardCornerRadius="@dimen/small_margin"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true"
     tools:cardBackgroundColor="@color/dark_grey"
@@ -54,7 +54,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_8dp"
+                android:layout_margin="@dimen/small_margin"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -65,7 +65,7 @@
                     android:layout_height="72dp"
                     android:adjustViewBounds="true"
                     android:fitsSystemWindows="true"
-                    android:padding="@dimen/_8dp"
+                    android:padding="@dimen/small_margin"
                     android:scaleType="fitCenter"
                     tools:src="@drawable/the_lab_icon_white" />
 
@@ -76,9 +76,9 @@
                     android:layout_weight="2"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="@dimen/_8dp"
-                    android:paddingStart="@dimen/_16dp"
-                    android:paddingEnd="@dimen/_16dp">
+                    android:padding="@dimen/small_margin"
+                    android:paddingStart="@dimen/medium_margin"
+                    android:paddingEnd="@dimen/medium_margin">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -118,8 +118,8 @@
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/arrow_icon"
-                        android:layout_width="@dimen/_24dp"
-                        android:layout_height="@dimen/_24dp"
+                        android:layout_width="@dimen/big_margin"
+                        android:layout_height="@dimen/big_margin"
                         android:fitsSystemWindows="true"
                         app:srcCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
                 </LinearLayout>

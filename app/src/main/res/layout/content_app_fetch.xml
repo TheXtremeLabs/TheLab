@@ -7,8 +7,8 @@
     android:layout_marginStart="0dp"
     android:layout_marginEnd="0dp"
     android:background="@color/default_dark"
-    android:paddingTop="@dimen/_16dp"
-    android:paddingBottom="@dimen/_16dp">
+    android:paddingTop="@dimen/medium_margin"
+    android:paddingBottom="@dimen/medium_margin">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/app_recyclerView"

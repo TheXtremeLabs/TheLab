@@ -11,7 +11,7 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/_16dp"
+        android:padding="@dimen/medium_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -21,7 +21,7 @@
             android:id="@+id/input_layout_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_4dp">
+            android:layout_margin="@dimen/extra_small_margin">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_name"
@@ -35,7 +35,7 @@
             android:id="@+id/input_layout_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_4dp">
+            android:layout_margin="@dimen/extra_small_margin">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_email"
@@ -49,7 +49,7 @@
             android:id="@+id/input_layout_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_4dp">
+            android:layout_margin="@dimen/extra_small_margin">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_password"
