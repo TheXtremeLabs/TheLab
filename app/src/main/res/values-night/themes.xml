@@ -65,19 +65,19 @@
     <!-- Youtube Item -->
     <style name="YoutubeItemCardViewShape" parent="">
         <!-- Top Left -->
-        <item name="cornerSizeTopLeft">@dimen/_24dp</item>
+        <item name="cornerSizeTopLeft">@dimen/big_margin</item>
         <item name="cornerFamilyTopLeft">rounded</item>
         <!-- Top Right -->
-        <item name="cornerSizeTopRight">@dimen/_24dp</item>
+        <item name="cornerSizeTopRight">@dimen/big_margin</item>
         <item name="cornerFamilyTopRight">rounded</item>
     </style>
 
     <style name="YoutubeItemImageViewShape" parent="">
         <!-- Top Left -->
-        <item name="cornerSizeTopLeft">@dimen/_16dp</item>
+        <item name="cornerSizeTopLeft">@dimen/medium_margin</item>
         <item name="cornerFamilyTopLeft">rounded</item>
         <!-- Top Right -->
-        <item name="cornerSizeTopRight">@dimen/_16dp</item>
+        <item name="cornerSizeTopRight">@dimen/medium_margin</item>
         <item name="cornerFamilyTopRight">rounded</item>
     </style>
 

@@ -5,8 +5,8 @@
     android:id="@+id/row_news_card_view"
     android:layout_width="140dp"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/_8dp"
-    app:cardCornerRadius="@dimen/_8dp"
+    android:layout_margin="@dimen/small_margin"
+    app:cardCornerRadius="@dimen/small_margin"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true">
 
@@ -18,11 +18,11 @@
             android:id="@+id/row_news_image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/_32dp"
-            android:layout_marginLeft="@dimen/_32dp"
+            android:layout_marginStart="@dimen/big_medium_margin"
+            android:layout_marginLeft="@dimen/big_medium_margin"
             android:layout_marginEnd="-32dp"
             android:layout_marginRight="-32dp"
-            android:padding="@dimen/_24dp"
+            android:padding="@dimen/big_margin"
             android:scaleType="centerCrop"
             tools:src="@drawable/logo_colors" />
 
@@ -36,7 +36,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_56dp"
+                android:layout_height="@dimen/ultra_big_margin"
                 android:background="@drawable/maps_loading_gradient" />
 
             <com.google.android.material.textview.MaterialTextView

@@ -9,5 +9,5 @@
         android:startColor="@color/transparent"
         android:type="linear" />
 
-    <corners android:radius="@dimen/_8dp" />
+    <corners android:radius="@dimen/small_margin" />
 </shape>

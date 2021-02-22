@@ -42,9 +42,9 @@
             android:id="@+id/weather_data_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_24dp"
+            android:layout_marginTop="@dimen/big_margin"
             android:orientation="vertical"
-            android:paddingHorizontal="@dimen/_16dp"
+            android:paddingHorizontal="@dimen/medium_margin"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">
@@ -53,7 +53,7 @@
                 android:id="@+id/ac_tv_Weather"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:hint="@string/form_hint_search_city"
                 android:imeOptions="actionDone"
                 android:inputType="text"
@@ -68,8 +68,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/ac_tv_Weather"
-                android:layout_marginTop="@dimen/_16dp"
-                android:layout_marginBottom="@dimen/_4dp"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginBottom="@dimen/extra_small_margin"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -104,7 +104,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/container_city_country"
-                android:layout_marginVertical="@dimen/_16dp"
+                android:layout_marginVertical="@dimen/medium_margin"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -135,8 +135,8 @@
                     android:id="@+id/container_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_4dp"
-                    android:layout_marginBottom="@dimen/_4dp"
+                    android:layout_marginTop="@dimen/extra_small_margin"
+                    android:layout_marginBottom="@dimen/extra_small_margin"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toTopOf="@id/guideline_description_info_separator"
@@ -166,8 +166,8 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_4dp"
-                    android:layout_marginBottom="@dimen/_4dp"
+                    android:layout_marginTop="@dimen/extra_small_margin"
+                    android:layout_marginBottom="@dimen/extra_small_margin"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toTopOf="@id/guideline_temperature_info_separator"
@@ -186,8 +186,8 @@
                         android:id="@+id/tv_weather_city_temperature"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_4dp"
-                        android:layout_marginLeft="@dimen/_4dp"
+                        android:layout_marginStart="@dimen/extra_small_margin"
+                        android:layout_marginLeft="@dimen/extra_small_margin"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         tools:text="2°C" />
@@ -207,8 +207,8 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_4dp"
-                    android:layout_marginBottom="@dimen/_4dp"
+                    android:layout_marginTop="@dimen/extra_small_margin"
+                    android:layout_marginBottom="@dimen/extra_small_margin"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -227,8 +227,8 @@
                         android:id="@+id/tv_weather_city_real_feels"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_4dp"
-                        android:layout_marginLeft="@dimen/_4dp"
+                        android:layout_marginStart="@dimen/extra_small_margin"
+                        android:layout_marginLeft="@dimen/extra_small_margin"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         tools:text="2°C" />
@@ -252,7 +252,7 @@
                     android:id="@+id/container_sun_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/_16dp"
+                    android:layout_marginVertical="@dimen/medium_margin"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toTopOf="@id/grid_layout"
                     app:layout_constraintTop_toTopOf="parent">
@@ -264,8 +264,8 @@
 
                         <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/iv_sunrise"
-                            android:layout_width="@dimen/_56dp"
-                            android:layout_height="@dimen/_56dp"
+                            android:layout_width="@dimen/ultra_big_margin"
+                            android:layout_height="@dimen/ultra_big_margin"
                             android:adjustViewBounds="true"
                             android:tint="@color/white"
                             app:layout_constraintBottom_toTopOf="@id/tv_sunrise"
@@ -299,8 +299,8 @@
 
                         <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/iv_sunset"
-                            android:layout_width="@dimen/_56dp"
-                            android:layout_height="@dimen/_56dp"
+                            android:layout_width="@dimen/ultra_big_margin"
+                            android:layout_height="@dimen/ultra_big_margin"
                             android:adjustViewBounds="true"
                             android:tint="@color/white"
                             app:layout_constraintBottom_toTopOf="@id/tv_sunset"
@@ -325,7 +325,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_marginTop="@dimen/_8dp"
+                    android:layout_marginTop="@dimen/small_margin"
                     android:background="@drawable/separator_view_gradient"
                     app:layout_constraintBottom_toTopOf="@id/grid_layout"
                     app:layout_constraintTop_toBottomOf="@id/container_sun_data" />
@@ -334,7 +334,7 @@
                     android:id="@+id/grid_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/_16dp"
+                    android:layout_marginVertical="@dimen/medium_margin"
                     android:columnCount="2"
                     android:orientation="horizontal"
                     android:rowCount="2"
@@ -350,7 +350,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="top|start"
-                        android:layout_marginVertical="@dimen/_8dp"
+                        android:layout_marginVertical="@dimen/small_margin"
                         android:gravity="center"
                         android:orientation="horizontal">
 
@@ -379,8 +379,8 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_4dp"
-                            android:layout_marginBottom="@dimen/_4dp"
+                            android:layout_marginTop="@dimen/extra_small_margin"
+                            android:layout_marginBottom="@dimen/extra_small_margin"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -415,7 +415,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="top|end"
-                        android:layout_marginVertical="@dimen/_8dp"
+                        android:layout_marginVertical="@dimen/small_margin"
                         android:orientation="horizontal">
 
                         <!-- Pressure icon -->
@@ -437,8 +437,8 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_4dp"
-                            android:layout_marginBottom="@dimen/_4dp"
+                            android:layout_marginTop="@dimen/extra_small_margin"
+                            android:layout_marginBottom="@dimen/extra_small_margin"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -474,7 +474,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="top|start"
-                        android:layout_marginVertical="@dimen/_8dp"
+                        android:layout_marginVertical="@dimen/small_margin"
                         android:gravity="center"
                         android:orientation="horizontal">
 
@@ -497,8 +497,8 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_4dp"
-                            android:layout_marginBottom="@dimen/_4dp"
+                            android:layout_marginTop="@dimen/extra_small_margin"
+                            android:layout_marginBottom="@dimen/extra_small_margin"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
                             app:layout_constraintBottom_toTopOf="@id/guideline_wind_info_separator"
@@ -536,8 +536,8 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_4dp"
-                            android:layout_marginBottom="@dimen/_4dp"
+                            android:layout_marginTop="@dimen/extra_small_margin"
+                            android:layout_marginBottom="@dimen/extra_small_margin"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -556,8 +556,8 @@
                                 android:id="@+id/tv_weather_extra_wind_direction"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_4dp"
-                                android:layout_marginLeft="@dimen/_4dp"
+                                android:layout_marginStart="@dimen/extra_small_margin"
+                                android:layout_marginLeft="@dimen/extra_small_margin"
                                 android:textColor="@color/white"
                                 android:textSize="16sp"
                                 tools:text="2°C" />
@@ -577,7 +577,7 @@
                         android:layout_row="1"
                         android:layout_column="1"
                         android:layout_gravity="top|end"
-                        android:layout_marginVertical="@dimen/_8dp"
+                        android:layout_marginVertical="@dimen/small_margin"
                         android:gravity="center"
                         android:orientation="horizontal">
 
@@ -607,8 +607,8 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_4dp"
-                            android:layout_marginBottom="@dimen/_4dp"
+                            android:layout_marginTop="@dimen/extra_small_margin"
+                            android:layout_marginBottom="@dimen/extra_small_margin"
                             android:gravity="center"
                             android:orientation="horizontal"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -648,15 +648,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="@dimen/_8dp"
+                android:layout_marginBottom="@dimen/small_margin"
                 android:gravity="end|center"
                 android:orientation="horizontal">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_8dp"
-                    android:layout_marginRight="@dimen/_8dp"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:layout_marginRight="@dimen/small_margin"
                     android:text="@string/weather_data_provided_by"
                     android:textColor="@color/white"
                     android:textSize="12sp" />

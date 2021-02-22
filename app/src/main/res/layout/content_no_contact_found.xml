@@ -20,7 +20,7 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_4dp"
+            android:layout_margin="@dimen/extra_small_margin"
             android:adjustViewBounds="true"
             android:fitsSystemWindows="true"
             android:scaleType="fitCenter"
@@ -29,7 +29,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_4dp"
+            android:layout_margin="@dimen/extra_small_margin"
             android:text="No record found !"
             android:textColor="@color/white" />
 
@@ -44,7 +44,7 @@
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_16dp"
+            android:layout_margin="@dimen/medium_margin"
             android:text="Add a new contact" />
 
     </LinearLayout>

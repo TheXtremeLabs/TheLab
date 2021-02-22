@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="@dimen/_16dp"
-    android:paddingBottom="@dimen/_16dp"
+    android:paddingTop="@dimen/medium_margin"
+    android:paddingBottom="@dimen/medium_margin"
     tools:background="@color/oil">
 
     <!-- NOTE: This list should be displayed in a list
@@ -20,9 +20,9 @@
         android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/activity_margin"
-        android:paddingTop="@dimen/_16dp"
+        android:paddingTop="@dimen/medium_margin"
         android:paddingRight="@dimen/activity_margin"
-        android:paddingBottom="@dimen/_16dp">
+        android:paddingBottom="@dimen/medium_margin">
 
 
         <com.google.android.material.textview.MaterialTextView

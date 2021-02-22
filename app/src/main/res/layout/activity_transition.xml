@@ -11,7 +11,7 @@
         android:id="@+id/iv_logo"
         android:layout_width="@dimen/max_card_image_width"
         android:layout_height="@dimen/max_card_image_height"
-        android:layout_margin="@dimen/_16dp"
+        android:layout_margin="@dimen/medium_margin"
         android:adjustViewBounds="true"
         android:fitsSystemWindows="true"
         android:scaleType="centerCrop"
