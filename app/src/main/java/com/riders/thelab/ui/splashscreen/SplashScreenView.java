@@ -40,10 +40,8 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     private static final String ANDROID_RES_PATH = "android.resource://";
     private static final String SEPARATOR = "/";
 
-    //@BindView(R.id.cl_splash_content)
+    @BindView(R.id.cl_splash_content)
     ConstraintLayout clContent;
-    //@BindView(R.id.ll_splash_content)
-    RelativeLayout rlContent;
     @BindView(R.id.splash_video)
     VideoView splashVideoView;
     @BindView(R.id.tv_app_version)
@@ -73,12 +71,6 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         getPresenter().attachView(this);
 
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
-
-        if (LabCompatibilityManager.isTablet(context)) {
-            clContent = context.findViewById(R.id.cl_splash_content);
-        } else {
-            rlContent = context.findViewById(R.id.ll_splash_content);
-        }
 
         TheLabApplication.getInstance();
 
@@ -132,12 +124,6 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     /////////////////////////////////
     @Override
     public void onPermissionsGranted() {
-
-        if (null != rlContent) { // For smartphone
-            // Initially hide the content view.
-            rlContent.setVisibility(View.GONE);
-        }
-
         if (null != clContent) { // For tablet
             // Initially hide the content view.
             clContent.setVisibility(View.GONE);
@@ -185,11 +171,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     @Override
     public void onCompletion(MediaPlayer mp) {
         Timber.e("Video completed");
-        crossFadeViews(
-                LabCompatibilityManager.isTablet(context)
-                        ? clContent
-                        : rlContent
-        );
+        crossFadeViews(clContent);
     }
 
 
