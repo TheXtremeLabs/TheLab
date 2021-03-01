@@ -27,11 +27,11 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.utils.Validator;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 @SuppressLint({"UnknownNullness", "NonConstantResourceId"})
 public class MainActivityViewHolder extends RecyclerView.ViewHolder {
@@ -57,7 +57,27 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
         this.context = context;
 
-        ButterKnife.bind(this, itemView);
+        if (!LabCompatibilityManager.isTablet(context)) {
+            bindSmartphoneViews(itemView);
+        } else {
+            bindTabletViews(itemView);
+        }
+    }
+
+    private void bindSmartphoneViews(View itemView) {
+        itemCardView = itemView.findViewById(R.id.row_item_cardView);
+        backgroundImageView = itemView.findViewById(R.id.iv_row_item_background);
+        iconImageView = itemView.findViewById(R.id.row_icon_imageView);
+        titleTextView = itemView.findViewById(R.id.row_title_textView);
+        descriptionTextView = itemView.findViewById(R.id.row_description_textView);
+        ivArrow = itemView.findViewById(R.id.arrow_icon);
+    }
+
+    private void bindTabletViews(View itemView) {
+        itemCardView = itemView.findViewById(R.id.row_item_cardView);
+        backgroundImageView = itemView.findViewById(R.id.iv_row_item_background);
+        titleTextView = itemView.findViewById(R.id.row_title_textView);
+        descriptionTextView = itemView.findViewById(R.id.row_description_textView);
     }
 
     public void bindData(App app) {
@@ -159,4 +179,28 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
         return updatedBitmap;
     }
+
+
+    public void bindTabletData(App app) {
+
+        titleTextView.setText(!Validator.isEmpty(app.getTitle())
+                ? app.getTitle()
+                : app.getName());
+
+        descriptionTextView.setText(
+                !Validator.isEmpty(app.getVersion())
+                        ? app.getVersion()
+                        : app.getDescription());
+
+
+        // Load background image
+        Glide.with(context)
+                .load(
+                        null != app.getActivity()
+                                ? app.getIcon()
+                                : app.getDrawableIcon())
+                .into(backgroundImageView);
+
+    }
+
 }

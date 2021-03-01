@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="0dp"
+    android:layout_marginEnd="0dp"
+    android:background="@color/default_dark"
+    android:paddingTop="@dimen/medium_margin"
+    android:paddingBottom="@dimen/medium_margin"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/top_fragments_container">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/app_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="64dp"
+        android:paddingVertical="48dp"
+        android:scrollIndicators="bottom"
+        android:scrollbarFadeDuration="@android:integer/config_mediumAnimTime"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbars="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="UnusedAttribute"
+        tools:layout_height="360dp"
+        tools:listitem="@layout/row_main_app_item"
+        tools:scrollbars="horizontal" />
+</androidx.constraintlayout.widget.ConstraintLayout>

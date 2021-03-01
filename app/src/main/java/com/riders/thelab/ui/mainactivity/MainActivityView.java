@@ -22,6 +22,7 @@ import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +37,7 @@ import com.riders.thelab.core.interfaces.ConnectivityListener;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabNetworkManager;
 import com.riders.thelab.core.utils.UIManager;
+import com.riders.thelab.core.views.ItemSnapHelper;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.ui.base.BaseViewImpl;
 import com.riders.thelab.ui.mainactivity.fragment.news.NewsFragment;
@@ -44,6 +46,7 @@ import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -59,6 +62,9 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         implements MainActivityContract.View, MainActivityAppClickListener,
         ConnectivityListener, MenuItem.OnMenuItemClickListener {
 
+    // TAG & Context
+    private MainActivity context;
+
     //Views
     @BindView(R.id.view_pager)
     ViewPager2 viewPager2;
@@ -68,11 +74,11 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     LinearLayout layoutDots;
     @BindView(R.id.app_recyclerView)
     RecyclerView appRecyclerView;
-    TimeFragment timeFragment;
-    WeatherFragment weatherFragment;
-    NewsFragment newsFragment;
-    // TAG & Context
-    private MainActivity context;
+    @BindView(R.id.fragment_time)
+    FragmentContainerView timeFragmentContainerView;
+    @BindView(R.id.fragment_weather)
+    FragmentContainerView weatherFragmentContainerView;
+
     /**
      * The pager adapter, which provides the pages to the view pager widget.
      */
@@ -108,10 +114,12 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         // Attach view with presenter
         getPresenter().attachView(this);
 
-        // Butterknife view binding
-        ButterKnife.bind(this, context.findViewById(android.R.id.content));
-
-        initViews();
+        if (!LabCompatibilityManager.isTablet(context)) {
+            bindSmartphoneViews();
+            initViews();
+        } else {
+            bindTabletViews();
+        }
 
         // Call presenter to fetch data
         getPresenter().getApplications();
@@ -226,10 +234,34 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     // BUTTERKNIFE
     //
     /////////////////////////////////////
-    /*@OnClick(R.id.btn_quit_app)
-    void onClickExitApp() {
-        closeApp();
-    }*/
+    private void bindSmartphoneViews() {
+        // Butterknife view binding
+        ButterKnife.bind(context, viewPager2);
+        ButterKnife.bind(context, toolbar);
+        ButterKnife.bind(context, layoutDots);
+        ButterKnife.bind(context, appRecyclerView);
+    }
+
+    private void bindTabletViews() {
+        ButterKnife.bind(context, timeFragmentContainerView);
+        ButterKnife.bind(context, weatherFragmentContainerView);
+        ButterKnife.bind(context, context.findViewById(R.id.app_recyclerView));
+
+        context.getSupportFragmentManager()
+                .beginTransaction()
+                .add(
+                        R.id.fragment_time,
+                        TimeFragment.newInstance())
+                .commit();
+
+
+        context.getSupportFragmentManager()
+                .beginTransaction()
+                .add(
+                        R.id.fragment_weather,
+                        WeatherFragment.newInstance())
+                .commit();
+    }
 
 
     /////////////////////////////////////
@@ -419,20 +451,30 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         MainActivityAdapter adapter = new MainActivityAdapter(context, applications, this);
 
         LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                new LinearLayoutManager(context,
+                        !LabCompatibilityManager.isTablet(context)
+                                ? LinearLayoutManager.VERTICAL
+                                : LinearLayoutManager.HORIZONTAL, false);
+
+        appRecyclerView = context.findViewById(R.id.app_recyclerView);
+
         appRecyclerView.setLayoutManager(linearLayoutManager);
 
         DividerItemDecoration divider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-        divider.setDrawable(ContextCompat.getDrawable(context, R.drawable.item_separator_view_gradient));
-        appRecyclerView.addItemDecoration(divider);
+        divider.setDrawable(
+                Objects.requireNonNull(
+                        ContextCompat.getDrawable(
+                                context,
+                                R.drawable.item_separator_view_gradient)));
+        if (!LabCompatibilityManager.isTablet(context))
+            appRecyclerView.addItemDecoration(divider);
+        else {
+            ItemSnapHelper helper = new ItemSnapHelper();
+            helper.attachToRecyclerView(appRecyclerView);
+        }
+
         appRecyclerView.setItemAnimator(new DefaultItemAnimator());
         appRecyclerView.setAdapter(adapter);
-
-        /*GridLayoutManager gridLayoutManager
-                = new GridLayoutManager(context, 2);
-        appRecyclerView.setLayoutManager(gridLayoutManager);
-        appRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        appRecyclerView.setAdapter(adapter);*/
     }
 
     @Override
