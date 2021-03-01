@@ -26,12 +26,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
+import java.util.Objects;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -60,7 +62,8 @@ public class TimeFragment extends Fragment {
     private FirebaseStorage storage;
 
 
-    public TimeFragment() {
+    public static TimeFragment newInstance() {
+        return new TimeFragment();
     }
 
     @Override
@@ -110,11 +113,14 @@ public class TimeFragment extends Fragment {
         LocalDate localDate = LocalDate.now();
         tvDate.setText(localDate.format(DateTimeFormatter.ofPattern("EEE, d MMM yyyy")));
 
-        getFirebaseFiles();
-
+        if (!LabCompatibilityManager.isTablet(requireActivity()))
+            getFirebaseFiles();
     }
 
 
+    /**
+     * Fetch Firebase Storage files and load background image from REST database
+     */
     public void getFirebaseFiles() {
         Timber.d("getFirebaseFiles()");
 
@@ -126,7 +132,7 @@ public class TimeFragment extends Fragment {
         mAuth
                 .signInAnonymously()
                 .addOnCompleteListener(
-                        getActivity(),
+                        requireActivity(),
                         new OnCompleteListener<AuthResult>() {
                             @SuppressLint("ThrowableNotAtBeginning")
                             @Override

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.App;
 
 import java.util.List;
@@ -64,8 +65,13 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
 
         final App item = appList.get(position);
 
-        holder.bindData(item);
-        holder.itemCardView.setOnClickListener(
-                view -> listener.onAppItemCLickListener(view, item, holder.getAdapterPosition()));
+        if (!LabCompatibilityManager.isTablet(context)) {
+            holder.bindData(item);
+            holder.itemCardView.setOnClickListener(
+                    view -> listener.onAppItemCLickListener(view, item, holder.getAdapterPosition()));
+        } else {
+            holder.bindTabletData(item);
+        }
+
     }
 }

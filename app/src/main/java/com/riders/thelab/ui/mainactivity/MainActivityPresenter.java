@@ -89,7 +89,7 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
                 }
             }
 
-            getView().onSuccessPackageList(appList);
+            //getView().onSuccessPackageList(appList);
         } else {
             Timber.e("package " + TARGET_PACKAGES + " not found.");
             //installPackage(directory, targetApkFile);

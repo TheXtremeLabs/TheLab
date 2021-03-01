@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/default_dark"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.mainactivity.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/top_fragments_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/detail_backdrop_height"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_time"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/small_margin_tablet"
+            android:background="@drawable/vertical_gradient_view"/>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_weather"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_fragments_container">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/app_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="24dp"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingHorizontal="64dp"
+            android:paddingVertical="32dp"
+            android:scrollIndicators="bottom"
+            android:scrollbarFadeDuration="@android:integer/config_mediumAnimTime"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="horizontal"
+            tools:ignore="UnusedAttribute"
+            tools:layout_height="360dp"
+            tools:listitem="@layout/row_main_app_item"
+            tools:scrollbars="horizontal" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

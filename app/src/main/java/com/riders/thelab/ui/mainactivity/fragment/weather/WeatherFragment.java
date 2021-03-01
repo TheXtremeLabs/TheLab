@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
@@ -64,11 +63,14 @@ public class WeatherFragment extends Fragment {
     LabService service;
     private Context context;
 
-
-    @Inject
     public WeatherFragment() {
         compositeDisposable = new CompositeDisposable();
     }
+
+    public static WeatherFragment newInstance() {
+        return new WeatherFragment();
+    }
+
 
     @Override
     public void onAttach(@NotNull Context context) {
