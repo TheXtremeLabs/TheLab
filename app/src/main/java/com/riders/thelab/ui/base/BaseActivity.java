@@ -13,13 +13,11 @@ public class BaseActivity<V extends BaseView> extends DaggerAppCompatActivity {
     @Inject
     public V view;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         view.onCreate();
     }
-
 
     @Override
     protected void onDestroy() {

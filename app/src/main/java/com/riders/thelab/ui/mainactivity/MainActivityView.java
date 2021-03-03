@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
@@ -12,14 +15,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -30,8 +34,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.interfaces.ConnectivityListener;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
@@ -43,6 +55,7 @@ import com.riders.thelab.ui.base.BaseViewImpl;
 import com.riders.thelab.ui.mainactivity.fragment.news.NewsFragment;
 import com.riders.thelab.ui.mainactivity.fragment.time.TimeFragment;
 import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment;
+import com.riders.thelab.utils.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +63,8 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 
 @SuppressLint({"NonConstantResourceId", "NewApi"})
@@ -66,18 +76,17 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     private MainActivity context;
 
     //Views
-    @BindView(R.id.view_pager)
     ViewPager2 viewPager2;
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.layoutDots)
     LinearLayout layoutDots;
-    @BindView(R.id.app_recyclerView)
     RecyclerView appRecyclerView;
-    @BindView(R.id.fragment_time)
     FragmentContainerView timeFragmentContainerView;
-    @BindView(R.id.fragment_weather)
     FragmentContainerView weatherFragmentContainerView;
+    ConstraintLayout clDetailItem;
+    ShapeableImageView ivItemDetail;
+    MaterialTextView tvTitleDetail;
+    MaterialTextView tvDescriptionDetail;
+    MaterialButton goButton;
 
     /**
      * The pager adapter, which provides the pages to the view pager widget.
@@ -149,7 +158,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     @Override
     public void onPause() {
         Timber.e("onPause()");
-
         if (LabCompatibilityManager.isLollipop()) {
             mConnectivityManager.unregisterNetworkCallback(networkManager);
         }
@@ -193,7 +201,9 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
                 UIManager.showActionInToast(context, "Wifi clicked");
 
                 WifiManager wifiManager =
-                        (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                        (WifiManager) context
+                                .getApplicationContext()
+                                .getSystemService(Context.WIFI_SERVICE);
 
                 if (!LabCompatibilityManager.isAndroid10()) {
                     boolean isWifi = wifiManager.isWifiEnabled();
@@ -228,48 +238,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         }
     }
 
-
-    /////////////////////////////////////
-    //
-    // BUTTERKNIFE
-    //
-    /////////////////////////////////////
-    private void bindSmartphoneViews() {
-        // Butterknife view binding
-        ButterKnife.bind(context, viewPager2);
-        ButterKnife.bind(context, toolbar);
-        ButterKnife.bind(context, layoutDots);
-        ButterKnife.bind(context, appRecyclerView);
-    }
-
-    private void bindTabletViews() {
-        ButterKnife.bind(context, timeFragmentContainerView);
-        ButterKnife.bind(context, weatherFragmentContainerView);
-        ButterKnife.bind(context, context.findViewById(R.id.app_recyclerView));
-
-        context.getSupportFragmentManager()
-                .beginTransaction()
-                .add(
-                        R.id.fragment_time,
-                        TimeFragment.newInstance())
-                .commit();
-
-
-        context.getSupportFragmentManager()
-                .beginTransaction()
-                .add(
-                        R.id.fragment_weather,
-                        WeatherFragment.newInstance())
-                .commit();
-    }
-
-
-    /////////////////////////////////////
-    //
-    // CLASS METHODS
-    //
-    /////////////////////////////////////
-
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
         Timber.e("startActivityForResult()");
@@ -286,6 +254,53 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         getPresenter().detachView();
         context = null;
     }
+
+
+    /////////////////////////////////////
+    //
+    // BUTTERKNIFE
+    //
+    /////////////////////////////////////
+    private void bindSmartphoneViews() {
+        // Butterknife view binding
+        viewPager2 = context.findViewById(R.id.view_pager);
+        toolbar = context.findViewById(R.id.toolbar);
+        layoutDots = context.findViewById(R.id.layoutDots);
+        appRecyclerView = context.findViewById(R.id.app_recyclerView);
+    }
+
+    private void bindTabletViews() {
+        ButterKnife.bind(context, timeFragmentContainerView);
+        ButterKnife.bind(context, weatherFragmentContainerView);
+        ButterKnife.bind(context, context.findViewById(R.id.app_recyclerView));
+
+        context.getSupportFragmentManager()
+                .beginTransaction()
+                .add(
+                        R.id.fragment_time,
+                        TimeFragment.newInstance())
+                .commit();
+
+        context.getSupportFragmentManager()
+                .beginTransaction()
+                .add(
+                        R.id.fragment_weather,
+                        WeatherFragment.newInstance())
+                .commit();
+
+        clDetailItem = context.findViewById(R.id.cl_detail_item);
+        ivItemDetail = context.findViewById(R.id.iv_item_detail);
+        tvTitleDetail = context.findViewById(R.id.tv_title_detail);
+        tvDescriptionDetail = context.findViewById(R.id.tv_description_detail);
+        goButton = context.findViewById(R.id.item_detail_btn);
+    }
+
+
+    /////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    /////////////////////////////////////
 
     // Method to manually check connection status
     private void checkConnection() {
@@ -324,7 +339,11 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         fragmentList.add(new WeatherFragment());
         fragmentList.add(new NewsFragment());
 
-        pagerAdapter = new ViewPager2Adapter(context.getSupportFragmentManager(), context.getLifecycle(), fragmentList);
+        pagerAdapter =
+                new ViewPager2Adapter(
+                        context.getSupportFragmentManager(),
+                        context.getLifecycle(),
+                        fragmentList);
         // set Orientation in your ViewPager2
         viewPager2.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
 
@@ -359,7 +378,8 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
      * Will show and hide the toolbar txtPostTitle on scroll
      */
     private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar = context.findViewById(R.id.collapsing_toolbar);
+        final CollapsingToolbarLayout collapsingToolbar =
+                context.findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(" ");
         AppBarLayout appBarLayout = context.findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
@@ -398,6 +418,9 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
      * https://stackoverflow.com/questions/10692755/how-do-i-hide-a-menu-item-in-the-actionbar#:~:text=The%20best%20way%20to%20hide,menu%20inside%20the%20same%20group.&text=Then%2C%20on%20your%20activity%20(preferable,visibility%20to%20false%20or%20true.
      */
     private void initToolbar() {
+
+        toolbar = context.findViewById(R.id.toolbar);
+
         toolbar.inflateMenu(R.menu.menu_main);
         this.menu = toolbar.getMenu();
         hideMenuButtons();
@@ -420,6 +443,65 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
             menu.setGroupVisible(R.id.menu_main_group, false); // Or true to be visible
     }
 
+    private void showItemDetail(App app) {
+
+        if (View.INVISIBLE == clDetailItem.getVisibility())
+            clDetailItem.setVisibility(View.VISIBLE);
+
+        Glide.with(context)
+                .load(
+                        (0 != app.getIcon())
+                                ? app.getIcon()
+                                : app.getDrawableIcon())
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource,
+                                                   boolean isFirstResource) {
+
+                        if (goButton.getVisibility() == View.GONE) {
+                            goButton.setVisibility(View.VISIBLE);
+                        }
+
+                        if (0 != app.getIcon() && app.getTitle().equals("Palette")) {
+                            Bitmap myBitmap = ((BitmapDrawable) resource).getBitmap();
+
+                            Bitmap newBitmap = UIManager.addGradientToImageView(context, myBitmap);
+                            ivItemDetail.setImageDrawable(
+                                    new BitmapDrawable(context.getResources(), newBitmap));
+                            return true;
+                        }
+
+                        if (0 != app.getIcon() && app.getTitle().equals("WIP")) {
+                            ivItemDetail.setImageDrawable(
+                                    ContextCompat.getDrawable(context, R.drawable.logo_testing));
+                            goButton.setVisibility(View.GONE);
+                            return true;
+                        }
+
+                        return false;
+                    }
+                })
+                .into(ivItemDetail);
+
+        tvTitleDetail.setText(!Validator.isEmpty(app.getTitle())
+                ? app.getTitle()
+                : app.getName());
+
+        tvDescriptionDetail.setText(
+                !Validator.isEmpty(app.getVersion())
+                        ? app.getVersion()
+                        : app.getDescription());
+
+    }
+
     /////////////////////////////////////
     //
     // PRESENTER
@@ -427,26 +509,15 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     /////////////////////////////////////
     @Override
     public void showLoading() {
-
-        //progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-
-        //progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void onSuccessPackageList(List<App> applications) {
         Timber.d("onSuccessPackageList()");
-
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-        View childLayout =
-                inflater.inflate(
-                        R.layout.content_no_app_found,
-                        context.findViewById(R.id.content_loader));
-        //parentLayout.addView(childLayout);
 
         MainActivityAdapter adapter = new MainActivityAdapter(context, applications, this);
 
@@ -493,30 +564,16 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
         Timber.d("Clicked item : " + item + ", at position : " + position);
 
-        if (null != item.getPackageName()) {
-            Timber.d("launchIntentForPackage(%s)", item.getPackageName());
-
-            // Just use these following two lines,
-            // so you can launch any installed application whose package name is known:
-            getPresenter().launchIntentForPackage(item.getPackageName());
+        if (!LabCompatibilityManager.isTablet(context)) {
+            getPresenter().launchActivityOrPackage(item);
         } else {
-
-            // Prevent app from crashing if you click on WIP item
-            if (null != item.getActivity()) {
-                Timber.d("launchActivity(%s)", item.getActivity().getSimpleName());
-
-                getPresenter().launchActivity(item.getActivity());
-            } else {
-                // Just Log wip item
-                Timber.e("Cannot launch this activity : %s", item.toString());
-            }
+            showItemDetail(item);
+            goButton.setOnClickListener(v -> getPresenter().launchActivityOrPackage(item));
         }
     }
 
-
     @Override
     public void onConnected() {
-
         UIManager.showConnectionStatusInSnackBar(context, true);
 
         updateToolbarConnectionIcon(true);
@@ -534,7 +591,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         Timber.e("updateToolbarConnectionIcon, is connected : %s", isConnected);
 
         context.runOnUiThread(() -> {
-
             if (null != menu)
                 menu
                         .getItem(0)

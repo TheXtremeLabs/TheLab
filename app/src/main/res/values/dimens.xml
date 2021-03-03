@@ -34,6 +34,7 @@
     <dimen name="big_medium_margin_tablet">48dp</dimen>
     <dimen name="extra_big_margin_tablet">64dp</dimen>
     <dimen name="ultra_big_margin_tablet">72dp</dimen>
+    <dimen name="ultra_ultra_big_margin_tablet">96dp</dimen>
 
     <!-- CardView -->
     <!-- Default Card View Dimens -->
