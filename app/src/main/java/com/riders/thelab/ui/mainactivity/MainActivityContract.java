@@ -65,6 +65,8 @@ public interface MainActivityContract {
          */
         void getApplications();
 
+        void launchActivityOrPackage(App item);
+
         void launchIntentForPackage(String targetPackage);
 
         void launchActivity(Class<? extends Activity> targetActivity);

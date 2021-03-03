@@ -3,12 +3,6 @@ package com.riders.thelab.ui.mainactivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.LinearGradient;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -28,6 +22,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.utils.Validator;
 
@@ -104,7 +99,7 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
                         if (0 != app.getIcon() && app.getTitle().equals("Palette")) {
                             Bitmap myBitmap = ((BitmapDrawable) resource).getBitmap();
 
-                            Bitmap newBitmap = addGradient(myBitmap);
+                            Bitmap newBitmap = UIManager.addGradientToImageView(context, myBitmap);
                             iconImageView.setImageDrawable(
                                     new BitmapDrawable(context.getResources(), newBitmap));
                             return true;
@@ -122,15 +117,7 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
                 })
                 .into(iconImageView);
 
-        titleTextView.setText(!Validator.isEmpty(app.getTitle())
-                ? app.getTitle()
-                : app.getName());
-
-        descriptionTextView.setText(
-                !Validator.isEmpty(app.getVersion())
-                        ? app.getVersion()
-                        : app.getDescription());
-
+        bindTitleAndDescription(app);
 
         // Load background image
         Glide.with(context)
@@ -139,50 +126,21 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
                                 ? app.getIcon()
                                 : app.getDrawableIcon())
                 .into(backgroundImageView);
-
     }
-
-
-    /**
-     * Reference : https://stackoverflow.com/questions/37775675/imageview-set-color-filter-to-gradient
-     *
-     * @param originalBitmap
-     * @return
-     */
-    public Bitmap addGradient(Bitmap originalBitmap) {
-        int width = originalBitmap.getWidth();
-        int height = originalBitmap.getHeight();
-        Bitmap updatedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(updatedBitmap);
-
-        canvas.drawBitmap(originalBitmap, 0, 0, null);
-
-        Paint paint = new Paint();
-
-        int[] colors = {
-                ContextCompat.getColor(context, R.color.admin_splash_bg),
-                ContextCompat.getColor(context, R.color.adminDashboardColorPrimary),
-                ContextCompat.getColor(context, R.color.adminDashboardSelectedItemAccent),
-                ContextCompat.getColor(context, R.color.multiPaneColorPrimaryDark),
-        };
-
-        LinearGradient shader =
-                new LinearGradient(
-                        0, 0,
-                        0, height,
-                        colors,
-                        null,
-                        Shader.TileMode.CLAMP);
-        paint.setShader(shader);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawRect(0, 0, width, height, paint);
-
-        return updatedBitmap;
-    }
-
 
     public void bindTabletData(App app) {
+        // Load background image
+        Glide.with(context)
+                .load(
+                        null != app.getActivity()
+                                ? app.getIcon()
+                                : app.getDrawableIcon())
+                .into(backgroundImageView);
 
+        bindTitleAndDescription(app);
+    }
+
+    public void bindTitleAndDescription(App app) {
         titleTextView.setText(!Validator.isEmpty(app.getTitle())
                 ? app.getTitle()
                 : app.getName());
@@ -191,15 +149,6 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
                 !Validator.isEmpty(app.getVersion())
                         ? app.getVersion()
                         : app.getDescription());
-
-
-        // Load background image
-        Glide.with(context)
-                .load(
-                        null != app.getActivity()
-                                ? app.getIcon()
-                                : app.getDrawableIcon())
-                .into(backgroundImageView);
 
     }
 

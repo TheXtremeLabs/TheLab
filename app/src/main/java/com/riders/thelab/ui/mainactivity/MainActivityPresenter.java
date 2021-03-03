@@ -52,6 +52,29 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
 
     }
 
+    @Override
+    public void launchActivityOrPackage(App item) {
+
+        if (null != item.getPackageName()) {
+            Timber.d("launchIntentForPackage(%s)", item.getPackageName());
+
+            // Just use these following two lines,
+            // so you can launch any installed application whose package name is known:
+            launchIntentForPackage(item.getPackageName());
+        } else {
+
+            // Prevent app from crashing if you click on WIP item
+            if (null != item.getActivity()) {
+                Timber.d("launchActivity(%s)", item.getActivity().getSimpleName());
+
+                launchActivity(item.getActivity());
+            } else {
+                // Just Log wip item
+                Timber.e("Cannot launch this activity : %s", item.toString());
+            }
+        }
+    }
+
     /**
      * Get all packages and check if the returned list contains the target package
      */
