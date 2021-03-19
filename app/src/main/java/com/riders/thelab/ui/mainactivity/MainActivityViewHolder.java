@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,24 +28,19 @@ import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.utils.Validator;
 
-import butterknife.BindView;
-
 @SuppressLint({"UnknownNullness", "NonConstantResourceId"})
 public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
     private final Context context;
 
-    @BindView(R.id.row_item_cardView)
+    public RelativeLayout itemRelativeLayout;
+    LinearLayout backgroundLinearLayout;
+
     public MaterialCardView itemCardView;
-    @BindView(R.id.iv_row_item_background)
     ShapeableImageView backgroundImageView;
-    @BindView(R.id.row_icon_imageView)
     ShapeableImageView iconImageView;
-    @BindView(R.id.row_title_textView)
     MaterialTextView titleTextView;
-    @BindView(R.id.row_description_textView)
     MaterialTextView descriptionTextView;
-    @BindView(R.id.arrow_icon)
     ShapeableImageView ivArrow;
 
 
@@ -69,6 +66,8 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void bindTabletViews(View itemView) {
+        itemRelativeLayout = itemView.findViewById(R.id.card_frame_layout);
+        backgroundLinearLayout = itemView.findViewById(R.id.ll_card_selected_background);
         itemCardView = itemView.findViewById(R.id.row_item_cardView);
         backgroundImageView = itemView.findViewById(R.id.iv_row_item_background);
         titleTextView = itemView.findViewById(R.id.row_title_textView);
@@ -151,5 +150,4 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
                         : app.getDescription());
 
     }
-
 }

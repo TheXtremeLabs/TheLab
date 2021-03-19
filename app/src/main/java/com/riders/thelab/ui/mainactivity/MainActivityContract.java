@@ -16,9 +16,6 @@ public interface MainActivityContract {
 
     interface View extends BaseView {
 
-        void onSaveInstanceState(Bundle savedInstanceState);
-
-        void onRestoreInstanceState(Bundle savedInstanceState);
 
         void onStart();
 
