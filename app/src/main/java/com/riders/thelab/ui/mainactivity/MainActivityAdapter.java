@@ -1,14 +1,13 @@
 package com.riders.thelab.ui.mainactivity;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.riders.thelab.R;
@@ -83,16 +82,11 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
 
         if (position == lastPosition) {
             // Item selected
-            holder.itemCardView.setAlpha(1f);
+            holder.itemRelativeLayout.setAlpha(1f);
 
-            holder.itemCardView.setStrokeWidth((int) 16f);
-            holder.itemCardView.setStrokeColor(
-                    ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                    context,
-                                    android.R.color.holo_blue_light)));
+            holder.backgroundLinearLayout.setVisibility(View.VISIBLE);
 
-            holder.itemCardView.animate()
+            holder.itemRelativeLayout.animate()
                     .setDuration(500)
                     .scaleX(1.25f)
                     .scaleY(1.25f)
@@ -101,15 +95,17 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
 
         } else {
             if (lastPosition == -1) // Check first launch nothing is selected
-                holder.itemCardView.setAlpha(1f);
+                holder.itemRelativeLayout.setAlpha(1f);
 
             else {
                 // Item not selected
-                holder.itemCardView.setAlpha(0.5f);
-                holder.itemCardView.setStrokeWidth((int) 0f);
+                holder.backgroundLinearLayout.setVisibility(View.INVISIBLE);
 
-                holder.itemCardView.setScaleX(1f);
-                holder.itemCardView.setScaleY(1f);
+                holder.itemRelativeLayout.setAlpha(0.5f);
+//                holder.frameLayout.setStrokeWidth((int) 0f);
+
+                holder.itemRelativeLayout.setScaleX(1f);
+                holder.itemRelativeLayout.setScaleY(1f);
                 holder.itemCardView.setCardElevation(0f);
             }
         }

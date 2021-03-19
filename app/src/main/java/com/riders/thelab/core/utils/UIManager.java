@@ -216,23 +216,23 @@ public class UIManager {
      * @return
      */
     public static Bitmap addGradientToImageView(Context context, Bitmap originalBitmap) {
-        int width = originalBitmap.getWidth();
-        int height = originalBitmap.getHeight();
-        Bitmap updatedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(updatedBitmap);
+        final int width = originalBitmap.getWidth();
+        final int height = originalBitmap.getHeight();
+        final Bitmap updatedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(updatedBitmap);
 
         canvas.drawBitmap(originalBitmap, 0, 0, null);
 
         Paint paint = new Paint();
 
-        int[] colors = {
+        final int[] colors = {
                 ContextCompat.getColor(context, R.color.admin_splash_bg),
                 ContextCompat.getColor(context, R.color.adminDashboardColorPrimary),
                 ContextCompat.getColor(context, R.color.adminDashboardSelectedItemAccent),
                 ContextCompat.getColor(context, R.color.multiPaneColorPrimaryDark),
         };
 
-        LinearGradient shader =
+        final LinearGradient shader =
                 new LinearGradient(
                         0, 0,
                         0, height,

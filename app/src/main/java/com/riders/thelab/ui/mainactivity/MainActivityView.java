@@ -12,7 +12,6 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Html;
 import android.view.Menu;
@@ -76,17 +75,17 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     private MainActivity context;
 
     //Views
-    ViewPager2 viewPager2;
-    Toolbar toolbar;
-    LinearLayout layoutDots;
-    RecyclerView appRecyclerView;
-    FragmentContainerView timeFragmentContainerView;
-    FragmentContainerView weatherFragmentContainerView;
-    ConstraintLayout clDetailItem;
-    ShapeableImageView ivItemDetail;
-    MaterialTextView tvTitleDetail;
-    MaterialTextView tvDescriptionDetail;
-    MaterialButton goButton;
+    private ViewPager2 viewPager2;
+    private Toolbar toolbar;
+    private LinearLayout layoutDots;
+    private RecyclerView appRecyclerView;
+    private FragmentContainerView timeFragmentContainerView;
+    private FragmentContainerView weatherFragmentContainerView;
+    private ConstraintLayout clDetailItem;
+    private ShapeableImageView ivItemDetail;
+    private MaterialTextView tvTitleDetail;
+    private MaterialTextView tvDescriptionDetail;
+    private MaterialButton goButton;
 
     /**
      * The pager adapter, which provides the pages to the view pager widget.
@@ -145,15 +144,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-
-    }
 
     @Override
     public void onPause() {
