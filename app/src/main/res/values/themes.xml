@@ -61,6 +61,17 @@
     </style>
 
 
+    <!-- Main App Item -->
+    <style name="AppItemImageViewShapeTablet" parent="">
+        <!-- Top Left -->
+        <item name="cornerSizeTopLeft">16dp</item>
+        <item name="cornerFamilyTopLeft">rounded</item>
+
+        <item name="cornerSizeBottomLeft">16dp</item>
+        <item name="cornerFamilyBottomLeft">rounded</item>
+    </style>
+
+
     <!-- Youtube Item -->
     <style name="YoutubeItemCardViewShape" parent="">
         <!-- Top Left -->

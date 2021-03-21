@@ -67,18 +67,6 @@ public class MainActivity extends BaseActivity<MainActivityView>
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        view.onSaveInstanceState(outState);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        view.onRestoreInstanceState(savedInstanceState);
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
     protected void onPause() {
         view.onPause();
         super.onPause();

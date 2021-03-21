@@ -3,7 +3,14 @@ package com.riders.thelab.core.utils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Shader;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -13,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
@@ -200,4 +208,42 @@ public class UIManager {
 
         return color;
     }
+
+    /**
+     * Reference : https://stackoverflow.com/questions/37775675/imageview-set-color-filter-to-gradient
+     *
+     * @param originalBitmap
+     * @return
+     */
+    public static Bitmap addGradientToImageView(Context context, Bitmap originalBitmap) {
+        final int width = originalBitmap.getWidth();
+        final int height = originalBitmap.getHeight();
+        final Bitmap updatedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(updatedBitmap);
+
+        canvas.drawBitmap(originalBitmap, 0, 0, null);
+
+        Paint paint = new Paint();
+
+        final int[] colors = {
+                ContextCompat.getColor(context, R.color.admin_splash_bg),
+                ContextCompat.getColor(context, R.color.adminDashboardColorPrimary),
+                ContextCompat.getColor(context, R.color.adminDashboardSelectedItemAccent),
+                ContextCompat.getColor(context, R.color.multiPaneColorPrimaryDark),
+        };
+
+        final LinearGradient shader =
+                new LinearGradient(
+                        0, 0,
+                        0, height,
+                        colors,
+                        null,
+                        Shader.TileMode.CLAMP);
+        paint.setShader(shader);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawRect(0, 0, width, height, paint);
+
+        return updatedBitmap;
+    }
+
 }
