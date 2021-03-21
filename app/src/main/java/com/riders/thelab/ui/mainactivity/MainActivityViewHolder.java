@@ -3,15 +3,11 @@ package com.riders.thelab.ui.mainactivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.LinearGradient;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,28 +23,24 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.utils.Validator;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 @SuppressLint({"UnknownNullness", "NonConstantResourceId"})
 public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
     private final Context context;
 
-    @BindView(R.id.row_item_cardView)
+    public RelativeLayout itemRelativeLayout;
+    LinearLayout backgroundLinearLayout;
+
     public MaterialCardView itemCardView;
-    @BindView(R.id.iv_row_item_background)
     ShapeableImageView backgroundImageView;
-    @BindView(R.id.row_icon_imageView)
     ShapeableImageView iconImageView;
-    @BindView(R.id.row_title_textView)
     MaterialTextView titleTextView;
-    @BindView(R.id.row_description_textView)
     MaterialTextView descriptionTextView;
-    @BindView(R.id.arrow_icon)
     ShapeableImageView ivArrow;
 
 
@@ -57,7 +49,29 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
         this.context = context;
 
-        ButterKnife.bind(this, itemView);
+        if (!LabCompatibilityManager.isTablet(context)) {
+            bindSmartphoneViews(itemView);
+        } else {
+            bindTabletViews(itemView);
+        }
+    }
+
+    private void bindSmartphoneViews(View itemView) {
+        itemCardView = itemView.findViewById(R.id.row_item_cardView);
+        backgroundImageView = itemView.findViewById(R.id.iv_row_item_background);
+        iconImageView = itemView.findViewById(R.id.row_icon_imageView);
+        titleTextView = itemView.findViewById(R.id.row_title_textView);
+        descriptionTextView = itemView.findViewById(R.id.row_description_textView);
+        ivArrow = itemView.findViewById(R.id.arrow_icon);
+    }
+
+    private void bindTabletViews(View itemView) {
+        itemRelativeLayout = itemView.findViewById(R.id.card_frame_layout);
+        backgroundLinearLayout = itemView.findViewById(R.id.ll_card_selected_background);
+        itemCardView = itemView.findViewById(R.id.row_item_cardView);
+        backgroundImageView = itemView.findViewById(R.id.iv_row_item_background);
+        titleTextView = itemView.findViewById(R.id.row_title_textView);
+        descriptionTextView = itemView.findViewById(R.id.row_description_textView);
     }
 
     public void bindData(App app) {
@@ -84,7 +98,7 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
                         if (0 != app.getIcon() && app.getTitle().equals("Palette")) {
                             Bitmap myBitmap = ((BitmapDrawable) resource).getBitmap();
 
-                            Bitmap newBitmap = addGradient(myBitmap);
+                            Bitmap newBitmap = UIManager.addGradientToImageView(context, myBitmap);
                             iconImageView.setImageDrawable(
                                     new BitmapDrawable(context.getResources(), newBitmap));
                             return true;
@@ -102,6 +116,30 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
                 })
                 .into(iconImageView);
 
+        bindTitleAndDescription(app);
+
+        // Load background image
+        Glide.with(context)
+                .load(
+                        null != app.getActivity()
+                                ? app.getIcon()
+                                : app.getDrawableIcon())
+                .into(backgroundImageView);
+    }
+
+    public void bindTabletData(App app) {
+        // Load background image
+        Glide.with(context)
+                .load(
+                        null != app.getActivity()
+                                ? app.getIcon()
+                                : app.getDrawableIcon())
+                .into(backgroundImageView);
+
+        bindTitleAndDescription(app);
+    }
+
+    public void bindTitleAndDescription(App app) {
         titleTextView.setText(!Validator.isEmpty(app.getTitle())
                 ? app.getTitle()
                 : app.getName());
@@ -111,52 +149,5 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
                         ? app.getVersion()
                         : app.getDescription());
 
-
-        // Load background image
-        Glide.with(context)
-                .load(
-                        null != app.getActivity()
-                                ? app.getIcon()
-                                : app.getDrawableIcon())
-                .into(backgroundImageView);
-
-    }
-
-
-    /**
-     * Reference : https://stackoverflow.com/questions/37775675/imageview-set-color-filter-to-gradient
-     *
-     * @param originalBitmap
-     * @return
-     */
-    public Bitmap addGradient(Bitmap originalBitmap) {
-        int width = originalBitmap.getWidth();
-        int height = originalBitmap.getHeight();
-        Bitmap updatedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(updatedBitmap);
-
-        canvas.drawBitmap(originalBitmap, 0, 0, null);
-
-        Paint paint = new Paint();
-
-        int[] colors = {
-                ContextCompat.getColor(context, R.color.admin_splash_bg),
-                ContextCompat.getColor(context, R.color.adminDashboardColorPrimary),
-                ContextCompat.getColor(context, R.color.adminDashboardSelectedItemAccent),
-                ContextCompat.getColor(context, R.color.multiPaneColorPrimaryDark),
-        };
-
-        LinearGradient shader =
-                new LinearGradient(
-                        0, 0,
-                        0, height,
-                        colors,
-                        null,
-                        Shader.TileMode.CLAMP);
-        paint.setShader(shader);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawRect(0, 0, width, height, paint);
-
-        return updatedBitmap;
     }
 }

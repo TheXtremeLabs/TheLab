@@ -16,9 +16,6 @@ public interface MainActivityContract {
 
     interface View extends BaseView {
 
-        void onSaveInstanceState(Bundle savedInstanceState);
-
-        void onRestoreInstanceState(Bundle savedInstanceState);
 
         void onStart();
 
@@ -64,6 +61,8 @@ public interface MainActivityContract {
          * Retrieve applications from both compiled classes and packages installed on the devices
          */
         void getApplications();
+
+        void launchActivityOrPackage(App item);
 
         void launchIntentForPackage(String targetPackage);
 
