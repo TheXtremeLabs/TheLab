@@ -262,6 +262,9 @@
     <!-- Youtube -->
     <string name="activity_title_youtube_like">Youtube Like Activity</string>
     <string name="recycler_detail_btn_placeholder">DETAIL</string>
+    <string name="thumb_transition_name">yt_thumb</string>
+    <string name="title_transition_name">yt_title</string>
+    <string name="description_transition_name">yt_desc</string>
 
     <!-- Floating View -->
     <string name="activity_title_floating_view">Floating Widget</string>
