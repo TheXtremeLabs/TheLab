@@ -8,10 +8,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
 import androidx.palette.graphics.Palette;
 
 import com.bumptech.glide.Glide;
@@ -32,7 +33,7 @@ import timber.log.Timber;
 
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
-@SuppressLint("NonConstantResourceId")
+@SuppressLint({"NonConstantResourceId", "NewApi"})
 public class YoutubeLikeDetailActivity extends SimpleActivity {
 
     //Bundle Arguments
@@ -50,6 +51,9 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Window w = getWindow();
+        w.setAllowEnterTransitionOverlap(true);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
 
         /*
@@ -62,21 +66,18 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
 
         setContentView(R.layout.activity_youtube_detail);
 
+        supportPostponeEnterTransition();
         mContext = this;
-
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ButterKnife.bind(this);
 
         getBundle();
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        loadContent();
+        if (null != item) {
+            loadContent();
+        } else {
+            Timber.e("Cannot load content");
+        }
     }
 
     private void getBundle() {
@@ -88,22 +89,18 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
             Timber.e("get the data one by one");
 
             item = extras.getParcelable(VIDEO_OBJECT_ARG);
-
-            getSupportActionBar().setTitle(item.getName());
         }
     }
 
     private void loadContent() {
 
+        getSupportActionBar().setTitle(item.getName());
+
         //Load the background  thumb image
         Glide.with(this)
                 .load(item.getImageThumb())
-                .apply(bitmapTransform(new BlurTransformation(25, 3)))
+                .apply(bitmapTransform(new BlurTransformation(5, 3)))
                 .into(imageThumbBlurred);
-
-//        ImageManagerUtils.setBlurredImage(this, imageThumbBlurred, 5);
-
-        ViewCompat.setTransitionName(imageThumb, "thumb");
 
 
         //Load the thumb image clicked before
@@ -113,6 +110,7 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model,
                                                 Target<Drawable> target, boolean isFirstResource) {
+                        supportStartPostponedEnterTransition();
                         return false;
                     }
 
@@ -120,6 +118,8 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
                     public boolean onResourceReady(Drawable resource, Object model,
                                                    Target<Drawable> target, DataSource dataSource,
                                                    boolean isFirstResource) {
+
+                        supportStartPostponedEnterTransition();
 
                         //retrouver le bitmap téléchargé par Picasso
                         Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
@@ -134,7 +134,6 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
                                 generatePalette(palette);
                             }
                         });
-
                         return false;
                     }
                 })
@@ -170,5 +169,24 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
             }
 
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                supportFinishAfterTransition();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        finishAfterTransition();
     }
 }
