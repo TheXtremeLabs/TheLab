@@ -14,9 +14,9 @@ principles.
 
 ## Related Apps
 
-***Material Design*** : [a link](https://github.com/MichaelStH/MaterialDesignFeatures)
-***Testing*** : [a link](https://github.com/MichaelStH/Testing/tree/develop)
-***TheKoLab*** : [a link](https://github.com/LVMVRQUXL/thekolab/tree/master) (Repository created and maintained by LAMARQUE Loïc (*@LVMVRQUXL* on *Github*))
+* ***Material Design*** : [https://github.com/MichaelStH/MaterialDesignFeatures](https://github.com/MichaelStH/MaterialDesignFeatures)
+* ***Testing*** : [https://github.com/MichaelStH/Testing/tree/develop](https://github.com/MichaelStH/Testing/tree/develop)
+* ***TheKoLab*** : [https://github.com/LVMVRQUXL/thekolab/tree/master](https://github.com/LVMVRQUXL/thekolab/tree/master) (Repository created and maintained by LAMARQUE Loïc (*@LVMVRQUXL* on *Github*))
 
 ## Authors
 
