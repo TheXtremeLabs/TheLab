@@ -73,7 +73,6 @@
     </style>
 
 
-
     <!-- Youtube Item -->
     <style name="YoutubeItemCardViewShape" parent="">
         <!-- Top Left -->
@@ -195,7 +194,14 @@
         <item name="colorAccent">@color/swipeDownColorAccent</item>
 
         <!-- enable window content transitions -->
-        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
+        <item name="android:windowActivityTransitions" tools:ignore="NewApi">true</item>
+
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition" tools:ignore="NewApi">@transition/explode</item>
+        <item name="android:windowExitTransition" tools:ignore="NewApi">@transition/explode</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowContentTransitions" tools:ignore="NewApi">true</item>
         <!-- specify shared element transitions -->
         <item name="android:windowSharedElementEnterTransition" tools:ignore="NewApi">
             @transition/change_image_transform
@@ -203,7 +209,9 @@
         <item name="android:windowSharedElementExitTransition" tools:ignore="NewApi">
             @transition/change_image_transform
         </item>
+
     </style>
+
 
     <!-- Transition Theme -->
     <style name="TransitionTheme" parent="TransitionStyleTheme.Base" />

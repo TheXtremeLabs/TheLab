@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.Video;
 import com.riders.thelab.ui.base.BaseViewImpl;
@@ -128,7 +129,12 @@ public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
     }
 
     @Override
-    public void onYoutubeItemClicked(@NonNull ShapeableImageView view, Video video, int position) {
-        getPresenter().onYoutubeItemClicked(view, video, position);
+    public void onYoutubeItemClicked(
+            @NonNull ShapeableImageView thumbShapeableImageView,
+            @NonNull MaterialTextView titleTextView,
+            @NonNull MaterialTextView descriptionTextView,
+            Video video,
+            int position) {
+        getPresenter().onYoutubeItemClicked(thumbShapeableImageView, titleTextView, descriptionTextView, video, position);
     }
 }

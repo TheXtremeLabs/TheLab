@@ -69,6 +69,8 @@
                 android:maxLines="1"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:transitionName="@string/title_transition_name"
+                tools:targetApi="lollipop"
                 tools:text="50 Cent - Hate It Or Love It"
                 tools:textColor="@color/white" />
 
@@ -84,6 +86,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:padding="@dimen/medium_margin"
+                android:transitionName="@string/description_transition_name"
+                tools:targetApi="lollipop"
                 tools:text="@string/lorem_ipsum"
                 tools:textColor="@color/white" />
         </LinearLayout>
@@ -101,17 +105,20 @@
         android:layout_width="@dimen/thumb_width_content"
         android:layout_height="@dimen/thumb_height_content"
         android:layout_marginStart="@dimen/ultra_big_margin"
+        android:layout_marginLeft="@dimen/ultra_big_margin"
         android:adjustViewBounds="true"
         android:background="@color/oil"
         android:contentDescription="thumb_icon"
         android:elevation="@dimen/small_margin"
         android:fitsSystemWindows="true"
         android:scaleType="centerCrop"
+        android:transitionName="@string/thumb_transition_name"
         app:layout_constraintBottom_toBottomOf="@id/guideline_image_view"
         app:layout_constraintStart_toStartOf="parent"
         app:strokeColor="@color/oil"
         tools:ignore="HardcodedText"
-        tools:src="@drawable/image7" />
+        tools:src="@drawable/image7"
+        tools:targetApi="lollipop" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

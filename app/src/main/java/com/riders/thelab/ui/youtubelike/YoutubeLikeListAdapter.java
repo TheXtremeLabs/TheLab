@@ -74,6 +74,8 @@ public class YoutubeLikeListAdapter extends RecyclerView.Adapter<YoutubeLikeView
         holder.itemCardView.setOnClickListener(v ->
                 listener.onYoutubeItemClicked(
                         holder.getImageView(),
+                        holder.getNameTextView(),
+                        holder.getDescriptionView(),
                         itemYoutubeVideo,
                         holder.getAdapterPosition()));
 
