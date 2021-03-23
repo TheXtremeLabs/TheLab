@@ -15,9 +15,9 @@ def buildDateTime =
                 : new Date().format('yyMMddHHmm').toInteger()
 
 // version information
-def versionMajor = 3
-def versionMinor = 7
-def versionPatch = 5
+def versionMajor = 4
+def versionMinor = 3
+def versionPatch = 0
 
 
 android {
@@ -223,8 +223,6 @@ dependencies {
     // Tests Dependencies
     /////////////////////////////
     testImplementation rootProject.ext.testDependencies.junit
-
-
     androidTestImplementation rootProject.ext.testDependencies.testJUnit
     androidTestImplementation rootProject.ext.testDependencies.espresso
 }

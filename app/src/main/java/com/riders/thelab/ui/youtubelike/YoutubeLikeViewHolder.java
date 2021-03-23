@@ -47,6 +47,12 @@ public class YoutubeLikeViewHolder extends RecyclerView.ViewHolder {
     public ShapeableImageView getImageView() {
         return this.imageThumb;
     }
+    public MaterialTextView getNameTextView() {
+        return this.nameTextView;
+    }
+    public MaterialTextView getDescriptionView() {
+        return this.descriptionTextView;
+    }
 
     public void setImage(String imageURL) {
         Glide.with(context)

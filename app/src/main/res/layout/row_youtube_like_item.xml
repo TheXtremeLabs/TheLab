@@ -40,6 +40,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:transitionName="thumb"
+                tools:ignore="UnusedAttribute"
                 tools:src="@drawable/youtube_icon_like" />
 
         </RelativeLayout>

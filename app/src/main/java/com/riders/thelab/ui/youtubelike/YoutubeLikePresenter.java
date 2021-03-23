@@ -3,14 +3,17 @@ package com.riders.thelab.ui.youtubelike;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
+import androidx.core.util.Pair;
 
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabNetworkManager;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.model.Video;
@@ -85,31 +88,45 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
     }
 
     @Override
-    public void onYoutubeItemClicked(@NonNull ShapeableImageView view, Video video, int position) {
-        Timber.d("onYoutubeItemClicked()");
+    public void onYoutubeItemClicked(
+            @NonNull ShapeableImageView thumbShapeableImageView,
+            @NonNull MaterialTextView titleTextView,
+            @NonNull MaterialTextView descriptionTextView,
+            Video video,
+            int position) {
 
         Timber.e("Click on : " + position + ", " + video.getName());
 
-        Intent intent = new Intent(activity, YoutubeLikeDetailActivity.class);
+        // Variables
+        ActivityOptionsCompat options = null;
 
+        Pair<View, String> sePairThumb;
+        Pair<View, String> sePairTitle;
+        Pair<View, String> sePairDescription;
+
+
+        Intent intent = new Intent(activity, YoutubeLikeDetailActivity.class);
         intent.putExtra(YoutubeLikeDetailActivity.VIDEO_OBJECT_ARG, video);
 
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-            // Apply activity transition
-            ActivityOptionsCompat options =
+            sePairThumb = Pair.create(thumbShapeableImageView, activity.getString(R.string.thumb_transition_name));
+            sePairTitle = Pair.create(titleTextView, activity.getString(R.string.title_transition_name));
+            sePairDescription = Pair.create(descriptionTextView, activity.getString(R.string.description_transition_name));
+
+            options =
                     ActivityOptionsCompat.
                             makeSceneTransitionAnimation(
                                     activity,
-                                    view,
-                                    ViewCompat.getTransitionName(view));
-
-            navigator.callYoutubeDetailActivityWithTransition(intent, options.toBundle());
-
-        } else {
-            // Swap without transition
-            navigator.callYoutubeDetailActivity(intent);
+                                    sePairThumb, sePairTitle, sePairDescription);
         }
+
+        navigator.callYoutubeDetailActivity(
+                intent,
+                !LabCompatibilityManager.isLollipop()
+                        ? null
+                        : options.toBundle(),
+                LabCompatibilityManager.isLollipop());
     }
 }
