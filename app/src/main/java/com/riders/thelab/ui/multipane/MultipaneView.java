@@ -28,7 +28,6 @@ public class MultipaneView extends BaseViewImpl<MultipanePresenter>
     @BindView(R.id.rv_multi_pane)
     RecyclerView recyclerView;
     private MultipaneActivity context;
-    //    private List<Movie> movieList;
     private MoviesAdapter mAdapter;
 
     @Inject
