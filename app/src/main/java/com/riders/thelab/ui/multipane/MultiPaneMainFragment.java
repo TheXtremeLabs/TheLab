@@ -26,6 +26,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
 public class MultiPaneMainFragment extends Fragment
@@ -35,6 +36,7 @@ public class MultiPaneMainFragment extends Fragment
 
     @BindView(R.id.rv_multi_pane_main)
     RecyclerView recyclerView;
+
     private Unbinder unbinder;
 
     private List<Movie> movieList;
@@ -45,14 +47,12 @@ public class MultiPaneMainFragment extends Fragment
      */
     private OnItemSelectedListener listener;
 
-
     public interface OnItemSelectedListener {
-        void onMovieItemSelected(String movieTitle, String movieGenre, String movieYear, String url);
+        void onMovieItemSelected(Movie movie);
     }
 
 
     public static MultiPaneMainFragment newInstance() {
-
         Bundle args = new Bundle();
 
         MultiPaneMainFragment fragment = new MultiPaneMainFragment();
@@ -103,6 +103,31 @@ public class MultiPaneMainFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        fetchData();
+        setUpRecyclerView();
+        buildAndApplyAdapter();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+
+    ///////////////////////////////////////////
+    //
+    //  Class methods
+    //
+    ///////////////////////////////////////////
+    private void fetchData() {
+        Timber.d("fetchData");
+        movieList = MovieEnum.getMovies();
+    }
+
+    private void setUpRecyclerView() {
+        Timber.d("setUpRecyclerView");
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -115,8 +140,7 @@ public class MultiPaneMainFragment extends Fragment
                 Toast.makeText(mContext, movie.getTitle() + " is selected", Toast.LENGTH_SHORT).show();
 
                 // send data to activity
-                listener.onMovieItemSelected(movie.getTitle(), movie.getGenre(), movie.getYear(), movie.getUrlThumbnail());
-
+                listener.onMovieItemSelected(movie);
             }
 
             @Override
@@ -125,17 +149,13 @@ public class MultiPaneMainFragment extends Fragment
                 Toast.makeText(mContext, "Long click on : " + movie.getTitle(), Toast.LENGTH_SHORT).show();
             }
         }));
+    }
 
-        mAdapter = new MoviesAdapter(mContext, MovieEnum.getMovies(), this);
+    private void buildAndApplyAdapter() {
+        Timber.d("buildAndApplyAdapter");
+        mAdapter = new MoviesAdapter(mContext, movieList, this);
         recyclerView.setAdapter(mAdapter);
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
 
     ///////////////////////////////////////////
     //
@@ -144,7 +164,5 @@ public class MultiPaneMainFragment extends Fragment
     ///////////////////////////////////////////
     @Override
     public void onMovieClicked(Movie movie) {
-
     }
-
 }
