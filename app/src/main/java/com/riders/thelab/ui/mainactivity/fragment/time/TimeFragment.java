@@ -66,11 +66,6 @@ public class TimeFragment extends Fragment {
         return new TimeFragment();
     }
 
-    @Override
-    public void onAttach(@NotNull Context context) {
-        super.onAttach(context);
-        AndroidSupportInjection.inject(this);
-    }
 
     @Nullable
     @Override
