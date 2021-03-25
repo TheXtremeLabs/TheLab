@@ -1,8 +1,8 @@
 package com.riders.thelab.ui.multipane;
 
 import android.annotation.SuppressLint;
-import android.content.pm.ActivityInfo;
 
+import androidx.fragment.app.FragmentContainerView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,12 +12,13 @@ import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.Movie;
 import com.riders.thelab.ui.base.BaseViewImpl;
+import com.riders.thelab.ui.mainactivity.fragment.time.TimeFragment;
+import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
@@ -25,10 +26,13 @@ import timber.log.Timber;
 public class MultipaneView extends BaseViewImpl<MultipanePresenter>
         implements MultipaneContract.View, MovieClickListener {
 
-    @BindView(R.id.rv_multi_pane)
-    RecyclerView recyclerView;
+    // Views
+    private RecyclerView recyclerView;
+
+    private FragmentContainerView fcMainMovieList;
+    private FragmentContainerView fcDetailMovie;
+
     private MultipaneActivity context;
-    //    private List<Movie> movieList;
     private MoviesAdapter mAdapter;
 
     @Inject
@@ -41,16 +45,11 @@ public class MultipaneView extends BaseViewImpl<MultipanePresenter>
     public void onCreate() {
         getPresenter().attachView(this);
 
-        if (LabCompatibilityManager.isTablet(context))
-            //Force screen orientation to Landscape mode
-            this.context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        else
-            //Force screen orientation to Portrait mode
-            this.context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        context.setContentView(R.layout.activity_multi_pane);
-
-        ButterKnife.bind(this, context.findViewById(android.R.id.content));
+        if (!LabCompatibilityManager.isTablet(context)) {
+            bindSmartphoneViews();
+        } else {
+            bindTabletViews();
+        }
 
         context.getSupportActionBar().setDisplayShowHomeEnabled(true);
         context.getSupportActionBar().setTitle(context.getString(R.string.activity_title_multipane));
@@ -84,8 +83,9 @@ public class MultipaneView extends BaseViewImpl<MultipanePresenter>
     @Override
     public void onResume() {
         Timber.d("onResume()");
-
-        getPresenter().fetchMovies();
+        if (!LabCompatibilityManager.isTablet(context)) {
+            getPresenter().fetchMovies();
+        }
     }
 
     @Override
@@ -110,5 +110,37 @@ public class MultipaneView extends BaseViewImpl<MultipanePresenter>
     public void onMovieClicked(Movie movie) {
         Timber.d("movie clicked: %s", movie.toString());
         getPresenter().getMovieDetail(movie);
+    }
+
+
+    /////////////////////////////////////
+    //
+    // BUTTERKNIFE
+    //
+    /////////////////////////////////////
+    private void bindSmartphoneViews() {
+        Timber.d("bindSmartphoneViews()");
+        // Butterknife view binding
+        ButterKnife.bind(context, recyclerView);
+    }
+
+    private void bindTabletViews() {
+        Timber.d("bindTabletViews()");
+        ButterKnife.bind(context, fcMainMovieList);
+        ButterKnife.bind(context, fcDetailMovie);
+
+        context.getSupportFragmentManager()
+                .beginTransaction()
+                .add(
+                        R.id.fc_main_multi_pane,
+                        MultiPaneMainFragment.newInstance())
+                .commit();
+
+        context.getSupportFragmentManager()
+                .beginTransaction()
+                .add(
+                        R.id.fc_detail_movie_pane,
+                        MultiPaneDetailFragment.newInstance())
+                .commit();
     }
 }

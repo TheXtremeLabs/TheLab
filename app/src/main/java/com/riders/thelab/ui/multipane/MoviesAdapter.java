@@ -20,7 +20,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MultiPaneViewHolder> {
     private final MovieClickListener listener;
 
     public MoviesAdapter(Context context, List<Movie> moviesList, MovieClickListener listener) {
-
         this.context = context;
         this.moviesList = moviesList;
         this.listener = listener;
