@@ -59,23 +59,27 @@ public class ColorActivity extends SimpleActivity {
         // Get current TextView color
         fromColor = targetColorTextView.getCurrentTextColor();
         // Apply fade color transition to TextView
-        LabAnimationsManager.applyFadeColorAnimationToView(
-                targetColorTextView,
-                fromColor,
-                toColor,
-                LabAnimationsManager
-                        .getInstance()
-                        .getShortAnimationDuration());
+        LabAnimationsManager
+                .getInstance()
+                .applyFadeColorAnimationToView(
+                        targetColorTextView,
+                        fromColor,
+                        toColor,
+                        LabAnimationsManager
+                                .getInstance()
+                                .getShortAnimationDuration());
 
         // Get current button color
         fromColor = changeColorButton.getCurrentTextColor();
         // Apply fade color transition to Button
-        LabAnimationsManager.applyFadeColorAnimationToView(
-                changeColorButton,
-                fromColor,
-                toColor,
-                LabAnimationsManager
-                        .getInstance()
-                        .getShortAnimationDuration());
+        LabAnimationsManager
+                .getInstance()
+                .applyFadeColorAnimationToView(
+                        changeColorButton,
+                        fromColor,
+                        toColor,
+                        LabAnimationsManager
+                                .getInstance()
+                                .getShortAnimationDuration());
     }
 }
