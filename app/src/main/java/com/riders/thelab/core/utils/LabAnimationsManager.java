@@ -58,7 +58,7 @@ public class LabAnimationsManager {
      * @param animationDuration
      */
     @SuppressLint("RestrictedApi")
-    public static void applyFadeColorAnimationToView(final View view, final int fromColor, final int toColor, final int animationDuration) {
+    public void applyFadeColorAnimationToView(final View view, final int fromColor, final int toColor, final int animationDuration) {
         ObjectAnimator fadeAnimator = null;
 
         if (view instanceof MaterialTextView) {
@@ -90,7 +90,7 @@ public class LabAnimationsManager {
      * @param objectAnimator
      * @param duration
      */
-    public static void startAnimation(final ObjectAnimator objectAnimator, final int duration) {
+    public void startAnimation(final ObjectAnimator objectAnimator, final int duration) {
         if (null != objectAnimator) {
             objectAnimator.setDuration(duration);
             objectAnimator.start();
