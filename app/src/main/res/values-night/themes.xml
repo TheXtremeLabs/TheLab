@@ -232,10 +232,10 @@
 
         <!-- specify shared element transitions -->
         <item name="android:windowSharedElementEnterTransition" tools:ignore="NewApi">
-            @transition/change_bounds
+            @transition/change_bounds_transform
         </item>
         <item name="android:windowSharedElementExitTransition" tools:ignore="NewApi">
-            @transition/change_bounds
+            @transition/change_bounds_transform
         </item>
     </style>
 </resources>

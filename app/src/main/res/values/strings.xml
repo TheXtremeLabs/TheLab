@@ -98,6 +98,7 @@
     <string name="activity_title_transition">Transitions</string>
     <string name="button_next_activity">Next Activity</string>
     <string name="logo_transition_name">logo_transition</string>
+    <string name="button_transition_name">button_transition</string>
     <string name="activity_title_transition_detail">Transitions Detail</string>
 
     <!-- Floating Labels-->

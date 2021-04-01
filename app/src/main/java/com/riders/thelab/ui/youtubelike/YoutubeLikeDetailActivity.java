@@ -36,8 +36,10 @@ import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 @SuppressLint({"NonConstantResourceId", "NewApi"})
 public class YoutubeLikeDetailActivity extends SimpleActivity {
 
+    private Context mContext;
     //Bundle Arguments
     public static final String VIDEO_OBJECT_ARG = "content_video";
+
     @BindView(R.id.content_image_thumb)
     ShapeableImageView imageThumb;
     @BindView(R.id.content_image_thumb_blurred)
@@ -46,15 +48,15 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
     MaterialTextView titleTextView;
     @BindView(R.id.content_text_description)
     MaterialTextView descriptionTextView;
-    private Context mContext;
     private Video item;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
         Window w = getWindow();
         w.setAllowEnterTransitionOverlap(true);
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        super.onCreate(savedInstanceState);
 
         /*
         Where myBitmap is the Image from which you want to extract the color.
