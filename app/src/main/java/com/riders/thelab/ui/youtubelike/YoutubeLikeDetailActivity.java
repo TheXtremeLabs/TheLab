@@ -23,6 +23,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.Video;
 import com.riders.thelab.ui.base.SimpleActivity;
 
@@ -48,6 +49,7 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
     MaterialTextView titleTextView;
     @BindView(R.id.content_text_description)
     MaterialTextView descriptionTextView;
+
     private Video item;
 
     @Override
@@ -62,7 +64,7 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
         Where myBitmap is the Image from which you want to extract the color.
         Also for API 21 and above, you'll need to add the following flags if you're planning to color the status bar and navigation bar:
          */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (LabCompatibilityManager.isLollipop()) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
@@ -165,7 +167,7 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
         {
             Palette.Swatch mutedDark = palette.getDarkMutedSwatch();
             if (mutedDark != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (LabCompatibilityManager.isLollipop()) {
                     getWindow().setStatusBarColor(mutedDark.getRgb());
                 }
             }
