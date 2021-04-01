@@ -15,70 +15,39 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 import com.riders.thelab.R;
 import com.riders.thelab.ui.base.SimpleActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 @SuppressLint({"NonConstantResourceId", "NewApi"})
 public class TransitionDetailActivity extends SimpleActivity {
 
     @BindView(R.id.iv_logo)
     ShapeableImageView ivTarget;
+    @BindView(R.id.button_detail)
+    MaterialButton button;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
-        // Enable Activity Transitions. Optionally enable Activity transitions in your
-        // theme with <item name=”android:windowActivityTransitions”>true</item>.
-        getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-
-        // Set the transition name, which matches Activity A’s start view transition name, on
-        // the root view.
-        this.findViewById(android.R.id.content).setTransitionName(getString(R.string.logo_transition_name));
-
-        // Attach a callback used to receive the shared elements from Activity A to be
-        // used by the container transform transition.
-        setEnterSharedElementCallback(new MaterialContainerTransformSharedElementCallback());
-
-        /*// Set this Activity’s enter and return transition to a MaterialContainerTransform
-        getWindow().setSharedElementEnterTransition(
-                new MaterialContainerTransform()
-//                        .addTarget(android.R.id.content)
-                        .addTarget(R.id.iv_logo)
-                        .setDuration(300L));
-
-        getWindow().setSharedElementReturnTransition(
-                new MaterialContainerTransform()
-//                        .addTarget(android.R.id.content)
-                        .addTarget(R.id.iv_logo)
-                        .setDuration(250L));*/
-
-
         super.onCreate(savedInstanceState);
+
+        Window w = getWindow();
+        w.setAllowEnterTransitionOverlap(true);
+
         // Tell the framework to wait.
         postponeEnterTransition();
         setContentView(R.layout.activity_transition_detail);
 
         ButterKnife.bind(this);
 
-        ivTarget
-                .getViewTreeObserver()
-                .addOnPreDrawListener(
-                        new ViewTreeObserver.OnPreDrawListener() {
-                            @Override
-                            public boolean onPreDraw() {
-                                ivTarget
-                                        .getViewTreeObserver()
-                                        .removeOnPreDrawListener(this);
-                                supportStartPostponedEnterTransition();
-                                return true;
-                            }
-                        }
-                );
+        getSupportActionBar().setTitle(getString(R.string.activity_title_transition_detail));
+
+        loadImage();
     }
 
 
@@ -128,6 +97,11 @@ public class TransitionDetailActivity extends SimpleActivity {
                     }
                 })
                 .into(ivTarget);
+    }
+
+    @OnClick(R.id.button_detail)
+    public void onButtonClicked() {
+        onBackPressed();
     }
 
     @Override

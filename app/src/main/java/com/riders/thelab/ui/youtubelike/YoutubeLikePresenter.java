@@ -109,7 +109,7 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
         intent.putExtra(YoutubeLikeDetailActivity.VIDEO_OBJECT_ARG, video);
 
         // Check if we're running on Android 5.0 or higher
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (LabCompatibilityManager.isLollipop()) {
 
             sePairThumb = Pair.create(thumbShapeableImageView, activity.getString(R.string.thumb_transition_name));
             sePairTitle = Pair.create(titleTextView, activity.getString(R.string.title_transition_name));
