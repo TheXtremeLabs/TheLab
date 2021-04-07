@@ -19,23 +19,25 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_avd_google_io16"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="center"
-            android:src="@drawable/avd_handwriting_io16" />
+            app:srcCompat="@drawable/avd_handwriting_io16" />
 
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_avd_progress_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="center"
-            android:src="@drawable/avd_ko_lab_drawable_progress" />
+            app:srcCompat="@drawable/avd_ko_lab_drawable_progress" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

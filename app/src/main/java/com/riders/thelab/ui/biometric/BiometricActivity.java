@@ -111,7 +111,6 @@ public class BiometricActivity extends AppCompatActivity {
     }
 
     private void authenticate() {
-
         Timber.d("authenticate()");
         goldFinger
                 .authenticate(params, new Goldfinger.Callback() {
@@ -172,7 +171,6 @@ public class BiometricActivity extends AppCompatActivity {
 
     @OnClick(R.id.finger_print_btn)
     public void onFingerPrintClicked() {
-
         Timber.d("on fingerprint button clicked");
         authenticateWithRX();
     }
