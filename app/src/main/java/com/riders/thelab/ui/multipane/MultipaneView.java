@@ -12,13 +12,12 @@ import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.Movie;
 import com.riders.thelab.ui.base.BaseViewImpl;
-import com.riders.thelab.ui.mainactivity.fragment.time.TimeFragment;
-import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
@@ -27,7 +26,8 @@ public class MultipaneView extends BaseViewImpl<MultipanePresenter>
         implements MultipaneContract.View, MovieClickListener {
 
     // Views
-    private RecyclerView recyclerView;
+    @BindView(R.id.rv_multi_pane)
+    RecyclerView recyclerView;
 
     private FragmentContainerView fcMainMovieList;
     private FragmentContainerView fcDetailMovie;
@@ -121,7 +121,7 @@ public class MultipaneView extends BaseViewImpl<MultipanePresenter>
     private void bindSmartphoneViews() {
         Timber.d("bindSmartphoneViews()");
         // Butterknife view binding
-        ButterKnife.bind(context, recyclerView);
+        ButterKnife.bind(this, context.findViewById(android.R.id.content));
     }
 
     private void bindTabletViews() {
