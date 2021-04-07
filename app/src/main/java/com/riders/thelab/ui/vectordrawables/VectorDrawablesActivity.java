@@ -35,6 +35,8 @@ public class VectorDrawablesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_vector_drawables);
 
         ButterKnife.bind(this);
+
+        getSupportActionBar().setTitle(getString(R.string.activity_title_vector_drawables));
     }
 
 
