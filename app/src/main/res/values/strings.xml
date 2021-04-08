@@ -285,5 +285,6 @@
     <string name="path_one_googleio">M211,45L235,45A2,2 0,0 1,237 47L237,155A2,2 0,0 1,235 157L211,157A2,2 0,0 1,209 155L209,47A2,2 0,0 1,211 45z</string>
     <string name="retry">Retry</string>
     <string name="action_go">GO !</string>
+    <string name="use_biometric_authentication_placeholder">Use Biometric authentication</string>
 
 </resources>

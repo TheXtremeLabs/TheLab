@@ -4,14 +4,17 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.ImageButton;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.core.utils.LabDeviceManager;
+import com.riders.thelab.core.utils.UIManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,57 +22,75 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.infinum.goldfinger.Goldfinger;
-import co.infinum.goldfinger.crypto.CipherCrypter;
-import co.infinum.goldfinger.crypto.CipherFactory;
-import co.infinum.goldfinger.crypto.impl.AesCipherFactory;
-import co.infinum.goldfinger.crypto.impl.Base64CipherCrypter;
-import co.infinum.goldfinger.rx.RxGoldfinger;
 import io.reactivex.observers.DisposableObserver;
 import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
 public class BiometricActivity extends AppCompatActivity {
 
-    @BindView(R.id.finger_print_btn)
-    ImageButton fingerPrintButton;
-    Goldfinger goldFinger;
-    Goldfinger.PromptParams params;
-    // RX approach
-    RxGoldfinger rxGoldFinger;
-    Goldfinger.PromptParams rxParams;
     private Context context;
 
+    // Views
+    @BindView(R.id.finger_print_btn)
+    AppCompatImageButton fingerPrintButton;
+
+    ///////////////////////
+    //
+    // OVERRIDE
+    //
+    ///////////////////////
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biometric);
 
-        init();
+        this.init();
 
-        if (LabCompatibilityManager.isMarshmallow()) {
-            initGoldFinger();
-        }
+        if (!LabCompatibilityManager.isMarshmallow()) {
+            Timber.e("Incompatibility detected - Device runs on API below API 23 (Marshmallow)");
 
-        // Check if fingerprint hardware is available
-        if (checkFingerPrintAvailability()) {
-            Timber.d("Fingerprint hardware ok");
+//            UIManager.showActionInSnackBar(context,  findViewById(android.R.id.content), );
 
+            Snackbar
+                    .make(
+                            findViewById(android.R.id.content),
+                            "Incompatibility detected - Device runs on API below API 23 (Marshmallow)",
+                            BaseTransientBottomBar.LENGTH_LONG)
+                    .setAction("LEAVE", v -> {
+                        finish();
+                    }).show();
         } else {
-            Timber.e("The device doesn't have finger print hardware");
-        }
 
-        // Authenticate
-        if (goldFinger.canAuthenticate()) {
-            /* Authenticate */
-            Timber.d("Authenticate");
-
-            authenticate();
-        } else {
-            Timber.e("Cannot authenticate");
+            // initGoldFinger
+            this.initGoldFinger();
         }
     }
 
+
+    ///////////////////////
+    //
+    // BUTTERKNIFE
+    //
+    ///////////////////////
+    @OnClick(R.id.finger_print_btn)
+    public void onFingerPrintClicked() {
+        Timber.d("on fingerprint button clicked");
+
+        if (!LabDeviceManager.getRxGoldFinger().canAuthenticate()) {
+            Timber.e("Cannot authenticate");
+            return;
+        }
+
+        authenticateWithRX();
+    }
+
+
+    ///////////////////////
+    //
+    // CLASSES METHODS
+    //
+    ///////////////////////
     private void init() {
 
         context = this;
@@ -80,66 +101,40 @@ public class BiometricActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getString(R.string.activity_title_biometric));
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void initGoldFinger() {
+        LabDeviceManager.initFingerPrintWithRx(context, this);
 
-        // fingerprint instantiation
-        goldFinger = new Goldfinger.Builder(context).build();
+        // Check if fingerprint hardware is available
+        if (!LabDeviceManager.hasFingerPrintHardware()) {
+            Timber.e("The device doesn't have finger print hardware");
 
-        // fingerprint prompt instantiation
-        params = new Goldfinger.PromptParams.Builder(this)
-                .title("Title")
-                .negativeButtonText("Cancel")
-                .description("Description")
-                .subtitle("Subtitle")
-                .build();
+            Snackbar
+                    .make(
+                            findViewById(android.R.id.content),
+                            "The device doesn't have finger print hardware",
+                            BaseTransientBottomBar.LENGTH_LONG)
+                    .setAction("LEAVE", v -> {
+                        finish();
+                    }).show();
+            return;
+        }
 
+        Timber.d("Fingerprint hardware ok");
 
-        CipherFactory factory = new AesCipherFactory(context);
-        CipherCrypter crypter = new Base64CipherCrypter();
-
-        rxGoldFinger = new RxGoldfinger.Builder(context)
-                .logEnabled(true)
-                .cipherFactory(factory)
-                .cipherCrypter(crypter)
-                .build();
-    }
-
-    private boolean checkFingerPrintAvailability() {
-        return goldFinger.hasFingerprintHardware();
-    }
-
-    private void authenticate() {
-        Timber.d("authenticate()");
-        goldFinger
-                .authenticate(params, new Goldfinger.Callback() {
-                    @Override
-                    public void onError(@NonNull Exception e) {
-                        /* Critical error happened */
-                        Timber.e(e);
-                    }
-
-                    @Override
-                    public void onResult(@NonNull Goldfinger.Result result) {
-                        /* Result received */
-
-                        Timber.d(
-                                "Result :\n" +
-                                        "type : " + result.type() + "\n" +
-                                        "value : " + result.value() + "\n" +
-                                        "reason : " + result.reason() + "\n" +
-                                        "message : " + result.message() + "\n" +
-                                        "");
-                    }
-                });
+        // Check if device can authenticate
+        if (!LabDeviceManager.getRxGoldFinger().canAuthenticate())
+            Timber.e("Cannot authenticate");
+        else
+            Timber.d("Init successful");
 
     }
 
     private void authenticateWithRX() {
         Timber.d("authenticateWithRX()");
-        rxGoldFinger
-                .authenticate(params)
+        //rxGoldFinger
+        LabDeviceManager.getRxGoldFinger()
+                .authenticate(LabDeviceManager.getGoldFingerPromptParams())
                 .subscribe(new DisposableObserver<Goldfinger.Result>() {
 
                     @Override
@@ -169,9 +164,4 @@ public class BiometricActivity extends AppCompatActivity {
                 });
     }
 
-    @OnClick(R.id.finger_print_btn)
-    public void onFingerPrintClicked() {
-        Timber.d("on fingerprint button clicked");
-        authenticateWithRX();
-    }
 }
