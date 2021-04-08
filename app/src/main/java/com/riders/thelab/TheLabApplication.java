@@ -3,6 +3,8 @@ package com.riders.thelab;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
+import androidx.multidex.MultiDex;
+
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
@@ -60,6 +62,12 @@ public class TheLabApplication extends DaggerApplication {
     }
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
 
@@ -69,7 +77,7 @@ public class TheLabApplication extends DaggerApplication {
 
         LAB_PACKAGE_NAME = getPackageName();
 
-        client = new WeatherRestClient();
+//        client = new WeatherRestClient();
     }
 
     private void init() {

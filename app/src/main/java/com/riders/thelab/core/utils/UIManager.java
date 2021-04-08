@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
 import com.riders.thelab.core.views.toast.TheLabToast;
@@ -112,7 +113,7 @@ public class UIManager {
 
     public static void showActionInSnackBar(final Context context, final View view, final String message, SnackBarType type) {
         // create instance
-        Snackbar snackBar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
+        Snackbar snackBar = Snackbar.make(view, message, BaseTransientBottomBar.LENGTH_LONG);
 
         /*switch (type){
             case NORMAL:
