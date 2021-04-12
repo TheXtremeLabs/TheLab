@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Window;
@@ -55,7 +54,6 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
         Window w = getWindow();
         w.setAllowEnterTransitionOverlap(true);
@@ -130,13 +128,10 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
 
                         //demande à la palette de générer ses coleurs, de façon asynchrone
                         //afin de ne pas bloquer l'interface graphique
-                        new Palette.Builder(bitmap).generate(new Palette.PaletteAsyncListener() {
-                            @Override
-                            public void onGenerated(Palette palette) {
+                        new Palette.Builder(bitmap).generate(palette -> {
 
-                                //lorsque la palette est générée, je l'utilise sur mes textViews
-                                generatePalette(palette);
-                            }
+                            //lorsque la palette est générée, je l'utilise sur mes textViews
+                            generatePalette(palette);
                         });
                         return false;
                     }

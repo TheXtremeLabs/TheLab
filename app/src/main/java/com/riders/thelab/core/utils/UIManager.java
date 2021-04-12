@@ -16,9 +16,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
@@ -110,54 +112,42 @@ public class UIManager {
                 .show();
     }
 
-
-    public static void showActionInSnackBar(final Context context, final View view, final String message, SnackBarType type) {
+    public static void showActionInSnackBar(final Activity context, final View view,
+                                            final String message, final SnackBarType type,
+                                            @Nullable final String actionText,
+                                            @Nullable final View.OnClickListener listener) {
         // create instance
-        Snackbar snackBar = Snackbar.make(view, message, BaseTransientBottomBar.LENGTH_LONG);
+        Snackbar snackBar =
+                Snackbar.make(
+                        context.findViewById(android.R.id.content),
+                        message,
+                        listener != null
+                                ? BaseTransientBottomBar.LENGTH_INDEFINITE
+                                : BaseTransientBottomBar.LENGTH_LONG);
 
-        /*switch (type){
-            case NORMAL:
-                // set action button color
-                snackBar.setActionTextColor(context.getResources().getColor(R.color.indigo));
-                break;
-
-            case WARNING:
-                snackBar.setActionTextColor(context.getResources().getColor(R.color.indigo));
-                break;
-
-            case ALERT:
-                snackBar.setActionTextColor(context.getResources().getColor(R.color.indigo));
-                break;
-        }*/
+        snackBar.setBackgroundTint(ContextCompat.getColor(context, type.getBackgroundColor()));
 
         // get snackBar view
         View snackBarView = snackBar.getView();
 
-        // change snackbar text color
+        // change snackBar text color
         int snackBarTextId = com.google.android.material.R.id.snackbar_text;
         TextView textView = (TextView) snackBarView.findViewById(snackBarTextId);
-        switch (type) {
-            case NORMAL:
-                // set action button color
-                textView.setTextColor(context.getResources().getColor(R.color.white));
-                break;
+        // set action text color
+        textView.setTextColor(ContextCompat.getColor(context, type.getTextColor()));
 
-            case WARNING:
-                textView.setTextColor(context.getResources().getColor(R.color.warning));
-                break;
+        if (null != actionText && null != listener) {
 
-            case ALERT:
-                textView.setTextColor(context.getResources().getColor(R.color.error));
-                break;
+            // change snackBar button text color
+            int snackBarButtonId = com.google.android.material.R.id.snackbar_action;
+            Button buttonView = (Button) snackBarView.findViewById(snackBarButtonId);
+            // set action text color
+            buttonView.setBackgroundColor(ContextCompat.getColor(context, type.getTextColor()));
+
+            snackBar.setAction(actionText, listener);
         }
 
         snackBar.show();
-
-        /*
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-                .setActionTextColor()
-                .setAction("Action", null).show();
-                */
     }
 
 
@@ -165,31 +155,25 @@ public class UIManager {
     public static void showConnectionStatusInSnackBar(Activity context, boolean isConnected) {
         Timber.d("showConnectionStatusInSnackBar()");
 
-        String message;
-        int backgroundColor;
-        int textColor;
-
-        if (isConnected) {
-            message = "Good! Connected to Internet";
-            backgroundColor = context.getResources().getColor(R.color.contactsDatabaseColorPrimaryDark);
-            textColor = Color.WHITE;
-        } else {
-            message = "Sorry! Not connected to internet";
-            backgroundColor = context.getResources().getColor(R.color.locationColorPrimaryDark);
-            textColor = Color.WHITE;
-        }
-
         Snackbar snackbar =
                 Snackbar.make(
                         context.findViewById(android.R.id.content),
-                        message,
-                        Snackbar.LENGTH_LONG);
+                        context.getString(
+                                !isConnected
+                                        ? R.string.network_status_disconnected
+                                        : R.string.network_status_connected),
+                        BaseTransientBottomBar.LENGTH_LONG);
 
-        snackbar.setBackgroundTint(backgroundColor);
+        snackbar.setBackgroundTint(
+                ContextCompat.getColor(
+                        context,
+                        !isConnected
+                                ? R.color.locationColorPrimaryDark
+                                : R.color.contactsDatabaseColorPrimaryDark));
 
         View sbView = snackbar.getView();
         TextView textView = sbView.findViewById(com.google.android.material.R.id.snackbar_text);
-        textView.setTextColor(textColor);
+        textView.setTextColor(Color.WHITE);
         snackbar.show();
     }
 

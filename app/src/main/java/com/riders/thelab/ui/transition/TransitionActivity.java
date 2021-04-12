@@ -41,18 +41,6 @@ public class TransitionActivity extends SimpleActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Enable Activity Transitions. Optionally enable Activity transitions in your
-        // theme with <item name=”android:windowActivityTransitions”>true</item>.
-        /*getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-
-        // Attach a callback used to capture the shared elements from this Activity to be used
-        // by the container transform transition
-        setExitSharedElementCallback(new MaterialContainerTransformSharedElementCallback());
-
-        // Keep system bars (status bar, navigation bar) persistent throughout the transition.
-        getWindow().setSharedElementsUseOverlay(false);*/
-
         Window w = getWindow();
         w.setAllowEnterTransitionOverlap(true);
         setContentView(R.layout.activity_transition);

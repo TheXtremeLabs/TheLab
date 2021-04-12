@@ -13,10 +13,6 @@ public interface YoutubeLikeContract {
 
     interface View extends BaseView {
 
-        void onStart();
-
-        void onStop();
-
         void showLoader();
 
         void hideLoader();
