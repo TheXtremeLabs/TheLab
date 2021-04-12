@@ -59,7 +59,6 @@ public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
         getPresenter().attachView(this);
 
         setupToolbar();
-
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
 
         showLoader();
@@ -76,7 +75,6 @@ public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
 
     @Override
     public void showLoader() {
-
         //create a new progress bar for each image to be loaded
         mLoader.setVisibility(View.VISIBLE);
     }
@@ -117,8 +115,16 @@ public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
         context.getSupportActionBar().setTitle(context.getString(R.string.activity_title_youtube_like));
 
         if (LabCompatibilityManager.isLollipop()) {
-            context.getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context, R.color.swipeDownColorPrimary)));
-            context.getWindow().setStatusBarColor(ContextCompat.getColor(context, R.color.swipeDownColorPrimaryDark));
+            this.context.getSupportActionBar()
+                    .setBackgroundDrawable(new ColorDrawable(
+                            ContextCompat.getColor(
+                                    context,
+                                    R.color.swipeDownColorPrimary)));
+            this.context.getWindow()
+                    .setStatusBarColor(
+                            ContextCompat.getColor(
+                                    context,
+                                    R.color.swipeDownColorPrimaryDark));
         }
     }
 
