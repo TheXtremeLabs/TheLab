@@ -147,9 +147,9 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
                     // Store found app package name
                     String appToAdd = packageInfo.packageName;
 
-                    // Check if it does equal to the hub package
+                    // Check if it does equal to The Lab package name
                     // because we don't don't want to display it
-                    if (!appToAdd.equals(TheLabApplication.LAB_PACKAGE_NAME))
+                    if (!appToAdd.equals(TheLabApplication.getLabPackageName()))
                         installedAppList.add(packageInfo);
                     isPackageFound = true;
                 }

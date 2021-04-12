@@ -6,8 +6,6 @@ import android.content.Context;
 import androidx.multidex.MultiDex;
 
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.riders.thelab.core.broadcast.ConnectivityReceiver;
@@ -24,7 +22,7 @@ import timber.log.Timber;
 @SuppressLint("StaticFieldLeak")
 public class TheLabApplication extends DaggerApplication {
 
-    public static String LAB_PACKAGE_NAME = "";
+    private static String LAB_PACKAGE_NAME;
     // Context
     private static Context context;
     private static TheLabApplication mInstance;
@@ -46,6 +44,10 @@ public class TheLabApplication extends DaggerApplication {
 
     public static Context getContext() {
         return context;
+    }
+
+    public static String getLabPackageName() {
+        return LAB_PACKAGE_NAME;
     }
 
     public static WeatherRestClient getWeatherRestClient() {
@@ -77,7 +79,7 @@ public class TheLabApplication extends DaggerApplication {
 
         LAB_PACKAGE_NAME = getPackageName();
 
-//        client = new WeatherRestClient();
+        client = new WeatherRestClient();
     }
 
     private void init() {

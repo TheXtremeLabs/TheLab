@@ -10,9 +10,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.ui.mainactivity.MainActivityAppClickListener;
@@ -27,16 +28,39 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
-import dagger.android.support.AndroidSupportInjection;
 import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
 public class NewsFragment extends Fragment {
 
     private final String[] recentAppsNames = new String[]{"Recycler", "Biometric", "Widget"};
-    @BindView(R.id.rv_News)
-    RecyclerView rvNews;
+
+    // Card View 1
+    @BindView(R.id.news_card_view_1)
+    MaterialCardView cardView1;
+    @BindView(R.id.news_image_view_1)
+    ShapeableImageView imageView1;
+    @BindView(R.id.news_text_view_1)
+    MaterialTextView textView1;
+
+    // Card View 1
+    @BindView(R.id.news_card_view_2)
+    MaterialCardView cardView2;
+    @BindView(R.id.news_image_view_2)
+    ShapeableImageView imageView2;
+    @BindView(R.id.news_text_view_2)
+    MaterialTextView textView2;
+
+    // Card View 1
+    @BindView(R.id.news_card_view_3)
+    MaterialCardView cardView3;
+    @BindView(R.id.news_image_view_3)
+    ShapeableImageView imageView3;
+    @BindView(R.id.news_text_view_3)
+    MaterialTextView textView3;
+
 
     Unbinder unbinder;
     private Context context;
@@ -53,7 +77,6 @@ public class NewsFragment extends Fragment {
     @Override
     public void onAttach(@NotNull Context context) {
         super.onAttach(context);
-        AndroidSupportInjection.inject(this);
 
         if (context instanceof MainActivityAppClickListener) {
             listener = (MainActivityAppClickListener) context;
@@ -92,28 +115,7 @@ public class NewsFragment extends Fragment {
             }
         }
 
-        Timber.e("Recent apps");
-        for (App app : recentApps) {
-            Timber.e(app.toString());
-        }
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Timber.d("onResume()");
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
-        rvNews.setLayoutManager(linearLayoutManager);
-        NewsAdapter adapter = new NewsAdapter(context, recentApps, listener);
-        rvNews.setAdapter(adapter);
+        setupCards(recentApps);
     }
 
     @Override
@@ -122,5 +124,55 @@ public class NewsFragment extends Fragment {
         if (null != unbinder)
             unbinder.unbind();
         super.onDestroyView();
+    }
+
+    @OnClick({R.id.news_card_view_1, R.id.news_card_view_2, R.id.news_card_view_3})
+    public void onCardClicked(View view) {
+        switch (view.getId()) {
+            case R.id.news_card_view_1:
+                listener.onAppItemCLickListener(view, recentApps.get(0), 0);
+                break;
+
+            case R.id.news_card_view_2:
+                listener.onAppItemCLickListener(view, recentApps.get(1), 1);
+                break;
+
+            case R.id.news_card_view_3:
+                listener.onAppItemCLickListener(view, recentApps.get(2), 2);
+                break;
+        }
+    }
+
+    private void setupCards(final List<App> appList) {
+
+        for (int i = 0; i < appList.size(); i++) {
+            if (i == 0) {
+                bindData(imageView1, textView1, appList.get(i));
+            }
+            if (i == 1) {
+
+                bindData(imageView2, textView2, appList.get(i));
+            }
+            if (i == 2) {
+
+                bindData(imageView3, textView3, appList.get(i));
+            }
+        }
+    }
+
+    private void bindData(final ShapeableImageView imageView,
+                          final MaterialTextView textView,
+                          final App app) {
+
+        if (app.getDrawableIcon() != null) {
+            imageView.setBackgroundDrawable(app.getDrawableIcon());
+        } else {
+            imageView.setBackgroundResource(app.getIcon());
+        }
+
+        textView.setText(
+                app.getName() != null
+                        ? app.getName()
+                        : app.getTitle());
     }
 }
