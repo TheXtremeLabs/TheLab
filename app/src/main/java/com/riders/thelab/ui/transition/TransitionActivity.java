@@ -41,6 +41,7 @@ public class TransitionActivity extends SimpleActivity {
         setContentView(R.layout.activity_transition);
 
         ButterKnife.bind(this);
+        getSupportActionBar().setTitle(getString(R.string.activity_title_transition));
     }
 
     @SuppressLint("NewApi")

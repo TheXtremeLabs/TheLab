@@ -38,64 +38,11 @@ public class TransitionDetailActivity extends SimpleActivity {
 
         Window w = getWindow();
         w.setAllowEnterTransitionOverlap(true);
-
-        // Tell the framework to wait.
-        //postponeEnterTransition();
         setContentView(R.layout.activity_transition_detail);
 
         ButterKnife.bind(this);
 
         getSupportActionBar().setTitle(getString(R.string.activity_title_transition_detail));
-
-        //loadImage();
-    }
-
-
-    /**
-     * Schedules the shared element transition to be started immediately
-     * after the shared element has been measured and laid out within the
-     * activity's view hierarchy. Some common places where it might make
-     * sense to call this method are:
-     * <p>
-     * (1) Inside a Fragment's onCreateView() method (if the shared element
-     * lives inside a Fragment hosted by the called Activity).
-     * <p>
-     * (2) Inside a Picasso Callback object (if you need to wait for Picasso to
-     * asynchronously load/scale a bitmap before the transition can begin).
-     **/
-    private void scheduleStartPostponedTransition(final View sharedElement) {
-        sharedElement.getViewTreeObserver().addOnPreDrawListener(
-                new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        sharedElement.getViewTreeObserver().removeOnPreDrawListener(this);
-                        startPostponedEnterTransition();
-                        return true;
-                    }
-                });
-    }
-
-    private void loadImage() {
-        Glide.with(this)
-                .load(R.drawable.logo_colors)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                Target<Drawable> target, boolean isFirstResource) {
-                        supportStartPostponedEnterTransition();
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model,
-                                                   Target<Drawable> target, DataSource dataSource,
-                                                   boolean isFirstResource) {
-
-                        supportStartPostponedEnterTransition();
-                        return false;
-                    }
-                })
-                .into(ivTarget);
     }
 
     @OnClick(R.id.button_detail)

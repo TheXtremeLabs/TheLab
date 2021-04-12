@@ -68,6 +68,7 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
 
         setContentView(R.layout.activity_youtube_detail);
 
+        // Tell the framework to wait.
         supportPostponeEnterTransition();
         mContext = this;
 
@@ -140,7 +141,6 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
 
         titleTextView.setText(item.getName());
         descriptionTextView.setText(item.getDescription());
-
     }
 
 
