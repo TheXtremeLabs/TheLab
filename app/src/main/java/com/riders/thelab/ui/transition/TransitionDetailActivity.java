@@ -40,14 +40,14 @@ public class TransitionDetailActivity extends SimpleActivity {
         w.setAllowEnterTransitionOverlap(true);
 
         // Tell the framework to wait.
-        postponeEnterTransition();
+        //postponeEnterTransition();
         setContentView(R.layout.activity_transition_detail);
 
         ButterKnife.bind(this);
 
         getSupportActionBar().setTitle(getString(R.string.activity_title_transition_detail));
 
-        loadImage();
+        //loadImage();
     }
 
 

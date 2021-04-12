@@ -15,6 +15,7 @@ import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabDeviceManager;
 import com.riders.thelab.core.utils.UIManager;
+import com.riders.thelab.data.local.bean.SnackBarType;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -50,16 +51,16 @@ public class BiometricActivity extends AppCompatActivity {
         if (!LabCompatibilityManager.isMarshmallow()) {
             Timber.e("Incompatibility detected - Device runs on API below API 23 (Marshmallow)");
 
-//            UIManager.showActionInSnackBar(context,  findViewById(android.R.id.content), );
-
-            Snackbar
-                    .make(
+            UIManager
+                    .showActionInSnackBar(
+                            this,
                             findViewById(android.R.id.content),
                             "Incompatibility detected - Device runs on API below API 23 (Marshmallow)",
-                            BaseTransientBottomBar.LENGTH_LONG)
-                    .setAction("LEAVE", v -> {
-                        finish();
-                    }).show();
+                            SnackBarType.ALERT,
+                            "LEAVE",
+                            v -> {
+                                finish();
+                            });
         } else {
 
             // initGoldFinger
@@ -123,11 +124,33 @@ public class BiometricActivity extends AppCompatActivity {
         Timber.d("Fingerprint hardware ok");
 
         // Check if device can authenticate
-        if (!LabDeviceManager.getRxGoldFinger().canAuthenticate())
+        if (!LabDeviceManager.getRxGoldFinger().canAuthenticate()) {
             Timber.e("Cannot authenticate");
-        else
-            Timber.d("Init successful");
 
+            UIManager
+                    .showActionInSnackBar(
+                            this,
+                            findViewById(android.R.id.content),
+                            "Cannot authenticate",
+                            SnackBarType.ALERT,
+                            "QUIT",
+                            v -> {
+                                finish();
+                            });
+            return;
+        }
+
+        // Init successfully executed
+        UIManager
+                .showActionInSnackBar(
+                        this,
+                        findViewById(android.R.id.content),
+                        "Fingerprint initialization successfully executed",
+                        SnackBarType.NORMAL,
+                        "CONTINUE",
+                        v -> {
+                            Timber.d("User action validate");
+                        });
     }
 
     private void authenticateWithRX() {

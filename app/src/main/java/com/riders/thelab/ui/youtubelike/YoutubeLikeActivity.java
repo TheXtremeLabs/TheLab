@@ -14,22 +14,10 @@ public class YoutubeLikeActivity extends BaseActivity<YoutubeLikeView> {
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setContentView(R.layout.activity_youtube);
-        super.onCreate(savedInstanceState);
         Window w = getWindow();
         w.setAllowEnterTransitionOverlap(true);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        view.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        view.onStop();
-        super.onStop();
+        setContentView(R.layout.activity_youtube);
+        super.onCreate(savedInstanceState);
     }
 
     @Override

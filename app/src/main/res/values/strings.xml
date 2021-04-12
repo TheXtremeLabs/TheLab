@@ -16,13 +16,19 @@
     <string name="no_connection">Not connected to the Internet :(</string>
     <string name="check_your_connection">Please check your cellular network or Wi-Fi network</string>
 
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="ok">OK</string>
-    <string name="btn_continue">Continue</string>
-    <string name="later">Later</string>
-    <string name="enter">Enter</string>
-    <string name="exit">Quit</string>
+    <string name="action_yes">Yes</string>
+    <string name="action_no">No</string>
+    <string name="action_ok">OK</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_later">Later</string>
+    <string name="action_enter">Enter</string>
+    <string name="action_exit">Quit</string>
+
+    <!-- Network connection status -->
+    <string name="network_status_connected">Good! Connected to Internet</string>
+    <string name="network_status_disconnected">Sorry! Not connected to internet</string>
+    <string name="network_status_pending">Retry! Internet connection pending</string>
+    <string name="network_status_lost">Lost! Connection lost. Try to reconnect</string>
 
 
     <string name="title_main_page">Choose your testing app</string>

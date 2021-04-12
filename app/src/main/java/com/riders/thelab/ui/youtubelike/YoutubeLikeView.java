@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.youtubelike;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -8,6 +9,7 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.model.Video;
 import com.riders.thelab.ui.base.BaseViewImpl;
 
@@ -30,13 +34,17 @@ import timber.log.Timber;
 public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
         implements YoutubeLikeContract.View, YoutubeListClickListener {
 
+    // Context
+    private YoutubeLikeActivity context;
+
+    // Views
     @BindView(R.id.no_connection_linear_container)
     LinearLayout mLinearNoConnectionContainer;
     @BindView(R.id.youtube_content_loader)
     ProgressBar mLoader;
     @BindView(R.id.youtube_content_recyclerView)
     RecyclerView contentRecyclerView;
-    private YoutubeLikeActivity context;
+
     private YoutubeLikeListAdapter contentAdapter;
 
 
@@ -50,8 +58,7 @@ public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
 
         getPresenter().attachView(this);
 
-        context.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        context.getSupportActionBar().setTitle(context.getString(R.string.activity_title_youtube_like));
+        setupToolbar();
 
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
 
@@ -65,18 +72,6 @@ public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
         getPresenter().detachView();
 
         context = null;
-    }
-
-    @Override
-    public void onStart() {
-        Timber.d("onStart()");
-
-    }
-
-    @Override
-    public void onStop() {
-        Timber.d("onStop()");
-
     }
 
     @Override
@@ -113,19 +108,27 @@ public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
     public void onFetchError() {
         Timber.e("onFetchError()");
 
+        UIManager.showActionInToast(context, "Unable to fetch content");
     }
 
-    public void setAdapter() {
-        Timber.d("setAdapter()");
+    @SuppressLint("NewApi")
+    private void setupToolbar() {
+        context.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        context.getSupportActionBar().setTitle(context.getString(R.string.activity_title_youtube_like));
+
+        if (LabCompatibilityManager.isLollipop()) {
+            context.getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context, R.color.swipeDownColorPrimary)));
+            context.getWindow().setStatusBarColor(ContextCompat.getColor(context, R.color.swipeDownColorPrimaryDark));
+        }
+    }
+
+    public void initAdapter() {
+        Timber.d("initAdapter()");
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         contentRecyclerView.setLayoutManager(layoutManager);
         contentRecyclerView.setItemAnimator(new DefaultItemAnimator());
-    }
-
-    public YoutubeLikeListAdapter getContentAdapter() {
-        return this.contentAdapter;
     }
 
     @Override
@@ -135,6 +138,11 @@ public class YoutubeLikeView extends BaseViewImpl<YoutubeLikePresenter>
             @NonNull MaterialTextView descriptionTextView,
             Video video,
             int position) {
-        getPresenter().onYoutubeItemClicked(thumbShapeableImageView, titleTextView, descriptionTextView, video, position);
+        getPresenter().onYoutubeItemClicked(
+                thumbShapeableImageView,
+                titleTextView,
+                descriptionTextView,
+                video,
+                position);
     }
 }

@@ -59,7 +59,7 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
 
         } else {
 
-            getView().setAdapter();
+            getView().initAdapter();
 
             Timber.e("Fetch Content");
             makeRESTCallVideosData();
@@ -74,6 +74,8 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
                         videos -> {
                             if (videos.isEmpty()) {
                                 getView().onFetchError();
+                                getView().hideLoader();
+                                return;
                             }
 
                             getView().hideLoader();
@@ -122,6 +124,8 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
                                     sePairThumb, sePairTitle, sePairDescription);
         }
 
+        // Call navigator to switch activity with or without transition according
+        // to the device's version running the application
         navigator.callYoutubeDetailActivity(
                 intent,
                 !LabCompatibilityManager.isLollipop()
