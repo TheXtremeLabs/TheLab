@@ -54,9 +54,7 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
             Timber.e("No Internet connection");
 
             getView().onNoConnectionDetected();
-
             UIManager.showActionInToast(activity, activity.getResources().getString(R.string.pas_de_connexion));
-
         } else {
 
             getView().initAdapter();
@@ -91,11 +89,11 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
 
     @Override
     public void onYoutubeItemClicked(
-            @NonNull ShapeableImageView thumbShapeableImageView,
-            @NonNull MaterialTextView titleTextView,
-            @NonNull MaterialTextView descriptionTextView,
-            Video video,
-            int position) {
+            @NonNull final ShapeableImageView thumbShapeableImageView,
+            @NonNull final MaterialTextView titleTextView,
+            @NonNull final MaterialTextView descriptionTextView,
+            final Video video,
+            final int position) {
 
         Timber.e("Click on : " + position + ", " + video.getName());
 
@@ -120,7 +118,7 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
             options =
                     ActivityOptionsCompat.
                             makeSceneTransitionAnimation(
-                                    activity,
+                                    this.activity,
                                     sePairThumb, sePairTitle, sePairDescription);
         }
 

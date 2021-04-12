@@ -1,25 +1,20 @@
 package com.riders.thelab.ui.transition;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityOptions;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.transition.TransitionSet;
+import androidx.core.util.Pair;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.ui.base.SimpleActivity;
-import com.riders.thelab.ui.youtubelike.YoutubeLikeDetailActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,14 +51,14 @@ public class TransitionActivity extends SimpleActivity {
         Intent intent = new Intent(this, TransitionDetailActivity.class);
         ActivityOptionsCompat options = null;
 
-        androidx.core.util.Pair<View, String> sePairThumb;
-        androidx.core.util.Pair<View, String> sePairButton;
+        Pair<View, String> sePairThumb;
+        Pair<View, String> sePairButton;
 
         // Check if we're running on Android 5.0 or higher
         if (LabCompatibilityManager.isLollipop()) {
 
-            sePairThumb = androidx.core.util.Pair.create(imageView, getString(R.string.logo_transition_name));
-            sePairButton = androidx.core.util.Pair.create(materialButton, getString(R.string.button_transition_name));
+            sePairThumb = Pair.create(imageView, getString(R.string.logo_transition_name));
+            sePairButton = Pair.create(materialButton, getString(R.string.button_transition_name));
 
             // create the transition animation - the images in the layouts
             // of both activities are defined with android:transitionName="robot"
@@ -75,7 +70,6 @@ public class TransitionActivity extends SimpleActivity {
 
             // start the new activity
             startActivity(intent, options.toBundle());
-
         } else {
             startActivity(intent);
         }
