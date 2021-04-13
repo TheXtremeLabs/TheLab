@@ -120,5 +120,4 @@
         tools:src="@drawable/image7"
         tools:targetApi="lollipop" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

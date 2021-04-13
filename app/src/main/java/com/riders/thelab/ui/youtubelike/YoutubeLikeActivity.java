@@ -21,18 +21,6 @@ public class YoutubeLikeActivity extends BaseActivity<YoutubeLikeView> {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        view.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        view.onStop();
-        super.onStop();
-    }
-
-    @Override
     protected void onDestroy() {
         view.onDestroy();
         super.onDestroy();

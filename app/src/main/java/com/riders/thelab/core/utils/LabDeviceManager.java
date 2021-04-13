@@ -8,16 +8,33 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
 
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.FragmentActivity;
+
 import com.riders.thelab.utils.Constants;
 
 import java.io.File;
 import java.lang.reflect.Method;
 
+import co.infinum.goldfinger.Goldfinger;
+import co.infinum.goldfinger.crypto.CipherCrypter;
+import co.infinum.goldfinger.crypto.CipherFactory;
+import co.infinum.goldfinger.crypto.impl.AesCipherFactory;
+import co.infinum.goldfinger.crypto.impl.Base64CipherCrypter;
+import co.infinum.goldfinger.rx.RxGoldfinger;
 import timber.log.Timber;
 
 public class LabDeviceManager {
 
+    //FingerPrint variables
+    private static Goldfinger goldFinger;
+    // RX approach
+    private static RxGoldfinger rxGoldFinger;
+    private static Goldfinger.PromptParams params;
+
+    /* Cannot instantiate this class */
     private LabDeviceManager() {
+        Timber.d("LabDeviceManager");
     }
 
     public static void logDeviceInfo() {
@@ -175,6 +192,12 @@ public class LabDeviceManager {
     }
 
 
+    /**
+     * Get DisplayMetrics for below Android 10 devices
+     *
+     * @param activity
+     * @return
+     */
     public static DisplayMetrics getDisplayMetrics(Activity activity) {
         //Retrieve Screen's height and width
         DisplayMetrics metrics = new DisplayMetrics();
@@ -186,6 +209,12 @@ public class LabDeviceManager {
         return metrics;
     }
 
+    /**
+     * Get WindowMetrics for above and equal Android 10 devices
+     *
+     * @param activity
+     * @return
+     */
     @SuppressLint("NewApi")
     public static WindowMetrics getDisplayMetricsAndroid10(Activity activity) {
         WindowManager manager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
@@ -224,10 +253,17 @@ public class LabDeviceManager {
                 || canExecuteCommand("/system/bin/which su") || canExecuteCommand("which su");
     }
 
-    // executes a command on the system
+
+    /**
+     * Check if the device can execute sudo sh command
+     *
+     * @param command
+     * @return
+     */
     private static boolean canExecuteCommand(String command) {
         boolean executedSuccesfully;
         try {
+            // executes a command on the system
             Runtime.getRuntime().exec(command);
             executedSuccesfully = true;
         } catch (Exception e) {
@@ -235,5 +271,92 @@ public class LabDeviceManager {
         }
 
         return executedSuccesfully;
+    }
+
+    /**
+     * Init the basic GoldFinger variable
+     *
+     * @param context
+     * @param activity
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public static void initFingerPrint(final Context context, final FragmentActivity activity) {
+
+        // fingerprint instantiation
+        goldFinger = new Goldfinger.Builder(context).build();
+
+        // fingerprint prompt instantiation
+        initGoldFingerPromptParams(activity);
+    }
+
+    /**
+     * Init the RxGoldFinger variable
+     *
+     * @param context
+     * @param activity
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public static void initFingerPrintWithRx(final Context context, final FragmentActivity activity) {
+        CipherFactory factory = new AesCipherFactory(context);
+        CipherCrypter crypter = new Base64CipherCrypter();
+
+        rxGoldFinger = new RxGoldfinger.Builder(context)
+                .logEnabled(true)
+                .cipherFactory(factory)
+                .cipherCrypter(crypter)
+                .build();
+
+        // fingerprint prompt instantiation
+        initGoldFingerPromptParams(activity);
+    }
+
+    private static void initGoldFingerPromptParams(final FragmentActivity activity) {
+        params = new Goldfinger.PromptParams.Builder(activity)
+                .title("Title")
+                .negativeButtonText("Cancel")
+                .description("Description")
+                .subtitle("Subtitle")
+                .build();
+    }
+
+    /**
+     * This method returns if the device has fingerprint hardware or not
+     *
+     * @return
+     */
+    public static boolean hasFingerPrintHardware() {
+        if (null != goldFinger)
+            return goldFinger.hasFingerprintHardware();
+        else if (null != rxGoldFinger)
+            return rxGoldFinger.hasFingerprintHardware();
+
+        return false;
+    }
+
+    /**
+     * Returns GoldFinger (using the basic approach) variable
+     *
+     * @return
+     */
+    public static Goldfinger getGoldFinger() {
+        return goldFinger;
+    }
+
+    /**
+     * Returns GoldFinger (using the reactiveX approach) variable
+     *
+     * @return
+     */
+    public static RxGoldfinger getRxGoldFinger() {
+        return rxGoldFinger;
+    }
+
+    /**
+     * Returns GoldFinger prompt params
+     *
+     * @return
+     */
+    public static Goldfinger.PromptParams getGoldFingerPromptParams() {
+        return params;
     }
 }

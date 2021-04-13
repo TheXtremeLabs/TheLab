@@ -79,8 +79,8 @@ public class DeviceInformationView extends BaseViewImpl<DeviceInformationPresent
         tvDeviceAndroidRelease.setText(deviceInformation.getAndroidRelease());
         tvDeviceRooted.setText(
                 deviceInformation.isRooted()
-                        ? context.getString(R.string.yes)
-                        : context.getString(R.string.no));
+                        ? context.getString(R.string.action_yes)
+                        : context.getString(R.string.action_no));
     }
 
 
