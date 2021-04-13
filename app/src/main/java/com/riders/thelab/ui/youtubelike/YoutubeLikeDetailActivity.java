@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Window;
@@ -23,6 +22,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.Video;
 import com.riders.thelab.ui.base.SimpleActivity;
 
@@ -36,8 +36,10 @@ import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 @SuppressLint({"NonConstantResourceId", "NewApi"})
 public class YoutubeLikeDetailActivity extends SimpleActivity {
 
+    private Context mContext;
     //Bundle Arguments
     public static final String VIDEO_OBJECT_ARG = "content_video";
+
     @BindView(R.id.content_image_thumb)
     ShapeableImageView imageThumb;
     @BindView(R.id.content_image_thumb_blurred)
@@ -46,26 +48,27 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
     MaterialTextView titleTextView;
     @BindView(R.id.content_text_description)
     MaterialTextView descriptionTextView;
-    private Context mContext;
+
     private Video item;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         Window w = getWindow();
         w.setAllowEnterTransitionOverlap(true);
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        super.onCreate(savedInstanceState);
 
         /*
         Where myBitmap is the Image from which you want to extract the color.
         Also for API 21 and above, you'll need to add the following flags if you're planning to color the status bar and navigation bar:
          */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (LabCompatibilityManager.isLollipop()) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
         setContentView(R.layout.activity_youtube_detail);
 
+        // Tell the framework to wait.
         supportPostponeEnterTransition();
         mContext = this;
 
@@ -126,13 +129,10 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
 
                         //demande à la palette de générer ses coleurs, de façon asynchrone
                         //afin de ne pas bloquer l'interface graphique
-                        new Palette.Builder(bitmap).generate(new Palette.PaletteAsyncListener() {
-                            @Override
-                            public void onGenerated(Palette palette) {
+                        new Palette.Builder(bitmap).generate(palette -> {
 
-                                //lorsque la palette est générée, je l'utilise sur mes textViews
-                                generatePalette(palette);
-                            }
+                            //lorsque la palette est générée, je l'utilise sur mes textViews
+                            generatePalette(palette);
                         });
                         return false;
                     }
@@ -141,7 +141,6 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
 
         titleTextView.setText(item.getName());
         descriptionTextView.setText(item.getDescription());
-
     }
 
 
@@ -163,7 +162,7 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
         {
             Palette.Swatch mutedDark = palette.getDarkMutedSwatch();
             if (mutedDark != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (LabCompatibilityManager.isLollipop()) {
                     getWindow().setStatusBarColor(mutedDark.getRgb());
                 }
             }

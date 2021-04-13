@@ -13,10 +13,6 @@ public interface YoutubeLikeContract {
 
     interface View extends BaseView {
 
-        void onStart();
-
-        void onStop();
-
         void showLoader();
 
         void hideLoader();
@@ -33,10 +29,10 @@ public interface YoutubeLikeContract {
         void fetchContent();
 
         void onYoutubeItemClicked(
-                @NonNull ShapeableImageView thumbShapeableImageView,
-                @NonNull MaterialTextView titleTextView,
-                @NonNull MaterialTextView descriptionTextView,
-                Video video,
-                int position);
+                @NonNull final ShapeableImageView thumbShapeableImageView,
+                @NonNull final MaterialTextView titleTextView,
+                @NonNull final MaterialTextView descriptionTextView,
+                final Video video,
+                final int position);
     }
 }

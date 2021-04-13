@@ -54,12 +54,10 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
             Timber.e("No Internet connection");
 
             getView().onNoConnectionDetected();
-
             UIManager.showActionInToast(activity, activity.getResources().getString(R.string.pas_de_connexion));
-
         } else {
 
-            getView().setAdapter();
+            getView().initAdapter();
 
             Timber.e("Fetch Content");
             makeRESTCallVideosData();
@@ -74,6 +72,8 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
                         videos -> {
                             if (videos.isEmpty()) {
                                 getView().onFetchError();
+                                getView().hideLoader();
+                                return;
                             }
 
                             getView().hideLoader();
@@ -89,11 +89,11 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
 
     @Override
     public void onYoutubeItemClicked(
-            @NonNull ShapeableImageView thumbShapeableImageView,
-            @NonNull MaterialTextView titleTextView,
-            @NonNull MaterialTextView descriptionTextView,
-            Video video,
-            int position) {
+            @NonNull final ShapeableImageView thumbShapeableImageView,
+            @NonNull final MaterialTextView titleTextView,
+            @NonNull final MaterialTextView descriptionTextView,
+            final Video video,
+            final int position) {
 
         Timber.e("Click on : " + position + ", " + video.getName());
 
@@ -109,7 +109,7 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
         intent.putExtra(YoutubeLikeDetailActivity.VIDEO_OBJECT_ARG, video);
 
         // Check if we're running on Android 5.0 or higher
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (LabCompatibilityManager.isLollipop()) {
 
             sePairThumb = Pair.create(thumbShapeableImageView, activity.getString(R.string.thumb_transition_name));
             sePairTitle = Pair.create(titleTextView, activity.getString(R.string.title_transition_name));
@@ -118,10 +118,12 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
             options =
                     ActivityOptionsCompat.
                             makeSceneTransitionAnimation(
-                                    activity,
+                                    this.activity,
                                     sePairThumb, sePairTitle, sePairDescription);
         }
 
+        // Call navigator to switch activity with or without transition according
+        // to the device's version running the application
         navigator.callYoutubeDetailActivity(
                 intent,
                 !LabCompatibilityManager.isLollipop()
