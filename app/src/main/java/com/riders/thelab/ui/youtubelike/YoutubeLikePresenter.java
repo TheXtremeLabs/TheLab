@@ -54,7 +54,7 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
             Timber.e("No Internet connection");
 
             getView().onNoConnectionDetected();
-            UIManager.showActionInToast(activity, activity.getResources().getString(R.string.pas_de_connexion));
+            UIManager.showActionInToast(activity, activity.getResources().getString(R.string.network_status_disconnected));
         } else {
 
             getView().initAdapter();
