@@ -11,12 +11,14 @@
         android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginTop="@dimen/ultra_big_margin"
         android:layout_marginEnd="@dimen/medium_margin"
+        android:gravity="center_horizontal"
         android:text="@string/click_on_display_button_message"
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Material.Display2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="NewApi" />
 
     <LinearLayout
         android:id="@+id/button_custom"
@@ -31,11 +33,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UnusedAttribute"
+        tools:targetApi="m">
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:text="@string/display_toast"
             android:textAlignment="center"
             android:textSize="22sp"
@@ -79,20 +84,5 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintStart_toEndOf="@id/display_toast_btn" />
-
-
-    <!--<com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/progressIndicator"
-        style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/medium_margin"
-        android:indeterminate="true"
-        android:indeterminateDuration="3000"
-        android:indeterminateOnly="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/right_guideline"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:indeterminateTint="@color/black" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

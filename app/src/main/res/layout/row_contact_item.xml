@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <!-- Background view (delete buttons) -->
     <RelativeLayout
         android:id="@+id/view_background"
         android:layout_width="match_parent"
@@ -20,7 +22,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/row_padding"
             android:layout_marginRight="@dimen/row_padding"
-            android:src="@drawable/ic_delete" />
+            app:srcCompat="@drawable/ic_delete" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
@@ -35,13 +37,13 @@
             android:textSize="13sp" />
     </RelativeLayout>
 
-
+    <!-- foreground view (card view item) -->
     <RelativeLayout
         android:id="@+id/view_foreground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.card.MaterialCardView xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_contact_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,6 +94,5 @@
                     tools:text="+596 123 520 14" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
-
     </RelativeLayout>
 </FrameLayout>

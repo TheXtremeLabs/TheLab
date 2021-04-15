@@ -1,34 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    tools:background="@color/default_dark"
     tools:context=".ui.youtubelike.YoutubeLikeActivity">
 
     <LinearLayout
         android:id="@+id/no_connection_linear_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal|center_vertical"
+        android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/extra_big_margin_tablet"
+            android:layout_height="@dimen/extra_big_margin_tablet"
+            android:layout_marginBottom="@dimen/small_margin_tablet"
             android:adjustViewBounds="true"
             android:contentDescription="no connection icon"
-            android:padding="16dp"
-            android:src="@drawable/ic_no_connection"
+            app:srcCompat="@drawable/ic_no_connection"
             tools:ignore="HardcodedText" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pas_de_connexion"
-            android:textSize="20sp" />
+            android:layout_marginTop="@dimen/small_margin_tablet"
+            android:text="@string/network_status_disconnected"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/network_check_connection"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
     </LinearLayout>
 
     <ProgressBar
@@ -46,7 +56,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:itemCount="3"
+        tools:listitem="@layout/row_youtube_like_item"
+        tools:visibility="gone">
 
     </androidx.recyclerview.widget.RecyclerView>
 
