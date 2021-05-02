@@ -11,7 +11,6 @@ import com.riders.thelab.ui.base.BaseActivity;
 
 public class PaletteActivity extends BaseActivity<PaletteView> {
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 

@@ -2,13 +2,14 @@ package com.riders.thelab.ui.palette;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 import androidx.palette.graphics.Palette;
 
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.ui.base.BaseViewImpl;
 import com.riders.thelab.utils.Constants;
 
@@ -21,6 +22,8 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class PaletteView extends BaseViewImpl<PalettePresenter>
         implements PaletteContract.View {
+    // TAG & Context
+    private PaletteActivity context;
 
     //Views
     @BindView(R.id.palette_image)
@@ -37,9 +40,6 @@ public class PaletteView extends BaseViewImpl<PalettePresenter>
     MaterialTextView textMutedLight;
     @BindView(R.id.textMutedDark)
     MaterialTextView textMutedDark;
-    // TAG & Context
-    private PaletteActivity context;
-
 
     @Inject
     PaletteView(PaletteActivity context) {
@@ -55,25 +55,22 @@ public class PaletteView extends BaseViewImpl<PalettePresenter>
 
         // InitViews
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
-        Timber.i("View initialized");
-
-        //getImage();
 
         getPresenter().loadImage(imageView, Constants.PALETTE_URL);
     }
 
-
     @Override
-    public void onLoadingImageSuccessful(Bitmap bitmap) {
-        Timber.i("Image is correctly downloaded");
+    public void onLoadingImageSuccessful(Drawable drawable) {
+        try {
+            Bitmap mBitmap = UIManager.drawableToBitmap(drawable);
 
-        //retrouver le bitmap téléchargé par Picasso
-        bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-
-        //demande à la palette de générer ses coleurs, de façon asynchrone
-        //afin de ne pas bloquer l'interface graphique
-        //lorsque la palette est générée, je l'utilise sur mes textViews
-        new Palette.Builder(bitmap).generate(this::appliquerPalette);
+            //demande à la palette de générer ses coleurs, de façon asynchrone
+            //afin de ne pas bloquer l'interface graphique
+            //lorsque la palette est générée, je l'utilise sur mes textViews
+            new Palette.Builder(mBitmap).generate(this::appliquerPalette);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -137,7 +134,6 @@ public class PaletteView extends BaseViewImpl<PalettePresenter>
 
     @Override
     public void onDestroy() {
-
         getPresenter().detachView();
         context = null;
     }
