@@ -52,8 +52,24 @@ android {
             viewBinding true
         }
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            debuggable true
+
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type.
+            minifyEnabled true
+
+            // Enables resource shrinking, which is performed by the
+            // Android Gradle plugin.
+            shrinkResources true
+
+            // Includes the default ProGuard rules files that are packaged with
+            // the Android Gradle plugin. To learn more, go to the section about
+            // R8 configuration files.
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+
         }
     }
 
@@ -84,7 +100,9 @@ android {
     // Watch the memory
     dexOptions {
         javaMaxHeapSize = '4g'
+        preDexLibraries = false
     }
+
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -165,9 +183,6 @@ dependencies {
     implementation rootProject.ext.generalDependencies.butterknife
     annotationProcessor rootProject.ext.generalDependencies.butterknifeAnnotation
 
-    // Picasso
-    implementation rootProject.ext.generalDependencies.picasso
-
     // Glide
     implementation rootProject.ext.generalDependencies.glide
     annotationProcessor rootProject.ext.generalDependencies.glideAnnotation
@@ -182,14 +197,12 @@ dependencies {
 
     // OkHttp
     // define a BOM and its version
-    implementation(platform(rootProject.ext.generalDependencies.okHttpBom))
+//    implementation(platform(rootProject.ext.generalDependencies.okHttpBom))
 
     // define any required OkHttp artifacts without version
     implementation rootProject.ext.generalDependencies.okHttp
     implementation rootProject.ext.generalDependencies.okHttpLogging
 
-    // Gson
-    implementation rootProject.ext.generalDependencies.gson
     // Moshi
     implementation rootProject.ext.generalDependencies.moshi
 

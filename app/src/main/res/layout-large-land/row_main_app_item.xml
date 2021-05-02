@@ -55,10 +55,10 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                app:layout_constraintWidth_percent=".5"
                 android:layout_height="match_parent"
                 android:background="@drawable/left_background_gradient"
                 android:orientation="horizontal"
+                app:layout_constraintWidth_percent=".5"
                 tools:ignore="MissingConstraints" />
 
             <androidx.constraintlayout.widget.Guideline
@@ -93,6 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center|start"
+                    android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     tools:ignore="NewApi"
@@ -104,6 +105,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center|start"
+                    android:textColor="@color/white"
                     android:textStyle="normal"
                     tools:ignore="NewApi"
                     tools:text="App description"

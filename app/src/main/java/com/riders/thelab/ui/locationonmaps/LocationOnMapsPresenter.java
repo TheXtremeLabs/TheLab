@@ -8,8 +8,9 @@ import com.riders.thelab.ui.base.BasePresenterImpl;
 
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.disposables.Disposable;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 public class LocationOnMapsPresenter extends BasePresenterImpl<LocationOnMapsView>

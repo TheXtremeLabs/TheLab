@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
@@ -43,6 +44,7 @@ public class CustomToastActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         if (LabCompatibilityManager.isLollipop()) {
             Window w = getWindow();
@@ -57,6 +59,13 @@ public class CustomToastActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.activity_title_custom_toast));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(false);
     }
 
     @OnClick(R.id.button_custom)

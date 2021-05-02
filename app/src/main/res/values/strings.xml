@@ -157,6 +157,9 @@
     <string name="activity_title_detail_contacts">Detail Contact</string>
     <string name="activity_title_add_new_contact">Add Contact</string>
     <string name="delete">DELETE</string>
+    <string name="contact_no_record_found">No record found !</string>
+    <string name="add_a_new_contact_msg">Do you want to add a new contact ?</string>
+    <string name="btn_add_a_new_contact">Add a new contact</string>
 
     <string name="button_update">Update</string>
     <string name="button_add">Add</string>

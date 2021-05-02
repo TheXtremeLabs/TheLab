@@ -12,10 +12,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
 
 public class LabRepository {
 
@@ -55,7 +56,8 @@ public class LabRepository {
     public Maybe<List<Long>> insertAllCities(final List<City> dtoCities) {
 
         List<CityModel> citiesToDatabase = new ArrayList<>(CityMapper.getCityList(dtoCities));
-        return weatherDao.insertAllRX(citiesToDatabase)
+        return weatherDao
+                .insertAllRX(citiesToDatabase)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -95,6 +97,4 @@ public class LabRepository {
     public void clearData() {
         contactDao.deleteAll();
     }
-
-
 }

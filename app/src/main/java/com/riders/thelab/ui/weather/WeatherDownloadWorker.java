@@ -20,7 +20,8 @@ import com.riders.thelab.utils.Validator;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.schedulers.Schedulers;
+
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 @SuppressLint("RestrictedApi")
