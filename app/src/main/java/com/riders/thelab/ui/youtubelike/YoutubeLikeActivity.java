@@ -7,6 +7,7 @@ import android.view.Window;
 import androidx.annotation.Nullable;
 
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.ui.base.BaseActivity;
 
 public class YoutubeLikeActivity extends BaseActivity<YoutubeLikeView> {
@@ -14,8 +15,11 @@ public class YoutubeLikeActivity extends BaseActivity<YoutubeLikeView> {
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        Window w = getWindow();
-        w.setAllowEnterTransitionOverlap(true);
+        if (LabCompatibilityManager.isLollipop()) {
+            Window w = getWindow();
+            w.setAllowEnterTransitionOverlap(true);
+        }
+
         setContentView(R.layout.activity_youtube);
         super.onCreate(savedInstanceState);
     }

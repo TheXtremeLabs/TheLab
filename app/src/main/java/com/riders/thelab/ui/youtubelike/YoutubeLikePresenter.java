@@ -1,7 +1,10 @@
 package com.riders.thelab.ui.youtubelike;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.view.View;
 
@@ -49,19 +52,37 @@ public class YoutubeLikePresenter extends BasePresenterImpl<YoutubeLikeView>
     public void fetchContent() {
         Timber.d("fetchContent()");
 
+        boolean isConnected = false;
+
         //Test the internet's connection
-        if (!LabNetworkManager.isConnected(activity)) {
-            Timber.e("No Internet connection");
+        if (!LabCompatibilityManager.isLollipop()) {
+            ConnectivityManager connMgr =
+                    (ConnectivityManager) activity.getSystemService(Activity.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            isConnected = networkInfo != null && networkInfo.isConnected();
 
-            getView().onNoConnectionDetected();
-            UIManager.showActionInToast(activity, activity.getResources().getString(R.string.network_status_disconnected));
+            if (!isConnected) {
+                Timber.e("No Internet connection");
+
+                getView().onNoConnectionDetected();
+                UIManager.showActionInToast(activity, activity.getResources().getString(R.string.network_status_disconnected));
+                return;
+            }
+
         } else {
+            if (!LabNetworkManager.isConnected(activity)) {
+                Timber.e("No Internet connection");
 
-            getView().initAdapter();
-
-            Timber.e("Fetch Content");
-            makeRESTCallVideosData();
+                getView().onNoConnectionDetected();
+                UIManager.showActionInToast(activity, activity.getResources().getString(R.string.network_status_disconnected));
+            }
         }
+
+        getView().initAdapter();
+
+        Timber.e("Fetch Content");
+        makeRESTCallVideosData();
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)

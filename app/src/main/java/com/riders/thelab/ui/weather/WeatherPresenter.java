@@ -1,7 +1,10 @@
 package com.riders.thelab.ui.weather;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import androidx.work.Constraints;
 import androidx.work.Data;
@@ -13,8 +16,11 @@ import androidx.work.WorkRequest;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabLocationManager;
 import com.riders.thelab.core.utils.LabNetworkManager;
+import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.LabRepository;
 import com.riders.thelab.data.local.model.weather.CityModel;
 import com.riders.thelab.data.remote.LabService;
@@ -27,8 +33,8 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 public class WeatherPresenter extends BasePresenterImpl<WeatherView>
@@ -66,18 +72,35 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
         compositeDisposable = new CompositeDisposable();
     }
 
+
     @SuppressLint("NewApi")
     @Override
     public void getCitiesData() {
 
-        if (!LabNetworkManager.isConnected(activity)) {
-            getView().hideLoader();
-            getView().onNoConnectionDetected();
-            return;
+        boolean isConnected = false;
+        if (!LabCompatibilityManager.isLollipop()) {
+            ConnectivityManager connMgr =
+                    (ConnectivityManager) activity.getSystemService(Activity.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            isConnected = networkInfo != null && networkInfo.isConnected();
+
+            if (!isConnected) {
+                Timber.e("No Internet connection");
+
+                getView().onNoConnectionDetected();
+                UIManager.showActionInToast(activity, activity.getResources().getString(R.string.network_status_disconnected));
+                return;
+            }
+
+        } else {
+            if (!LabNetworkManager.isIsConnected()) {
+                getView().hideLoader();
+                getView().onNoConnectionDetected();
+                return;
+            }
         }
 
         getView().showLoader();
-
 
         // First step
         // Call repository to check if there is data in database
