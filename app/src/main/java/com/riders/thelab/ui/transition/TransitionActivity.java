@@ -2,11 +2,13 @@ package com.riders.thelab.ui.transition;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 
@@ -32,12 +34,16 @@ public class TransitionActivity extends SimpleActivity {
     @BindView(R.id.button_next_activity)
     MaterialButton materialButton;
 
-    @SuppressLint("NewApi")
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window w = getWindow();
-        w.setAllowEnterTransitionOverlap(true);
+
+        if (LabCompatibilityManager.isLollipop()) {
+            Window w = getWindow();
+            w.setAllowEnterTransitionOverlap(true);
+        }
+
         setContentView(R.layout.activity_transition);
 
         ButterKnife.bind(this);

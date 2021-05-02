@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
-import com.riders.thelab.core.views.toast.TheLabToast;
-import com.riders.thelab.core.views.toast.ToastTypeEnum;
+import com.riders.thelab.core.utils.UIManager;
+import com.riders.thelab.data.local.bean.SnackBarType;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,11 +32,20 @@ public class VectorDrawablesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vector_drawables);
+        if (!LabCompatibilityManager.isLollipop()) {
+            UIManager.showActionInSnackBar(
+                    this,
+                    findViewById(android.R.id.content),
+                    "Device running API blelow API 21 (Lollipop), canoont launch this activity",
+                    SnackBarType.ALERT,
+                    "LEAVE",
+                    v -> finish());
+        } else {
+            setContentView(R.layout.activity_vector_drawables);
 
-        ButterKnife.bind(this);
-
-        getSupportActionBar().setTitle(getString(R.string.activity_title_vector_drawables));
+            ButterKnife.bind(this);
+            getSupportActionBar().setTitle(getString(R.string.activity_title_vector_drawables));
+        }
     }
 
 
@@ -46,10 +55,17 @@ public class VectorDrawablesActivity extends AppCompatActivity {
         super.onResume();
 
         if (!LabCompatibilityManager.isLollipop()) {
-            new TheLabToast.Builder(this)
+            UIManager.showActionInSnackBar(
+                    this,
+                    findViewById(android.R.id.content),
+                    "Device running API blelow API 21 (Lollipop), canoont launch this activity",
+                    SnackBarType.ALERT,
+                    "LEAVE",
+                    v -> finish());
+            /*new TheLabToast.Builder(this)
                     .setType(ToastTypeEnum.ERROR)
                     .setText("Your device's API cannot run this animation. Requires target API 21 (Lollipop)")
-                    .show();
+                    .show();*/
             return;
         }
 
