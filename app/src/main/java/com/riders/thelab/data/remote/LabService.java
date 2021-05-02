@@ -14,9 +14,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import timber.log.Timber;
 
@@ -71,16 +71,16 @@ public class LabService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<WeatherResponse> getWeather(String city) {
+    /*public Single<WeatherResponse> getWeather(String city) {
         Timber.e("getWeather()");
         return weatherApiService
                 .getCurrentWeatherByCityName(city)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-    }
+    }*/
 
 
-    public Single<WeatherResponse> getWeather(Location location) {
+    /*public Single<WeatherResponse> getWeather(Location location) {
         Timber.e("getWeather()");
 
         double lat = location.getLatitude();
@@ -90,10 +90,10 @@ public class LabService {
                 .getCurrentWeatherByGeographicCoordinates(lat, lon)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-    }
+    }*/
 
 
-    public Single<WeatherResponse> getWeather(Object object) {
+    public Single<WeatherResponse> getWeather(final Object object) {
         Timber.e("getWeather()");
 
         if (null == object) {
@@ -101,22 +101,27 @@ public class LabService {
             return null;
         }
 
+        Single<WeatherResponse> rxSingleWeatherRequest = null;
+
         if (object instanceof String) {
-            return weatherApiService
-                    .getCurrentWeatherByCityName((String) object)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
+            rxSingleWeatherRequest =
+                    weatherApiService
+                            .getCurrentWeatherByCityName((String) object);
         } else if (object instanceof Location) {
             double lat = ((Location) object).getLatitude();
             double lon = ((Location) object).getLongitude();
 
-            return weatherApiService
-                    .getCurrentWeatherByGeographicCoordinates(lat, lon)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
+            rxSingleWeatherRequest =
+                    weatherApiService
+                            .getCurrentWeatherByGeographicCoordinates(lat, lon);
         }
 
-        return null;
+        return
+                rxSingleWeatherRequest == null
+                        ? null
+                        : rxSingleWeatherRequest
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<ResponseBody> getBulkWeatherCitiesFile() {

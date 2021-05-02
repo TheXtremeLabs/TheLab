@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabNetworkManager;
 
 
@@ -35,10 +36,13 @@ public class ConnectivityReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent arg1) {
 
-        boolean isConnected = LabNetworkManager.isConnected(context);
+        if (LabCompatibilityManager.isLollipop()) {
 
-        if (connectivityReceiverListener != null) {
-            connectivityReceiverListener.onNetworkConnectionChanged(isConnected);
+            boolean isConnected = LabNetworkManager.isConnected(context);
+
+            if (connectivityReceiverListener != null) {
+                connectivityReceiverListener.onNetworkConnectionChanged(isConnected);
+            }
         }
     }
 

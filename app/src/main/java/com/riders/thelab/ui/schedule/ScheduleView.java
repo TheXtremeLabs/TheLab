@@ -120,7 +120,9 @@ public class ScheduleView extends BaseViewImpl<SchedulePresenter>
 
     @Override
     public void onDestroy() {
-        context.unbindService(mServiceConnection);
+        if (null != mServiceConnection)
+            context.unbindService(mServiceConnection);
+
         if (mPendingIntent != null && mAlarmManager != null) {
             mAlarmManager.cancel(mPendingIntent);
         }

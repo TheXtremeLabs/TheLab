@@ -42,7 +42,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.rxjava3.observers.DisposableSingleObserver;
+
+import io.reactivex.observers.DisposableSingleObserver;
 import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")

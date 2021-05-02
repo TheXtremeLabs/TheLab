@@ -19,9 +19,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -34,6 +34,9 @@ public class LabNetworkManager extends ConnectivityManager.NetworkCallback {
         this.listener = listener;
     }
 
+    public static boolean isIsConnected() {
+        return isConnected;
+    }
     /**
      * Check the Internet connection
      *
@@ -46,7 +49,7 @@ public class LabNetworkManager extends ConnectivityManager.NetworkCallback {
             ConnectivityManager connMgr =
                     (ConnectivityManager) context.getSystemService(Activity.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            return networkInfo != null && networkInfo.isConnected();
+            isConnected = networkInfo != null && networkInfo.isConnected();
         }
 
         return isConnected;
@@ -130,6 +133,5 @@ public class LabNetworkManager extends ConnectivityManager.NetworkCallback {
         Timber.d("Progress value : %d percent", progress);
         liveDataHelper.updateDownloadPer(progress);
     }
-
 
 }
