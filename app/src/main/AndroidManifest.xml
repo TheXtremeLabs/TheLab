@@ -148,11 +148,11 @@
         <activity
             android:name=".ui.recycler.RecyclerViewActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
+            android:theme="@style/Theme.TheLab"/>
         <activity
             android:name=".ui.recycler.RecyclerViewDetailActivity"
             android:parentActivityName=".ui.recycler.RecyclerViewActivity"
-            android:theme="@style/Theme.TheLab" />
+            android:theme="@style/RecyclerTheme"/>
 
         <activity
             android:name=".ui.tabs.WorkingTabsActivity"

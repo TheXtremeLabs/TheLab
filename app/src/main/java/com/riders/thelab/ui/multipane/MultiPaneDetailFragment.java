@@ -25,6 +25,8 @@ import com.riders.thelab.data.local.model.Movie;
 
 import org.parceler.Parcels;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -98,8 +100,8 @@ public class MultiPaneDetailFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         unbinder.unbind();
+        super.onDestroyView();
     }
     ///////////////////////////////////////////
     //
@@ -135,7 +137,7 @@ public class MultiPaneDetailFragment extends Fragment {
 
         Timber.e("URL RECEIVE : %s", movie.getUrlThumbnail());
 
-        Glide.with(mContext)
+        Glide.with(Objects.requireNonNull(getActivity()))
                 .load(movie.getUrlThumbnail())
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -158,7 +160,7 @@ public class MultiPaneDetailFragment extends Fragment {
 
                             Timber.e("Picasso - Image bien téléchargée et affichée !!!");
                         }
-                        return true;
+                        return false;
                     }
                 })
                 .into(ivMovieImage);
@@ -167,5 +169,4 @@ public class MultiPaneDetailFragment extends Fragment {
         tvGenreDetail.setText(movie.getGenre());
         tvYearDetail.setText(movie.getYear());
     }
-
 }
