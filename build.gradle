@@ -157,8 +157,9 @@ ext {
 
             /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
             retrofit              : "com.squareup.retrofit2:retrofit:$retrofit2Version",
-            retrofitConverterGson : "com.squareup.retrofit2:converter-gson:$retrofit2Version",
             retrofitRxJava        : "com.squareup.retrofit2:adapter-rxjava2:$retrofit2Version",
+            retrofitConverterGson : "com.squareup.retrofit2:converter-gson:$retrofit2Version",
+            retrofitConverterMoshi  : "com.squareup.retrofit2:converter-moshi:$retrofit2Version",
 //            retrofitRxJava        : "com.squareup.retrofit2:adapter-rxjava3:$retrofit2Version",
 
             // OkHttp

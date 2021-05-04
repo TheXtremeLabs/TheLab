@@ -29,14 +29,14 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import dagger.android.support.AndroidSupportInjection;
-
-
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
@@ -51,6 +51,8 @@ public class WeatherFragment extends Fragment {
     ConstraintLayout weatherDataContainer;
     @BindView(R.id.iv_weather_icon)
     ShapeableImageView ivWeatherIcon;
+    @BindView(R.id.tv_degree_placeholder)
+    MaterialTextView tvDegreePlaceholder;
     @BindView(R.id.tv_weather_city_name)
     MaterialTextView tvWeatherCityName;
     @BindView(R.id.tv_weather_city_country)
@@ -110,7 +112,6 @@ public class WeatherFragment extends Fragment {
         LabLocationManager labLocationManager = new LabLocationManager(context);
 
         if (!labLocationManager.canGetLocation()) {
-
             Timber.e("Cannot get location please enable position");
             labLocationManager.showSettingsAlert();
         } else {
@@ -187,6 +188,9 @@ public class WeatherFragment extends Fragment {
                 .load(getWeatherIconUrl(weatherResponse.getWeather().get(0).getIcon()))
                 .into(ivWeatherIcon);
 
+        tvWeatherCityTemperature.setText(String.format(Locale.getDefault(), "%d", (int) Math.round(weatherResponse.getMain().getTemperature())));
+        tvDegreePlaceholder.setVisibility(View.VISIBLE);
+
         // Load city name
         String cityName = weatherResponse.getName() +
                 context.getResources().getString(R.string.separator_placeholder);
@@ -194,7 +198,6 @@ public class WeatherFragment extends Fragment {
         tvWeatherCityCountry.setText(weatherResponse.getSystem().getCountry());
         tvWeatherDescription.setText(weatherResponse.getWeather().get(0).getDescription());
 
-        tvWeatherCityTemperature.setText((int) Math.round(weatherResponse.getMain().getTemperature()) + "");
     }
 
     public String getWeatherIconUrl(String weatherIconId) {
@@ -205,12 +208,12 @@ public class WeatherFragment extends Fragment {
     @Override
     public void onDestroyView() {
         Timber.d("onDestroyView()");
+
+        // don't send events once the activity is destroyed
+        compositeDisposable.clear();
+
         if (null != unbinder)
             unbinder.unbind();
-
-        if (null != compositeDisposable)
-            // don't send events once the activity is destroyed
-            compositeDisposable.clear();
 
         super.onDestroyView();
     }

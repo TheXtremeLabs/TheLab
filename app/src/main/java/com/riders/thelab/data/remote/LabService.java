@@ -3,10 +3,12 @@ package com.riders.thelab.data.remote;
 import android.location.Location;
 
 import com.riders.thelab.data.local.model.Video;
+import com.riders.thelab.data.remote.api.ArtistsAPIService;
 import com.riders.thelab.data.remote.api.GoogleAPIService;
 import com.riders.thelab.data.remote.api.WeatherApiService;
 import com.riders.thelab.data.remote.api.WeatherBulkApiService;
 import com.riders.thelab.data.remote.api.YoutubeApiService;
+import com.riders.thelab.data.remote.dto.Artist;
 import com.riders.thelab.data.remote.dto.directions.Directions;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 
@@ -22,18 +24,21 @@ import timber.log.Timber;
 
 public class LabService {
 
-
-    GoogleAPIService googleAPIService;
-    YoutubeApiService youtubeApiService;
-    WeatherApiService weatherApiService;
-    WeatherBulkApiService weatherBulkApiService;
+    private final ArtistsAPIService artistsAPIService;
+    private final GoogleAPIService googleAPIService;
+    private final YoutubeApiService youtubeApiService;
+    private final WeatherApiService weatherApiService;
+    private final WeatherBulkApiService weatherBulkApiService;
 
     @Inject
-    public LabService(GoogleAPIService googleAPIService,
-                      YoutubeApiService youtubeApiService,
-                      WeatherApiService weatherApiService,
-                      WeatherBulkApiService weatherBulkApiService) {
+    public LabService(
+            ArtistsAPIService artistsAPIService,
+            GoogleAPIService googleAPIService,
+            YoutubeApiService youtubeApiService,
+            WeatherApiService weatherApiService,
+            WeatherBulkApiService weatherBulkApiService) {
 
+        this.artistsAPIService = artistsAPIService;
         this.googleAPIService = googleAPIService;
         this.youtubeApiService = youtubeApiService;
         this.weatherApiService = weatherApiService;
@@ -52,6 +57,15 @@ public class LabService {
      * GET
      * *********************
      */
+    public Single<List<Artist>> getArtists(String url) {
+        Timber.e("getArtists()");
+        return artistsAPIService
+                .getArtists(url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
     public Single<Directions> getRoutes(String origin, String destination, String key) {
         Timber.e("getRoutes()");
         return googleAPIService
@@ -70,28 +84,6 @@ public class LabService {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
-
-    /*public Single<WeatherResponse> getWeather(String city) {
-        Timber.e("getWeather()");
-        return weatherApiService
-                .getCurrentWeatherByCityName(city)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }*/
-
-
-    /*public Single<WeatherResponse> getWeather(Location location) {
-        Timber.e("getWeather()");
-
-        double lat = location.getLatitude();
-        double lon = location.getLongitude();
-
-        return weatherApiService
-                .getCurrentWeatherByGeographicCoordinates(lat, lon)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }*/
-
 
     public Single<WeatherResponse> getWeather(final Object object) {
         Timber.e("getWeather()");
