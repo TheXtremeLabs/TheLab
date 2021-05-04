@@ -17,17 +17,24 @@ import com.riders.thelab.data.local.dao.ContactDao;
 import com.riders.thelab.data.local.dao.WeatherDao;
 import com.riders.thelab.data.local.model.weather.WeatherKey;
 import com.riders.thelab.data.remote.LabService;
+import com.riders.thelab.data.remote.api.ArtistsAPIService;
 import com.riders.thelab.data.remote.api.GoogleAPIService;
 import com.riders.thelab.data.remote.api.WeatherApiService;
 import com.riders.thelab.data.remote.api.WeatherBulkApiService;
 import com.riders.thelab.data.remote.api.YoutubeApiService;
+import com.riders.thelab.data.remote.dto.Artist;
+import com.riders.thelab.data.remote.dto.ArtistsResponseJsonAdapter;
 import com.riders.thelab.utils.Constants;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -41,10 +48,12 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-//import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 import timber.log.Timber;
+
+//import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 
 @Module
 public class DataModule {
@@ -119,18 +128,18 @@ public class DataModule {
     /* Provide OkHttp for the app */
     @Provides
     @Singleton
-    @NotNull OkHttpClient provideOkHttp(int readTimeOut, long connectTimeOut) {
+    @NotNull OkHttpClient provideOkHttp() {
 
         return new OkHttpClient.Builder()
-                .readTimeout(readTimeOut, TimeUnit.SECONDS)
-                .connectTimeout(connectTimeOut, TimeUnit.SECONDS)
+                .readTimeout(TimeOut.TIME_OUT_READ.getValue(), TimeUnit.SECONDS)
+                .connectTimeout(TimeOut.TIME_OUT_CONNECTION.getValue(), TimeUnit.SECONDS)
                 .addInterceptor(chain -> {
                     Request original = chain.request();
                     // Customize the request
                     Request request = original.newBuilder()
                             .header("Content-Type", "application/json; charset=utf-8")
                             .header("Connection", "close")
-                            //.header("Content-Type", "application/json")
+//                            .header("Content-Type", "application/json")
                             .header("Accept-Encoding", "Identity")
                             .build();
 
@@ -155,13 +164,51 @@ public class DataModule {
 
         return new Retrofit.Builder()
                 .baseUrl(url)
-                .client(provideOkHttp(
-                        TimeOut.TIME_OUT_READ.getValue(),
-                        TimeOut.TIME_OUT_CONNECTION.getValue()
-                ))
+                .client(provideOkHttp())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
 //                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    @NotNull Retrofit provideRetrofitArtists(String url) {
+
+        Moshi moshi =
+                new Moshi.Builder()
+                        .add(new ArtistsResponseJsonAdapter())
+                        .build();
+        return new Retrofit.Builder()
+                .baseUrl(url)
+                .client(provideOkHttpArtists())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .build();
+    }
+
+
+    @Provides
+    @Singleton
+    @NotNull OkHttpClient provideOkHttpArtists() {
+        return new OkHttpClient.Builder()
+                .readTimeout(TimeOut.TIME_OUT_READ.getValue(), TimeUnit.SECONDS)
+                .connectTimeout(TimeOut.TIME_OUT_CONNECTION.getValue(), TimeUnit.SECONDS)
+                .addInterceptor(chain -> {
+                    Request original = chain.request();
+                    // Customize the request
+                    Request request = original.newBuilder()
+//                            .header("Content-Type", "application/json; charset=utf8")
+//                            .header("Accept", "application/json")
+                            .build();
+
+                    Response response = chain.proceed(request);
+                    response.cacheResponse();
+                    // Customize or return the response
+                    return response;
+                })
+                .addInterceptor(provideOkHttpLogger())
                 .build();
     }
 
@@ -275,6 +322,14 @@ public class DataModule {
 
     @Provides
     @Singleton
+    @NotNull ArtistsAPIService provideArtistsAPIService() {
+        return provideRetrofitArtists(Constants.BASE_ENDPOINT_GOOGLE_FIREBASE_API)
+                .create(ArtistsAPIService.class);
+    }
+
+
+    @Provides
+    @Singleton
     @NotNull GoogleAPIService provideGoogleAPIService() {
         return provideRetrofit(Constants.BASE_ENDPOINT_GOOGLE_MAPS_API).create(GoogleAPIService.class);
     }
@@ -307,6 +362,7 @@ public class DataModule {
     @Singleton
     LabService providesLabService() {
         return new LabService(
+                provideArtistsAPIService(),
                 provideGoogleAPIService(),
                 provideYoutubeApiService(),
                 provideWeatherApiService(),

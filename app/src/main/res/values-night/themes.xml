@@ -102,6 +102,12 @@
         <item name="colorAccent">@color/tabColorAccent</item>
     </style>
 
+    <!-- Recycler Theme -->
+    <style name="RecyclerTheme" parent="RecyclerStyleTheme.Base" />
+
+    <style name="RecyclerStyleTheme.Base" parent="Theme.TheLab.NoActionBar">
+    </style>
+
     <!-- SwipeDown Theme -->
     <style name="SwipeDownTheme" parent="SwipeDownStyleTheme.Base" />
 

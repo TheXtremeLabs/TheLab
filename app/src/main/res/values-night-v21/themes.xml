@@ -110,6 +110,26 @@
         <item name="colorAccent">@color/tabColorAccent</item>
     </style>
 
+
+    <!-- Recycler Theme -->
+    <style name="RecyclerTheme" parent="RecyclerStyleTheme.Base" />
+
+    <style name="RecyclerStyleTheme.Base" parent="Theme.TheLab.NoActionBar">
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
+        <item name="android:windowContentTransitions">true</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/change_image_transform
+        </item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/change_image_transform
+        </item>
+    </style>
+
+
     <!-- SwipeDown Theme -->
     <style name="SwipeDownTheme" parent="SwipeDownStyleTheme.Base" />
 

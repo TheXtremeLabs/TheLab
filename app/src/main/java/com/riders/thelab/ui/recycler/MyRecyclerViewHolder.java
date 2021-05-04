@@ -15,6 +15,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.RecyclerItem;
+import com.riders.thelab.data.remote.dto.Artist;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,7 +25,7 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
 
-    private static RecyclerItem itemSelection;
+    private static Artist itemSelection;
     private static int position;
     @BindView(R.id.row_card_view)
     public MaterialCardView cardView;
@@ -45,11 +46,12 @@ public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void bind(RecyclerItem item) {
-        nameTextView.setText(item.getName());
+    public void bind(Artist artist) {
+        Timber.d(artist.toString());
+        nameTextView.setText(artist.getArtistName());
     }
 
-    public void storeItem(final RecyclerItem item, int position) {
+    public void storeItem(final Artist item, int position) {
         Timber.d("storeItem()");
         itemSelection = item;
         MyRecyclerViewHolder.position = position;
