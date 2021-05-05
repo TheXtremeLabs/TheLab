@@ -24,6 +24,8 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
+    ndkVersion "21.3.6528147"
+
     defaultConfig {
         applicationId "com.riders.thelab"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -48,8 +50,12 @@ android {
 
     buildTypes {
         buildFeatures {
-            dataBinding true
-            viewBinding true
+            // Determines whether to support View Binding.
+            // Note that the viewBinding.enabled property is now deprecated.
+            //viewBinding = false
+            // Determines whether to support Data Binding.
+            // Note that the dataBinding.enabled property is now deprecated.
+            //dataBinding = false
         }
         release {
 
@@ -102,7 +108,6 @@ android {
         javaMaxHeapSize = '4g'
         preDexLibraries = false
     }
-
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -224,8 +229,17 @@ dependencies {
     //ThreeTen : Alternative to Android Calendar API
     implementation rootProject.ext.generalDependencies.threeten
 
+    // https://stackoverflow.com/questions/50202843/gradle-deprecated-annotation-processor-warnings-for-lombok
+    /*
+     * dependencies {
+     * compileOnly('org.projectlombok:lombok:1.16.20')
+     * annotationProcessor 'org.projectlombok:lombok:1.16.20'
+     * // compile 'org.projectlombok:lombok:1.16.20' <-- this no longer works!
+     * // other dependencies...
+     * }
+     */
     // Lombok
-    compileOnly rootProject.ext.generalDependencies.lombok
+    compileOnly (rootProject.ext.generalDependencies.lombok)
     annotationProcessor rootProject.ext.generalDependencies.lombokAnnotation
 
     // Timber : Logging library

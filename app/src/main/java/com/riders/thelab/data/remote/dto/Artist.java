@@ -7,29 +7,30 @@ import org.parceler.Parcel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
 @Setter
 @Getter
 @ToString
 @Parcel
 public class Artist {
     @Json(name = "artistName")
-    private String artistName;
+    String artistName;
     @Json(name = "firstName")
-    private String firstName;
+    String firstName;
     @Json(name = "secondName")
-    private String secondName;
+    String secondName;
     @Json(name = "lastName")
-    private String lastName;
+    String lastName;
     @Json(name = "dateOfBirth")
-    private String dateOfBirth;
+    String dateOfBirth;
     @Json(name = "origin")
-    private String origin;
+    String origin;
     @Json(name = "debutes")
-    private String debutes;
+    String debutes;
     @Json(name = "activities")
-    private String activities;
+    String activities;
     @Json(name = "urlThumb")
-    private String urlThumb;
+    String urlThumb;
     @Json(name = "description")
-    private String description;
+    String description;
 }
