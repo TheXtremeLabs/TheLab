@@ -21,6 +21,10 @@ public interface RecyclerViewContract {
 
         void onJSONURLError();
 
+        void onArtistsThumbnailsSuccessful(List<String> artistThumbnails);
+
+        void onArtistsThumbnailsError();
+
         void onFetchArtistsSuccessful(List<Artist> listOfArtists);
 
         void onFetchArtistsError();
@@ -29,6 +33,8 @@ public interface RecyclerViewContract {
     interface Presenter {
 
         void getFirebaseJSONURL();
+
+        void getFirebaseFiles();
 
         void fetchArtists(String urlPath);
     }

@@ -1,6 +1,8 @@
 package com.riders.thelab.ui.recycler;
 
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,7 @@ import androidx.transition.TransitionManager;
 
 import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
-import com.riders.thelab.data.local.model.RecyclerItem;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.remote.dto.Artist;
 
 import java.util.List;
@@ -21,15 +23,21 @@ import timber.log.Timber;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHolder> {
 
+    private Context mContext;
     private static ShapeableImageView transitionImageView;
     private final List<Artist> artistList;
+    private List<String> artistThumbnails;
     private final RecyclerClickListener listener;
     private RecyclerView recyclerView = null;
     private int mExpandedPosition = -1;
 
-    public RecyclerViewAdapter(List<Artist> artistList,
+    public RecyclerViewAdapter(@NonNull Context context,
+                               List<Artist> artistList,
+                               List<String> artistThumbnails,
                                RecyclerClickListener listener) {
+        this.mContext = context;
         this.artistList = artistList;
+        this.artistThumbnails = artistThumbnails;
         this.listener = listener;
     }
 
@@ -55,15 +63,33 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHold
     @Override
     public MyRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MyRecyclerViewHolder(
+                mContext,
                 LayoutInflater
                         .from(parent.getContext())
                         .inflate(R.layout.row_recycler_view, parent, false));
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onBindViewHolder(@NonNull final MyRecyclerViewHolder holder, final int position) {
 
         Artist artist = artistList.get(position);
+
+        if (!LabCompatibilityManager.isNougat()) {
+            for (String element : artistThumbnails) {
+                if (element.contains(artist.getUrlThumb())) {
+                    artist.setUrlThumb(element);
+                }
+            }
+        } else {
+            artist
+                    .setUrlThumb(
+                            artistThumbnails
+                                    .stream()
+                                    .filter(element -> element.contains(artist.getUrlThumb()))
+                                    .findFirst()
+                                    .orElse(""));
+        }
 
         holder.bind(artist);
 
