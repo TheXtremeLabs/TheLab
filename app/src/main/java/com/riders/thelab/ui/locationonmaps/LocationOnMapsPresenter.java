@@ -53,9 +53,7 @@ public class LocationOnMapsPresenter extends BasePresenterImpl<LocationOnMapsVie
                                         UIManager.showActionInToast(activity, directions.getStatus());
                                     }
                                 },
-                                throwable -> {
-                                    Timber.e(throwable);
-                                }
+                                Timber::e
                         );
 
         compositeDisposable.add(disposable);
