@@ -2,7 +2,6 @@ package com.riders.thelab.ui.recycler;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -12,11 +11,8 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.remote.dto.Artist;
 import com.riders.thelab.ui.base.SimpleActivity;
 import com.riders.thelab.utils.Validator;
@@ -52,9 +48,6 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
 
     Artist item;
 
-    private FirebaseAuth mAuth;
-    private FirebaseStorage storage;
-
 
     @SuppressLint("NewApi")
     @Override
@@ -71,10 +64,11 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Timber.d("item : %s", item.toString());
+
 
         collapsingToolbar.setTitle(item.getArtistName());
         collapsingToolbar.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
-//        getSupportActionBar().setTitle(itemNameDetail);
 
         appBarLayout.setExpanded(true);
 
@@ -98,7 +92,10 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
         });
 
 
-        loadWithGlide();
+        // Display image
+        Glide.with(this)
+                .load(item.getUrlThumb())
+                .into(transitionImageView);
 
         tvNameDetail.setText(item.getArtistName());
 
@@ -116,53 +113,13 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
         tvDescriptionDetail.setText(item.getDescription());
     }
 
-    private void loadWithGlide() {
 
-        Timber.d("getFirebaseFiles()");
+    @SuppressLint("NewApi")
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
-        mAuth
-                .signInAnonymously()
-                .addOnCompleteListener(
-                        this,
-                        task -> {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Timber.d("signInAnonymously:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-
-                                String bucketName = "gs://the-lab-3920e.appspot.com";
-
-                                storage = FirebaseStorage.getInstance(bucketName);
-                                // Create a storage reference from our app
-                                StorageReference storageRef = storage.getReference();
-
-                                // Create a child reference
-                                // imagesRef now points to "images"
-                                StorageReference imagesRef = storageRef.child("images/artists/" + item.getUrlThumb());
-
-                                imagesRef
-                                        .getDownloadUrl()
-                                        .addOnSuccessListener(uri -> {
-                                            // Display image
-                                            Glide.with(this)
-                                                    .load(uri.toString())
-                                                    .into(transitionImageView);
-                                        })
-                                        .addOnFailureListener(Timber::e)
-                                        .addOnCompleteListener(task1 -> {
-                                            Timber.d("onComplete()");
-                                        });
-
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Timber.w("signInAnonymously:failure %s", task.getException().toString());
-                                Toast.makeText(
-                                        this,
-                                        "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
+        if (LabCompatibilityManager.isLollipop())
+            finishAfterTransition();
     }
 }

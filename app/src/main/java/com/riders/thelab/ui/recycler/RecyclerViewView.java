@@ -3,6 +3,8 @@ package com.riders.thelab.ui.recycler;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityOptionsCompat;
@@ -22,11 +24,15 @@ import com.riders.thelab.ui.base.BaseViewImpl;
 import org.parceler.Parcels;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
@@ -35,6 +41,8 @@ public class RecyclerViewView extends BaseViewImpl<RecyclerViewPresenter>
 
     private RecyclerViewActivity context;
 
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
     @BindView(R.id.coordinatorLayout)
     CoordinatorLayout coordinatorLayout;
     @BindView(R.id.recyclerView)
@@ -76,17 +84,20 @@ public class RecyclerViewView extends BaseViewImpl<RecyclerViewPresenter>
 
     @Override
     public void showLoader() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoader() {
-
+        progressBar.setVisibility(View.GONE);
     }
+
+    private String bucketUrl;
 
     @Override
     public void onJSONURLFetched(String url) {
-        getPresenter().fetchArtists(url);
+        bucketUrl = url;
+        getPresenter().getFirebaseFiles();
     }
 
     @Override
@@ -94,20 +105,47 @@ public class RecyclerViewView extends BaseViewImpl<RecyclerViewPresenter>
 
     }
 
+    private List<String> artistThumbnails;
+
+    @Override
+    public void onArtistsThumbnailsSuccessful(List<String> artistThumbnails) {
+        this.artistThumbnails = artistThumbnails;
+        getPresenter().fetchArtists(bucketUrl);
+    }
+
+    @Override
+    public void onArtistsThumbnailsError() {
+
+    }
+
     @Override
     public void onFetchArtistsSuccessful(List<Artist> listOfArtists) {
 
-        adapter =
-                new RecyclerViewAdapter(
-                        listOfArtists,
-                        this);
+        Completable.complete()
+                .delay(3, TimeUnit.SECONDS)
+                .doOnComplete(() -> {
+                    context.runOnUiThread(() -> {
+                        hideLoader();
+                        adapter =
+                                new RecyclerViewAdapter(
+                                        context,
+                                        listOfArtists,
+                                        artistThumbnails,
+                                        this);
 
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
+                        LinearLayoutManager layoutManager
+                                = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                        mRecyclerView.setLayoutManager(layoutManager);
 
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(adapter);
+                        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                        mRecyclerView.setAdapter(adapter);
+                    });
+                })
+                .doOnError(Timber::e)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+
     }
 
     @Override

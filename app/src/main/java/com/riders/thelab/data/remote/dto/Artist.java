@@ -5,8 +5,9 @@ import com.squareup.moshi.Json;
 import org.parceler.Parcel;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
-
+@Setter
 @Getter
 @ToString
 @Parcel

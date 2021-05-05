@@ -1,7 +1,13 @@
 package com.riders.thelab.data.remote;
 
+import android.app.Activity;
 import android.location.Location;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.riders.thelab.data.local.model.Video;
 import com.riders.thelab.data.remote.api.ArtistsAPIService;
 import com.riders.thelab.data.remote.api.GoogleAPIService;
@@ -17,7 +23,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import timber.log.Timber;
@@ -51,6 +59,56 @@ public class LabService {
     // REST API
     //
     /////////////////////////////////////
+
+
+    /**
+     * **********************
+     * Google Cloud Auth
+     * *********************
+     */
+    public Single<StorageReference> getStorageReference(Activity activity) {
+        return new Single<StorageReference>() {
+            @Override
+            protected void subscribeActual(@NonNull SingleObserver<? super StorageReference> observer) {
+                FirebaseAuth mAuth;
+                final FirebaseStorage[] storage = new FirebaseStorage[1];
+
+                // Initialize Firebase Auth
+                mAuth = FirebaseAuth.getInstance();
+                mAuth
+                        .signInAnonymously()
+                        .addOnCompleteListener(
+                                activity,
+                                task -> {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Timber.d("signInAnonymously:success");
+                                        FirebaseUser user = mAuth.getCurrentUser();
+
+                                        String bucketName = "gs://the-lab-3920e.appspot.com";
+
+                                        storage[0] = FirebaseStorage.getInstance(bucketName);
+                                        // Create a storage reference from our app
+                                        StorageReference storageRef = storage[0].getReference();
+                                        observer.onSuccess(storageRef);
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Timber.w("signInAnonymously:failure %s", task.getException().toString());
+
+                                        Toast.makeText(
+                                                activity,
+                                                "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+
+                                        observer.onError(task.getException());
+                                    }
+                                });
+            }
+        }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
 
     /**
      * **********************
