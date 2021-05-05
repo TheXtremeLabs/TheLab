@@ -9,8 +9,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabDeviceManager;
@@ -110,14 +108,16 @@ public class BiometricActivity extends AppCompatActivity {
         if (!LabDeviceManager.hasFingerPrintHardware()) {
             Timber.e("The device doesn't have finger print hardware");
 
-            Snackbar
-                    .make(
+            UIManager
+                    .showActionInSnackBar(
+                            this,
                             findViewById(android.R.id.content),
                             "The device doesn't have finger print hardware",
-                            BaseTransientBottomBar.LENGTH_LONG)
-                    .setAction("LEAVE", v -> {
-                        finish();
-                    }).show();
+                            SnackBarType.ALERT,
+                            "LEAVE",
+                            v -> {
+                                finish();
+                            });
             return;
         }
 
