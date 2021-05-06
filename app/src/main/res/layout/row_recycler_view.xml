@@ -5,49 +5,85 @@
     android:id="@+id/row_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="8dp"
-    app:cardMaxElevation="8dp"
+    app:cardBackgroundColor="@color/oil"
+    app:cardCornerRadius="@dimen/small_margin"
+    app:cardElevation="@dimen/small_margin"
+    app:cardMaxElevation="@dimen/small_margin"
     app:cardPreventCornerOverlap="true"
-    app:cardUseCompatPadding="true"
-    tools:cardBackgroundColor="@color/jumbo">
+    app:cardUseCompatPadding="true">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/transition_imageView"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="@dimen/small_margin"
+            android:id="@+id/iv_background_blurred"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/thumb_height_content"
             android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/logo_colors"
-            android:transitionName="icon" />
+            android:fitsSystemWindows="true"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/logo_colors" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/small_margin"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/ultra_ultra_big_margin_tablet"
+            android:layout_marginRight="@dimen/ultra_ultra_big_margin_tablet"
+            android:background="@drawable/left_background_gradient_artist_item" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/transition_imageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="@dimen/small_margin"
+                android:layout_marginVertical="@dimen/big_medium_margin"
+                android:adjustViewBounds="true"
+                android:elevation="@dimen/small_margin"
+                android:scaleType="centerCrop"
+                android:transitionName="icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/left_guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UnusedAttribute" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/left_guideline"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.3" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/row_name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/big_margin"
                 android:text="@string/app_name"
-                android:textSize="18sp" />
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@id/left_guideline"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <RelativeLayout
                 android:id="@+id/row_details_linear_layout"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_margin"
-                android:layout_marginBottom="@dimen/small_margin"
+                android:layout_margin="@dimen/small_margin"
                 android:orientation="horizontal"
                 android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/left_guideline"
+                app:layout_constraintTop_toBottomOf="@id/row_name_text_view"
                 tools:visibility="visible">
 
                 <com.google.android.material.button.MaterialButton
@@ -57,7 +93,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
-                    android:text="@string/recycler_detail_btn_placeholder" />
+                    android:text="@string/recycler_detail_btn_placeholder"
+                    android:textColor="@color/white" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/row_delete_btn"
@@ -66,9 +103,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_delete" />
-
+                    app:srcCompat="@drawable/ic_delete" />
             </RelativeLayout>
-        </LinearLayout>
-    </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </com.google.android.material.card.MaterialCardView>

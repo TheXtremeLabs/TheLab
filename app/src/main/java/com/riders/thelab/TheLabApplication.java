@@ -94,7 +94,6 @@ public class TheLabApplication extends DaggerApplication {
         mFirebaseCrashlytics.setCrashlyticsCollectionEnabled(true);
         mFirebaseCrashlytics.setUserId("wayne");
 
-
         // Mobile ADS
         MobileAds.initialize(
                 this,

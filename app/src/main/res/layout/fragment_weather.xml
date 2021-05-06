@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/detail_backdrop_height"
-    android:background="?android:attr/colorBackground"
+    android:background="@color/dark_grey"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:background="@color/oil"
     tools:layout_height="@dimen/detail_backdrop_height">
@@ -54,6 +54,7 @@
                 style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
                 android:textSize="48sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tv_degree_placeholder"
@@ -71,11 +72,12 @@
                 android:layout_marginLeft="@dimen/extra_small_margin"
                 android:text="@string/degree_placeholder"
                 android:textSize="20sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tv_weather_city_temperature"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:textColor="@color/white" />
+                android:textColor="@color/white" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- Weather Temperature icon -->
@@ -91,7 +93,7 @@
             app:layout_constraintBottom_toTopOf="@id/middle_guideline"
             app:layout_constraintStart_toEndOf="@id/temperature_container"
             tools:text="Paris, "
-            tools:textColor="@color/white" />
+            android:textColor="@color/white" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_weather_city_country"
@@ -100,7 +102,7 @@
             app:layout_constraintBottom_toTopOf="@id/middle_guideline"
             app:layout_constraintStart_toEndOf="@id/tv_weather_city_name"
             tools:text="FR"
-            tools:textColor="@color/white" />
+            android:textColor="@color/white" />
         <!-- Weather City data -->
 
 
@@ -115,7 +117,7 @@
             app:layout_constraintStart_toEndOf="@id/temperature_container"
             app:layout_constraintTop_toBottomOf="@id/middle_guideline"
             tools:text="light rain, "
-            tools:textColor="@color/white" />
+            android:textColor="@color/white" />
         <!-- Weather Description -->
 
         <androidx.constraintlayout.widget.Guideline

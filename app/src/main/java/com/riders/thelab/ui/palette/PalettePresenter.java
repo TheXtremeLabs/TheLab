@@ -1,13 +1,16 @@
 package com.riders.thelab.ui.palette;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenterImpl;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -20,45 +23,32 @@ public class PalettePresenter extends BasePresenterImpl<PaletteView>
     PaletteActivity activity;
 
     @Inject
-    Navigator navigator;
-
-    @Inject
     PalettePresenter() {
     }
 
 
     @Override
-    public void loadImage(ShapeableImageView targetImageView, String imageURL) {
-        Picasso.get()
+    public void loadImage(final ShapeableImageView targetImageView, final String imageURL) {
+
+        Glide.with(activity)
                 .load(imageURL)
-                //.load(R.drawable.image1)
-                .fit()
-                .centerCrop()
-                .into(
-                        targetImageView,
-                        //j'écoute le chargement via picasso
-                        new Callback() {
-                            @Override
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Timber.e(e);
 
-                            //puis lorsque l'image a bien été chargée
-                            public void onSuccess() {
+                        getView().onLoadingImageFailed();
+                        return false;
+                    }
 
-                                Timber.i("Image is correctly downloaded");
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
 
-                                //retrouver le bitmap téléchargé par Picasso
-                                Bitmap bitmap = ((BitmapDrawable) targetImageView.getDrawable()).getBitmap();
-
-                                getView().onLoadingImageSuccessful(bitmap);
-
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                Timber.e(e);
-                                e.printStackTrace();
-
-                                getView().onLoadingImageFailed();
-                            }
-                        });
+                        Timber.i("Image is correctly downloaded");
+                        getView().onLoadingImageSuccessful(resource);
+                        return false;
+                    }
+                })
+                .into(targetImageView);
     }
 }

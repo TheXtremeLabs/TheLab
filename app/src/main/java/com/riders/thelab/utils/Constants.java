@@ -34,6 +34,7 @@ public class Constants {
     //REST client Base URL
     public static final String BASE_ENDPOINT_YOUTUBE = "https://raw.githubusercontent.com";
     public static final String BASE_ENDPOINT_SEARCH = "https://ajax.googleapis.com";
+    public static final String BASE_ENDPOINT_GOOGLE_FIREBASE_API = " https://firebasestorage.googleapis.com/";
     public static final String BASE_ENDPOINT_GOOGLE_MAPS_API = "https://maps.googleapis.com/maps/api/";
     public static final String BASE_ENDPOINT_GOOGLE_PLACES = "https://maps.googleapis.com/maps/api/place/";
     public static final String BASE_ENDPOINT_WEATHER = "http://api.openweathermap.org";

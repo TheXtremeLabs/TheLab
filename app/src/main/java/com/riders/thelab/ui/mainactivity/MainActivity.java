@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import com.riders.thelab.R;
@@ -19,12 +18,12 @@ import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.ui.base.BaseActivity;
 
-@SuppressLint("NewApi")
 public class MainActivity extends BaseActivity<MainActivityView>
         implements MainActivityAppClickListener {
 
     Context context;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

@@ -2,6 +2,7 @@ package com.riders.thelab.ui.multipane;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +13,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.Movie;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,8 +100,8 @@ public class MultiPaneDetailFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         unbinder.unbind();
+        super.onDestroyView();
     }
     ///////////////////////////////////////////
     //
@@ -131,59 +137,36 @@ public class MultiPaneDetailFragment extends Fragment {
 
         Timber.e("URL RECEIVE : %s", movie.getUrlThumbnail());
 
-        Picasso.get()
+        Glide.with(Objects.requireNonNull(getActivity()))
                 .load(movie.getUrlThumbnail())
-                .into(ivMovieImage, new ImageLoadedCallback(progressBar) {
+                .listener(new RequestListener<Drawable>() {
                     @Override
-                    public void onSuccess() {
-
-                        if (this.progressBar != null) {
-                            this.progressBar.setVisibility(View.GONE);
-
-                            Timber.e("Picasso - Image bien téléchargée et affichée !!!");
-                        }
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        super.onError(e);
-
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         ivMovieImage.setImageResource(R.mipmap.ic_launcher);
 
                         Timber.e("Picasso - OOOOOOOHHH CA VA PAAAAAS LAAAAA !!!");
 
-                        if (this.progressBar != null) {
-                            this.progressBar.setVisibility(View.GONE);
+                        if (progressBar != null) {
+                            progressBar.setVisibility(View.GONE);
                         }
+                        return false;
                     }
 
-                });
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+
+                        if (progressBar != null) {
+                            progressBar.setVisibility(View.GONE);
+
+                            Timber.e("Picasso - Image bien téléchargée et affichée !!!");
+                        }
+                        return false;
+                    }
+                })
+                .into(ivMovieImage);
 
         tvTitleDetail.setText(movie.getTitle());
         tvGenreDetail.setText(movie.getGenre());
         tvYearDetail.setText(movie.getYear());
-    }
-    ///////////////////////////////////////////
-    //
-    //  Class methods
-    //
-    ///////////////////////////////////////////
-
-
-    private class ImageLoadedCallback implements Callback {
-        ProgressBar progressBar;
-
-        public ImageLoadedCallback(ProgressBar progBar) {
-            progressBar = progBar;
-        }
-
-        @Override
-        public void onSuccess() {
-        }
-
-        @Override
-        public void onError(Exception e) {
-            e.printStackTrace();
-        }
     }
 }
