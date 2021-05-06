@@ -1,0 +1,100 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <bool name="isTab">false</bool>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="activity_margin">16dp</dimen>
+
+    <!-- GLOBAL -->
+
+    <!-- Smartphone -->
+    <dimen name="ultra_small_margin">2dp</dimen>
+    <dimen name="extra_small_margin">4dp</dimen>
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="medium_margin">16dp</dimen>
+    <dimen name="big_margin">24dp</dimen>
+    <dimen name="big_medium_margin">32dp</dimen>
+    <dimen name="extra_big_margin">48dp</dimen>
+    <dimen name="ultra_big_margin">56dp</dimen>
+
+    <dimen name="dots_height">30dp</dimen>
+    <dimen name="dots_margin_bottom">20dp</dimen>
+
+
+    <!-- Tablet -->
+    <dimen name="ultra_small_margin_tablet">4dp</dimen>
+    <dimen name="extra_small_margin_tablet">8dp</dimen>
+    <dimen name="small_margin_tablet">16dp</dimen>
+    <dimen name="medium_margin_tablet">24dp</dimen>
+    <dimen name="big_margin_tablet">36dp</dimen>
+    <dimen name="big_medium_margin_tablet">48dp</dimen>
+    <dimen name="extra_big_margin_tablet">64dp</dimen>
+    <dimen name="ultra_big_margin_tablet">72dp</dimen>
+    <dimen name="ultra_ultra_big_margin_tablet">96dp</dimen>
+
+    <!-- CardView -->
+    <!-- Default Card View Dimens -->
+    <dimen name="card_elevation">8dp</dimen>
+    <dimen name="max_card_image_width">344dp</dimen>
+    <dimen name="max_card_image_height">194dp</dimen>
+
+    <dimen name="activity_section_title">20sp</dimen>
+
+    <dimen name="admin_dashboard_nav_drawer_width">260dp</dimen>
+
+    <dimen name="tab_max_width">264dp</dimen>
+    <dimen name="tab_padding_bottom">16dp</dimen>
+    <dimen name="tab_label">14sp</dimen>
+    <dimen name="custom_tab_layout_height">72dp</dimen>
+
+    <dimen name="search_box_date_textSize">18sp</dimen>
+    <dimen name="search_box_time_textSize">72sp</dimen>
+
+    <dimen name="bandeau_pictures_horizontal_margin">102dp</dimen>
+    <dimen name="bandeau_pictures_vertical_margin">24dp</dimen>
+    <dimen name="bandeau_pictures_singer_name_textSize">24sp</dimen>
+    <dimen name="bandeau_pictures_singer_biography_textSize">16sp</dimen>
+
+
+    <dimen name="thumb_margin">16sp</dimen>
+    <dimen name="thumb_width">147sp</dimen>
+    <dimen name="thumb_height">82sp</dimen>
+
+
+    <dimen name="thumb_width_content">197sp</dimen>
+    <dimen name="thumb_height_content">132sp</dimen>
+
+
+    <dimen name="gridlayout_big_thumb_width">410dp</dimen>
+    <dimen name="gridlayout_small_thumb_width">200dp</dimen>
+
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="spacing_xsmall">2dp</dimen>
+    <dimen name="spacing_medium">8dp</dimen>
+    <dimen name="spacing_large">16dp</dimen>
+    <dimen name="spacing_xlarge">32dp</dimen>
+
+    <dimen name="elevation_low">9dp</dimen>
+    <dimen name="elevation_high">12dp</dimen>
+    <dimen name="status_bar_height">25dp</dimen>
+
+
+    <!-- Contacts -->
+    <dimen name="thumbnail">40dp</dimen>
+    <dimen name="row_padding">10dp</dimen>
+    <dimen name="ic_delete">30dp</dimen>
+    <dimen name="contact_name">15dp</dimen>
+    <dimen name="contact_number">12dp</dimen>
+
+    <!-- Built-in WebView -->
+    <dimen name="detail_backdrop_height">270dp</dimen>
+
+    <!-- Vector Drawables -->
+    <item name="hashtag_stroke_width" format="float" type="dimen">5</item>
+
+</resources>
