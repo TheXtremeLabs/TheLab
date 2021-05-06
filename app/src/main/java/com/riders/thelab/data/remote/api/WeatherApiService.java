@@ -4,7 +4,8 @@ package com.riders.thelab.data.remote.api;
 import com.riders.thelab.data.remote.dto.weather.Weather;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 
-import io.reactivex.rxjava3.core.Single;
+
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

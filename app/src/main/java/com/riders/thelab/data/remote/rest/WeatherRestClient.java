@@ -11,7 +11,8 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+//import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 
 public class WeatherRestClient {
 
@@ -24,7 +25,7 @@ public class WeatherRestClient {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
                 .client(provideOkHttpClient())
-                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
         bulkApiService = retrofit.create(WeatherBulkApiService.class);
@@ -70,7 +71,7 @@ public class WeatherRestClient {
                 .addInterceptor(new LabInterceptors.GzipRequestInterceptor())
                 .addInterceptor(LabInterceptors.provideLoggingInterceptor());
 
-        httpClientBuilder.build();
+        //httpClientBuilder.build();
         return httpClientBuilder.build();
     }
 

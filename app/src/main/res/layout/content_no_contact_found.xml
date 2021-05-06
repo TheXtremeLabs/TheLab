@@ -5,6 +5,7 @@
     android:id="@+id/layout_no_contacts_found"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/oil"
     tools:background="@color/oil">
 
     <LinearLayout
@@ -24,19 +25,19 @@
             android:adjustViewBounds="true"
             android:fitsSystemWindows="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_no_connection" />
+            app:srcCompat="@drawable/ic_no_connection" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/extra_small_margin"
-            android:text="No record found !"
+            android:text="@string/contact_no_record_found"
             android:textColor="@color/white" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Do you want to add a new contact ?"
+            android:text="@string/add_a_new_contact_msg"
             android:textColor="@color/white" />
 
         <com.google.android.material.button.MaterialButton
@@ -45,8 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/medium_margin"
-            android:text="Add a new contact" />
+            android:text="@string/btn_add_a_new_contact" />
 
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

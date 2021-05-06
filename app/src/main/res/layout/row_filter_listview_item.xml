@@ -17,7 +17,8 @@
         android:id="@+id/rank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/ranklabel" />
+        android:layout_toEndOf="@id/ranklabel"
+        android:layout_toRightOf="@id/ranklabel" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/countrylabel"
@@ -31,7 +32,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rank"
-        android:layout_toEndOf="@id/countrylabel" />
+        android:layout_toEndOf="@id/countrylabel"
+        android:layout_toRightOf="@id/countrylabel" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/populationlabel"
@@ -45,6 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/country"
-        android:layout_toEndOf="@id/populationlabel" />
+        android:layout_toEndOf="@id/populationlabel"
+        android:layout_toRightOf="@id/populationlabel" />
 
 </RelativeLayout>

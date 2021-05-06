@@ -571,7 +571,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
 
     @Override
     public void onLostConnection() {
-
         UIManager.showConnectionStatusInSnackBar(context, false);
 
         updateToolbarConnectionIcon(false);

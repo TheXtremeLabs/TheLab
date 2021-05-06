@@ -15,6 +15,9 @@
             android:layout_height="450dp"
             android:layout_centerHorizontal="true"
             android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logo_colors"
+            android:visibility="visible"
             tools:background="#AAA" />
 
         <LinearLayout

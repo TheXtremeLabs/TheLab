@@ -17,6 +17,8 @@ import com.riders.thelab.ui.multipane.MultipaneActivity;
 import com.riders.thelab.ui.multipane.MultipaneModule;
 import com.riders.thelab.ui.palette.PaletteActivity;
 import com.riders.thelab.ui.palette.PaletteModule;
+import com.riders.thelab.ui.recycler.RecyclerViewActivity;
+import com.riders.thelab.ui.recycler.RecyclerViewModule;
 import com.riders.thelab.ui.schedule.ScheduleActivity;
 import com.riders.thelab.ui.schedule.ScheduleModule;
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity;
@@ -51,6 +53,10 @@ public abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = LocationOnMapsModule.class)
     abstract LocationOnMapsActivity locationOnMapsActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = RecyclerViewModule.class)
+    abstract RecyclerViewActivity recyclerViewActivity();
 
     @ActivityScope
     @ContributesAndroidInjector(modules = ScheduleModule.class)

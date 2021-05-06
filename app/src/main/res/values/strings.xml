@@ -1,20 +1,15 @@
 <resources>
     <string name="app_name">The Lab</string>
 
-
     <!-- Google API Keys -->
     <string name="google_maps_key">AIzaSyDuywb98tO1xXHb9lflC2iTLs_67jgihgQ</string>
     <string name="google_ads_key">ca-app-pub-2216496940806622~2620241949</string>
-
 
     <!-- General -->
     <string name="action_settings">Settings</string>
     <string name="force_crash">Force Crash</string>
 
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur ipsum in placerat molestie. Fusce quis mauris a enim sollicitudin ultrices non eget velit. Aliquam eu pulvinar enim. Praesent libero nisl, ultricies vel maximus eu, maximus et nisi. Phasellus pharetra nec ligula vitae mollis. Quisque porttitor ornare magna, quis dignissim libero aliquam id. Donec sollicitudin ultrices ante, a semper erat tristique in. Vivamus sodales in ligula at sodales. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla tempus bibendum nibh, ac tincidunt quam convallis non. Proin dolor nunc, egestas et tortor consequat, dignissim lacinia odio. Ut ut aliquet erat.  Ut non scelerisque elit. Morbi dolor neque, iaculis eu justo rutrum, aliquet dictum mauris. Phasellus quis massa ut ligula feugiat congue a et dolor. Etiam a dui a sapien ornare accumsan ac ut lorem. Suspendisse vehicula lorem dapibus nibh rhoncus ultricies. Proin sem nulla, elementum quis pharetra quis, commodo vitae nisi. Donec urna orci, posuere et iaculis sit amet, fringilla quis sapien. Pellentesque nec posuere felis. Praesent malesuada tellus nisi, non dictum justo interdum eget. Quisque mollis euismod libero, non aliquam lorem interdum vitae. Aliquam vehicula efficitur purus eget rutrum. Sed pulvinar fermentum risus ac viverra. Cras laoreet ligula quam, ac lacinia nisl elementum in. Aenean velit arcu, euismod a venenatis non, pulvinar pulvinar massa. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur ipsum in placerat molestie. Fusce quis mauris a enim sollicitudin ultrices non eget velit. Aliquam eu pulvinar enim. Praesent libero nisl, ultricies vel maximus eu, maximus et nisi. Phasellus pharetra nec ligula vitae mollis. Quisque porttitor ornare magna, quis dignissim libero aliquam id. Donec sollicitudin ultrices ante, a semper erat tristique in. Vivamus sodales in ligula at sodales. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla tempus bibendum nibh, ac tincidunt quam convallis non. Proin dolor nunc, egestas et tortor consequat, dignissim lacinia odio. Ut ut aliquet erat.  Ut non scelerisque elit. Morbi dolor neque, iaculis eu justo rutrum, aliquet dictum mauris. Phasellus quis massa ut ligula feugiat congue a et dolor. Etiam a dui a sapien ornare accumsan ac ut lorem. Suspendisse vehicula lorem dapibus nibh rhoncus ultricies. Proin sem nulla, elementum quis pharetra quis, commodo vitae nisi. Donec urna orci, posuere et iaculis sit amet, fringilla quis sapien. Pellentesque nec posuere felis. Praesent malesuada tellus nisi, non dictum justo interdum eget. Quisque mollis euismod libero, non aliquam lorem interdum vitae. Aliquam vehicula efficitur purus eget rutrum. Sed pulvinar fermentum risus ac viverra. Cras laoreet ligula quam, ac lacinia nisl elementum in. Aenean velit arcu, euismod a venenatis non, pulvinar pulvinar massa.</string>
-
-    <string name="no_connection">Not connected to the Internet :(</string>
-    <string name="check_your_connection">Please check your cellular network or Wi-Fi network</string>
 
     <string name="action_yes">Yes</string>
     <string name="action_no">No</string>
@@ -23,12 +18,15 @@
     <string name="action_later">Later</string>
     <string name="action_enter">Enter</string>
     <string name="action_exit">Quit</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_go">GO !</string>
 
     <!-- Network connection status -->
     <string name="network_status_connected">Good! Connected to Internet</string>
     <string name="network_status_disconnected">Sorry! Not connected to internet</string>
     <string name="network_status_pending">Retry! Internet connection pending</string>
     <string name="network_status_lost">Lost! Connection lost. Try to reconnect</string>
+    <string name="network_check_connection">Please check your cellular network or Wi-Fi network</string>
 
 
     <string name="title_main_page">Choose your testing app</string>
@@ -50,9 +48,6 @@
     <string name="activity_walking">walking</string>
     <string name="activity_unknown">Unknown</string>
 
-
-    <string name="pas_de_connexion">Not connected to the Internet :(</string>
-    <string name="verifiez_votre_connexion">Please check your cellular network or Wi-Fi network</string>
 
     <string name="hint_content_title">Video\'s title</string>
     <string name="hint_content_description">Video\'s description link</string>
@@ -78,6 +73,8 @@
 
     <!-- Colors -->
     <string name="activity_title_colors">Colors</string>
+    <string name="colors_text_placeholder">Yoo Pi\'erre you want to come out here ?</string>
+    <string name="btn_change_color">Change color</string>
 
     <!-- Recycler -->
     <string name="activity_title_recycler_view">Recycler View</string>
@@ -85,6 +82,8 @@
 
     <!-- Biometric -->
     <string name="activity_title_biometric">Biometric</string>
+    <string name="use_biometric_authentication_placeholder">Use Biometric authentication</string>
+
 
     <!-- Tabs Fragments -->
     <string name="activity_title_working_tabs">Working Tabs</string>
@@ -158,6 +157,9 @@
     <string name="activity_title_detail_contacts">Detail Contact</string>
     <string name="activity_title_add_new_contact">Add Contact</string>
     <string name="delete">DELETE</string>
+    <string name="contact_no_record_found">No record found !</string>
+    <string name="add_a_new_contact_msg">Do you want to add a new contact ?</string>
+    <string name="btn_add_a_new_contact">Add a new contact</string>
 
     <string name="button_update">Update</string>
     <string name="button_add">Add</string>
@@ -289,8 +291,6 @@
     <!-- Handwriting paths -->
     <string name="path_funky_six">M302.14,60.72C302.29,61.46 276.46,97.06 270.1,112.55C260.87,138.44 278.6,149.83 284.3,152.76C299.15,160.38 316.85,150.27 323.08,141.43C329.3,132.59 333.05,109.99 316.85,100.57C306.85,94.75 290.54,97.32 290.2,97.06C289.85,96.79 276.32,81.31 276.46,80.88C276.6,80.45 294.73,77.62 302.88,84.28C315.76,92.99 315.62,114.99 306.84,127.42C298.06,139.85 276.46,144.38 260.54,130.73C238.46,111.79 259.06,85.64 260.87,83.1C260.87,83.1 286.23,46.19 286.83,46.03C287.43,45.87 301.99,59.99 302.14,60.72Z</string>
     <string name="path_one_googleio">M211,45L235,45A2,2 0,0 1,237 47L237,155A2,2 0,0 1,235 157L211,157A2,2 0,0 1,209 155L209,47A2,2 0,0 1,211 45z</string>
-    <string name="retry">Retry</string>
-    <string name="action_go">GO !</string>
-    <string name="use_biometric_authentication_placeholder">Use Biometric authentication</string>
+
 
 </resources>

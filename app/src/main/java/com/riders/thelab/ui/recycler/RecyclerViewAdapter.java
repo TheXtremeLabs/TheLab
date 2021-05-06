@@ -1,6 +1,8 @@
 package com.riders.thelab.ui.recycler;
 
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,8 @@ import androidx.transition.TransitionManager;
 
 import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
-import com.riders.thelab.data.local.model.RecyclerItem;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.data.remote.dto.Artist;
 
 import java.util.List;
 
@@ -20,15 +23,21 @@ import timber.log.Timber;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHolder> {
 
+    private Context mContext;
     private static ShapeableImageView transitionImageView;
-    private final List<RecyclerItem> recyclerItemArrayList;
+    private final List<Artist> artistList;
+    private List<String> artistThumbnails;
     private final RecyclerClickListener listener;
     private RecyclerView recyclerView = null;
     private int mExpandedPosition = -1;
 
-    public RecyclerViewAdapter(List<RecyclerItem> recyclerItemArrayList,
+    public RecyclerViewAdapter(@NonNull Context context,
+                               List<Artist> artistList,
+                               List<String> artistThumbnails,
                                RecyclerClickListener listener) {
-        this.recyclerItemArrayList = recyclerItemArrayList;
+        this.mContext = context;
+        this.artistList = artistList;
+        this.artistThumbnails = artistThumbnails;
         this.listener = listener;
     }
 
@@ -45,8 +54,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHold
     @Override
     public int getItemCount() {
 
-        if (null != recyclerItemArrayList)
-            return recyclerItemArrayList.size();
+        if (null != artistList)
+            return artistList.size();
         return 0;
     }
 
@@ -54,17 +63,35 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHold
     @Override
     public MyRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MyRecyclerViewHolder(
+                mContext,
                 LayoutInflater
                         .from(parent.getContext())
                         .inflate(R.layout.row_recycler_view, parent, false));
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onBindViewHolder(@NonNull final MyRecyclerViewHolder holder, final int position) {
 
-        RecyclerItem item = recyclerItemArrayList.get(position);
+        Artist artist = artistList.get(position);
 
-        holder.bind(item);
+        if (!LabCompatibilityManager.isNougat()) {
+            for (String element : artistThumbnails) {
+                if (element.contains(artist.getUrlThumb())) {
+                    artist.setUrlThumb(element);
+                }
+            }
+        } else {
+            artist
+                    .setUrlThumb(
+                            artistThumbnails
+                                    .stream()
+                                    .filter(element -> element.contains(artist.getUrlThumb()))
+                                    .findFirst()
+                                    .orElse(""));
+        }
+
+        holder.bind(artist);
 
         // This line checks if the item displayed on screen
         // was expanded or not (Remembering the fact that Recycler View )
@@ -81,7 +108,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHold
         // Click event for each item (itemView is an in-built variable of holder class)
         holder.cardView.setOnClickListener(v -> {
 
-            listener.onRecyclerClick(item);
+            listener.onRecyclerClick(artist);
 
             // if the clicked item is already expanded then return -1
             //else return the position (this works with notifyDataSetChanged )
@@ -90,32 +117,32 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewHold
             //This will call the onBindViewHolder for all the itemViews on Screen
             notifyDataSetChanged();
 
-            holder.storeItem(item, position);
+            holder.storeItem(artist, position);
 
             transitionImageView = holder.transitionImageView;
         });
 
         holder.btnDetail.setOnClickListener(detailView -> {
             Timber.e("setOnClickListener detailView ");
-            listener.onDetailClick(item, transitionImageView, position);
+            listener.onDetailClick(artist, transitionImageView, position);
         });
 
         holder.btnDelete.setOnClickListener(deleteView -> {
             Timber.e("setOnClickListener deleteView ");
-            listener.onDeleteClick(item, position);
+            listener.onDeleteClick(artist, position);
         });
     }
 
     public void removeItem(int position) {
-        recyclerItemArrayList.remove(position);
+        artistList.remove(position);
         // notify the item removed by position
         // to perform recycler view delete animations
         // NOTE: don't call notifyDataSetChanged()
         notifyItemRemoved(position);
     }
 
-    public void restoreItem(RecyclerItem item, int position) {
-        recyclerItemArrayList.add(position, item);
+    public void restoreItem(Artist item, int position) {
+        artistList.add(position, item);
         // notify item added by position
         notifyItemInserted(position);
     }

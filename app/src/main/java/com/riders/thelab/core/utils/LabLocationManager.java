@@ -17,6 +17,7 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
@@ -33,12 +34,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.observers.DisposableSingleObserver;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import lombok.SneakyThrows;
 import timber.log.Timber;
 
@@ -230,6 +230,13 @@ public class LabLocationManager extends Service
         } else {
             this.canGetLocation = true;
 
+
+            if (!LabCompatibilityManager.isMarshmallow()) {
+
+            } else {
+
+            }
+
             Dexter.withContext(mActivity)
                     .withPermissions(
                             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -292,7 +299,7 @@ public class LabLocationManager extends Service
                                     }
                                 }
 
-                                EventBus.getDefault().post(new LocationFetchedEvent(location));
+                                //EventBus.getDefault().post(new LocationFetchedEvent(location));
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -312,6 +319,45 @@ public class LabLocationManager extends Service
         // return location object
         return location;
 
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getLocationViaNetwork() {
+
+        locationManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                MIN_TIME_BW_UPDATES,
+                MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                mLocationListener);
+        Timber.d("Network Enabled");
+        if (locationManager != null) {
+            location =
+                    locationManager
+                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (location != null) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+            }
+        }
+    }
+    @SuppressLint("MissingPermission")
+    private void getLocationViaGPS() {
+        if (location == null) {
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                    mLocationListener);
+            Timber.d("GPS Enabled");
+            if (locationManager != null) {
+                location = locationManager
+                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location != null) {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                }
+            }
+        }
     }
 
     /**
@@ -416,6 +462,8 @@ public class LabLocationManager extends Service
     @Override
     public void onLocationChanged(Location location) {
         Timber.d("onLocationChanged");
+
+        EventBus.getDefault().post(new LocationFetchedEvent(location));
     }
 
     @Override
