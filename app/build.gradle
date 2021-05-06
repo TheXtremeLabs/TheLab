@@ -16,7 +16,7 @@ def buildDateTime =
 
 // version information
 def versionMajor = 4
-def versionMinor = 5
+def versionMinor = 6
 def versionPatch = 0
 
 
@@ -134,6 +134,7 @@ dependencies {
     // https://developer.android.com/guide/fragments/create#java
     // Fragments require a dependency on the AndroidX Fragment library.
     implementation rootProject.ext.generalDependencies.fragment
+    implementation rootProject.ext.generalDependencies.springForce
 
     implementation rootProject.ext.generalDependencies.viewPager2
 
