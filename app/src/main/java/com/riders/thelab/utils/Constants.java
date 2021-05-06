@@ -17,6 +17,7 @@ import com.riders.thelab.ui.palette.PaletteActivity;
 import com.riders.thelab.ui.recycler.RecyclerViewActivity;
 import com.riders.thelab.ui.schedule.ScheduleActivity;
 import com.riders.thelab.ui.speechtotext.SpeechToTextActivity;
+import com.riders.thelab.ui.spring.SpringActivity;
 import com.riders.thelab.ui.tabs.WorkingTabsActivity;
 import com.riders.thelab.ui.transition.TransitionActivity;
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity;
@@ -139,6 +140,9 @@ public class Constants {
 
         list.add(new App("Vector Drawables", "Animated, scale, transform vector drawables...",
                 R.drawable.ic_aspect_ratio, VectorDrawablesActivity.class));
+
+        list.add(new App("Spring", "Physics-based motion is driven by force. Spring force is one such force that guides interactivity and motion....",
+                R.drawable.ic_filter_center_focus, SpringActivity.class));
 
 
         list.add(new App("WIP", "Coming soon...",
