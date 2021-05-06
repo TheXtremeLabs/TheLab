@@ -1,0 +1,38 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.MainActivity">
+
+    <group android:id="@+id/menu_main_group">
+
+        <item
+            android:id="@+id/action_force_crash"
+            android:icon="@android:drawable/ic_menu_close_clear_cancel"
+            android:orderInCategory="100"
+            android:title="@string/force_crash"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/connection_icon"
+            android:icon="@drawable/ic_baseline_wifi_24"
+            android:orderInCategory="1"
+            android:title="@string/connection_settings"
+            app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/info_icon"
+            android:icon="@drawable/ic_baseline_perm_device_information_24"
+            android:orderInCategory="2"
+            android:title="@string/info_settings"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/action_settings"
+            android:icon="@drawable/ic_baseline_settings_24"
+            android:orderInCategory="100"
+            android:title="@string/action_settings"
+            app:showAsAction="always" />
+
+    </group>
+
+</menu>

@@ -1,0 +1,255 @@
+plugins {
+    id 'com.android.application'
+}
+
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.google.gms.google-services'
+// Apply the Crashlytics Gradle plugin
+apply plugin: 'com.google.firebase.crashlytics'
+// Apply the Performance Monitoring plugin
+apply plugin: 'com.google.firebase.firebase-perf'
+
+def buildDateTime =
+        project.hasProperty('devBuild')
+                ? 100
+                : new Date().format('yyMMddHHmm').toInteger()
+
+// version information
+def versionMajor = 4
+def versionMinor = 5
+def versionPatch = 0
+
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    ndkVersion "21.3.6528147"
+
+    defaultConfig {
+        applicationId "com.riders.thelab"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        versionCode buildDateTime
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath false
+            }
+        }
+
+        // Enabling multidex support.
+        multiDexEnabled true
+
+        vectorDrawables.useSupportLibrary = true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        buildFeatures {
+            // Determines whether to support View Binding.
+            // Note that the viewBinding.enabled property is now deprecated.
+            //viewBinding = false
+            // Determines whether to support Data Binding.
+            // Note that the dataBinding.enabled property is now deprecated.
+            //dataBinding = false
+        }
+        release {
+
+            debuggable true
+
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type.
+            minifyEnabled true
+
+            // Enables resource shrinking, which is performed by the
+            // Android Gradle plugin.
+            shrinkResources true
+
+            // Includes the default ProGuard rules files that are packaged with
+            // the Android Gradle plugin. To learn more, go to the section about
+            // R8 configuration files.
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+
+        }
+    }
+
+    // Increase build gradle time
+    // https://medium.com/@AthorNZ/how-to-speed-up-your-slow-gradle-builds-5d9a9545f91a
+
+    // Disable multi-APK (in development)
+    if (project.hasProperty('devBuild')) {
+        splits.abi.enable = false
+        splits.density.enable = false
+        aaptOptions.cruncherEnabled = false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+//        exclude 'META-INF/androidx.versionedparcelable_versionedparcelable.version'
+//        exclude 'META-INF/androidx.core_core.version'
+//            exclude 'META-INF/NOTICE'
+//              exclude 'META-INF/LICENSE'
+//              exclude 'META-INF/LICENSE.txt'
+//              exclude 'META-INF/NOTICE.txt'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    // Watch the memory
+    dexOptions {
+        javaMaxHeapSize = '4g'
+        preDexLibraries = false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    /////////////////////////////
+    // General Dependencies
+    /////////////////////////////
+    // AndroidX
+    implementation rootProject.ext.generalDependencies.multidex
+    implementation rootProject.ext.generalDependencies.core
+    implementation rootProject.ext.generalDependencies.appcompat
+    implementation rootProject.ext.generalDependencies.material
+    implementation rootProject.ext.generalDependencies.palette
+    implementation rootProject.ext.generalDependencies.constraintLayout
+    implementation rootProject.ext.generalDependencies.navigationFragment
+    implementation rootProject.ext.generalDependencies.navigationUi
+    implementation rootProject.ext.generalDependencies.recyclerView
+    implementation rootProject.ext.generalDependencies.cardView
+    // https://developer.android.com/guide/fragments/create#java
+    // Fragments require a dependency on the AndroidX Fragment library.
+    implementation rootProject.ext.generalDependencies.fragment
+
+    implementation rootProject.ext.generalDependencies.viewPager2
+
+    implementation rootProject.ext.generalDependencies.autoFill
+
+    // Worker
+    implementation rootProject.ext.generalDependencies.workerRuntime
+    implementation rootProject.ext.generalDependencies.workerRxJava3
+    implementation rootProject.ext.generalDependencies.workerMultiprocess
+    androidTestImplementation rootProject.ext.testDependencies.workTest
+    implementation rootProject.ext.generalDependencies.concurrent
+
+    //Room
+    implementation rootProject.ext.generalDependencies.roomRuntime
+    implementation rootProject.ext.generalDependencies.roomRX
+    annotationProcessor rootProject.ext.generalDependencies.roomCompiler
+
+    // Google Play
+    // Maps
+    implementation rootProject.ext.generalDependencies.googleAPIClient
+    implementation rootProject.ext.generalDependencies.maps
+    implementation rootProject.ext.generalDependencies.mapsUtils
+    implementation rootProject.ext.generalDependencies.location
+    implementation rootProject.ext.generalDependencies.places
+    // Firebase
+    implementation platform(rootProject.ext.generalDependencies.firebasePlatform)
+    implementation rootProject.ext.generalDependencies.firebaseAnalitycs
+    implementation rootProject.ext.generalDependencies.firebaseAuth
+    implementation rootProject.ext.generalDependencies.firebaseCraslytics
+    implementation rootProject.ext.generalDependencies.firebaseMessaging
+    implementation rootProject.ext.generalDependencies.firebasePerf
+    implementation rootProject.ext.generalDependencies.firebaseCloudstorage
+    implementation rootProject.ext.generalDependencies.firebaseAds
+
+    // RxJava / RxAndroid
+    implementation rootProject.ext.generalDependencies.rxjava
+    implementation rootProject.ext.generalDependencies.rxandroid
+
+    /* Dagger2 - We are going to use dagger.android which includes
+     * support for Activity and fragment injection so we need to include
+     * the following dependencies */
+    implementation rootProject.ext.generalDependencies.dagger
+    annotationProcessor rootProject.ext.generalDependencies.daggerCompiler
+    implementation rootProject.ext.generalDependencies.daggerAndroid
+    implementation rootProject.ext.generalDependencies.daggerAndroidSupport
+    // if you use the support libraries
+    annotationProcessor rootProject.ext.generalDependencies.daggerAndroidProcessor
+
+
+    // Butterknife : Views binding
+    //noinspection AnnotationProcessorOnCompilePath
+    implementation rootProject.ext.generalDependencies.butterknife
+    annotationProcessor rootProject.ext.generalDependencies.butterknifeAnnotation
+
+    // Glide
+    implementation rootProject.ext.generalDependencies.glide
+    annotationProcessor rootProject.ext.generalDependencies.glideAnnotation
+    implementation rootProject.ext.generalDependencies.blurry
+    implementation rootProject.ext.generalDependencies.glideTransformation
+
+    /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
+    implementation rootProject.ext.generalDependencies.retrofit
+    implementation rootProject.ext.generalDependencies.retrofitConverterGson
+    implementation rootProject.ext.generalDependencies.retrofitConverterMoshi
+    implementation rootProject.ext.generalDependencies.retrofitRxJava
+
+    // OkHttp
+    // define a BOM and its version
+//    implementation(platform(rootProject.ext.generalDependencies.okHttpBom))
+
+    // define any required OkHttp artifacts without version
+    implementation rootProject.ext.generalDependencies.okHttp
+    implementation rootProject.ext.generalDependencies.okHttpLogging
+
+    // Moshi
+    implementation rootProject.ext.generalDependencies.moshi
+
+    // Parceler
+    implementation rootProject.ext.generalDependencies.parceler
+    annotationProcessor rootProject.ext.generalDependencies.parcelerAnnotation
+
+    // EventBus
+    implementation rootProject.ext.generalDependencies.eventBus
+
+    // Dexter : permissions
+    implementation rootProject.ext.generalDependencies.dexter
+
+    // GoldFinger
+    implementation rootProject.ext.generalDependencies.goldfinger
+    implementation rootProject.ext.generalDependencies.goldfingerRX
+
+
+    //ThreeTen : Alternative to Android Calendar API
+    implementation rootProject.ext.generalDependencies.threeten
+
+    // https://stackoverflow.com/questions/50202843/gradle-deprecated-annotation-processor-warnings-for-lombok
+    /*
+     * dependencies {
+     * compileOnly('org.projectlombok:lombok:1.16.20')
+     * annotationProcessor 'org.projectlombok:lombok:1.16.20'
+     * // compile 'org.projectlombok:lombok:1.16.20' <-- this no longer works!
+     * // other dependencies...
+     * }
+     */
+    // Lombok
+    compileOnly (rootProject.ext.generalDependencies.lombok)
+    annotationProcessor rootProject.ext.generalDependencies.lombokAnnotation
+
+    // Timber : Logging library
+    implementation rootProject.ext.generalDependencies.timber
+
+
+    /////////////////////////////
+    // Tests Dependencies
+    /////////////////////////////
+    testImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.testJUnit
+    androidTestImplementation rootProject.ext.testDependencies.espresso
+}
