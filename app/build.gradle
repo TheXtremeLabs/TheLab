@@ -16,7 +16,7 @@ def buildDateTime =
 
 // version information
 def versionMajor = 4
-def versionMinor = 5
+def versionMinor = 6
 def versionPatch = 0
 
 
