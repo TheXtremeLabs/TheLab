@@ -28,7 +28,7 @@ ext {
 
     roomVersion = '2.2.5'
 
-    daggerVersion = '2.34'
+    daggerVersion = '2.35.1'
 
     googlePlayServicesBaseVersion = '16.0.0'
 
@@ -219,7 +219,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.3'
+        classpath 'com.android.tools.build:gradle:4.2.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
