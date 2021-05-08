@@ -32,9 +32,9 @@ jobs:
         run: |
           git config user.email "$GIT_USER_EMAIL"
           git config user.name "$GIT_USER_NAME"
-      - name: Tag version
-        run: |
-          version=`cat ./.github/resources/APK_VERSION`
-          git tag -a "v$version" -m "Release version $version"
+      - name: Get application's version
+        run: echo "APP_VERSION=$( ./gradlew -q printVersionName )" >> $GITHUB_ENV
+      - name: Create tag
+        run: git tag -a "v$APP_VERSION" -m "Release v$APP_VERSION"
       - name: Push tag to Github
         run: git push --tags origin

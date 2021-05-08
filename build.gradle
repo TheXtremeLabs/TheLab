@@ -250,3 +250,9 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task printVersionName {
+    doLast {
+        print rootProject.ext.versionName
+    }
+}
