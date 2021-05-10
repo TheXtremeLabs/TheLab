@@ -31,6 +31,10 @@ public class SpringActivity extends SimpleActivity {
     ImageView imageView2;
     @BindView(R.id.imageView3)
     ImageView imageView3;
+    @BindView(R.id.imageView4)
+    ImageView imageView4;
+    @BindView(R.id.imageView5)
+    ImageView imageView5;
 
     private SpringAnimation xAnimation;
     private SpringAnimation yAnimation;
@@ -122,9 +126,20 @@ public class SpringActivity extends SimpleActivity {
                 SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY);
         final SpringAnimation yAnimation3 = createSpringAnimation(imageView3, Y, imageView3.getY(),
                 SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY);
+        final SpringAnimation xAnimation4 = createSpringAnimation(imageView4, X, imageView4.getX(),
+                SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY);
+        final SpringAnimation yAnimation4 = createSpringAnimation(imageView4, Y, imageView4.getY(),
+                SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY);
+
+        final SpringAnimation xAnimation5 = createSpringAnimation(imageView5, X, imageView5.getX(),
+                SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY);
+        final SpringAnimation yAnimation5 = createSpringAnimation(imageView5, Y, imageView5.getY(),
+                SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY);
 
         final ViewGroup.MarginLayoutParams imageView2Params = (ViewGroup.MarginLayoutParams) imageView2.getLayoutParams();
         final ViewGroup.MarginLayoutParams imageView3Params = (ViewGroup.MarginLayoutParams) imageView3.getLayoutParams();
+        final ViewGroup.MarginLayoutParams imageView4Params = (ViewGroup.MarginLayoutParams) imageView4.getLayoutParams();
+        final ViewGroup.MarginLayoutParams imageView5Params = (ViewGroup.MarginLayoutParams) imageView5.getLayoutParams();
 
 
         xAnimation2.addUpdateListener((dynamicAnimation, v, v1) ->
@@ -137,6 +152,30 @@ public class SpringActivity extends SimpleActivity {
         yAnimation2.addUpdateListener((dynamicAnimation, v, v1) ->
                 yAnimation3.animateToFinalPosition(v + imageView2.getHeight() + imageView3Params.topMargin)
         );
+
+
+        xAnimation3.addUpdateListener((dynamicAnimation, v, v1) ->
+                xAnimation4.animateToFinalPosition(
+                        v + ((imageView3.getWidth() - imageView4.getWidth()) / 2)
+                )
+        );
+
+
+        yAnimation3.addUpdateListener((dynamicAnimation, v, v1) ->
+                yAnimation4.animateToFinalPosition(v + imageView3.getHeight() + imageView4Params.topMargin)
+        );
+
+
+        xAnimation4.addUpdateListener((dynamicAnimation, v, v1) ->
+                xAnimation5.animateToFinalPosition(
+                        v + ((imageView4.getWidth() - imageView5.getWidth()) / 2)
+                )
+        );
+
+        yAnimation4.addUpdateListener((dynamicAnimation, v, v1) ->
+                yAnimation5.animateToFinalPosition(v + imageView4.getHeight() + imageView5Params.topMargin)
+        );
+
 
         imageView.setOnTouchListener((view, motionEvent) -> {
             switch (motionEvent.getActionMasked()) {
