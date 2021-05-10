@@ -25,6 +25,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
@@ -32,7 +34,10 @@ import com.riders.thelab.core.views.toast.TheLabToast;
 import com.riders.thelab.core.views.toast.ToastTypeEnum;
 import com.riders.thelab.data.local.bean.SnackBarType;
 
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import timber.log.Timber;
+
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class UIManager {
 
@@ -248,5 +253,16 @@ public class UIManager {
         drawable.draw(canvas);
 
         return bitmap;
+    }
+
+
+    public static void loadImageBlurred(final Context context,
+                                        final Object imageURL,
+                                        final ShapeableImageView targetImageView) {
+        //Load the background  thumb image
+        Glide.with(context)
+                .load(imageURL)
+                .apply(bitmapTransform(new BlurTransformation(5, 5)))
+                .into(targetImageView);
     }
 }

@@ -579,19 +579,19 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     private void updateToolbarConnectionIcon(boolean isConnected) {
         Timber.e("updateToolbarConnectionIcon, is connected : %s", isConnected);
 
-        context.runOnUiThread(() -> {
-            if (null != menu)
-                menu
-                        .getItem(0)
-                        .setIcon(
-                                ContextCompat.getDrawable(
-                                        context,
-                                        isConnected
-                                                ? R.drawable.ic_wifi
-                                                : R.drawable.ic_wifi_off));
+        if (!LabCompatibilityManager.isTablet(context))
+            context.runOnUiThread(() -> {
+                if (null != menu)
+                    menu
+                            .getItem(0)
+                            .setIcon(
+                                    ContextCompat.getDrawable(
+                                            context,
+                                            isConnected
+                                                    ? R.drawable.ic_wifi
+                                                    : R.drawable.ic_wifi_off));
 
-        });
-
+            });
     }
 
     @Override

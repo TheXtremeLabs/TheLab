@@ -16,6 +16,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.remote.dto.Artist;
 
 import butterknife.BindView;
@@ -59,13 +60,17 @@ public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
     public void bind(Artist artist) {
         Timber.d(artist.toString());
 
-        //Load the background  thumb image
-        Glide.with(context)
-                .load(artist.getUrlThumb())
-                .apply(bitmapTransform(new BlurTransformation(5, 3)))
-                .into(ivBackgroundBlurred);
+        if (!LabCompatibilityManager.isTablet(context)) {
+            ivBackgroundBlurred.setVisibility(View.VISIBLE);
 
-        //Load the background  thumb image
+            //Load the background  thumb image
+            Glide.with(context)
+                    .load(artist.getUrlThumb())
+                    .apply(bitmapTransform(new BlurTransformation(5, 3)))
+                    .into(ivBackgroundBlurred);
+        }
+
+        //Load the front image
         Glide.with(context)
                 .load(artist.getUrlThumb())
                 .into(transitionImageView);
