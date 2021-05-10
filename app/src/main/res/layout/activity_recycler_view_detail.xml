@@ -106,7 +106,7 @@
                     android:layout_margin="@dimen/spacing_large"
                     android:text="@string/lorem_ipsum"
                     android:textColor="@color/white"
-                    tools:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    android:textSize="22sp" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
