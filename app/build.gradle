@@ -14,11 +14,6 @@ def buildDateTime =
                 ? 100
                 : new Date().format('yyMMddHHmm').toInteger()
 
-// version information
-def versionMajor = 4
-def versionMinor = 6
-def versionPatch = 0
-
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -32,7 +27,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
 
         versionCode buildDateTime
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        versionName rootProject.ext.versionName
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -241,7 +236,7 @@ dependencies {
      * }
      */
     // Lombok
-    compileOnly (rootProject.ext.generalDependencies.lombok)
+    compileOnly(rootProject.ext.generalDependencies.lombok)
     annotationProcessor rootProject.ext.generalDependencies.lombokAnnotation
 
     // Timber : Logging library
