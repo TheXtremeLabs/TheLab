@@ -10,6 +10,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -133,8 +134,14 @@ public class RecyclerViewView extends BaseViewImpl<RecyclerViewPresenter>
                                         artistThumbnails,
                                         this);
 
-                        LinearLayoutManager layoutManager
-                                = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                        LinearLayoutManager layoutManager;
+                        if (!LabCompatibilityManager.isTablet(context)) {
+                            layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+
+                        } else {
+                            layoutManager = new GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false);
+                        }
+
                         mRecyclerView.setLayoutManager(layoutManager);
 
                         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
