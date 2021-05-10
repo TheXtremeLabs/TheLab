@@ -100,13 +100,13 @@
                     android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/description"
+                    android:id="@+id/tv_description_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/spacing_large"
                     android:text="@string/lorem_ipsum"
                     android:textColor="@color/white"
-                    tools:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    android:textSize="22sp" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

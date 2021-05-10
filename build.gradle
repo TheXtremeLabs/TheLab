@@ -5,6 +5,13 @@ ext {
     compileSdkVersion = 30
     buildToolsVersion = "30.0.2"
 
+    // version information
+    versionMajor = 4
+    versionMinor = 6
+    versionPatch = 1
+    versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+
+
     // App dependencies
     multidexVersion = '2.0.1'
     coreVersion = '1.6.0-alpha03'
@@ -98,7 +105,7 @@ ext {
             recyclerView          : "androidx.recyclerview:recyclerview:$recyclerViewVersion",
             cardView              : "androidx.cardview:cardview:$cardViewVersion",
             fragment              : "androidx.fragment:fragment:$fragmentVersion",
-            springForce              : "androidx.dynamicanimation:dynamicanimation:$dynamicanimationVersion",
+            springForce           : "androidx.dynamicanimation:dynamicanimation:$dynamicanimationVersion",
 
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2Version",
 
@@ -127,7 +134,7 @@ ext {
             daggerAndroidProcessor: "com.google.dagger:dagger-android-processor:$daggerVersion",
 
             // Maps
-            googlePlayServices : "com.google.android.gms:play-services-base:$googlePlayServicesBaseVersion",
+            googlePlayServices    : "com.google.android.gms:play-services-base:$googlePlayServicesBaseVersion",
             googleAPIClient       : "com.google.api-client:google-api-client:$googleApiClientVersion",
             maps                  : "com.google.android.gms:play-services-maps:$mapsVersion",
             mapsUtils             : "com.google.maps.android:android-maps-utils:$mapsUtilsVersion",
@@ -161,7 +168,7 @@ ext {
             retrofit              : "com.squareup.retrofit2:retrofit:$retrofit2Version",
             retrofitRxJava        : "com.squareup.retrofit2:adapter-rxjava2:$retrofit2Version",
             retrofitConverterGson : "com.squareup.retrofit2:converter-gson:$retrofit2Version",
-            retrofitConverterMoshi  : "com.squareup.retrofit2:converter-moshi:$retrofit2Version",
+            retrofitConverterMoshi: "com.squareup.retrofit2:converter-moshi:$retrofit2Version",
 //            retrofitRxJava        : "com.squareup.retrofit2:adapter-rxjava3:$retrofit2Version",
 
             // OkHttp
@@ -249,4 +256,10 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+task printVersionName {
+    doLast {
+        print rootProject.ext.versionName
+    }
 }
