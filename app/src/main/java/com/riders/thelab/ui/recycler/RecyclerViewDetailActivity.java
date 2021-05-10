@@ -5,23 +5,20 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.imageview.ShapeableImageView;
-import com.google.android.material.textview.MaterialTextView;
-import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.remote.dto.Artist;
+import com.riders.thelab.databinding.ActivityRecyclerViewDetailBinding;
 import com.riders.thelab.utils.Validator;
 
 import org.parceler.Parcels;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import java.util.Objects;
+
 import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
@@ -30,61 +27,52 @@ public class RecyclerViewDetailActivity extends AppCompatActivity {
     public static final String EXTRA_RECYCLER_ITEM = "recycler_item";
     public static final String EXTRA_TRANSITION_ICON_NAME = "icon";
 
-    private RecyclerViewDetailActivity_ViewBinding viewBinding;
-
-    @BindView(R.id.app_bar_layout)
-    AppBarLayout appBarLayout;
-    @BindView(R.id.collapsing_toolbar_recycler_view_detail)
-    CollapsingToolbarLayout collapsingToolbar;
-    @BindView(R.id.toolbar_recycler_view_detail)
-    Toolbar toolbar;
-    ShapeableImageView ivBackgroundBlurred;
-    @BindView(R.id.transition_imageView)
-    ShapeableImageView transitionImageView;
-    @BindView(R.id.tv_name_detail)
-    MaterialTextView tvNameDetail;
-    @BindView(R.id.tv_debutes_detail)
-    MaterialTextView tvDebutesDetail;
-    @BindView(R.id.tv_full_name_detail)
-    MaterialTextView tvFullNameDetail;
-    @BindView(R.id.tv_activities_detail)
-    MaterialTextView tvActivitiesDetail;
-    @BindView(R.id.description)
-    MaterialTextView tvDescriptionDetail;
+    private ActivityRecyclerViewDetailBinding viewDetailBinding;
 
     private Artist item;
-
-    private boolean isTablet;
 
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycler_view_detail);
 
-        ButterKnife.bind(this);
+        viewDetailBinding = ActivityRecyclerViewDetailBinding.inflate(getLayoutInflater());
+        setContentView(viewDetailBinding.getRoot());
 
+        getBundle();
+
+        initCollapsingToolbar();
+
+        if (null != item)
+            bindData();
+        else
+            Timber.e("Cannot bind data for artist. Cause : Artist object is null");
+    }
+
+
+    /**
+     * Retrieve bundle passed from Recycler View Activity
+     * <p>
+     * And bind value in artist object
+     */
+    private void getBundle() {
         Bundle extras = getIntent().getExtras();
-
         item = Parcels.unwrap(extras.getParcelable(EXTRA_RECYCLER_ITEM));
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         Timber.d("item : %s", item.toString());
+    }
 
-        if (LabCompatibilityManager.isTablet(this)) {
-            isTablet = true;
-            bindTabletViews();
-        }
+    private void initCollapsingToolbar() {
+        setSupportActionBar(viewDetailBinding.toolbarRecyclerViewDetail);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        collapsingToolbar.setTitle(item.getArtistName());
-        collapsingToolbar.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+        viewDetailBinding.collapsingToolbarRecyclerViewDetail.setTitle(item.getArtistName());
+        viewDetailBinding.collapsingToolbarRecyclerViewDetail
+                .setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
 
-        appBarLayout.setExpanded(true);
+        viewDetailBinding.appBarLayout.setExpanded(true);
 
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+        viewDetailBinding.appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
 
@@ -94,48 +82,50 @@ public class RecyclerViewDetailActivity extends AppCompatActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(item.getArtistName());
+                    viewDetailBinding.collapsingToolbarRecyclerViewDetail.setTitle(item.getArtistName());
                     isShow = true;
                 } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
+                    viewDetailBinding.collapsingToolbarRecyclerViewDetail.setTitle(" ");
                     isShow = false;
                 }
             }
         });
+    }
 
-        if (isTablet) {
+    /**
+     * Display artist value
+     */
+    private void bindData() {
+        if (LabCompatibilityManager.isTablet(this)) {
+            //Load the background  thumb image
             UIManager.loadImageBlurred(
                     this,
                     item.getUrlThumb(),
-                    ivBackgroundBlurred);
-            //Load the background  thumb image
-            /*Glide.with(context)
-                    .load(artist.getUrlThumb())
-                    .apply(bitmapTransform(new BlurTransformation(5, 3)))
-                    .into(ivBackgroundBlurred);*/
+                    viewDetailBinding.ivBackgroundBlurred);
 
-            tvDebutesDetail.setText("Since : " + item.getDebutes());
+            Objects.requireNonNull(viewDetailBinding.tvDebutesDetail)
+                    .setText(String.format("Since : %s", item.getDebutes()));
         }
 
         // Display image
         Glide.with(this)
                 .load(item.getUrlThumb())
-                .into(transitionImageView);
+                .into(viewDetailBinding.transitionImageView);
 
-        tvNameDetail.setText(item.getArtistName());
+        viewDetailBinding.tvNameDetail.setText(item.getArtistName());
 
         StringBuilder sb = new StringBuilder();
 
         sb.append(item.getFirstName());
-        if (null != item.getSecondName()
-                && !Validator.isEmpty(item.getSecondName()))
+
+        if (null != item.getSecondName() && !Validator.isEmpty(item.getSecondName()))
             sb.append(", ").append(item.getSecondName());
+
         sb.append(" ").append(item.getLastName());
-        tvFullNameDetail.setText(sb.toString());
+        viewDetailBinding.tvFullNameDetail.setText(sb.toString());
 
-        tvActivitiesDetail.setText(item.getActivities());
-
-        tvDescriptionDetail.setText(item.getDescription());
+        viewDetailBinding.tvActivitiesDetail.setText(item.getActivities());
+        viewDetailBinding.tvDescriptionDetail.setText(item.getDescription());
     }
 
 
@@ -146,10 +136,5 @@ public class RecyclerViewDetailActivity extends AppCompatActivity {
 
         if (LabCompatibilityManager.isLollipop())
             finishAfterTransition();
-    }
-
-    private void bindTabletViews() {
-        ivBackgroundBlurred = findViewById(R.id.iv_background_blurred);
-        tvDebutesDetail = findViewById(R.id.tv_debutes_detail);
     }
 }
