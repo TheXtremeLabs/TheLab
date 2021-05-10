@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
@@ -13,8 +14,8 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.remote.dto.Artist;
-import com.riders.thelab.ui.base.SimpleActivity;
 import com.riders.thelab.utils.Validator;
 
 import org.parceler.Parcels;
@@ -24,10 +25,12 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
-public class RecyclerViewDetailActivity extends SimpleActivity {
+public class RecyclerViewDetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_RECYCLER_ITEM = "recycler_item";
     public static final String EXTRA_TRANSITION_ICON_NAME = "icon";
+
+    private RecyclerViewDetailActivity_ViewBinding viewBinding;
 
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
@@ -35,10 +38,13 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
     CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.toolbar_recycler_view_detail)
     Toolbar toolbar;
+    ShapeableImageView ivBackgroundBlurred;
     @BindView(R.id.transition_imageView)
     ShapeableImageView transitionImageView;
     @BindView(R.id.tv_name_detail)
     MaterialTextView tvNameDetail;
+    @BindView(R.id.tv_debutes_detail)
+    MaterialTextView tvDebutesDetail;
     @BindView(R.id.tv_full_name_detail)
     MaterialTextView tvFullNameDetail;
     @BindView(R.id.tv_activities_detail)
@@ -46,7 +52,9 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
     @BindView(R.id.description)
     MaterialTextView tvDescriptionDetail;
 
-    Artist item;
+    private Artist item;
+
+    private boolean isTablet;
 
 
     @SuppressLint("NewApi")
@@ -66,6 +74,10 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
 
         Timber.d("item : %s", item.toString());
 
+        if (LabCompatibilityManager.isTablet(this)) {
+            isTablet = true;
+            bindTabletViews();
+        }
 
         collapsingToolbar.setTitle(item.getArtistName());
         collapsingToolbar.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
@@ -91,6 +103,19 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
             }
         });
 
+        if (isTablet) {
+            UIManager.loadImageBlurred(
+                    this,
+                    item.getUrlThumb(),
+                    ivBackgroundBlurred);
+            //Load the background  thumb image
+            /*Glide.with(context)
+                    .load(artist.getUrlThumb())
+                    .apply(bitmapTransform(new BlurTransformation(5, 3)))
+                    .into(ivBackgroundBlurred);*/
+
+            tvDebutesDetail.setText("Since : " + item.getDebutes());
+        }
 
         // Display image
         Glide.with(this)
@@ -121,5 +146,10 @@ public class RecyclerViewDetailActivity extends SimpleActivity {
 
         if (LabCompatibilityManager.isLollipop())
             finishAfterTransition();
+    }
+
+    private void bindTabletViews() {
+        ivBackgroundBlurred = findViewById(R.id.iv_background_blurred);
+        tvDebutesDetail = findViewById(R.id.tv_debutes_detail);
     }
 }

@@ -49,14 +49,6 @@ android {
     }
 
     buildTypes {
-        buildFeatures {
-            // Determines whether to support View Binding.
-            // Note that the viewBinding.enabled property is now deprecated.
-            //viewBinding = false
-            // Determines whether to support Data Binding.
-            // Note that the dataBinding.enabled property is now deprecated.
-            //dataBinding = false
-        }
         release {
 
             debuggable true
@@ -97,6 +89,15 @@ android {
 //              exclude 'META-INF/LICENSE'
 //              exclude 'META-INF/LICENSE.txt'
 //              exclude 'META-INF/NOTICE.txt'
+    }
+
+    buildFeatures {
+        // Determines whether to support View Binding.
+        // Note that the viewBinding.enabled property is now deprecated.
+        viewBinding = true
+        // Determines whether to support Data Binding.
+        // Note that the dataBinding.enabled property is now deprecated.
+        //dataBinding = false
     }
 
     lintOptions {
