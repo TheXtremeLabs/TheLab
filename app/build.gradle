@@ -192,9 +192,8 @@ dependencies {
 
     /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
     implementation rootProject.ext.generalDependencies.retrofit
-    implementation rootProject.ext.generalDependencies.retrofitConverterGson
-    implementation rootProject.ext.generalDependencies.retrofitConverterMoshi
     implementation rootProject.ext.generalDependencies.retrofitRxJava
+    implementation rootProject.ext.generalDependencies.retrofitConverterMoshi
 
     // OkHttp
     // define a BOM and its version
