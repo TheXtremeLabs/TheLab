@@ -120,7 +120,8 @@
                     app:layout_constraintEnd_toStartOf="@id/guideline_image_separator"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/weather_cloudy" />
+                    tools:src="@drawable/ic_humidity"
+                    tools:tint="@color/white" />
                 <!-- Weather icon -->
 
                 <androidx.constraintlayout.widget.Guideline
@@ -278,12 +279,12 @@
                             android:id="@+id/tv_sunrise"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/white"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/iv_sunrise"
-                            tools:text="06:30"
-                            tools:textColor="@color/white" />
+                            tools:text="06:30" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -313,12 +314,12 @@
                             android:id="@+id/tv_sunset"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/white"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/iv_sunset"
-                            tools:text="17:30"
-                            tools:textColor="@color/white" />
+                            tools:text="17:30" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
 
