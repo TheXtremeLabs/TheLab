@@ -7,8 +7,8 @@ ext {
 
     // version information
     versionMajor = 4
-    versionMinor = 6
-    versionPatch = 4
+    versionMinor = 7
+    versionPatch = 0
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
 
@@ -167,7 +167,7 @@ ext {
             /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
             retrofit              : "com.squareup.retrofit2:retrofit:$retrofit2Version",
             retrofitRxJava        : "com.squareup.retrofit2:adapter-rxjava2:$retrofit2Version",
-            retrofitConverterGson : "com.squareup.retrofit2:converter-gson:$retrofit2Version",
+//            retrofitConverterGson : "com.squareup.retrofit2:converter-gson:$retrofit2Version",
             retrofitConverterMoshi: "com.squareup.retrofit2:converter-moshi:$retrofit2Version",
 //            retrofitRxJava        : "com.squareup.retrofit2:adapter-rxjava3:$retrofit2Version",
 
