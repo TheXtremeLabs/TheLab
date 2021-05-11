@@ -35,7 +35,7 @@ import timber.log.Timber;
 @SuppressLint("NonConstantResourceId")
 public class NewsFragment extends Fragment {
 
-    private final String[] recentAppsNames = new String[]{"Recycler", "Biometric", "Widget"};
+    private final String[] recentAppsNames = new String[]{"Spring", "Recycler", "Weather"};
 
     // Card View 1
     @BindView(R.id.news_card_view_1)
