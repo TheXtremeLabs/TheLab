@@ -36,14 +36,15 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 @SuppressLint("NonConstantResourceId")
@@ -96,6 +97,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     MaterialTextView tvWeatherExtraHumidity;
     private WeatherActivity context;
 
+    CompositeDisposable compositeDisposable;
 
     @Inject
     WeatherView(WeatherActivity context) {
@@ -113,6 +115,8 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
 
         setListeners();
+
+        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
@@ -145,6 +149,8 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     @Override
     public void onDestroy() {
         Timber.e("onDestroy()");
+        compositeDisposable.clear();
+
         getPresenter().detachView();
         context = null;
     }
@@ -284,21 +290,22 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
 
         Timber.e(latitude + ", " + longitude);
 
-        LabLocationManager
-                .getDeviceLocationWithRX(location, context)
-                .subscribe(new DisposableSingleObserver<String>() {
-                    @Override
-                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull String city) {
-                        Timber.e("final string city returned : %s", city);
 
-                        getPresenter().getWeather(city);
-                    }
+        Disposable disposable =
+                LabLocationManager
+                        .getDeviceLocationWithRX(location, context)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                city -> {
+                                    Timber.e("final string city returned : %s", city);
 
-                    @Override
-                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                        Timber.e(Objects.requireNonNull(e.getMessage()));
-                    }
-                });
+                                    getPresenter().getWeather(city);
+                                },
+                                Timber::e
+                        );
+
+        compositeDisposable.add(disposable);
     }
 
     /////////////////////////////////////

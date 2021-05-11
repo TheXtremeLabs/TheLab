@@ -178,9 +178,7 @@ public class LabLocationManager extends Service
                             }
                         });
             }
-        }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        };
     }
 
     static Single<List<Address>> getRXAddress(final Geocoder geoCoder, final double latitude, final double longitude) {
