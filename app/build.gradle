@@ -190,7 +190,7 @@ dependencies {
     implementation rootProject.ext.generalDependencies.blurry
     implementation rootProject.ext.generalDependencies.glideTransformation
 
-    /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
+    /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Moshi  */
     implementation rootProject.ext.generalDependencies.retrofit
     implementation rootProject.ext.generalDependencies.retrofitRxJava
     implementation rootProject.ext.generalDependencies.retrofitConverterMoshi
@@ -212,6 +212,9 @@ dependencies {
 
     // EventBus
     implementation rootProject.ext.generalDependencies.eventBus
+
+    // androidChart
+    implementation rootProject.ext.generalDependencies.androidChart
 
     // Dexter : permissions
     implementation rootProject.ext.generalDependencies.dexter
