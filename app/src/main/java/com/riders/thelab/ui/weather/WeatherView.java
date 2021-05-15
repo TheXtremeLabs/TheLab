@@ -1,31 +1,46 @@
 package com.riders.thelab.ui.weather;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
 import android.content.Context;
-import android.location.Location;
-import android.view.KeyEvent;
+import android.database.Cursor;
+import android.location.Address;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.AutoCompleteTextView;
+import android.widget.Toast;
 
+import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.bus.LocationFetchedEvent;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabLocationManager;
 import com.riders.thelab.core.utils.UIManager;
+import com.riders.thelab.data.local.LabRepository;
+import com.riders.thelab.data.local.bean.SnackBarType;
 import com.riders.thelab.data.local.model.weather.CityModel;
-import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
+import com.riders.thelab.data.remote.dto.weather.CurrentWeather;
+import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse;
 import com.riders.thelab.ui.base.BaseViewImpl;
 import com.riders.thelab.utils.Constants;
 import com.riders.thelab.utils.DateTimeUtils;
@@ -35,22 +50,26 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-@SuppressLint("NonConstantResourceId")
+@SuppressLint({"NonConstantResourceId", "NewApi"})
 public class WeatherView extends BaseViewImpl<WeatherPresenter>
-        implements WeatherContract.View, MaterialTextView.OnEditorActionListener,
-        AdapterView.OnItemClickListener {
+        implements WeatherContract.View, WeatherClickListener {
+
+    private WeatherActivity context;
 
     // Views
     @BindView(R.id.weather_root_view)
@@ -62,9 +81,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     MaterialTextView tvDownloadStatus;
     // Weather container
     @BindView(R.id.weather_data_container)
-    RelativeLayout weatherDataContainer;
-    @BindView(R.id.ac_tv_Weather)
-    MaterialAutoCompleteTextView acTvWeather;
+    ConstraintLayout weatherDataContainer;
     // City
     @BindView(R.id.tv_weather_city_name)
     MaterialTextView tvWeatherCityName;
@@ -95,9 +112,16 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     MaterialTextView tvWeatherExtraWindDirection;
     @BindView(R.id.tv_weather_extra_humidity)
     MaterialTextView tvWeatherExtraHumidity;
-    private WeatherActivity context;
+    @BindView(R.id.rv_forecast_five_days)
+    RecyclerView rvForecastFiveDays;
+
+    private SearchView searchView;
 
     CompositeDisposable compositeDisposable;
+
+
+    @Inject
+    LabRepository repository;
 
     @Inject
     WeatherView(WeatherActivity context) {
@@ -109,41 +133,115 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         Timber.d("onCreate()");
         getPresenter().attachView(this);
 
-        context.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(context.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         context.getSupportActionBar().setTitle(context.getString(R.string.activity_title_weather));
 
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
 
-        setListeners();
-
         compositeDisposable = new CompositeDisposable();
-    }
 
-    @Override
-    public void onStart() {
-        Timber.d("onStart()");
-
-        getPresenter().getCitiesData();
-        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu) {
         context.getMenuInflater()
                 .inflate(R.menu.menu_weather, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(context.getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        ((AutoCompleteTextView) searchView.findViewById(R.id.search_src_text)).setThreshold(3);
+
+        // listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                getCitiesFromDb(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                // Set the minimum number of characters, to show suggestions
+                getCitiesFromDb(query);
+                return true;
+            }
+
+            @SuppressLint("CheckResult")
+            private void getCitiesFromDb(String searchText) {
+                searchText = "%" + searchText + "%";
+                Observable
+                        .just(searchText)
+                        .observeOn(Schedulers.computation())
+                        .map(searchQueryText -> getPresenter().getCityQuery(searchQueryText))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                this::handleResults,
+                                this::handleError);
+            }
+
+            private void handleResults(Cursor cursor) {
+                searchView.setSuggestionsAdapter(
+                        new WeatherSearchViewAdapter(
+                                context,
+                                cursor,
+                                searchView,
+                                WeatherView.this));
+            }
+
+            private void handleError(Throwable t) {
+                Timber.e(t);
+                Toast.makeText(context, "Problem in Fetching Deals",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
     public void onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_position) {
-            getPresenter().getCurrentWeather();
+        switch (item.getItemId()) {
+
+            case R.id.action_position: {
+                if (getPresenter().canGetLocation())
+                    getPresenter().getCurrentWeather();
+                else
+                    UIManager
+                            .showActionInSnackBar(
+                                    context,
+                                    context.findViewById(android.R.id.content),
+                                    "Cannot get location please enable device's position setting.",
+                                    SnackBarType.ALERT,
+                                    context.getString(R.string.action_ok),
+                                    v -> {
+                                    });
+                break;
+            }
+
+            //noinspection SimplifiableIfStatement
+            case R.id.action_search:
+                Timber.d("noinspection SimplifiableIfStatement");
+                break;
+
+            default:
+                break;
         }
     }
 
     @Override
-    public void onStop() {
-        Timber.d("onStop()");
+    public void onPause() {
+        Timber.d("onPause()");
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        Timber.d("onResume()");
+        EventBus.getDefault().register(this);
+        getPresenter().getCitiesData();
     }
 
     @Override
@@ -173,66 +271,97 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         tvDownloadStatus.setText(statusMessage);
     }
 
+
     @Override
-    public void updateUI(WeatherResponse weatherResponse) {
-        Timber.d("updateUI()");
+    public void updateOneCallUI(OneCallWeatherResponse oneCallWeatherResponse) {
+        Timber.d("updateOneCallUI()");
+
+        weatherDataContainer.setVisibility(View.VISIBLE);
 
         // Load weather icon
         Glide.with(context)
                 .load(getWeatherIconFromApi(
-                        weatherResponse
+                        oneCallWeatherResponse
+                                .getCurrentWeather()
                                 .getWeather()
                                 .get(0)
                                 .getIcon()))
                 .into(ivWeatherIcon);
 
+        Address address =
+                getPresenter()
+                        .getCityNameWithCoordinates(
+                                oneCallWeatherResponse.getLatitude(),
+                                oneCallWeatherResponse.getLongitude());
+
         // Load city name
-        String cityName = weatherResponse.getName() +
-                context.getResources().getString(R.string.separator_placeholder);
+        String cityName = address.getLocality() + context.getResources().getString(R.string.separator_placeholder);
         tvWeatherCityName.setText(cityName);
-        tvWeatherCityCountry.setText(weatherResponse.getSystem().getCountry());
-        tvWeatherDescription.setText(weatherResponse.getWeather().get(0).getDescription());
+        String country = address.getCountryName();
+        tvWeatherCityCountry.setText(country);
+        tvWeatherDescription.setText(
+                oneCallWeatherResponse
+                        .getCurrentWeather()
+                        .getWeather()
+                        .get(0)
+                        .getDescription());
+
+
+        Objects.requireNonNull(context.getSupportActionBar()).setTitle(
+                cityName + " " + country);
 
         // Temperatures
-        String temperature = (int) Math.round(weatherResponse.getMain().getTemperature()) +
-                context.getResources().getString(R.string.degree_placeholder);
+        String temperature =
+                (int) Math.round(oneCallWeatherResponse.getCurrentWeather().getTemperature()) + context.getResources().getString(R.string.degree_placeholder);
         tvWeatherCityTemperature.setText(temperature);
-        String realFeels = (int) Math.round(weatherResponse.getMain().getFeelsLike()) +
-                context.getResources().getString(R.string.degree_placeholder);
+        String realFeels =
+                (int) Math.round(oneCallWeatherResponse.getCurrentWeather().getFeelsLike()) + context.getResources().getString(R.string.degree_placeholder);
         tvWeatherRealFeels.setText(realFeels);
 
         tvWeatherSunrise.setText(
                 DateTimeUtils.formatMillisToTimeHoursMinutes(
-                        weatherResponse
-                                .getSystem()
-                                .getSunrise()));
+                        oneCallWeatherResponse.getCurrentWeather().getSunrise()));
 
         tvWeatherSunset.setText(
                 DateTimeUtils.formatMillisToTimeHoursMinutes(
-                        weatherResponse
-                                .getSystem()
-                                .getSunset()));
+                        oneCallWeatherResponse.getCurrentWeather().getSunset()));
 
-        String cloudiness = weatherResponse.getClouds().getCloudiness() + " " +
-                context.getResources().getString(R.string.percent_placeholder);
+        List<CurrentWeather> hourlyWeather = oneCallWeatherResponse.getHourlyWeather();
+
+        // Build chart with hourly weather data
+        buildChart(hourlyWeather);
+
+        String cloudiness = oneCallWeatherResponse.getCurrentWeather().getClouds() + " " + context.getResources().getString(R.string.percent_placeholder);
         tvWeatherExtraCloudiness.setText(cloudiness);
 
-        String humidity = weatherResponse.getMain().getHumidity() + " " +
-                context.getResources().getString(R.string.percent_placeholder);
+        String humidity = oneCallWeatherResponse.getCurrentWeather().getHumidity() + " " + context.getResources().getString(R.string.percent_placeholder);
         tvWeatherExtraHumidity.setText(humidity);
 
-        String pressure = weatherResponse.getMain().getPressure() + " " +
-                context.getResources().getString(R.string.pressure_unit_placeholder);
+        String pressure = oneCallWeatherResponse.getCurrentWeather().getPressure() + " " + context.getResources().getString(R.string.pressure_unit_placeholder);
         tvWeatherExtraPressure.setText(pressure);
 
-        String wind =
-                weatherResponse.getWind().getSpeed() + " " +
-                        context.getResources().getString(R.string.kilometer_unit_placeholder);
+        String wind = oneCallWeatherResponse.getCurrentWeather().getWindSpeed() + " " + context.getResources().getString(R.string.meter_unit_placeholder);
         tvWeatherExtraWindSpeed.setText(wind);
 
-        String windDirection =
-                weatherResponse.getWind().getDegree() + " ";
+        String windDirection = oneCallWeatherResponse.getCurrentWeather().getWindDegree() + " ";
         tvWeatherExtraWindDirection.setText(windDirection);
+
+        Timber.e("Wind direction : %s",
+                getWindDirectionToTextualDescription(
+                        oneCallWeatherResponse.getCurrentWeather().getWindDegree()));
+
+        WeatherForecastAdapter mAdapter =
+                new WeatherForecastAdapter(
+                        context,
+                        oneCallWeatherResponse
+                                .getDailyWeather()
+                                .subList(1, oneCallWeatherResponse.getDailyWeather().size() - 2));
+
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+
+        rvForecastFiveDays.setLayoutManager(linearLayoutManager);
+        rvForecastFiveDays.setAdapter(mAdapter);
     }
 
     @Override
@@ -243,25 +372,15 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     }
 
     @Override
-    public void onFetchCitySuccessful(List<CityModel> cityList) {
+    public void onFetchCitySuccessful() {
         Timber.d("onFetchCitySuccessful()");
 
         weatherDataContainer.setVisibility(View.VISIBLE);
-
-        WeatherCityAdapter mAdapter = new WeatherCityAdapter(
-                context,
-                R.layout.row_city_spinner,
-                (ArrayList<CityModel>) cityList);
-
-        // Set the minimum number of characters, to show suggestions
-        acTvWeather.setThreshold(3);
-        acTvWeather.setAdapter(mAdapter);
     }
 
     @Override
     public void onFetchCityError() {
         Timber.e("onFetchCityError()");
-
     }
 
     @Override
@@ -281,31 +400,16 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     /////////////////////////////////////
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLocationFetchedEventResult(LocationFetchedEvent event) {
-        Timber.e("onLocationFetchedEvent()");
+        Timber.e("onLocationFetchedEvent() - "
+                + event.getLocation().getLatitude()
+                + ", "
+                + event.getLocation().getLongitude());
 
-        Location location = event.getLocation();
-
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-
-        Timber.e(latitude + ", " + longitude);
-
-
-        Disposable disposable =
-                LabLocationManager
-                        .getDeviceLocationWithRX(location, context)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                city -> {
-                                    Timber.e("final string city returned : %s", city);
-
-                                    getPresenter().getWeather(city);
-                                },
-                                Timber::e
-                        );
-
-        compositeDisposable.add(disposable);
+        getPresenter().getWeather(
+                LabLocationManager.buildTargetLocationObject(
+                        event.getLocation().getLatitude(),
+                        event.getLocation().getLongitude()
+                ));
     }
 
     /////////////////////////////////////
@@ -313,54 +417,145 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     // CLASS METHODS
     //
     /////////////////////////////////////
-    private void setListeners() {
-        Timber.d("setListeners()");
-        acTvWeather.setOnItemClickListener(this);
-        acTvWeather.setOnEditorActionListener(this);
-    }
-
     public String getWeatherIconFromApi(String weatherIconId) {
         return Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX;
     }
 
+    public String getWindDirectionToTextualDescription(double degree) {
+        if (degree > 337.5) return "Northerly";
+        if (degree > 292.5) return "North Westerly";
+        if (degree > 247.5) return "Westerly";
+        if (degree > 202.5) return "South Westerly";
+        if (degree > 157.5) return "Southerly";
+        if (degree > 122.5) return "South Easterly";
+        if (degree > 67.5) return "Easterly";
+        if (degree > 22.5) {
+            return "North Easterly";
+        }
+        return "Northerly";
+    }
+
+    public void buildChart(List<CurrentWeather> hourlyWeather) {
+
+        // in this example, a LineChart is initialized from xml
+        LineChart chart = context.findViewById(R.id.weather_hourly_chart);
+
+        int whiteColor = ContextCompat.getColor(context, R.color.white);
+        /*
+         * https://stackoverflow.com/questions/31263097/mpandroidchart-hide-background-grid
+         *
+         */
+        // Styling
+        chart.setAutoScaleMinMaxEnabled(true);
+        chart.setTouchEnabled(false);
+        chart.setClickable(false);
+
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setDoubleTapToZoomEnabled(false);
+
+        chart.setDrawBorders(false);
+        chart.setDrawGridBackground(false);
+
+        chart.getDescription().setEnabled(false);
+        chart.getLegend().setEnabled(false);
+
+        chart.getAxisLeft().setDrawGridLines(false);
+        chart.getAxisLeft().setDrawLabels(false);
+        chart.getAxisLeft().setDrawAxisLine(false);
+
+        chart.getXAxis().setDrawGridLines(false);
+        chart.getXAxis().setDrawLabels(true);
+        chart.getXAxis().setDrawAxisLine(false);
+
+        chart.getAxisRight().setDrawGridLines(false);
+        chart.getAxisRight().setDrawLabels(false);
+        chart.getAxisRight().setDrawAxisLine(false);
+
+        chart.getAxisLeft().setTextColor(whiteColor); // left y-axis
+        chart.getXAxis().setTextColor(whiteColor);
+        chart.getLegend().setTextColor(whiteColor);
+        chart.getDescription().setTextColor(whiteColor);
+
+        Legend l = chart.getLegend();
+        l.setEnabled(false);
+
+//        WeatherUtils.stylingChartGrid(chart, whiteColor);
+
+        List<Float> temperatureForNextHours =
+                WeatherUtils.getWeatherTemperaturesForNextHours(hourlyWeather);
+
+
+        HashMap<Float, Float> integers = new HashMap<>();
+
+        for (int i = 0; i < temperatureForNextHours.size(); i++) {
+            integers.put((float) i, temperatureForNextHours.get(i));
+        }
+
+        List<Entry> entries = new ArrayList<>();
+
+        for (Map.Entry<Float, Float> data : integers.entrySet()) {
+            // turn your data into Entry objects
+            entries.add(new Entry(data.getKey(), data.getValue()));
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
+        dataSet.setColor(whiteColor);
+        dataSet.setValueTextSize(12f);
+        dataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getPointLabel(Entry entry) {
+                return (int) entry.getY() + context.getString(R.string.degree_placeholder);
+            }
+        });
+        dataSet.setValueTextColor(whiteColor);
+        dataSet.getValueTextColor(whiteColor);
+
+        // the labels that should be drawn on the XAxis
+        final String[] quarters = WeatherUtils.getWeatherTemperaturesQuarters(hourlyWeather);
+        ValueFormatter formatter = new ValueFormatter() {
+            @Override
+            public String getAxisLabel(float value, AxisBase axis) {
+                return quarters[(int) value];
+            }
+        };
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+        xAxis.setValueFormatter(
+                quarters.length > 1
+                        ? formatter
+                        : new DefaultAxisValueFormatter(3));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        LineData lineData = new LineData(dataSet);
+        chart.setData(lineData);
+//        chart.notifyDataSetChanged();
+        chart.invalidate(); // refresh
+    }
 
     /////////////////////////////////////
     //
     // IMPLEMENTS
     //
     /////////////////////////////////////
+    @SuppressLint("RestrictedApi")
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onWeatherItemClicked(final CityModel cityModel) {
 
-        View v = context.getCurrentFocus();
+        if (!LabCompatibilityManager.isOreo()) {
+            if (!searchView.isIconified()) {
+                searchView.setIconified(true);
+            }
 
-        if (v != null) {
-            // Dismiss keyboard
-            InputMethodManager inputManager =
-                    (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(
-                    v.getWindowToken(),
-                    InputMethodManager.HIDE_NOT_ALWAYS);
+        } else {
+            Objects.requireNonNull(context.getSupportActionBar()).collapseActionView();
         }
 
-        CityModel city = (CityModel) parent.getItemAtPosition(position);
+        UIManager.hideView(context.findViewById(android.R.id.content));
 
-        String szCity = city.getName() + "," + city.getCountry();
-        Timber.d("position selected, with value of %s", city);
-
-        getPresenter().getWeather(szCity.toLowerCase());
-    }
-
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-        if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
-                || (actionId == EditorInfo.IME_ACTION_DONE)) {
-            Timber.e("Done pressed");
-
-            String cityEntered = acTvWeather.getText().toString();
-            getPresenter().getWeather(cityEntered);
-        }
-        return false;
+        getPresenter().getWeather(
+                LabLocationManager.buildTargetLocationObject(
+                        cityModel.getLatitude(),
+                        cityModel.getLongitude()
+                ));
     }
 }
