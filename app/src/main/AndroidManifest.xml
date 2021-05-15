@@ -148,11 +148,11 @@
         <activity
             android:name=".ui.recycler.RecyclerViewActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab"/>
+            android:theme="@style/Theme.TheLab" />
         <activity
             android:name=".ui.recycler.RecyclerViewDetailActivity"
             android:parentActivityName=".ui.recycler.RecyclerViewActivity"
-            android:theme="@style/RecyclerTheme"/>
+            android:theme="@style/RecyclerTheme" />
 
         <activity
             android:name=".ui.tabs.WorkingTabsActivity"
@@ -261,7 +261,16 @@
         <activity
             android:name=".ui.weather.WeatherActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
+            android:theme="@style/Theme.TheLab">
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable_weather" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".ui.floatingview.FloatingViewActivity"
@@ -286,9 +295,10 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
-        <activity android:name=".ui.spring.SpringActivity"
+        <activity
+            android:name=".ui.spring.SpringActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab"  />
+            android:theme="@style/Theme.TheLab" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
