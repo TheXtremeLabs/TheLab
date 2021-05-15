@@ -20,7 +20,6 @@ import com.riders.thelab.utils.Validator;
 
 import java.util.List;
 
-
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -125,6 +124,7 @@ public class WeatherDownloadWorker extends ListenableWorker {
     }
 
 
+    @SuppressLint("CheckResult")
     public void saveCities(List<City> dtoCities) {
         Timber.d("saveCities()");
         DataModule

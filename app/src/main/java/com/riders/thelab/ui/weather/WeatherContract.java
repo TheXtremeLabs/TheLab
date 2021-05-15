@@ -1,22 +1,27 @@
 package com.riders.thelab.ui.weather;
 
+import android.database.Cursor;
+import android.location.Address;
 import android.location.Location;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.riders.thelab.data.local.model.weather.CityModel;
+import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 import com.riders.thelab.ui.base.BaseView;
 
 import java.util.List;
 
+import io.reactivex.Single;
+
 public interface WeatherContract {
 
     interface View extends BaseView {
 
-        void onStart();
+        void onPause();
 
-        void onStop();
+        void onResume();
 
         void onCreateOptionsMenu(Menu menu);
 
@@ -28,11 +33,11 @@ public interface WeatherContract {
 
         void updateDownloadStatus(String statusMessage);
 
-        void updateUI(WeatherResponse weatherResponse);
+        void updateOneCallUI(OneCallWeatherResponse oneCallWeatherResponse);
 
         void onNoConnectionDetected();
 
-        void onFetchCitySuccessful(List<CityModel> cityList);
+        void onFetchCitySuccessful();
 
         void onFetchCityError();
 
@@ -41,11 +46,15 @@ public interface WeatherContract {
 
     interface Presenter {
 
+        boolean canGetLocation();
+
+        Cursor getCityQuery(String cityQuery);
+
         void getCitiesData();
 
-        void getCurrentWeather();
+        Address getCityNameWithCoordinates(double latitude, double longitude);
 
-        void getWeather(String city);
+        void getCurrentWeather();
 
         void getWeather(Location location);
 

@@ -1,7 +1,6 @@
 package com.riders.thelab.data.remote.dto.weather;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 import java.util.List;
 
@@ -14,46 +13,45 @@ import lombok.ToString;
 @ToString
 public class WeatherResponse {
 
-    @SerializedName("coord")
+    @Json(name = "coord")
     Coordinates coordinates;
 
-    @Expose
+    @Json(name = "weather")
     List<Weather> weather;
 
-    @Expose
+    @Json(name = "base")
     String base;
 
-    @Expose
+    @Json(name = "main")
     Main main;
 
-    @Expose
+    @Json(name = "visibility")
     int visibility;
 
-    @Expose
+    @Json(name = "rain")
     Rain rain;
 
-    @Expose
+    @Json(name = "wind")
     Wind wind;
 
-    @Expose
+    @Json(name = "clouds")
     Clouds clouds;
 
-    @Expose
+    @Json(name = "dt")
     long dt;
 
-    @SerializedName("sys")
+    @Json(name = "sys")
     Sys system;
 
-    @Expose
+    @Json(name = "timezone")
     int timezone;
 
-    @Expose
+    @Json(name = "id")
     int id;
 
-    @Expose
+    @Json(name = "name")
     String name;
 
-    @SerializedName("cod")
-    @Expose
+    @Json(name = "cod")
     int code;
 }
