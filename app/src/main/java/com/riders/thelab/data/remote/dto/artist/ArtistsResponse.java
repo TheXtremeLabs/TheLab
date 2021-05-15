@@ -1,11 +1,19 @@
-package com.riders.thelab.data.remote.dto;
+package com.riders.thelab.data.remote.dto.artist;
 
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.ToJson;
 
 import java.util.List;
 
-public class ArtistsResponseJsonAdapter {
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
+public class ArtistsResponse {
+    private List<Artist> artists;
 
     @FromJson
     List<Artist> artistsFromJson(List<Artist> artistsEventJson) {

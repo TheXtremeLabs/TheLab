@@ -1,4 +1,4 @@
-package com.riders.thelab.data.remote.dto;
+package com.riders.thelab.data.remote.dto.artist;
 
 import com.squareup.moshi.Json;
 
