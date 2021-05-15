@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Rain {
+public class Snow {
 
     // Rain volume for the last 1 hour, mm
     @Json(name = "1h")
