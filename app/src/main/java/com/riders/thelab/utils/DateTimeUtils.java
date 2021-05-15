@@ -29,6 +29,21 @@ public class DateTimeUtils {
         return format.format(date);
     }
 
+    public static String formatMillisToTimeDayMonth(long millis) {
+        Timber.e("mills : %d", millis);
+
+        long time = millis * (long) 1000;
+        Date date = new Date(time);
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM");
+        /*format.setTimeZone(
+                TimeZone.getTimeZone(
+                        buildUTCTimeZone(getOffsetTimeZone(millis))
+                )
+        );*/
+
+        return format.format(date);
+    }
+
     private static int getOffsetTimeZone(long millis) {
         return (int) ((millis / 60) / 60);
     }
