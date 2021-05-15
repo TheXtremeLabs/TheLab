@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.mainactivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -13,6 +14,7 @@ import com.riders.thelab.ui.base.BasePresenterImpl;
 import com.riders.thelab.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,10 +45,8 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
         appList.addAll(getPackageList());
 
         if (appList.isEmpty()) {
-            getView().hideLoading();
             getView().onErrorPackageList();
         } else {
-            getView().hideLoading();
             getView().onSuccessPackageList(appList);
         }
 
@@ -89,8 +89,6 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
 
         List<App> appList = new ArrayList<>();
 
-        getView().showLoading();
-
         if (isPackageExists(installedAppList, TARGET_PACKAGES)) {
 
             for (ApplicationInfo appInfo : installedAppList) {
@@ -111,12 +109,9 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
                     e.printStackTrace();
                 }
             }
-
-            //getView().onSuccessPackageList(appList);
         } else {
-            Timber.e("package " + TARGET_PACKAGES + " not found.");
+            Timber.e("package " + Arrays.toString(TARGET_PACKAGES) + " not found.");
             //installPackage(directory, targetApkFile);
-            getView().hideLoading();
         }
 
         return appList;
@@ -129,6 +124,7 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
      * @param targetPackages
      * @return
      */
+    @SuppressLint("QueryPermissionsNeeded")
     public boolean isPackageExists(final List<ApplicationInfo> installedAppList, String... targetPackages) {
 
         boolean isPackageFound = false;
