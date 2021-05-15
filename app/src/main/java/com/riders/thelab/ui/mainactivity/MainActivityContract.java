@@ -30,17 +30,6 @@ public interface MainActivityContract {
         void startActivityForResult(Intent intent, int requestCode);
 
         /**
-         * Shows loader progressBar
-         */
-        void showLoading();
-
-        /**
-         * Hide loader progressBar
-         */
-        void hideLoading();
-
-
-        /**
          * When the data has been correctly fetched from server and display them
          *
          * @param
