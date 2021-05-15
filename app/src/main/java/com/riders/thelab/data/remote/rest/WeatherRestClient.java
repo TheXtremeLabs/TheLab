@@ -5,6 +5,8 @@ import com.riders.thelab.data.local.bean.TimeOut;
 import com.riders.thelab.data.remote.api.WeatherBulkApiService;
 import com.riders.thelab.utils.Constants;
 
+import org.apache.http.HttpHeaders;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
@@ -60,10 +62,10 @@ public class WeatherRestClient {
                     requestBuilder =
                             original.newBuilder()
                                     .url(url)
-                                    .header("Connection", "close")
-                                    .header("Cache-Control", "max-age=60")
-                                    .header("Accept-Ranges", "bytes")
-                                    .header("Accept-Encoding", "");
+                                    .header(HttpHeaders.CONNECTION, "close")
+                                    .header(HttpHeaders.CACHE_CONTROL, "max-age=60")
+                                    .header(HttpHeaders.ACCEPT_RANGES, "bytes")
+                                    .header(HttpHeaders.ACCEPT_ENCODING, "");
 
                     Request request = requestBuilder.build();
                     return chain.proceed(request);

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/small_margin"
+    tools:background="@color/oil">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/row_tv_forecast_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/base"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="12/03" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/row_iv_forecast_weather"
+        android:layout_width="@dimen/extra_big_margin"
+        android:layout_height="@dimen/extra_big_margin"
+        android:adjustViewBounds="true"
+        android:fitsSystemWindows="true"
+        android:maxWidth="@dimen/ultra_big_margin"
+        android:maxHeight="@dimen/ultra_big_margin"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/row_tv_forecast_temperature"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/row_tv_forecast_day"
+        tools:src="@drawable/logo_colors" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/row_tv_forecast_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/row_iv_forecast_weather"
+        tools:text="2°c" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
