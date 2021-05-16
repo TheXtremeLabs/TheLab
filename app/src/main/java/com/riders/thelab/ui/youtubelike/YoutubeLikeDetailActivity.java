@@ -1,7 +1,6 @@
 package com.riders.thelab.ui.youtubelike;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -26,6 +25,8 @@ import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.Video;
 import com.riders.thelab.ui.base.SimpleActivity;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.BlurTransformation;
@@ -36,7 +37,6 @@ import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 @SuppressLint({"NonConstantResourceId", "NewApi"})
 public class YoutubeLikeDetailActivity extends SimpleActivity {
 
-    private Context mContext;
     //Bundle Arguments
     public static final String VIDEO_OBJECT_ARG = "content_video";
 
@@ -70,7 +70,6 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
 
         // Tell the framework to wait.
         supportPostponeEnterTransition();
-        mContext = this;
 
         ButterKnife.bind(this);
 
@@ -97,7 +96,7 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
 
     private void loadContent() {
 
-        getSupportActionBar().setTitle(item.getName());
+        Objects.requireNonNull(getSupportActionBar()).setTitle(item.getName());
 
         //Load the background  thumb image
         Glide.with(this)
@@ -132,6 +131,7 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
                         new Palette.Builder(bitmap).generate(palette -> {
 
                             //lorsque la palette est générée, je l'utilise sur mes textViews
+                            assert palette != null;
                             generatePalette(palette);
                         });
                         return false;
@@ -156,7 +156,8 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
             //il se peut que la palette ne génère pas tous les swatch
             if (muted != null) {
                 //j'utilise getRgb() en tant que couleur de fond de ma toolbar
-                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(muted.getRgb()));
+                Objects.requireNonNull(getSupportActionBar())
+                        .setBackgroundDrawable(new ColorDrawable(muted.getRgb()));
             }
         }
         {
