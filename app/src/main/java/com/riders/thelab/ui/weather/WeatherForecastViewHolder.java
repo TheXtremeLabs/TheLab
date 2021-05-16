@@ -49,7 +49,7 @@ public class WeatherForecastViewHolder extends RecyclerView.ViewHolder {
 
         // Load weather icon
         Glide.with(context)
-                .load(getWeatherIconFromApi(
+                .load(WeatherUtils.getWeatherIconFromApi(
                         dailyWeather
                                 .getWeather()
                                 .get(0)
@@ -60,9 +60,4 @@ public class WeatherForecastViewHolder extends RecyclerView.ViewHolder {
                 (int) dailyWeather.getTemperature().getDay() +
                         context.getString(R.string.degree_placeholder));
     }
-
-    private String getWeatherIconFromApi(String weatherIconId) {
-        return Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX;
-    }
-
 }

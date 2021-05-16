@@ -261,6 +261,7 @@
     <string name="humidity_placeholder">Humidity :</string>
     <string name="pressure_placeholder">Pressure :</string>
     <string name="pressure_unit_placeholder">inHg</string>
+    <string name="wind_placeholder">Wind :</string>
     <string name="wind_speed_placeholder">Wind Speed:</string>
     <string name="wind_direction_placeholder">Wind Direction :</string>
     <string name="percent_placeholder">%</string>

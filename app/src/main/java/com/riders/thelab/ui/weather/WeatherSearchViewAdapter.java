@@ -1,11 +1,11 @@
 package com.riders.thelab.ui.weather;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.cursoradapter.widget.CursorAdapter;
@@ -14,8 +14,11 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.weather.CityModel;
 import com.riders.thelab.utils.Constants;
+
+import java.util.Objects;
 
 public class WeatherSearchViewAdapter extends CursorAdapter {
 
@@ -40,6 +43,7 @@ public class WeatherSearchViewAdapter extends CursorAdapter {
         return mLayoutInflater.inflate(R.layout.row_city_spinner, parent, false);
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
@@ -67,9 +71,15 @@ public class WeatherSearchViewAdapter extends CursorAdapter {
 
         view.setOnClickListener(view1 -> {
             //take next action based user selected item
-            mSearchView.setIconified(true);
-            assert tvCityName != null;
-            Toast.makeText(context, "Selected suggestion " + tvCityName.getText(), Toast.LENGTH_LONG).show();
+
+            if (!LabCompatibilityManager.isOreo()) {
+                if (!mSearchView.isIconified()) {
+                    mSearchView.setIconified(true);
+                }
+
+            } else {
+                Objects.requireNonNull(((WeatherActivity) context).getSupportActionBar()).collapseActionView();
+            }
 
             mListener.onWeatherItemClicked(new CityModel(cursor));
         });
