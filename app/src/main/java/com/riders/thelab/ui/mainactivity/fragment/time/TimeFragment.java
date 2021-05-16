@@ -1,69 +1,69 @@
 package com.riders.thelab.ui.mainactivity.fragment.time;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.imageview.ShapeableImageView;
-import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.data.remote.LabService;
+import com.riders.thelab.databinding.FragmentTimeBinding;
 
+import org.jetbrains.annotations.NotNull;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.Random;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import javax.inject.Inject;
+
+import dagger.android.support.AndroidSupportInjection;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
-@SuppressLint("NonConstantResourceId")
 public class TimeFragment extends Fragment {
 
-    @BindView(R.id.iv_time_background)
-    ShapeableImageView ivBackground;
-
-    @BindView(R.id.tv_time)
-    MaterialTextView tvTime;
-
-    @BindView(R.id.tv_date)
-    MaterialTextView tvDate;
-
-    Unbinder unbinder;
+    FragmentTimeBinding viewBinding;
 
     private Thread mThread;
 
-    private FirebaseAuth mAuth;
-    private FirebaseStorage storage;
+    private final CompositeDisposable compositeDisposable;
 
+    @Inject
+    LabService service;
+
+
+    public TimeFragment() {
+        compositeDisposable = new CompositeDisposable();
+    }
 
     public static TimeFragment newInstance() {
         return new TimeFragment();
     }
 
 
+    @Override
+    public void onAttach(@NotNull Context context) {
+        super.onAttach(context);
+        AndroidSupportInjection.inject(this);
+    }
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_time, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
-        return rootView;
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        viewBinding = FragmentTimeBinding.inflate(inflater, container, false);
+        return viewBinding.getRoot();
     }
 
     @Override
@@ -84,9 +84,10 @@ public class TimeFragment extends Fragment {
                 try {
                     while (!isInterrupted()) {
                         Thread.sleep(1000);
-                        getActivity().runOnUiThread(() -> {
+                        requireActivity().runOnUiThread(() -> {
                             LocalTime localTime = LocalTime.now();
-                            tvTime.setText(localTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+                            viewBinding.tvTime.setText(
+                                    localTime.format(DateTimeFormatter.ofPattern("HH:mm")));
                         });
                     }
                 } catch (InterruptedException e) {
@@ -97,14 +98,10 @@ public class TimeFragment extends Fragment {
         mThread.start();
 
         LocalDate localDate = LocalDate.now();
-        tvDate.setText(localDate.format(DateTimeFormatter.ofPattern("EEE, d MMM yyyy")));
+        viewBinding.tvDate.setText(localDate.format(DateTimeFormatter.ofPattern("EEE, d MMM yyyy")));
 
         if (!LabCompatibilityManager.isTablet(requireActivity()))
             getFirebaseFiles();
-        else {
-            tvTime.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white));
-            tvDate.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white));
-        }
     }
 
 
@@ -114,78 +111,59 @@ public class TimeFragment extends Fragment {
     public void getFirebaseFiles() {
         Timber.d("getFirebaseFiles()");
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        Disposable disposable =
+                service.getStorageReference(requireActivity())
+                        .subscribe(storageReference -> {
+                            // Create a child reference
+                            // imagesRef now points to "images"
+                            StorageReference imagesRef = storageReference.child("images/dark_theme");
 
-        mAuth
-                .signInAnonymously()
-                .addOnCompleteListener(
-                        requireActivity(),
-                        task -> {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Timber.d("signInAnonymously:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
+                            imagesRef.list(5)
+                                    .addOnSuccessListener(listResult -> {
+                                        Timber.d("onSuccess()");
 
-                                String bucketName = "gs://the-lab-3920e.appspot.com";
+                                        int max = listResult.getItems().size();
 
-                                storage = FirebaseStorage.getInstance(bucketName);
-                                // Create a storage reference from our app
-                                StorageReference storageRef = storage.getReference();
+                                        // Get random int
+                                        int iRandom = new Random().nextInt(max);
 
-                                // Create a child reference
-                                // imagesRef now points to "images"
-                                StorageReference imagesRef = storageRef.child("images/dark_theme");
+                                        // Get item url using random int
+                                        StorageReference item =
+                                                listResult.getItems().get(iRandom);
 
-                                imagesRef.list(5)
-                                        .addOnSuccessListener(listResult -> {
-                                            Timber.d("onSuccess()");
+                                        // Make rest call
+                                        item
+                                                .getDownloadUrl()
+                                                .addOnSuccessListener(uri ->
 
-                                            int max = listResult.getItems().size();
-                                            Random random = new Random();
+                                                        // Display image
+                                                        Glide.with(requireActivity())
+                                                                .load(uri.toString())
+                                                                .into(viewBinding.ivTimeBackground)
+                                                );
+                                    })
+                                    .addOnFailureListener(Timber::e)
+                                    .addOnCompleteListener(task1 ->
+                                            Timber.d(
+                                                    "onComplete() - %d ",
+                                                    task1.getResult().getItems().size()));
+                        }, Timber::e);
 
-                                            // Get random int
-                                            int iRandom = random.nextInt(max);
-
-                                            // Get item url using random int
-                                            StorageReference item = listResult.getItems().get(iRandom);
-
-                                            // Make rest call
-                                            item.getDownloadUrl().addOnSuccessListener(uri -> {
-
-                                                // Display image
-                                                Glide.with(requireActivity())
-                                                        .load(uri.toString())
-                                                        .into(ivBackground);
-                                            });
-                                        })
-                                        .addOnFailureListener(Timber::e)
-                                        .addOnCompleteListener(task1 -> Timber.d("onComplete() - %d ", task1.getResult().getItems().size()));
-
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Timber.w("signInAnonymously:failure %s", task.getException().toString());
-                                Toast.makeText(
-                                        getActivity(),
-                                        "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
+        compositeDisposable.add(disposable);
     }
 
     @Override
     public void onDestroyView() {
         Timber.d("onDestroyView()");
-        if (null != unbinder)
-            unbinder.unbind();
 
         if (null != mThread) {
             mThread.interrupt();
             mThread = null;
         }
+
+        compositeDisposable.clear();
+
         super.onDestroyView();
+        viewBinding = null;
     }
 }

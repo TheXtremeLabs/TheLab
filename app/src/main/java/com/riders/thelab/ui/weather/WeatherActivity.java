@@ -18,9 +18,15 @@ public class WeatherActivity extends BaseActivity<WeatherView> {
     }
 
     @Override
-    protected void onStart() {
-        view.onStart();
-        super.onStart();
+    protected void onPause() {
+        view.onPause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        view.onResume();
+        super.onResume();
     }
 
     @Override
@@ -33,12 +39,6 @@ public class WeatherActivity extends BaseActivity<WeatherView> {
     public boolean onOptionsItemSelected(MenuItem item) {
         view.onOptionsItemSelected(item);
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onStop() {
-        view.onStop();
-        super.onStop();
     }
 
     @Override

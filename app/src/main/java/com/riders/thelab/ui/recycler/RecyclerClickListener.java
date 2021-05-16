@@ -1,7 +1,7 @@
 package com.riders.thelab.ui.recycler;
 
 import com.google.android.material.imageview.ShapeableImageView;
-import com.riders.thelab.data.remote.dto.Artist;
+import com.riders.thelab.data.remote.dto.artist.Artist;
 
 public interface RecyclerClickListener {
     void onRecyclerClick(Artist artist);

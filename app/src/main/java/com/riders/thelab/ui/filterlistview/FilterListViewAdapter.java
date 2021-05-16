@@ -26,14 +26,14 @@ public class FilterListViewAdapter extends BaseAdapter {
         mContext = context;
         this.mWorldPopulationList = worldPopulationList;
         mInflater = LayoutInflater.from(mContext);
-        this.arraylist = new ArrayList<WorldPopulation>();
+        this.arraylist = new ArrayList<>();
         this.arraylist.addAll(worldPopulationList);
     }
 
 
     @Override
     public int getCount() {
-        if (mWorldPopulationList.size() != 0)
+        if (!mWorldPopulationList.isEmpty())
             return mWorldPopulationList.size();
         return 0;
     }
@@ -106,7 +106,7 @@ public class FilterListViewAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public class ViewHolder {
+    public static class ViewHolder {
         MaterialTextView rank;
         MaterialTextView country;
         MaterialTextView population;

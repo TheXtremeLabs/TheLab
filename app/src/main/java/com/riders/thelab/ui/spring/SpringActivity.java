@@ -130,7 +130,6 @@ public class SpringActivity extends SimpleActivity {
                 SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY);
         final SpringAnimation yAnimation4 = createSpringAnimation(imageView4, Y, imageView4.getY(),
                 SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY);
-
         final SpringAnimation xAnimation5 = createSpringAnimation(imageView5, X, imageView5.getX(),
                 SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY);
         final SpringAnimation yAnimation5 = createSpringAnimation(imageView5, Y, imageView5.getY(),
@@ -203,6 +202,5 @@ public class SpringActivity extends SimpleActivity {
             }
             return true;
         });
-
     }
 }

@@ -37,7 +37,6 @@
         app:layout_constraintTop_toBottomOf="@id/imageView2"
         app:srcCompat="@drawable/ic_point" />
 
-
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="@dimen/ultra_big_margin_tablet"

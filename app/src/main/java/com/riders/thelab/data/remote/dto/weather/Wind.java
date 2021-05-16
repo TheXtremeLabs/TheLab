@@ -1,7 +1,6 @@
 package com.riders.thelab.data.remote.dto.weather;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,13 +10,12 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Wind {
-
-    @Expose
+    @Json(name = "1h")
     double speed;
 
-    @SerializedName("deg")
+    @Json(name = "deg")
     int degree;
 
-    @SerializedName("gust")
+    @Json(name = "gust")
     String metrics;
 }

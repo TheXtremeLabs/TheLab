@@ -1,7 +1,6 @@
 package com.riders.thelab.data.local.model.weather;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +11,6 @@ import lombok.ToString;
 @ToString
 public class WeatherKey {
 
-    @SerializedName("appid")
-    @Expose
-    public String appID;
+    @Json(name = "appid")
+    private String appID;
 }

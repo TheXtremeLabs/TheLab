@@ -1,6 +1,6 @@
 package com.riders.thelab.data.remote.api;
 
-import com.riders.thelab.data.remote.dto.Artist;
+import com.riders.thelab.data.remote.dto.artist.Artist;
 
 import java.util.List;
 

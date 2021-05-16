@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -77,6 +75,16 @@ public class LabLocationManager extends Service
         mLocationListener = this;
         getLocation();
     }
+
+    public static Location buildTargetLocationObject(final double latitude, final double longitude){
+        Location location = new Location("");
+
+        location.setLatitude(latitude);
+        location.setLongitude(longitude);
+
+        return location;
+    }
+
 
     public static String getDeviceLocationToString(final Geocoder geocoder, final Location location, final Context context) {
 
@@ -178,9 +186,7 @@ public class LabLocationManager extends Service
                             }
                         });
             }
-        }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        };
     }
 
     static Single<List<Address>> getRXAddress(final Geocoder geoCoder, final double latitude, final double longitude) {
@@ -218,24 +224,30 @@ public class LabLocationManager extends Service
 
         locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
 
-        // getting GPS status
-        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        // getting network status
-        isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-        if (!isGPSEnabled && !isNetworkEnabled) {
-            // no network provider is enabled
-            Timber.e("no network provider is enabled");
-        } else {
-            this.canGetLocation = true;
-
-
-            if (!LabCompatibilityManager.isMarshmallow()) {
-
+        // Check device API in order to run dexter permission or not
+        if (!LabCompatibilityManager.isMarshmallow()) {
+            if (!canGetLocation()) {
+                // no network provider is enabled
+                Timber.e("no network provider is enabled");
             } else {
+                try {
 
+                    // if Network Enabled get lat/long using Network
+                    if (isNetworkEnabled) {
+                        getLocationViaNetwork();
+                    }
+
+                    // if GPS Enabled get lat/long using GPS Services
+                    if (isGPSEnabled) {
+                        getLocationViaGPS();
+                    }
+
+                    EventBus.getDefault().post(new LocationFetchedEvent(location));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+        } else {
 
             Dexter.withContext(mActivity)
                     .withPermissions(
@@ -256,53 +268,27 @@ public class LabLocationManager extends Service
                                 // permission is denied permanently, navigate user to app settings
                             }
 
+                            if (!canGetLocation()) {
+                                // no network provider is enabled
+                                Timber.e("no network provider is enabled");
+                            } else {
+                                try {
 
-                            try {
-
-                                if (isNetworkEnabled) {
-
-                                    locationManager.requestLocationUpdates(
-                                            LocationManager.NETWORK_PROVIDER,
-                                            MIN_TIME_BW_UPDATES,
-                                            MIN_DISTANCE_CHANGE_FOR_UPDATES,
-                                            mLocationListener);
-                                    Timber.d("Network Enabled");
-                                    if (locationManager != null) {
-                                        location =
-                                                locationManager
-                                                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                                        if (location != null) {
-                                            latitude = location.getLatitude();
-                                            longitude = location.getLongitude();
-                                        }
+                                    // if Network Enabled get lat/long using Network
+                                    if (isNetworkEnabled) {
+                                        getLocationViaNetwork();
                                     }
-                                }
 
-
-                                // if GPS Enabled get lat/long using GPS Services
-                                if (isGPSEnabled) {
-                                    if (location == null) {
-                                        locationManager.requestLocationUpdates(
-                                                LocationManager.GPS_PROVIDER,
-                                                MIN_TIME_BW_UPDATES,
-                                                MIN_DISTANCE_CHANGE_FOR_UPDATES,
-                                                mLocationListener);
-                                        Timber.d("GPS Enabled");
-                                        if (locationManager != null) {
-                                            location = locationManager
-                                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                            if (location != null) {
-                                                latitude = location.getLatitude();
-                                                longitude = location.getLongitude();
-                                            }
-                                        }
+                                    // if GPS Enabled get lat/long using GPS Services
+                                    if (isGPSEnabled) {
+                                        getLocationViaGPS();
                                     }
+
+                                    EventBus.getDefault().post(new LocationFetchedEvent(location));
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-
-                                //EventBus.getDefault().post(new LocationFetchedEvent(location));
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
                         }
 
@@ -318,12 +304,10 @@ public class LabLocationManager extends Service
 
         // return location object
         return location;
-
     }
 
     @SuppressLint("MissingPermission")
     private void getLocationViaNetwork() {
-
         locationManager.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
                 MIN_TIME_BW_UPDATES,
@@ -340,6 +324,7 @@ public class LabLocationManager extends Service
             }
         }
     }
+
     @SuppressLint("MissingPermission")
     private void getLocationViaGPS() {
         if (location == null) {
@@ -366,16 +351,6 @@ public class LabLocationManager extends Service
      */
     public void stopUsingGPS() {
         if (locationManager != null) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
             locationManager.removeUpdates(LabLocationManager.this);
         }
     }
@@ -429,6 +404,10 @@ public class LabLocationManager extends Service
         return this.canGetLocation;
     }
 
+    public Location getLocationObject() {
+        return location;
+    }
+
     /**
      * Function to show settings alert dialog On pressing Settings button will
      * lauch Settings Options
@@ -463,7 +442,7 @@ public class LabLocationManager extends Service
     public void onLocationChanged(Location location) {
         Timber.d("onLocationChanged");
 
-        EventBus.getDefault().post(new LocationFetchedEvent(location));
+        //EventBus.getDefault().post(new LocationFetchedEvent(location));
     }
 
     @Override

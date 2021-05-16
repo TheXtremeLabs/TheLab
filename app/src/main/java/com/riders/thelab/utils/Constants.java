@@ -31,7 +31,12 @@ import timber.log.Timber;
 
 public class Constants {
 
+    private static Constants instance;
+
     public static final String EMULATOR_DEVICE_TAG = "sdk";
+
+    private final List<App> activityItems;
+
     //REST client Base URL
     public static final String BASE_ENDPOINT_YOUTUBE = "https://raw.githubusercontent.com";
     public static final String BASE_ENDPOINT_SEARCH = "https://ajax.googleapis.com";
@@ -42,20 +47,22 @@ public class Constants {
     public static final String BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD = "http://bulk.openweathermap.org/";
     public static final String WEATHER_BULK_DOWNLOAD_URL = "sample/city.list.json.gz";
     public static final String BASE_ENDPOINT_WEATHER_ICON = "http://openweathermap.org/img/wn/";
+    public static final String BASE_ENDPOINT_WEATHER_FLAG = "http://openweathermap.org/images/flags/";
     public static final String WEATHER_ICON_SUFFIX = "@2x.png";
+    public static final String WEATHER_FLAG_PNG_SUFFIX = ".png";
     public static final String WEATHER_COUNTRY_CODE_FRANCE = "FR";
     public static final String WEATHER_COUNTRY_CODE_GUADELOUPE = "GP";
     public static final String WEATHER_COUNTRY_CODE_MARTINIQUE = "MQ";
     public static final String WEATHER_COUNTRY_CODE_GUYANE = "GF";
     public static final String WEATHER_COUNTRY_CODE_REUNION = "RE";
+
     // Palette
     public static final String PALETTE_URL = "http://i.ytimg.com/vi/aNHOfJCphwk/maxresdefault.jpg";
+
     // Activity Recognition
     public static final String BROADCAST_DETECTED_ACTIVITY = "activity_intent";
     public static final long DETECTION_INTERVAL_IN_MILLISECONDS = 30 * 1000;
     public static final int CONFIDENCE = 70;
-    private static Constants instance;
-    private final List<App> activityItems;
 
 
     // private constructor can't be accessed outside the class
