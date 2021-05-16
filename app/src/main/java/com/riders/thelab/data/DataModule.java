@@ -6,10 +6,8 @@ import android.content.res.AssetManager;
 
 import androidx.room.Room;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.riders.thelab.TheLabApplication;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
+import com.riders.thelab.core.utils.LabFileManager;
 import com.riders.thelab.data.local.LabDatabase;
 import com.riders.thelab.data.local.LabRepository;
 import com.riders.thelab.data.local.bean.TimeOut;
@@ -22,19 +20,15 @@ import com.riders.thelab.data.remote.api.GoogleAPIService;
 import com.riders.thelab.data.remote.api.WeatherApiService;
 import com.riders.thelab.data.remote.api.WeatherBulkApiService;
 import com.riders.thelab.data.remote.api.YoutubeApiService;
-import com.riders.thelab.data.remote.dto.Artist;
-import com.riders.thelab.data.remote.dto.ArtistsResponseJsonAdapter;
+import com.riders.thelab.data.remote.dto.artist.ArtistsResponseJsonAdapter;
 import com.riders.thelab.utils.Constants;
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
 
+import org.apache.http.HttpHeaders;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 
 import java.io.InputStream;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -49,7 +43,6 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 import timber.log.Timber;
 
@@ -108,17 +101,6 @@ public class DataModule {
     /*  GENERAL */
     @Provides
     @Singleton
-    @NotNull Gson provideGsonFactory() {
-        return new GsonBuilder()
-                .disableHtmlEscaping()
-                .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
-                .setLenient()
-                .create();
-    }
-
-
-    @Provides
-    @Singleton
     @NotNull HttpLoggingInterceptor provideOkHttpLogger() {
         return new HttpLoggingInterceptor(message -> Timber.tag("OkHttp").d(message))
                 .setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -137,10 +119,9 @@ public class DataModule {
                     Request original = chain.request();
                     // Customize the request
                     Request request = original.newBuilder()
-                            .header("Content-Type", "application/json; charset=utf-8")
-                            .header("Connection", "close")
-//                            .header("Content-Type", "application/json")
-                            .header("Accept-Encoding", "Identity")
+                            .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
+                            .header(HttpHeaders.CONNECTION, "close")
+                            .header(HttpHeaders.ACCEPT_ENCODING, "Identity")
                             .build();
 
                     Response response = chain.proceed(request);
@@ -157,15 +138,11 @@ public class DataModule {
     @Provides
     @Singleton
     @NotNull Retrofit provideRetrofit(String url) {
-        Gson gson = new GsonBuilder()
-                .disableHtmlEscaping()
-                .setLenient()
-                .create();
 
         return new Retrofit.Builder()
                 .baseUrl(url)
                 .client(provideOkHttp())
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(MoshiConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
 //                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build();
@@ -199,8 +176,6 @@ public class DataModule {
                     Request original = chain.request();
                     // Customize the request
                     Request request = original.newBuilder()
-//                            .header("Content-Type", "application/json; charset=utf8")
-//                            .header("Accept", "application/json")
                             .build();
 
                     Response response = chain.proceed(request);
@@ -231,9 +206,9 @@ public class DataModule {
                     HttpUrl url = null;
                     String json;
 
-                    WeatherKey model;
+                    WeatherKey mWeatherKey = null;
 
-                    JSONObject obj = new JSONObject();
+//                    JSONObject obj = new JSONObject();
 
                     AssetManager mAssetManager =
                             TheLabApplication.getContext()
@@ -242,10 +217,22 @@ public class DataModule {
 
                     try {
 
+                        // Get file from assets
                         InputStream is = mAssetManager
                                 .open("weather_api.json");
 
-                        int size = is.available();
+                        // Read file and store it into json string object
+                        json = LabFileManager.tryReadFile(is);
+
+                        // Use of Moshi
+                        Moshi moshi = new Moshi.Builder().build();
+                        JsonAdapter<WeatherKey> jsonAdapter = moshi.adapter(WeatherKey.class);
+
+                        assert json != null;
+                        // Get value from josn string into WeatherKey object
+                        mWeatherKey = jsonAdapter.fromJson(json);
+
+                        /*int size = is.available();
                         byte[] buffer = new byte[size];
                         is.read(buffer);
                         is.close();
@@ -253,7 +240,7 @@ public class DataModule {
                         if (LabCompatibilityManager.isKitkat()) {
                             json = new String(buffer, StandardCharsets.UTF_8);
                             obj = new JSONObject(json);
-                        }
+                        }*/
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -266,8 +253,9 @@ public class DataModule {
                     // Avoid key and metrics when requesting for bulk download
                     if (!originalHttpUrl.toString().contains("sample")) {
                         try {
+                            assert mWeatherKey != null;
                             url = originalHttpUrl.newBuilder()
-                                    .addQueryParameter("appid", (String) obj.get("appid"))
+                                    .addQueryParameter("appid", mWeatherKey.getAppID())
                                     .addQueryParameter("units", "metric")
                                     .build();
                         } catch (Exception e) {
@@ -275,14 +263,15 @@ public class DataModule {
                             Timber.e(Objects.requireNonNull(e.getMessage()));
                         }
 
+                        assert url != null;
                         // Request customization: add request headers
                         requestBuilder =
                                 original.newBuilder()
                                         .url(url)
-                                        .header("Content-Type", "application/json; charset=utf-8")
-                                        .header("Connection", "close")
-                                        //.header("Content-Type", "application/json")
-                                        .header("Accept-Encoding", "Identity");
+                                        .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
+                                        .header(HttpHeaders.CONNECTION, "close")
+                                        //.header(HttpHeaders.CONTENT_TYPE, "application/json")
+                                        .header(HttpHeaders.ACCEPT_ENCODING, "Identity");
                     } else {
                         url = originalHttpUrl.newBuilder()
                                 .build();
@@ -291,11 +280,11 @@ public class DataModule {
                         requestBuilder =
                                 original.newBuilder()
                                         .url(url)
-                                        .header("Content-Type", "text/plain")
-                                        .header("Connection", "close")
-                                        .header("Cache-Control", "max-age=60")
-                                        .header("Accept-Ranges", "bytes")
-                                        .header("Accept-Encoding", "Identity");
+                                        .header(HttpHeaders.CONTENT_TYPE, "text/plain")
+                                        .header(HttpHeaders.CONNECTION, "close")
+                                        .header(HttpHeaders.CACHE_CONTROL, "max-age=60")
+                                        .header(HttpHeaders.ACCEPT_RANGES, "bytes")
+                                        .header(HttpHeaders.ACCEPT_ENCODING, "Identity");
                     }
 
                     Request request = requestBuilder.build();
@@ -315,7 +304,7 @@ public class DataModule {
                         TimeOut.TIME_OUT_READ.getValue(),
                         TimeOut.TIME_OUT_CONNECTION.getValue()
                 ))
-                .addConverterFactory(GsonConverterFactory.create(provideGsonFactory()))
+                .addConverterFactory(MoshiConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }

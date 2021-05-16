@@ -1,11 +1,13 @@
 package com.riders.thelab.ui.weather;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
+import androidx.core.content.ContextCompat;
+import androidx.room.EmptyResultSetException;
 import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.NetworkType;
@@ -15,20 +17,20 @@ import androidx.work.WorkRequest;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
 import com.riders.thelab.R;
+import com.riders.thelab.core.utils.LabAddressesUtils;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabLocationManager;
 import com.riders.thelab.core.utils.LabNetworkManager;
+import com.riders.thelab.core.utils.LabNetworkManagerNewAPI;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.LabRepository;
-import com.riders.thelab.data.local.model.weather.CityModel;
+import com.riders.thelab.data.local.model.weather.WeatherData;
 import com.riders.thelab.data.remote.LabService;
 import com.riders.thelab.ui.base.BasePresenterImpl;
 import com.riders.thelab.utils.Constants;
-import com.riders.thelab.utils.Validator;
 
-import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -49,6 +51,7 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     // prone as you might forgot to dispose.
     // In this case we can use CompositeDisposable.
     private final CompositeDisposable compositeDisposable;
+
     @Inject
     WeatherActivity activity;
     @Inject
@@ -63,8 +66,8 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     // the observer try to update the activity/fragment's UI that has been destroyed
     @Inject
     LabService service;
-    private List<CityModel> citiesModel;
-    private Gson mGson;
+
+    private LabLocationManager labLocationManager;
 
 
     @Inject
@@ -73,18 +76,24 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     }
 
 
+    @Override
+    public boolean canGetLocation() {
+        labLocationManager = new LabLocationManager(activity, activity);
+        return labLocationManager.canGetLocation();
+    }
+
+    @Override
+    public Cursor getCityQuery(String cityQuery) {
+        return repository.getCitiesCursor(cityQuery);
+    }
+
+
     @SuppressLint("NewApi")
     @Override
     public void getCitiesData() {
 
-        boolean isConnected = false;
         if (!LabCompatibilityManager.isLollipop()) {
-            ConnectivityManager connMgr =
-                    (ConnectivityManager) activity.getSystemService(Activity.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            isConnected = networkInfo != null && networkInfo.isConnected();
-
-            if (!isConnected) {
+            if (!LabNetworkManager.isConnected(activity)) {
                 Timber.e("No Internet connection");
 
                 getView().onNoConnectionDetected();
@@ -93,7 +102,7 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
             }
 
         } else {
-            if (!LabNetworkManager.isIsConnected()) {
+            if (!LabNetworkManagerNewAPI.isConnected(activity)) {
                 getView().hideLoader();
                 getView().onNoConnectionDetected();
                 return;
@@ -105,11 +114,11 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
         // First step
         // Call repository to check if there is data in database
         Disposable disposable =
-                repository.getAllCities()
+                repository.getWeatherData()
                         .subscribe(
-                                cityList -> {
+                                weatherData -> {
 
-                                    if (Validator.isNullOrEmpty(cityList)) {
+                                    if (!weatherData.isWeatherData()) {
 
                                         // In this case record's return is null
                                         // then we have to call our Worker to perform
@@ -120,29 +129,42 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                                         // Use worker to make long job operation in background
                                         Timber.e("Use worker to make long job operation in background...");
                                         startWork();
-
                                     } else {
                                         // In this case data already exists in database
                                         // Load data then let the the user perform his request
                                         Timber.d("Record found in database. Continue...");
 
-                                        citiesModel = cityList;
-
                                         getView().hideLoader();
-                                        getView().onFetchCitySuccessful(citiesModel);
+                                        getView().onFetchCitySuccessful();
                                     }
                                 }, throwable -> {
                                     Timber.e("Error while fetching records in database");
-                                    Timber.e(throwable);
+
+                                    if (throwable instanceof EmptyResultSetException) {
+                                        Timber.e(throwable);
+                                        Timber.e("weatherData is empty. No Record found in database");
+
+                                        startWork();
+                                    } else {
+                                        Timber.e(throwable);
+                                    }
                                 });
 
         compositeDisposable.add(disposable);
     }
 
+    @Override
+    public Address getCityNameWithCoordinates(final double latitude, final double longitude) {
+        return LabAddressesUtils
+                .getDeviceAddress(
+                        new Geocoder(activity, Locale.getDefault()),
+                        LabLocationManager.buildTargetLocationObject(latitude, longitude));
+    }
+
 
     @Override
     public void getCurrentWeather() {
-        new LabLocationManager(activity, activity);
+        labLocationManager.getLocation();
     }
 
 
@@ -219,20 +241,15 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
 
                                 case SUCCEEDED:
                                     Disposable disposable =
-                                            repository.getAllCities()
-                                                    .subscribe(
-                                                            cityList -> {
-                                                                citiesModel = cityList;
-
-                                                                getView().hideLoader();
-                                                                getView().updateDownloadStatus("Loading finished");
-                                                                getView().onFetchCitySuccessful(citiesModel);
-                                                            }, throwable -> {
-                                                                Timber.e("Error while fetching records in database");
-                                                                Timber.e(throwable);
-                                                            });
+                                            repository
+                                                    .insertWeatherData(new WeatherData(true))
+                                                    .subscribe();
 
                                     compositeDisposable.add(disposable);
+
+                                    getView().hideLoader();
+                                    getView().updateDownloadStatus("Loading finished");
+                                    getView().onFetchCitySuccessful();
                                     break;
 
                                 case FAILED:
@@ -242,7 +259,7 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
                                                     activity.findViewById(android.R.id.content),
                                                     "Worker FAILED",
                                                     BaseTransientBottomBar.LENGTH_LONG)
-                                            .setTextColor(activity.getResources().getColor(android.R.color.holo_red_light))
+                                            .setTextColor(ContextCompat.getColor(activity, android.R.color.holo_red_light))
                                             .show();
                                     break;
 
@@ -267,45 +284,27 @@ public class WeatherPresenter extends BasePresenterImpl<WeatherView>
     //
     /////////////////////////////////////
     @Override
-    public void getWeather(String city) {
-        getView().showLoader();
-
-        makeWeatherCall(city);
-    }
-
-    @Override
     public void getWeather(Location location) {
         getView().showLoader();
 
-        makeWeatherCall(location);
-    }
-
-
-    public void makeWeatherCall(Object object) {
-        getView().showLoader();
-
         Disposable disposable =
-                service.getWeather(object)
+                service.getWeatherOneCallAPI(location)
                         .subscribe(
                                 weatherResponse -> {
-
-                                    if (200 != weatherResponse.getCode()) {
-                                        Timber.e("error code : %s", weatherResponse.getCode());
-                                    } else {
-                                        getView().hideLoader();
-                                        getView().updateUI(weatherResponse);
-                                    }
+                                    getView().hideLoader();
+                                    getView().updateOneCallUI(weatherResponse);
                                 },
-                                Timber::e);
+                                throwable -> {
+                                    Timber.e(throwable);
+                                    getView().hideLoader();
+                                });
 
         compositeDisposable.add(disposable);
     }
 
     @Override
     public void clearDisposables() {
-        if (null != compositeDisposable)
-            // don't send events once the activity is destroyed
-            compositeDisposable.clear();
+        compositeDisposable.clear();
     }
 
     private void cancelWorker() {

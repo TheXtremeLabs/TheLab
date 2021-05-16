@@ -1,25 +1,29 @@
 package com.riders.thelab.utils;
 
+import android.annotation.SuppressLint;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
 import timber.log.Timber;
 
+@SuppressLint("SimpleDateFormat")
 public class DateTimeUtils {
 
     private static final String UTC = "UTC";
     private static final String GMT = "GMT";
+    private static final String HH_mm = "HH:mm";
+    private static final String dd_MM = "dd/MM";
 
     private DateTimeUtils() {
     }
 
     public static String formatMillisToTimeHoursMinutes(long millis) {
-        Timber.e("mills : %d", millis);
 
         long time = millis * (long) 1000;
         Date date = new Date(time);
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat format = new SimpleDateFormat(HH_mm);
         format.setTimeZone(
                 TimeZone.getTimeZone(
                         buildUTCTimeZone(getOffsetTimeZone(millis))
@@ -27,6 +31,10 @@ public class DateTimeUtils {
         );
 
         return format.format(date);
+    }
+
+    public static String formatMillisToTimeDayMonth(long millis) {
+        return new SimpleDateFormat(dd_MM).format(new Date(millis * (long) 1000));
     }
 
     private static int getOffsetTimeZone(long millis) {
