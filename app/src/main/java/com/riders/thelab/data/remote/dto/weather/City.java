@@ -17,7 +17,6 @@ public class City {
     private String state;
     private String country;
 
-    @SerializedName("coord")
     @Json(name = "coord")
     private Coordinates coordinates;
 }

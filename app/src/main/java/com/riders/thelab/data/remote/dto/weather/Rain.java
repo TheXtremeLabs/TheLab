@@ -1,6 +1,6 @@
 package com.riders.thelab.data.remote.dto.weather;
 
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,10 +12,10 @@ import lombok.ToString;
 public class Rain {
 
     // Rain volume for the last 1 hour, mm
-    @SerializedName("1h")
+    @Json(name = "1h")
     double lastHour;
 
     // Rain volume for the last 3 hour, mm
-    @SerializedName("3h")
+    @Json(name = "3h")
     double lastThreeHour;
 }

@@ -1,9 +1,9 @@
 package com.riders.thelab.data.remote.api;
 
 
+import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse;
 import com.riders.thelab.data.remote.dto.weather.Weather;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
-
 
 import io.reactivex.Single;
 import retrofit2.Call;
@@ -86,4 +86,17 @@ public interface WeatherApiService {
     @GET("/data/2.5/weather?")
     Call<Weather> getCurrentWeatherByZipCode(@Query("zip") String zipCodeAndCountryCode);
 
+    /**
+     * API call: api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={your api key}
+     * Parameters: lat, lon coordinates of the location of your interest
+     * Examples of API calls: api.openweathermap.org/data/2.5/onecall?lat=35&lon=139
+     *
+     * @param lat
+     * @param lon
+     * @return
+     */
+    @GET("/data/2.5/onecall?")
+    Single<OneCallWeatherResponse> getCurrentWeatherWithNewOneCallAPI(
+            @Query("lat") double lat,
+            @Query("lon") double lon);
 }

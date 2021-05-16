@@ -14,8 +14,9 @@ import com.riders.thelab.data.remote.api.GoogleAPIService;
 import com.riders.thelab.data.remote.api.WeatherApiService;
 import com.riders.thelab.data.remote.api.WeatherBulkApiService;
 import com.riders.thelab.data.remote.api.YoutubeApiService;
-import com.riders.thelab.data.remote.dto.Artist;
+import com.riders.thelab.data.remote.dto.artist.Artist;
 import com.riders.thelab.data.remote.dto.directions.Directions;
+import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 
 import java.util.List;
@@ -93,7 +94,8 @@ public class LabService {
                                         observer.onSuccess(storageRef);
                                     } else {
                                         // If sign in fails, display a message to the user.
-                                        Timber.w("signInAnonymously:failure %s", task.getException().toString());
+                                        Timber.w("signInAnonymously:failure %s",
+                                                task.getException().toString());
 
                                         Toast.makeText(
                                                 activity,
@@ -170,6 +172,23 @@ public class LabService {
                 rxSingleWeatherRequest == null
                         ? null
                         : rxSingleWeatherRequest
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    public Single<OneCallWeatherResponse> getWeatherOneCallAPI(final Location location) {
+        Timber.e("getWeatherOneCallAPI()");
+
+        if (null == location) {
+            Timber.e("Cannot perform request call object is null");
+            return null;
+        }
+        return
+                weatherApiService
+                        .getCurrentWeatherWithNewOneCallAPI(
+                                location.getLatitude(),
+                                location.getLongitude())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
     }

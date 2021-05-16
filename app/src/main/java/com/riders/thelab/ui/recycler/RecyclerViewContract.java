@@ -1,6 +1,6 @@
 package com.riders.thelab.ui.recycler;
 
-import com.riders.thelab.data.remote.dto.Artist;
+import com.riders.thelab.data.remote.dto.artist.Artist;
 import com.riders.thelab.ui.base.BaseView;
 
 import java.util.List;

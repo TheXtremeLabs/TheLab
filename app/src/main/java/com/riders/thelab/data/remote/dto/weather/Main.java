@@ -1,7 +1,6 @@
 package com.riders.thelab.data.remote.dto.weather;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,21 +11,21 @@ import lombok.ToString;
 @ToString
 public class Main {
 
-    @SerializedName("temp")
+    @Json(name = "temp")
     double temperature;
 
-    @SerializedName("feels_like")
+    @Json(name = "feels_like")
     double feelsLike;
 
-    @SerializedName("temp_min")
+    @Json(name = "temp_min")
     double minTemperature;
 
-    @SerializedName("temp_max")
+    @Json(name = "temp_max")
     double maxTemperature;
 
-    @Expose
+    @Json(name = "pressure")
     int pressure;
 
-    @Expose
+    @Json(name = "humidity")
     int humidity;
 }

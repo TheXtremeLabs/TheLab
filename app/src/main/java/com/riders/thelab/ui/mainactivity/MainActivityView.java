@@ -47,6 +47,7 @@ import com.riders.thelab.R;
 import com.riders.thelab.core.interfaces.ConnectivityListener;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabNetworkManager;
+import com.riders.thelab.core.utils.LabNetworkManagerNewAPI;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.core.views.ItemSnapHelper;
 import com.riders.thelab.data.local.model.App;
@@ -92,7 +93,7 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
      */
     private FragmentStateAdapter pagerAdapter;
     private ConnectivityManager mConnectivityManager;
-    private LabNetworkManager networkManager;
+    private LabNetworkManagerNewAPI networkManager;
     private Menu menu;
     private List<Fragment> fragmentList;
     private TextView[] dots;
@@ -140,7 +141,7 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
                 (ConnectivityManager) context.getSystemService(Activity.CONNECTIVITY_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            networkManager = new LabNetworkManager(this);
+            networkManager = new LabNetworkManagerNewAPI(this);
         }
     }
 
@@ -156,8 +157,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     @Override
     public void onResume() {
         Timber.d("onResume()");
-//        TheLabApplication.getInstance().setConnectivityListener(this);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
             // register connection status listener
@@ -497,14 +496,6 @@ public class MainActivityView extends BaseViewImpl<MainActivityPresenter>
     // PRESENTER
     //
     /////////////////////////////////////
-    @Override
-    public void showLoading() {
-    }
-
-    @Override
-    public void hideLoading() {
-    }
-
     @Override
     public void onSuccessPackageList(List<App> applications) {
         Timber.d("onSuccessPackageList()");

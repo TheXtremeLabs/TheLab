@@ -44,6 +44,15 @@ public class UIManager {
     private UIManager() {
     }
 
+    public static void showView(final View view) {
+        view.setVisibility(View.VISIBLE);
+    }
+
+    public static void hideView(final View view) {
+        view.setVisibility(View.GONE);
+    }
+
+
     /**
      * Hide the keyboard
      *
