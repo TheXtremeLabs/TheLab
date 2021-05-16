@@ -2,7 +2,9 @@ package com.riders.thelab.ui.weather;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
+import com.riders.thelab.data.local.bean.Hours;
 import com.riders.thelab.data.remote.dto.weather.CurrentWeather;
+import com.riders.thelab.utils.Constants;
 import com.riders.thelab.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -12,24 +14,11 @@ import timber.log.Timber;
 
 public class WeatherUtils {
 
-    enum Hours {
-        MORNING("06"),
-        DAY("12"),
-        EVENING("18"),
-        NIGHT("22");
-
-        private final String hourValue;
-
-        Hours(String hourValue) {
-            this.hourValue = hourValue;
-        }
-
-        public String getHourValue() {
-            return hourValue;
-        }
+    private WeatherUtils() {
     }
 
-    private WeatherUtils() {
+    public static String getWeatherIconFromApi(String weatherIconId) {
+        return Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX;
     }
 
     public static void stylingChartGrid(LineChart chart, final int whiteColor) {

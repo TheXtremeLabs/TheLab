@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -19,9 +21,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -33,16 +38,15 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.bus.LocationFetchedEvent;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabLocationManager;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.LabRepository;
 import com.riders.thelab.data.local.bean.SnackBarType;
+import com.riders.thelab.data.local.bean.WindDirection;
 import com.riders.thelab.data.local.model.weather.CityModel;
 import com.riders.thelab.data.remote.dto.weather.CurrentWeather;
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse;
 import com.riders.thelab.ui.base.BaseViewImpl;
-import com.riders.thelab.utils.Constants;
 import com.riders.thelab.utils.DateTimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -108,14 +112,16 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     MaterialTextView tvWeatherExtraPressure;
     @BindView(R.id.tv_weather_extra_wind_speed)
     MaterialTextView tvWeatherExtraWindSpeed;
-    @BindView(R.id.tv_weather_extra_wind_direction)
-    MaterialTextView tvWeatherExtraWindDirection;
+    @BindView(R.id.iv_weather_extra_wind_direction_icon)
+    ShapeableImageView ivWeatherExtraWindDirectionIcon;
+    @BindView(R.id.tv_weather_extra_wind_direction_short_name)
+    MaterialTextView tvWeatherExtraWindDirectionShortName;
     @BindView(R.id.tv_weather_extra_humidity)
     MaterialTextView tvWeatherExtraHumidity;
     @BindView(R.id.rv_forecast_five_days)
     RecyclerView rvForecastFiveDays;
 
-    private SearchView searchView;
+    private SearchView mSearchView;
 
     CompositeDisposable compositeDisposable;
 
@@ -150,14 +156,14 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         // Associate searchable configuration with the SearchView
         SearchManager searchManager =
                 (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(context.getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
+        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(context.getComponentName()));
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
 
-        ((AutoCompleteTextView) searchView.findViewById(R.id.search_src_text)).setThreshold(3);
+        ((AutoCompleteTextView) mSearchView.findViewById(R.id.search_src_text)).setThreshold(3);
 
         // listening to search query text change
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 getCitiesFromDb(query);
@@ -176,8 +182,8 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
                 searchText = "%" + searchText + "%";
                 Observable
                         .just(searchText)
-                        .observeOn(Schedulers.computation())
                         .map(searchQueryText -> getPresenter().getCityQuery(searchQueryText))
+                        .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 this::handleResults,
@@ -185,11 +191,11 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
             }
 
             private void handleResults(Cursor cursor) {
-                searchView.setSuggestionsAdapter(
+                mSearchView.setSuggestionsAdapter(
                         new WeatherSearchViewAdapter(
                                 context,
                                 cursor,
-                                searchView,
+                                mSearchView,
                                 WeatherView.this));
             }
 
@@ -276,16 +282,28 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     public void updateOneCallUI(OneCallWeatherResponse oneCallWeatherResponse) {
         Timber.d("updateOneCallUI()");
 
-        weatherDataContainer.setVisibility(View.VISIBLE);
-
         // Load weather icon
         Glide.with(context)
-                .load(getWeatherIconFromApi(
-                        oneCallWeatherResponse
-                                .getCurrentWeather()
-                                .getWeather()
-                                .get(0)
-                                .getIcon()))
+                .load(
+                        WeatherUtils.getWeatherIconFromApi(
+                                oneCallWeatherResponse
+                                        .getCurrentWeather()
+                                        .getWeather()
+                                        .get(0)
+                                        .getIcon()))
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Timber.e("error %s", e.getMessage());
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Timber.e("Image weather bien chargée");
+                        return false;
+                    }
+                })
                 .into(ivWeatherIcon);
 
         Address address =
@@ -340,15 +358,35 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         String pressure = oneCallWeatherResponse.getCurrentWeather().getPressure() + " " + context.getResources().getString(R.string.pressure_unit_placeholder);
         tvWeatherExtraPressure.setText(pressure);
 
-        String wind = oneCallWeatherResponse.getCurrentWeather().getWindSpeed() + " " + context.getResources().getString(R.string.meter_unit_placeholder);
+        // Wind
+        String wind =
+                oneCallWeatherResponse.getCurrentWeather().getWindSpeed() + " "
+                        + context.getResources().getString(R.string.meter_unit_placeholder);
         tvWeatherExtraWindSpeed.setText(wind);
 
-        String windDirection = oneCallWeatherResponse.getCurrentWeather().getWindDegree() + " ";
-        tvWeatherExtraWindDirection.setText(windDirection);
+        WindDirection windDirection =
+                WindDirection.getWindDirectionToTextualDescription(
+                        oneCallWeatherResponse.getCurrentWeather().getWindDegree());
 
-        Timber.e("Wind direction : %s",
-                getWindDirectionToTextualDescription(
-                        oneCallWeatherResponse.getCurrentWeather().getWindDegree()));
+        Glide.with(context)
+                .load(ContextCompat.getDrawable(context, windDirection.getIcon()))
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Timber.e("error %s", e.getMessage());
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Timber.e("Image wind bien chargée");
+                        return false;
+                    }
+                })
+                .into(ivWeatherExtraWindDirectionIcon);
+
+        String windDirectionShortName = windDirection.getShortName() + " ";
+        tvWeatherExtraWindDirectionShortName.setText(windDirectionShortName);
 
         WeatherForecastAdapter mAdapter =
                 new WeatherForecastAdapter(
@@ -417,24 +455,6 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     // CLASS METHODS
     //
     /////////////////////////////////////
-    public String getWeatherIconFromApi(String weatherIconId) {
-        return Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX;
-    }
-
-    public String getWindDirectionToTextualDescription(double degree) {
-        if (degree > 337.5) return "Northerly";
-        if (degree > 292.5) return "North Westerly";
-        if (degree > 247.5) return "Westerly";
-        if (degree > 202.5) return "South Westerly";
-        if (degree > 157.5) return "Southerly";
-        if (degree > 122.5) return "South Easterly";
-        if (degree > 67.5) return "Easterly";
-        if (degree > 22.5) {
-            return "North Easterly";
-        }
-        return "Northerly";
-    }
-
     public void buildChart(List<CurrentWeather> hourlyWeather) {
 
         // in this example, a LineChart is initialized from xml
@@ -446,7 +466,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
          *
          */
         // Styling
-        chart.setAutoScaleMinMaxEnabled(true);
+        /*chart.setAutoScaleMinMaxEnabled(true);
         chart.setTouchEnabled(false);
         chart.setClickable(false);
 
@@ -477,9 +497,9 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
         chart.getDescription().setTextColor(whiteColor);
 
         Legend l = chart.getLegend();
-        l.setEnabled(false);
+        l.setEnabled(false);*/
 
-//        WeatherUtils.stylingChartGrid(chart, whiteColor);
+        WeatherUtils.stylingChartGrid(chart, whiteColor);
 
         List<Float> temperatureForNextHours =
                 WeatherUtils.getWeatherTemperaturesForNextHours(hourlyWeather);
@@ -512,6 +532,8 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
 
         // the labels that should be drawn on the XAxis
         final String[] quarters = WeatherUtils.getWeatherTemperaturesQuarters(hourlyWeather);
+        Timber.d("quarters value : %d", quarters.length);
+
         ValueFormatter formatter = new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, AxisBase axis) {
@@ -528,7 +550,6 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
 
         LineData lineData = new LineData(dataSet);
         chart.setData(lineData);
-//        chart.notifyDataSetChanged();
         chart.invalidate(); // refresh
     }
 
@@ -540,17 +561,7 @@ public class WeatherView extends BaseViewImpl<WeatherPresenter>
     @SuppressLint("RestrictedApi")
     @Override
     public void onWeatherItemClicked(final CityModel cityModel) {
-
-        if (!LabCompatibilityManager.isOreo()) {
-            if (!searchView.isIconified()) {
-                searchView.setIconified(true);
-            }
-
-        } else {
-            Objects.requireNonNull(context.getSupportActionBar()).collapseActionView();
-        }
-
-        UIManager.hideView(context.findViewById(android.R.id.content));
+        UIManager.hideKeyboard(context, context.findViewById(android.R.id.content));
 
         getPresenter().getWeather(
                 LabLocationManager.buildTargetLocationObject(
