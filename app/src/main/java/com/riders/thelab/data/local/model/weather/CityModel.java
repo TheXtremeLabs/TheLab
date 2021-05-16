@@ -1,5 +1,7 @@
 package com.riders.thelab.data.local.model.weather;
 
+import android.database.Cursor;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -20,7 +22,7 @@ public class CityModel {
 
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "_id")
     public int id;
     @ColumnInfo(name = "name")
     public String name;
@@ -45,5 +47,14 @@ public class CityModel {
         setCountry(dtoCity.getCountry());
         setLatitude(dtoCity.getCoordinates().getLatitude());
         setLongitude(dtoCity.getCoordinates().getLongitude());
+    }
+
+    @Ignore
+    public CityModel(Cursor cursor) {
+        setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+        setState(cursor.getString(cursor.getColumnIndexOrThrow("state")));
+        setCountry(cursor.getString(cursor.getColumnIndexOrThrow("country")));
+        setLatitude(cursor.getDouble(cursor.getColumnIndexOrThrow("latitude")));
+        setLongitude(cursor.getDouble(cursor.getColumnIndexOrThrow("longitude")));
     }
 }

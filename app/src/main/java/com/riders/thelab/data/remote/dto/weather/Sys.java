@@ -1,6 +1,6 @@
 package com.riders.thelab.data.remote.dto.weather;
 
-import com.google.gson.annotations.Expose;
+import com.squareup.moshi.Json;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,19 +10,18 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Sys {
-
-    @Expose
+    @Json(name = "type")
     int type;
 
-    @Expose
+    @Json(name = "id")
     int id;
 
-    @Expose
+    @Json(name = "country")
     String country;
 
-    @Expose
+    @Json(name = "sunrise")
     long sunrise;
 
-    @Expose
+    @Json(name = "sunset")
     long sunset;
 }
