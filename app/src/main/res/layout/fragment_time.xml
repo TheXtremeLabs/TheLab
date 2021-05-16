@@ -28,17 +28,17 @@
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:textSize="52sp"
             android:textStyle="bold"
-            tools:text="15:20"
-            tools:textColor="@color/white" />
+            tools:text="15:20" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="jeu. 24 Décembre 2020"
-            tools:textColor="@color/white" />
+            android:textColor="@color/white"
+            tools:text="jeu. 24 Décembre 2020" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
