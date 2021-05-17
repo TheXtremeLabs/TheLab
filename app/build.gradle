@@ -162,6 +162,7 @@ dependencies {
     implementation rootProject.ext.generalDependencies.firebaseMessaging
     implementation rootProject.ext.generalDependencies.firebasePerf
     implementation rootProject.ext.generalDependencies.firebaseCloudstorage
+    implementation rootProject.ext.generalDependencies.firebaseDatabase
     implementation rootProject.ext.generalDependencies.firebaseAds
 
     // RxJava / RxAndroid
