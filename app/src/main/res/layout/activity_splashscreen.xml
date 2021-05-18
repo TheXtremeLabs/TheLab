@@ -39,38 +39,65 @@
             app:layout_constraintTop_toTopOf="parent">
 
 
-            <!-- Image -->
-            <com.google.android.material.imageview.ShapeableImageView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/the_lab_icon_white" />
+                android:layout_height="@dimen/extra_big_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <!-- Image -->
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_the_la_part"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:adjustViewBounds="true"
+                    android:alpha="0"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_the_la_part"
+                    tools:alpha="1"
+                    tools:visibility="visible" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_five_number"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/extra_small_margin"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@color/default_dark"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_five_number" />
+            </LinearLayout>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_app_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
+                android:layout_gravity="center"
                 android:layout_margin="@dimen/small_margin"
+                android:alpha="0"
                 android:textColor="@color/white"
+                tools:alpha="1"
                 tools:text="v 1.0.3" />
         </LinearLayout>
 
 
         <!-- ProgressBar -->
-        <ProgressBar
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="wrap_content"
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="72dp"
+            android:layout_marginBottom="@dimen/ultra_big_margin_tablet"
             android:indeterminate="true"
             android:indeterminateOnly="true"
-            android:indeterminateTint="@color/splashProgressbarTint"
+            app:indicatorColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:trackCornerRadius="@dimen/small_margin"
+            tools:progress="45" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
