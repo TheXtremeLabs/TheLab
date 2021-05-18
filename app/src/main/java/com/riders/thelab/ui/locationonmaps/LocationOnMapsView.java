@@ -55,6 +55,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabLocationManager;
+import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.bean.MapsEnum;
 import com.riders.thelab.ui.base.BaseViewImpl;
 
@@ -390,26 +391,37 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
         mCriteria = new Criteria();
 
         mProvider = mLocationManager.getBestProvider(mCriteria, true);
-        try {
-            mLocation = mLocationManager.getLastKnownLocation(mProvider);
-        } catch (SecurityException e) {
-            e.printStackTrace();
+
+
+        if (null == mProvider) {
+            Timber.e("Cannot get location please enable position");
+            LabLocationManager labLocationManager = new LabLocationManager(context);
+            labLocationManager.showSettingsAlert();
+        } else {
+
+            try {
+                mLocation = mLocationManager.getLastKnownLocation(mProvider);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+
+            if (mLocation != null) {
+                onLocationChanged(mLocation);
+            }
+
+            try {
+
+                mLocationManager.requestLocationUpdates(
+                        mProvider,
+                        20000,
+                        0,
+                        this);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+
         }
 
-        if (mLocation != null) {
-            onLocationChanged(mLocation);
-        }
-
-        try {
-
-            mLocationManager.requestLocationUpdates(
-                    mProvider,
-                    20000,
-                    0,
-                    this);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
     }
 
     private void hideLoading() {
@@ -417,7 +429,7 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
                 && rlMapsLoading.getVisibility() == View.VISIBLE)
             startAnimation(rlMapsLoading);
 
-        getPresenter().getDirections();
+        //getPresenter().getDirections();
 
         // Places
         // getPlaces();
@@ -562,9 +574,9 @@ public class LocationOnMapsView extends BaseViewImpl<LocationOnMapsPresenter>
 
                         String errorMessage = "Location settings are inadequate, and cannot be " +
                                 "fixed here. Fix in Settings.";
-                        Timber.e(errorMessage);
 
-                        Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+                        UIManager.showActionInToast(context, errorMessage);
+                        Timber.e(errorMessage);
                     }
 
                     updateLocationUI();
