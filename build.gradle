@@ -6,9 +6,9 @@ ext {
     buildToolsVersion = "30.0.2"
 
     // version information
-    versionMajor = 4
-    versionMinor = 7
-    versionPatch = 3
+    versionMajor = 5
+    versionMinor = 0
+    versionPatch = 0
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
 
