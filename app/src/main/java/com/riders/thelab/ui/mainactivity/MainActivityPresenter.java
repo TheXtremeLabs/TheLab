@@ -94,9 +94,9 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
             for (ApplicationInfo appInfo : installedAppList) {
                 Timber.e("package found : %s", appInfo.packageName);
                 try {
-                    String name = (String) activity.getPackageManager().getApplicationLabel(appInfo);
-                    Drawable icon = activity.getPackageManager().getApplicationIcon(appInfo.packageName);
-                    PackageInfo pInfo = activity.getPackageManager().getPackageInfo(appInfo.packageName, 0);
+                    String name = (String) activity.context.getPackageManager().getApplicationLabel(appInfo);
+                    Drawable icon = activity.context.getPackageManager().getApplicationIcon(appInfo.packageName);
+                    PackageInfo pInfo = activity.context.getPackageManager().getPackageInfo(appInfo.packageName, 0);
                     String version = pInfo.versionName;
                     String packageName = appInfo.packageName;
 
@@ -133,7 +133,7 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
         List<ApplicationInfo> packages;
         PackageManager packageManager;
 
-        packageManager = activity.getPackageManager();
+        packageManager = activity.context.getPackageManager();
         packages = packageManager.getInstalledApplications(0);
 
         for (ApplicationInfo packageInfo : packages) {
@@ -145,7 +145,7 @@ public class MainActivityPresenter extends BasePresenterImpl<MainActivityView>
 
                     // Check if it does equal to The Lab package name
                     // because we don't don't want to display it
-                    if (!appToAdd.equals(TheLabApplication.getLabPackageName()))
+                    if (!appToAdd.equals(TheLabApplication.getInstance()))
                         installedAppList.add(packageInfo);
                     isPackageFound = true;
                 }
