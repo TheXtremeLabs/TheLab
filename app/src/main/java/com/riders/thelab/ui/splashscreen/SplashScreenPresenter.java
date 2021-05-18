@@ -11,12 +11,17 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenterImpl;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 
@@ -27,12 +32,14 @@ public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
     SplashScreenActivity activity;
 
     @Inject
+    Navigator navigator;
+
+    @Inject
     SplashScreenPresenter() {
     }
 
     @Override
     public void hasPermissions(Context context) {
-
         Dexter
                 .withContext(context)
                 .withPermissions(
@@ -84,10 +91,32 @@ public class SplashScreenPresenter extends BasePresenterImpl<SplashScreenView>
                             .getPackageInfo(activity.getPackageName(), 0);
             String version = pInfo.versionName;
 
-            getView().displayAppVersion(version);
-
+            getView().setAppVersion(version);
         } catch (PackageManager.NameNotFoundException error) {
             Timber.e(error);
         }
+    }
+
+    @Override
+    public void goToMainActivity() {
+        Timber.i("goToMainActivity()");
+
+        Completable
+                .complete()
+                .delay(3, TimeUnit.SECONDS)
+                .doOnComplete(() -> {
+
+                    if (activity != null && navigator != null) {
+                        navigator.callMainActivity();
+                        activity.finish();
+                    }
+
+                })
+                .doOnError(Timber::e)
+                .subscribeOn(Schedulers.io())
+                //Caused by: android.util.AndroidRuntimeException:
+                // Animators may only be run on Looper threads
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 }
