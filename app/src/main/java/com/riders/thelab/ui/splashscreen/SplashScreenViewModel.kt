@@ -7,12 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
-import javax.inject.Inject
 
-@HiltViewModel
-class SplashScreenViewModel @Inject constructor(activity: SplashScreenActivity) : ViewModel() {
-
-    private var mContext: SplashScreenActivity = activity
+class SplashScreenViewModel : ViewModel() {
 
     private val appVersion: MutableLiveData<String> = MutableLiveData()
     private val onVideoEnd: MutableLiveData<Boolean> = MutableLiveData()
@@ -26,14 +22,12 @@ class SplashScreenViewModel @Inject constructor(activity: SplashScreenActivity) 
         return onVideoEnd;
     }
 
-
-    fun retrieveAppVersion() {
-
+    fun retrieveAppVersion(activity: SplashScreenActivity) {
         try {
             val pInfo: PackageInfo =
-                    mContext
+                    activity
                             .packageManager
-                            .getPackageInfo(mContext.packageName, 0)
+                            .getPackageInfo(activity.packageName, 0)
             val version = pInfo.versionName
 
             appVersion.value = version
