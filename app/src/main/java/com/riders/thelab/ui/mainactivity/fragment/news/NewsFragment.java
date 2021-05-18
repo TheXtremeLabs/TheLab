@@ -15,7 +15,6 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
-import com.riders.thelab.ui.mainactivity.MainActivityAppClickListener;
 
 import org.jetbrains.annotations.NotNull;
 

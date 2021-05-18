@@ -49,24 +49,22 @@ class Constants {
         const val BROADCAST_DETECTED_ACTIVITY = "activity_intent"
         const val DETECTION_INTERVAL_IN_MILLISECONDS = (30 * 1000).toLong()
         const val CONFIDENCE = 70
+
+        private var instance: Constants? = null
+
+        // Factory method to provide the users with instances
+        fun getInstance(): Constants {
+            if (null == instance) instance = Constants()
+            return instance!!
+        }
     }
 
-    private var instance: Constants? = null
-
-    private lateinit var activityItems: List<App>
-
+    private var activityItems: List<App>
 
     init {
         Timber.d("Constructor constants()")
         activityItems = ArrayList(loadActivities())
     }
-
-    // Factory method to provide the users with instances
-    fun getInstance(): Constants {
-        if (null == instance) instance = Constants()
-        return instance!!
-    }
-
     fun loadActivities(): List<App> {
         val list: MutableList<App> = ArrayList()
 

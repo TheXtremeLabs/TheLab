@@ -59,6 +59,8 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
 
         initViewModelsObservers()
 
+        mViewModel.retrieveAppVersion(this)
+
         startVideo()
     }
 
