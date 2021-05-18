@@ -190,11 +190,12 @@ dependencies {
      * support for Activity and fragment injection so we need to include
      * the following dependencies */
     implementation rootProject.ext.generalDependencies.hilt
-    kapt rootProject.ext.generalDependencies.hiltKaptCompiler
+    kapt(rootProject.ext.generalDependencies.hiltKaptCompiler)
     implementation rootProject.ext.generalDependencies.hiltLifecycle
-    kapt rootProject.ext.generalDependencies.hiltKaptAndroidXCompiler
+    kapt(rootProject.ext.generalDependencies.hiltKaptAndroidXCompiler)
     // if you use the support libraries
-    kapt rootProject.ext.generalDependencies.hiltKaptAndroidCompiler
+//    kapt rootProject.ext.generalDependencies.hiltKaptAndroidCompiler
+//    kapt(rootProject.ext.generalDependencies.hiltWorkerManager)
 
 
     // Butterknife : Views binding
