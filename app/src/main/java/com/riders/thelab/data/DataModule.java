@@ -6,7 +6,6 @@ import android.content.res.AssetManager;
 
 import androidx.room.Room;
 
-import com.riders.thelab.TheLabApplication;
 import com.riders.thelab.core.utils.LabFileManager;
 import com.riders.thelab.data.local.LabDatabase;
 import com.riders.thelab.data.local.LabRepository;

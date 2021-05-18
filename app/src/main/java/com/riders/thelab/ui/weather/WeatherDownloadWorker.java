@@ -10,7 +10,6 @@ import androidx.work.ListenableWorker;
 import androidx.work.WorkerParameters;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.riders.thelab.TheLabApplication;
 import com.riders.thelab.core.parser.LabParser;
 import com.riders.thelab.core.utils.LabFileManager;
 import com.riders.thelab.data.DataModule;

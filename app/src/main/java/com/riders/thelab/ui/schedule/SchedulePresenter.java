@@ -8,7 +8,6 @@ import android.content.ServiceConnection;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 
-import com.riders.thelab.TheLabApplication;
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver;
 import com.riders.thelab.core.service.ScheduleAlarmService;
 import com.riders.thelab.core.utils.UIManager;
