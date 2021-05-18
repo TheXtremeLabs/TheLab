@@ -150,6 +150,7 @@ ext {
             firebaseMessaging     : "com.google.firebase:firebase-messaging",
             firebasePerf          : "com.google.firebase:firebase-perf",
             firebaseCloudstorage  : "com.google.firebase:firebase-storage",
+            firebaseDatabase      : "com.google.firebase:firebase-database",
             firebaseAds           : "com.google.android.gms:play-services-ads:$adsVersion",
 
 

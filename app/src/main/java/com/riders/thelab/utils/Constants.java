@@ -11,6 +11,7 @@ import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity;
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity;
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity;
 import com.riders.thelab.ui.floatingview.FloatingViewActivity;
+import com.riders.thelab.ui.kat.KatActivity;
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity;
 import com.riders.thelab.ui.multipane.MultipaneActivity;
 import com.riders.thelab.ui.palette.PaletteActivity;
@@ -55,6 +56,7 @@ public class Constants {
     public static final String WEATHER_COUNTRY_CODE_MARTINIQUE = "MQ";
     public static final String WEATHER_COUNTRY_CODE_GUYANE = "GF";
     public static final String WEATHER_COUNTRY_CODE_REUNION = "RE";
+    public static final String FIREBASE_DATABASE_NAME = "kat";
 
     // Palette
     public static final String PALETTE_URL = "http://i.ytimg.com/vi/aNHOfJCphwk/maxresdefault.jpg";
@@ -150,6 +152,10 @@ public class Constants {
 
         list.add(new App("Spring", "Physics-based motion is driven by force. Spring force is one such force that guides interactivity and motion....",
                 R.drawable.ic_filter_center_focus, SpringActivity.class));
+
+
+        list.add(new App("Chat", "Realtime chat using firebase realtime database features",
+                R.drawable.ic_k_at, KatActivity.class));
 
 
         list.add(new App("WIP", "Coming soon...",

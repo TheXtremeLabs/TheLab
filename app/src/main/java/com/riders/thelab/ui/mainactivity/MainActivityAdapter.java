@@ -71,7 +71,7 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
             holder.bindData(item);
 
             holder.itemCardView.setOnClickListener(
-                    view -> listener.onAppItemCLickListener(view, item, holder.getAdapterPosition()));
+                    view -> listener.onAppItemCLickListener(view, item, position));
         } else {
             holder.bindTabletData(item);
             bindTabletViewHolder(holder, item, position);
