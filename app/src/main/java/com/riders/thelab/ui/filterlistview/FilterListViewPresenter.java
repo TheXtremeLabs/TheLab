@@ -1,7 +1,6 @@
 package com.riders.thelab.ui.filterlistview;
 
 import com.riders.thelab.data.local.model.WorldPopulation;
-import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenterImpl;
 
 import java.util.ArrayList;

@@ -1,12 +1,7 @@
 package com.riders.thelab.ui.recycler;
 
 import com.riders.thelab.di.scopes.ActivityScope;
-import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenter;
-import com.riders.thelab.ui.palette.PalettePresenter;
-import com.riders.thelab.ui.schedule.ScheduleActivity;
-import com.riders.thelab.ui.schedule.ScheduleContract;
-import com.riders.thelab.ui.schedule.ScheduleView;
 
 import dagger.Binds;
 import dagger.Module;

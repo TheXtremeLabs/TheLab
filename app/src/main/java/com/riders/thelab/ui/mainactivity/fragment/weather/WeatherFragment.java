@@ -17,11 +17,9 @@ import com.riders.thelab.R;
 import com.riders.thelab.core.bus.LocationFetchedEvent;
 import com.riders.thelab.core.utils.LabLocationManager;
 import com.riders.thelab.core.utils.UIManager;
-import com.riders.thelab.data.remote.LabService;
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse;
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 import com.riders.thelab.databinding.FragmentWeatherBinding;
-import com.riders.thelab.utils.Constants;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

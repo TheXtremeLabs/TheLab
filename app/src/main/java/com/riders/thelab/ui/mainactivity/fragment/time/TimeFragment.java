@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.StorageReference;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
-import com.riders.thelab.data.remote.LabService;
 import com.riders.thelab.databinding.FragmentTimeBinding;
 
 import org.jetbrains.annotations.NotNull;

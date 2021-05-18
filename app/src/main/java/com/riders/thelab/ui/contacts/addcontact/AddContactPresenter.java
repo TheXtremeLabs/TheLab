@@ -2,7 +2,6 @@ package com.riders.thelab.ui.contacts.addcontact;
 
 import com.riders.thelab.data.local.LabRepository;
 import com.riders.thelab.data.local.model.Contact;
-import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenterImpl;
 import com.riders.thelab.ui.contacts.ContactsActivity;
 

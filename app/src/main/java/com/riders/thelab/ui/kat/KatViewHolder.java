@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.riders.thelab.data.remote.dto.kat.Kat;
 import com.riders.thelab.databinding.RowKatMessageOtherBinding;
 import com.riders.thelab.databinding.RowKatMessageSelfBinding;
-import com.riders.thelab.utils.DateTimeUtils;
 
 import timber.log.Timber;
 

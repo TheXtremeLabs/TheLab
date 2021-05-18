@@ -1,54 +1,10 @@
 package com.riders.thelab.data;
 
-import android.annotation.SuppressLint;
-import android.app.Application;
-import android.content.res.AssetManager;
-
-import androidx.room.Room;
-
-import com.riders.thelab.core.utils.LabFileManager;
-import com.riders.thelab.data.local.LabDatabase;
-import com.riders.thelab.data.local.LabRepository;
-import com.riders.thelab.data.local.bean.TimeOut;
-import com.riders.thelab.data.local.dao.ContactDao;
-import com.riders.thelab.data.local.dao.WeatherDao;
-import com.riders.thelab.data.local.model.weather.WeatherKey;
-import com.riders.thelab.data.remote.LabService;
-import com.riders.thelab.data.remote.api.ArtistsAPIService;
-import com.riders.thelab.data.remote.api.GoogleAPIService;
-import com.riders.thelab.data.remote.api.WeatherApiService;
-import com.riders.thelab.data.remote.api.WeatherBulkApiService;
-import com.riders.thelab.data.remote.api.YoutubeApiService;
-import com.riders.thelab.data.remote.dto.artist.ArtistsResponseJsonAdapter;
-import com.riders.thelab.utils.Constants;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-
-import org.apache.http.HttpHeaders;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.InputStream;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.moshi.MoshiConverterFactory;
-import timber.log.Timber;
-
 //import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 
-@Module
+//@Module
 public class DataModule {
+/*
 
     private static DataModule mInstance;
     private final Application application;
@@ -97,7 +53,9 @@ public class DataModule {
     }
 
 
-    /*  GENERAL */
+    */
+    /*  GENERAL *//*
+
     @Provides
     @Singleton
     @NotNull HttpLoggingInterceptor provideOkHttpLogger() {
@@ -106,7 +64,9 @@ public class DataModule {
     }
 
 
-    /* Provide OkHttp for the app */
+    */
+    /* Provide OkHttp for the app *//*
+
     @Provides
     @Singleton
     @NotNull OkHttpClient provideOkHttp() {
@@ -133,7 +93,9 @@ public class DataModule {
     }
 
 
-    /* Provide Retrofit for the app */
+    */
+    /* Provide Retrofit for the app *//*
+
     @Provides
     @Singleton
     @NotNull Retrofit provideRetrofit(String url) {
@@ -187,8 +149,12 @@ public class DataModule {
     }
 
 
-    /* WEATHER */
-    /* Provide OkHttp for the app */
+    */
+    /* WEATHER *//*
+
+     */
+    /* Provide OkHttp for the app *//*
+
     @SuppressLint("NewApi")
     @Provides
     @Singleton
@@ -231,7 +197,8 @@ public class DataModule {
                         // Get value from josn string into WeatherKey object
                         mWeatherKey = jsonAdapter.fromJson(json);
 
-                        /*int size = is.available();
+                        */
+/*int size = is.available();
                         byte[] buffer = new byte[size];
                         is.read(buffer);
                         is.close();
@@ -239,7 +206,8 @@ public class DataModule {
                         if (LabCompatibilityManager.isKitkat()) {
                             json = new String(buffer, StandardCharsets.UTF_8);
                             obj = new JSONObject(json);
-                        }*/
+                        }*//*
+
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -356,6 +324,7 @@ public class DataModule {
                 provideWeatherApiService(),
                 proWeatherBulkApiService());
     }
+*/
 
 }
 

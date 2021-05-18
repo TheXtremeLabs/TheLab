@@ -4,8 +4,6 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.riders.thelab.data.local.bean.Hours;
 import com.riders.thelab.data.remote.dto.weather.CurrentWeather;
-import com.riders.thelab.utils.Constants;
-import com.riders.thelab.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat;
 
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
-import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.ui.base.BaseActivity;
 
 public class MainActivity extends BaseActivity<MainActivityView>

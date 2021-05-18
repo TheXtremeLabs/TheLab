@@ -11,7 +11,6 @@ import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.ui.base.BaseViewImpl;
-import com.riders.thelab.utils.Constants;
 
 import javax.inject.Inject;
 

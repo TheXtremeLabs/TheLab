@@ -22,13 +22,9 @@ import com.riders.thelab.core.utils.LabAddressesUtils;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabLocationManager;
 import com.riders.thelab.core.utils.LabNetworkManager;
-import com.riders.thelab.core.utils.LabNetworkManagerNewAPI;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.LabRepository;
-import com.riders.thelab.data.local.model.weather.WeatherData;
-import com.riders.thelab.data.remote.LabService;
 import com.riders.thelab.ui.base.BasePresenterImpl;
-import com.riders.thelab.utils.Constants;
 
 import java.util.Locale;
 import java.util.UUID;

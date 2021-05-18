@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
-import com.riders.thelab.data.local.model.App;
 
 import java.util.List;
 

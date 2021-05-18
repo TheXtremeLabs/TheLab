@@ -44,18 +44,14 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
-import com.riders.thelab.core.interfaces.ConnectivityListener;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabNetworkManager;
-import com.riders.thelab.core.utils.LabNetworkManagerNewAPI;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.core.views.ItemSnapHelper;
-import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.ui.base.BaseViewImpl;
 import com.riders.thelab.ui.mainactivity.fragment.news.NewsFragment;
 import com.riders.thelab.ui.mainactivity.fragment.time.TimeFragment;
 import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment;
-import com.riders.thelab.utils.Validator;
 
 import java.util.ArrayList;
 import java.util.List;

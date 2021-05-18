@@ -3,11 +3,9 @@ package com.riders.thelab.ui.mainactivity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.riders.thelab.data.local.model.App;
 import com.riders.thelab.ui.base.BaseView;
 
 import java.util.List;
