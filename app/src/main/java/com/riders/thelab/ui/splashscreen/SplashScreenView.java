@@ -131,9 +131,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         logoColorAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation, boolean isReverse) {
-
                 slideNumber();
-
             }
         });
         logoColorAnimator.start();
@@ -325,9 +323,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         slideNumberAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation, boolean isReverse) {
-                context.runOnUiThread(() -> {
-                    startTheLaPartAnimation();
-                });
+                startTheLaPartAnimation();
             }
         });
         slideNumberAnim.start();
