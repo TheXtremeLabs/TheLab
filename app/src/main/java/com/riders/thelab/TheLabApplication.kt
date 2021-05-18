@@ -10,9 +10,10 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltAndroidApp
-class TheLabApplication : MultiDexApplication() {
+class TheLabApplication : MultiDexApplication(), Configuration.Provider  {
 
     companion object {
         private var LAB_PACKAGE_NAME: String? = null
@@ -30,8 +31,14 @@ class TheLabApplication : MultiDexApplication() {
 
     }
 
+
     // Firebase
     private var mFirebaseCrashlytics: FirebaseCrashlytics? = null
+
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
 
     override fun onCreate() {
         super.onCreate()
@@ -106,4 +113,9 @@ class TheLabApplication : MultiDexApplication() {
     override fun onTerminate() {
         super.onTerminate()
     }
+
+    override fun getWorkManagerConfiguration() =
+            Configuration.Builder()
+                    .setWorkerFactory(workerFactory)
+                    .build()
 }
