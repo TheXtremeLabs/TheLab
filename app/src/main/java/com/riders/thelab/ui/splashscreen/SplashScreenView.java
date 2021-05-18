@@ -2,32 +2,33 @@ package com.riders.thelab.ui.splashscreen;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.Keyframe;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.VideoView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.TheLabApplication;
+import com.riders.thelab.core.utils.LabAnimationsManager;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
-import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BaseViewImpl;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import io.reactivex.Completable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.riders.thelab.R.string.version_placeholder;
@@ -37,6 +38,8 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         implements SplashScreenContract.View, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener {
 
+    private SplashScreenActivity context;
+
     private static final String ANDROID_RES_PATH = "android.resource://";
     private static final String SEPARATOR = "/";
 
@@ -44,14 +47,23 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     ConstraintLayout clContent;
     @BindView(R.id.splash_video)
     VideoView splashVideoView;
+    @BindView(R.id.iv_the_la_part)
+    ShapeableImageView ivTheLaPart;
+    @BindView(R.id.iv_five_number)
+    ShapeableImageView ivFiveNumber;
     @BindView(R.id.tv_app_version)
     MaterialTextView tvAppVersion;
-    @Inject
-    Navigator navigator;
-    private SplashScreenActivity context;
+    @BindView(R.id.progressBar)
+    LinearProgressIndicator progressBar;
+
     private int position = 0;
 
-    private int shortAnimationDuration;
+    // Animators
+    private ObjectAnimator logoColorAnimator;
+    private ObjectAnimator slideNumberAnim;
+    private ObjectAnimator slideTextAnim;
+    private ObjectAnimator versionTextAnimator;
+    private ObjectAnimator fadeProgressAnimator;
 
 
     @Inject
@@ -67,21 +79,12 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
     /////////////////////////////////
     @Override
     public void onCreate() {
-
         getPresenter().attachView(this);
 
         ButterKnife.bind(this, context.findViewById(android.R.id.content));
-
         TheLabApplication.getInstance();
 
-        getPresenter().getAppVersion();
-
-        // Retrieve and cache the system's default "short" animation time.
-        shortAnimationDuration =
-                context
-                        .getResources()
-                        .getInteger(android.R.integer.config_shortAnimTime);
-
+        progressBar.setAlpha(0f);
         getPresenter().hasPermissions(context);
     }
 
@@ -101,15 +104,87 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
 
     @Override
     public void onPause() {
-        Timber.i("onPause()");
+        Timber.e("onPause()");
 
     }
 
     @Override
     public void onResume() {
-        Timber.i("onResume()");
+        Timber.d("onResume()");
+
     }
 
+    @Override
+    public void startFiveAnimation() {
+        Timber.e("startFiveAnimation()");
+        Keyframe kf0 = Keyframe.ofFloat(0f, 0f);
+        Keyframe kf1 = Keyframe.ofFloat(.25f, 360f * 1.5f);
+        Keyframe kf2 = Keyframe.ofFloat(.35f, 360f * 3.0f);
+        Keyframe kf3 = Keyframe.ofFloat(.5f, 360f * 5.0f);
+        Keyframe kf5 = Keyframe.ofFloat(.75f, 360.0f * 7.0f);
+        Keyframe kf6 = Keyframe.ofFloat(1f, 360f * 9.0f);
+        PropertyValuesHolder pvhRotation =
+                PropertyValuesHolder.ofKeyframe("rotationY", kf0, kf1, kf2, kf3, kf5, kf6);
+        logoColorAnimator = ObjectAnimator.ofPropertyValuesHolder(ivFiveNumber, pvhRotation);
+        logoColorAnimator.setDuration(3500);
+        logoColorAnimator.setInterpolator(new LinearOutSlowInInterpolator());
+        logoColorAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation, boolean isReverse) {
+                slideNumber();
+            }
+        });
+        logoColorAnimator.start();
+    }
+
+    @Override
+    public void startTheLaPartAnimation() {
+        Timber.e("startTheLaPartAnimation()");
+        ivTheLaPart.setVisibility(View.VISIBLE);
+
+        slideTextAnim = ObjectAnimator.ofFloat(ivTheLaPart, "alpha", 1f);
+        slideTextAnim.setDuration(LabAnimationsManager.getInstance().getShortAnimationDuration());
+        slideTextAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation, boolean isReverse) {
+                ivTheLaPart.setAlpha(1f);
+                displayAppVersion();
+
+            }
+        });
+        slideTextAnim.start();
+    }
+
+    @Override
+    public void displayAppVersion() {
+        Timber.e("displayAppVersion()");
+        versionTextAnimator = ObjectAnimator.ofFloat(tvAppVersion, "alpha", 1f);
+        versionTextAnimator.setDuration(LabAnimationsManager.getInstance().getLongAnimationDuration());
+        versionTextAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation, boolean isReverse) {
+                tvAppVersion.setAlpha(1f);
+                startProgressAnimation();
+            }
+        });
+        versionTextAnimator.start();
+    }
+
+
+    @Override
+    public void startProgressAnimation() {
+        Timber.e("startProgressAnimation()");
+        fadeProgressAnimator = ObjectAnimator.ofFloat(progressBar, "alpha", 0f, 1f);
+        fadeProgressAnimator.setDuration(LabAnimationsManager.getInstance().getShortAnimationDuration());
+        fadeProgressAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation, boolean isReverse) {
+                progressBar.setAlpha(1f);
+                getPresenter().goToMainActivity();
+            }
+        });
+        fadeProgressAnimator.start();
+    }
 
     @Override
     public void onDestroy() {
@@ -129,6 +204,8 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
             clContent.setVisibility(View.GONE);
         }
 
+        getPresenter().getAppVersion();
+
         startVideo();
     }
 
@@ -140,10 +217,10 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void displayAppVersion(String appVersion) {
+    public void setAppVersion(String appVersion) {
+        Timber.e("setAppVersion()");
         tvAppVersion.setText(context.getString(version_placeholder) + appVersion);
     }
-
 
     @Override
     public void closeApp() {
@@ -205,15 +282,6 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         splashVideoView.setOnCompletionListener(this);
     }
 
-    protected void goToMainActivity() {
-        Timber.i("goToMainActivity()");
-        if (context != null && navigator != null) {
-            navigator.callMainActivity();
-            context.finish();
-        }
-
-    }
-
 
     private void crossFadeViews(View view) {
         Timber.i("crossFadeViews()");
@@ -227,7 +295,7 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         // listener set on the view.
         view.animate()
                 .alpha(1f)
-                .setDuration(shortAnimationDuration)
+                .setDuration(LabAnimationsManager.getInstance().getShortAnimationDuration())
                 .setListener(null);
 
         // Animate the loading view to 0% opacity. After the animation ends,
@@ -235,24 +303,35 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
         // participate in layout passes, etc.)
         splashVideoView.animate()
                 .alpha(0f)
-                .setDuration(shortAnimationDuration)
+                .setDuration(LabAnimationsManager.getInstance().getShortAnimationDuration())
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         Timber.e("onAnimationEnd()");
                         splashVideoView.setVisibility(View.GONE);
 
-                        Completable
-                                .complete()
-                                .delay(3, TimeUnit.SECONDS)
-                                .doOnComplete(() -> context.view.goToMainActivity())
-                                .doOnError(Timber::e)
-                                .subscribeOn(Schedulers.io())
-                                //Caused by: android.util.AndroidRuntimeException:
-                                // Animators may only be run on Looper threads
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe();
+                        if (!LabCompatibilityManager.isOreo()) {
+                            startProgressAnimation();
+                            getPresenter().goToMainActivity();
+
+                        } else {
+                            startFiveAnimation();
+                        }
                     }
                 });
+    }
+
+    private void slideNumber() {
+        Timber.e("slideNumber()");
+        slideNumberAnim = ObjectAnimator.ofFloat(ivFiveNumber, "translationX", 0f, 25f, 50f, 0f);
+        slideNumberAnim.setDuration(LabAnimationsManager.getInstance().getMediumAnimationDuration());
+        slideNumberAnim.setInterpolator(new AccelerateInterpolator());
+        slideNumberAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation, boolean isReverse) {
+                startTheLaPartAnimation();
+            }
+        });
+        slideNumberAnim.start();
     }
 }

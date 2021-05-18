@@ -21,7 +21,15 @@ public interface SplashScreenContract {
 
         void onResume();
 
-        void displayAppVersion(String appVersion);
+        void setAppVersion(String appVersion);
+
+        void startFiveAnimation();
+
+        void startTheLaPartAnimation();
+
+        void startProgressAnimation();
+
+        void displayAppVersion();
 
         void closeApp();
     }
@@ -30,5 +38,7 @@ public interface SplashScreenContract {
         void hasPermissions(Context context);
 
         void getAppVersion();
+
+        void goToMainActivity();
     }
 }
