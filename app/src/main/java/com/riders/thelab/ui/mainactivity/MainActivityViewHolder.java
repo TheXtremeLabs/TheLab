@@ -25,8 +25,6 @@ import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.UIManager;
-import com.riders.thelab.data.local.model.App;
-import com.riders.thelab.utils.Validator;
 
 @SuppressLint({"UnknownNullness", "NonConstantResourceId"})
 public class MainActivityViewHolder extends RecyclerView.ViewHolder {

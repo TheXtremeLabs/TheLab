@@ -8,10 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 
 import com.riders.thelab.TheLabApplication;
-import com.riders.thelab.data.local.model.App;
-import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenterImpl;
-import com.riders.thelab.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -2,7 +2,6 @@ package com.riders.thelab.ui.youtubelike;
 
 
 import com.riders.thelab.di.scopes.ActivityScope;
-import com.riders.thelab.navigator.Navigator;
 import com.riders.thelab.ui.base.BasePresenter;
 import com.riders.thelab.ui.filterlistview.FilterListViewPresenter;
 

@@ -11,8 +11,6 @@ import android.view.WindowMetrics;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 
-import com.riders.thelab.utils.Constants;
-
 import java.io.File;
 import java.lang.reflect.Method;
 

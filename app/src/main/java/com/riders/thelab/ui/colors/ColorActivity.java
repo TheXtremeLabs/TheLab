@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.LabAnimationsManager;
 import com.riders.thelab.core.utils.LabColorsManager;
 import com.riders.thelab.ui.base.SimpleActivity;
 

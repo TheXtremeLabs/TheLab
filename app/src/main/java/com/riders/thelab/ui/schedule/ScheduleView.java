@@ -19,7 +19,6 @@ import com.riders.thelab.R;
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver;
 import com.riders.thelab.core.bus.AlarmEvent;
 import com.riders.thelab.ui.base.BaseViewImpl;
-import com.riders.thelab.utils.Validator;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

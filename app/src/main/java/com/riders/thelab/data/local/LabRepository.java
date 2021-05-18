@@ -1,28 +1,7 @@
 package com.riders.thelab.data.local;
 
-import android.database.Cursor;
-
-import com.riders.thelab.data.local.dao.ContactDao;
-import com.riders.thelab.data.local.dao.WeatherDao;
-import com.riders.thelab.data.local.model.Contact;
-import com.riders.thelab.data.local.model.weather.CityMapper;
-import com.riders.thelab.data.local.model.weather.CityModel;
-import com.riders.thelab.data.local.model.weather.WeatherData;
-import com.riders.thelab.data.remote.dto.weather.City;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import io.reactivex.Maybe;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-
-
 public class LabRepository {
-
+/*
     private final ContactDao contactDao;
     private final WeatherDao weatherDao;
 
@@ -109,10 +88,10 @@ public class LabRepository {
     //
     /////////////////////////////////////
 
-    /**
+    *//**
      * Clear All Local Data
-     */
+     *//*
     public void clearData() {
         contactDao.deleteAll();
-    }
+    }*/
 }

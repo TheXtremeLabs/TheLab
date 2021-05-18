@@ -6,14 +6,8 @@ import android.location.Location;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.riders.thelab.data.local.model.weather.CityModel;
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse;
-import com.riders.thelab.data.remote.dto.weather.WeatherResponse;
 import com.riders.thelab.ui.base.BaseView;
-
-import java.util.List;
-
-import io.reactivex.Single;
 
 public interface WeatherContract {
 

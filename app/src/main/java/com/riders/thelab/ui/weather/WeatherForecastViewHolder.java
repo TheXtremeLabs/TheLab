@@ -12,8 +12,6 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.remote.dto.weather.DailyWeather;
-import com.riders.thelab.utils.Constants;
-import com.riders.thelab.utils.DateTimeUtils;
 
 import org.jetbrains.annotations.NotNull;
 
