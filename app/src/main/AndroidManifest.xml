@@ -299,6 +299,12 @@
             android:name=".ui.spring.SpringActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
+
+        <activity
+            android:name=".ui.kat.KatActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab"
+            android:windowSoftInputMode="adjustResize" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 

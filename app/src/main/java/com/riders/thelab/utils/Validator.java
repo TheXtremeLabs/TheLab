@@ -6,6 +6,7 @@ public class Validator {
 
     private static final String REGEX_CODE_NUMERIC = "\\d+(?:\\.\\d+)?";
     private static final String REGEX_CODE_ALPHA = "[a-zA-Z]+";
+    private static final String REGEX_CODE_ALPHA_NUMERIC = "[A-Za-z0-9]+";
 
     /**
      * Verify if String is null or empty
