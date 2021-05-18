@@ -310,7 +310,13 @@ public class SplashScreenView extends BaseViewImpl<SplashScreenPresenter>
                         Timber.e("onAnimationEnd()");
                         splashVideoView.setVisibility(View.GONE);
 
-                        startFiveAnimation();
+                        if (!LabCompatibilityManager.isOreo()) {
+                            startProgressAnimation();
+                            getPresenter().goToMainActivity();
+
+                        } else {
+                            startFiveAnimation();
+                        }
                     }
                 });
     }
