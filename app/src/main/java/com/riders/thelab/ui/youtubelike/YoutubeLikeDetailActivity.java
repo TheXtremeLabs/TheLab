@@ -61,9 +61,8 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
         Where myBitmap is the Image from which you want to extract the color.
         Also for API 21 and above, you'll need to add the following flags if you're planning to color the status bar and navigation bar:
          */
-        if (LabCompatibilityManager.isLollipop()) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
 
         setContentView(R.layout.activity_youtube_detail);
 
@@ -162,9 +161,8 @@ public class YoutubeLikeDetailActivity extends SimpleActivity {
         {
             Palette.Swatch mutedDark = palette.getDarkMutedSwatch();
             if (mutedDark != null) {
-                if (LabCompatibilityManager.isLollipop()) {
-                    getWindow().setStatusBarColor(mutedDark.getRgb());
-                }
+                getWindow().setStatusBarColor(mutedDark.getRgb());
+
             }
 
         }
