@@ -9,7 +9,7 @@ import com.riders.thelab.core.interfaces.ConnectivityListener
 import timber.log.Timber
 
 class LabNetworkManagerNewAPI constructor(
-        val listener: ConnectivityListener
+    val listener: ConnectivityListener
 ) : NetworkCallback() {
 
     companion object {
@@ -28,7 +28,8 @@ class LabNetworkManagerNewAPI constructor(
      */
     fun isConnected(context: Context): Boolean {
         if (!LabCompatibilityManager.isLollipop()) {
-            val connMgr = context.getSystemService(Activity.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connMgr =
+                context.getSystemService(Activity.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo = connMgr.activeNetworkInfo
             isConnected = networkInfo != null && networkInfo.isConnected
         }

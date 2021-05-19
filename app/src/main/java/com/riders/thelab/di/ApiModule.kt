@@ -1,6 +1,5 @@
 package com.riders.thelab.di
 
-import com.riders.thelab.data.local.bean.TimeOut
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

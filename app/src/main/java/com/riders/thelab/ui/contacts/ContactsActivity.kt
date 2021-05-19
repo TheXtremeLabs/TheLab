@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.model.Contact
 import com.riders.thelab.databinding.ActivityContactsBinding
 import com.riders.thelab.ui.contacts.RecyclerItemTouchHelper.RecyclerItemTouchHelperListener

@@ -140,18 +140,9 @@
             android:name=".ui.recycler.RecyclerViewActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
-        <activity
-            android:name=".ui.recycler.RecyclerViewDetailActivity"
-            android:parentActivityName=".ui.recycler.RecyclerViewActivity"
-            android:theme="@style/RecyclerTheme" />
+
 
         <activity
-            android:name=".ui.tabs.WorkingTabsActivity"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/TabTheme" />
-
-
-         <activity
              android:name=".ui.contacts.ContactsActivity"
              android:parentActivityName=".ui.mainactivity.MainActivity"
              android:theme="@style/Theme.TheLab.NoActionBar">
@@ -203,10 +194,6 @@
         <activity
             android:name=".ui.multipane.MultipaneActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/MultiPaneTheme" />
-        <activity
-            android:name=".ui.multipane.MultipaneDetailActivity"
-            android:parentActivityName=".ui.multipane.MultipaneActivity"
             android:theme="@style/MultiPaneTheme" />
 
 

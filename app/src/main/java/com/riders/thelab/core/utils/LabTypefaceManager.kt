@@ -19,18 +19,21 @@ class LabTypefaceManager private constructor() {
          * @param customFontFileNameInAssets file name of the font from assets
          */
         @SuppressLint("BinaryOperationInTimber")
-        fun overrideFont(context: Context,
-                         defaultFontNameToOverride: String,
-                         customFontFileNameInAssets: String) {
+        fun overrideFont(
+            context: Context,
+            defaultFontNameToOverride: String,
+            customFontFileNameInAssets: String
+        ) {
 
-            val customFontTypeface = Typeface.createFromAsset(context.assets, customFontFileNameInAssets)
+            val customFontTypeface =
+                Typeface.createFromAsset(context.assets, customFontFileNameInAssets)
 
             if (LabCompatibilityManager.isLollipop()) {
                 val newMap: MutableMap<String, Typeface> = HashMap()
                 newMap["serif"] = customFontTypeface
                 try {
                     val staticField = Typeface::class.java
-                            .getDeclaredField("sSystemFontMap")
+                        .getDeclaredField("sSystemFontMap")
                     staticField.isAccessible = true
                     staticField[null] = newMap
                 } catch (e: NoSuchFieldException) {
@@ -40,13 +43,15 @@ class LabTypefaceManager private constructor() {
                 }
             } else {
                 try {
-                    val defaultFontTypefaceField = Typeface::class.java.getDeclaredField(defaultFontNameToOverride)
+                    val defaultFontTypefaceField =
+                        Typeface::class.java.getDeclaredField(defaultFontNameToOverride)
                     defaultFontTypefaceField.isAccessible = true
                     defaultFontTypefaceField[null] = customFontTypeface
                 } catch (e: Exception) {
                     Timber.e(
-                            "Can not set custom font " + customFontFileNameInAssets
-                                    + " instead of " + defaultFontNameToOverride)
+                        "Can not set custom font " + customFontFileNameInAssets
+                                + " instead of " + defaultFontNameToOverride
+                    )
                 }
             }
         }
