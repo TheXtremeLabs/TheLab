@@ -6,7 +6,6 @@ import android.util.DisplayMetrics;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabDeviceManager;
 import com.riders.thelab.data.local.model.DeviceInformation;
-import com.riders.thelab.ui.base.BasePresenterImpl;
 
 import javax.inject.Inject;
 

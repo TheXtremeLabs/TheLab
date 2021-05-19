@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.Movie;
-import com.riders.thelab.ui.base.BaseActivity;
 
 import org.parceler.Parcels;
 

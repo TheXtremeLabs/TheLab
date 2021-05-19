@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.DeviceInformation;
-import com.riders.thelab.ui.base.BaseViewImpl;
 
 import javax.inject.Inject;
 

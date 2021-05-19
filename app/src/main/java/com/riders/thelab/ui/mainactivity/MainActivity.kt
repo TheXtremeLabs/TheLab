@@ -22,6 +22,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
@@ -37,8 +40,10 @@ import com.riders.thelab.core.interfaces.ConnectivityListener
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.core.utils.UIManager
+import com.riders.thelab.core.views.ItemSnapHelper
 import com.riders.thelab.data.local.model.App
 import com.riders.thelab.databinding.ActivityMainBinding
+import com.riders.thelab.ui.mainactivity.fragment.bottomsheet.BottomSheetFragment
 import com.riders.thelab.ui.mainactivity.fragment.news.NewsFragment
 import com.riders.thelab.ui.mainactivity.fragment.time.TimeFragment
 import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment
@@ -76,7 +81,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private val mViewModel: MainViewModel by viewModels()
+    private val mViewModel: MainActivityViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -206,6 +211,37 @@ class MainActivity : AppCompatActivity(),
                             updateToolbarConnectionIcon(connectionStatus)
                         })
 
+        mViewModel
+                .getApplications().observe(
+                        this,
+                        { appList ->
+                            Timber.d("onSuccessPackageList()")
+
+                            val adapter = MainActivityAdapter(this, appList, this)
+
+                            val linearLayoutManager = LinearLayoutManager(
+                                    this,
+                                    if (!LabCompatibilityManager.isTablet(this)) LinearLayoutManager.VERTICAL else LinearLayoutManager.HORIZONTAL,
+                                    false)
+
+                            viewBinding.appRecyclerView?.layoutManager = linearLayoutManager
+
+                            val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+                            divider.setDrawable(
+                                    Objects.requireNonNull(
+                                            ContextCompat.getDrawable(
+                                                    this,
+                                                    R.drawable.item_separator_view_gradient))!!)
+                            if (!LabCompatibilityManager.isTablet(this))
+                                viewBinding.appRecyclerView?.addItemDecoration(divider)
+                            else {
+                                val helper = ItemSnapHelper()
+                                helper.attachToRecyclerView(viewBinding.appRecyclerView)
+                            }
+
+                            viewBinding.appRecyclerView?.itemAnimator = DefaultItemAnimator()
+                            viewBinding.appRecyclerView?.adapter = adapter
+                        })
     }
 
     /**
@@ -223,10 +259,8 @@ class MainActivity : AppCompatActivity(),
         fragmentList!!.add(TimeFragment())
         fragmentList!!.add(WeatherFragment())
         fragmentList!!.add(NewsFragment())
-        pagerAdapter = ViewPager2Adapter(
-                this.supportFragmentManager,
-                this.lifecycle,
-                fragmentList)
+        pagerAdapter = ViewPager2Adapter(this, fragmentList as ArrayList<Fragment>)
+
         // set Orientation in your ViewPager2
         viewBinding.includeToolbarLayout?.viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         viewBinding.includeToolbarLayout?.viewPager?.adapter = pagerAdapter
@@ -431,7 +465,9 @@ class MainActivity : AppCompatActivity(),
             mViewModel.launchActivityOrPackage(item)
         } else {
             showItemDetail(item)
-            viewBinding.itemDetailBtn?.setOnClickListener { mViewModel.launchActivityOrPackage(item) }
+            viewBinding.itemDetailBtn?.setOnClickListener {
+                mViewModel.launchActivityOrPackage(item)
+            }
         }
     }
 

@@ -15,14 +15,16 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel : ViewModel() {
+class MainActivityViewModel @Inject constructor(
+        private val  navigator: Navigator
+) : ViewModel() {
 
     private val applications: MutableLiveData<List<App>> = MutableLiveData()
 
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
-
+/*
     @Inject
-    var navigator: Navigator? = null
+    lateinit var navigator: Navigator*/
 
     @Inject
     private lateinit var repository: RepositoryImpl
@@ -75,11 +77,11 @@ class MainViewModel : ViewModel() {
     }
 
 
-    fun launchIntentForPackage(packageName: String) {
-        navigator!!.callIntentForPackageActivity(packageName)
+    private fun launchIntentForPackage(packageName: String) {
+        navigator.callIntentForPackageActivity(packageName)
     }
 
-    fun launchActivity(activity: Class<out Activity>) {
-        navigator!!.callIntentActivity(activity)
+    private fun launchActivity(activity: Class<out Activity>) {
+        navigator.callIntentActivity(activity)
     }
 }

@@ -52,6 +52,4 @@ data class CityModel constructor(
     override fun toString(): String {
         return "CityModel(id=$id, name=$name, state=$state, country=$country, longitude=$longitude, latitude=$latitude)"
     }
-
-
 }

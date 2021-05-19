@@ -4,7 +4,6 @@ import android.content.Intent;
 
 import com.riders.thelab.data.local.LabRepository;
 import com.riders.thelab.data.local.model.Contact;
-import com.riders.thelab.ui.base.BasePresenterImpl;
 
 import javax.inject.Inject;
 

@@ -140,10 +140,6 @@
             android:name=".ui.colors.ColorActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
-        <activity
-            android:name=".ui.biometric.BiometricActivity"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
 
         <activity
             android:name=".ui.recycler.RecyclerViewActivity"

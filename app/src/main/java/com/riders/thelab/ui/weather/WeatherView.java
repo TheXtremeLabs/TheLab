@@ -45,7 +45,6 @@ import com.riders.thelab.data.local.bean.SnackBarType;
 import com.riders.thelab.data.local.bean.WindDirection;
 import com.riders.thelab.data.remote.dto.weather.CurrentWeather;
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse;
-import com.riders.thelab.ui.base.BaseViewImpl;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

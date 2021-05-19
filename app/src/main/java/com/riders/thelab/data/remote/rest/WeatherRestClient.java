@@ -1,6 +1,9 @@
 package com.riders.thelab.data.remote.rest;
 
+import com.riders.thelab.core.okhttp.LabInterceptors;
 import com.riders.thelab.data.local.bean.TimeOut;
+import com.riders.thelab.data.remote.api.WeatherBulkApiService;
+import com.riders.thelab.utils.Constants;
 
 import org.apache.http.HttpHeaders;
 
@@ -10,8 +13,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-//import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 
 public class WeatherRestClient {
 
@@ -24,7 +26,7 @@ public class WeatherRestClient {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
                 .client(provideOkHttpClient())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build();
 
         bulkApiService = retrofit.create(WeatherBulkApiService.class);
@@ -67,8 +69,8 @@ public class WeatherRestClient {
                     Request request = requestBuilder.build();
                     return chain.proceed(request);
                 })
-                .addInterceptor(new LabInterceptors.GzipRequestInterceptor())
-                .addInterceptor(LabInterceptors.provideLoggingInterceptor());
+                .addInterceptor(new LabInterceptors.GzipRequestInterceptor());
+//                .addInterceptor(LabInterceptors.provideLoggingInterceptor());
 
         //httpClientBuilder.build();
         return httpClientBuilder.build();

@@ -4,7 +4,6 @@ import android.content.Intent;
 
 import com.riders.thelab.data.local.bean.MovieEnum;
 import com.riders.thelab.data.local.model.Movie;
-import com.riders.thelab.ui.base.BasePresenterImpl;
 
 import org.parceler.Parcels;
 

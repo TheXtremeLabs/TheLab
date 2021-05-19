@@ -21,7 +21,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.model.Contact;
-import com.riders.thelab.ui.base.BaseViewImpl;
 
 import java.util.ArrayList;
 import java.util.List;

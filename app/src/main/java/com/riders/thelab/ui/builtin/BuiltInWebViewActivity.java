@@ -18,7 +18,6 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.BrowserUtils;
 import com.riders.thelab.ui.base.SimpleActivity;
 
 import butterknife.BindView;

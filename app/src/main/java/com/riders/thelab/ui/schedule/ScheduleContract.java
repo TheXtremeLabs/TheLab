@@ -4,8 +4,6 @@ import android.content.Intent;
 
 import androidx.annotation.Nullable;
 
-import com.riders.thelab.ui.base.BaseView;
-
 public interface ScheduleContract {
 
     interface View extends BaseView {
