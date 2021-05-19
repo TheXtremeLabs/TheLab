@@ -121,31 +121,33 @@ class BiometricActivity : AppCompatActivity() {
         Timber.d("authenticateWithRX()")
 
         //rxGoldFinger
-        LabDeviceManager.getRxGoldFinger()
-                .authenticate(LabDeviceManager.getGoldFingerPromptParams())
-                .subscribe(object : DisposableObserver<Goldfinger.Result?>() {
-                    override fun onComplete() {
-                        /* Fingerprint authentication is finished */
-                        Timber.d("Authentication complete")
-                    }
+        LabDeviceManager.getGoldFingerPromptParams()?.let {
+            LabDeviceManager.getRxGoldFinger()
+                    ?.authenticate(it)
+                    ?.subscribe(object : DisposableObserver<Goldfinger.Result?>() {
+                        override fun onComplete() {
+                            /* Fingerprint authentication is finished */
+                            Timber.d("Authentication complete")
+                        }
 
-                    override fun onError(e: Throwable) {
-                        /* Critical error happened */
-                        Timber.e(e)
-                    }
+                        override fun onError(e: Throwable) {
+                            /* Critical error happened */
+                            Timber.e(e)
+                        }
 
-                    override fun onNext(result: Goldfinger.Result) {
-                        /* Result received */
-                        Timber.d(
-                                """
-                        Result :
-                        type : ${result.type()}
-                        value : ${result.value()}
-                        reason : ${result.reason()}
-                        message : ${result.message()}
-                        
-                        """.trimIndent())
-                    }
-                })
+                        override fun onNext(result: Goldfinger.Result) {
+                            /* Result received */
+                            Timber.d(
+                                    """
+                            Result :
+                            type : ${result.type()}
+                            value : ${result.value()}
+                            reason : ${result.reason()}
+                            message : ${result.message()}
+                            
+                            """.trimIndent())
+                        }
+                    })
+        }
     }
 }
