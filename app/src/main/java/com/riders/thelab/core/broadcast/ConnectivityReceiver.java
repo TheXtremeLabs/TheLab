@@ -5,8 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.riders.thelab.core.utils.LabNetworkManager;
-
 
 public class ConnectivityReceiver extends BroadcastReceiver {
 

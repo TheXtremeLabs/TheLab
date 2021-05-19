@@ -7,7 +7,7 @@ import org.parceler.Parcel
 data class RecyclerItem constructor(var name: String? = null) {
 
     constructor(item: RecyclerEnum) : this() {
-        name = item.getName()
+        name = item.fullName
     }
 
     override fun toString(): String {
