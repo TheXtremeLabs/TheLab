@@ -24,7 +24,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.riders.thelab.R
 import com.riders.thelab.core.views.toast.TheLabToast
 import com.riders.thelab.core.views.toast.ToastTypeEnum
-import com.riders.thelab.data.local.bean.SnackBarType
 import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
 
