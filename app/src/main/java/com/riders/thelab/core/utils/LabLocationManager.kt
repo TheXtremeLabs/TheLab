@@ -39,7 +39,7 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
         // The minimum time between updates in milliseconds
         private const val MIN_TIME_BW_UPDATES = (1000 * 60 * 1).toLong() // 1 minute
 
-        fun getDeviceLocationToString(geocoder: Geocoder, location: Location, context: Context?): String? {
+        fun getDeviceLocationToString(geocoder: Geocoder, location: Location, context: Context): String? {
             Timber.i("getDeviceLocationToString")
             var finalAddress = "" //This is the complete address.
             val finalCity = "" //This is the complete address.
