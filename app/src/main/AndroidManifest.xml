@@ -136,10 +136,10 @@
             android:name=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab.NoActionBar" />
 
-        <!--<activity
+        <activity
             android:name=".ui.recycler.RecyclerViewActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />-->
+            android:theme="@style/Theme.TheLab" />
         <activity
             android:name=".ui.recycler.RecyclerViewDetailActivity"
             android:parentActivityName=".ui.recycler.RecyclerViewActivity"
@@ -151,7 +151,7 @@
             android:theme="@style/TabTheme" />
 
 
-        <!-- <activity
+         <activity
              android:name=".ui.contacts.ContactsActivity"
              android:parentActivityName=".ui.mainactivity.MainActivity"
              android:theme="@style/Theme.TheLab.NoActionBar">
@@ -163,8 +163,8 @@
              <intent-filter>
                  <action android:name="android.intent.action.SEARCH" />
              </intent-filter>
-         </activity>-->
-        <!-- <activity
+         </activity>
+         <activity
             android:name=".ui.contacts.addcontact.AddContactActivity"
             android:parentActivityName=".ui.contacts.ContactsActivity"
             android:theme="@style/Theme.TheLab"
@@ -182,14 +182,14 @@
             android:name=".ui.schedule.ScheduleActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab"
-            android:windowSoftInputMode="adjustResize|stateHidden" />-->
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".ui.deviceinformation.DeviceInformationActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/SwipeDownTheme" />
 
-        <!--<activity
+        <activity
             android:name=".ui.palette.PaletteActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/PaletteTheme" />
@@ -198,12 +198,12 @@
             android:name=".ui.filterlistview.FilterListViewActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/FilterListViewTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" />-->
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
-        <!--<activity
+        <activity
             android:name=".ui.multipane.MultipaneActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/MultiPaneTheme" />-->
+            android:theme="@style/MultiPaneTheme" />
         <activity
             android:name=".ui.multipane.MultipaneDetailActivity"
             android:parentActivityName=".ui.multipane.MultipaneActivity"
@@ -220,7 +220,7 @@
             android:parentActivityName=".ui.youtubelike.YoutubeLikeActivity"
             android:theme="@style/YoutubeTheme" />
 
-        <!--<activity
+        <activity
             android:name=".ui.weather.WeatherActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab">
@@ -232,7 +232,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-        </activity>-->
+        </activity>
 
         <activity
             android:name=".ui.transition.TransitionActivity"
