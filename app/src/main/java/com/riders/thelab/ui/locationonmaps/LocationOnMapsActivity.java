@@ -11,7 +11,6 @@ import android.view.Window;
 import androidx.annotation.Nullable;
 
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
 
 public class LocationOnMapsActivity extends BaseActivity<LocationOnMapsView> {
 

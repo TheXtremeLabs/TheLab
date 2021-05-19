@@ -21,7 +21,6 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.riders.thelab.core.bus.LocationFetchedEvent;
 
 import org.greenrobot.eventbus.EventBus;
 

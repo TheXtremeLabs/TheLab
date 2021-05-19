@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
 
 import java.util.ArrayList;
 import java.util.List;

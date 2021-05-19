@@ -24,6 +24,6 @@ public class ScheduleAlarmReceiver extends BroadcastReceiver {
         EventBus.getDefault().post(new AlarmEvent());
 
         // Show toast when broadcast receive intent
-        UIManager.showActionInToast(context, "Alarm...");
+        UIManager.Companion.showActionInToast(context, "Alarm...");
     }
 }

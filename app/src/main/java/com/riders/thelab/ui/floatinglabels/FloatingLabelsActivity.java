@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.ui.base.SimpleActivity;
 
 import butterknife.BindView;

@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
-import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.model.Video;
 
 import java.util.ArrayList;

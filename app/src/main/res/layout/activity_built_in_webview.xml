@@ -49,7 +49,9 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_built_in_webview" />
+    <include
+        android:id="@+id/content_built_in_webview"
+        layout="@layout/content_built_in_webview" />
 
     <ProgressBar
         android:id="@+id/built_in_progressBar"

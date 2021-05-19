@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.model.Contact;
 
 import java.util.ArrayList;

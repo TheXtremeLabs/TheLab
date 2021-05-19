@@ -3,7 +3,6 @@ package com.riders.thelab.ui.deviceinformation;
 import android.annotation.SuppressLint;
 import android.util.DisplayMetrics;
 
-import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.utils.LabDeviceManager;
 import com.riders.thelab.data.local.model.DeviceInformation;
 

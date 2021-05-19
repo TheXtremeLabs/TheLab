@@ -2,8 +2,6 @@ package com.riders.thelab.data.remote.dto.kat;
 
 import android.annotation.SuppressLint;
 
-import com.riders.thelab.core.utils.LabCompatibilityManager;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

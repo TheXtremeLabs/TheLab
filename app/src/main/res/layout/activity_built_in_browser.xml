@@ -23,7 +23,9 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_built_in_browser_full" />
+    <include
+        android:id="@+id/content_built_in_browser"
+        layout="@layout/content_built_in_browser_full" />
 
     <ProgressBar
         android:id="@+id/built_in_browser_progressBar"

@@ -14,9 +14,11 @@ import com.riders.thelab.core.utils.LabDeviceManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.databinding.ActivityBiometricBinding
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.observers.DisposableObserver
 import timber.log.Timber
 
+@AndroidEntryPoint
 class BiometricActivity : AppCompatActivity() {
 
     private var context: Context? = null

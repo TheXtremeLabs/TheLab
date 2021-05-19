@@ -55,7 +55,6 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabLocationManager;
-import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.bean.MapsEnum;
 
 import java.io.IOException;

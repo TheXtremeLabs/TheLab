@@ -9,8 +9,6 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
-import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.remote.dto.artist.Artist;
 import com.riders.thelab.databinding.ActivityRecyclerViewDetailBinding;
 

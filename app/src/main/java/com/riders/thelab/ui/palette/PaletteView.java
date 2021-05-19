@@ -9,7 +9,6 @@ import androidx.palette.graphics.Palette;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.UIManager;
 
 import javax.inject.Inject;
 

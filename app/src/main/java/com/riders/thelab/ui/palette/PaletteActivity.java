@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
 
 public class PaletteActivity extends BaseActivity<PaletteView> {
 

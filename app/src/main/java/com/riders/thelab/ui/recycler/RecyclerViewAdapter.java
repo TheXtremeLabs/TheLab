@@ -13,7 +13,6 @@ import androidx.transition.TransitionManager;
 
 import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.remote.dto.artist.Artist;
 
 import java.util.List;
