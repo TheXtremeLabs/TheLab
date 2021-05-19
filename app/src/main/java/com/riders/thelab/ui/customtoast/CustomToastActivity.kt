@@ -13,6 +13,7 @@ import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.views.toast.TheLabToast
 import com.riders.thelab.core.views.toast.ToastTypeEnum
 import com.riders.thelab.databinding.ActivityCustomToastBinding
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -20,6 +21,7 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class CustomToastActivity : AppCompatActivity() {
     private var context: Context? = null
 
@@ -45,50 +47,50 @@ class CustomToastActivity : AppCompatActivity() {
 
         viewBinding.buttonCustom.setOnClickListener {
             viewBinding.progressIndicator.animate()
-                    .setDuration(2000)
-                    .alpha(1.0f)
-                    .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(animation: Animator) {
-                            viewBinding.progressIndicator.visibility = View.VISIBLE
-                            viewBinding.progressIndicator.alpha = 0f
-                            viewBinding.progressIndicator.setIndicatorColor(
-                                    ContextCompat.getColor(context!!, R.color.success),
-                                    ContextCompat.getColor(context!!, R.color.warning),
-                                    ContextCompat.getColor(context!!, R.color.error)
-                            )
-                        }
+                .setDuration(2000)
+                .alpha(1.0f)
+                .setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
+                        viewBinding.progressIndicator.visibility = View.VISIBLE
+                        viewBinding.progressIndicator.alpha = 0f
+                        viewBinding.progressIndicator.setIndicatorColor(
+                            ContextCompat.getColor(context!!, R.color.success),
+                            ContextCompat.getColor(context!!, R.color.warning),
+                            ContextCompat.getColor(context!!, R.color.error)
+                        )
+                    }
 
-                        override fun onAnimationEnd(animation: Animator) {
-                            Completable.complete()
-                                    .delay(2, TimeUnit.SECONDS)
-                                    .doOnComplete {
-                                        runOnUiThread {
-                                            viewBinding.progressIndicator.animate()
-                                                    .setDuration(1500)
-                                                    .alpha(0.0f)
-                                                    .setListener(object : Animator.AnimatorListener {
-                                                        override fun onAnimationStart(animation: Animator) {}
-                                                        override fun onAnimationEnd(animation: Animator) {
-                                                            viewBinding.progressIndicator.visibility = View.GONE
-                                                        }
+                    override fun onAnimationEnd(animation: Animator) {
+                        Completable.complete()
+                            .delay(2, TimeUnit.SECONDS)
+                            .doOnComplete {
+                                runOnUiThread {
+                                    viewBinding.progressIndicator.animate()
+                                        .setDuration(1500)
+                                        .alpha(0.0f)
+                                        .setListener(object : Animator.AnimatorListener {
+                                            override fun onAnimationStart(animation: Animator) {}
+                                            override fun onAnimationEnd(animation: Animator) {
+                                                viewBinding.progressIndicator.visibility = View.GONE
+                                            }
 
-                                                        override fun onAnimationCancel(animation: Animator) {}
-                                                        override fun onAnimationRepeat(animation: Animator) {}
-                                                    })
-                                        }
-                                    }
-                                    .doOnError {
-                                        Timber.e(it)
-                                    }
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe()
-                        }
+                                            override fun onAnimationCancel(animation: Animator) {}
+                                            override fun onAnimationRepeat(animation: Animator) {}
+                                        })
+                                }
+                            }
+                            .doOnError {
+                                Timber.e(it)
+                            }
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe()
+                    }
 
-                        override fun onAnimationCancel(animation: Animator) {}
-                        override fun onAnimationRepeat(animation: Animator) {}
-                    })
-                    .start()
+                    override fun onAnimationCancel(animation: Animator) {}
+                    override fun onAnimationRepeat(animation: Animator) {}
+                })
+                .start()
             displayCustomToastUsingClass()
         }
     }
@@ -104,8 +106,8 @@ class CustomToastActivity : AppCompatActivity() {
         Timber.d("random : %s", random)
 
         TheLabToast.Builder(this)
-                .setText("Testing a new text")
-                .setType(ToastTypeEnum.values()[random])
-                .show()
+            .setText("Testing a new text")
+            .setType(ToastTypeEnum.values()[random])
+            .show()
     }
 }

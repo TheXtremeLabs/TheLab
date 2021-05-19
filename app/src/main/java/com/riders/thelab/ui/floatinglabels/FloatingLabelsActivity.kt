@@ -14,7 +14,9 @@ import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.databinding.ActivityFloatingLabelsBinding
 import com.riders.thelab.utils.Validator
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 open class FloatingLabelsActivity : AppCompatActivity() {
 
     lateinit var viewBinding: ActivityFloatingLabelsBinding
@@ -104,7 +106,7 @@ open class FloatingLabelsActivity : AppCompatActivity() {
     private fun requestFocus(view: View) {
         if (view.requestFocus()) {
             window
-                    .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
         }
     }
 

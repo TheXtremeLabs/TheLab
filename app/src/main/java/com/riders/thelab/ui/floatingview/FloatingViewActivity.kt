@@ -11,8 +11,10 @@ import com.riders.thelab.R
 import com.riders.thelab.core.service.FloatingViewService
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.databinding.ActivityFloatingViewBinding
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+@AndroidEntryPoint
 class FloatingViewActivity : AppCompatActivity() {
 
     companion object {
