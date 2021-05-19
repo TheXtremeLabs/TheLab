@@ -39,4 +39,8 @@ data class App constructor(
         this.icon = icon
         this.activity = activity
     }
+
+    override fun toString(): String {
+        return "App(appName=$appName, appDrawableIcon=$appDrawableIcon, appVersion=$appVersion, appPackageName=$appPackageName, appTitle=$appTitle, appDescription=$appDescription, appIcon=$appIcon, appActivity=$appActivity, name=$name, drawableIcon=$drawableIcon, version=$version, packageName=$packageName, title=$title, description=$description, icon=$icon, activity=$activity)"
+    }
 }
