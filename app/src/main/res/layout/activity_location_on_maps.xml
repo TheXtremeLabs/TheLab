@@ -63,7 +63,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rl_maps_laoding"
+        android:id="@+id/rl_maps_loading"
         android:layout_width="match_parent"
         android:layout_height="96dp"
         android:layout_gravity="bottom|center_horizontal"
