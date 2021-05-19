@@ -61,12 +61,14 @@ class UIManager private constructor() {
          * @param positiveMessage
          */
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        fun showAlertDialog(activity: Activity?,
-                            context: Context?,
-                            title: String?,
-                            message: String?,
-                            negativeMessage: String,
-                            positiveMessage: String?) {
+        fun showAlertDialog(
+            activity: Activity?,
+            context: Context?,
+            title: String?,
+            message: String?,
+            negativeMessage: String,
+            positiveMessage: String?
+        ) {
             Timber.i("Show alert dialog")
             val alertDialog = AlertDialog.Builder(context)
 
@@ -81,7 +83,8 @@ class UIManager private constructor() {
                     //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
                 }
                 if (negativeMessage.equals("Réessayer", ignoreCase = true)
-                        && LabNetworkManager.isConnected(context)) {
+                    && LabNetworkManagerNewAPI.isConnected
+                ) {
                     dialog.dismiss()
                 }
             }
@@ -105,20 +108,23 @@ class UIManager private constructor() {
 
         fun showCustomToast(context: Context?, type: ToastTypeEnum?, message: String?) {
             TheLabToast.Builder(context)
-                    .setType(type)
-                    .setText(message)
-                    .show()
+                .setType(type)
+                .setText(message)
+                .show()
         }
 
-        fun showActionInSnackBar(context: Activity, view: View?,
-                                 message: String?, type: SnackBarType,
-                                 actionText: String?,
-                                 listener: View.OnClickListener?) {
+        fun showActionInSnackBar(
+            context: Activity, view: View?,
+            message: String?, type: SnackBarType,
+            actionText: String?,
+            listener: View.OnClickListener?
+        ) {
             // create instance
             val snackBar = Snackbar.make(
-                    context.findViewById(R.id.content),
-                    message!!,
-                    if (listener != null) BaseTransientBottomBar.LENGTH_INDEFINITE else BaseTransientBottomBar.LENGTH_LONG)
+                context.findViewById(R.id.content),
+                message!!,
+                if (listener != null) BaseTransientBottomBar.LENGTH_INDEFINITE else BaseTransientBottomBar.LENGTH_LONG
+            )
             snackBar.setBackgroundTint(ContextCompat.getColor(context, type.backgroundColor))
 
             // get snackBar view
@@ -146,16 +152,21 @@ class UIManager private constructor() {
         fun showConnectionStatusInSnackBar(context: Activity, isConnected: Boolean) {
             Timber.d("showConnectionStatusInSnackBar()")
             val snackbar = Snackbar.make(
-                    context.findViewById(R.id.content),
-                    context.getString(
-                            if (!isConnected) R.string.network_status_disconnected else R.string.network_status_connected),
-                    BaseTransientBottomBar.LENGTH_LONG)
+                context.findViewById(R.id.content),
+                context.getString(
+                    if (!isConnected) R.string.network_status_disconnected else R.string.network_status_connected
+                ),
+                BaseTransientBottomBar.LENGTH_LONG
+            )
             snackbar.setBackgroundTint(
-                    ContextCompat.getColor(
-                            context,
-                            if (!isConnected) R.color.locationColorPrimaryDark else R.color.contactsDatabaseColorPrimaryDark))
+                ContextCompat.getColor(
+                    context,
+                    if (!isConnected) R.color.locationColorPrimaryDark else R.color.contactsDatabaseColorPrimaryDark
+                )
+            )
             val sbView = snackbar.view
-            val textView = sbView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+            val textView =
+                sbView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
             textView.setTextColor(Color.WHITE)
             snackbar.show()
         }
@@ -190,17 +201,19 @@ class UIManager private constructor() {
             canvas.drawBitmap(originalBitmap, 0f, 0f, null)
             val paint = Paint()
             val colors = intArrayOf(
-                    ContextCompat.getColor(context!!, R.color.admin_splash_bg),
-                    ContextCompat.getColor(context, R.color.adminDashboardColorPrimary),
-                    ContextCompat.getColor(context, R.color.adminDashboardSelectedItemAccent),
-                    ContextCompat.getColor(context, R.color.multiPaneColorPrimaryDark))
+                ContextCompat.getColor(context!!, R.color.admin_splash_bg),
+                ContextCompat.getColor(context, R.color.adminDashboardColorPrimary),
+                ContextCompat.getColor(context, R.color.adminDashboardSelectedItemAccent),
+                ContextCompat.getColor(context, R.color.multiPaneColorPrimaryDark)
+            )
 
             val shader = LinearGradient(
-                    0f, 0f,
-                    0f, height.toFloat(),
-                    colors,
-                    null,
-                    Shader.TileMode.CLAMP)
+                0f, 0f,
+                0f, height.toFloat(),
+                colors,
+                null,
+                Shader.TileMode.CLAMP
+            )
             paint.shader = shader
             paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
             canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
@@ -208,7 +221,7 @@ class UIManager private constructor() {
             return updatedBitmap
         }
 
-        fun drawableToBitmap(drawable: Drawable): Bitmap? {
+        fun drawableToBitmap(drawable: Drawable): Bitmap {
             if (drawable is BitmapDrawable) {
                 return drawable.bitmap
             }
@@ -224,14 +237,16 @@ class UIManager private constructor() {
         }
 
 
-        fun loadImageBlurred(context: Context?,
-                             imageURL: Any?,
-                             targetImageView: ShapeableImageView?) {
+        fun loadImageBlurred(
+            context: Context?,
+            imageURL: Any?,
+            targetImageView: ShapeableImageView?
+        ) {
             //Load the background  thumb image
             Glide.with(context!!)
-                    .load(imageURL)
-                    .apply(RequestOptions.bitmapTransform(BlurTransformation(5, 5)))
-                    .into(targetImageView!!)
+                .load(imageURL)
+                .apply(RequestOptions.bitmapTransform(BlurTransformation(5, 5)))
+                .into(targetImageView!!)
         }
     }
 }

@@ -10,7 +10,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class Navigator @Inject constructor(
-        context: Activity
+    context: Activity
 ) {
     private val activity: Activity = context
 
@@ -37,14 +37,9 @@ class Navigator @Inject constructor(
         activity.startActivity(intent)
     }
 
-    fun callYoutubeDetailActivity(intent: Intent?, optionsCompat: Bundle?, isWithTransition: Boolean) {
-        if (isWithTransition && null != optionsCompat) {
-            Timber.d("Apply activity transition")
-            activity.startActivity(intent, optionsCompat)
-        } else {
-            Timber.d("Swap without transition")
-            activity.startActivity(intent)
-        }
+    fun callYoutubeDetailActivity(intent: Intent, optionsCompat: Bundle?) {
+        Timber.d("Apply activity transition")
+        activity.startActivity(intent, optionsCompat)
     }
 
     /* Activities */
@@ -55,10 +50,10 @@ class Navigator @Inject constructor(
     /* Packages */
     fun callIntentForPackageActivity(intentPackageName: String?) {
         activity.startActivity(
-                intentPackageName?.let {
-                    activity
-                            .packageManager
-                            .getLaunchIntentForPackage(it)
-                })
+            intentPackageName?.let {
+                activity
+                    .packageManager
+                    .getLaunchIntentForPackage(it)
+            })
     }
 }
