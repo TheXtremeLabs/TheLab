@@ -9,7 +9,6 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver;
-import com.riders.thelab.core.service.ScheduleAlarmService;
 
 import javax.inject.Inject;
 
