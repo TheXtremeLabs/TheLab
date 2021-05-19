@@ -6,8 +6,10 @@ import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabAnimationsManager
 import com.riders.thelab.core.utils.LabColorsManager
 import com.riders.thelab.databinding.ActivityColorBinding
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class ColorActivity : AppCompatActivity() {
 
     lateinit var viewBinding: ActivityColorBinding
@@ -36,27 +38,29 @@ class ColorActivity : AppCompatActivity() {
             fromColor = viewBinding.targetColorTextView.currentTextColor
             // Apply fade color transition to TextView
             LabAnimationsManager
-                    .getInstance()
-                    .applyFadeColorAnimationToView(
-                            viewBinding.targetColorTextView,
-                            fromColor,
-                            toColor,
-                            LabAnimationsManager
-                                    .getInstance()
-                                    .shortAnimationDuration)
+                .getInstance()
+                .applyFadeColorAnimationToView(
+                    viewBinding.targetColorTextView,
+                    fromColor,
+                    toColor,
+                    LabAnimationsManager
+                        .getInstance()
+                        .shortAnimationDuration
+                )
 
             // Get current button color
             fromColor = viewBinding.changeColorButton.currentTextColor
             // Apply fade color transition to Button
             LabAnimationsManager
-                    .getInstance()
-                    .applyFadeColorAnimationToView(
-                            viewBinding.changeColorButton,
-                            fromColor,
-                            toColor,
-                            LabAnimationsManager
-                                    .getInstance()
-                                    .shortAnimationDuration)
+                .getInstance()
+                .applyFadeColorAnimationToView(
+                    viewBinding.changeColorButton,
+                    fromColor,
+                    toColor,
+                    LabAnimationsManager
+                        .getInstance()
+                        .shortAnimationDuration
+                )
 
         }
     }

@@ -199,10 +199,6 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/FilterListViewTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />-->
-        <activity
-            android:name=".ui.filterlistview.FilterListViewDetailActivity"
-            android:parentActivityName=".ui.filterlistview.FilterListViewActivity"
-            android:theme="@style/FilterListViewTheme" />
 
         <!--<activity
             android:name=".ui.multipane.MultipaneActivity"
