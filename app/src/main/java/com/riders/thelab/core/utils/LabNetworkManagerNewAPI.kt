@@ -13,7 +13,7 @@ class LabNetworkManagerNewAPI constructor(
 ) : NetworkCallback() {
 
     companion object {
-        private var isConnected = false
+        var isConnected = false
     }
 
     init {
