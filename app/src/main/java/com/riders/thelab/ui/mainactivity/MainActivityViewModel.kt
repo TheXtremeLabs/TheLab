@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.riders.thelab.core.utils.LabNetworkManager
 import com.riders.thelab.data.RepositoryImpl
 import com.riders.thelab.data.local.model.App
 import com.riders.thelab.navigator.Navigator
