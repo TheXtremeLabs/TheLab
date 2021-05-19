@@ -54,7 +54,7 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
         })
         mRecyclerViewModel.getArtistsThumbnailsSuccessful().observe(this, {
 
-            this.artistThumbnails = artistThumbnails
+            this.artistThumbnails = it
             bucketUrl?.let { url -> mRecyclerViewModel.fetchArtists(url) }
         })
         mRecyclerViewModel.getArtistsThumbnailsError().observe(this, {
