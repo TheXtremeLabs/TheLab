@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
 
 import java.util.Objects;
 

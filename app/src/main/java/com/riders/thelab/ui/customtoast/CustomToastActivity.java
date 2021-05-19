@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.core.views.toast.TheLabToast;
 import com.riders.thelab.core.views.toast.ToastTypeEnum;
 

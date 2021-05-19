@@ -15,7 +15,6 @@ import androidx.core.util.Pair;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.ui.base.SimpleActivity;
 
 import butterknife.BindView;

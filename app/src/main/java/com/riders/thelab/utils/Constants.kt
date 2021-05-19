@@ -109,20 +109,28 @@ class Constants {
 
         list.add(App("Built-in Web View", "Display web view in activity directly...",
                 R.drawable.ic_alternate_email, BuiltInWebViewActivity::class.java))
+
         /*list.add(App("Weather App", "Current weather forecast in your city...",
                 R.drawable.openweathermap, WeatherActivity::class.java))*/
+
         list.add(App("Floating Widget", "Create a floating widget that you can move around on the screen...",
                 R.drawable.ic_flip_to_back, FloatingViewActivity::class.java))
+
         list.add(App("Custom Toast", "Custom Toast Layout...",
                 R.drawable.ic_announcement, CustomToastActivity::class.java))
+
         list.add(App("Vector Drawables", "Animated, scale, transform vector drawables...",
                 R.drawable.ic_aspect_ratio, VectorDrawablesActivity::class.java))
+
         list.add(App("Spring", "Physics-based motion is driven by force. Spring force is one such force that guides interactivity and motion....",
                 R.drawable.ic_filter_center_focus, SpringActivity::class.java))
+
         list.add(App("Chat", "Realtime chat using firebase realtime database features",
                 R.drawable.ic_k_at, KatActivity::class.java))
+
         list.add(App("WIP", "Coming soon...",
                 R.drawable.ic_warning, null))
+
         return list
     }
 

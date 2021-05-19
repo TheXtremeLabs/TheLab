@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.RecyclerItemClickListener;
 import com.riders.thelab.data.local.bean.MovieEnum;
 import com.riders.thelab.data.local.model.Movie;
 

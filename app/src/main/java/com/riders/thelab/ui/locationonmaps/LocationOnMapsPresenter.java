@@ -1,7 +1,6 @@
 package com.riders.thelab.ui.locationonmaps;
 
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.remote.dto.directions.Legs;
 
 import javax.inject.Inject;

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.local.model.Movie;
 
 import java.util.List;
