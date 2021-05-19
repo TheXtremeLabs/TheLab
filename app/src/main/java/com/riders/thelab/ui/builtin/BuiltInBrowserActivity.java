@@ -20,7 +20,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
-import com.riders.thelab.core.utils.BrowserUtils;
 import com.riders.thelab.ui.base.SimpleActivity;
 
 import butterknife.BindView;

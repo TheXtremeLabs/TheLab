@@ -10,7 +10,6 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.riders.thelab.ui.base.BasePresenterImpl;
 
 import javax.inject.Inject;
 

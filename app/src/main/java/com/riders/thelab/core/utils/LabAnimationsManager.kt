@@ -12,7 +12,7 @@ import lombok.Getter
 import javax.inject.Inject
 
 @Getter
-class LabAnimationsManager {
+class LabAnimationsManager private constructor() {
 
     companion object {
         private var mInstance: LabAnimationsManager? = null

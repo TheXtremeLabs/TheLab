@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
-import com.riders.thelab.ui.base.BaseActivity;
 
 public class YoutubeLikeActivity extends BaseActivity<YoutubeLikeView> {
 

@@ -11,7 +11,6 @@ import android.os.IBinder;
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver;
 import com.riders.thelab.core.service.ScheduleAlarmService;
 import com.riders.thelab.core.utils.UIManager;
-import com.riders.thelab.ui.base.BasePresenterImpl;
 
 import javax.inject.Inject;
 

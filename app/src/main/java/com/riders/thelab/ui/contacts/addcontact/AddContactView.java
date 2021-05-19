@@ -14,7 +14,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.Contact;
-import com.riders.thelab.ui.base.BaseViewImpl;
 
 import javax.inject.Inject;
 

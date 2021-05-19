@@ -1,7 +1,6 @@
 package com.riders.thelab.ui.contacts.addcontact;
 
 import com.riders.thelab.data.local.model.Contact;
-import com.riders.thelab.ui.base.BaseView;
 
 public interface AddContactContract {
 

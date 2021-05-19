@@ -4,7 +4,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.riders.thelab.data.local.model.Contact;
-import com.riders.thelab.ui.base.BaseView;
 
 import java.util.List;
 

@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse;
-import com.riders.thelab.ui.base.BaseView;
 
 public interface WeatherContract {
 

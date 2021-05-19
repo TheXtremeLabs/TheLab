@@ -8,7 +8,6 @@ import android.widget.ListView;
 
 import com.riders.thelab.R;
 import com.riders.thelab.data.local.model.WorldPopulation;
-import com.riders.thelab.ui.base.BaseViewImpl;
 
 import java.util.ArrayList;
 import java.util.Locale;

@@ -20,7 +20,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabCompatibilityManager;
 import com.riders.thelab.data.remote.dto.artist.Artist;
-import com.riders.thelab.ui.base.BaseViewImpl;
 
 import org.parceler.Parcels;
 

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.riders.thelab.R;
-import com.riders.thelab.ui.base.BaseActivity;
 
 public class AddContactActivity extends BaseActivity<AddContactView> {
 

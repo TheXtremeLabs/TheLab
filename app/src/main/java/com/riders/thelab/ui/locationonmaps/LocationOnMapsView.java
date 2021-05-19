@@ -57,7 +57,6 @@ import com.riders.thelab.R;
 import com.riders.thelab.core.utils.LabLocationManager;
 import com.riders.thelab.core.utils.UIManager;
 import com.riders.thelab.data.local.bean.MapsEnum;
-import com.riders.thelab.ui.base.BaseViewImpl;
 
 import java.io.IOException;
 import java.text.DateFormat;

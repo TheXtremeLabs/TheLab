@@ -7,7 +7,6 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 
 import com.riders.thelab.R;
-import com.riders.thelab.ui.base.BaseActivity;
 
 public class ContactsActivity extends BaseActivity<ContactsView> {
 
