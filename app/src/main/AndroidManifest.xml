@@ -136,15 +136,10 @@
             android:name=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab.NoActionBar" />
 
-        <activity
-            android:name=".ui.colors.ColorActivity"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
-
-        <activity
+        <!--<activity
             android:name=".ui.recycler.RecyclerViewActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
+            android:theme="@style/Theme.TheLab" />-->
         <activity
             android:name=".ui.recycler.RecyclerViewDetailActivity"
             android:parentActivityName=".ui.recycler.RecyclerViewActivity"
@@ -155,31 +150,21 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/TabTheme" />
 
-        <activity
-            android:name=".ui.floatinglabels.FloatingLabelsActivity"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/SwipeDownTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <!-- <activity
+             android:name=".ui.contacts.ContactsActivity"
+             android:parentActivityName=".ui.mainactivity.MainActivity"
+             android:theme="@style/Theme.TheLab.NoActionBar">
 
-        <activity
-            android:name=".ui.contacts.ContactsActivity"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab.NoActionBar">
+             <meta-data
+                 android:name="android.app.searchable"
+                 android:resource="@xml/searchable" />
 
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ui.contacts.ContactDetailActivity"
-            android:parentActivityName=".ui.contacts.ContactsActivity"
-            android:theme="@style/Theme.TheLab.NoActionBar" />
-        <activity
+             <intent-filter>
+                 <action android:name="android.intent.action.SEARCH" />
+             </intent-filter>
+         </activity>-->
+        <!-- <activity
             android:name=".ui.contacts.addcontact.AddContactActivity"
             android:parentActivityName=".ui.contacts.ContactsActivity"
             android:theme="@style/Theme.TheLab"
@@ -197,14 +182,14 @@
             android:name=".ui.schedule.ScheduleActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />-->
 
         <activity
             android:name=".ui.deviceinformation.DeviceInformationActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/SwipeDownTheme" />
 
-        <activity
+        <!--<activity
             android:name=".ui.palette.PaletteActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/PaletteTheme" />
@@ -213,16 +198,16 @@
             android:name=".ui.filterlistview.FilterListViewActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/FilterListViewTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />-->
         <activity
             android:name=".ui.filterlistview.FilterListViewDetailActivity"
             android:parentActivityName=".ui.filterlistview.FilterListViewActivity"
             android:theme="@style/FilterListViewTheme" />
 
-        <activity
+        <!--<activity
             android:name=".ui.multipane.MultipaneActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/MultiPaneTheme" />
+            android:theme="@style/MultiPaneTheme" />-->
         <activity
             android:name=".ui.multipane.MultipaneDetailActivity"
             android:parentActivityName=".ui.multipane.MultipaneActivity"
@@ -239,12 +224,7 @@
             android:parentActivityName=".ui.youtubelike.YoutubeLikeActivity"
             android:theme="@style/YoutubeTheme" />
 
-        <activity
-            android:name=".ui.speechtotext.SpeechToTextActivity"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
-
-        <activity
+        <!--<activity
             android:name=".ui.weather.WeatherActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab">
@@ -256,7 +236,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-        </activity>
+        </activity>-->
 
         <activity
             android:name=".ui.floatingview.FloatingViewActivity"
@@ -272,25 +252,6 @@
             android:parentActivityName=".ui.transition.TransitionActivity"
             android:theme="@style/TransitionTheme" />
 
-        <activity
-            android:name=".ui.customtoast.CustomToastActivity"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/TransitionTheme" />
-        <activity
-            android:name=".ui.vectordrawables.VectorDrawablesActivity"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
-
-        <activity
-            android:name=".ui.spring.SpringActivity"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
-
-        <activity
-            android:name=".ui.kat.KatActivity"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab"
-            android:windowSoftInputMode="adjustResize" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
