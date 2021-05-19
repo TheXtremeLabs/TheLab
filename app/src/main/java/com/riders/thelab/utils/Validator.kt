@@ -1,5 +1,8 @@
 package com.riders.thelab.utils
 
+import android.text.TextUtils
+import android.util.Patterns
+
 class Validator {
 
     companion object {
@@ -53,6 +56,11 @@ class Validator {
          */
         fun isAlpha(s: String?): Boolean {
             return s != null && s.trim { it <= ' ' }.isNotEmpty() && s.matches(Regex(REGEX_CODE_ALPHA))
+        }
+
+        fun isValidEmail(email: String): Boolean {
+            return (!TextUtils.isEmpty(email)
+                    && Patterns.EMAIL_ADDRESS.matcher(email).matches())
         }
     }
 }
