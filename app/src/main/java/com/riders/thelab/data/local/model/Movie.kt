@@ -1,12 +1,14 @@
 package com.riders.thelab.data.local.model
 
 import com.riders.thelab.data.local.bean.MovieEnum
+import org.parceler.Parcel
 
+@Parcel
 data class Movie constructor(
-        var title: String? = null,
-        var genre: String? = null,
-        var year: String? = null,
-        var urlThumbnail: String? = null
+    var title: String? = null,
+    var genre: String? = null,
+    var year: String? = null,
+    var urlThumbnail: String? = null
 ) {
     constructor() : this("", "", "", "") {
     }

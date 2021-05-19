@@ -1,6 +1,6 @@
 package com.riders.thelab.core.utils
 
-import android.R
+
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.view.View
@@ -38,9 +38,12 @@ class LabAnimationsManager private constructor() {
     init {
 
         // Retrieve and cache the system's default "short" animation time.
-        shortAnimationDuration = application.resources.getInteger(R.integer.config_shortAnimTime)
-        mediumAnimationDuration = application.resources.getInteger(R.integer.config_mediumAnimTime)
-        longAnimationDuration = application.resources.getInteger(R.integer.config_longAnimTime)
+        shortAnimationDuration =
+            application.resources.getInteger(android.R.integer.config_shortAnimTime)
+        mediumAnimationDuration =
+            application.resources.getInteger(android.R.integer.config_mediumAnimTime)
+        longAnimationDuration =
+            application.resources.getInteger(android.R.integer.config_longAnimTime)
     }
 
 
@@ -53,24 +56,29 @@ class LabAnimationsManager private constructor() {
      * @param animationDuration
      */
     @SuppressLint("RestrictedApi")
-    fun applyFadeColorAnimationToView(view: View?, fromColor: Int, toColor: Int, animationDuration: Int) {
+    fun applyFadeColorAnimationToView(
+        view: View?,
+        fromColor: Int,
+        toColor: Int,
+        animationDuration: Int
+    ) {
         var fadeAnimator: ObjectAnimator? = null
         if (view is MaterialTextView) {
             fadeAnimator = ObjectAnimator.ofObject(
-                    view,
-                    "textColor",
-                    ArgbEvaluator(),
-                    fromColor,
-                    toColor
+                view,
+                "textColor",
+                ArgbEvaluator(),
+                fromColor,
+                toColor
             )
         }
         if (view is MaterialButton) {
             fadeAnimator = ObjectAnimator.ofObject(
-                    view,
-                    "backgroundColor",
-                    ArgbEvaluator(),
-                    fromColor,
-                    toColor
+                view,
+                "backgroundColor",
+                ArgbEvaluator(),
+                fromColor,
+                toColor
             )
         }
         startAnimation(fadeAnimator, animationDuration)

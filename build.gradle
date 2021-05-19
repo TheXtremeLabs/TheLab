@@ -124,7 +124,6 @@ ext {
 
             /* Android Architecture Component - Room Persistance Lib  */
             roomRuntime                  : "androidx.room:room-runtime:$roomVersion",
-//            roomRX                  : "androidx.room:room-rxjava2:$roomVersion",
             roomRX                       : "androidx.room:room-rxjava3:$roomVersion",
             roomCompiler                 : "androidx.room:room-compiler:$roomVersion",
             // optional - Kotlin Extensions and Coroutines support for Room

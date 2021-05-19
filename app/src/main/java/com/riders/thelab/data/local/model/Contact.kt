@@ -8,18 +8,18 @@ import org.jetbrains.annotations.Contract
 
 @Entity(tableName = "contact")
 data class Contact(
-        @PrimaryKey
-        @ColumnInfo(name = "_id")
-        var id: Long,
+    @PrimaryKey
+    @ColumnInfo(name = "_id")
+    var id: Long,
 
-        @ColumnInfo(name = "name")
-        var name: String,
+    @ColumnInfo(name = "name")
+    var name: String,
 
-        @ColumnInfo(name = "email")
-        var email: String,
+    @ColumnInfo(name = "email")
+    var email: String,
 
-        @ColumnInfo(name = "password")
-        var password: String,
+    @ColumnInfo(name = "password")
+    var password: String,
 ) {
 
     @Contract(pure = true)

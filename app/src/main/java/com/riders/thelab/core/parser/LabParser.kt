@@ -26,8 +26,8 @@ class LabParser {
             Timber.d("Build Moshi adapter and build object...")
             // Step 2 convert to class object
             val moshi = Moshi.Builder()
-                    .add(CitiesEventJsonAdapter())
-                    .build()
+                .add(CitiesEventJsonAdapter())
+                .build()
             val type: Type = Types.newParameterizedType(MutableList::class.java, City::class.java)
             val jsonAdapter: JsonAdapter<List<City>> = moshi.adapter(type)
             jsonAdapter.fromJson(jsonToParse)

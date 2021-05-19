@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.BrowserUtils
 import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.databinding.ActivityBuiltInBrowserBinding
 import dagger.hilt.android.AndroidEntryPoint
 

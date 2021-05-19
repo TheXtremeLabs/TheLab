@@ -39,7 +39,11 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
         // The minimum time between updates in milliseconds
         private const val MIN_TIME_BW_UPDATES = (1000 * 60 * 1).toLong() // 1 minute
 
-        fun getDeviceLocationToString(geocoder: Geocoder, location: Location, context: Context): String? {
+        fun getDeviceLocationToString(
+            geocoder: Geocoder,
+            location: Location,
+            context: Context
+        ): String? {
             Timber.i("getDeviceLocationToString")
             var finalAddress = "" //This is the complete address.
             val finalCity = "" //This is the complete address.
@@ -59,12 +63,12 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
                 val regionName = address.adminArea
                 val countryName = address.countryName
                 addressStringBuilder
-                        .append(street).append(" - ")
-                        .append(locality).append(" - ")
-                        .append(postalCode).append(" - ")
-                        .append(departmentName).append(" - ")
-                        .append(regionName).append(" - ")
-                        .append(countryName)
+                    .append(street).append(" - ")
+                    .append(locality).append(" - ")
+                    .append(postalCode).append(" - ")
+                    .append(departmentName).append(" - ")
+                    .append(regionName).append(" - ")
+                    .append(countryName)
                 finalAddress = addressStringBuilder.toString() //This is the complete address.
                 Timber.e("Address : %s", finalAddress) //This will display the final address.
             } catch (e: IOException) {
@@ -85,42 +89,46 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
             return object : Single<String>() {
                 override fun subscribeActual(observer: SingleObserver<in String>) {
                     getRXAddress(geoCoder, latitude, longitude)
-                            .subscribe(object : DisposableSingleObserver<List<Address>>() {
-                                override fun onSuccess(addresses: List<Address>) {
-                                    for (element in addresses) {
-                                        Timber.e("element : %s", element.toString())
-                                    }
-                                    val address = addresses[0]
-                                    val street = address.featureName + ", " + address.thoroughfare
-                                    val locality = address.locality
-                                    val postalCode = address.postalCode
-                                    val departmentName = address.subAdminArea
-                                    val regionName = address.adminArea
-                                    val countryName = address.countryName
-                                    addressStringBuilder
-                                            .append(street).append(" - ")
-                                            .append(locality).append(" - ")
-                                            .append(postalCode).append(" - ")
-                                            .append(departmentName).append(" - ")
-                                            .append(regionName).append(" - ")
-                                            .append(countryName)
-                                    finalCity[0] = address.locality //This is the complete address.
-                                    if (finalCity[0]?.isNotEmpty() == true) {
-                                        observer.onSuccess(finalCity[0])
-                                    } else {
-                                        Timber.e("value are empty")
-                                    }
+                        .subscribe(object : DisposableSingleObserver<List<Address>>() {
+                            override fun onSuccess(addresses: List<Address>) {
+                                for (element in addresses) {
+                                    Timber.e("element : %s", element.toString())
                                 }
+                                val address = addresses[0]
+                                val street = address.featureName + ", " + address.thoroughfare
+                                val locality = address.locality
+                                val postalCode = address.postalCode
+                                val departmentName = address.subAdminArea
+                                val regionName = address.adminArea
+                                val countryName = address.countryName
+                                addressStringBuilder
+                                    .append(street).append(" - ")
+                                    .append(locality).append(" - ")
+                                    .append(postalCode).append(" - ")
+                                    .append(departmentName).append(" - ")
+                                    .append(regionName).append(" - ")
+                                    .append(countryName)
+                                finalCity[0] = address.locality //This is the complete address.
+                                if (finalCity[0]?.isNotEmpty() == true) {
+                                    observer.onSuccess(finalCity[0])
+                                } else {
+                                    Timber.e("value are empty")
+                                }
+                            }
 
-                                override fun onError(e: Throwable) {
-                                    observer.onError(e)
-                                }
-                            })
+                            override fun onError(e: Throwable) {
+                                observer.onError(e)
+                            }
+                        })
                 }
             }
         }
 
-        fun getRXAddress(geoCoder: Geocoder, latitude: Double, longitude: Double): Single<List<Address>> {
+        fun getRXAddress(
+            geoCoder: Geocoder,
+            latitude: Double,
+            longitude: Double
+        ): Single<List<Address>> {
             return object : Single<List<Address>>() {
                 @SneakyThrows
                 override fun subscribeActual(observer: SingleObserver<in List<Address>>) {
@@ -132,8 +140,8 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
                     }
                 }
             }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
         }
 
     }
@@ -218,51 +226,60 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
             }
         } else {
             Dexter.withContext(mActivity)
-                    .withPermissions(
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
-                    .withListener(object : MultiplePermissionsListener {
-                        @SuppressLint("MissingPermission")
-                        override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                            // check if all permissions are granted
-                            if (report.areAllPermissionsGranted()) {
-                                // do you work now
-                            }
+                .withPermissions(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+                .withListener(object : MultiplePermissionsListener {
+                    @SuppressLint("MissingPermission")
+                    override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                            // do you work now
+                        }
 
-                            // check for permanent denial of any permission
-                            if (report.isAnyPermissionPermanentlyDenied) {
-                                // permission is denied permanently, navigate user to app settings
-                            }
-                            if (!canGetLocation()) {
-                                // no network provider is enabled
-                                Timber.e("no network provider is enabled")
-                            } else {
-                                try {
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied) {
+                            // permission is denied permanently, navigate user to app settings
+                        }
+                        if (!canGetLocation()) {
+                            // no network provider is enabled
+                            Timber.e("no network provider is enabled")
+                        } else {
+                            try {
 
-                                    // if Network Enabled get lat/long using Network
-                                    if (isNetworkEnabled) {
-                                        getLocationViaNetwork()
-                                    }
-
-                                    // if GPS Enabled get lat/long using GPS Services
-                                    if (isGPSEnabled) {
-                                        getLocationViaGPS()
-                                    }
-                                    EventBus.getDefault().post(LocationFetchedEvent(location))
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
+                                // if Network Enabled get lat/long using Network
+                                if (isNetworkEnabled) {
+                                    getLocationViaNetwork()
                                 }
+
+                                // if GPS Enabled get lat/long using GPS Services
+                                if (isGPSEnabled) {
+                                    getLocationViaGPS()
+                                }
+                                EventBus.getDefault().post(LocationFetchedEvent(location))
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
                         }
+                    }
 
-                        override fun onPermissionRationaleShouldBeShown(permissions: List<PermissionRequest>, token: PermissionToken) {
-                            token.continuePermissionRequest()
-                        }
-                    })
-                    .withErrorListener { error: DexterError -> Toast.makeText(mActivity, "Error occurred! $error", Toast.LENGTH_SHORT).show() }
-                    .onSameThread()
-                    .check()
+                    override fun onPermissionRationaleShouldBeShown(
+                        permissions: List<PermissionRequest>,
+                        token: PermissionToken
+                    ) {
+                        token.continuePermissionRequest()
+                    }
+                })
+                .withErrorListener { error: DexterError ->
+                    Toast.makeText(
+                        mActivity,
+                        "Error occurred! $error",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                .onSameThread()
+                .check()
         }
 
         // return location object
@@ -272,10 +289,11 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
     @SuppressLint("MissingPermission")
     private fun getLocationViaNetwork() {
         locationManager!!.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER,
-                MIN_TIME_BW_UPDATES,
-                MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
-                mLocationListener!!)
+            LocationManager.NETWORK_PROVIDER,
+            MIN_TIME_BW_UPDATES,
+            MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
+            mLocationListener!!
+        )
         Timber.d("Network Enabled")
         if (locationManager != null) {
             location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!
@@ -287,10 +305,11 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
     @SuppressLint("MissingPermission")
     private fun getLocationViaGPS() {
         locationManager!!.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                MIN_TIME_BW_UPDATES,
-                MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
-                mLocationListener!!)
+            LocationManager.GPS_PROVIDER,
+            MIN_TIME_BW_UPDATES,
+            MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
+            mLocationListener!!
+        )
         Timber.d("GPS Enabled")
         if (locationManager != null) {
             location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
@@ -368,18 +387,21 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
 
         // Setting Dialog Message
         alertDialog
-                .setMessage("GPS is not enabled. Do you want to go to settings menu?")
+            .setMessage("GPS is not enabled. Do you want to go to settings menu?")
 
         // On pressing Settings button
-        alertDialog.setPositiveButton("Settings"
+        alertDialog.setPositiveButton(
+            "Settings"
         ) { dialog: DialogInterface?, which: Int ->
             val intent = Intent(
-                    Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                Settings.ACTION_LOCATION_SOURCE_SETTINGS
+            )
             mContext.startActivity(intent)
         }
 
         // on pressing cancel button
-        alertDialog.setNegativeButton("Cancel"
+        alertDialog.setNegativeButton(
+            "Cancel"
         ) { dialog: DialogInterface, which: Int -> dialog.cancel() }
 
         // Showing Alert Message
