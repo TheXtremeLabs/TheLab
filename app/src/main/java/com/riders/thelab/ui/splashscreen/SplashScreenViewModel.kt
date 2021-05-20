@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
 
 class SplashScreenViewModel : ViewModel() {
@@ -25,9 +24,9 @@ class SplashScreenViewModel : ViewModel() {
     fun retrieveAppVersion(activity: SplashScreenActivity) {
         try {
             val pInfo: PackageInfo =
-                    activity
-                            .packageManager
-                            .getPackageInfo(activity.packageName, 0)
+                activity
+                    .packageManager
+                    .getPackageInfo(activity.packageName, 0)
             val version = pInfo.versionName
 
             appVersion.value = version

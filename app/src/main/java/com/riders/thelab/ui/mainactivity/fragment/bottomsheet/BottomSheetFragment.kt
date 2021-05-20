@@ -23,7 +23,11 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         return fragment
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         viewBinding = FragmentBottomSheetDialogBinding.inflate(inflater, container, false)
         return viewBinding.root
     }
@@ -35,8 +39,11 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
         viewBinding.tvBottomBrand.text = LabDeviceManager.getBrand()
         viewBinding.tvBottomModel.text = LabDeviceManager.getModel()
-        viewBinding.tvBottomScreenHeight.text = LabDeviceManager.getScreenHeight(activity).toString() + ""
-        viewBinding.tvBottomScreenWidth.text = LabDeviceManager.getScreenWidth(activity).toString() + ""
-        viewBinding.tvBottomVersion.text = LabDeviceManager.getSdkVersion().toString() + " " + LabCompatibilityManager.getOSName()
+        viewBinding.tvBottomScreenHeight.text =
+            LabDeviceManager.getScreenHeight(activity).toString() + ""
+        viewBinding.tvBottomScreenWidth.text =
+            LabDeviceManager.getScreenWidth(activity).toString() + ""
+        viewBinding.tvBottomVersion.text =
+            LabDeviceManager.getSdkVersion().toString() + " " + LabCompatibilityManager.getOSName()
     }
 }

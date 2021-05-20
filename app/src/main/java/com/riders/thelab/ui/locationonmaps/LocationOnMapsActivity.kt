@@ -6,11 +6,7 @@ import android.content.Intent
 import android.content.IntentSender.SendIntentException
 import android.content.res.Configuration
 import android.graphics.Color
-import android.location.Criteria
-import android.location.Geocoder
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
+import android.location.*
 import android.os.Bundle
 import android.os.Looper
 import android.view.View
@@ -51,7 +47,8 @@ import java.text.DateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
+class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
+    android.location.LocationListener {
 
     companion object {
         // location updates interval - 10sec
@@ -90,7 +87,6 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback, Location
     private var mLastUpdateTime: String? = null
 
 
-    @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val nightModeFlags: Int = resources.configuration.uiMode and

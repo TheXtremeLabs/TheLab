@@ -11,9 +11,9 @@ import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.data.local.model.App
 
 class MainActivityAdapter constructor(
-        context: Context,
-        appList: List<App>,
-        listener: MainActivityAppClickListener
+    context: Context,
+    appList: List<App>,
+    listener: MainActivityAppClickListener
 ) : RecyclerView.Adapter<MainActivityViewHolder>() {
 
     private val mContext: Context = context
@@ -29,9 +29,10 @@ class MainActivityAdapter constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainActivityViewHolder {
         return MainActivityViewHolder(
-                mContext,
-                LayoutInflater.from(parent.context)
-                        .inflate(R.layout.row_main_app_item, parent, false))
+            mContext,
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.row_main_app_item, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: MainActivityViewHolder, position: Int) {
@@ -51,7 +52,13 @@ class MainActivityAdapter constructor(
                 lastPosition = position
             }
             holder.bindData(item)
-            holder.viewBinding.rowItemCardView.setOnClickListener { view: View? -> mListener.onAppItemCLickListener(view!!, item, position) }
+            holder.viewBinding.rowItemCardView.setOnClickListener { view: View? ->
+                mListener.onAppItemCLickListener(
+                    view!!,
+                    item,
+                    position
+                )
+            }
         } else {
             holder.bindTabletData(item)
             bindTabletViewHolder(holder, item, position)
@@ -64,10 +71,10 @@ class MainActivityAdapter constructor(
             holder.viewBinding.cardFrameLayout.alpha = 1f
             holder.viewBinding.llCardSelectedBackground?.visibility = View.VISIBLE
             holder.viewBinding.cardFrameLayout.animate()
-                    .setDuration(500)
-                    .scaleX(1.25f)
-                    .scaleY(1.25f)
-                    .start()
+                .setDuration(500)
+                .scaleX(1.25f)
+                .scaleY(1.25f)
+                .start()
             holder.viewBinding.rowItemCardView.cardElevation = 4f
         } else {
             if (lastPosition == -1) // Check first launch nothing is selected
@@ -82,11 +89,11 @@ class MainActivityAdapter constructor(
             }
         }
         holder.viewBinding.rowItemCardView
-                .setOnClickListener { view: View? ->
-                    lastPosition = position
-                    notifyDataSetChanged()
-                    mListener.onAppItemCLickListener(view!!, item, holder.adapterPosition)
-                }
+            .setOnClickListener { view: View? ->
+                lastPosition = position
+                notifyDataSetChanged()
+                mListener.onAppItemCLickListener(view!!, item, holder.adapterPosition)
+            }
     }
 
 }

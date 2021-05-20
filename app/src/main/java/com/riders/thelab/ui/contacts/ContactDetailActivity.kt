@@ -50,7 +50,12 @@ class ContactDetailActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         viewBinding.contactDetailCollapsingToolbar.title = itemNameDetail
-        viewBinding.contactDetailCollapsingToolbar.setExpandedTitleColor(ContextCompat.getColor(this, R.color.transparent))
+        viewBinding.contactDetailCollapsingToolbar.setExpandedTitleColor(
+            ContextCompat.getColor(
+                this,
+                R.color.transparent
+            )
+        )
         //        getSupportActionBar().setTitle(itemNameDetail);
 
         viewBinding.appBarLayout.setExpanded(true)

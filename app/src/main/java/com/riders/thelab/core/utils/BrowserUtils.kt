@@ -31,7 +31,10 @@ class BrowserUtils private constructor() {
                 // If we don't mutate the drawable, then all drawable's with this id will have a color
                 // filter applied to it.
                 drawable.mutate()
-                drawable.setColorFilter(ContextCompat.getColor(context!!, color), PorterDuff.Mode.SRC_ATOP)
+                drawable.setColorFilter(
+                    ContextCompat.getColor(context!!, color),
+                    PorterDuff.Mode.SRC_ATOP
+                )
             }
         }
 

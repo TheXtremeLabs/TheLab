@@ -28,15 +28,15 @@ import java.util.*
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
-        dbImpl: DbImpl,
-        apiImpl: ApiImpl
+    dbImpl: DbImpl,
+    apiImpl: ApiImpl
 ) : IRepository {
 
     companion object {
         private val TARGET_PACKAGES = arrayOf(
-                "com.riders",
-                "com.reepling",
-                "com.praeter"
+            "com.riders",
+            "com.reepling",
+            "com.praeter"
         )
     }
 
@@ -57,16 +57,20 @@ class RepositoryImpl @Inject constructor(
                 Timber.e("package found : %s", appInfo.packageName)
                 try {
 
-                    val icon: Drawable = context.packageManager.getApplicationIcon(appInfo.packageName)
-                    val pInfo: PackageInfo = context.packageManager.getPackageInfo(appInfo.packageName, 0)
+                    val icon: Drawable =
+                        context.packageManager.getApplicationIcon(appInfo.packageName)
+                    val pInfo: PackageInfo =
+                        context.packageManager.getPackageInfo(appInfo.packageName, 0)
                     val version = pInfo.versionName
                     val packageName = appInfo.packageName
                     appList.add(
-                            App(
-                                    context.packageManager.getApplicationLabel(appInfo).toString(),
-                                    icon,
-                                    version,
-                                    packageName))
+                        App(
+                            context.packageManager.getApplicationLabel(appInfo).toString(),
+                            icon,
+                            version,
+                            packageName
+                        )
+                    )
                 } catch (e: PackageManager.NameNotFoundException) {
                     e.printStackTrace()
                 }
@@ -80,7 +84,10 @@ class RepositoryImpl @Inject constructor(
     }
 
     @SuppressLint("QueryPermissionsNeeded")
-    fun isPackageExists(installedAppList: MutableList<ApplicationInfo>, targetPackages: Array<String>): Boolean {
+    fun isPackageExists(
+        installedAppList: MutableList<ApplicationInfo>,
+        targetPackages: Array<String>
+    ): Boolean {
         var isPackageFound = false
 
         // First Method

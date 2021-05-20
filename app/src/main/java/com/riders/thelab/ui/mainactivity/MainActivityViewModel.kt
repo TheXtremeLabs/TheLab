@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-        private val  navigator: Navigator
+    private val navigator: Navigator
 ) : ViewModel() {
 
     private val applications: MutableLiveData<List<App>> = MutableLiveData()

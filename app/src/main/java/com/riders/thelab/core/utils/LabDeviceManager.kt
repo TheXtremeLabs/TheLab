@@ -151,7 +151,9 @@ class LabDeviceManager private constructor() {
         fun getScreenHeight(activity: Activity): Int {
             var screenHeight = 0
             screenHeight = if (LabCompatibilityManager.isAndroid10()
-                    && getModel().trim { it <= ' ' }.toLowerCase().contains(Constants.EMULATOR_DEVICE_TAG)) {
+                && getModel().trim { it <= ' ' }.toLowerCase()
+                    .contains(Constants.EMULATOR_DEVICE_TAG)
+            ) {
                 val metrics = getDisplayMetricsAndroid10(activity)
                 metrics.bounds.height()
             } else {
@@ -165,7 +167,9 @@ class LabDeviceManager private constructor() {
         fun getScreenWidth(activity: Activity): Int {
             var screenWidth = 0
             screenWidth = if (LabCompatibilityManager.isAndroid10()
-                    && getModel().trim { it <= ' ' }.toLowerCase().contains(Constants.EMULATOR_DEVICE_TAG)) {
+                && getModel().trim { it <= ' ' }.toLowerCase()
+                    .contains(Constants.EMULATOR_DEVICE_TAG)
+            ) {
                 val metrics = getDisplayMetricsAndroid10(activity)
                 metrics.bounds.width()
             } else {
@@ -186,9 +190,9 @@ class LabDeviceManager private constructor() {
             //Retrieve Screen's height and width
             val metrics = DisplayMetrics()
             activity
-                    .windowManager
-                    .defaultDisplay
-                    .getMetrics(metrics)
+                .windowManager
+                .defaultDisplay
+                .getMetrics(metrics)
             return metrics
         }
 
@@ -202,8 +206,9 @@ class LabDeviceManager private constructor() {
         fun getDisplayMetricsAndroid10(activity: Activity): WindowMetrics {
             val manager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
             return WindowMetrics(
-                    manager.currentWindowMetrics.bounds,
-                    manager.currentWindowMetrics.windowInsets)
+                manager.currentWindowMetrics.bounds,
+                manager.currentWindowMetrics.windowInsets
+            )
         }
 
 
@@ -282,10 +287,10 @@ class LabDeviceManager private constructor() {
             val factory: CipherFactory = AesCipherFactory(context!!)
             val crypter: CipherCrypter = Base64CipherCrypter()
             rxGoldFinger = RxGoldfinger.Builder(context)
-                    .logEnabled(true)
-                    .cipherFactory(factory)
-                    .cipherCrypter(crypter)
-                    .build()
+                .logEnabled(true)
+                .cipherFactory(factory)
+                .cipherCrypter(crypter)
+                .build()
 
             // fingerprint prompt instantiation
             initGoldFingerPromptParams(activity)
@@ -293,11 +298,11 @@ class LabDeviceManager private constructor() {
 
         private fun initGoldFingerPromptParams(activity: FragmentActivity) {
             params = PromptParams.Builder(activity)
-                    .title("Title")
-                    .negativeButtonText("Cancel")
-                    .description("Description")
-                    .subtitle("Subtitle")
-                    .build()
+                .title("Title")
+                .negativeButtonText("Cancel")
+                .description("Description")
+                .subtitle("Subtitle")
+                .build()
         }
 
         /**

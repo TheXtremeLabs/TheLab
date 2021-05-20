@@ -45,7 +45,11 @@ class Validator {
          * @return The result of test
          */
         fun isNumeric(s: String?): Boolean {
-            return s != null && s.trim { it <= ' ' }.isNotEmpty() && s.matches(Regex(REGEX_CODE_NUMERIC))
+            return s != null && s.trim { it <= ' ' }.isNotEmpty() && s.matches(
+                Regex(
+                    REGEX_CODE_NUMERIC
+                )
+            )
         }
 
         /**
@@ -55,7 +59,11 @@ class Validator {
          * @return The result of test
          */
         fun isAlpha(s: String?): Boolean {
-            return s != null && s.trim { it <= ' ' }.isNotEmpty() && s.matches(Regex(REGEX_CODE_ALPHA))
+            return s != null && s.trim { it <= ' ' }.isNotEmpty() && s.matches(
+                Regex(
+                    REGEX_CODE_ALPHA
+                )
+            )
         }
 
         fun isValidEmail(email: String): Boolean {

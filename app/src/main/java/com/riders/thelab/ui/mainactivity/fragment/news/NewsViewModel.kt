@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.riders.thelab.data.local.model.App
 import com.riders.thelab.utils.Constants
-import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
 
 class NewsViewModel : ViewModel() {

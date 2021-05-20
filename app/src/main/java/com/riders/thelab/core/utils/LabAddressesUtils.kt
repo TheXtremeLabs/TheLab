@@ -18,9 +18,10 @@ class LabAddressesUtils private constructor() {
             Timber.i("getDeviceAddress")
             try {
                 val addresses = geocoder.getFromLocation(
-                        location.latitude,
-                        location.longitude,
-                        1)
+                    location.latitude,
+                    location.longitude,
+                    1
+                )
                 Timber.e("addresses : %s", addresses)
 
                 //get the address
@@ -35,9 +36,9 @@ class LabAddressesUtils private constructor() {
 
 
         fun getRXAddress(
-                geoCoder: Geocoder,
-                latitude: Double,
-                longitude: Double
+            geoCoder: Geocoder,
+            latitude: Double,
+            longitude: Double
         ): Single<List<Address>> {
             return object : Single<List<Address>>() {
                 override fun subscribeActual(observer: SingleObserver<in List<Address>>) {
@@ -54,8 +55,8 @@ class LabAddressesUtils private constructor() {
                     }
                 }
             }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
         }
 
         fun buildAddress(address: Address): String? {
@@ -68,12 +69,12 @@ class LabAddressesUtils private constructor() {
             val regionName = address.adminArea
             val countryName = address.countryName
             addressStringBuilder
-                    .append(street).append(" - ")
-                    .append(locality).append(" - ")
-                    .append(postalCode).append(" - ")
-                    .append(departmentName).append(" - ")
-                    .append(regionName).append(" - ")
-                    .append(countryName)
+                .append(street).append(" - ")
+                .append(locality).append(" - ")
+                .append(postalCode).append(" - ")
+                .append(departmentName).append(" - ")
+                .append(regionName).append(" - ")
+                .append(countryName)
             Timber.d(addressStringBuilder.toString())
             return locality
         }

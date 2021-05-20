@@ -29,7 +29,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
-        OnCompletionListener {
+    OnCompletionListener {
 
     companion object {
         private const val ANDROID_RES_PATH = "android.resource://"
@@ -50,8 +50,9 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
 
         val w = window
         w.setFlags(
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
 
         super.onCreate(savedInstanceState)
         viewBinding = ActivitySplashscreenBinding.inflate(layoutInflater)
@@ -64,7 +65,10 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         startVideo()
     }
 
-    override fun onSaveInstanceState(savedInstanceState: Bundle, outPersistentState: PersistableBundle) {
+    override fun onSaveInstanceState(
+        savedInstanceState: Bundle,
+        outPersistentState: PersistableBundle
+    ) {
         super.onSaveInstanceState(savedInstanceState, outPersistentState)
 
         //we use onSaveInstanceState in order to store the video playback position for orientation change
@@ -72,7 +76,10 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         viewBinding.splashVideo.pause()
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+    override fun onRestoreInstanceState(
+        savedInstanceState: Bundle?,
+        persistentState: PersistableBundle?
+    ) {
         super.onRestoreInstanceState(savedInstanceState, persistentState)
 
         //we use onRestoreInstanceState in order to play the video playback from the stored position
@@ -108,13 +115,13 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
     @SuppressLint("SetTextI18n")
     private fun initViewModelsObservers() {
         mViewModel
-                .getAppVersion()
-                .observe(this, { appVersion ->
-                    Timber.d("Version : %s", appVersion)
+            .getAppVersion()
+            .observe(this, { appVersion ->
+                Timber.d("Version : %s", appVersion)
 
-                    viewBinding.tvAppVersion.text =
-                            this.getString(R.string.version_placeholder) + appVersion
-                })
+                viewBinding.tvAppVersion.text =
+                    this.getString(R.string.version_placeholder) + appVersion
+            })
 
         mViewModel.getOnVideoEnd().observe(this, { finished ->
             Timber.d("getOnVideoEnd : %s", finished)
@@ -129,15 +136,18 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         try {
             //set the uri of the video to be played
             viewBinding.splashVideo
-                    .setVideoURI(
-                            Uri.parse((
-                                    ANDROID_RES_PATH
-                                            + packageName.toString()
-                                            + SEPARATOR +
-                                            if (!LabCompatibilityManager.isTablet(this))
-                                                R.raw.splash_intro_testing_sound_2 //Smartphone portrait video
-                                            else
-                                                R.raw.splash_intro_testing_no_sound_tablet))) //Tablet landscape video
+                .setVideoURI(
+                    Uri.parse(
+                        (
+                                ANDROID_RES_PATH
+                                        + packageName.toString()
+                                        + SEPARATOR +
+                                        if (!LabCompatibilityManager.isTablet(this))
+                                            R.raw.splash_intro_testing_sound_2 //Smartphone portrait video
+                                        else
+                                            R.raw.splash_intro_testing_no_sound_tablet)
+                    )
+                ) //Tablet landscape video
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -159,32 +169,32 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         // Animate the content view to 100% opacity, and clear any animation
         // listener set on the view.
         view.animate()
-                .alpha(1f)
-                .setDuration(LabAnimationsManager.getInstance().shortAnimationDuration.toLong())
-                .setListener(null)
+            .alpha(1f)
+            .setDuration(LabAnimationsManager.getInstance().shortAnimationDuration.toLong())
+            .setListener(null)
 
         // Animate the loading view to 0% opacity. After the animation ends,
         // set its visibility to GONE as an optimization step (it won't
         // participate in layout passes, etc.)
         viewBinding.splashVideo.animate()
-                .alpha(0f)
-                .setDuration(LabAnimationsManager.getInstance().shortAnimationDuration.toLong())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        Timber.e("onAnimationEnd()")
-                        viewBinding.splashVideo.visibility = View.GONE
+            .alpha(0f)
+            .setDuration(LabAnimationsManager.getInstance().shortAnimationDuration.toLong())
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    Timber.e("onAnimationEnd()")
+                    viewBinding.splashVideo.visibility = View.GONE
 
-                        Completable
-                                .complete()
-                                .delay(3, TimeUnit.SECONDS)
-                                .doOnComplete { goToMainActivity() }
-                                .doOnError { t: Throwable? -> Timber.e(t) }
-                                .subscribeOn(Schedulers.io()) //Caused by: android.util.AndroidRuntimeException:
-                                // Animators may only be run on Looper threads
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe()
-                    }
-                })
+                    Completable
+                        .complete()
+                        .delay(3, TimeUnit.SECONDS)
+                        .doOnComplete { goToMainActivity() }
+                        .doOnError { t: Throwable? -> Timber.e(t) }
+                        .subscribeOn(Schedulers.io()) //Caused by: android.util.AndroidRuntimeException:
+                        // Animators may only be run on Looper threads
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe()
+                }
+            })
     }
 
     private fun goToMainActivity() {

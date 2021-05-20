@@ -59,8 +59,9 @@ class BuiltInWebViewActivity : AppCompatActivity() {
                  */
                 if (BrowserUtils.isSameDomain(POST_URL, url)) {
                     val intent = Intent(
-                            this@BuiltInWebViewActivity,
-                            BuiltInWebViewActivity::class.java)
+                        this@BuiltInWebViewActivity,
+                        BuiltInWebViewActivity::class.java
+                    )
                     intent.putExtra("postUrl", url)
                     startActivity(intent)
                 } else {
@@ -100,8 +101,9 @@ class BuiltInWebViewActivity : AppCompatActivity() {
 
     private fun openInAppBrowser(url: String) {
         val intent = Intent(
-                this@BuiltInWebViewActivity,
-                BuiltInBrowserActivity::class.java)
+            this@BuiltInWebViewActivity,
+            BuiltInBrowserActivity::class.java
+        )
         intent.putExtra("url", url)
         startActivity(intent)
     }
@@ -134,9 +136,9 @@ class BuiltInWebViewActivity : AppCompatActivity() {
 
         // loading toolbar header image
         Glide.with(applicationContext)
-                .load("http://api.androidhive.info/webview/nougat.jpg") /*.thumbnail(0.5f)
+            .load("http://api.androidhive.info/webview/nougat.jpg") /*.thumbnail(0.5f)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)*/
-                .into(viewBinding.backdrop)
+            .into(viewBinding.backdrop)
     }
 }

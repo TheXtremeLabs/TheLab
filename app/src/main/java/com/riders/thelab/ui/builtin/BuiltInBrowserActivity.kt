@@ -66,7 +66,11 @@ class BuiltInBrowserActivity : AppCompatActivity() {
                 invalidateOptionsMenu()
             }
 
-            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+            override fun onReceivedError(
+                view: WebView,
+                request: WebResourceRequest,
+                error: WebResourceError
+            ) {
                 super.onReceivedError(view, request, error)
                 viewBinding.builtInBrowserProgressBar.visibility = View.GONE
                 invalidateOptionsMenu()
@@ -83,7 +87,10 @@ class BuiltInBrowserActivity : AppCompatActivity() {
             }
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> mDownX = event.x // save the x
-                MotionEvent.ACTION_MOVE, MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> event.setLocation(mDownX, event.y) // set x so that it doesn't move
+                MotionEvent.ACTION_MOVE, MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> event.setLocation(
+                    mDownX,
+                    event.y
+                ) // set x so that it doesn't move
             }
             false
         }
@@ -131,13 +138,22 @@ class BuiltInBrowserActivity : AppCompatActivity() {
             // bookmark / unbookmark the url
             BrowserUtils.bookmarkUrl(this, viewBinding.contentBuiltInBrowser.browserWebView.url)
             val msg =
-                    if (BrowserUtils.isBookmarked(
-                                    this,
-                                    viewBinding.contentBuiltInBrowser.browserWebView.url))
-                        viewBinding.contentBuiltInBrowser.browserWebView.title + "is Bookmarked!"
-                    else viewBinding.contentBuiltInBrowser.browserWebView.title + " removed!"
+                if (BrowserUtils.isBookmarked(
+                        this,
+                        viewBinding.contentBuiltInBrowser.browserWebView.url
+                    )
+                )
+                    viewBinding.contentBuiltInBrowser.browserWebView.title + "is Bookmarked!"
+                else viewBinding.contentBuiltInBrowser.browserWebView.title + " removed!"
 
-            UIManager.showActionInSnackBar(this, viewBinding.mainContent, msg, SnackBarType.NORMAL, "", null)
+            UIManager.showActionInSnackBar(
+                this,
+                viewBinding.mainContent,
+                msg,
+                SnackBarType.NORMAL,
+                "",
+                null
+            )
 
             // refresh the toolbar icons, so that bookmark icon color changes
             // depending on bookmark status

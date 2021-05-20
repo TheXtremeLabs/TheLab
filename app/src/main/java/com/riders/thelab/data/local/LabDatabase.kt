@@ -8,9 +8,10 @@ import com.riders.thelab.data.local.model.Contact
 import com.riders.thelab.data.local.model.weather.WeatherData
 
 @Database(
-        entities = [Contact::class, CityModel::class, WeatherData::class],
-        version = 1,
-        exportSchema = false)
+    entities = [Contact::class, CityModel::class, WeatherData::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class LabDatabase : RoomDatabase() {
     companion object {
         const val DATABASE_NAME = "lab"

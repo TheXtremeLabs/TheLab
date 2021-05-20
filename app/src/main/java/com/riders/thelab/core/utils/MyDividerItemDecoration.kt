@@ -13,16 +13,16 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import kotlin.math.roundToInt
 
 class MyDividerItemDecoration(
-        context: Context,
-        orientation: Int,
-        private val margin: Int
+    context: Context,
+    orientation: Int,
+    private val margin: Int
 ) : ItemDecoration() {
 
     companion object {
         private const val HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL
         private const val VERTICAL_LIST = LinearLayoutManager.VERTICAL
         private val ATTRS = intArrayOf(
-                R.attr.listDivider
+            R.attr.listDivider
         )
     }
 
@@ -57,7 +57,7 @@ class MyDividerItemDecoration(
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
             val params =
-                    child.layoutParams as RecyclerView.LayoutParams
+                child.layoutParams as RecyclerView.LayoutParams
             val top = child.bottom + params.bottomMargin
             val bottom = top + mDivider!!.intrinsicHeight
             mDivider!!.setBounds(left + dpToPx(margin), top, right, bottom)
@@ -72,7 +72,7 @@ class MyDividerItemDecoration(
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
             val params =
-                    child.layoutParams as RecyclerView.LayoutParams
+                child.layoutParams as RecyclerView.LayoutParams
             val left = child.right + params.rightMargin
             val right = left + mDivider!!.intrinsicHeight
             mDivider!!.setBounds(left, top + dpToPx(margin), right, bottom - dpToPx(margin))
@@ -80,7 +80,12 @@ class MyDividerItemDecoration(
         }
     }
 
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
         if (mOrientation == VERTICAL_LIST) {
             outRect[0, 0, 0] = mDivider!!.intrinsicHeight
         } else {
@@ -90,6 +95,10 @@ class MyDividerItemDecoration(
 
     private fun dpToPx(dp: Int): Int {
         val r = mContext.resources
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), r.displayMetrics).roundToInt()
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            r.displayMetrics
+        ).roundToInt()
     }
 }

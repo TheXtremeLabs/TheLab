@@ -33,19 +33,23 @@ class LabInterceptors {
             val request: Request = chain.request()
 
             //If we're downloading a file, we dont want to intercept the response
-            if (request.body!!.contentType()!!.subtype == "vnd.android.package-archive") return chain.proceed(request)
+            if (request.body!!.contentType()!!.subtype == "vnd.android.package-archive") return chain.proceed(
+                request
+            )
             val response: Response = chain.proceed(request)
             val jsonResponse = response.body!!.string()
             Timber.d("Received response : %s", jsonResponse)
 
             // Re-create the response before returning it because body can be read only once
             return response
-                    .newBuilder()
-                    .body(
-                            ResponseBody.create(
-                                    Objects.requireNonNull(response.body)!!.contentType(),
-                                    jsonResponse))
-                    .build()
+                .newBuilder()
+                .body(
+                    ResponseBody.create(
+                        Objects.requireNonNull(response.body)!!.contentType(),
+                        jsonResponse
+                    )
+                )
+                .build()
         }
     }
 
@@ -60,13 +64,14 @@ class LabInterceptors {
         override fun intercept(chain: Interceptor.Chain): Response {
             val originalRequest: Request = chain.request()
             if (originalRequest.body == null
-                    || originalRequest.header("Content-Encoding") != null) {
+                || originalRequest.header("Content-Encoding") != null
+            ) {
                 return chain.proceed(originalRequest)
             }
             val compressedRequest = originalRequest.newBuilder()
-                    .header("Content-Encoding", "gzip")
-                    .method(originalRequest.method, gzip(originalRequest.body))
-                    .build()
+                .header("Content-Encoding", "gzip")
+                .method(originalRequest.method, gzip(originalRequest.body))
+                .build()
             return chain.proceed(compressedRequest)
         }
 
