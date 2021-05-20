@@ -5,10 +5,11 @@ import io.reactivex.rxjava3.core.Single
 
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Url
 
 interface ArtistsAPIService {
     @GET
-    fun getArtists(): Single<List<Artist>>
+    fun getArtists(@Url url: String): Single<List<Artist>>
 
     @GET("{artistsPath}")
     fun getArtistsWithPath(@Path(value = "artistsPath") path: String?): Single<List<Artist>>

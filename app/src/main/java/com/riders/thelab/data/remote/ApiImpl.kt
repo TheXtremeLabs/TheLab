@@ -79,7 +79,7 @@ class ApiImpl @Inject constructor(
     override fun getArtists(url: String): Single<List<Artist>> {
         Timber.e("getArtists()")
         return mArtistsAPIService
-            .getArtistsWithPath(url)
+            .getArtists(url)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
