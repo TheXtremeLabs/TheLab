@@ -1,15 +1,16 @@
 package com.riders.thelab.data.local.model
 
+import android.os.Parcelable
 import com.riders.thelab.data.local.bean.MovieEnum
-import org.parceler.Parcel
+import kotlinx.android.parcel.Parcelize
 
-@Parcel
+@Parcelize
 data class Movie constructor(
     var title: String? = null,
     var genre: String? = null,
     var year: String? = null,
     var urlThumbnail: String? = null
-) {
+) : Parcelable {
     constructor() : this("", "", "", "") {
     }
 

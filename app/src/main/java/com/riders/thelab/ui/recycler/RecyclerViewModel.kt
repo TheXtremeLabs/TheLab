@@ -26,7 +26,6 @@ import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import org.parceler.Parcels
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -229,7 +228,7 @@ class RecyclerViewModel @Inject constructor(
 
         val intent = Intent(activity, RecyclerViewDetailActivity::class.java)
 
-        intent.putExtra(RecyclerViewDetailActivity.EXTRA_RECYCLER_ITEM, Parcels.wrap(item))
+        intent.putExtra(RecyclerViewDetailActivity.EXTRA_RECYCLER_ITEM, item)
 
         Timber.d("Apply activity transition")
         intent.putExtra(

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.riders.thelab.data.local.model.Movie
 import com.riders.thelab.databinding.ActivityMultiPaneDetailBinding
-import org.parceler.Parcels
 import timber.log.Timber
 import java.util.*
 
@@ -29,13 +28,11 @@ class MultipaneDetailActivity : AppCompatActivity() {
             Timber.e("Bundle is null exit activity.")
             finish()
         }
-        val movie: Movie = Parcels.unwrap(
-            Objects.requireNonNull(bundle)!!.getParcelable(
-                EXTRA_MOVIE
-            )
-        )
-        supportActionBar?.title = movie.title
-        setViews(movie)
+        val movie: Movie? = Objects.requireNonNull(bundle)!!.getParcelable(EXTRA_MOVIE)
+        if (movie != null) {
+            supportActionBar?.title = movie.title
+            setViews(movie)
+        }
     }
 
     private fun setViews(movie: Movie) {

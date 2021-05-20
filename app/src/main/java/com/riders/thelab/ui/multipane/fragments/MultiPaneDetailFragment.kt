@@ -16,7 +16,6 @@ import com.riders.thelab.R
 import com.riders.thelab.data.local.model.Movie
 import com.riders.thelab.databinding.FragmentMultiPaneDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
-import org.parceler.Parcels
 import timber.log.Timber
 import java.util.*
 
@@ -36,10 +35,8 @@ class MultiPaneDetailFragment : Fragment() {
 
         fun newInstance(movie: Movie): MultiPaneDetailFragment {
             val args = Bundle()
-            args.putParcelable(
-                BUNDLE_MOVIE,
-                Parcels.wrap<Any>(movie)
-            )
+            args.putParcelable(BUNDLE_MOVIE, movie)
+
             val fragment = MultiPaneDetailFragment()
             fragment.arguments = args
             return fragment
@@ -75,9 +72,10 @@ class MultiPaneDetailFragment : Fragment() {
             Timber.e("Bundle is null - Cannot retrieve movie")
             return
         }
-        val movie: Movie =
-            Parcels.unwrap(bundle.getParcelable(BUNDLE_MOVIE))
-        setTextOnFragment(movie)
+        val movie: Movie? = bundle.getParcelable(BUNDLE_MOVIE)
+        if (movie != null) {
+            setTextOnFragment(movie)
+        }
     }
 
     @SuppressLint("UseRequireInsteadOfGet")

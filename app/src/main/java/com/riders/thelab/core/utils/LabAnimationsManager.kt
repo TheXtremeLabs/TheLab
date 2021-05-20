@@ -8,10 +8,6 @@ import androidx.vectordrawable.graphics.drawable.ArgbEvaluator
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.TheLabApplication
-import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
-import lombok.Getter
-import javax.inject.Inject
 
 class LabAnimationsManager private constructor() {
 

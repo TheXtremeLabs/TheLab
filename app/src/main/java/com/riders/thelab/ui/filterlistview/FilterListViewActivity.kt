@@ -17,7 +17,7 @@ import java.util.*
 class FilterListViewActivity : AppCompatActivity(), TextWatcher {
 
     var mWorldPopulationList: ArrayList<WorldPopulation>? = null
-    var adapter: FilterListViewAdapter? = null
+    lateinit var adapter: FilterListViewAdapter
 
     lateinit var viewBinding: ActivityFilterListviewBinding
 
@@ -64,6 +64,6 @@ class FilterListViewActivity : AppCompatActivity(), TextWatcher {
     override fun afterTextChanged(s: Editable?) {
         val text: String =
             viewBinding.etFilterListviewSearch.text.toString().toLowerCase(Locale.getDefault())
-        adapter!!.filter(text)
+        adapter.filter(text)
     }
 }

@@ -11,7 +11,6 @@ import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.databinding.ActivityRecyclerViewDetailBinding
-import org.parceler.Parcels
 import timber.log.Timber
 import java.util.*
 
@@ -45,7 +44,7 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
      */
     private fun getBundle() {
         val extras = intent.extras
-        item = Parcels.unwrap(extras!!.getParcelable(EXTRA_RECYCLER_ITEM))
+        item = extras!!.getParcelable(EXTRA_RECYCLER_ITEM)!!
         Timber.d("item : %s", item.toString())
     }
 

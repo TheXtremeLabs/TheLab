@@ -44,13 +44,13 @@ class MainActivityViewHolder constructor(
                         if (0 != app.appIcon && app.appTitle == "Palette") {
                             val myBitmap = (resource as BitmapDrawable).bitmap
                             val newBitmap = UIManager.addGradientToImageView(context, myBitmap)
-                            viewBinding.arrowIcon?.setImageDrawable(
+                            it.setImageDrawable(
                                 BitmapDrawable(context.resources, newBitmap)
                             )
                             return true
                         }
                         if (0 != app.appIcon && app.appTitle == "WIP") {
-                            viewBinding.arrowIcon?.setImageDrawable(
+                            it.setImageDrawable(
                                 ContextCompat.getDrawable(context, R.drawable.logo_testing)
                             )
                             viewBinding.arrowIcon?.visibility = View.GONE

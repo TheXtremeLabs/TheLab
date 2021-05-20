@@ -24,7 +24,7 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
-import lombok.SneakyThrows
+
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import java.io.IOException
@@ -130,7 +130,6 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
             longitude: Double
         ): Single<List<Address>> {
             return object : Single<List<Address>>() {
-                @SneakyThrows
                 override fun subscribeActual(observer: SingleObserver<in List<Address>>) {
                     val addressList = geoCoder.getFromLocation(latitude, longitude, 1)
                     if (addressList.isNotEmpty()) {
