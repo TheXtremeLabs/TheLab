@@ -1,7 +1,6 @@
 package com.riders.thelab.ui.splashscreen
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
+import android.animation.*
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
@@ -11,8 +10,10 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.AccelerateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabAnimationsManager
 import com.riders.thelab.core.utils.LabCompatibilityManager
@@ -41,6 +42,12 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
 
     private val position = 0
 
+    // Animators
+    private lateinit var logoColorAnimator: ObjectAnimator
+    private lateinit var slideNumberAnim: ObjectAnimator
+    private lateinit var slideTextAnim: ObjectAnimator
+    private lateinit var versionTextAnimator: ObjectAnimator
+    private lateinit var fadeProgressAnimator: ObjectAnimator
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -178,25 +185,106 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
                 override fun onAnimationEnd(animation: Animator) {
                     Timber.e("onAnimationEnd()")
                     viewBinding.splashVideo.visibility = View.GONE
-
-                    Completable
-                        .complete()
-                        .delay(3, TimeUnit.SECONDS)
-                        .doOnComplete { goToMainActivity() }
-                        .doOnError { t: Throwable? -> Timber.e(t) }
-                        .subscribeOn(Schedulers.io())
-                        //Caused by: android.util.AndroidRuntimeException:
-                        // Animators may only be run on Looper threads
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe()
+                    startFiveAnimation()
                 }
             })
     }
 
+    fun startFiveAnimation() {
+        Timber.e("startFiveAnimation()")
+        val kf0 = Keyframe.ofFloat(0f, 0f)
+        val kf1 = Keyframe.ofFloat(.25f, 360f * 1.5f)
+        val kf2 = Keyframe.ofFloat(.35f, 360f * 3.0f)
+        val kf3 = Keyframe.ofFloat(.5f, 360f * 5.0f)
+        val kf5 = Keyframe.ofFloat(.75f, 360.0f * 7.0f)
+        val kf6 = Keyframe.ofFloat(1f, 360f * 9.0f)
+        val pvhRotation = PropertyValuesHolder.ofKeyframe("rotationY", kf0, kf1, kf2, kf3, kf5, kf6)
+        logoColorAnimator =
+            ObjectAnimator.ofPropertyValuesHolder(viewBinding.ivFiveNumber, pvhRotation)
+        logoColorAnimator.duration = 3500
+        logoColorAnimator.interpolator = LinearOutSlowInInterpolator()
+        logoColorAnimator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
+                slideNumber()
+            }
+        })
+        logoColorAnimator.start()
+    }
+
+    private fun slideNumber() {
+        Timber.e("slideNumber()")
+        slideNumberAnim =
+            ObjectAnimator.ofFloat(viewBinding.ivFiveNumber, "translationX", 0f, 25f, 50f, 0f)
+        slideNumberAnim.duration =
+            LabAnimationsManager.getInstance().mediumAnimationDuration.toLong()
+        slideNumberAnim.interpolator = AccelerateInterpolator()
+        slideNumberAnim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?, isReverse: Boolean) {
+                startTheLaPartAnimation()
+            }
+        })
+        slideNumberAnim.start()
+    }
+
+    fun startTheLaPartAnimation() {
+        Timber.e("startTheLaPartAnimation()")
+        viewBinding.ivTheLaPart.visibility = View.VISIBLE
+        slideTextAnim = ObjectAnimator.ofFloat(viewBinding.ivTheLaPart, "alpha", 1f)
+        slideTextAnim.duration = LabAnimationsManager.getInstance().shortAnimationDuration.toLong()
+        slideTextAnim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
+                viewBinding.ivTheLaPart.setAlpha(1f)
+                displayAppVersion()
+            }
+        })
+        slideTextAnim.start()
+    }
+
+    fun displayAppVersion() {
+        Timber.e("displayAppVersion()")
+        versionTextAnimator = ObjectAnimator.ofFloat(viewBinding.tvAppVersion, "alpha", 1f)
+        versionTextAnimator.duration =
+            LabAnimationsManager.getInstance().longAnimationDuration.toLong()
+        versionTextAnimator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
+                viewBinding.tvAppVersion.alpha = 1f
+                startProgressAnimation()
+            }
+        })
+        versionTextAnimator.start()
+    }
+
+
+    fun startProgressAnimation() {
+        Timber.e("startProgressAnimation()")
+        fadeProgressAnimator = ObjectAnimator.ofFloat(viewBinding.progressBar, "alpha", 0f, 1f)
+        fadeProgressAnimator.duration =
+            LabAnimationsManager.getInstance().shortAnimationDuration.toLong()
+        fadeProgressAnimator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
+                viewBinding.progressBar.alpha = 1f
+
+                goToMainActivity()
+            }
+        })
+        fadeProgressAnimator.start()
+    }
+
     private fun goToMainActivity() {
         Timber.i("goToMainActivity()")
-        Navigator(this).callMainActivity()
-        finish()
 
+        Completable
+            .complete()
+            .delay(3, TimeUnit.SECONDS)
+            .doOnComplete {
+                Navigator(this).callMainActivity()
+                finish()
+            }
+            .doOnError { t: Throwable? -> Timber.e(t) }
+            .subscribeOn(Schedulers.io())
+            //Caused by: android.util.AndroidRuntimeException:
+            // Animators may only be run on Looper threads
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
     }
 }
