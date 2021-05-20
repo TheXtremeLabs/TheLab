@@ -21,11 +21,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ApiImpl @Inject constructor(
-        artistsAPIService: ArtistsAPIService,
-        googleAPIService: GoogleAPIService,
-        youtubeApiService: YoutubeApiService,
-        weatherApiService: WeatherApiService,
-        weatherBulkApiService: WeatherBulkApiService
+    artistsAPIService: ArtistsAPIService,
+    googleAPIService: GoogleAPIService,
+    youtubeApiService: YoutubeApiService,
+    weatherApiService: WeatherApiService,
+    weatherBulkApiService: WeatherBulkApiService
 ) : IApi {
 
     private var mArtistsAPIService: ArtistsAPIService = artistsAPIService
@@ -43,50 +43,53 @@ class ApiImpl @Inject constructor(
                 // Initialize Firebase Auth
                 val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
                 mAuth
-                        .signInAnonymously()
-                        .addOnCompleteListener(
-                                activity
-                        ) { task: Task<AuthResult?> ->
-                            if (task.isSuccessful) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Timber.d("signInAnonymously:success")
-                                val user = mAuth.currentUser
-                                val bucketName = "gs://the-lab-3920e.appspot.com"
-                                storage[0] = FirebaseStorage.getInstance(bucketName)
-                                // Create a storage reference from our app
-                                val storageRef = storage[0]!!.reference
-                                observer.onSuccess(storageRef)
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Timber.w("signInAnonymously:failure %s",
-                                        task.exception.toString())
-                                Toast.makeText(
-                                        activity,
-                                        "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show()
-                                observer.onError(task.exception!!)
-                            }
+                    .signInAnonymously()
+                    .addOnCompleteListener(
+                        activity
+                    ) { task: Task<AuthResult?> ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Timber.d("signInAnonymously:success")
+                            val user = mAuth.currentUser
+                            val bucketName = "gs://the-lab-3920e.appspot.com"
+                            storage[0] = FirebaseStorage.getInstance(bucketName)
+                            // Create a storage reference from our app
+                            val storageRef = storage[0]!!.reference
+                            observer.onSuccess(storageRef)
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Timber.w(
+                                "signInAnonymously:failure %s",
+                                task.exception.toString()
+                            )
+                            Toast.makeText(
+                                activity,
+                                "Authentication failed.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            observer.onError(task.exception!!)
                         }
+                    }
             }
         }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun getArtists(url: String): Single<List<Artist>> {
         Timber.e("getArtists()")
         return mArtistsAPIService
-                .getArtists()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .getArtists()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun getVideos(): Single<List<Video>> {
         Timber.e("getVideos()")
         return mYoutubeApiService
-                .fetchYoutubeVideos()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .fetchYoutubeVideos()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun getWeatherOneCallAPI(location: Location): Single<OneCallWeatherResponse>? {
@@ -98,18 +101,19 @@ class ApiImpl @Inject constructor(
         }
 
         return mWeatherApiService
-                .getCurrentWeatherWithNewOneCallAPI(
-                        location.latitude,
-                        location.longitude)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .getCurrentWeatherWithNewOneCallAPI(
+                location.latitude,
+                location.longitude
+            )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun getBulkWeatherCitiesFile(): Single<ResponseBody> {
         Timber.e("get cities bulk file()")
         return mWeatherBulkApiService
-                .getCitiesGZipFile()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .getCitiesGZipFile()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 }

@@ -74,8 +74,9 @@ interface WeatherApiService {
             @Query("lon") int lon);*/
     @GET("/data/2.5/weather?")
     fun getCurrentWeatherByGeographicCoordinates(
-            @Query("lat") lat: Double,
-            @Query("lon") lon: Double): Single<WeatherResponse>
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double
+    ): Single<WeatherResponse>
 
 
     /**
@@ -101,6 +102,7 @@ interface WeatherApiService {
      */
     @GET("/data/2.5/onecall?")
     fun getCurrentWeatherWithNewOneCallAPI(
-            @Query("lat") lat: Double,
-            @Query("lon") lon: Double): Single<OneCallWeatherResponse>
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double
+    ): Single<OneCallWeatherResponse>
 }

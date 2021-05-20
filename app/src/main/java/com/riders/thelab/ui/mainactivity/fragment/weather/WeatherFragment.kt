@@ -41,7 +41,11 @@ class WeatherFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         viewBinding = FragmentWeatherBinding.inflate(inflater, container, false)
         return viewBinding.root
     }
@@ -50,23 +54,23 @@ class WeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mWeatherViewModel
-                .getProgressBarVisibility()
-                .observe(requireActivity(), {
-                    if (!it) UIManager.hideView(viewBinding.progressBar)
-                    else UIManager.showView(viewBinding.progressBar)
-                })
+            .getProgressBarVisibility()
+            .observe(requireActivity(), {
+                if (!it) UIManager.hideView(viewBinding.progressBar)
+                else UIManager.showView(viewBinding.progressBar)
+            })
 
         mWeatherViewModel
-                .getWeatherFailed()
-                .observe(requireActivity(), {
-                    Timber.e("getWeatherFailed")
-                })
+            .getWeatherFailed()
+            .observe(requireActivity(), {
+                Timber.e("getWeatherFailed")
+            })
 
         mWeatherViewModel
-                .getWeather()
-                .observe(requireActivity(), {
-                    updateUI(it)
-                })
+            .getWeather()
+            .observe(requireActivity(), {
+                updateUI(it)
+            })
     }
 
     override fun onPause() {
@@ -80,7 +84,7 @@ class WeatherFragment : Fragment() {
         Timber.d("onResume()")
         EventBus.getDefault().register(this)
 
-        val labLocationManager = LabLocationManager(context)
+        val labLocationManager = LabLocationManager(requireActivity())
 
         if (!labLocationManager.canGetLocation()) {
             Timber.e("Cannot get location please enable position")
@@ -119,11 +123,11 @@ class WeatherFragment : Fragment() {
 
         // Load weather icon
         Glide.with(requireActivity())
-                .load(WeatherUtils.getWeatherIconFromApi(cityWeather.weatherIconURL))
-                .into(viewBinding.ivWeatherIcon)
+            .load(WeatherUtils.getWeatherIconFromApi(cityWeather.weatherIconURL))
+            .into(viewBinding.ivWeatherIcon)
 
         viewBinding.tvWeatherCityTemperature.text =
-                String.format(Locale.getDefault(), "%d", cityWeather.cityTemperature.roundToInt())
+            String.format(Locale.getDefault(), "%d", cityWeather.cityTemperature.roundToInt())
         viewBinding.tvDegreePlaceholder.visibility = View.VISIBLE
 
         // Load city name

@@ -22,11 +22,14 @@ import javax.inject.Inject
 @SuppressLint("RestrictedApi")
 @HiltWorker
 class WeatherDownloadWorker @AssistedInject constructor(
-        @Assisted context: Context?,
-        @Assisted workerParams: WorkerParameters?
+    @Assisted context: Context?,
+    @Assisted workerParams: WorkerParameters?
 ) : ListenableWorker(context!!, workerParams!!) {
 
     companion object {
+        const val MESSAGE_STATUS = "message_status"
+        const val URL_REQUEST = "url_request"
+
         const val WORK_SUCCESS = "Loading finished"
         const val WORK_DOWNLOAD_FAILED = "Error while downloading zip file"
         const val WORK_RESULT = "work_result"
@@ -51,51 +54,54 @@ class WeatherDownloadWorker @AssistedInject constructor(
         if (null == taskData) {
             Timber.e("Input Data is null")
         }
-        taskDataString = taskData!!.getString(WeatherPresenter.MESSAGE_STATUS)
+        taskDataString = taskData!!.getString(MESSAGE_STATUS)
 
-        val urlRequest = taskData!!.getString(WeatherPresenter.URL_REQUEST)
+        val urlRequest = taskData!!.getString(URL_REQUEST)
         if (urlRequest == null) {
             future!!.set(Result.failure())
         }
 
 
         mRepository.getBulkWeatherCitiesFile()
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        { responseFile ->
-                            Timber.d("observer.onSuccess(responseFile)")
-                            try {
-                                Timber.d("Unzipped downloaded file...")
-                                // Step 1 : Unzip
-                                val unzippedGZipResult = LabFileManager.unzipGzip(responseFile)
-                                if (Validator.isEmpty(unzippedGZipResult)) {
-                                    Timber.e("String unzippedGZipResult is empty")
-                                    return@subscribe
-                                }
-                                val dtoCities: List<City>? = LabParser
-                                        .getInstance()
-                                        .parseJsonFileListWithMoshi(unzippedGZipResult)
-                                if (Validator.isNullOrEmpty(dtoCities)) {
-                                    Timber.e("List<City> dtoCities is empty")
-                                    return@subscribe
-                                }
-                                Timber.d("Save in database...")
-                                // Step 3 save in database
-                                if (dtoCities != null) {
-                                    saveCities(dtoCities)
-                                }
-                            } catch (e: Exception) {
-                                Timber.e(e)
-                            }
-                        },
-                        { throwable ->
-                            Timber.e(WORK_DOWNLOAD_FAILED)
-                            Timber.e(throwable)
-                            outputData = createOutputData(
-                                    WORK_RESULT,
-                                    WORK_DOWNLOAD_FAILED)
-                            future!!.set(Result.failure(outputData!!))
-                        })
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                { responseFile ->
+                    Timber.d("observer.onSuccess(responseFile)")
+                    try {
+                        Timber.d("Unzipped downloaded file...")
+                        // Step 1 : Unzip
+                        val unzippedGZipResult = LabFileManager.unzipGzip(responseFile)
+                        if (Validator.isEmpty(unzippedGZipResult)) {
+                            Timber.e("String unzippedGZipResult is empty")
+                            return@subscribe
+                        }
+                        val dtoCities: List<City>? = unzippedGZipResult?.let {
+                            LabParser
+                                .getInstance()
+                                .parseJsonFileListWithMoshi(it)
+                        }
+                        if (Validator.isNullOrEmpty(dtoCities)) {
+                            Timber.e("List<City> dtoCities is empty")
+                            return@subscribe
+                        }
+                        Timber.d("Save in database...")
+                        // Step 3 save in database
+                        if (dtoCities != null) {
+                            saveCities(dtoCities)
+                        }
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                    }
+                },
+                { throwable ->
+                    Timber.e(WORK_DOWNLOAD_FAILED)
+                    Timber.e(throwable)
+                    outputData = createOutputData(
+                        WORK_RESULT,
+                        WORK_DOWNLOAD_FAILED
+                    )
+                    future!!.set(Result.failure(outputData!!))
+                })
 
         return future!!
     }
@@ -110,8 +116,8 @@ class WeatherDownloadWorker @AssistedInject constructor(
     private fun createOutputData(outputDataKey: String, message: String): Data {
         Timber.d("createOutputData()")
         return Data.Builder()
-                .put(outputDataKey, message)
-                .build()
+            .put(outputDataKey, message)
+            .build()
     }
 
 
@@ -119,12 +125,13 @@ class WeatherDownloadWorker @AssistedInject constructor(
     fun saveCities(dtoCities: List<City>) {
         Timber.d("saveCities()")
         mRepository
-                .saveCities(dtoCities)
-                .subscribe(
-                        { longs ->
-                            outputData = createOutputData(WORK_RESULT, WORK_SUCCESS)
-                            future!!.set(Result.success(outputData!!))
-                        },
-                        Timber::e)
+            .saveCities(dtoCities)
+            .subscribe(
+                { longs ->
+                    outputData = createOutputData(WORK_RESULT, WORK_SUCCESS)
+                    future!!.set(Result.success(outputData!!))
+                },
+                Timber::e
+            )
     }
 }

@@ -16,11 +16,12 @@ object AppHelperModule {
 
     @Provides
     fun provideDbHelper(appDatabase: LabDatabase) =
-            DbImpl(
-                    appDatabase.getContactDao(),
-                    appDatabase.getWeatherDao())
+        DbImpl(
+            appDatabase.getContactDao(),
+            appDatabase.getWeatherDao()
+        )
 
     @Provides
     fun provideRepository(dbImpl: DbImpl, apiImpl: ApiImpl) =
-            RepositoryImpl(dbImpl, apiImpl) as IRepository
+        RepositoryImpl(dbImpl, apiImpl) as IRepository
 }

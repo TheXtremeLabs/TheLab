@@ -65,21 +65,42 @@ class Constants {
         Timber.d("Constructor constants()")
         activityItems = ArrayList(loadActivities())
     }
+
     fun loadActivities(): List<App> {
         val list: MutableList<App> = ArrayList()
 
-        list.add(App("Colors", "Change color programmatically...",
-                R.drawable.logo_colors, ColorActivity::class.java))
-        list.add(App("Biometric", "Check biometric hardware and test it...",
-                R.drawable.ic_fingerprint, BiometricActivity::class.java))
+        list.add(
+            App(
+                "Colors", "Change color programmatically...",
+                R.drawable.logo_colors, ColorActivity::class.java
+            )
+        )
+        list.add(
+            App(
+                "Biometric", "Check biometric hardware and test it...",
+                R.drawable.ic_fingerprint, BiometricActivity::class.java
+            )
+        )
         /*list.add(App("Recycler", "Recycler Basics and best practices...",
                 R.drawable.ic_filter_list, RecyclerViewActivity::class.java))*/
-        list.add(App("Tabs", "ViewPager Fragments Tabs...",
-                R.drawable.ic_tab, WorkingTabsActivity::class.java))
-        list.add(App("Transitions", "Start a new activity with awesome animations...",
-                R.drawable.ic_flip_to_back, TransitionActivity::class.java))
-        list.add(App("Floating Labels", "Floating Labels Form...",
-                R.drawable.ic_outline_label, FloatingLabelsActivity::class.java))
+        list.add(
+            App(
+                "Tabs", "ViewPager Fragments Tabs...",
+                R.drawable.ic_tab, WorkingTabsActivity::class.java
+            )
+        )
+        list.add(
+            App(
+                "Transitions", "Start a new activity with awesome animations...",
+                R.drawable.ic_flip_to_back, TransitionActivity::class.java
+            )
+        )
+        list.add(
+            App(
+                "Floating Labels", "Floating Labels Form...",
+                R.drawable.ic_outline_label, FloatingLabelsActivity::class.java
+            )
+        )
         /*list.add(App("Contact List", "Fetch contacts from database, add one and more...",
                 R.drawable.ic_contacts, ContactsActivity::class.java))
         list.add(App("Location On Maps", "Display User location on map...",
@@ -100,36 +121,72 @@ class Constants {
 */
         /*list.add(App("Youtube", "Youtube look like...",
                 R.drawable.youtube_icon_like, YoutubeLikeActivity::class.java))*/
-        list.add(App("My Speech To Text", "Own speech to text implementation...",
-                R.drawable.ic_mic, SpeechToTextActivity::class.java))
+        list.add(
+            App(
+                "My Speech To Text", "Own speech to text implementation...",
+                R.drawable.ic_mic, SpeechToTextActivity::class.java
+            )
+        )
 
         /*
         list.add(new App("Activity Recognition", "Display user activity...",
                 R.drawable.ic_walking, ActivityRecognitionActivity.class));*/
 
-        list.add(App("Built-in Web View", "Display web view in activity directly...",
-                R.drawable.ic_alternate_email, BuiltInWebViewActivity::class.java))
+        list.add(
+            App(
+                "Built-in Web View", "Display web view in activity directly...",
+                R.drawable.ic_alternate_email, BuiltInWebViewActivity::class.java
+            )
+        )
 
         /*list.add(App("Weather App", "Current weather forecast in your city...",
                 R.drawable.openweathermap, WeatherActivity::class.java))*/
 
-        list.add(App("Floating Widget", "Create a floating widget that you can move around on the screen...",
-                R.drawable.ic_flip_to_back, FloatingViewActivity::class.java))
+        list.add(
+            App(
+                "Floating Widget",
+                "Create a floating widget that you can move around on the screen...",
+                R.drawable.ic_flip_to_back,
+                FloatingViewActivity::class.java
+            )
+        )
 
-        list.add(App("Custom Toast", "Custom Toast Layout...",
-                R.drawable.ic_announcement, CustomToastActivity::class.java))
+        list.add(
+            App(
+                "Custom Toast", "Custom Toast Layout...",
+                R.drawable.ic_announcement, CustomToastActivity::class.java
+            )
+        )
 
-        list.add(App("Vector Drawables", "Animated, scale, transform vector drawables...",
-                R.drawable.ic_aspect_ratio, VectorDrawablesActivity::class.java))
+        list.add(
+            App(
+                "Vector Drawables", "Animated, scale, transform vector drawables...",
+                R.drawable.ic_aspect_ratio, VectorDrawablesActivity::class.java
+            )
+        )
 
-        list.add(App("Spring", "Physics-based motion is driven by force. Spring force is one such force that guides interactivity and motion....",
-                R.drawable.ic_filter_center_focus, SpringActivity::class.java))
+        list.add(
+            App(
+                "Spring",
+                "Physics-based motion is driven by force. Spring force is one such force that guides interactivity and motion....",
+                R.drawable.ic_filter_center_focus,
+                SpringActivity::class.java
+            )
+        )
 
-        list.add(App("Chat", "Realtime chat using firebase realtime database features",
-                R.drawable.ic_k_at, KatActivity::class.java))
+        list.add(
+            App(
+                "Chat", "Realtime chat using firebase realtime database features",
+                R.drawable.ic_k_at, KatActivity::class.java
+            )
+        )
 
-        list.add(App("WIP", "Coming soon...",
-                R.drawable.ic_warning, null))
+        list.add(
+            App(
+                "WIP", "Coming soon...",
+                R.drawable.ic_warning, null
+            )
+        )
 
         return list
     }

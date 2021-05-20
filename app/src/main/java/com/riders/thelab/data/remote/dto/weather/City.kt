@@ -9,17 +9,16 @@ import lombok.ToString
 @Getter
 @ToString
 data class City(
-        @Json(name = "id")
-        val id: Int,
-        @Json(name = "name")
-        val name: String? = null,
-        @Json(name = "state")
-        val state: String? = null,
-        @Json(name = "country")
-        val country: String? = null,
-
-        @Json(name = "coord")
-        val coordinates: Coordinates? = null
+    @Json(name = "id")
+    val id: Int,
+    @Json(name = "name")
+    val name: String,
+    @Json(name = "state")
+    val state: String,
+    @Json(name = "country")
+    val country: String,
+    @Json(name = "coord")
+    val coordinates: Coordinates
 ) {
 
     override fun toString(): String {
