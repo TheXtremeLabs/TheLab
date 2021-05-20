@@ -18,9 +18,9 @@ internal object AppModule {
     @Provides
     fun provideAppDatabase(@ApplicationContext appContext: Context): LabDatabase {
         return Room
-                .databaseBuilder(appContext, LabDatabase::class.java, LabDatabase.DATABASE_NAME)
-                .fallbackToDestructiveMigration()
-                .build()
+            .databaseBuilder(appContext, LabDatabase::class.java, LabDatabase.DATABASE_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

@@ -16,6 +16,10 @@ class WeatherUtils private constructor() {
             return Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX
         }
 
+        /*
+         * https://stackoverflow.com/questions/31263097/mpandroidchart-hide-background-grid
+         *
+         */
         fun stylingChartGrid(chart: LineChart, whiteColor: Int) {
 
             // Styling
@@ -49,13 +53,15 @@ class WeatherUtils private constructor() {
             val temperatures: MutableList<Float> = ArrayList()
             for (i in hourlyWeather.indices) {
                 val hour: String =
-                        DateTimeUtils
-                                .formatMillisToTimeHoursMinutes(hourlyWeather[i].dateTimeUTC)
-                                .split(":")[0]
+                    DateTimeUtils
+                        .formatMillisToTimeHoursMinutes(hourlyWeather[i].dateTimeUTC)
+                        .split(":")[0]
                 if (hour == "00") {
                     break
                 } else {
-                    for (element in Hours.values()) if (element.hourValue == hour) temperatures.add(hourlyWeather[i].temperature.toFloat())
+                    for (element in Hours.values()) if (element.hourValue == hour) temperatures.add(
+                        hourlyWeather[i].temperature.toFloat()
+                    )
                 }
             }
             return temperatures
@@ -65,12 +71,12 @@ class WeatherUtils private constructor() {
             val temperaturesQuarters: MutableList<String> = ArrayList()
             for (i in hourlyWeather.indices) {
                 val hour: String =
-                        DateTimeUtils
-                                .formatMillisToTimeHoursMinutes(hourlyWeather[i].dateTimeUTC)
+                    DateTimeUtils
+                        .formatMillisToTimeHoursMinutes(hourlyWeather[i].dateTimeUTC)
                 val hourSplit: String =
-                        DateTimeUtils
-                                .formatMillisToTimeHoursMinutes(hourlyWeather[i].dateTimeUTC)
-                                .split(":")[0]
+                    DateTimeUtils
+                        .formatMillisToTimeHoursMinutes(hourlyWeather[i].dateTimeUTC)
+                        .split(":")[0]
                 if (hourSplit == "00") {
                     Timber.e("hour.equals(\"00\")")
                     break

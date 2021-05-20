@@ -9,24 +9,24 @@ import com.riders.thelab.data.remote.dto.weather.City
 
 @Entity(tableName = "city")
 data class CityModel constructor(
-        @PrimaryKey
-        @ColumnInfo(name = "id")
-        var id: Int = 0,
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    var id: Int = 0,
 
-        @ColumnInfo(name = "name")
-        var name: String? = null,
+    @ColumnInfo(name = "name")
+    var name: String,
 
-        @ColumnInfo(name = "state")
-        var state: String? = null,
+    @ColumnInfo(name = "state")
+    var state: String,
 
-        @ColumnInfo(name = "country")
-        var country: String? = null,
+    @ColumnInfo(name = "country")
+    var country: String,
 
-        @ColumnInfo(name = "longitude")
-        var longitude: Double? = 0.0,
+    @ColumnInfo(name = "longitude")
+    var longitude: Double = 0.0,
 
-        @ColumnInfo(name = "latitude")
-        var latitude: Double? = 0.0
+    @ColumnInfo(name = "latitude")
+    var latitude: Double = 0.0
 ) {
     constructor() : this(-1, "", "", "", 0.0, 0.0)
 
@@ -36,8 +36,8 @@ data class CityModel constructor(
         this.name = dtoCity.name
         this.state = dtoCity.state
         this.country = dtoCity.country
-        this.longitude = dtoCity.coordinates?.longitude
-        this.latitude = dtoCity.coordinates?.latitude
+        this.longitude = dtoCity.coordinates.longitude
+        this.latitude = dtoCity.coordinates.latitude
     }
 
     @Ignore

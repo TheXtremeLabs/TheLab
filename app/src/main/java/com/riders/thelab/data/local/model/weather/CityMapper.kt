@@ -21,12 +21,12 @@ class CityMapper() {
             } else {
                 // Use stream method
                 dtoCities
-                        .stream()
-                        .forEach { dtoCity: City? ->
-                            dtoCity
-                                    ?.let { CityModel(it) }
-                                    ?.let { listToReturn.add(it) }
-                        }
+                    .stream()
+                    .forEach { dtoCity: City? ->
+                        dtoCity
+                            ?.let { CityModel(it) }
+                            ?.let { listToReturn.add(it) }
+                    }
             }
             return listToReturn
         }

@@ -6,7 +6,7 @@ enum class WindDirection(
     val shortName: String,
     val fullName: String,
     val degree: Double,
-    icon: Int
+    val icon: Int
 ) {
 
     NORTH("N", "Northerly", 337.5, R.drawable.ic_wind_north),
@@ -19,7 +19,7 @@ enum class WindDirection(
     NORTH_EAST("NNE", "North Easterly", 22.5, R.drawable.ic_wind_north_east);
 
     companion object {
-        fun getWindDirectionToTextualDescription(degree: Double): WindDirection? {
+        fun getWindDirectionToTextualDescription(degree: Int): WindDirection {
             if (degree > 337.5) return NORTH
             if (degree > 292.5) return NORTH_WEST
             if (degree > 247.5) return WEST

@@ -13,12 +13,12 @@ import lombok.ToString
 @ToString
 data class WeatherData constructor(
 
-        @PrimaryKey
-        @ColumnInfo(name = "_id")
-        var id: Int = 0,
+    @PrimaryKey
+    @ColumnInfo(name = "_id")
+    var id: Int = 0,
 
-        @ColumnInfo(name = "isWeatherData")
-        var isWeatherData: Boolean = false
+    @ColumnInfo(name = "isWeatherData")
+    var isWeatherData: Boolean = false
 ) {
     constructor(isWeatherData: Boolean) : this()
 }
