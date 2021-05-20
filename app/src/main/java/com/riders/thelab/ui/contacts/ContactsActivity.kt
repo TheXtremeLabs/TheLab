@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.UIManager
+import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.model.Contact
 import com.riders.thelab.databinding.ActivityContactsBinding
 import com.riders.thelab.navigator.Navigator
@@ -22,10 +22,9 @@ import com.riders.thelab.ui.contacts.RecyclerItemTouchHelper.RecyclerItemTouchHe
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class ContactsActivity: AppCompatActivity(), ContactsClickListener,
+class ContactsActivity : AppCompatActivity(), ContactsClickListener,
     RecyclerItemTouchHelperListener {
 
     lateinit var viewBinding: ActivityContactsBinding
@@ -49,7 +48,7 @@ class ContactsActivity: AppCompatActivity(), ContactsClickListener,
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        supportActionBar?.setTitle(getString(R.string.activity_title_database_contacts))
+        supportActionBar?.title = getString(R.string.activity_title_database_contacts)
 
         mContactViewModel
             .getProgressBarVisibility()
@@ -93,8 +92,11 @@ class ContactsActivity: AppCompatActivity(), ContactsClickListener,
                     RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this)
                 ItemTouchHelper(itemTouchHelperCallback)
                     .attachToRecyclerView(viewBinding.contactsLayoutContainer.rvContacts)
-
             })
+
+        viewBinding.noContactFoundLayoutContainer.btnAddNewContact.setOnClickListener {
+            Navigator(this).callAddContactActivity()
+        }
     }
 
     override fun onPause() {
