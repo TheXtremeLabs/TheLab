@@ -2,9 +2,11 @@ package com.riders.thelab.data.local.model
 
 import android.os.Parcelable
 import com.riders.thelab.data.local.bean.MovieEnum
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Movie constructor(
     var title: String? = null,
     var genre: String? = null,
