@@ -20,10 +20,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapFragment
-import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.karumi.dexter.Dexter
@@ -64,11 +61,11 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var viewBinding: ActivityLocationOnMapsBinding
 
 
-    var mapFragment: MapFragment? = null
+    private lateinit var mapFragment: SupportMapFragment
     var geocoder: Geocoder? = null
     private lateinit var mMap: GoogleMap
-    private var mLocation: Location? = null
-    private var mLocationManager: LocationManager? = null
+    private lateinit var mLocation: Location
+    private lateinit var mLocationManager: LocationManager
     private var mCriteria: Criteria? = null
     private var mProvider = ""
 
@@ -208,11 +205,11 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         /*
             source :  https://stackoverflow.com/questions/36785542/how-to-change-the-position-of-my-location-button-in-google-maps-using-android-st
          */
-        if (mapFragment!!.view != null) {
+        if (mapFragment.view != null) {
             Timber.d("Get the button view")
             // Get the button view
             val locationButton =
-                (mapFragment!!.view!!.findViewById<View>("1".toInt()).parent as View)
+                (mapFragment.requireView().findViewById<View>("1".toInt()).parent as View)
                     .findViewById<View>("2".toInt())
             Timber.d("and next place it, on bottom right (as Google Maps app)")
             // and next place it, on bottom right (as Google Maps app)
@@ -321,30 +318,29 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         Timber.i("setupMap()")
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment =
-            supportFragmentManager.findFragmentById(R.id.google_maps_fragment) as MapFragment?
-        if (null == mapFragment) {
-            mapFragment!!.getMapAsync(this)
-        }
+            supportFragmentManager.findFragmentById(R.id.google_maps_fragment) as SupportMapFragment
+
+        mapFragment.getMapAsync(this)
     }
 
     fun setLocationSettings() {
         Timber.i("setLocationSettings()")
-        mLocationManager = getSystemService(LOCATION_SERVICE) as LocationManager?
+        mLocationManager = getSystemService(LOCATION_SERVICE) as LocationManager
         mCriteria = Criteria()
-        mProvider = mLocationManager!!.getBestProvider(mCriteria!!, true)!!
+        mProvider = mLocationManager.getBestProvider(mCriteria!!, true)!!
         if (null == mProvider) {
             Timber.e("Cannot get location please enable position")
             val labLocationManager = LabLocationManager(this)
             labLocationManager.showSettingsAlert()
         } else {
             try {
-                mLocation = mLocationManager!!.getLastKnownLocation(mProvider)
+                mLocation = mLocationManager.getLastKnownLocation(mProvider)!!
             } catch (e: SecurityException) {
                 e.printStackTrace()
             }
-            mLocation?.let { onLocationChanged(it) }
+            onLocationChanged(mLocation)
             try {
-                mLocationManager!!.requestLocationUpdates(
+                mLocationManager.requestLocationUpdates(
                     mProvider,
                     20000,
                     0f,
