@@ -14,10 +14,10 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
-import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.RepositoryImpl
+import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.remote.dto.artist.Artist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -107,7 +107,6 @@ class RecyclerViewModel @Inject constructor(
     fun getFirebaseFiles(activity: Activity) {
 
         Timber.d("getFirebaseFiles()")
-//        getView().showLoader()
 
         val disposable: Disposable =
             repositoryImpl
@@ -215,7 +214,6 @@ class RecyclerViewModel @Inject constructor(
                     }, { throwable ->
                         Timber.e(throwable)
                         artistsError.value = true
-//                        getView().hideLoader()
                     })
         compositeDisposable.add(disposable)
     }
@@ -231,7 +229,7 @@ class RecyclerViewModel @Inject constructor(
 
         val intent = Intent(activity, RecyclerViewDetailActivity::class.java)
 
-        intent.putExtra(RecyclerViewDetailActivity.EXTRA_RECYCLER_ITEM, Parcels.wrap<Any>(item))
+        intent.putExtra(RecyclerViewDetailActivity.EXTRA_RECYCLER_ITEM, Parcels.wrap(item))
 
         Timber.d("Apply activity transition")
         intent.putExtra(
@@ -255,10 +253,10 @@ class RecyclerViewModel @Inject constructor(
         adapter: RecyclerViewAdapter,
         position: Int
     ) {
-        Timber.d("onDeleteClick() item %s at position : %s", item.artistName!!, position)
+        Timber.d("onDeleteClick() item %s at position : %s", item.artistName, position)
 
         // get the removed item name to display it in snack bar
-        val name: String = item.artistName!!
+        val name: String = item.artistName
 
         // backup of removed item for undo purpose
 
