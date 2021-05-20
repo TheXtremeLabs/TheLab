@@ -3,9 +3,7 @@ package com.riders.thelab.data.local.model
 import android.os.Parcelable
 import android.os.Parcelable.Creator
 import com.squareup.moshi.Json
-import org.parceler.Parcel
 
-@Parcel
 data class Video constructor(
     @Json(name = "id")
     val favId: String? = null,

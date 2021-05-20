@@ -12,7 +12,7 @@ import com.squareup.moshi.FromJson
  * <p>
  * Reference : https://github.com/square/moshi
  */
-class CitiesEventJsonAdapter constructor() {
+class CitiesEventJsonAdapter {
 
     @FromJson
     fun citiesFromJson(citiesEventJson: List<City>): List<City> {

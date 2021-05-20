@@ -1,8 +1,6 @@
 package com.riders.thelab.data.local.model.weather
 
-
 import com.riders.thelab.data.remote.dto.weather.City
-import lombok.Getter
 
 /**
  * Moshi implementation (Gson library replacement)
@@ -11,6 +9,4 @@ import lombok.Getter
  * <p>
  * Reference : https://github.com/square/moshi
  */
-@Getter
-data class CitiesEventJson(val citiesList: List<City>) {
-}
+data class CitiesEventJson(val citiesList: List<City>)

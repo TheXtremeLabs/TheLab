@@ -10,7 +10,6 @@ import com.riders.thelab.data.local.bean.MovieEnum
 import com.riders.thelab.data.local.model.Movie
 import com.riders.thelab.navigator.Navigator
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import org.parceler.Parcels
 import javax.inject.Inject
 
 class MultiPaneViewModel @Inject constructor(
@@ -33,7 +32,7 @@ class MultiPaneViewModel @Inject constructor(
 
     fun getMovieDetail(activity: Context, movie: Movie) {
         val intent = Intent(activity, MultipaneDetailActivity::class.java)
-        intent.putExtra(MultipaneDetailActivity.EXTRA_MOVIE, Parcels.wrap<Any>(movie))
+        intent.putExtra(MultipaneDetailActivity.EXTRA_MOVIE, movie)
         navigator.callMultipaneDetailActivity(intent)
     }
 }
