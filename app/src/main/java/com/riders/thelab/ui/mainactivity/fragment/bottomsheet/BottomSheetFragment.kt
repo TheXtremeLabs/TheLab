@@ -40,9 +40,9 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         viewBinding.tvBottomBrand.text = LabDeviceManager.getBrand()
         viewBinding.tvBottomModel.text = LabDeviceManager.getModel()
         viewBinding.tvBottomScreenHeight.text =
-            LabDeviceManager.getScreenHeight(activity).toString() + ""
+            LabDeviceManager.getScreenHeight(requireActivity()).toString() + ""
         viewBinding.tvBottomScreenWidth.text =
-            LabDeviceManager.getScreenWidth(activity).toString() + ""
+            LabDeviceManager.getScreenWidth(requireActivity()).toString() + ""
         viewBinding.tvBottomVersion.text =
             LabDeviceManager.getSdkVersion().toString() + " " + LabCompatibilityManager.getOSName()
     }

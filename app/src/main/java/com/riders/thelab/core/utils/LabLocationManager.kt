@@ -202,85 +202,63 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
     fun getLocation(): Location {
         locationManager = mContext.getSystemService(LOCATION_SERVICE) as LocationManager
 
-        // Check device API in order to run dexter permission or not
-        if (!LabCompatibilityManager.isMarshmallow()) {
-            if (!canGetLocation()) {
-                // no network provider is enabled
-                Timber.e("no network provider is enabled")
-            } else {
-                try {
-
-                    // if Network Enabled get lat/long using Network
-                    if (isNetworkEnabled) {
-                        getLocationViaNetwork()
+        // run dexter permission
+        Dexter.withContext(mActivity)
+            .withPermissions(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            .withListener(object : MultiplePermissionsListener {
+                @SuppressLint("MissingPermission")
+                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                    // check if all permissions are granted
+                    if (report.areAllPermissionsGranted()) {
+                        // do you work now
                     }
 
-                    // if GPS Enabled get lat/long using GPS Services
-                    if (isGPSEnabled) {
-                        getLocationViaGPS()
+                    // check for permanent denial of any permission
+                    if (report.isAnyPermissionPermanentlyDenied) {
+                        // permission is denied permanently, navigate user to app settings
                     }
-                    EventBus.getDefault().post(LocationFetchedEvent(location))
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        } else {
-            Dexter.withContext(mActivity)
-                .withPermissions(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-                .withListener(object : MultiplePermissionsListener {
-                    @SuppressLint("MissingPermission")
-                    override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                        // check if all permissions are granted
-                        if (report.areAllPermissionsGranted()) {
-                            // do you work now
-                        }
+                    if (!canGetLocation()) {
+                        // no network provider is enabled
+                        Timber.e("no network provider is enabled")
+                    } else {
+                        try {
 
-                        // check for permanent denial of any permission
-                        if (report.isAnyPermissionPermanentlyDenied) {
-                            // permission is denied permanently, navigate user to app settings
-                        }
-                        if (!canGetLocation()) {
-                            // no network provider is enabled
-                            Timber.e("no network provider is enabled")
-                        } else {
-                            try {
-
-                                // if Network Enabled get lat/long using Network
-                                if (isNetworkEnabled) {
-                                    getLocationViaNetwork()
-                                }
-
-                                // if GPS Enabled get lat/long using GPS Services
-                                if (isGPSEnabled) {
-                                    getLocationViaGPS()
-                                }
-                                EventBus.getDefault().post(LocationFetchedEvent(location))
-                            } catch (e: Exception) {
-                                e.printStackTrace()
+                            // if Network Enabled get lat/long using Network
+                            if (isNetworkEnabled) {
+                                getLocationViaNetwork()
                             }
+
+                            // if GPS Enabled get lat/long using GPS Services
+                            if (isGPSEnabled) {
+                                getLocationViaGPS()
+                            }
+                            EventBus.getDefault().post(LocationFetchedEvent(location))
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
                     }
-
-                    override fun onPermissionRationaleShouldBeShown(
-                        permissions: List<PermissionRequest>,
-                        token: PermissionToken
-                    ) {
-                        token.continuePermissionRequest()
-                    }
-                })
-                .withErrorListener { error: DexterError ->
-                    Toast.makeText(
-                        mActivity,
-                        "Error occurred! $error",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
-                .onSameThread()
-                .check()
-        }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: List<PermissionRequest>,
+                    token: PermissionToken
+                ) {
+                    token.continuePermissionRequest()
+                }
+            })
+            .withErrorListener { error: DexterError ->
+                Toast.makeText(
+                    mActivity,
+                    "Error occurred! $error",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .onSameThread()
+            .check()
+
 
         // return location object
         return location

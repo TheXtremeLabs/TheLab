@@ -1,7 +1,7 @@
 package com.riders.thelab.data
 
 import com.riders.thelab.data.local.IDb
-import com.riders.thelab.data.local.model.App
+import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.data.remote.IApi
 
 interface IRepository : IDb, IApi {

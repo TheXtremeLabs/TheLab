@@ -95,8 +95,7 @@
         android:roundIcon="@mipmap/ic_lab_five_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TheLab"
-        android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        android:usesCleartextTraffic="true">
 
         <!-- Firebase Perf -->
         <meta-data
@@ -137,25 +136,50 @@
             android:theme="@style/Theme.TheLab.NoActionBar" />
 
         <activity
+            android:name=".ui.colors.ColorActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+        <activity
+            android:name=".ui.biometric.BiometricActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+
+        <activity
             android:name=".ui.recycler.RecyclerViewActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
+        <activity
+            android:name=".ui.tabs.WorkingTabsActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/TabTheme" />
 
         <activity
-             android:name=".ui.contacts.ContactsActivity"
-             android:parentActivityName=".ui.mainactivity.MainActivity"
-             android:theme="@style/Theme.TheLab.NoActionBar">
+            android:name=".ui.floatinglabels.FloatingLabelsActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/SwipeDownTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
-             <meta-data
-                 android:name="android.app.searchable"
-                 android:resource="@xml/searchable" />
+        <activity
+            android:name=".ui.contacts.ContactsActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab.NoActionBar">
 
-             <intent-filter>
-                 <action android:name="android.intent.action.SEARCH" />
-             </intent-filter>
-         </activity>
-         <activity
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.contacts.ContactDetailActivity"
+            android:parentActivityName=".ui.contacts.ContactsActivity"
+            android:theme="@style/Theme.TheLab.NoActionBar" />
+
+        <activity
             android:name=".ui.contacts.addcontact.AddContactActivity"
             android:parentActivityName=".ui.contacts.ContactsActivity"
             android:theme="@style/Theme.TheLab"
@@ -195,7 +219,20 @@
             android:name=".ui.multipane.MultipaneActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/MultiPaneTheme" />
+        <activity
+            android:name=".ui.multipane.MultipaneDetailActivity"
+            android:parentActivityName=".ui.multipane.MultipaneActivity"
+            android:theme="@style/MultiPaneTheme" />
 
+        <activity
+            android:name=".ui.builtin.BuiltInWebViewActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/BuiltInWebViewTheme" />
+
+        <activity
+            android:name=".ui.builtin.BuiltInBrowserActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/BuiltInWebViewTheme" />
 
         <activity
             android:name=".ui.youtubelike.YoutubeLikeActivity"
@@ -203,9 +240,10 @@
             android:theme="@style/YoutubeTheme" />
 
         <activity
-            android:name=".ui.youtubelike.YoutubeLikeDetailActivity"
-            android:parentActivityName=".ui.youtubelike.YoutubeLikeActivity"
-            android:theme="@style/YoutubeTheme" />
+            android:name=".ui.speechtotext.SpeechToTextActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+
 
         <activity
             android:name=".ui.weather.WeatherActivity"
@@ -222,6 +260,11 @@
         </activity>
 
         <activity
+            android:name=".ui.floatingview.FloatingViewActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+
+        <activity
             android:name=".ui.transition.TransitionActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/TransitionTheme" />
@@ -230,6 +273,25 @@
             android:parentActivityName=".ui.transition.TransitionActivity"
             android:theme="@style/TransitionTheme" />
 
+        <activity
+            android:name=".ui.customtoast.CustomToastActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/TransitionTheme" />
+        <activity
+            android:name=".ui.vectordrawables.VectorDrawablesActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+
+        <activity
+            android:name=".ui.spring.SpringActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+
+        <activity
+            android:name=".ui.kat.KatActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab"
+            android:windowSoftInputMode="adjustResize" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
@@ -272,6 +334,12 @@
 
         <service android:name=".services.BackgroundDetectedActivitiesService" />-->
 
+        <service android:name=".core.service.ScheduleAlarmService" />
+
+        <service
+            android:name=".core.service.FloatingViewService"
+            android:enabled="true"
+            android:exported="false" />
         <!-- ////////////// SERVICES ////////////// -->
 
 

@@ -21,10 +21,10 @@ class RecyclerViewAdapter(
     listener: RecyclerClickListener
 ) : RecyclerView.Adapter<RecyclerViewHolder>() {
 
-    private var transitionImageView: ShapeableImageView? = null
+    private lateinit var transitionImageView: ShapeableImageView
     private var artistList: List<Artist> = ArrayList()
-    private var artistThumbnails: List<String>? = null
-    private var listener: RecyclerClickListener? = null
+    private lateinit var artistThumbnails: List<String>
+    private lateinit var listener: RecyclerClickListener
     private var mRecyclerView: RecyclerView? = null
     private var mExpandedPosition = -1
 
@@ -60,24 +60,20 @@ class RecyclerViewAdapter(
         val artist: Artist = artistList[position]
 
         if (!LabCompatibilityManager.isNougat()) {
-            for (element in artistThumbnails!!) {
-                if (artist.urlThumb?.let { element.contains(it) } == true) {
+            for (element in artistThumbnails) {
+                if (artist.urlThumb.let { element.contains(it) }) {
                     artist.urlThumb = element
                 }
             }
         } else {
             artist.urlThumb =
                 artistThumbnails
-                    ?.stream()
-                    ?.filter(Predicate { element: String ->
-                        artist.urlThumb?.let {
-                            element.contains(
-                                it
-                            )
-                        } == true
-                    })
+                    .stream()
+                    .filter { element: String ->
+                        element.contains(artist.urlThumb)
+                    }
                     ?.findFirst()
-                    ?.orElse("")
+                    ?.orElse("").toString()
 
         }
         holder.bind(artist)
@@ -97,7 +93,7 @@ class RecyclerViewAdapter(
 
         // Click event for each item (itemView is an in-built variable of holder class)
         holder.viewBinding.rowCardView.setOnClickListener { v: View? ->
-            listener?.onRecyclerClick(artist)
+            listener.onRecyclerClick(artist)
 
             // if the clicked item is already expanded then return -1
             //else return the position (this works with notifyDataSetChanged )
@@ -110,15 +106,15 @@ class RecyclerViewAdapter(
         }
         holder.viewBinding.rowDetailBtn.setOnClickListener { detailView: View? ->
             Timber.e("setOnClickListener detailView ")
-            listener?.onDetailClick(
+            listener.onDetailClick(
                 artist,
-                transitionImageView!!,
+                transitionImageView,
                 position
             )
         }
         holder.viewBinding.rowDeleteBtn.setOnClickListener { deleteView: View? ->
             Timber.e("setOnClickListener deleteView ")
-            listener?.onDeleteClick(artist, position)
+            listener.onDeleteClick(artist, position)
         }
     }
 

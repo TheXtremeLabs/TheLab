@@ -6,24 +6,24 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.Contact
 import com.riders.thelab.databinding.ActivityAddContactBinding
+import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Validator
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-open class AddContactActivity : AppCompatActivity() {
+class AddContactActivity: AppCompatActivity() {
 
     lateinit var viewBinding: ActivityAddContactBinding
 
-    @Inject
-    private lateinit var mAddContactViewModel: AddContactViewModel
-
+    private val mAddContactViewModel: AddContactViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,7 +97,7 @@ open class AddContactActivity : AppCompatActivity() {
             requestFocus(viewBinding.inputName)
             return false
         } else {
-            viewBinding.inputLayoutName.setErrorEnabled(false)
+            viewBinding.inputLayoutName.isErrorEnabled = false
         }
         return true
     }
@@ -131,14 +131,14 @@ open class AddContactActivity : AppCompatActivity() {
         }
     }
 
-    internal class MyTextWatcher constructor(private val view: View) : TextWatcher {
+    open class MyTextWatcher constructor(private val view: View) : TextWatcher {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(sEditable: Editable) {
             when (view.id) {
-                R.id.input_name -> AddContactActivity.validateName()
-                R.id.input_email -> AddContactActivity.validateEmail()
-                R.id.input_password -> AddContactActivity.validatePassword()
+                R.id.input_name -> AddContactActivity().validateName()
+                R.id.input_email -> AddContactActivity().validateEmail()
+                R.id.input_password -> AddContactActivity().validatePassword()
             }
         }
     }

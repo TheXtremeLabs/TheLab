@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -28,7 +29,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.riders.ktweather.data.local.bean.SnackBarType
+import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.R
 import com.riders.thelab.core.bus.LocationFetchedEvent
 import com.riders.thelab.core.utils.LabLocationUtils
@@ -48,7 +49,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -56,8 +56,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
     private lateinit var viewBinding: ActivityWeatherBinding
 
-    @Inject
-    lateinit var mWeatherViewModel: WeatherViewModel
+    private val mWeatherViewModel: WeatherViewModel by viewModels()
 
     private lateinit var context: WeatherActivity
     private var mSearchView: SearchView? = null
@@ -119,7 +118,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
             @SuppressLint("CheckResult")
             private fun getCitiesFromDb(queryText: String) {
-                val searchText =  "%$queryText%"
+                val searchText = "%$queryText%"
 
                 Observable
                     .just(searchText)

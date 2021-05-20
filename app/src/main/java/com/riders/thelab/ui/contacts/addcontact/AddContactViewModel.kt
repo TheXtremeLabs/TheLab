@@ -17,8 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddContactViewModel @Inject constructor(
-    val repositoryImpl: RepositoryImpl,
-    var navigator: Navigator
+    val repositoryImpl: RepositoryImpl
 ) : ViewModel() {
 
     private val addContact: MutableLiveData<Boolean> = MutableLiveData()
@@ -52,7 +51,7 @@ class AddContactViewModel @Inject constructor(
         compositeDisposable.add(disposable)
     }
 
-    fun goToContactActivity(activity: AddContactActivity) {
+    fun goToContactActivity(activity: AddContactActivity, navigator: Navigator) {
         navigator.callIntentActivity(ContactsActivity::class.java)
         activity.finish()
     }

@@ -26,13 +26,7 @@ class LabNetworkManagerNewAPI constructor(
      * @param context
      * @return
      */
-    fun isConnected(context: Context): Boolean {
-        if (!LabCompatibilityManager.isLollipop()) {
-            val connMgr =
-                context.getSystemService(Activity.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val networkInfo = connMgr.activeNetworkInfo
-            isConnected = networkInfo != null && networkInfo.isConnected
-        }
+    fun isConnected(): Boolean {
         return isConnected
     }
 

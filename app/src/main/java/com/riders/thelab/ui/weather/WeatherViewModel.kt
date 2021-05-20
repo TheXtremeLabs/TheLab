@@ -15,11 +15,9 @@ import androidx.room.rxjava3.EmptyResultSetException
 import androidx.work.*
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.riders.thelab.core.utils.LabAddressesUtils
-import com.riders.thelab.core.utils.LabLocationManager
-import com.riders.thelab.core.utils.LabLocationUtils
-import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
+import com.riders.thelab.core.utils.*
 import com.riders.thelab.data.RepositoryImpl
+import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.model.weather.WeatherData
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.navigator.Navigator
@@ -33,8 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    val repositoryImpl: RepositoryImpl,
-    var navigator: Navigator
+    val repositoryImpl: RepositoryImpl
 ) : ViewModel() {
 
     companion object {
@@ -286,19 +283,14 @@ class WeatherViewModel @Inject constructor(
                             downloadDone.value = true
                             downloadStatus.value = "Worker FAILED"
                             workerStatus.value = WorkInfo.State.FAILED
-                            Snackbar
-                                .make(
-                                    activity.findViewById<View>(R.id.content),
-                                    "Worker FAILED",
-                                    BaseTransientBottomBar.LENGTH_LONG
-                                )
-                                .setTextColor(
-                                    ContextCompat.getColor(
-                                        activity,
-                                        R.color.holo_red_light
-                                    )
-                                )
-                                .show()
+
+                            UIManager.showActionInSnackBar(
+                                activity,
+                                activity.findViewById(android.R.id.content),
+                                "Worker FAILED",
+                                SnackBarType.ALERT,
+                                "", null
+                            )
                         }
                         WorkInfo.State.BLOCKED -> Timber.e("Worker BLOCKED")
                         WorkInfo.State.CANCELLED -> Timber.e("Worker CANCELLED")

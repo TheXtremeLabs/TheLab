@@ -116,9 +116,9 @@ open class FloatingLabelsActivity : AppCompatActivity() {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(sEditable: Editable) {
             when (view.id) {
-                R.id.input_name -> FloatingLabelsActivity.validateName()
-                R.id.input_email -> FloatingLabelsActivity.validateEmail()
-                R.id.input_password -> FloatingLabelsActivity.validatePassword()
+                R.id.input_name -> FloatingLabelsActivity().validateName()
+                R.id.input_email -> FloatingLabelsActivity().validateEmail()
+                R.id.input_password -> FloatingLabelsActivity().validatePassword()
             }
         }
     }

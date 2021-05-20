@@ -31,12 +31,6 @@ class FloatingViewActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.activity_title_floating_view)
 
-
-        //Check if the application has draw over other apps permission or not?
-        //This permission is by default available for API < 23. But for API > 23
-        //you have to ask for the permission in runtime.
-
-
         //Check if the application has draw over other apps permission or not?
         //This permission is by default available for API < 23. But for API > 23
         //you have to ask for the permission in runtime.

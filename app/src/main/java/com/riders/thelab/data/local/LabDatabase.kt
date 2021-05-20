@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import com.riders.thelab.data.local.dao.ContactDao
 import com.riders.thelab.data.local.dao.WeatherDao
 import com.riders.thelab.data.local.model.Contact
+import com.riders.thelab.data.local.model.weather.CityModel
 import com.riders.thelab.data.local.model.weather.WeatherData
 
 @Database(

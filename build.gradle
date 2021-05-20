@@ -135,7 +135,7 @@ ext {
             hilt                         : "com.google.dagger:hilt-android:$hiltVersion",
             hiltKaptCompiler             : "com.google.dagger:hilt-android-compiler:$hiltVersion",
             hiltLifecycle                : "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion",
-            hiltKaptAndroidXCompiler     : "androidx.hilt:hilt-compiler:$hiltAndroidXVersion",// if you use the support libraries
+            hiltKaptAndroidXCompiler     : "androidx.hilt:hilt-compiler:1.0.0",// if you use the support libraries
 //            hiltKaptAndroidCompiler : "com.google.dagger:hilt-android-compiler:$hiltVersion",
             //Hilt with workManager
             hiltWorkerManager            : "androidx.hilt:hilt-work:$hiltAndroidXVersion",
@@ -172,9 +172,8 @@ ext {
             butterknife                  : "com.jakewharton:butterknife:$butterknifeVersion",
             butterknifeAnnotation        : "com.jakewharton:butterknife-compiler:$butterknifeVersion",
 
-            /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Moshi  */
+            /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
             retrofit                     : "com.squareup.retrofit2:retrofit:$retrofit2Version",
-//            retrofitRxJava       : "com.squareup.retrofit2:adapter-rxjava2:$retrofit2Version",
             retrofitConverterMoshi       : "com.squareup.retrofit2:converter-moshi:$retrofit2Version",
             retrofitRxJava3              : "com.squareup.retrofit2:adapter-rxjava3:$retrofit2Version",
 

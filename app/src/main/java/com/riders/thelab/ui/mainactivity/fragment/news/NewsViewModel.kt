@@ -3,7 +3,7 @@ package com.riders.thelab.ui.mainactivity.fragment.news
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.riders.thelab.data.local.model.App
+import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.utils.Constants
 import java.util.*
 

@@ -2,8 +2,8 @@ package com.riders.thelab.ui.youtubelike
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Menu
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -14,6 +14,7 @@ import com.riders.thelab.R
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.databinding.ActivityYoutubeBinding
+import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -22,8 +23,7 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
 
     private lateinit var viewBinding: ActivityYoutubeBinding
 
-    @Inject
-    lateinit var mYoutubeViewModel: YoutubeLikeViewModel
+    private val mYoutubeViewModel: YoutubeLikeViewModel by viewModels()
 
     private var contentAdapter: YoutubeLikeListAdapter? = null
 
@@ -95,6 +95,7 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
     ) {
         mYoutubeViewModel.onYoutubeItemClicked(
             this,
+            Navigator(this),
             thumbShapeableImageView,
             titleTextView,
             descriptionTextView,

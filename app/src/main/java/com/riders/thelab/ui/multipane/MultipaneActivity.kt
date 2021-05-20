@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.multipane
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -21,8 +22,7 @@ class MultipaneActivity : AppCompatActivity(), MovieClickListener {
 
     private lateinit var viewBinding: ActivityMultiPaneBinding
 
-    @Inject
-    lateinit var mMultiPaneViewModel: MultiPaneViewModel
+    private val mMultiPaneViewModel: MultiPaneViewModel by viewModels()
 
     private var mAdapter: MoviesAdapter? = null
 

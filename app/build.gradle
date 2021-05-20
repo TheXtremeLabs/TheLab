@@ -189,13 +189,13 @@ dependencies {
     /* Hilt - We are going to use hilt.android which includes
      * support for Activity and fragment injection so we need to include
      * the following dependencies */
+    // Hilt
     implementation rootProject.ext.generalDependencies.hilt
     kapt(rootProject.ext.generalDependencies.hiltKaptCompiler)
     implementation rootProject.ext.generalDependencies.hiltLifecycle
-    kapt(rootProject.ext.generalDependencies.hiltKaptAndroidXCompiler)
-    // if you use the support libraries
-//    kapt rootProject.ext.generalDependencies.hiltKaptAndroidCompiler
-//    kapt(rootProject.ext.generalDependencies.hiltWorkerManager)
+    // Worker
+    implementation rootProject.ext.generalDependencies.hiltWorkerManager
+    kapt rootProject.ext.generalDependencies.hiltKaptAndroidXCompiler
 
 
     // Butterknife : Views binding
@@ -209,7 +209,7 @@ dependencies {
     implementation rootProject.ext.generalDependencies.blurry
     implementation rootProject.ext.generalDependencies.glideTransformation
 
-    /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Moshi  */
+    /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
     implementation rootProject.ext.generalDependencies.retrofit
     implementation rootProject.ext.generalDependencies.retrofitRxJava3
     implementation rootProject.ext.generalDependencies.retrofitConverterMoshi

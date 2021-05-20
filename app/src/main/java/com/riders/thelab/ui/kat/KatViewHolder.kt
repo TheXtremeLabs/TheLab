@@ -10,8 +10,8 @@ import timber.log.Timber
 
 class KatViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    var rowOtherBinding: RowKatMessageOtherBinding? = null
-    var rowSelfBinding: RowKatMessageSelfBinding? = null
+    private var rowOtherBinding: RowKatMessageOtherBinding? = null
+    private var rowSelfBinding: RowKatMessageSelfBinding? = null
 
     constructor(selfItemView: RowKatMessageSelfBinding) : this(selfItemView.root) {
         rowSelfBinding = selfItemView
@@ -23,17 +23,17 @@ class KatViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemVi
 
     fun bindOther(data: Kat) {
         Timber.d("bindOther() object : %s", data.toString())
-        rowOtherBinding?.tvMessageSender.text = data.senderId
-        rowOtherBinding?.tvMessageContent.text = data.message
-        rowOtherBinding?.tvMessageTimestamp.text =
+        rowOtherBinding?.tvMessageSender?.text = data.senderId
+        rowOtherBinding?.tvMessageContent?.text = data.message
+        rowOtherBinding?.tvMessageTimestamp?.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(data.timestamp)
     }
 
     fun bindSelf(data: Kat) {
         Timber.d("bindSelf() object : %s", data.toString())
-        rowSelfBinding?.tvMessageSender.text = data.senderId
-        rowSelfBinding?.tvMessageContent.text = data.message
-        rowSelfBinding?.tvMessageTimestamp.text =
+        rowSelfBinding?.tvMessageSender?.text = data.senderId
+        rowSelfBinding?.tvMessageContent?.text = data.message
+        rowSelfBinding?.tvMessageTimestamp?.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(data.timestamp)
     }
 }

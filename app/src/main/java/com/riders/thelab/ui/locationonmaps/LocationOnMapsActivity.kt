@@ -108,7 +108,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setTitle(getString(R.string.activity_title_location_on_maps))
+        supportActionBar?.title = getString(R.string.activity_title_location_on_maps)
 
         Dexter.withContext(this)
             .withPermissions(
@@ -321,8 +321,8 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         Timber.i("setupMap()")
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment =
-            getFragmentManager().findFragmentById(R.id.google_maps_fragment) as MapFragment?
-        if (mapFragment != null) {
+            supportFragmentManager.findFragmentById(R.id.google_maps_fragment) as MapFragment?
+        if (null == mapFragment) {
             mapFragment!!.getMapAsync(this)
         }
     }

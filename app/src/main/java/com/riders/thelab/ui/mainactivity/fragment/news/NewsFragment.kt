@@ -6,23 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.R
-import com.riders.thelab.data.local.model.App
+import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.FragmentNewsBinding
 import com.riders.thelab.ui.mainactivity.MainActivityAppClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class NewsFragment @Inject constructor() : Fragment(), View.OnClickListener {
+class NewsFragment : Fragment(), View.OnClickListener {
 
     lateinit var viewBinding: FragmentNewsBinding
 
-    @Inject
-    lateinit var mNewsViewModel: NewsViewModel
+    private val mNewsViewModel: NewsViewModel by viewModels()
 
     private val recentAppsNames = arrayOf("Chat", "Spring", "Weather")
     private var mRecentApps: List<App>? = null
