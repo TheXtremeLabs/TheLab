@@ -192,7 +192,11 @@ class MainActivity : AppCompatActivity(),
     override fun onDestroy() {
         Timber.d("onDestroy()")
         Timber.d("unregister network callback()")
-        networkManager?.let { mConnectivityManager?.unregisterNetworkCallback(it) };
+        try {
+            networkManager?.let { mConnectivityManager?.unregisterNetworkCallback(it) };
+        } catch (exception: RuntimeException) {
+            Timber.e("NetworkCallback was already unregistered")
+        }
         super.onDestroy()
     }
 

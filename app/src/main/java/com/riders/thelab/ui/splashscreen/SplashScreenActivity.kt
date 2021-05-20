@@ -1,6 +1,8 @@
 package com.riders.thelab.ui.splashscreen
 
-import android.animation.*
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
@@ -10,10 +12,8 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.View
 import android.view.WindowManager
-import android.view.animation.AccelerateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabAnimationsManager
 import com.riders.thelab.core.utils.LabCompatibilityManager
@@ -43,9 +43,8 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
     private val position = 0
 
     // Animators
-    private lateinit var logoColorAnimator: ObjectAnimator
-    private lateinit var slideNumberAnim: ObjectAnimator
-    private lateinit var slideTextAnim: ObjectAnimator
+    private lateinit var theAnimator: ObjectAnimator
+    private lateinit var labAnimator: ObjectAnimator
     private lateinit var versionTextAnimator: ObjectAnimator
     private lateinit var fadeProgressAnimator: ObjectAnimator
 
@@ -122,8 +121,8 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
             .observe(this, { appVersion ->
                 Timber.d("Version : %s", appVersion)
 
-                viewBinding.tvAppVersion.text =
-                    this.getString(R.string.version_placeholder) + appVersion
+                /*viewBinding.tvAppVersion.text =
+                    this.getString(R.string.version_placeholder) + appVersion*/
             })
 
         mViewModel.getOnVideoEnd().observe(this, { finished ->
@@ -185,59 +184,36 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
                 override fun onAnimationEnd(animation: Animator) {
                     Timber.e("onAnimationEnd()")
                     viewBinding.splashVideo.visibility = View.GONE
-                    startFiveAnimation()
+                    startTheLabAnimation()
                 }
             })
     }
 
-    fun startFiveAnimation() {
-        Timber.e("startFiveAnimation()")
-        val kf0 = Keyframe.ofFloat(0f, 0f)
-        val kf1 = Keyframe.ofFloat(.25f, 360f * 1.5f)
-        val kf2 = Keyframe.ofFloat(.35f, 360f * 3.0f)
-        val kf3 = Keyframe.ofFloat(.5f, 360f * 5.0f)
-        val kf5 = Keyframe.ofFloat(.75f, 360.0f * 7.0f)
-        val kf6 = Keyframe.ofFloat(1f, 360f * 9.0f)
-        val pvhRotation = PropertyValuesHolder.ofKeyframe("rotationY", kf0, kf1, kf2, kf3, kf5, kf6)
-        logoColorAnimator =
-            ObjectAnimator.ofPropertyValuesHolder(viewBinding.ivFiveNumber, pvhRotation)
-        logoColorAnimator.duration = 3500
-        logoColorAnimator.interpolator = LinearOutSlowInInterpolator()
-        logoColorAnimator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
-                slideNumber()
-            }
-        })
-        logoColorAnimator.start()
-    }
 
-    private fun slideNumber() {
-        Timber.e("slideNumber()")
-        slideNumberAnim =
-            ObjectAnimator.ofFloat(viewBinding.ivFiveNumber, "translationX", 0f, 25f, 50f, 0f)
-        slideNumberAnim.duration =
-            LabAnimationsManager.getInstance().mediumAnimationDuration.toLong()
-        slideNumberAnim.interpolator = AccelerateInterpolator()
-        slideNumberAnim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?, isReverse: Boolean) {
-                startTheLaPartAnimation()
-            }
-        })
-        slideNumberAnim.start()
-    }
-
-    fun startTheLaPartAnimation() {
+    fun startTheLabAnimation() {
         Timber.e("startTheLaPartAnimation()")
-        viewBinding.ivTheLaPart.visibility = View.VISIBLE
-        slideTextAnim = ObjectAnimator.ofFloat(viewBinding.ivTheLaPart, "alpha", 1f)
-        slideTextAnim.duration = LabAnimationsManager.getInstance().shortAnimationDuration.toLong()
-        slideTextAnim.addListener(object : AnimatorListenerAdapter() {
+        viewBinding.ivThe?.visibility = View.VISIBLE
+        viewBinding.ivLab?.visibility = View.VISIBLE
+
+        theAnimator = ObjectAnimator.ofFloat(viewBinding.ivThe, "alpha", 1f)
+        theAnimator.duration = LabAnimationsManager.getInstance().longAnimationDuration.toLong()
+        theAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
-                viewBinding.ivTheLaPart.setAlpha(1f)
+                viewBinding.ivThe?.alpha = 1f
+            }
+        })
+        theAnimator.start()
+
+
+        labAnimator = ObjectAnimator.ofFloat(viewBinding.ivLab, "alpha", 1f)
+        labAnimator.duration = LabAnimationsManager.getInstance().longAnimationDuration.toLong()
+        labAnimator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
+                viewBinding.ivLab?.alpha = 1f
                 displayAppVersion()
             }
         })
-        slideTextAnim.start()
+        labAnimator.start()
     }
 
     fun displayAppVersion() {
@@ -247,13 +223,12 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
             LabAnimationsManager.getInstance().longAnimationDuration.toLong()
         versionTextAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
-                viewBinding.tvAppVersion.alpha = 1f
+                viewBinding.tvAppVersion?.alpha = 1f
                 startProgressAnimation()
             }
         })
         versionTextAnimator.start()
     }
-
 
     fun startProgressAnimation() {
         Timber.e("startProgressAnimation()")
