@@ -12,7 +12,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DeviceInformationActivity : AppCompatActivity() {
-    private var context: Context? = null
 
     lateinit var viewBinding: ActivityDeviceInformationBinding
 
@@ -26,7 +25,7 @@ class DeviceInformationActivity : AppCompatActivity() {
         setContentView(viewBinding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = context!!.getString(R.string.activity_title_device_information)
+        supportActionBar?.title = getString(R.string.activity_title_device_information)
 
         mViewModel
             .getDeviceInformation()
@@ -55,8 +54,8 @@ class DeviceInformationActivity : AppCompatActivity() {
         viewBinding.contentDeviceLayout.tvDeviceAndroidRelease.text =
             deviceInformation.androidRelease
         viewBinding.contentDeviceLayout.tvDeviceAndroidRooted.text =
-            if (deviceInformation.rooted) context!!.getString(R.string.action_yes)
-            else context!!.getString(R.string.action_no)
+            if (deviceInformation.rooted) getString(R.string.action_yes)
+            else getString(R.string.action_no)
     }
 
 }
