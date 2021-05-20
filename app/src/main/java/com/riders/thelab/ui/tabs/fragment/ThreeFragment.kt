@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.riders.thelab.databinding.FragmentTwoBinding
+import com.riders.thelab.databinding.FragmentThreeBinding
 
 class ThreeFragment : Fragment() {
     companion object {
@@ -22,7 +22,7 @@ class ThreeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewBinding = FragmentTwoBinding.inflate(inflater, container, false)
+        val viewBinding = FragmentThreeBinding.inflate(inflater, container, false)
         return viewBinding.root
     }
 }
