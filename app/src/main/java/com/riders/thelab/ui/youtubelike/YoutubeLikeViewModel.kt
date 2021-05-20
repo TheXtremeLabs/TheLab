@@ -98,7 +98,7 @@ class YoutubeLikeViewModel @Inject constructor(
         position: Int
     ) {
 
-        Timber.e("Click on : $position + ${video.videoName}")
+        Timber.e("Click on : $position + ${video.name}")
 
 
         val intent = Intent(activity, YoutubeLikeDetailActivity::class.java)

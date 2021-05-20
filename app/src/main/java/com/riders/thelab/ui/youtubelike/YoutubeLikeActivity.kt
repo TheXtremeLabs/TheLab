@@ -16,7 +16,6 @@ import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.databinding.ActivityYoutubeBinding
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
@@ -33,6 +32,29 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
         setContentView(viewBinding.root)
 
         setupToolbar()
+        initViewModelsObservers()
+
+        mYoutubeViewModel.fetchVideos(this)
+    }
+
+    fun setupToolbar() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.activity_title_youtube_like)
+
+        supportActionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    this,
+                    R.color.swipeDownColorPrimary
+                )
+            )
+        )
+        window.statusBarColor = ContextCompat.getColor(
+            this, R.color.swipeDownColorPrimaryDark
+        )
+    }
+
+    private fun initViewModelsObservers() {
 
         mYoutubeViewModel.getProgressBarVisibility().observe(this, {
             if (!it) viewBinding.youtubeContentLoader.visibility = View.GONE
@@ -54,34 +76,10 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
 
             if (!viewBinding.youtubeContentRecyclerView.isInLayout) {
                 contentAdapter = YoutubeLikeListAdapter(this, youtubeList, this)
-                viewBinding.youtubeContentRecyclerView.setVisibility(View.VISIBLE)
-                viewBinding.youtubeContentRecyclerView.setAdapter(contentAdapter)
+                viewBinding.youtubeContentRecyclerView.visibility = View.VISIBLE
+                viewBinding.youtubeContentRecyclerView.adapter = contentAdapter
             }
         })
-
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-    }
-
-    fun setupToolbar() {
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setTitle(getString(R.string.activity_title_youtube_like))
-
-        supportActionBar?.setBackgroundDrawable(
-            ColorDrawable(
-                ContextCompat.getColor(
-                    this,
-                    R.color.swipeDownColorPrimary
-                )
-            )
-        )
-        window.statusBarColor = ContextCompat.getColor(
-            this, R.color.swipeDownColorPrimaryDark
-        )
 
     }
 
