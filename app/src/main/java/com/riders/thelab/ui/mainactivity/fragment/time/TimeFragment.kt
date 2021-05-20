@@ -35,7 +35,11 @@ class TimeFragment : Fragment() {
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         viewBinding = FragmentTimeBinding.inflate(inflater, container, false)
         return viewBinding.root
     }
@@ -44,33 +48,33 @@ class TimeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mTimeViewModel
-                .getImagesFetchedDone()
-                .observe(
-                        requireActivity(),
-                        {
-                            Timber.d("getImagesFetchedDone() ")
-                        })
+            .getImagesFetchedDone()
+            .observe(
+                requireActivity(),
+                {
+                    Timber.d("getImagesFetchedDone() ")
+                })
 
         mTimeViewModel
-                .getImagesFetchedFailed()
-                .observe(
-                        requireActivity(),
-                        {
-                            Timber.e("getImagesFetchedFailed() ")
-                        })
+            .getImagesFetchedFailed()
+            .observe(
+                requireActivity(),
+                {
+                    Timber.e("getImagesFetchedFailed() ")
+                })
 
         mTimeViewModel
-                .getImageUrl()
-                .observe(
-                        requireActivity(),
-                        { url ->
+            .getImageUrl()
+            .observe(
+                requireActivity(),
+                { url ->
 
-                            // Display image
-                            Glide.with(requireActivity())
-                                    .load(url)
-                                    .into(viewBinding.ivTimeBackground)
+                    // Display image
+                    Glide.with(requireActivity())
+                        .load(url)
+                        .into(viewBinding.ivTimeBackground)
 
-                        })
+                })
 
         mTimeViewModel.getWallpaperImages(requireActivity())
     }
@@ -93,7 +97,8 @@ class TimeFragment : Fragment() {
                         sleep(1000)
                         requireActivity().runOnUiThread {
                             val localTime = LocalTime.now()
-                            viewBinding.tvTime.text = localTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                            viewBinding.tvTime.text =
+                                localTime.format(DateTimeFormatter.ofPattern("HH:mm"))
                         }
                     }
                 } catch (e: InterruptedException) {

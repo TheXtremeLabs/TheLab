@@ -13,25 +13,31 @@ import timber.log.Timber
 import java.util.*
 
 class ContactsAdapter(
-        val context: Context,
-        val contactList: ArrayList<Contact>,
-        val listener: ContactsClickListener
+    val context: Context,
+    val contactList: ArrayList<Contact>,
+    val listener: ContactsClickListener
 ) : RecyclerView.Adapter<ContactsViewHolder>(), Filterable {
 
     private var contactListFiltered: MutableList<Contact>? = contactList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactsViewHolder {
         return ContactsViewHolder(
-                context,
-                LayoutInflater.from(parent.context)
-                        .inflate(R.layout.row_contact_item, parent, false))
+            context,
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.row_contact_item, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: ContactsViewHolder, position: Int) {
         val item = contactListFiltered!![position]
 
         holder.bindData(item)
-        holder.viewBinding.cvContactItem.setOnClickListener { view: View? -> listener.onContactItemCLickListener(item, holder.adapterPosition) }
+        holder.viewBinding.cvContactItem.setOnClickListener { view: View? ->
+            listener.onContactItemCLickListener(
+                item,
+                holder.adapterPosition
+            )
+        }
     }
 
     override fun getItemCount(): Int {
@@ -55,8 +61,10 @@ class ContactsAdapter(
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        if (row.name.toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))
-                                || row.email.contains(charSequence)) {
+                        if (row.name.toLowerCase(Locale.ROOT)
+                                .contains(charString.toLowerCase(Locale.ROOT))
+                            || row.email.contains(charSequence)
+                        ) {
                             filteredList.add(row)
                         }
                     }

@@ -7,13 +7,13 @@ import org.parceler.Parcel
 
 @Parcel
 data class Video constructor(
-        @Json(name = "id")
-        val favId: String? = null,
-        val videoName: String? = null,
-        val videoDescription: String? = null,
-        @Json(name = "imageUrl")
-        val videoImageThumb: String? = null,
-        val videoUrl: String? = null
+    @Json(name = "id")
+    val favId: String? = null,
+    val videoName: String? = null,
+    val videoDescription: String? = null,
+    @Json(name = "imageUrl")
+    val videoImageThumb: String? = null,
+    val videoUrl: String? = null
 ) : Parcelable {
 
     @JvmField
@@ -59,7 +59,14 @@ data class Video constructor(
     }
 */
 
-    constructor(db_id: Int, fav_id: String, name: String, description: String, imageThumb: String, videoUrl: String) : this() {
+    constructor(
+        db_id: Int,
+        fav_id: String,
+        name: String,
+        description: String,
+        imageThumb: String,
+        videoUrl: String
+    ) : this() {
         this.db_id = db_id
         this.fav_id = fav_id
         this.name = name

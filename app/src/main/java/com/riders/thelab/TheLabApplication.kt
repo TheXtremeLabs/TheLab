@@ -13,7 +13,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
-class TheLabApplication : MultiDexApplication(), Configuration.Provider  {
+class TheLabApplication : MultiDexApplication(), androidx.work.Configuration.Provider {
 
     companion object {
         private var LAB_PACKAGE_NAME: String? = null
@@ -68,8 +68,9 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider  {
         // Mobile ADS
         MobileAds.initialize(this) { initializationStatus: InitializationStatus ->
             Timber.d(
-                    "initializationStatus : %s",
-                    initializationStatus.toString())
+                "initializationStatus : %s",
+                initializationStatus.toString()
+            )
 
         }
     }
@@ -100,9 +101,10 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider  {
 
         if (level == TRIM_MEMORY_RUNNING_LOW) {
             Timber.e(
-                    "The device is running much lower on memory. " +
-                            "Your app is running and not killable," +
-                            " but please release unused resources to improve system performance")
+                "The device is running much lower on memory. " +
+                        "Your app is running and not killable," +
+                        " but please release unused resources to improve system performance"
+            )
         }
     }
 
@@ -115,7 +117,7 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider  {
     }
 
     override fun getWorkManagerConfiguration() =
-            Configuration.Builder()
-                    .setWorkerFactory(workerFactory)
-                    .build()
+        androidx.work.Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 }

@@ -15,8 +15,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class DbImpl @Inject constructor(
-        contactDao: ContactDao,
-        weatherDao: WeatherDao
+    contactDao: ContactDao,
+    weatherDao: WeatherDao
 ) : IDb {
 
     private var mContactDao: ContactDao = contactDao
@@ -44,8 +44,8 @@ class DbImpl @Inject constructor(
 
     override fun getAllContacts(): Single<List<Contact>> {
         return mContactDao.getContacts()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun clearData() {
@@ -54,36 +54,36 @@ class DbImpl @Inject constructor(
 
     override fun insertWeatherData(isWeatherData: WeatherData): Maybe<Long> {
         return mWeatherDao.insert(isWeatherData)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun saveCity(city: CityModel): Maybe<Long> {
         return mWeatherDao
-                .insertRX(city)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .insertRX(city)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun saveCities(dtoCities: List<City>): Maybe<List<Long>> {
         val citiesToDatabase: List<CityModel> = ArrayList(CityMapper.getCityList(dtoCities))
 
         return mWeatherDao
-                .insertAllRX(citiesToDatabase)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .insertAllRX(citiesToDatabase)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun getWeatherData(): Single<WeatherData> {
         return mWeatherDao.getWeatherData()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun getCities(): Single<List<CityModel>> {
         return mWeatherDao.getCities()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun getCitiesCursor(query: String): Cursor {

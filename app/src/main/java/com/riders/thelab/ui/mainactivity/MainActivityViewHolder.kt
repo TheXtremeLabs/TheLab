@@ -19,7 +19,7 @@ import com.riders.thelab.databinding.RowMainAppItemBinding
 import com.riders.thelab.utils.Validator
 
 class MainActivityViewHolder constructor(
-        private val itemView: View
+    private val itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
 
     private var mContext: Context? = null
@@ -38,33 +38,39 @@ class MainActivityViewHolder constructor(
         mContext?.let {
             viewBinding.rowIconImageView?.let { iconView ->
                 Glide.with(it)
-                        .load(if (0 != app.appIcon) app.appIcon else app.appDrawableIcon)
-                        .listener(object : RequestListener<Drawable> {
-                            override fun onLoadFailed(e: GlideException?, model: Any,
-                                                      target: Target<Drawable>, isFirstResource: Boolean): Boolean {
-                                return false
-                            }
+                    .load(if (0 != app.appIcon) app.appIcon else app.appDrawableIcon)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?, model: Any,
+                            target: Target<Drawable>, isFirstResource: Boolean
+                        ): Boolean {
+                            return false
+                        }
 
-                            override fun onResourceReady(resource: Drawable, model: Any,
-                                                         target: Target<Drawable>, dataSource: DataSource,
-                                                         isFirstResource: Boolean): Boolean {
-                                if (0 != app.appIcon && app.appTitle.equals("Palette")) {
-                                    val myBitmap = (resource as BitmapDrawable).bitmap
-                                    val newBitmap = UIManager.addGradientToImageView(it, myBitmap)
-                                    viewBinding.arrowIcon?.setImageDrawable(
-                                            BitmapDrawable(it.resources, newBitmap))
-                                    return true
-                                }
-                                if (0 != app.appIcon && app.appTitle.equals("WIP")) {
-                                    viewBinding.arrowIcon?.setImageDrawable(
-                                            ContextCompat.getDrawable(it, R.drawable.logo_testing))
-                                    viewBinding.arrowIcon?.setVisibility(View.GONE)
-                                    return true
-                                }
-                                return false
+                        override fun onResourceReady(
+                            resource: Drawable, model: Any,
+                            target: Target<Drawable>, dataSource: DataSource,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            if (0 != app.appIcon && app.appTitle.equals("Palette")) {
+                                val myBitmap = (resource as BitmapDrawable).bitmap
+                                val newBitmap = UIManager.addGradientToImageView(it, myBitmap)
+                                viewBinding.arrowIcon?.setImageDrawable(
+                                    BitmapDrawable(it.resources, newBitmap)
+                                )
+                                return true
                             }
-                        })
-                        .into(iconView)
+                            if (0 != app.appIcon && app.appTitle.equals("WIP")) {
+                                viewBinding.arrowIcon?.setImageDrawable(
+                                    ContextCompat.getDrawable(it, R.drawable.logo_testing)
+                                )
+                                viewBinding.arrowIcon?.setVisibility(View.GONE)
+                                return true
+                            }
+                            return false
+                        }
+                    })
+                    .into(iconView)
             }
         }
         bindTitleAndDescription(app)
@@ -72,8 +78,8 @@ class MainActivityViewHolder constructor(
         // Load background image
         mContext?.let {
             Glide.with(it)
-                    .load(if (null != app.appActivity) app.appIcon else app.appDrawableIcon)
-                    .into(viewBinding.ivRowItemBackground)
+                .load(if (null != app.appActivity) app.appIcon else app.appDrawableIcon)
+                .into(viewBinding.ivRowItemBackground)
         }
     }
 
@@ -81,14 +87,16 @@ class MainActivityViewHolder constructor(
         // Load background image
         mContext?.let {
             Glide.with(it)
-                    .load(if (null != app.appActivity) app.appIcon else app.appDrawableIcon)
-                    .into(viewBinding.ivRowItemBackground)
+                .load(if (null != app.appActivity) app.appIcon else app.appDrawableIcon)
+                .into(viewBinding.ivRowItemBackground)
         }
         bindTitleAndDescription(app)
     }
 
     private fun bindTitleAndDescription(app: App) {
-        viewBinding.rowTitleTextView.text = if (!Validator.isEmpty(app.appTitle)) app.appTitle else app.appName
-        viewBinding.rowDescriptionTextView.text = if (!Validator.isEmpty(app.appVersion)) app.appVersion else app.appDescription
+        viewBinding.rowTitleTextView.text =
+            if (!Validator.isEmpty(app.appTitle)) app.appTitle else app.appName
+        viewBinding.rowDescriptionTextView.text =
+            if (!Validator.isEmpty(app.appVersion)) app.appVersion else app.appDescription
     }
 }

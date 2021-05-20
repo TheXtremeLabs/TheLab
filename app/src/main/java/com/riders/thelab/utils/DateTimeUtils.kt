@@ -20,7 +20,7 @@ class DateTimeUtils {
             val date = Date(time)
             val format = SimpleDateFormat(HH_mm)
             format.timeZone = TimeZone.getTimeZone(
-                    buildUTCTimeZone(getOffsetTimeZone(millis))
+                buildUTCTimeZone(getOffsetTimeZone(millis))
             )
             return format.format(date)
         }

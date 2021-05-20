@@ -12,7 +12,8 @@ interface GoogleAPIService {
     // Directions
     @GET("directions/json")
     fun getDirections(
-            @Query("origin") origin: String,
-            @Query("destination") destination: String,
-            @Query("key") key: String?): Single<Directions>
+        @Query("origin") origin: String,
+        @Query("destination") destination: String,
+        @Query("key") key: String?
+    ): Single<Directions>
 }

@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TimeViewModel @Inject constructor(
-        val repositoryImpl: RepositoryImpl
+    val repositoryImpl: RepositoryImpl
 ) : ViewModel() {
 
     private val imagesFetchedDone: MutableLiveData<Boolean> = MutableLiveData()
@@ -50,40 +50,41 @@ class TimeViewModel @Inject constructor(
         Timber.d("getFirebaseFiles()")
 
         val disposable: Disposable =
-                mRepositoryImpl.getStorageReference(context)
-                        .subscribe({ storageReference ->
-                            // Create a child reference
-                            // imagesRef now points to "images"
-                            val imagesRef: StorageReference = storageReference.child("images/dark_theme")
-                            imagesRef.list(5)
-                                    .addOnSuccessListener { listResult: ListResult ->
-                                        Timber.d("onSuccess()")
-                                        val max = listResult.items.size
+            mRepositoryImpl.getStorageReference(context)
+                .subscribe({ storageReference ->
+                    // Create a child reference
+                    // imagesRef now points to "images"
+                    val imagesRef: StorageReference = storageReference.child("images/dark_theme")
+                    imagesRef.list(5)
+                        .addOnSuccessListener { listResult: ListResult ->
+                            Timber.d("onSuccess()")
+                            val max = listResult.items.size
 
-                                        // Get random int
-                                        val iRandom = Random().nextInt(max)
+                            // Get random int
+                            val iRandom = Random().nextInt(max)
 
-                                        // Get item url using random int
-                                        val item = listResult.items[iRandom]
+                            // Get item url using random int
+                            val item = listResult.items[iRandom]
 
-                                        // Make rest call
-                                        item
-                                                .downloadUrl
-                                                .addOnSuccessListener { uri: Uri ->
-                                                    imageUrl.value = uri.toString()
-                                                }
-                                    }
-                                    .addOnFailureListener { t: Exception? ->
-                                        Timber.e(t)
-                                        imagesFetchedFailed.value = true
-                                    }
-                                    .addOnCompleteListener { task1: Task<ListResult> ->
-                                        Timber.d(
-                                                "onComplete() - %d ",
-                                                task1.result.items.size)
-                                        imagesFetchedDone.value = true
-                                    }
-                        }, Timber::e)
+                            // Make rest call
+                            item
+                                .downloadUrl
+                                .addOnSuccessListener { uri: Uri ->
+                                    imageUrl.value = uri.toString()
+                                }
+                        }
+                        .addOnFailureListener { t: Exception? ->
+                            Timber.e(t)
+                            imagesFetchedFailed.value = true
+                        }
+                        .addOnCompleteListener { task1: Task<ListResult> ->
+                            Timber.d(
+                                "onComplete() - %d ",
+                                task1.result.items.size
+                            )
+                            imagesFetchedDone.value = true
+                        }
+                }, Timber::e)
 
         compositeDisposable.add(disposable)
     }

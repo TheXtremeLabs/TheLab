@@ -29,7 +29,6 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
     private var item: Artist? = null
 
 
-    @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewDetailBinding = ActivityRecyclerViewDetailBinding.inflate(layoutInflater)
@@ -116,7 +115,6 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
     }
 
 
-    @SuppressLint("NewApi")
     override fun onBackPressed() {
         super.onBackPressed()
         finishAfterTransition()

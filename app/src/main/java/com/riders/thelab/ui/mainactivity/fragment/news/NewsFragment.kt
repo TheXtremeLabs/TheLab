@@ -46,16 +46,22 @@ class NewsFragment @Inject constructor() : Fragment(), View.OnClickListener {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener =
-                if (context is MainActivityAppClickListener) {
-                    context
-                } else {
-                    throw ClassCastException(context.toString()
-                            + " must implement MainActivityAppClickListener")
-                }
+            if (context is MainActivityAppClickListener) {
+                context
+            } else {
+                throw ClassCastException(
+                    context.toString()
+                            + " must implement MainActivityAppClickListener"
+                )
+            }
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         viewBinding = FragmentNewsBinding.inflate(inflater, container, false)
         return viewBinding.root
     }
@@ -69,13 +75,13 @@ class NewsFragment @Inject constructor() : Fragment(), View.OnClickListener {
         viewBinding.newsCardView3.setOnClickListener(this)
 
         mNewsViewModel
-                .getRecentApps()
-                .observe(
-                        requireActivity(),
-                        { recentApps ->
-                            mRecentApps = recentApps
-                            setupCards(recentApps)
-                        })
+            .getRecentApps()
+            .observe(
+                requireActivity(),
+                { recentApps ->
+                    mRecentApps = recentApps
+                    setupCards(recentApps)
+                })
 
         mNewsViewModel.fetchRecentApps(recentAppsNames)
     }
@@ -100,9 +106,11 @@ class NewsFragment @Inject constructor() : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun bindData(imageView: ShapeableImageView,
-                         textView: MaterialTextView,
-                         app: App) {
+    private fun bindData(
+        imageView: ShapeableImageView,
+        textView: MaterialTextView,
+        app: App
+    ) {
         if (app.appDrawableIcon != null) {
             imageView.setBackgroundDrawable(app.appDrawableIcon)
         } else {
@@ -114,9 +122,27 @@ class NewsFragment @Inject constructor() : Fragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         if (view != null) {
             when (view.id) {
-                R.id.news_card_view_1 -> mRecentApps?.let { listener!!.onAppItemCLickListener(requireView(), it[0], 0) }
-                R.id.news_card_view_2 -> mRecentApps?.let { listener!!.onAppItemCLickListener(requireView(), it[1], 0) }
-                R.id.news_card_view_3 -> mRecentApps?.let { listener!!.onAppItemCLickListener(requireView(), it[2], 0) }
+                R.id.news_card_view_1 -> mRecentApps?.let {
+                    listener!!.onAppItemCLickListener(
+                        requireView(),
+                        it[0],
+                        0
+                    )
+                }
+                R.id.news_card_view_2 -> mRecentApps?.let {
+                    listener!!.onAppItemCLickListener(
+                        requireView(),
+                        it[1],
+                        0
+                    )
+                }
+                R.id.news_card_view_3 -> mRecentApps?.let {
+                    listener!!.onAppItemCLickListener(
+                        requireView(),
+                        it[2],
+                        0
+                    )
+                }
             }
         }
     }

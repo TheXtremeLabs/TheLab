@@ -25,20 +25,20 @@ class DeviceInfoViewModel : ViewModel() {
         activity.windowManager.defaultDisplay.getMetrics(metrics)
 
         val mDeviceInfo = DeviceInformation(
-                LabDeviceManager.getDevice().toString(),
-                LabDeviceManager.getBrand().toString(),
-                LabDeviceManager.getModel(),
-                LabDeviceManager.getSerial().toString(),
-                LabDeviceManager.getFingerPrint().toString(),
-                LabDeviceManager.getHardware().toString(),
-                LabDeviceManager.getSerial().toString(),
-                LabDeviceManager.getID().toString(),
-                metrics.widthPixels,
-                metrics.heightPixels,
-                LabCompatibilityManager.getOSName(),
-                LabDeviceManager.getSdkVersion(),
-                LabDeviceManager.getRelease().toString(),
-                LabDeviceManager.isRooted()
+            LabDeviceManager.getDevice().toString(),
+            LabDeviceManager.getBrand().toString(),
+            LabDeviceManager.getModel(),
+            LabDeviceManager.getSerial().toString(),
+            LabDeviceManager.getFingerPrint().toString(),
+            LabDeviceManager.getHardware().toString(),
+            LabDeviceManager.getSerial().toString(),
+            LabDeviceManager.getID().toString(),
+            metrics.widthPixels,
+            metrics.heightPixels,
+            LabCompatibilityManager.getOSName(),
+            LabDeviceManager.getSdkVersion(),
+            LabDeviceManager.getRelease().toString(),
+            LabDeviceManager.isRooted()
         )
 
         deviceInformation.value = mDeviceInfo

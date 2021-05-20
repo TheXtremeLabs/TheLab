@@ -36,13 +36,13 @@ class BiometricActivity : AppCompatActivity() {
         if (!LabCompatibilityManager.isMarshmallow()) {
             Timber.e("Incompatibility detected - Device runs on API below API 23 (Marshmallow)")
             UIManager
-                    .showActionInSnackBar(
-                            this,
-                            viewBinding.root,
-                            "Incompatibility detected - Device runs on API below API 23 (Marshmallow)",
-                            SnackBarType.ALERT,
-                            "LEAVE"
-                    ) { v: View? -> finish() }
+                .showActionInSnackBar(
+                    this,
+                    viewBinding.root,
+                    "Incompatibility detected - Device runs on API below API 23 (Marshmallow)",
+                    SnackBarType.ALERT,
+                    "LEAVE"
+                ) { v: View? -> finish() }
         } else {
 
             // initGoldFinger
@@ -80,13 +80,13 @@ class BiometricActivity : AppCompatActivity() {
         if (!LabDeviceManager.hasFingerPrintHardware()) {
             Timber.e("The device doesn't have finger print hardware")
             UIManager
-                    .showActionInSnackBar(
-                            this,
-                            findViewById(R.id.content),
-                            "The device doesn't have finger print hardware",
-                            SnackBarType.ALERT,
-                            "LEAVE"
-                    ) { v: View? -> finish() }
+                .showActionInSnackBar(
+                    this,
+                    findViewById(R.id.content),
+                    "The device doesn't have finger print hardware",
+                    SnackBarType.ALERT,
+                    "LEAVE"
+                ) { v: View? -> finish() }
             return
         }
         Timber.d("Fingerprint hardware ok")
@@ -95,25 +95,25 @@ class BiometricActivity : AppCompatActivity() {
         if (!LabDeviceManager.getRxGoldFinger().canAuthenticate()) {
             Timber.e("Cannot authenticate")
             UIManager
-                    .showActionInSnackBar(
-                            this,
-                            findViewById(R.id.content),
-                            "Cannot authenticate",
-                            SnackBarType.ALERT,
-                            "QUIT"
-                    ) { v: View? -> finish() }
+                .showActionInSnackBar(
+                    this,
+                    findViewById(R.id.content),
+                    "Cannot authenticate",
+                    SnackBarType.ALERT,
+                    "QUIT"
+                ) { v: View? -> finish() }
             return
         }
 
         // Init successfully executed
         UIManager
-                .showActionInSnackBar(
-                        this,
-                        findViewById(R.id.content),
-                        "Fingerprint initialization successfully executed",
-                        SnackBarType.NORMAL,
-                        "CONTINUE"
-                ) { v: View? -> Timber.d("User action validate") }
+            .showActionInSnackBar(
+                this,
+                findViewById(R.id.content),
+                "Fingerprint initialization successfully executed",
+                SnackBarType.NORMAL,
+                "CONTINUE"
+            ) { v: View? -> Timber.d("User action validate") }
     }
 
     private fun authenticateWithRX() {
@@ -122,31 +122,32 @@ class BiometricActivity : AppCompatActivity() {
         //rxGoldFinger
         LabDeviceManager.getGoldFingerPromptParams()?.let {
             LabDeviceManager.getRxGoldFinger()
-                    ?.authenticate(it)
-                    ?.subscribe(object : DisposableObserver<Goldfinger.Result?>() {
-                        override fun onComplete() {
-                            /* Fingerprint authentication is finished */
-                            Timber.d("Authentication complete")
-                        }
+                ?.authenticate(it)
+                ?.subscribe(object : DisposableObserver<Goldfinger.Result?>() {
+                    override fun onComplete() {
+                        /* Fingerprint authentication is finished */
+                        Timber.d("Authentication complete")
+                    }
 
-                        override fun onError(e: Throwable) {
-                            /* Critical error happened */
-                            Timber.e(e)
-                        }
+                    override fun onError(e: Throwable) {
+                        /* Critical error happened */
+                        Timber.e(e)
+                    }
 
-                        override fun onNext(result: Goldfinger.Result) {
-                            /* Result received */
-                            Timber.d(
-                                    """
+                    override fun onNext(result: Goldfinger.Result) {
+                        /* Result received */
+                        Timber.d(
+                            """
                             Result :
                             type : ${result.type()}
                             value : ${result.value()}
                             reason : ${result.reason()}
                             message : ${result.message()}
                             
-                            """.trimIndent())
-                        }
-                    })
+                            """.trimIndent()
+                        )
+                    }
+                })
         }
     }
 }

@@ -16,8 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ContactViewModel @Inject constructor(
-        val repositoryImpl: RepositoryImpl,
-        var navigator: Navigator
+    val repositoryImpl: RepositoryImpl,
+    var navigator: Navigator
 ) : ViewModel() {
 
     private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
@@ -60,29 +60,29 @@ class ContactViewModel @Inject constructor(
         progressVisibility.value = true
 
         val disposable: Disposable =
-                repositoryImpl
-                        .getAllContacts()
-                        .subscribe(
-                                { dbContacts ->
-                                    if (dbContacts.isEmpty()) {
-                                        Timber.e("Contact list is empty")
-                                        progressVisibility.value = false
-                                        hideContactsLayout.value = true
-                                        noContactFound.value = dbContacts
-                                    } else {
-                                        Timber.d("contacts  : %s", contacts)
-                                        progressVisibility.value = false
-                                        showContactsLayout.value = true
-                                        showContactsLayout.value = true
-                                        contacts.value = dbContacts
-                                    }
-                                },
-                                { throwable ->
-                                    Timber.e(throwable)
-                                    progressVisibility.value = false
-                                    hideContactsLayout.value = true
-                                    contactsFailed.value = true
-                                })
+            repositoryImpl
+                .getAllContacts()
+                .subscribe(
+                    { dbContacts ->
+                        if (dbContacts.isEmpty()) {
+                            Timber.e("Contact list is empty")
+                            progressVisibility.value = false
+                            hideContactsLayout.value = true
+                            noContactFound.value = dbContacts
+                        } else {
+                            Timber.d("contacts  : %s", contacts)
+                            progressVisibility.value = false
+                            showContactsLayout.value = true
+                            showContactsLayout.value = true
+                            contacts.value = dbContacts
+                        }
+                    },
+                    { throwable ->
+                        Timber.e(throwable)
+                        progressVisibility.value = false
+                        hideContactsLayout.value = true
+                        contactsFailed.value = true
+                    })
         compositeDisposable.add(disposable)
     }
 

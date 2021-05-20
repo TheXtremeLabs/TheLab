@@ -54,9 +54,9 @@ import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(),
-        MainActivityAppClickListener,
-        ConnectivityListener,
-        MenuItem.OnMenuItemClickListener {
+    MainActivityAppClickListener,
+    ConnectivityListener,
+    MenuItem.OnMenuItemClickListener {
 
     private lateinit var viewBinding: ActivityMainBinding
 
@@ -134,10 +134,10 @@ class MainActivity : AppCompatActivity(),
 
         // register connection status listener
         val request = NetworkRequest.Builder()
-                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .build()
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
 
         mConnectivityManager!!.registerNetworkCallback(request, networkManager!!)
     }
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity(),
             R.id.connection_icon -> {
                 UIManager.showActionInToast(this, "Wifi clicked")
                 val wifiManager: WifiManager =
-                        this.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+                    this.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
 
                 if (!LabCompatibilityManager.isAndroid10()) {
                     val isWifi = wifiManager.isWifiEnabled
@@ -203,45 +203,49 @@ class MainActivity : AppCompatActivity(),
     private fun initViewModelsObservers() {
 
         mViewModel
-                .getConnectionStatus()
-                .observe(
-                        this,
-                        { connectionStatus ->
-                            UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
-                            updateToolbarConnectionIcon(connectionStatus)
-                        })
+            .getConnectionStatus()
+            .observe(
+                this,
+                { connectionStatus ->
+                    UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
+                    updateToolbarConnectionIcon(connectionStatus)
+                })
 
         mViewModel
-                .getApplications().observe(
+            .getApplications().observe(
+                this,
+                { appList ->
+                    Timber.d("onSuccessPackageList()")
+
+                    val adapter = MainActivityAdapter(this, appList, this)
+
+                    val linearLayoutManager = LinearLayoutManager(
                         this,
-                        { appList ->
-                            Timber.d("onSuccessPackageList()")
+                        if (!LabCompatibilityManager.isTablet(this)) LinearLayoutManager.VERTICAL else LinearLayoutManager.HORIZONTAL,
+                        false
+                    )
 
-                            val adapter = MainActivityAdapter(this, appList, this)
+                    viewBinding.appRecyclerView?.layoutManager = linearLayoutManager
 
-                            val linearLayoutManager = LinearLayoutManager(
-                                    this,
-                                    if (!LabCompatibilityManager.isTablet(this)) LinearLayoutManager.VERTICAL else LinearLayoutManager.HORIZONTAL,
-                                    false)
+                    val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+                    divider.setDrawable(
+                        Objects.requireNonNull(
+                            ContextCompat.getDrawable(
+                                this,
+                                R.drawable.item_separator_view_gradient
+                            )
+                        )!!
+                    )
+                    if (!LabCompatibilityManager.isTablet(this))
+                        viewBinding.appRecyclerView?.addItemDecoration(divider)
+                    else {
+                        val helper = ItemSnapHelper()
+                        helper.attachToRecyclerView(viewBinding.appRecyclerView)
+                    }
 
-                            viewBinding.appRecyclerView?.layoutManager = linearLayoutManager
-
-                            val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-                            divider.setDrawable(
-                                    Objects.requireNonNull(
-                                            ContextCompat.getDrawable(
-                                                    this,
-                                                    R.drawable.item_separator_view_gradient))!!)
-                            if (!LabCompatibilityManager.isTablet(this))
-                                viewBinding.appRecyclerView?.addItemDecoration(divider)
-                            else {
-                                val helper = ItemSnapHelper()
-                                helper.attachToRecyclerView(viewBinding.appRecyclerView)
-                            }
-
-                            viewBinding.appRecyclerView?.itemAnimator = DefaultItemAnimator()
-                            viewBinding.appRecyclerView?.adapter = adapter
-                        })
+                    viewBinding.appRecyclerView?.itemAnimator = DefaultItemAnimator()
+                    viewBinding.appRecyclerView?.adapter = adapter
+                })
     }
 
     /**
@@ -269,17 +273,19 @@ class MainActivity : AppCompatActivity(),
 
     private fun bindTabletViews() {
         this.supportFragmentManager
-                .beginTransaction()
-                .add(
-                        R.id.fragment_time,
-                        TimeFragment.newInstance())
-                .commit()
+            .beginTransaction()
+            .add(
+                R.id.fragment_time,
+                TimeFragment.newInstance()
+            )
+            .commit()
         this.supportFragmentManager
-                .beginTransaction()
-                .add(
-                        R.id.fragment_weather,
-                        WeatherFragment.newInstance())
-                .commit()
+            .beginTransaction()
+            .add(
+                R.id.fragment_weather,
+                WeatherFragment.newInstance()
+            )
+            .commit()
     }
 
     private fun addBottomDots(currentPage: Int) {
@@ -314,27 +320,27 @@ class MainActivity : AppCompatActivity(),
 
         // hiding & showing the txtPostTitle when toolbar expanded & collapsed
         viewBinding.includeToolbarLayout?.appbar?.addOnOffsetChangedListener(
-                object : OnOffsetChangedListener {
-                    var isShow = false
-                    var scrollRange = -1
-                    override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                        if (scrollRange == -1) {
-                            scrollRange = appBarLayout.totalScrollRange
-                        }
-                        if (scrollRange + verticalOffset == 0) {
-                            // Toolbar is collapsed
-                            viewBinding.includeToolbarLayout?.collapsingToolbar?.title =
-                                    this@MainActivity.resources.getString(R.string.app_name)
-                            showMenuButtons()
-                            isShow = true
-                        } else if (isShow) {
-                            // Toolbar is expanded
-                            viewBinding.includeToolbarLayout?.collapsingToolbar?.title = " "
-                            hideMenuButtons()
-                            isShow = false
-                        }
+            object : OnOffsetChangedListener {
+                var isShow = false
+                var scrollRange = -1
+                override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+                    if (scrollRange == -1) {
+                        scrollRange = appBarLayout.totalScrollRange
                     }
-                })
+                    if (scrollRange + verticalOffset == 0) {
+                        // Toolbar is collapsed
+                        viewBinding.includeToolbarLayout?.collapsingToolbar?.title =
+                            this@MainActivity.resources.getString(R.string.app_name)
+                        showMenuButtons()
+                        isShow = true
+                    } else if (isShow) {
+                        // Toolbar is expanded
+                        viewBinding.includeToolbarLayout?.collapsingToolbar?.title = " "
+                        hideMenuButtons()
+                        isShow = false
+                    }
+                }
+            })
     }
 
 
@@ -359,8 +365,9 @@ class MainActivity : AppCompatActivity(),
     fun showBottomSheetDialogFragment() {
         val bottomSheetFragment = BottomSheetFragment()
         bottomSheetFragment.show(
-                this.supportFragmentManager,
-                bottomSheetFragment.tag)
+            this.supportFragmentManager,
+            bottomSheetFragment.tag
+        )
     }
 
     @SuppressLint("InlinedApi")
@@ -370,9 +377,9 @@ class MainActivity : AppCompatActivity(),
             R.id.connection_icon -> {
                 UIManager.showActionInToast(this, "Wifi clicked")
                 val wifiManager: WifiManager =
-                        this
-                                .applicationContext
-                                .getSystemService(WIFI_SERVICE) as WifiManager
+                    this
+                        .applicationContext
+                        .getSystemService(WIFI_SERVICE) as WifiManager
                 if (!LabCompatibilityManager.isAndroid10()) {
                     val isWifi = wifiManager.isWifiEnabled
                     wifiManager.isWifiEnabled = !isWifi
@@ -403,14 +410,20 @@ class MainActivity : AppCompatActivity(),
      * Display menu buttons when collapsing toolbar is collapsed
      */
     fun showMenuButtons() {
-        if (menu != null) menu!!.setGroupVisible(R.id.menu_main_group, true) // Or true to be visible
+        if (menu != null) menu!!.setGroupVisible(
+            R.id.menu_main_group,
+            true
+        ) // Or true to be visible
     }
 
     /**
      * Hide menu buttons when collapse toolbar is expanded
      */
     fun hideMenuButtons() {
-        if (menu != null) menu!!.setGroupVisible(R.id.menu_main_group, false) // Or true to be visible
+        if (menu != null) menu!!.setGroupVisible(
+            R.id.menu_main_group,
+            false
+        ) // Or true to be visible
     }
 
     private fun showItemDetail(app: App) {
@@ -419,43 +432,55 @@ class MainActivity : AppCompatActivity(),
 
         viewBinding.ivItemDetail?.let {
             Glide.with(this)
-                    .load(if (0 != app.appIcon) app.appIcon else app.appDrawableIcon)
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(e: GlideException?, model: Any,
-                                                  target: Target<Drawable>, isFirstResource: Boolean): Boolean {
-                            return false
+                .load(if (0 != app.appIcon) app.appIcon else app.appDrawableIcon)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?, model: Any,
+                        target: Target<Drawable>, isFirstResource: Boolean
+                    ): Boolean {
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable, model: Any,
+                        target: Target<Drawable>, dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+
+                        if (viewBinding.itemDetailBtn?.visibility == View.GONE) {
+                            viewBinding.itemDetailBtn?.visibility = View.VISIBLE
                         }
 
-                        override fun onResourceReady(resource: Drawable, model: Any,
-                                                     target: Target<Drawable>, dataSource: DataSource,
-                                                     isFirstResource: Boolean): Boolean {
+                        if (0 != app.appIcon && app.appTitle.equals("Palette")) {
+                            val myBitmap = (resource as BitmapDrawable).bitmap
+                            val newBitmap =
+                                UIManager.addGradientToImageView(this@MainActivity, myBitmap)
 
-                            if (viewBinding.itemDetailBtn?.visibility == View.GONE) {
-                                viewBinding.itemDetailBtn?.visibility = View.VISIBLE
-                            }
-
-                            if (0 != app.appIcon && app.appTitle.equals("Palette")) {
-                                val myBitmap = (resource as BitmapDrawable).bitmap
-                                val newBitmap = UIManager.addGradientToImageView(this@MainActivity, myBitmap)
-
-                                viewBinding.ivItemDetail?.setImageDrawable(
-                                        BitmapDrawable(this@MainActivity.resources, newBitmap))
-                                return true
-                            }
-                            if (0 != app.appIcon && app.appTitle.equals("WIP")) {
-                                viewBinding.ivItemDetail?.setImageDrawable(
-                                        ContextCompat.getDrawable(this@MainActivity, R.drawable.logo_testing))
-                                viewBinding.itemDetailBtn?.visibility = View.GONE
-                                return true
-                            }
-                            return false
+                            viewBinding.ivItemDetail?.setImageDrawable(
+                                BitmapDrawable(this@MainActivity.resources, newBitmap)
+                            )
+                            return true
                         }
-                    })
-                    .into(it)
+                        if (0 != app.appIcon && app.appTitle.equals("WIP")) {
+                            viewBinding.ivItemDetail?.setImageDrawable(
+                                ContextCompat.getDrawable(
+                                    this@MainActivity,
+                                    R.drawable.logo_testing
+                                )
+                            )
+                            viewBinding.itemDetailBtn?.visibility = View.GONE
+                            return true
+                        }
+                        return false
+                    }
+                })
+                .into(it)
         }
 
-        viewBinding.tvTitleDetail?.text = if (!Validator.isEmpty(app.appTitle)) app.appTitle else app.appName
-        viewBinding.tvDescriptionDetail?.text = if (!Validator.isEmpty(app.appVersion)) app.appVersion else app.appDescription
+        viewBinding.tvTitleDetail?.text =
+            if (!Validator.isEmpty(app.appTitle)) app.appTitle else app.appName
+        viewBinding.tvDescriptionDetail?.text =
+            if (!Validator.isEmpty(app.appVersion)) app.appVersion else app.appDescription
     }
 
     override fun onAppItemCLickListener(view: View, item: App, position: Int) {
@@ -488,9 +513,10 @@ class MainActivity : AppCompatActivity(),
         if (!LabCompatibilityManager.isTablet(this))
             this.runOnUiThread {
                 menu?.getItem(0)?.icon =
-                        ContextCompat.getDrawable(
-                                this,
-                                if (isConnected) R.drawable.ic_wifi else R.drawable.ic_wifi_off)
+                    ContextCompat.getDrawable(
+                        this,
+                        if (isConnected) R.drawable.ic_wifi else R.drawable.ic_wifi_off
+                    )
             }
     }
 }

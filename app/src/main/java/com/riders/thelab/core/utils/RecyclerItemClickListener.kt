@@ -7,7 +7,11 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import timber.log.Timber
 
-class RecyclerItemClickListener(context: Context, recyclerView: RecyclerView, listener: OnItemClickListener?) : RecyclerView.OnItemTouchListener {
+class RecyclerItemClickListener(
+    context: Context,
+    recyclerView: RecyclerView,
+    listener: OnItemClickListener?
+) : RecyclerView.OnItemTouchListener {
 
     private var mGestureDetector: GestureDetector? = null
     private var mListener: OnItemClickListener? = listener
@@ -18,18 +22,19 @@ class RecyclerItemClickListener(context: Context, recyclerView: RecyclerView, li
     }
 
     init {
-        mGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapUp(e: MotionEvent): Boolean {
-                return true
-            }
-
-            override fun onLongPress(e: MotionEvent) {
-                val child = recyclerView.findChildViewUnder(e.x, e.y)
-                if (child != null && mListener != null) {
-                    mListener!!.onLongClick(child, recyclerView.getChildPosition(child))
+        mGestureDetector =
+            GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapUp(e: MotionEvent): Boolean {
+                    return true
                 }
-            }
-        })
+
+                override fun onLongPress(e: MotionEvent) {
+                    val child = recyclerView.findChildViewUnder(e.x, e.y)
+                    if (child != null && mListener != null) {
+                        mListener!!.onLongClick(child, recyclerView.getChildPosition(child))
+                    }
+                }
+            })
     }
 
     override fun onInterceptTouchEvent(view: RecyclerView, e: MotionEvent): Boolean {

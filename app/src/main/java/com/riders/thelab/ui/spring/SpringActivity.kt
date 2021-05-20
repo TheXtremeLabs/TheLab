@@ -12,7 +12,6 @@ import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.DynamicAnimation.ViewProperty
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
-import butterknife.ButterKnife
 import com.riders.thelab.databinding.ActivitySpringBinding
 
 class SpringActivity : AppCompatActivity() {
@@ -123,15 +122,15 @@ class SpringActivity : AppCompatActivity() {
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         val yAnimation4 = createSpringAnimation(
-            viewBinding. imageView4, DynamicAnimation.Y, viewBinding.imageView4.getY(),
+            viewBinding.imageView4, DynamicAnimation.Y, viewBinding.imageView4.getY(),
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         val xAnimation5 = createSpringAnimation(
-            viewBinding. imageView5, DynamicAnimation.X,viewBinding. imageView5.getX(),
+            viewBinding.imageView5, DynamicAnimation.X, viewBinding.imageView5.getX(),
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         val yAnimation5 = createSpringAnimation(
-            viewBinding. imageView5, DynamicAnimation.Y,viewBinding. imageView5.getY(),
+            viewBinding.imageView5, DynamicAnimation.Y, viewBinding.imageView5.getY(),
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
 

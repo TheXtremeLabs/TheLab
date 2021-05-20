@@ -155,8 +155,8 @@ class LabCompatibilityManager private constructor() {
                 }
                 if (fieldValue == Build.VERSION.SDK_INT) {
                     builder.append(" : ")
-                            .append(fieldName).append(" : ")
-                            .append("sdk=").append(fieldValue)
+                        .append(fieldName).append(" : ")
+                        .append("sdk=").append(fieldValue)
                 }
             }
             fields = null

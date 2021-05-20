@@ -1,29 +1,26 @@
-package com.riders.thelab.core.broadcast;
+package com.riders.thelab.core.broadcast
 
-import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
+import android.app.NotificationManager
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import androidx.core.app.NotificationCompat
 
-import androidx.core.app.NotificationCompat;
+class NotificationBuilderReceiver : BroadcastReceiver() {
 
+    companion object {
+        const val NOTIFICATION_ID = 1
+        private val TAG = NotificationBuilderReceiver::class.java.simpleName
+        const val TAG_INFO = "BuilderReceiver"
 
-/**
- * Created by michael on 07/03/2016.
- */
-// TODO : Check this class
-public class NotificationBuilderReceiver extends BroadcastReceiver {
+    }
 
-    public static final int NOTIFICATION_ID = 001;
-    private static final String TAG = NotificationBuilderReceiver.class.getSimpleName();
-    private static final String TAG_INFO = "BuilderReceiver";
-    public NotificationCompat.Builder mBuilder;
-    public NotificationManager mNotifyMgr;
-    CharSequence NotificationTitle = "Material Design Features app is here!";
-    CharSequence NotificationContent = "Click here to try it :D";
+    var mBuilder: NotificationCompat.Builder? = null
+    var mNotifyMgr: NotificationManager? = null
+    var NotificationTitle: CharSequence = "Material Design Features app is here!"
+    var NotificationContent: CharSequence = "Click here to try it :D"
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
+    override fun onReceive(context: Context?, intent: Intent?) {
 
         /*Utils.showActionInToast(context, "onReceive notification builder()");
         Log.e(TAG_INFO, "onReceive notification builder()");
