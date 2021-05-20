@@ -10,11 +10,11 @@ import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.data.local.model.Movie
 import com.riders.thelab.databinding.ActivityMultiPaneBinding
+import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.multipane.fragments.MultiPaneDetailFragment
 import com.riders.thelab.ui.multipane.fragments.MultiPaneMainFragment
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -24,7 +24,7 @@ class MultipaneActivity : AppCompatActivity(), MovieClickListener {
 
     private val mMultiPaneViewModel: MultiPaneViewModel by viewModels()
 
-    private var mAdapter: MoviesAdapter? = null
+    private lateinit var mAdapter: MoviesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +107,8 @@ class MultipaneActivity : AppCompatActivity(), MovieClickListener {
     }*/
 
     override fun onMovieClicked(movie: Movie) {
-        MultiPaneDetailFragment.newInstance(movie)
+        if (LabCompatibilityManager.isTablet(this))
+            MultiPaneDetailFragment.newInstance(movie)
+        else mMultiPaneViewModel.getMovieDetail(this, Navigator(this), movie)
     }
 }
