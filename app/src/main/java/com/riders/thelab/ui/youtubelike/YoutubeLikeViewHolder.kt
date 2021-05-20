@@ -39,7 +39,7 @@ class YoutubeLikeViewHolder constructor(
         viewBinding.descriptionItem.text = itemYoutubeVideo.description
 
         Glide.with(context)
-            .load(itemYoutubeVideo.imageThumb)
+            .load(itemYoutubeVideo.imageUrl)
             .addListener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     e: GlideException?,

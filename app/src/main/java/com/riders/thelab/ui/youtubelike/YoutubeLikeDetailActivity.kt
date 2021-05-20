@@ -70,14 +70,14 @@ class YoutubeLikeDetailActivity : AppCompatActivity() {
 
         //Load the background  thumb image
         Glide.with(this)
-            .load(item.imageThumb)
+            .load(item.imageUrl)
             .apply(RequestOptions.bitmapTransform(BlurTransformation(5, 3)))
             .into(viewBinding.contentImageThumbBlurred)
 
 
         //Load the thumb image clicked before
         Glide.with(this)
-            .load(item.imageThumb)
+            .load(item.imageUrl)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?, model: Any,
