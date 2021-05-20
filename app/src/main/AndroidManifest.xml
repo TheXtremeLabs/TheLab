@@ -150,6 +150,11 @@
             android:theme="@style/Theme.TheLab" />
 
         <activity
+            android:name=".ui.recycler.RecyclerViewDetailActivity"
+            android:parentActivityName=".ui.recycler.RecyclerViewActivity"
+            android:theme="@style/Theme.TheLab.NoActionBar" />
+
+        <activity
             android:name=".ui.tabs.WorkingTabsActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/TabTheme" />
@@ -291,7 +296,7 @@
             android:name=".ui.kat.KatActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
