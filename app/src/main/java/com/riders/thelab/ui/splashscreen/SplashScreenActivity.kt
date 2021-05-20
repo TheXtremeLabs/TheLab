@@ -91,10 +91,7 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
+    
     override fun onPrepared(mp: MediaPlayer?) {
         //if we have a position on savedInstanceState, the video playback should start from here
 
@@ -121,8 +118,8 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
             .observe(this, { appVersion ->
                 Timber.d("Version : %s", appVersion)
 
-                /*viewBinding.tvAppVersion.text =
-                    this.getString(R.string.version_placeholder) + appVersion*/
+                viewBinding.tvAppVersion.text =
+                    this.getString(R.string.version_placeholder) + appVersion
             })
 
         mViewModel.getOnVideoEnd().observe(this, { finished ->
@@ -210,10 +207,10 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         labAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
                 viewBinding.ivLab?.alpha = 1f
-                displayAppVersion()
             }
         })
         labAnimator.start()
+        displayAppVersion()
     }
 
     fun displayAppVersion() {
@@ -223,10 +220,11 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
             LabAnimationsManager.getInstance().longAnimationDuration.toLong()
         versionTextAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
-                viewBinding.tvAppVersion?.alpha = 1f
+                viewBinding.tvAppVersion.alpha = 1f
                 startProgressAnimation()
             }
         })
+        versionTextAnimator.startDelay = LabAnimationsManager.getInstance().longAnimationDuration.toLong()
         versionTextAnimator.start()
     }
 
