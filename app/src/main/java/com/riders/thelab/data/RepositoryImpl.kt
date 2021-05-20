@@ -11,7 +11,7 @@ import android.location.Location
 import com.google.firebase.storage.StorageReference
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.data.local.DbImpl
-import com.riders.thelab.data.local.model.App
+import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.data.local.model.Contact
 import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.data.local.model.weather.CityModel

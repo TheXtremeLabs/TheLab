@@ -41,8 +41,9 @@ import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.core.views.ItemSnapHelper
-import com.riders.thelab.data.local.model.App
+import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.ActivityMainBinding
+import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.bottomsheet.BottomSheetFragment
 import com.riders.thelab.ui.mainactivity.fragment.news.NewsFragment
 import com.riders.thelab.ui.mainactivity.fragment.time.TimeFragment
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity(),
     /*
      * ViewPager page change listener
      */
-    var pageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
+    private var pageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             addBottomDots(position)
@@ -91,18 +92,17 @@ class MainActivity : AppCompatActivity(),
 
         // In Activity's onCreate() for instance
         // make fully Android Transparent Status bar
-        if (LabCompatibilityManager.isLollipop()) {
-            when (this.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    val w = window
-                    w.statusBarColor = Color.TRANSPARENT
-                }
-                Configuration.UI_MODE_NIGHT_NO,
-                Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-                }
+        when (this.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                val w = window
+                w.statusBarColor = Color.TRANSPARENT
             }
-            window.navigationBarColor = ContextCompat.getColor(this, R.color.default_dark)
+            Configuration.UI_MODE_NIGHT_NO,
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+            }
         }
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.default_dark)
+
 
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
@@ -114,6 +114,8 @@ class MainActivity : AppCompatActivity(),
         }
 
         initViewModelsObservers()
+
+        mViewModel.retrieveApplications()
 
     }
 
@@ -219,11 +221,12 @@ class MainActivity : AppCompatActivity(),
 
                     val adapter = MainActivityAdapter(this, appList, this)
 
-                    val linearLayoutManager = LinearLayoutManager(
-                        this,
-                        if (!LabCompatibilityManager.isTablet(this)) LinearLayoutManager.VERTICAL else LinearLayoutManager.HORIZONTAL,
-                        false
-                    )
+                    val linearLayoutManager =
+                        LinearLayoutManager(
+                            this,
+                            if (!LabCompatibilityManager.isTablet(this)) LinearLayoutManager.VERTICAL
+                            else LinearLayoutManager.HORIZONTAL, false
+                        )
 
                     viewBinding.appRecyclerView?.layoutManager = linearLayoutManager
 
@@ -263,7 +266,7 @@ class MainActivity : AppCompatActivity(),
         fragmentList!!.add(TimeFragment())
         fragmentList!!.add(WeatherFragment())
         fragmentList!!.add(NewsFragment())
-        pagerAdapter = ViewPager2Adapter(this, fragmentList as ArrayList<Fragment>)
+        pagerAdapter = ViewPager2Adapter(this@MainActivity, fragmentList as ArrayList<Fragment>)
 
         // set Orientation in your ViewPager2
         viewBinding.includeToolbarLayout?.viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
@@ -298,7 +301,7 @@ class MainActivity : AppCompatActivity(),
         layoutDots?.removeAllViews()
 
         for (i in dots.indices) {
-            dots[i] = TextView(this)
+            dots[i] = TextView(this@MainActivity)
             dots[i]?.text = Html.fromHtml("&#8226;")
             dots[i]?.textSize = 35f
             dots[i]?.setTextColor(colorsInactive[currentPage])
@@ -486,24 +489,24 @@ class MainActivity : AppCompatActivity(),
     override fun onAppItemCLickListener(view: View, item: App, position: Int) {
         Timber.d("Clicked item : $item, at position : $position")
 
-        if (!LabCompatibilityManager.isTablet(this)) {
-            mViewModel.launchActivityOrPackage(item)
+        if (!LabCompatibilityManager.isTablet(this@MainActivity)) {
+            mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
         } else {
             showItemDetail(item)
             viewBinding.itemDetailBtn?.setOnClickListener {
-                mViewModel.launchActivityOrPackage(item)
+                mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
             }
         }
     }
 
     override fun onConnected() {
-        UIManager.showConnectionStatusInSnackBar(this, true)
+        UIManager.showConnectionStatusInSnackBar(this@MainActivity, true)
 
         updateToolbarConnectionIcon(true)
     }
 
     override fun onLostConnection() {
-        UIManager.showConnectionStatusInSnackBar(this, false)
+        UIManager.showConnectionStatusInSnackBar(this@MainActivity, false)
 
         updateToolbarConnectionIcon(false)
     }
@@ -514,7 +517,7 @@ class MainActivity : AppCompatActivity(),
             this.runOnUiThread {
                 menu?.getItem(0)?.icon =
                     ContextCompat.getDrawable(
-                        this,
+                        this@MainActivity,
                         if (isConnected) R.drawable.ic_wifi else R.drawable.ic_wifi_off
                     )
             }

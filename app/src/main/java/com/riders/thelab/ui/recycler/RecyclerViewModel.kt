@@ -14,12 +14,11 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
-import com.riders.ktweather.data.local.bean.SnackBarType
+import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.RepositoryImpl
 import com.riders.thelab.data.remote.dto.artist.Artist
-import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
@@ -34,8 +33,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecyclerViewModel @Inject constructor(
-    val repositoryImpl: RepositoryImpl,
-    var navigator: Navigator
+    val repositoryImpl: RepositoryImpl
 ) : ViewModel() {
 
     private var JSONURLFetched: MutableLiveData<String> = MutableLiveData()
@@ -247,8 +245,8 @@ class RecyclerViewModel @Inject constructor(
             sharedImageView,
             "icon"
         )
+        // navigator: Navigator
         activity.startActivity(intent, options.toBundle())
-
     }
 
     fun onDeleteClick(

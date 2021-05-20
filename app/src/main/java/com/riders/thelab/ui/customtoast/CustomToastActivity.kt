@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.views.toast.TheLabToast
 import com.riders.thelab.core.views.toast.ToastTypeEnum
 import com.riders.thelab.databinding.ActivityCustomToastBinding
@@ -32,10 +31,8 @@ class CustomToastActivity : AppCompatActivity() {
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
-        if (LabCompatibilityManager.isLollipop()) {
-            val w = window
-            w.statusBarColor = Color.TRANSPARENT
-        }
+        val w = window
+        w.statusBarColor = Color.TRANSPARENT
 
         viewBinding = ActivityCustomToastBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)

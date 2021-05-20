@@ -7,13 +7,10 @@ import com.riders.thelab.ui.contacts.addcontact.AddContactActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
 import timber.log.Timber
-import javax.inject.Inject
 
-class Navigator @Inject constructor(
-    context: Activity
+class Navigator constructor(
+    private val activity: Activity
 ) {
-    private val activity: Activity = context
-
 
     /* Activities */
     fun callSplashActivity() {
@@ -43,17 +40,12 @@ class Navigator @Inject constructor(
     }
 
     /* Activities */
-    fun callIntentActivity(targetClass: Class<out Activity?>?) {
+    fun callIntentActivity(targetClass: Class<out Activity>) {
         activity.startActivity(Intent(activity, targetClass))
     }
 
     /* Packages */
-    fun callIntentForPackageActivity(intentPackageName: String?) {
-        activity.startActivity(
-            intentPackageName?.let {
-                activity
-                    .packageManager
-                    .getLaunchIntentForPackage(it)
-            })
+    fun callIntentForPackageActivity(intentPackageName: String) {
+        activity.startActivity(activity.packageManager.getLaunchIntentForPackage(intentPackageName))
     }
 }

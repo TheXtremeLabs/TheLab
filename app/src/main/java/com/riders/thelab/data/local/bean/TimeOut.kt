@@ -1,4 +1,4 @@
-package com.riders.ktweather.data.local.bean
+package com.riders.thelab.data.local.bean
 
 enum class TimeOut(val value: Int) {
     TIME_OUT_READ(60),

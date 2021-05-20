@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.recycler
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -12,7 +11,6 @@ import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.databinding.ActivityRecyclerViewDetailBinding
-import com.riders.thelab.utils.Validator
 import org.parceler.Parcels
 import timber.log.Timber
 import java.util.*
@@ -26,7 +24,7 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
 
     private lateinit var viewDetailBinding: ActivityRecyclerViewDetailBinding
 
-    private var item: Artist? = null
+    private lateinit var item: Artist
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,15 +34,12 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
 
         getBundle()
         initCollapsingToolbar()
-
-        if (null != item) bindData()
-        else Timber.e("Cannot bind data for artist. Cause : Artist object is null")
+        bindData()
     }
 
 
     /**
      * Retrieve bundle passed from Recycler View Activity
-     *
      *
      * And bind value in artist object
      */
@@ -59,7 +54,7 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
         setSupportActionBar(viewDetailBinding.toolbarRecyclerViewDetail)
         Objects.requireNonNull(supportActionBar)!!.setDisplayHomeAsUpEnabled(true)
 
-        viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = item!!.artistName
+        viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = item.artistName
         viewDetailBinding.collapsingToolbarRecyclerViewDetail
             .setExpandedTitleColor(ContextCompat.getColor(this, R.color.transparent))
         viewDetailBinding.appBarLayout.setExpanded(true)
@@ -71,7 +66,7 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
                     scrollRange = appBarLayout.totalScrollRange
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = item!!.artistName
+                    viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = item.artistName
                     isShow = true
                 } else if (isShow) {
                     viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = " "
@@ -87,31 +82,31 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
     private fun bindData() {
         if (LabCompatibilityManager.isTablet(this)) {
             //Load the background  thumb image
-            UIManager.loadImageBlurred(
-                this,
-                item!!.urlThumb,
-                viewDetailBinding.ivBackgroundBlurred
-            )
-            viewDetailBinding.tvDebutesDetail?.text = String.format("Since : %s", item!!.debutes)
+            viewDetailBinding.ivBackgroundBlurred?.let {
+                UIManager.loadImageBlurred(
+                    this,
+                    item.urlThumb,
+                    it
+                )
+            }
+            viewDetailBinding.tvDebutesDetail?.text = String.format("Since : %s", item.debutes)
         }
 
         // Display image
         Glide.with(this)
-            .load(item!!.urlThumb)
+            .load(item.urlThumb)
             .into(viewDetailBinding.transitionImageView)
 
-        viewDetailBinding.tvNameDetail.text = item!!.artistName
+        viewDetailBinding.tvNameDetail.text = item.artistName
 
         val sb = StringBuilder()
-        sb.append(item!!.firstName)
-        if (null != item!!.secondName && !Validator.isEmpty(item!!.secondName)) sb.append(", ")
-            .append(
-                item!!.secondName
-            )
-        sb.append(" ").append(item!!.lastName)
+        sb.append(item.firstName)
+        if (item.secondName.isNotBlank()) sb.append(", ").append(item.secondName)
+        sb.append(" ").append(item.lastName)
+
         viewDetailBinding.tvFullNameDetail.text = sb.toString()
-        viewDetailBinding.tvActivitiesDetail.text = item!!.activities
-        viewDetailBinding.tvDescriptionDetail.text = item!!.description
+        viewDetailBinding.tvActivitiesDetail.text = item.activities
+        viewDetailBinding.tvDescriptionDetail.text = item.description
     }
 
 

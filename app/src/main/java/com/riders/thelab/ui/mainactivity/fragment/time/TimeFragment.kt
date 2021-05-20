@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.databinding.FragmentTimeBinding
@@ -19,8 +20,7 @@ import javax.inject.Inject
 class TimeFragment : Fragment() {
     lateinit var viewBinding: FragmentTimeBinding
 
-    @Inject
-    lateinit var mTimeViewModel: TimeViewModel
+    private val mTimeViewModel: TimeViewModel by viewModels()
 
     private var mThread: Thread? = null
 

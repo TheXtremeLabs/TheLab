@@ -4,8 +4,9 @@ import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.data.RepositoryImpl
-import com.riders.thelab.data.local.model.App
+import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,18 +16,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val navigator: Navigator
+    private val repository: RepositoryImpl
 ) : ViewModel() {
 
     private val applications: MutableLiveData<List<App>> = MutableLiveData()
 
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
-/*
-    @Inject
-    lateinit var navigator: Navigator*/
 
-    @Inject
-    private lateinit var repository: RepositoryImpl
 
     fun getApplications(): LiveData<List<App>> {
         return applications
@@ -37,7 +33,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun checkConnection(context: MainActivity) {
-        connectionStatus.value = LabNetworkManager.isConnected(context)
+        connectionStatus.value = LabNetworkManagerNewAPI.isConnected
     }
 
     fun retrieveApplications() {
@@ -54,20 +50,20 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun launchActivityOrPackage(item: App) {
+    fun launchActivityOrPackage(navigator: Navigator, item: App) {
 
-        if (null != item.appPackageName) {
+        if (item.appPackageName.isNotBlank()) {
             Timber.d("launchIntentForPackage(%s)", item.appPackageName)
 
             // Just use these following two lines,
             // so you can launch any installed application whose package name is known:
-            launchIntentForPackage(item.appPackageName!!)
+            launchIntentForPackage(navigator, item.appPackageName)
         } else {
 
             // Prevent app from crashing if you click on WIP item
             if (null != item.appActivity) {
                 Timber.d("launchActivity(%s)", item.appActivity!!.simpleName)
-                launchActivity(item.appActivity!!)
+                launchActivity(navigator, item.appActivity!!)
             } else {
                 // Just Log wip item
                 Timber.e("Cannot launch this activity : %s", item.toString())
@@ -76,11 +72,11 @@ class MainActivityViewModel @Inject constructor(
     }
 
 
-    private fun launchIntentForPackage(packageName: String) {
+    private fun launchIntentForPackage(navigator: Navigator, packageName: String) {
         navigator.callIntentForPackageActivity(packageName)
     }
 
-    private fun launchActivity(activity: Class<out Activity>) {
+    private fun launchActivity(navigator: Navigator, activity: Class<out Activity>) {
         navigator.callIntentActivity(activity)
     }
 }

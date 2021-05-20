@@ -1,5 +1,6 @@
 package com.riders.thelab.data.remote.rest;
 
+import com.riders.thelab.data.local.bean.TimeOut;
 import com.riders.thelab.core.okhttp.LabInterceptors;
 import com.riders.thelab.data.remote.api.WeatherBulkApiService;
 import com.riders.thelab.utils.Constants;

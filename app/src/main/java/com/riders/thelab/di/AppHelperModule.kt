@@ -8,10 +8,12 @@ import com.riders.thelab.data.remote.ApiImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class) // this is new
 object AppHelperModule {
 
     @Provides
@@ -22,6 +24,17 @@ object AppHelperModule {
         )
 
     @Provides
+    fun provideApiHelper() =
+        ApiImpl(
+            ApiModule.provideArtistsAPIService(),
+            ApiModule.provideGoogleAPIService(),
+            ApiModule.provideYoutubeApiService(),
+            ApiModule.provideWeatherApiService(),
+            ApiModule.proWeatherBulkApiService()
+        )
+
+    @Provides
+    @ViewModelScoped // this is new
     fun provideRepository(dbImpl: DbImpl, apiImpl: ApiImpl) =
         RepositoryImpl(dbImpl, apiImpl) as IRepository
 }

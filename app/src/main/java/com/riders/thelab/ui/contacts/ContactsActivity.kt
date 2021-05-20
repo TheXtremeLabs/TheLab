@@ -5,16 +5,19 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.Contact
 import com.riders.thelab.databinding.ActivityContactsBinding
+import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.contacts.RecyclerItemTouchHelper.RecyclerItemTouchHelperListener
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -22,7 +25,7 @@ import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ContactsActivity : AppCompatActivity(), ContactsClickListener,
+class ContactsActivity: AppCompatActivity(), ContactsClickListener,
     RecyclerItemTouchHelperListener {
 
     lateinit var viewBinding: ActivityContactsBinding
@@ -30,8 +33,7 @@ class ContactsActivity : AppCompatActivity(), ContactsClickListener,
 
     private var mAdapter: ContactsAdapter? = null
 
-    @Inject
-    lateinit var mContactViewModel: ContactViewModel
+    private val mContactViewModel: ContactViewModel by viewModels()
 
 
     private var contactList: List<Contact>? = null
@@ -134,7 +136,7 @@ class ContactsActivity : AppCompatActivity(), ContactsClickListener,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_add_contact -> mContactViewModel.addNewContact()
+            R.id.action_add_contact -> mContactViewModel.addNewContact(Navigator(this))
             R.id.action_search -> Timber.d("noinspection SimplifiableIfStatement")
             R.id.action_supervisor ->
                 UIManager.showActionInToast(this, "Action supervisor clicked")
@@ -163,7 +165,7 @@ class ContactsActivity : AppCompatActivity(), ContactsClickListener,
 
     override fun onContactItemCLickListener(item: Contact, position: Int) {
         Timber.d("contact %s clicked", item.toString())
-        mContactViewModel.showDetailContact(this, item)
+        mContactViewModel.showDetailContact(this, Navigator(this), item)
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int, position: Int) {

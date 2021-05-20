@@ -24,7 +24,6 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -41,9 +40,6 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
     private val mViewModel: SplashScreenViewModel by viewModels()
 
     private val position = 0
-
-    @Inject
-    var navigator: Navigator? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,7 +122,6 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         mViewModel.getOnVideoEnd().observe(this, { finished ->
             Timber.d("getOnVideoEnd : %s", finished)
             crossFadeViews(viewBinding.clSplashContent)
-
         })
     }
 
@@ -163,7 +158,7 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
 
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
-        view.alpha = 1f
+//        view.alpha = 1f
         view.visibility = View.VISIBLE
 
         // Animate the content view to 100% opacity, and clear any animation
@@ -189,7 +184,8 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
                         .delay(3, TimeUnit.SECONDS)
                         .doOnComplete { goToMainActivity() }
                         .doOnError { t: Throwable? -> Timber.e(t) }
-                        .subscribeOn(Schedulers.io()) //Caused by: android.util.AndroidRuntimeException:
+                        .subscribeOn(Schedulers.io())
+                        //Caused by: android.util.AndroidRuntimeException:
                         // Animators may only be run on Looper threads
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe()
@@ -199,9 +195,8 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
 
     private fun goToMainActivity() {
         Timber.i("goToMainActivity()")
-        if (navigator != null) {
-            navigator!!.callMainActivity()
-            finish()
-        }
+        Navigator(this).callMainActivity()
+        finish()
+
     }
 }

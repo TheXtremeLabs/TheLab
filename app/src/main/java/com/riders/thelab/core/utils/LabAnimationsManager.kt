@@ -8,10 +8,11 @@ import androidx.vectordrawable.graphics.drawable.ArgbEvaluator
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.TheLabApplication
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ApplicationContext
 import lombok.Getter
 import javax.inject.Inject
 
-@Getter
 class LabAnimationsManager private constructor() {
 
     companion object {
@@ -28,9 +29,6 @@ class LabAnimationsManager private constructor() {
         }
     }
 
-    @Inject
-    lateinit var application: TheLabApplication
-
     var shortAnimationDuration = 0
     var mediumAnimationDuration = 0
     var longAnimationDuration = 0
@@ -39,11 +37,11 @@ class LabAnimationsManager private constructor() {
 
         // Retrieve and cache the system's default "short" animation time.
         shortAnimationDuration =
-            application.resources.getInteger(android.R.integer.config_shortAnimTime)
+            TheLabApplication.getInstance().resources.getInteger(android.R.integer.config_shortAnimTime)
         mediumAnimationDuration =
-            application.resources.getInteger(android.R.integer.config_mediumAnimTime)
+            TheLabApplication.getInstance().resources.getInteger(android.R.integer.config_mediumAnimTime)
         longAnimationDuration =
-            application.resources.getInteger(android.R.integer.config_longAnimTime)
+            TheLabApplication.getInstance().resources.getInteger(android.R.integer.config_longAnimTime)
     }
 
 

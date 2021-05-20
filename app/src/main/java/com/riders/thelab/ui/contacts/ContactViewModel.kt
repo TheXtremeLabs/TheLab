@@ -16,8 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ContactViewModel @Inject constructor(
-    val repositoryImpl: RepositoryImpl,
-    var navigator: Navigator
+    val repositoryImpl: RepositoryImpl
 ) : ViewModel() {
 
     private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
@@ -86,12 +85,12 @@ class ContactViewModel @Inject constructor(
         compositeDisposable.add(disposable)
     }
 
-    fun addNewContact() {
+    fun addNewContact(navigator: Navigator) {
         Timber.d("addNewContact()")
         navigator.callAddContactActivity()
     }
 
-    fun showDetailContact(activity: ContactsActivity, contact: Contact) {
+    fun showDetailContact(activity: ContactsActivity,navigator: Navigator,  contact: Contact) {
         Timber.d("showDetailContact()")
         val intent = Intent(activity, ContactDetailActivity::class.java)
         intent.putExtra(ContactDetailActivity.CONTACT_NAME, contact.name)

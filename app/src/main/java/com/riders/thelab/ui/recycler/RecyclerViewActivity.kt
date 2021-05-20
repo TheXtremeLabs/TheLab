@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.recycler
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -10,6 +11,7 @@ import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.databinding.ActivityRecyclerViewBinding
+import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
@@ -19,14 +21,13 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
+class RecyclerViewActivity: AppCompatActivity(), RecyclerClickListener {
 
     lateinit var viewBinding: ActivityRecyclerViewBinding
 
     private var adapter: RecyclerViewAdapter? = null
 
-    @Inject
-    lateinit var mRecyclerViewModel: RecyclerViewModel
+    private val mRecyclerViewModel: RecyclerViewModel by viewModels()
 
     private var bucketUrl: String? = null
     private var artistThumbnails: List<String>? = null

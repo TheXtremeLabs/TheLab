@@ -3,7 +3,6 @@ package com.riders.thelab.core.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
-import timber.log.Timber
 import java.util.*
 
 class LabTypefaceManager private constructor() {
@@ -28,33 +27,19 @@ class LabTypefaceManager private constructor() {
             val customFontTypeface =
                 Typeface.createFromAsset(context.assets, customFontFileNameInAssets)
 
-            if (LabCompatibilityManager.isLollipop()) {
-                val newMap: MutableMap<String, Typeface> = HashMap()
-                newMap["serif"] = customFontTypeface
-                try {
-                    val staticField = Typeface::class.java
-                        .getDeclaredField("sSystemFontMap")
-                    staticField.isAccessible = true
-                    staticField[null] = newMap
-                } catch (e: NoSuchFieldException) {
-                    e.printStackTrace()
-                } catch (e: IllegalAccessException) {
-                    e.printStackTrace()
-                }
-            } else {
-                try {
-                    val defaultFontTypefaceField =
-                        Typeface::class.java.getDeclaredField(defaultFontNameToOverride)
-                    defaultFontTypefaceField.isAccessible = true
-                    defaultFontTypefaceField[null] = customFontTypeface
-                } catch (e: Exception) {
-                    Timber.e(
-                        "Can not set custom font " + customFontFileNameInAssets
-                                + " instead of " + defaultFontNameToOverride
-                    )
-                }
+            val newMap: MutableMap<String, Typeface> = HashMap()
+            newMap["serif"] = customFontTypeface
+
+            try {
+                val staticField = Typeface::class.java
+                    .getDeclaredField("sSystemFontMap")
+                staticField.isAccessible = true
+                staticField[null] = newMap
+            } catch (e: NoSuchFieldException) {
+                e.printStackTrace()
+            } catch (e: IllegalAccessException) {
+                e.printStackTrace()
             }
         }
-
     }
 }

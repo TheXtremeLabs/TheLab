@@ -21,6 +21,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.R
 import com.riders.thelab.core.views.toast.TheLabToast
 import com.riders.thelab.core.views.toast.ToastTypeEnum
@@ -105,7 +106,7 @@ class UIManager private constructor() {
             Toast.makeText(context, textToShow, Toast.LENGTH_SHORT).show()
         }
 
-        fun showCustomToast(context: Context?, type: ToastTypeEnum?, message: String?) {
+        fun showCustomToast(context: Context, type: ToastTypeEnum, message: String) {
             TheLabToast.Builder(context)
                 .setType(type)
                 .setText(message)
@@ -114,14 +115,14 @@ class UIManager private constructor() {
 
         fun showActionInSnackBar(
             context: Activity, view: View?,
-            message: String?, type: SnackBarType,
+            message: String, type: SnackBarType,
             actionText: String?,
             listener: View.OnClickListener?
         ) {
             // create instance
             val snackBar = Snackbar.make(
-                context.findViewById(R.id.content),
-                message!!,
+                context.findViewById(android.R.id.content),
+                message,
                 if (listener != null) BaseTransientBottomBar.LENGTH_INDEFINITE else BaseTransientBottomBar.LENGTH_LONG
             )
             snackBar.setBackgroundTint(ContextCompat.getColor(context, type.backgroundColor))
@@ -151,7 +152,7 @@ class UIManager private constructor() {
         fun showConnectionStatusInSnackBar(context: Activity, isConnected: Boolean) {
             Timber.d("showConnectionStatusInSnackBar()")
             val snackbar = Snackbar.make(
-                context.findViewById(R.id.content),
+                context.findViewById(android.R.id.content),
                 context.getString(
                     if (!isConnected) R.string.network_status_disconnected else R.string.network_status_connected
                 ),
@@ -192,7 +193,7 @@ class UIManager private constructor() {
          * @param originalBitmap
          * @return
          */
-        fun addGradientToImageView(context: Context?, originalBitmap: Bitmap): Bitmap? {
+        fun addGradientToImageView(context: Context, originalBitmap: Bitmap): Bitmap {
             val width = originalBitmap.width
             val height = originalBitmap.height
             val updatedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -200,7 +201,7 @@ class UIManager private constructor() {
             canvas.drawBitmap(originalBitmap, 0f, 0f, null)
             val paint = Paint()
             val colors = intArrayOf(
-                ContextCompat.getColor(context!!, R.color.admin_splash_bg),
+                ContextCompat.getColor(context, R.color.admin_splash_bg),
                 ContextCompat.getColor(context, R.color.adminDashboardColorPrimary),
                 ContextCompat.getColor(context, R.color.adminDashboardSelectedItemAccent),
                 ContextCompat.getColor(context, R.color.multiPaneColorPrimaryDark)
@@ -237,15 +238,15 @@ class UIManager private constructor() {
 
 
         fun loadImageBlurred(
-            context: Context?,
-            imageURL: Any?,
-            targetImageView: ShapeableImageView?
+            context: Context,
+            imageURL: Any,
+            targetImageView: ShapeableImageView
         ) {
             //Load the background  thumb image
-            Glide.with(context!!)
+            Glide.with(context)
                 .load(imageURL)
                 .apply(RequestOptions.bitmapTransform(BlurTransformation(5, 5)))
-                .into(targetImageView!!)
+                .into(targetImageView)
         }
     }
 }

@@ -6,19 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
-import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabCompatibilityManager
-import com.riders.thelab.data.local.model.App
+import com.riders.thelab.data.local.model.app.App
+import com.riders.thelab.databinding.RowMainAppItemBinding
 
 class MainActivityAdapter constructor(
-    context: Context,
-    appList: List<App>,
-    listener: MainActivityAppClickListener
+    private val mContext: Context,
+    private val mAppList: List<App>,
+    private val mListener: MainActivityAppClickListener
 ) : RecyclerView.Adapter<MainActivityViewHolder>() {
-
-    private val mContext: Context = context
-    private val mAppList: List<App> = appList
-    private val mListener: MainActivityAppClickListener = listener
 
     // Allows to remember the last item shown on screen
     private var lastPosition = -1
@@ -28,11 +24,9 @@ class MainActivityAdapter constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainActivityViewHolder {
-        return MainActivityViewHolder(
-            mContext,
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.row_main_app_item, parent, false)
-        )
+        val viewBinding: RowMainAppItemBinding =
+            RowMainAppItemBinding.inflate(LayoutInflater.from(parent.context))
+        return MainActivityViewHolder(mContext, viewBinding)
     }
 
     override fun onBindViewHolder(holder: MainActivityViewHolder, position: Int) {
@@ -44,7 +38,7 @@ class MainActivityAdapter constructor(
              *
              * Reference : https://levelup.gitconnected.com/android-recyclerview-animations-in-kotlin-1e323ffd39be
              *
-             * */
+             */
             // If the bound view wasn't previously displayed on screen, it's animated
             if (position > lastPosition) {
                 val animation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left)
@@ -95,5 +89,4 @@ class MainActivityAdapter constructor(
                 mListener.onAppItemCLickListener(view!!, item, holder.adapterPosition)
             }
     }
-
 }

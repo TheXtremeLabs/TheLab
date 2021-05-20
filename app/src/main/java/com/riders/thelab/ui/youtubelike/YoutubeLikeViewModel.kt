@@ -23,8 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class YoutubeLikeViewModel @Inject constructor(
-    val repositoryImpl: RepositoryImpl,
-    var navigator: Navigator
+    val repositoryImpl: RepositoryImpl
 ) : ViewModel() {
 
     private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
@@ -91,6 +90,7 @@ class YoutubeLikeViewModel @Inject constructor(
 
     fun onYoutubeItemClicked(
         activity: YoutubeLikeActivity,
+        navigator: Navigator,
         thumbShapeableImageView: ShapeableImageView,
         titleTextView: MaterialTextView,
         descriptionTextView: MaterialTextView,
