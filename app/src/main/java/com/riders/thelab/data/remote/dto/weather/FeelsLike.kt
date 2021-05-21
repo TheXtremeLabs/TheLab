@@ -1,10 +1,12 @@
 package com.riders.thelab.data.remote.dto.weather
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class FeelsLike(
     @Json(name = "day")
-    private var day: Double = 0.0,
+    var day: Double = 0.0,
     @Json(name = "night")
     val night: Double = 0.0,
     @Json(name = "eve")

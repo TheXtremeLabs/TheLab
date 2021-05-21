@@ -1,7 +1,9 @@
 package com.riders.thelab.data.remote.dto.weather
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class Rain(
     // Rain volume for the last 1 hour, mm
     @Json(name = "1h")

@@ -1,10 +1,12 @@
 package com.riders.thelab.data.remote.dto.weather
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class Weather(
     @Json(name = "id")
-    private var id: Int = 0,
+    val id: Int = 0,
 
     @Json(name = "main")
     val main: String,

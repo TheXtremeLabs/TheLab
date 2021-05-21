@@ -38,9 +38,24 @@ open class FloatingLabelsActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setTitle(getString(R.string.activity_title_floating_labels))
 
-        viewBinding.inputName.addTextChangedListener(MyTextWatcher(viewBinding.inputName))
-        viewBinding.inputEmail.addTextChangedListener(MyTextWatcher(viewBinding.inputEmail))
-        viewBinding.inputPassword.addTextChangedListener(MyTextWatcher(viewBinding.inputPassword))
+        viewBinding.inputName.addTextChangedListener(
+            MyTextWatcher(
+                this@FloatingLabelsActivity,
+                viewBinding.inputName
+            )
+        )
+        viewBinding.inputEmail.addTextChangedListener(
+            MyTextWatcher(
+                this@FloatingLabelsActivity,
+                viewBinding.inputEmail
+            )
+        )
+        viewBinding.inputPassword.addTextChangedListener(
+            MyTextWatcher(
+                this@FloatingLabelsActivity,
+                viewBinding.inputPassword
+            )
+        )
 
         viewBinding.floatingLabelsBtnSignup.setOnClickListener {
             try {
@@ -111,14 +126,17 @@ open class FloatingLabelsActivity : AppCompatActivity() {
     }
 
 
-    internal class MyTextWatcher(private val view: View) : TextWatcher {
+    internal class MyTextWatcher(
+        private val activity: FloatingLabelsActivity,
+        private val view: View
+    ) : TextWatcher {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(sEditable: Editable) {
             when (view.id) {
-                R.id.input_name -> FloatingLabelsActivity().validateName()
-                R.id.input_email -> FloatingLabelsActivity().validateEmail()
-                R.id.input_password -> FloatingLabelsActivity().validatePassword()
+                R.id.input_name -> activity.validateName()
+                R.id.input_email -> activity.validateEmail()
+                R.id.input_password -> activity.validatePassword()
             }
         }
     }

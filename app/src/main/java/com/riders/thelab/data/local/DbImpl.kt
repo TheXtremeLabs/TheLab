@@ -1,6 +1,7 @@
 package com.riders.thelab.data.local
 
 import android.database.Cursor
+import android.os.Looper
 import com.riders.thelab.data.local.dao.ContactDao
 import com.riders.thelab.data.local.dao.WeatherDao
 import com.riders.thelab.data.local.model.Contact
@@ -55,14 +56,13 @@ class DbImpl @Inject constructor(
     override fun insertWeatherData(isWeatherData: WeatherData): Maybe<Long> {
         return mWeatherDao.insert(isWeatherData)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun saveCity(city: CityModel): Maybe<Long> {
         return mWeatherDao
             .insertRX(city)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.from(Looper.myLooper()))
     }
 
     override fun saveCities(dtoCities: List<City>): Maybe<List<Long>> {
@@ -71,7 +71,7 @@ class DbImpl @Inject constructor(
         return mWeatherDao
             .insertAllRX(citiesToDatabase)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.from(Looper.myLooper()))
     }
 
     override fun getWeatherData(): Single<WeatherData> {

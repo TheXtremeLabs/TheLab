@@ -1,6 +1,7 @@
 package com.riders.thelab.data.remote.dto.weather
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /*
  * https://stackoverflow.com/questions/58501918/whats-the-use-of-moshis-kotlin-codegen
@@ -8,7 +9,7 @@ import com.squareup.moshi.Json
  * It’s also used by the Moshi code gen annotation processor to indicate
  * which classes should have an adapter generated for them.
  */
-//@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = true)
 data class OneCallWeatherResponse constructor(
 
     @Json(name = "lat")
