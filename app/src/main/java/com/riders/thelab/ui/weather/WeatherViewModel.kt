@@ -1,26 +1,21 @@
 package com.riders.thelab.ui.weather
 
-import android.R
 import android.annotation.SuppressLint
+import android.content.Context
 import android.database.Cursor
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.room.rxjava3.EmptyResultSetException
 import androidx.work.*
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
 import com.riders.thelab.core.utils.*
 import com.riders.thelab.data.RepositoryImpl
 import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.model.weather.WeatherData
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
-import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -92,9 +87,6 @@ class WeatherViewModel @Inject constructor(
         return workerStatus
     }
 
-    fun getWeatherCursor(): LiveData<Cursor> {
-        return weatherCursor
-    }
 
     fun getOneCalWeather(): LiveData<OneCallWeatherResponse> {
         return oneCallWeather
@@ -114,6 +106,7 @@ class WeatherViewModel @Inject constructor(
         latitude: Double,
         longitude: Double
     ): Address? {
+        Timber.d("getCityNameWithCoordinates()")
         return LabAddressesUtils
             .getDeviceAddress(
                 Geocoder(activity, Locale.getDefault()),
@@ -121,8 +114,9 @@ class WeatherViewModel @Inject constructor(
             )
     }
 
-    fun canGetLocation(activity: WeatherActivity): Boolean {
-        this.labLocationManager = LabLocationManager(activity)
+    fun canGetLocation(activity: WeatherActivity, context: Context): Boolean {
+        Timber.d("canGetLocation()")
+        this.labLocationManager = LabLocationManager(activity, context)
         return this.labLocationManager.canGetLocation()
     }
 
@@ -131,11 +125,8 @@ class WeatherViewModel @Inject constructor(
     }
 
 
-    fun getCityQuery(cityQuery: String) {
-        weatherCursor.value = repositoryImpl.getCitiesCursor(cityQuery)
-    }
-
     fun fetchCities() {
+        Timber.d("fetchCities()")
         if (!LabNetworkManagerNewAPI.isConnected) {
             hideLoader()
             connectionStatus.value = false
@@ -160,14 +151,12 @@ class WeatherViewModel @Inject constructor(
                                 // Only for debug purposes
                                 // Use worker to make long job operation in background
                                 Timber.e("Use worker to make long job operation in background...")
-//                                startWork()
                                 isWeatherData.value = false
                             } else {
                                 // In this case data already exists in database
                                 // Load data then let the the user perform his request
                                 Timber.d("Record found in database. Continue...")
                                 hideLoader()
-//                                getView().onFetchCitySuccessful()
                                 isWeatherData.value = true
                             }
                         },
@@ -177,7 +166,6 @@ class WeatherViewModel @Inject constructor(
                             if (throwable is EmptyResultSetException) {
                                 Timber.e(throwable)
                                 Timber.e("weatherData is empty. No Record found in database")
-//                                startWork()
                                 isWeatherData.value = false
                             } else {
                                 Timber.e(throwable)
@@ -190,9 +178,10 @@ class WeatherViewModel @Inject constructor(
 
 
     fun fetchWeather(location: Location) {
+        Timber.d("fetchWeather()")
         val disposable: Disposable =
             repositoryImpl
-                .getWeatherOneCallAPI(location)!!
+                .getWeatherOneCallAPI(location)
                 .subscribe(
                     { weatherResponse ->
                         hideLoader()
@@ -217,6 +206,7 @@ class WeatherViewModel @Inject constructor(
      */
     @SuppressLint("RestrictedApi")
     fun startWork(activity: WeatherActivity) {
+        Timber.d("startWork()")
 
         val constraints = Constraints.Builder()
             //                .setRequiresBatteryNotLow(true)
