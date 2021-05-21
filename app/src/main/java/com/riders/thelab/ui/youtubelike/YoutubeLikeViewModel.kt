@@ -3,7 +3,7 @@ package com.riders.thelab.ui.youtubelike
 import android.content.Intent
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
-
+import androidx.core.util.Pair
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -100,34 +100,35 @@ class YoutubeLikeViewModel @Inject constructor(
 
         Timber.e("Click on : $position + ${video.name}")
 
-
         val intent = Intent(activity, YoutubeLikeDetailActivity::class.java)
         intent.putExtra(YoutubeLikeDetailActivity.VIDEO_OBJECT_ARG, video)
 
-        val sePairThumb: androidx.core.util.Pair<View, String> =
-            androidx.core.util.Pair.create(
+        val sePairThumb: Pair<View, String> =
+            Pair.create(
                 thumbShapeableImageView,
                 activity.getString(R.string.thumb_transition_name)
             )
-        val sePairTitle: androidx.core.util.Pair<View, String> =
-            androidx.core.util.Pair.create(
+        val sePairTitle: Pair<View, String> =
+            Pair.create(
                 titleTextView,
                 activity.getString(R.string.title_transition_name)
             )
-        val sePairDescription: androidx.core.util.Pair<View, String> =
-            androidx.core.util.Pair.create(
+        val sePairDescription: Pair<View, String> =
+            Pair.create(
                 descriptionTextView,
                 activity.getString(R.string.description_transition_name)
             )
-        var options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
             activity, sePairThumb, sePairTitle, sePairDescription
         )
 
         // Call navigator to switch activity with or without transition according
         // to the device's version running the application
-        navigator.callYoutubeDetailActivity(
-            intent,
-            options.toBundle()
-        )
+        options.toBundle()?.let {
+            navigator.callYoutubeDetailActivity(
+                intent,
+                it
+            )
+        }
     }
 }

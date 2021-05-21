@@ -223,7 +223,6 @@ dependencies {
     // OkHttp
     // define a BOM and its version
     implementation(platform(rootProject.ext.generalDependencies.okHttpBom))
-
     // define any required OkHttp artifacts without version
     implementation(rootProject.ext.generalDependencies.okHttp)
     implementation(rootProject.ext.generalDependencies.okHttpLogging)

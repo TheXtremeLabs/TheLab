@@ -21,6 +21,7 @@ class TimeViewModel @Inject constructor(
     val repositoryImpl: RepositoryImpl
 ) : ViewModel() {
 
+    private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
     private val imagesFetchedDone: MutableLiveData<Boolean> = MutableLiveData()
     private val imagesFetchedFailed: MutableLiveData<Boolean> = MutableLiveData()
     private val imageUrl: MutableLiveData<String> = MutableLiveData()
@@ -29,6 +30,9 @@ class TimeViewModel @Inject constructor(
 
     private val mRepositoryImpl: RepositoryImpl = repositoryImpl
 
+    fun getProgressVisibility(): LiveData<Boolean> {
+        return progressVisibility
+    }
 
     fun getImagesFetchedDone(): LiveData<Boolean> {
         return imagesFetchedDone
@@ -48,6 +52,7 @@ class TimeViewModel @Inject constructor(
      */
     fun getWallpaperImages(context: FragmentActivity) {
         Timber.d("getFirebaseFiles()")
+        progressVisibility.value = true
 
         val disposable: Disposable =
             mRepositoryImpl.getStorageReference(context)
@@ -76,13 +81,12 @@ class TimeViewModel @Inject constructor(
                         .addOnFailureListener { t: Exception? ->
                             Timber.e(t)
                             imagesFetchedFailed.value = true
+                            progressVisibility.value = false
                         }
                         .addOnCompleteListener { task1: Task<ListResult> ->
-                            Timber.d(
-                                "onComplete() - %d ",
-                                task1.result.items.size
-                            )
+                            Timber.d("onComplete() - ${task1.result.items.size}")
                             imagesFetchedDone.value = true
+                            progressVisibility.value = false
                         }
                 }, Timber::e)
 

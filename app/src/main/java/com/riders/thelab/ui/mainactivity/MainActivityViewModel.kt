@@ -32,7 +32,7 @@ class MainActivityViewModel @Inject constructor(
         return connectionStatus
     }
 
-    fun checkConnection(context: MainActivity) {
+    fun checkConnection() {
         connectionStatus.value = LabNetworkManagerNewAPI.isConnected
     }
 
@@ -51,7 +51,6 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun launchActivityOrPackage(navigator: Navigator, item: App) {
-
         if (item.appPackageName.isNotBlank()) {
             Timber.d("launchIntentForPackage(%s)", item.appPackageName)
 

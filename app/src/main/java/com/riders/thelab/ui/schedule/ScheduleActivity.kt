@@ -7,8 +7,11 @@ import android.os.CountDownTimer
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.riders.thelab.R
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver
 import com.riders.thelab.core.bus.AlarmEvent
+import com.riders.thelab.core.utils.UIManager
+import com.riders.thelab.core.views.toast.ToastTypeEnum
 import com.riders.thelab.databinding.ActivityScheduleBinding
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
@@ -17,7 +20,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
-
 
 class ScheduleActivity : AppCompatActivity() {
 
@@ -30,30 +32,41 @@ class ScheduleActivity : AppCompatActivity() {
         viewBinding = ActivityScheduleBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        mViewModel.getCountDown().observe(this, { countDown ->
+        supportActionBar?.title = getString(R.string.activity_title_schedule_jobs)
 
-            showCountDownView()
+        mViewModel.getCountDown().observe(
+            this,
+            { countDown ->
 
-            val millsFuture = (countDown * 1000).toLong()
+                showCountDownView()
 
-            Completable.complete()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        object : CountDownTimer(millsFuture, 1000) {
-                            override fun onTick(millisUntilFinished: Long) {
-                                updateContDownUI(millisUntilFinished / 1000)
-                            }
+                val millsFuture = (countDown * 1000).toLong()
 
-                            override fun onFinish() {
-                                Timber.d("Count down finished")
-                            }
-                        }.start()
-                    },
-                    { t: Throwable? -> Timber.e(t) })
-        })
+                Completable.complete()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        {
+                            object : CountDownTimer(millsFuture, 1000) {
+                                override fun onTick(millisUntilFinished: Long) {
+                                    updateContDownUI(millisUntilFinished / 1000)
+                                }
 
+                                override fun onFinish() {
+                                    Timber.d("Count down finished")
+                                }
+                            }.start()
+                        },
+                        { t: Throwable? -> Timber.e(t) })
+            })
+
+        viewBinding.button.setOnClickListener {
+            viewBinding.time.text.toString().isNotBlank().let {
+                if (it)
+                mViewModel.startAlert(this,  viewBinding.time.text.toString())
+                else UIManager.showCustomToast(this,ToastTypeEnum.WARNING, "Field cannot be empty. Please enter a valid number")
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -65,19 +78,27 @@ class ScheduleActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        EventBus.getDefault().unregister(this)
+        try {
+            mViewModel.unregisterReceiver(this)
+
+        }catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+        super.onPause()
+    }
 
     override fun onResume() {
         super.onResume()
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
-        mViewModel.registerReceiver(this)
-    }
-
-    override fun onStop() {
-        EventBus.getDefault().unregister(this)
-        mViewModel.unregisterReceiver(this)
-        super.onStop()
+        try {
+            mViewModel.registerReceiver(this)
+        }catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     override fun onDestroy() {
@@ -86,7 +107,7 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
 
-    fun showCountDownView() {
+    private fun showCountDownView() {
         viewBinding.llDelayTimeContainer.visibility = View.VISIBLE
     }
 
@@ -105,7 +126,7 @@ class ScheduleActivity : AppCompatActivity() {
     //
     ////////////////////////////
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onAlarmEventCaught(event: AlarmEvent?) {
+    fun onAlarmEventCaught(event: AlarmEvent) {
         Timber.e("onAlarmEventCaught()")
         Timber.d("Count down finished event")
         hideCountDownView()

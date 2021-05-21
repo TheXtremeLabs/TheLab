@@ -3,11 +3,13 @@ package com.riders.thelab.core.utils
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.util.AndroidRuntimeException
 import android.view.View
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.TheLabApplication
+import timber.log.Timber
 
 class LabAnimationsManager private constructor() {
 
@@ -91,4 +93,16 @@ class LabAnimationsManager private constructor() {
         }
     }
 
+    suspend fun clearAnimations(vararg objectAnimators: ObjectAnimator) {
+        Timber.d("clearAnimations()")
+        try {
+            for (element in objectAnimators) {
+                element.removeAllListeners()
+                element.end()
+                element.cancel()
+            }
+        } catch (exception: AndroidRuntimeException) {
+            Timber.e(exception)
+        }
+    }
 }

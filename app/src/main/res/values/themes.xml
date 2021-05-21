@@ -118,7 +118,6 @@
     <style name="RecyclerStyleTheme.Base" parent="Theme.TheLab.NoActionBar">
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
-
         <item name="android:windowContentTransitions">true</item>
 
         <!-- specify shared element transitions -->
@@ -243,7 +242,6 @@
 
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
-
         <item name="android:windowContentTransitions">true</item>
         <!-- specify enter and exit transitions -->
         <item name="android:windowEnterTransition">@transition/explode</item>

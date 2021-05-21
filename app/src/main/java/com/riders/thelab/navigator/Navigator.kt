@@ -22,7 +22,7 @@ class Navigator constructor(
     }
 
     /* Detail Activities */
-    fun callContactDetailActivity(intent: Intent?) {
+    fun callContactDetailActivity(intent: Intent) {
         activity.startActivity(intent)
     }
 
@@ -34,7 +34,7 @@ class Navigator constructor(
         activity.startActivity(intent)
     }
 
-    fun callYoutubeDetailActivity(intent: Intent, optionsCompat: Bundle?) {
+    fun callYoutubeDetailActivity(intent: Intent, optionsCompat: Bundle) {
         Timber.d("Apply activity transition")
         activity.startActivity(intent, optionsCompat)
     }
