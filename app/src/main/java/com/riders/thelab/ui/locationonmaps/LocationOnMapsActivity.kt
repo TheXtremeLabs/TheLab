@@ -330,7 +330,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         mProvider = mLocationManager.getBestProvider(mCriteria!!, true)!!
         if (null == mProvider) {
             Timber.e("Cannot get location please enable position")
-            val labLocationManager = LabLocationManager(this)
+            val labLocationManager = LabLocationManager(this@LocationOnMapsActivity, this)
             labLocationManager.showSettingsAlert()
         } else {
             try {

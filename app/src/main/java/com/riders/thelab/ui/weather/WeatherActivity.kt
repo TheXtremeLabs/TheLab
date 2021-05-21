@@ -29,11 +29,12 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.R
 import com.riders.thelab.core.bus.LocationFetchedEvent
 import com.riders.thelab.core.utils.LabLocationUtils
 import com.riders.thelab.core.utils.UIManager
+import com.riders.thelab.data.RepositoryImpl
+import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.bean.WindDirection
 import com.riders.thelab.data.local.model.weather.CityModel
 import com.riders.thelab.data.remote.dto.weather.CurrentWeather
@@ -49,6 +50,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -58,12 +60,16 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
     private val mWeatherViewModel: WeatherViewModel by viewModels()
 
+    @Inject
+    lateinit var repositoryImpl: RepositoryImpl
+
     private lateinit var context: WeatherActivity
-    private var mSearchView: SearchView? = null
+    private lateinit var mSearchView: SearchView
 
     private lateinit var listener: WeatherClickListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.d("onCreate()")
         super.onCreate(savedInstanceState)
         viewBinding = ActivityWeatherBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
@@ -97,14 +103,14 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         // Associate searchable configuration with the SearchView
         val searchManager = this.getSystemService(SEARCH_SERVICE) as SearchManager
         mSearchView = menu!!.findItem(R.id.action_search).actionView as SearchView
-        mSearchView!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        mSearchView!!.maxWidth = Int.MAX_VALUE
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        mSearchView.maxWidth = Int.MAX_VALUE
 
-        (mSearchView!!.findViewById<View>(R.id.search_src_text) as AutoCompleteTextView).threshold =
-            3
+        (mSearchView.findViewById<View>(R.id.search_src_text) as AutoCompleteTextView)
+            .threshold = 3
 
         // listening to search query text change
-        mSearchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 getCitiesFromDb(query)
                 return true
@@ -123,7 +129,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                 Observable
                     .just(searchText)
                     .map { searchQueryText: String ->
-                        mWeatherViewModel.getCityQuery(searchQueryText)
+                        repositoryImpl.getCitiesCursor(searchQueryText)
                     }
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -137,11 +143,11 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             }
 
             private fun handleResults(cursor: Cursor) {
-                mSearchView!!.suggestionsAdapter =
+                mSearchView.suggestionsAdapter =
                     WeatherSearchViewAdapter(
                         context,
                         cursor,
-                        mSearchView!!,
+                        mSearchView,
                         listener
                     )
             }
@@ -160,7 +166,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_position -> {
-                if (mWeatherViewModel.canGetLocation(this))
+                if (mWeatherViewModel.canGetLocation(this, context))
                     mWeatherViewModel.getCurrentWeather()
                 else
                     UIManager.showActionInSnackBar(
@@ -207,6 +213,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
 
     fun initViewModelObservers() {
+        Timber.d("initViewModelObservers()")
 
         mWeatherViewModel.getProgressBarVisibility().observe(
             this,
@@ -232,16 +239,24 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             })
 
         mWeatherViewModel.getDownloadDone().observe(this, {
-
+            viewBinding.tvDownloadStatus.visibility = View.GONE
         })
         mWeatherViewModel.getIsWeatherData().observe(this, {
-            if (!it) mWeatherViewModel.startWork(this)
-            else viewBinding.weatherDataContainer.visibility = View.VISIBLE
+            if (!it) {
+                mWeatherViewModel.startWork(this)
+            } else {
+                viewBinding.tvDownloadStatus.visibility = View.GONE
+                viewBinding.weatherDataContainer.visibility = View.VISIBLE
+            }
         })
-        mWeatherViewModel.getWorkerStatus().observe(this, {})
-        mWeatherViewModel.getWeatherCursor().observe(this, {})
-        mWeatherViewModel.getOneCalWeather().observe(this, {})
+        mWeatherViewModel.getWorkerStatus().observe(this, {
+
+        })
+        mWeatherViewModel.getOneCalWeather().observe(this, {
+            updateOneCallUI(it)
+        })
     }
+
 
     fun updateOneCallUI(oneCallWeatherResponse: OneCallWeatherResponse) {
         Timber.d("updateOneCallUI()")
@@ -299,20 +314,21 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                 .weather[0]
                 .description
 
-        supportActionBar?.setTitle("$cityName $country")
+        supportActionBar?.title = "$cityName $country"
 
         // Temperatures
         val temperature =
-            "${oneCallWeatherResponse.currentWeather.temperature.roundToInt()} + ${getString(R.string.degree_placeholder)}"
+            "${oneCallWeatherResponse.currentWeather.temperature.roundToInt()} ${getString(R.string.degree_placeholder)}"
         viewBinding.tvWeatherCityTemperature.text = temperature
 
         val realFeels =
-            "${oneCallWeatherResponse.currentWeather.feelsLike.roundToInt()} + ${
+            "${oneCallWeatherResponse.currentWeather.feelsLike.roundToInt()} ${
                 resources.getString(
                     R.string.degree_placeholder
                 )
             }"
         viewBinding.tvWeatherCityRealFeels.text = realFeels
+
         viewBinding.tvSunrise.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(
                 oneCallWeatherResponse.currentWeather.sunrise
@@ -388,7 +404,8 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         viewBinding.rvForecastFiveDays.adapter = mAdapter
     }
 
-    fun buildChart(hourlyWeather: List<CurrentWeather?>?) {
+    fun buildChart(hourlyWeather: List<CurrentWeather>) {
+        Timber.d("buildChart()")
 
         // in this example, a LineChart is initialized from xml
         val chart = context.findViewById<LineChart>(R.id.weather_hourly_chart)
@@ -398,7 +415,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         WeatherUtils.stylingChartGrid(chart, whiteColor)
 
         val temperatureForNextHours =
-            WeatherUtils.getWeatherTemperaturesForNextHours(hourlyWeather as List<CurrentWeather>)
+            WeatherUtils.getWeatherTemperaturesForNextHours(hourlyWeather)
         val integers = HashMap<Float, Float>()
 
         for (i in temperatureForNextHours.indices) {
@@ -441,7 +458,9 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
     }
 
     override fun onWeatherItemClicked(cityModel: CityModel) {
+        Timber.d("onWeatherItemClicked()")
         UIManager.hideKeyboard(this, findViewById(android.R.id.content))
+
         mWeatherViewModel.fetchWeather(
             LabLocationUtils.buildTargetLocationObject(
                 cityModel.latitude,

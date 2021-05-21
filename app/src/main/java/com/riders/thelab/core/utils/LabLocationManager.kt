@@ -10,7 +10,6 @@ import android.content.Intent
 import android.location.*
 import android.os.IBinder
 import android.provider.Settings
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -24,13 +23,15 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
-
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
-class LabLocationManager constructor(private val mContext: Context) : Service(), LocationListener {
+class LabLocationManager constructor(
+    private val mActivity: Activity,
+    private val mContext: Context
+) : Service(), LocationListener {
 
     companion object {
         // The minimum distance to change Updates in meters
@@ -43,10 +44,9 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
             geocoder: Geocoder,
             location: Location,
             context: Context
-        ): String? {
+        ): String {
             Timber.i("getDeviceLocationToString")
             var finalAddress = "" //This is the complete address.
-            val finalCity = "" //This is the complete address.
             val latitude = location.latitude
             val longitude = location.longitude
 
@@ -146,7 +146,8 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
     }
 
     // Declaring a Location Manager
-    protected var locationManager: LocationManager? = null
+    private var locationManager: LocationManager =
+        mActivity.getSystemService(LOCATION_SERVICE) as LocationManager
 
     // flag for GPS status
     var isGPSEnabled = false
@@ -156,22 +157,19 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
 
     // flag for GPS status
     var canGetLocation = false
-    lateinit var location: Location // location
+
+    // location
+    var location: Location? = null
 
     var latitude = 0.0// latitude
     var longitude = 0.0// longitude
-    private var mActivity: Activity? = null
     private var mLocationListener: LocationListener? = null
 
     init {
-        locationManager = mContext.getSystemService(LOCATION_SERVICE) as LocationManager
+        mLocationListener = this
+//        getLocation()
     }
 
-    constructor(activity: Activity) : this(activity as Context) {
-        mActivity = activity
-        mLocationListener = this
-        getLocation()
-    }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -189,20 +187,16 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
         Timber.d("onProviderEnabled")
     }
 
-    fun setActivity(activity: Activity?) {
-        mActivity = activity
-    }
-
     fun setLocationListener() {
         mLocationListener = this
     }
 
     @JvmName("getLocation1")
-    fun getLocation(): Location {
-        locationManager = mContext.getSystemService(LOCATION_SERVICE) as LocationManager
+    fun getLocation(): Location? {
 
         // run dexter permission
-        Dexter.withContext(mActivity)
+        Dexter
+            .withContext(mActivity)
             .withPermissions(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -234,7 +228,8 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
                             if (isGPSEnabled) {
                                 getLocationViaGPS()
                             }
-                            EventBus.getDefault().post(LocationFetchedEvent(location))
+
+                            EventBus.getDefault().post(location?.let { LocationFetchedEvent(it) })
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -249,51 +244,43 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
                 }
             })
             .withErrorListener { error: DexterError ->
-                Toast.makeText(
-                    mActivity,
-                    "Error occurred! $error",
-                    Toast.LENGTH_SHORT
-                ).show()
+                UIManager.showActionInToast(mContext, "Error occurred! $error")
             }
             .onSameThread()
             .check()
 
 
         // return location object
-        return location
+        return this.location
     }
 
     @SuppressLint("MissingPermission")
     private fun getLocationViaNetwork() {
-        locationManager!!.requestLocationUpdates(
+        locationManager.requestLocationUpdates(
             LocationManager.NETWORK_PROVIDER,
             MIN_TIME_BW_UPDATES,
             MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
             mLocationListener!!
         )
         Timber.d("Network Enabled")
-        if (locationManager != null) {
-            location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!
-            latitude = location.latitude
-            longitude = location.longitude
-        }
+        this.location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!
+        latitude = this.location!!.latitude
+        longitude = this.location!!.longitude
     }
+
 
     @SuppressLint("MissingPermission")
     private fun getLocationViaGPS() {
-        locationManager!!.requestLocationUpdates(
+        locationManager.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
             MIN_TIME_BW_UPDATES,
             MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
             mLocationListener!!
         )
         Timber.d("GPS Enabled")
-        if (locationManager != null) {
-            location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
-            latitude = location.latitude
-            longitude = location.longitude
-        }
-
+        this.location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
+        latitude = this.location!!.latitude
+        longitude = this.location!!.longitude
     }
 
     /**
@@ -301,9 +288,7 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
      * app
      */
     fun stopUsingGPS() {
-        if (locationManager != null) {
-            locationManager!!.removeUpdates(this@LabLocationManager)
-        }
+        locationManager.removeUpdates(this@LabLocationManager)
     }
 
     /**
@@ -311,7 +296,7 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
      */
     @JvmName("getLatitude1")
     fun getLatitude(): Double {
-        latitude = location.latitude
+        latitude = this.location?.latitude!!
 
         return latitude
     }
@@ -321,7 +306,7 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
      */
     @JvmName("getLongitude1")
     fun getLongitude(): Double {
-        longitude = location.longitude
+        longitude = this.location?.longitude!!
 
         return longitude
     }
@@ -334,12 +319,12 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
     fun canGetLocation(): Boolean {
         Timber.d("canGetLocation()")
         try {
-            isGPSEnabled = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         } catch (ex: Exception) {
             Timber.e(ex)
         }
         try {
-            isNetworkEnabled = locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         } catch (ex: Exception) {
             Timber.e(ex)
         }
@@ -348,7 +333,7 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
     }
 
     fun getLocationObject(): Location? {
-        return location
+        return this.location
     }
 
 
@@ -385,3 +370,4 @@ class LabLocationManager constructor(private val mContext: Context) : Service(),
         alertDialog.show()
     }
 }
+

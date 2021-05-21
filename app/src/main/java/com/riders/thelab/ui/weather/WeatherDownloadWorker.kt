@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.riders.thelab.core.parser.LabParser
 import com.riders.thelab.core.utils.LabFileManager
 import com.riders.thelab.data.RepositoryImpl
+import com.riders.thelab.data.local.model.weather.WeatherData
 import com.riders.thelab.data.remote.dto.weather.City
 import com.riders.thelab.utils.Validator
 import dagger.assisted.Assisted
@@ -128,6 +129,8 @@ class WeatherDownloadWorker @AssistedInject constructor(
             .saveCities(dtoCities)
             .subscribe(
                 { longs ->
+
+                    mRepository.insertWeatherData(WeatherData(0,true))
                     outputData = createOutputData(WORK_RESULT, WORK_SUCCESS)
                     future!!.set(Result.success(outputData!!))
                 },

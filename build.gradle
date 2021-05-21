@@ -7,8 +7,8 @@ ext {
 
     // version information
     versionMajor = 6
-    versionMinor = 1
-    versionPatch = 3
+    versionMinor = 2
+    versionPatch = 0
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
     // Kotlin

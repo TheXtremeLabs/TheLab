@@ -188,7 +188,7 @@ class RepositoryImpl @Inject constructor(
         return mApiImpl.getVideos()
     }
 
-    override fun getWeatherOneCallAPI(location: Location): Single<OneCallWeatherResponse>? {
+    override fun getWeatherOneCallAPI(location: Location): Single<OneCallWeatherResponse> {
         return mApiImpl.getWeatherOneCallAPI(location)
     }
 
