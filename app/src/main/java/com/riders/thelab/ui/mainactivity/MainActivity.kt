@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
@@ -35,6 +36,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
+import com.google.android.material.tabs.TabLayoutMediator
 import com.riders.thelab.R
 import com.riders.thelab.core.interfaces.ConnectivityListener
 import com.riders.thelab.core.utils.LabCompatibilityManager
@@ -276,6 +278,15 @@ class MainActivity : AppCompatActivity(),
         viewBinding.includeToolbarLayout?.viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         viewBinding.includeToolbarLayout?.viewPager?.adapter = pagerAdapter
         viewBinding.includeToolbarLayout?.viewPager?.registerOnPageChangeCallback(pageChangeCallback)
+
+        viewBinding.includeToolbarLayout?.tabLayout?.let {tabLayout ->
+            viewBinding.includeToolbarLayout?.viewPager?.let {viewPager2 ->
+
+                TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+                    //Some implementation
+                }.attach()
+            }
+        }
     }
 
     private fun bindTabletViews() {

@@ -21,7 +21,7 @@
         app:layout_scrollFlags="scroll|exitUntilCollapsed"
         app:statusBarScrim="@color/default_dark">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/detail_backdrop_height"
             android:fitsSystemWindows="true"
@@ -35,19 +35,17 @@
                 android:layout_centerInParent="true"
                 tools:background="@color/red" />
 
-            <LinearLayout
-                android:id="@+id/layoutDots"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dots_height"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="@dimen/ultra_big_margin"
-                android:layout_marginEnd="@dimen/ultra_big_margin"
-                android:layout_marginBottom="@dimen/small_margin"
-                android:gravity="center"
-                android:orientation="horizontal"
-                tools:background="@color/teal_700" />
-        </RelativeLayout>
-
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp"
+                android:background="@color/transparent"
+                tools:background="@color/transparent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
