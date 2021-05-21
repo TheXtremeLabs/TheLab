@@ -49,7 +49,7 @@ class YoutubeLikeDetailActivity : AppCompatActivity() {
 
         // Tell the framework to wait.
         supportPostponeEnterTransition()
-        ButterKnife.bind(this)
+
         getBundle()
 
         loadContent()

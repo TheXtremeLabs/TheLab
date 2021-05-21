@@ -85,6 +85,7 @@
                 android:id="@+id/tv_app_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:transitionName="@string/splash_version_to_time_transition_name"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/small_margin"
                 android:alpha="0"

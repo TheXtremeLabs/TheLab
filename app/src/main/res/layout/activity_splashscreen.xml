@@ -72,52 +72,6 @@
             app:tint="@color/light"
             tools:alpha="1" />
 
-        <!--
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/extra_big_margin"
-                android:gravity="center"
-                android:orientation="horizontal">
-                &lt;!&ndash; Image &ndash;&gt;
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/iv_the_la_part"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:adjustViewBounds="true"
-                    android:alpha="0"
-                    android:scaleType="fitCenter"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_the_la_part"
-                    tools:alpha="1"
-                    tools:visibility="visible" />
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/iv_five_number"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/extra_small_margin"
-                    android:layout_weight="1"
-                    android:adjustViewBounds="true"
-                    android:background="@color/default_dark"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/ic_five_number" />
-            </LinearLayout>
-
-        </LinearLayout>-->
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/horizontal_middle_guideline"
             android:layout_width="0dp"
@@ -147,15 +101,14 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/ultra_ultra_big_margin_tablet"
             android:layout_marginBottom="@dimen/ultra_big_margin_tablet"
-            android:indeterminate="true"
             android:alpha="0"
-            tools:alpha="1"
             android:indeterminateOnly="true"
             app:indicatorColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:trackCornerRadius="@dimen/small_margin"
+            tools:alpha="1"
             tools:progress="45" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

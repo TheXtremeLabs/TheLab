@@ -28,6 +28,21 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_collapseMode="parallax">
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_app_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0"
+                android:textColor="@color/white"
+                android:textSize="52sp"
+                android:transitionName="@string/splash_version_to_time_transition_name"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:alpha="1"
+                tools:text="v 1.0.3" />
+
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
@@ -35,15 +50,16 @@
                 android:layout_centerInParent="true"
                 tools:background="@color/red" />
 
+
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:tabBackground="@drawable/tab_selector"
                 app:tabGravity="center"
                 app:tabIndicatorHeight="0dp"
-                android:background="@color/transparent"
                 tools:background="@color/transparent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

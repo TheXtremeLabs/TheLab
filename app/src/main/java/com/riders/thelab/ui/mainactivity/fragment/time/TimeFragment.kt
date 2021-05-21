@@ -8,13 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.riders.thelab.core.utils.LabCompatibilityManager
+import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.databinding.FragmentTimeBinding
 import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class TimeFragment : Fragment() {
@@ -46,6 +46,13 @@ class TimeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mTimeViewModel.getProgressVisibility().observe(
+            requireActivity(),
+            {
+                if (!it) UIManager.hideView(viewBinding.progressBar)
+                else UIManager.showView(viewBinding.progressBar)
+            })
 
         mTimeViewModel
             .getImagesFetchedDone()
@@ -80,7 +87,7 @@ class TimeFragment : Fragment() {
     }
 
     override fun onPause() {
-        if (null != mThread && !mThread!!.isInterrupted()) {
+        if (null != mThread && !mThread!!.isInterrupted) {
             mThread!!.interrupt()
             mThread = null
         }

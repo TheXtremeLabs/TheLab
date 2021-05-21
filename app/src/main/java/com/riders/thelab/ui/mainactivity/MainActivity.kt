@@ -12,12 +12,9 @@ import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.provider.Settings
-import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -25,10 +22,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager.widget.ViewPager
+import androidx.transition.TransitionInflater
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -54,6 +50,7 @@ import com.riders.thelab.utils.Validator
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
+import kotlin.system.exitProcess
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(),
@@ -63,6 +60,8 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var viewBinding: ActivityMainBinding
 
+    private val mViewModel: MainActivityViewModel by viewModels()
+
     /**
      * The pager adapter, which provides the pages to the view pager widget.
      */
@@ -71,32 +70,17 @@ class MainActivity : AppCompatActivity(),
     private var networkManager: LabNetworkManagerNewAPI? = null
     private var menu: Menu? = null
     private var fragmentList: MutableList<Fragment>? = null
-    private var layoutDots: LinearLayout? = null
-    private lateinit var dots: Array<TextView?>
-
-    /*
-     * ViewPager page change listener
-     */
-    private var pageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
-        override fun onPageSelected(position: Int) {
-            super.onPageSelected(position)
-            addBottomDots(position)
-        }
-    }
-
-    private val mViewModel: MainActivityViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // In Activity's onCreate() for instance
-        // make fully Android Transparent Status bar
+        val w = window
+        w.allowEnterTransitionOverlap = true
 
         // In Activity's onCreate() for instance
         // make fully Android Transparent Status bar
         when (this.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_YES -> {
-                val w = window
                 w.statusBarColor = Color.TRANSPARENT
             }
             Configuration.UI_MODE_NIGHT_NO,
@@ -105,9 +89,9 @@ class MainActivity : AppCompatActivity(),
         }
         window.navigationBarColor = ContextCompat.getColor(this, R.color.default_dark)
 
-
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+
 
         if (!LabCompatibilityManager.isTablet(this)) {
             initViews()
@@ -118,7 +102,6 @@ class MainActivity : AppCompatActivity(),
         initViewModelsObservers()
 
         mViewModel.retrieveApplications()
-
     }
 
     override fun onStart() {
@@ -128,9 +111,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onPause() {
-        super.onPause()
-
         mConnectivityManager!!.unregisterNetworkCallback(networkManager!!)
+        super.onPause()
     }
 
     override fun onResume() {
@@ -152,7 +134,7 @@ class MainActivity : AppCompatActivity(),
         this.menuInflater.inflate(R.menu.menu_main, menu)
         this.menu = menu
 
-        mViewModel.checkConnection(this)
+        mViewModel.checkConnection()
         return true
     }
 
@@ -188,6 +170,11 @@ class MainActivity : AppCompatActivity(),
         }
 
         return true
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        exitProcess(0)
     }
 
 
@@ -260,7 +247,6 @@ class MainActivity : AppCompatActivity(),
     /**
      * Set up views (recyclerviews, spinner, etc...)
      */
-
     private fun initViews() {
         initCollapsingToolbar()
         initToolbar()
@@ -268,20 +254,23 @@ class MainActivity : AppCompatActivity(),
         // Instantiate a ViewPager2 and a PagerAdapter.
         fragmentList = ArrayList()
 
+        val timeFragment = TimeFragment.newInstance()
+        timeFragment.sharedElementEnterTransition =
+            TransitionInflater.from(this).inflateTransition(R.transition.change_image_transform)
+
         // add Fragments in your ViewPagerFragmentAdapter class
-        fragmentList!!.add(TimeFragment())
-        fragmentList!!.add(WeatherFragment())
-        fragmentList!!.add(NewsFragment())
+        fragmentList!!.add(timeFragment)
+        fragmentList!!.add(WeatherFragment.newInstance())
+        fragmentList!!.add(NewsFragment.newInstance())
+
         pagerAdapter = ViewPager2Adapter(this@MainActivity, fragmentList as ArrayList<Fragment>)
 
         // set Orientation in your ViewPager2
         viewBinding.includeToolbarLayout?.viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         viewBinding.includeToolbarLayout?.viewPager?.adapter = pagerAdapter
-        viewBinding.includeToolbarLayout?.viewPager?.registerOnPageChangeCallback(pageChangeCallback)
 
-        viewBinding.includeToolbarLayout?.tabLayout?.let {tabLayout ->
-            viewBinding.includeToolbarLayout?.viewPager?.let {viewPager2 ->
-
+        viewBinding.includeToolbarLayout?.tabLayout?.let { tabLayout ->
+            viewBinding.includeToolbarLayout?.viewPager?.let { viewPager2 ->
                 TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
                     //Some implementation
                 }.attach()
@@ -305,28 +294,6 @@ class MainActivity : AppCompatActivity(),
             )
             .commit()
     }
-
-    private fun addBottomDots(currentPage: Int) {
-
-        dots = arrayOfNulls(fragmentList!!.size)
-
-        val colorsActive: IntArray = this.resources.getIntArray(R.array.array_dot_active)
-        val colorsInactive: IntArray = this.resources.getIntArray(R.array.array_dot_inactive)
-
-        layoutDots?.removeAllViews()
-
-        for (i in dots.indices) {
-            dots[i] = TextView(this@MainActivity)
-            dots[i]?.text = Html.fromHtml("&#8226;")
-            dots[i]?.textSize = 35f
-            dots[i]?.setTextColor(colorsInactive[currentPage])
-            layoutDots?.addView(dots[i])
-        }
-
-        if (dots.isNotEmpty())
-            dots[currentPage]?.setTextColor(colorsActive[currentPage])
-    }
-
 
     /**
      * Initializing collapsing toolbar
@@ -438,10 +405,8 @@ class MainActivity : AppCompatActivity(),
      * Hide menu buttons when collapse toolbar is expanded
      */
     fun hideMenuButtons() {
-        if (menu != null) menu!!.setGroupVisible(
-            R.id.menu_main_group,
-            false
-        ) // Or true to be visible
+        // Or true to be visible
+        if (menu != null) menu!!.setGroupVisible(R.id.menu_main_group, false)
     }
 
     private fun showItemDetail(app: App) {
@@ -516,13 +481,11 @@ class MainActivity : AppCompatActivity(),
 
     override fun onConnected() {
         UIManager.showConnectionStatusInSnackBar(this@MainActivity, true)
-
         updateToolbarConnectionIcon(true)
     }
 
     override fun onLostConnection() {
         UIManager.showConnectionStatusInSnackBar(this@MainActivity, false)
-
         updateToolbarConnectionIcon(false)
     }
 

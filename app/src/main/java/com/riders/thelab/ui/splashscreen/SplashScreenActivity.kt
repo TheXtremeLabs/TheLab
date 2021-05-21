@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.media.MediaPlayer.OnPreparedListener
@@ -14,15 +15,16 @@ import android.view.View
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabAnimationsManager
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.databinding.ActivitySplashscreenBinding
 import com.riders.thelab.navigator.Navigator
+import com.riders.thelab.ui.mainactivity.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -91,7 +93,7 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         }
     }
 
-    
+
     override fun onPrepared(mp: MediaPlayer?) {
         //if we have a position on savedInstanceState, the video playback should start from here
 
@@ -224,7 +226,8 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
                 startProgressAnimation()
             }
         })
-        versionTextAnimator.startDelay = LabAnimationsManager.getInstance().longAnimationDuration.toLong()
+        versionTextAnimator.startDelay =
+            LabAnimationsManager.getInstance().longAnimationDuration.toLong()
         versionTextAnimator.start()
     }
 
@@ -232,32 +235,35 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         Timber.e("startProgressAnimation()")
         fadeProgressAnimator = ObjectAnimator.ofFloat(viewBinding.progressBar, "alpha", 0f, 1f)
         fadeProgressAnimator.duration =
-            LabAnimationsManager.getInstance().shortAnimationDuration.toLong()
+            LabAnimationsManager.getInstance().mediumAnimationDuration.toLong()
         fadeProgressAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
                 viewBinding.progressBar.alpha = 1f
 
-                goToMainActivity()
+                clearAllAnimations()
             }
         })
         fadeProgressAnimator.start()
     }
 
-    private fun goToMainActivity() {
-        Timber.i("goToMainActivity()")
+    private fun clearAllAnimations() {
+        Timber.d("clearAllAnimations()")
 
-        Completable
-            .complete()
-            .delay(3, TimeUnit.SECONDS)
-            .doOnComplete {
-                Navigator(this).callMainActivity()
-                finish()
-            }
-            .doOnError { t: Throwable? -> Timber.e(t) }
-            .subscribeOn(Schedulers.io())
-            //Caused by: android.util.AndroidRuntimeException:
-            // Animators may only be run on Looper threads
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+        Timber.d("Use coroutines to clear animations then launch Main Activity")
+        // Use coroutines to clear animations then launch Main Activity
+        GlobalScope.launch(Dispatchers.IO) {
+            Timber.d("Use coroutines to clear animations")
+            LabAnimationsManager.getInstance().clearAnimations(
+                theAnimator, labAnimator, versionTextAnimator, fadeProgressAnimator
+            )
+
+            delay(TimeUnit.SECONDS.toMillis(3))
+            launchActivity()
+        }
+    }
+
+    private fun launchActivity() {
+        Navigator(this).callMainActivity()
+        finish()
     }
 }
