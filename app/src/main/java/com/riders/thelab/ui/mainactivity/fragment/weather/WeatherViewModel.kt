@@ -46,11 +46,10 @@ class WeatherViewModel @Inject constructor(
     }
 
     fun getCityWeather(context: FragmentActivity, location: Location) {
-
         val disposable: Disposable? =
             mRepositoryImpl
                 .getWeatherOneCallAPI(location)
-                ?.subscribe(
+                .subscribe(
                     { response ->
 
                         val address: Address? =
@@ -90,5 +89,9 @@ class WeatherViewModel @Inject constructor(
                     })
 
         compositeDisposable.add(disposable)
+    }
+
+    fun clearDisposable() {
+        compositeDisposable.clear()
     }
 }
