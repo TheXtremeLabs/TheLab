@@ -1,7 +1,9 @@
 package com.riders.thelab.data.remote.dto.weather
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class Temperature(
     @Json(name = "day")
     val day: Double = 0.0,

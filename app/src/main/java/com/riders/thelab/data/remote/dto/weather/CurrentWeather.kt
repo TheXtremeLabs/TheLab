@@ -1,7 +1,9 @@
 package com.riders.thelab.data.remote.dto.weather
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class CurrentWeather(
     @Json(name = "dt")
     val dateTimeUTC: Long = 0,
@@ -38,7 +40,7 @@ data class CurrentWeather(
 
     // UV index
     @Json(name = "uvi")
-    val UVIndex: Double = 0.0,
+    val uvIndex: Double = 0.0,
 
     @Json(name = "clouds")
     val clouds: Int = 0,
@@ -60,10 +62,10 @@ data class CurrentWeather(
     val weather: List<Weather>,
 
     @Json(name = "rain")
-    val rain: Rain,
+    val rain: Rain? = null,
 
     @Json(name = "snow")
-    val snow: Snow,
+    val snow: Snow? = null,
 
     // Probability of precipitation
     @Json(name = "pop")
