@@ -54,20 +54,20 @@ class WeatherFragment : Fragment() {
 
         mWeatherViewModel
             .getProgressBarVisibility()
-            .observe(requireActivity(), {
+            .observe(viewLifecycleOwner, {
                 if (!it) UIManager.hideView(viewBinding.progressBar)
                 else UIManager.showView(viewBinding.progressBar)
             })
 
         mWeatherViewModel
             .getWeatherFailed()
-            .observe(requireActivity(), {
+            .observe(viewLifecycleOwner, {
                 Timber.e("getWeatherFailed")
             })
 
         mWeatherViewModel
             .getWeather()
-            .observe(requireActivity(), {
+            .observe(viewLifecycleOwner, {
                 updateUI(it)
             })
     }
@@ -83,19 +83,19 @@ class WeatherFragment : Fragment() {
         Timber.d("onResume()")
         EventBus.getDefault().register(this)
 
-        val labLocationManager = LabLocationManager(requireActivity())
+        val labLocationManager = LabLocationManager(requireActivity(), requireContext())
 
         if (!labLocationManager.canGetLocation()) {
             Timber.e("Cannot get location please enable position")
             labLocationManager.showSettingsAlert()
         } else {
-            labLocationManager.setActivity(activity)
             labLocationManager.setLocationListener()
-            labLocationManager.location
+            labLocationManager.getLocation()
         }
     }
 
     override fun onDestroyView() {
+        mWeatherViewModel.clearDisposable()
         super.onDestroyView()
     }
 
