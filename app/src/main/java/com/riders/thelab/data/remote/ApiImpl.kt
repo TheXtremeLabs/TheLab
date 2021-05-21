@@ -92,13 +92,8 @@ class ApiImpl @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun getWeatherOneCallAPI(location: Location): Single<OneCallWeatherResponse>? {
+    override fun getWeatherOneCallAPI(location: Location): Single<OneCallWeatherResponse> {
         Timber.e("getWeatherOneCallAPI()")
-
-        if (null == location) {
-            Timber.e("Cannot perform request call object is null")
-            return null
-        }
 
         return mWeatherApiService
             .getCurrentWeatherWithNewOneCallAPI(
