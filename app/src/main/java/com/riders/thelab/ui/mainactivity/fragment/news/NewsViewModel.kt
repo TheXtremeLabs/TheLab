@@ -16,12 +16,12 @@ class NewsViewModel : ViewModel() {
     }
 
     fun fetchRecentApps(recentAppsNames: Array<String>) {
-        val recentAppList: List<App>? = null
+        val recentAppList: MutableList<App> = ArrayList()
 
         // Setup last 3 features added
         for (element in Constants.getInstance().getActivityList()) {
             for (item in recentAppsNames) {
-                if (element.appTitle?.contains(item) == true)
+                if (element.appTitle.contains(item))
                     (recentAppList as ArrayList<App>).add(element)
             }
         }
