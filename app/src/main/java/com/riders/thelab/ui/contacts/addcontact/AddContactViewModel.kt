@@ -56,8 +56,9 @@ class AddContactViewModel @Inject constructor(
         activity.finish()
     }
 
-    fun clearDisposable() {
-        compositeDisposable.dispose()
 
+    override fun onCleared() {
+        compositeDisposable.dispose()
+        super.onCleared()
     }
 }

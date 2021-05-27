@@ -272,4 +272,9 @@ class RecyclerViewModel @Inject constructor(
             adapter.restoreItem(item, position)
         }
     }
+
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
+    }
 }

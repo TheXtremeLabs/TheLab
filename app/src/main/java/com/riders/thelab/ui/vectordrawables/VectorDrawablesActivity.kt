@@ -3,6 +3,7 @@ package com.riders.thelab.ui.vectordrawables
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
 import com.riders.thelab.databinding.ActivityVectorDrawablesBinding
@@ -38,5 +39,14 @@ class VectorDrawablesActivity : AppCompatActivity() {
             progressBarAnimatedVectorDrawable = drawableProgressBar
             progressBarAnimatedVectorDrawable!!.start()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
     }
 }

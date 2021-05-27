@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.recycler
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -9,19 +10,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.imageview.ShapeableImageView
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabCompatibilityManager
+import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.databinding.ActivityRecyclerViewBinding
-import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class RecyclerViewActivity: AppCompatActivity(), RecyclerClickListener {
+class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
 
     lateinit var viewBinding: ActivityRecyclerViewBinding
 
@@ -45,6 +45,16 @@ class RecyclerViewActivity: AppCompatActivity(), RecyclerClickListener {
         mRecyclerViewModel.getFirebaseJSONURL(this)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
+    }
+
+
     fun initViewModelObservers() {
         mRecyclerViewModel.getJSONURLFetched().observe(this, {
             bucketUrl = it
@@ -67,7 +77,7 @@ class RecyclerViewActivity: AppCompatActivity(), RecyclerClickListener {
                 .delay(3, TimeUnit.SECONDS)
                 .doOnComplete {
                     this@RecyclerViewActivity.runOnUiThread {
-//                        hideLoader()
+                        UIManager.hideView(viewBinding.progressBar)
                         adapter = RecyclerViewAdapter(
                             this,
                             it,

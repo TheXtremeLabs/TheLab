@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.location.*
 import android.os.Bundle
 import android.os.Looper
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.Animation
@@ -174,6 +175,15 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         }
 
         updateLocationUI()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
     }
 
 

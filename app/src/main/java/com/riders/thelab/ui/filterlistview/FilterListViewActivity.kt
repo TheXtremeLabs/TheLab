@@ -4,6 +4,7 @@ package com.riders.thelab.ui.filterlistview
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
@@ -49,6 +50,15 @@ class FilterListViewActivity : AppCompatActivity(), TextWatcher {
                 // Capture Text in EditText
                 viewBinding.etFilterListviewSearch.addTextChangedListener(this)
             })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
     }
 
     private fun setAdapter() {

@@ -78,12 +78,6 @@ class AddContactActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        mAddContactViewModel.clearDisposable()
-        super.onDestroy()
-    }
-
-
     /**
      * Validating form
      */

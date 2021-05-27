@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -90,6 +91,15 @@ class CustomToastActivity : AppCompatActivity() {
                 .start()
             displayCustomToastUsingClass()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
     }
 
     override fun onDestroy() {

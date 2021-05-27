@@ -163,8 +163,12 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         return super.onCreateOptionsMenu(menu)
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
             R.id.action_position -> {
                 if (mWeatherViewModel.canGetLocation(this, context))
                     mWeatherViewModel.getCurrentWeather()
@@ -180,7 +184,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             R.id.action_search -> Timber.d("noinspection SimplifiableIfStatement")
 
         }
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
     override fun onDestroy() {

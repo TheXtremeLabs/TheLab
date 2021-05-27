@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.multipane
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -50,6 +51,16 @@ class MultipaneActivity : AppCompatActivity(), MovieClickListener {
             mMultiPaneViewModel.fetchMovies()
         }
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
+    }
+
 
     private fun initViewModelObservers() {
 

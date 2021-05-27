@@ -2,6 +2,7 @@ package com.riders.thelab.ui.youtubelike
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -35,6 +36,15 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
         initViewModelsObservers()
 
         mYoutubeViewModel.fetchVideos(this)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
     }
 
     fun setupToolbar() {

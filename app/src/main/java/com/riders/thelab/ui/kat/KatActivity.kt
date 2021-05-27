@@ -3,6 +3,7 @@ package com.riders.thelab.ui.kat
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.*
@@ -103,6 +104,15 @@ class KatActivity : AppCompatActivity(), TextWatcher {
                 .child(key!!)
                 .setValue(katModel)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
     }
 
     private fun initMessageRecyclerView() {

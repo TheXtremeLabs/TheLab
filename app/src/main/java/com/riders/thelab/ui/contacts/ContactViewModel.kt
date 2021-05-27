@@ -90,7 +90,7 @@ class ContactViewModel @Inject constructor(
         navigator.callAddContactActivity()
     }
 
-    fun showDetailContact(activity: ContactsActivity,navigator: Navigator,  contact: Contact) {
+    fun showDetailContact(activity: ContactsActivity, navigator: Navigator, contact: Contact) {
         Timber.d("showDetailContact()")
         val intent = Intent(activity, ContactDetailActivity::class.java)
         intent.putExtra(ContactDetailActivity.CONTACT_NAME, contact.name)
@@ -99,7 +99,8 @@ class ContactViewModel @Inject constructor(
         navigator.callContactDetailActivity(intent)
     }
 
-    fun clearDisposable() {
+    override fun onCleared() {
         compositeDisposable.dispose()
+        super.onCleared()
     }
 }

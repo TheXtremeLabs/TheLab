@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +21,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class BiometricActivity : AppCompatActivity() {
 
-    private var context: Context? = null
+    private lateinit var context: Context
 
     // Views
     private lateinit var viewBinding: ActivityBiometricBinding
@@ -36,6 +37,16 @@ class BiometricActivity : AppCompatActivity() {
         // initGoldFinger
         initGoldFinger()
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
+    }
+
 
     ///////////////////////
     //

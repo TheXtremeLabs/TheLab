@@ -131,4 +131,9 @@ class YoutubeLikeViewModel @Inject constructor(
             )
         }
     }
+
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
+    }
 }
