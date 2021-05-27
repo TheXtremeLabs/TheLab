@@ -2,6 +2,7 @@ package com.riders.thelab.ui.transition
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
@@ -28,12 +29,11 @@ class TransitionActivity : AppCompatActivity() {
 
             // Variables
             val intent = Intent(this, TransitionDetailActivity::class.java)
-            var options: ActivityOptionsCompat? = null
 
 
-            var sePairThumb: Pair<View, String> =
+            val sePairThumb: Pair<View, String> =
                 Pair.create(viewBinding.ivLogo, getString(R.string.logo_transition_name))
-            var sePairButton: Pair<View, String> =
+            val sePairButton: Pair<View, String> =
                 Pair.create(
                     viewBinding.buttonNextActivity,
                     getString(R.string.button_transition_name)
@@ -41,10 +41,7 @@ class TransitionActivity : AppCompatActivity() {
 
             // create the transition animation - the images in the layouts
             // of both activities are defined with android:transitionName="robot"
-
-            // create the transition animation - the images in the layouts
-            // of both activities are defined with android:transitionName="robot"
-            options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 this,
                 sePairThumb, sePairButton
             )
@@ -54,5 +51,14 @@ class TransitionActivity : AppCompatActivity() {
             // start the new activity
             startActivity(intent, options.toBundle())
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
     }
 }

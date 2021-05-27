@@ -1,8 +1,8 @@
 package com.riders.thelab.ui.deviceinformation
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
@@ -34,6 +34,15 @@ class DeviceInformationActivity : AppCompatActivity() {
             })
 
         mViewModel.fetchDeviceInformation(this)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
     }
 
     @SuppressLint("SetTextI18n")

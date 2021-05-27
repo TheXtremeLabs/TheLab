@@ -160,10 +160,6 @@ class ContactsActivity : AppCompatActivity(), ContactsClickListener,
         }
     }
 
-    override fun onDestroy() {
-        mContactViewModel.clearDisposable()
-        super.onDestroy()
-    }
 
     override fun onContactItemCLickListener(item: Contact, position: Int) {
         Timber.d("contact %s clicked", item.toString())

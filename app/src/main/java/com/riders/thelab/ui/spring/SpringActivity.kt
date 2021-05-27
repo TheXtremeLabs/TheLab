@@ -2,6 +2,7 @@ package com.riders.thelab.ui.spring
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
@@ -82,6 +83,16 @@ class SpringActivity : AppCompatActivity() {
         viewBinding.imageView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
         chainedSpringAnimation()
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
+    }
+
 
     fun createSpringAnimation(
         view: View?,

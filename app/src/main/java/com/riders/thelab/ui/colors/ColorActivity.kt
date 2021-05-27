@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.colors
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabAnimationsManager
@@ -63,5 +64,14 @@ class ColorActivity : AppCompatActivity() {
                 )
 
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
     }
 }

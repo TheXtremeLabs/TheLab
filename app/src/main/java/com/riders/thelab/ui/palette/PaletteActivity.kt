@@ -4,6 +4,7 @@ package com.riders.thelab.ui.palette
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
@@ -29,8 +30,7 @@ class PaletteActivity : AppCompatActivity() {
         setContentView(viewBinding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setTitle(getString(R.string.activity_title_palette))
-
+        supportActionBar?.title = getString(R.string.activity_title_palette)
 
         Glide.with(this)
             .load(Constants.PALETTE_URL)
@@ -76,7 +76,16 @@ class PaletteActivity : AppCompatActivity() {
                 }
             })
             .into(viewBinding.paletteImage)
+    }
 
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
     }
 
 
