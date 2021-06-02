@@ -437,16 +437,16 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         dataSet.valueTextSize = 12f
         dataSet.valueFormatter = object : ValueFormatter() {
             override fun getPointLabel(entry: Entry): String {
-                return "${entry.y.toInt()} + ${getString(R.string.degree_placeholder)}"
+                return "${entry.y.toInt()}" + getString(R.string.degree_placeholder)
             }
         }
         dataSet.valueTextColor = whiteColor
         dataSet.getValueTextColor(whiteColor)
 
         // the labels that should be drawn on the XAxis
-        val quarters =
-            WeatherUtils.getWeatherTemperaturesQuarters(hourlyWeather as List<CurrentWeather>)
+        val quarters = WeatherUtils.getWeatherTemperaturesQuarters(hourlyWeather)
         Timber.d("quarters value : %d", quarters.size)
+
         val formatter: ValueFormatter = object : ValueFormatter() {
             override fun getAxisLabel(value: Float, axis: AxisBase): String {
                 return quarters[value.toInt()]

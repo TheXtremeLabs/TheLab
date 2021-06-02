@@ -138,6 +138,9 @@ class ContactsActivity : AppCompatActivity(), ContactsClickListener,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
             R.id.action_add_contact -> mContactViewModel.addNewContact(Navigator(this))
             R.id.action_search -> Timber.d("noinspection SimplifiableIfStatement")
             R.id.action_supervisor ->
