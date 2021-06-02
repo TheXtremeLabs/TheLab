@@ -114,7 +114,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar_recycler_view_detail"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
