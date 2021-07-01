@@ -33,6 +33,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabAddressesUtils
 import com.riders.thelab.core.utils.LabLocationManager
+import com.riders.thelab.core.utils.LabLocationUtils
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.bean.MapsEnum
 import com.riders.thelab.databinding.ActivityLocationOnMapsBinding
@@ -264,7 +265,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 .position(latLng)
                 .title(
                     geocoder?.let {
-                        LabLocationManager.getDeviceLocationToString(
+                        LabLocationUtils.getDeviceLocationToString(
                             it,
                             location,
                             this

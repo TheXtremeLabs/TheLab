@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.mainactivity.fragment.weather
 
 import android.location.Location
+import android.location.LocationListener
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +24,7 @@ import java.util.*
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
-class WeatherFragment : Fragment() {
+class WeatherFragment : Fragment(), LocationListener {
 
     companion object {
         fun newInstance(): WeatherFragment {
@@ -83,7 +84,7 @@ class WeatherFragment : Fragment() {
         Timber.d("onResume()")
         EventBus.getDefault().register(this)
 
-        val labLocationManager = LabLocationManager(requireActivity(), requireContext())
+        val labLocationManager = LabLocationManager(requireActivity(), requireContext(), this)
 
         if (!labLocationManager.canGetLocation()) {
             Timber.e("Cannot get location please enable position")
@@ -135,4 +136,13 @@ class WeatherFragment : Fragment() {
         viewBinding.tvWeatherMainDescription.text = cityWeather.cityWeatherDescription
     }
 
+    override fun onLocationChanged(location: Location) {
+        Timber.e("onLocationChanged() $location")
+    }
+
+    override fun onProviderEnabled(provider: String) {}
+
+    override fun onProviderDisabled(provider: String) {}
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 }
