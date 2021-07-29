@@ -22,14 +22,10 @@ class TransitionActivity : AppCompatActivity() {
         viewBinding = ActivityTransitionBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        supportActionBar?.title = getString(R.string.activity_title_transition)
-
         viewBinding.buttonNextActivity.setOnClickListener {
-
 
             // Variables
             val intent = Intent(this, TransitionDetailActivity::class.java)
-
 
             val sePairThumb: Pair<View, String> =
                 Pair.create(viewBinding.ivLogo, getString(R.string.logo_transition_name))

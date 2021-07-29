@@ -147,18 +147,20 @@
 
         <activity
             android:name=".ui.colors.ColorActivity"
+            android:label="@string/activity_title_colors"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
         <activity
             android:name=".ui.biometric.BiometricActivity"
+            android:label="@string/activity_title_biometric"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
         <activity
             android:name=".ui.recycler.RecyclerViewActivity"
+            android:label="@string/activity_title_recycler_view"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
-
         <activity
             android:name=".ui.recycler.RecyclerViewDetailActivity"
             android:parentActivityName=".ui.recycler.RecyclerViewActivity"
@@ -166,17 +168,20 @@
 
         <activity
             android:name=".ui.tabs.WorkingTabsActivity"
+            android:label="@string/activity_title_working_tabs"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/TabTheme" />
 
         <activity
             android:name=".ui.floatinglabels.FloatingLabelsActivity"
+            android:label="@string/activity_title_floating_labels"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/SwipeDownTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".ui.contacts.ContactsActivity"
+            android:label="@string/activity_title_database_contacts"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab.NoActionBar">
 
@@ -196,6 +201,7 @@
 
         <activity
             android:name=".ui.contacts.addcontact.AddContactActivity"
+            android:label="@string/activity_title_add_new_contact"
             android:parentActivityName=".ui.contacts.ContactsActivity"
             android:theme="@style/Theme.TheLab"
             android:windowSoftInputMode="adjustResize|stateHidden" />
@@ -203,6 +209,7 @@
 
         <activity
             android:name=".ui.locationonmaps.LocationOnMapsActivity"
+            android:label="@string/activity_title_location"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/LocationTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
@@ -210,28 +217,33 @@
 
         <activity
             android:name=".ui.schedule.ScheduleActivity"
+            android:label="@string/activity_title_schedule_jobs"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".ui.deviceinformation.DeviceInformationActivity"
+            android:label="@string/activity_title_device_information"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/SwipeDownTheme" />
 
         <activity
             android:name=".ui.palette.PaletteActivity"
+            android:label="@string/activity_title_palette"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/PaletteTheme" />
 
         <activity
             android:name=".ui.filterlistview.FilterListViewActivity"
+            android:label="@string/activity_title_filter_list_view"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/FilterListViewTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".ui.multipane.MultipaneActivity"
+            android:label="@string/activity_title_multipane"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/MultiPaneTheme" />
         <activity
@@ -241,6 +253,7 @@
 
         <activity
             android:name=".ui.builtin.BuiltInWebViewActivity"
+            android:label="@string/activity_title_built_in_web_view"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/BuiltInWebViewTheme" />
 
@@ -251,6 +264,7 @@
 
         <activity
             android:name=".ui.youtubelike.YoutubeLikeActivity"
+            android:label="@string/activity_title_youtube_like"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/YoutubeTheme" />
         <activity
@@ -260,12 +274,14 @@
 
         <activity
             android:name=".ui.speechtotext.SpeechToTextActivity"
+            android:label="@string/activity_title_speech_to_text"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
 
         <activity
             android:name=".ui.weather.WeatherActivity"
+            android:label="@string/activity_title_weather"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab">
 
@@ -280,42 +296,49 @@
 
         <activity
             android:name=".ui.floatingview.FloatingViewActivity"
+            android:label="@string/activity_title_floating_view"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
         <activity
             android:name=".ui.transition.TransitionActivity"
+            android:label="@string/activity_title_transition"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/TransitionTheme" />
         <activity
             android:name=".ui.transition.TransitionDetailActivity"
+            android:label="@string/activity_title_transition_detail"
             android:parentActivityName=".ui.transition.TransitionActivity"
             android:theme="@style/TransitionTheme" />
 
         <activity
             android:name=".ui.customtoast.CustomToastActivity"
+            android:label="@string/activity_title_custom_toast"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/TransitionTheme" />
         <activity
             android:name=".ui.vectordrawables.VectorDrawablesActivity"
+            android:label="@string/activity_title_vector_drawables"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
         <activity
             android:name=".ui.spring.SpringActivity"
+            android:label="@string/activity_title_spring"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
         <activity
             android:name=".ui.kat.KatActivity"
+            android:label="@string/activity_title_kat"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".ui.songplayer.SongPlayerActivity"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
             android:label="@string/activity_title_music"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 

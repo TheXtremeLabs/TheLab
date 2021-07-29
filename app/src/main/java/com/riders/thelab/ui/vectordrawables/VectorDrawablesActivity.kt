@@ -19,8 +19,6 @@ class VectorDrawablesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityVectorDrawablesBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-
-        supportActionBar?.title = getString(R.string.activity_title_vector_drawables)
     }
 
     override fun onResume() {
