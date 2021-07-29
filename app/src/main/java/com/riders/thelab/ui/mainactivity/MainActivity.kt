@@ -1,22 +1,23 @@
 package com.riders.thelab.ui.mainactivity
 
-import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.net.wifi.WifiManager
 import android.os.Bundle
-import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -25,17 +26,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.riders.thelab.R
+import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.interfaces.ConnectivityListener
+import com.riders.thelab.core.location.GpsUtils
+import com.riders.thelab.core.location.OnGpsListener
 import com.riders.thelab.core.utils.LabCompatibilityManager
+import com.riders.thelab.core.utils.LabGlideListener
 import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.core.views.ItemSnapHelper
@@ -46,7 +46,7 @@ import com.riders.thelab.ui.mainactivity.fragment.bottomsheet.BottomSheetFragmen
 import com.riders.thelab.ui.mainactivity.fragment.news.NewsFragment
 import com.riders.thelab.ui.mainactivity.fragment.time.TimeFragment
 import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment
-import com.riders.thelab.utils.Validator
+import com.riders.thelab.utils.Constants.Companion.GPS_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
@@ -54,9 +54,8 @@ import kotlin.system.exitProcess
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(),
-    MainActivityAppClickListener,
-    ConnectivityListener,
-    MenuItem.OnMenuItemClickListener {
+    Toolbar.OnMenuItemClickListener, OnOffsetChangedListener,
+    ConnectivityListener, MainActivityAppClickListener, OnGpsListener {
 
     private lateinit var viewBinding: ActivityMainBinding
 
@@ -67,11 +66,23 @@ class MainActivity : AppCompatActivity(),
      */
     private var pagerAdapter: FragmentStateAdapter? = null
     private var mConnectivityManager: ConnectivityManager? = null
-    private var networkManager: LabNetworkManagerNewAPI? = null
+    private lateinit var networkManager: LabNetworkManagerNewAPI
+
     private var menu: Menu? = null
     private var fragmentList: MutableList<Fragment>? = null
 
+    private lateinit var locationReceiver: LocationBroadcastReceiver
+    private lateinit var mGpsUtils: GpsUtils
+    private var isGPS: Boolean = false
 
+    private var isShow = false
+    private var scrollRange = -1
+
+    /////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    /////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val w = window
@@ -92,15 +103,19 @@ class MainActivity : AppCompatActivity(),
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
+        // Variables
+        locationReceiver = LocationBroadcastReceiver()
+        mGpsUtils = GpsUtils(this)
 
+        // Views
         if (!LabCompatibilityManager.isTablet(this)) {
             initViews()
         } else {
             bindTabletViews()
         }
 
+        // ViewModel
         initViewModelsObservers()
-
         mViewModel.retrieveApplications()
     }
 
@@ -111,7 +126,12 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onPause() {
-        mConnectivityManager!!.unregisterNetworkCallback(networkManager!!)
+        mConnectivityManager!!.unregisterNetworkCallback(networkManager)
+
+        // View Models implementation
+        // don't forget to remove receiver data source
+        mViewModel.removeDataSource(locationReceiver.getLocationStatus())
+        unregisterReceiver(locationReceiver)
         super.onPause()
     }
 
@@ -125,50 +145,33 @@ class MainActivity : AppCompatActivity(),
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
 
-        mConnectivityManager!!.registerNetworkCallback(request, networkManager!!)
+        mConnectivityManager!!.registerNetworkCallback(request, networkManager)
+
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
+
+        // View Models implementation
+        // add data source
+        mViewModel.addDataSource(locationReceiver.getLocationStatus())
+        registerReceiver(locationReceiver, intentFilter)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == GPS_REQUEST) {
+                isGPS = true; // flag maintain before get location
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         Timber.d("onCreateOptionsMenu()")
-
         this.menuInflater.inflate(R.menu.menu_main, menu)
         this.menu = menu
-
         mViewModel.checkConnection()
-        return true
-    }
-
-    @SuppressLint("InlinedApi")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.connection_icon -> {
-                UIManager.showActionInToast(this, "Wifi clicked")
-                val wifiManager: WifiManager =
-                    this.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
-
-                if (!LabCompatibilityManager.isAndroid10()) {
-                    val isWifi = wifiManager.isWifiEnabled
-                    wifiManager.isWifiEnabled = !isWifi
-                } else {
-                    Timber.e("For applications targeting android.os.Build.VERSION_CODES Q or above, this API will always fail and return false")
-
-                    /*
-                        ACTION_INTERNET_CONNECTIVITY Shows settings related to internet connectivity, such as Airplane mode, Wi-Fi, and Mobile Data.
-                        ACTION_WIFI Shows Wi-Fi settings, but not the other connectivity settings. This is useful for apps that need a Wi-Fi connection to perform large uploads or downloads.
-                        ACTION_NFC Shows all settings related to near-field communication (NFC).
-                        ACTION_VOLUME Shows volume settings for all audio streams.
-                     */
-                    val panelIntent = Intent(Settings.Panel.ACTION_WIFI)
-                    this.startActivityForResult(panelIntent, 955)
-                }
-            }
-            R.id.action_settings -> UIManager.showActionInToast(this, "Settings clicked")
-            R.id.info_icon -> showBottomSheetDialogFragment()
-            R.id.action_force_crash -> throw java.lang.RuntimeException("This is a crash")
-            else -> {
-            }
-        }
-
         return true
     }
 
@@ -177,12 +180,11 @@ class MainActivity : AppCompatActivity(),
         exitProcess(0)
     }
 
-
     override fun onDestroy() {
         Timber.d("onDestroy()")
         Timber.d("unregister network callback()")
         try {
-            networkManager?.let { mConnectivityManager?.unregisterNetworkCallback(it) };
+            networkManager.let { mConnectivityManager?.unregisterNetworkCallback(it) };
         } catch (exception: RuntimeException) {
             Timber.e("NetworkCallback was already unregistered")
         }
@@ -207,42 +209,30 @@ class MainActivity : AppCompatActivity(),
                 })
 
         mViewModel
+            .getLocationData()
+            .observe(
+                this,
+                { locationStatus ->
+                    Timber.d("getLocationData().observe : $locationStatus")
+                    menu?.findItem(R.id.action_location_settings)?.setIcon(
+                        if (!locationStatus) R.drawable.ic_location_off else R.drawable.ic_location_on
+                    )
+                })
+
+        mViewModel
             .getApplications().observe(
                 this,
                 { appList ->
                     Timber.d("onSuccessPackageList()")
 
-                    val adapter = MainActivityAdapter(this, appList, this)
-
-                    val linearLayoutManager =
-                        LinearLayoutManager(
-                            this,
-                            if (!LabCompatibilityManager.isTablet(this)) LinearLayoutManager.VERTICAL
-                            else LinearLayoutManager.HORIZONTAL, false
-                        )
-
-                    viewBinding.appRecyclerView?.layoutManager = linearLayoutManager
-
-                    val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-                    divider.setDrawable(
-                        Objects.requireNonNull(
-                            ContextCompat.getDrawable(
-                                this,
-                                R.drawable.item_separator_view_gradient
-                            )
-                        )!!
-                    )
-                    if (!LabCompatibilityManager.isTablet(this))
-                        viewBinding.appRecyclerView?.addItemDecoration(divider)
-                    else {
-                        val helper = ItemSnapHelper()
-                        helper.attachToRecyclerView(viewBinding.appRecyclerView)
+                    if (appList.isEmpty()) {
+                        Timber.d("App list is empty")
+                    } else {
+                        bindApps(appList)
                     }
-
-                    viewBinding.appRecyclerView?.itemAnimator = DefaultItemAnimator()
-                    viewBinding.appRecyclerView?.adapter = adapter
                 })
     }
+
 
     /**
      * Set up views (recyclerviews, spinner, etc...)
@@ -250,6 +240,50 @@ class MainActivity : AppCompatActivity(),
     private fun initViews() {
         initCollapsingToolbar()
         initToolbar()
+        setupViewPager()
+    }
+
+    private fun bindTabletViews() {
+        this.supportFragmentManager
+            .beginTransaction()
+            .add(R.id.fragment_time, TimeFragment.newInstance())
+            .commit()
+        this.supportFragmentManager
+            .beginTransaction()
+            .add(R.id.fragment_weather, WeatherFragment.newInstance())
+            .commit()
+    }
+
+    /**
+     * Initializing collapsing toolbar
+     * Will show and hide the toolbar txtPostTitle on scroll
+     */
+    private fun initCollapsingToolbar() {
+        viewBinding.includeToolbarLayout?.collapsingToolbar?.title = " "
+        viewBinding.includeToolbarLayout?.appbar?.setExpanded(true)
+
+        // hiding & showing the txtPostTitle when toolbar expanded & collapsed
+        viewBinding.includeToolbarLayout?.appbar?.addOnOffsetChangedListener(this)
+    }
+
+
+    /**
+     * Setup Toolbar menu icon differently than the basic way because of the collapsing toolbar
+     * <p>
+     * We want the button to show up only when the tollbar is collapsed
+     * <p>
+     * https://stackoverflow.com/questions/10692755/how-do-i-hide-a-menu-item-in-the-actionbar#:~:text=The%20best%20way%20to%20hide,menu%20inside%20the%20same%20group.&text=Then%2C%20on%20your%20activity%20(preferable,visibility%20to%20false%20or%20true.
+     */
+    private fun initToolbar() {
+        viewBinding.includeToolbarLayout?.toolbar?.inflateMenu(R.menu.menu_main)
+        menu = viewBinding.includeToolbarLayout?.toolbar?.menu
+
+        menu?.let { menu -> UIManager.hideMenuButtons(menu) }
+
+        viewBinding.includeToolbarLayout?.toolbar?.setOnMenuItemClickListener(this)
+    }
+
+    private fun setupViewPager() {
 
         // Instantiate a ViewPager2 and a PagerAdapter.
         fragmentList = ArrayList()
@@ -278,73 +312,37 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun bindTabletViews() {
-        this.supportFragmentManager
-            .beginTransaction()
-            .add(
-                R.id.fragment_time,
-                TimeFragment.newInstance()
+
+    private fun bindApps(appList: List<App>) {
+        Timber.d("bindApps()")
+
+        val adapter = MainActivityAdapter(this, appList, this)
+
+        val linearLayoutManager =
+            LinearLayoutManager(
+                this,
+                if (!LabCompatibilityManager.isTablet(this)) LinearLayoutManager.VERTICAL
+                else LinearLayoutManager.HORIZONTAL, false
             )
-            .commit()
-        this.supportFragmentManager
-            .beginTransaction()
-            .add(
-                R.id.fragment_weather,
-                WeatherFragment.newInstance()
-            )
-            .commit()
-    }
 
-    /**
-     * Initializing collapsing toolbar
-     * Will show and hide the toolbar txtPostTitle on scroll
-     */
-    private fun initCollapsingToolbar() {
-        viewBinding.includeToolbarLayout?.collapsingToolbar?.title = " "
-        viewBinding.includeToolbarLayout?.appbar?.setExpanded(true)
+        viewBinding.appRecyclerView?.layoutManager = linearLayoutManager
 
-        // hiding & showing the txtPostTitle when toolbar expanded & collapsed
-        viewBinding.includeToolbarLayout?.appbar?.addOnOffsetChangedListener(
-            object : OnOffsetChangedListener {
-                var isShow = false
-                var scrollRange = -1
-                override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                    if (scrollRange == -1) {
-                        scrollRange = appBarLayout.totalScrollRange
-                    }
-                    if (scrollRange + verticalOffset == 0) {
-                        // Toolbar is collapsed
-                        viewBinding.includeToolbarLayout?.collapsingToolbar?.title =
-                            this@MainActivity.resources.getString(R.string.app_name)
-                        showMenuButtons()
-                        isShow = true
-                    } else if (isShow) {
-                        // Toolbar is expanded
-                        viewBinding.includeToolbarLayout?.collapsingToolbar?.title = " "
-                        hideMenuButtons()
-                        isShow = false
-                    }
-                }
-            })
-    }
-
-
-    /**
-     * Setup Toolbar menu icon differently than the basic way because of the collapsing toolbar
-     * <p>
-     * We want the button to show up only when the tollbar is collapsed
-     * <p>
-     * https://stackoverflow.com/questions/10692755/how-do-i-hide-a-menu-item-in-the-actionbar#:~:text=The%20best%20way%20to%20hide,menu%20inside%20the%20same%20group.&text=Then%2C%20on%20your%20activity%20(preferable,visibility%20to%20false%20or%20true.
-     */
-    private fun initToolbar() {
-        viewBinding.includeToolbarLayout?.toolbar?.inflateMenu(R.menu.menu_main)
-        menu = viewBinding.includeToolbarLayout?.toolbar?.menu
-
-        hideMenuButtons()
-
-        viewBinding.includeToolbarLayout?.toolbar?.setOnMenuItemClickListener { item: MenuItem? ->
-            onMenuItemClick(item)
+        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        divider.setDrawable(
+            ContextCompat.getDrawable(
+                this,
+                R.drawable.item_separator_view_gradient
+            )!!
+        )
+        if (!LabCompatibilityManager.isTablet(this))
+            viewBinding.appRecyclerView?.addItemDecoration(divider)
+        else {
+            val helper = ItemSnapHelper()
+            helper.attachToRecyclerView(viewBinding.appRecyclerView)
         }
+
+        viewBinding.appRecyclerView?.itemAnimator = DefaultItemAnimator()
+        viewBinding.appRecyclerView?.adapter = adapter
     }
 
     fun showBottomSheetDialogFragment() {
@@ -355,96 +353,38 @@ class MainActivity : AppCompatActivity(),
         )
     }
 
-    @SuppressLint("InlinedApi")
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        Timber.d("onMenuItemClick()")
-        when (item!!.itemId) {
-            R.id.connection_icon -> {
-                UIManager.showActionInToast(this, "Wifi clicked")
-                val wifiManager: WifiManager =
-                    this
-                        .applicationContext
-                        .getSystemService(WIFI_SERVICE) as WifiManager
-                if (!LabCompatibilityManager.isAndroid10()) {
-                    val isWifi = wifiManager.isWifiEnabled
-                    wifiManager.isWifiEnabled = !isWifi
-                } else {
-                    Timber.e("For applications targeting android.os.Build.VERSION_CODES Q or above, this API will always fail and return false")
-
-                    /*
-                        ACTION_INTERNET_CONNECTIVITY Shows settings related to internet connectivity, such as Airplane mode, Wi-Fi, and Mobile Data.
-                        ACTION_WIFI Shows Wi-Fi settings, but not the other connectivity settings. This is useful for apps that need a Wi-Fi connection to perform large uploads or downloads.
-                        ACTION_NFC Shows all settings related to near-field communication (NFC).
-                        ACTION_VOLUME Shows volume settings for all audio streams.
-                     */
-                    val panelIntent = Intent(Settings.Panel.ACTION_WIFI)
-                    this.startActivityForResult(panelIntent, 955)
-                }
-            }
-            R.id.action_settings -> UIManager.showActionInToast(this, "Settings clicked")
-            R.id.info_icon -> showBottomSheetDialogFragment()
-            R.id.action_force_crash -> throw RuntimeException("This is a crash")
-            else -> {
-            }
-        }
-        return true
-    }
-
-
-    /**
-     * Display menu buttons when collapsing toolbar is collapsed
-     */
-    fun showMenuButtons() {
-        if (menu != null) menu!!.setGroupVisible(
-            R.id.menu_main_group,
-            true
-        ) // Or true to be visible
-    }
-
-    /**
-     * Hide menu buttons when collapse toolbar is expanded
-     */
-    fun hideMenuButtons() {
-        // Or true to be visible
-        if (menu != null) menu!!.setGroupVisible(R.id.menu_main_group, false)
-    }
 
     private fun showItemDetail(app: App) {
+        viewBinding.app = app
+
         if (View.INVISIBLE == viewBinding.clDetailItem?.visibility)
             viewBinding.clDetailItem?.visibility = View.VISIBLE
+        viewBinding.clDetailItem?.let { UIManager.showView(it) }
+
 
         viewBinding.ivItemDetail?.let {
-            Glide.with(this)
-                .load(if (0 != app.appIcon) app.appIcon else app.appDrawableIcon)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?, model: Any,
-                        target: Target<Drawable>, isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable, model: Any,
-                        target: Target<Drawable>, dataSource: DataSource,
-                        isFirstResource: Boolean
-                    ): Boolean {
-
+            UIManager.loadImage(
+                this,
+                (if (0 != app.appIcon) app.appIcon else app.appDrawableIcon)!!,
+                it,
+                LabGlideListener(
+                    onLoadingSuccess = { resource ->
+                        Timber.d("dskjfnodsnv")
                         if (viewBinding.itemDetailBtn?.visibility == View.GONE) {
                             viewBinding.itemDetailBtn?.visibility = View.VISIBLE
                         }
 
-                        if (0 != app.appIcon && app.appTitle.equals("Palette")) {
-                            val myBitmap = (resource as BitmapDrawable).bitmap
+                        if (0 != app.appIcon && app.appTitle == "Palette") {
+                            val myBitmap: Bitmap = UIManager.drawableToBitmap(resource!!)
                             val newBitmap =
                                 UIManager.addGradientToImageView(this@MainActivity, myBitmap)
 
                             viewBinding.ivItemDetail?.setImageDrawable(
                                 BitmapDrawable(this@MainActivity.resources, newBitmap)
                             )
-                            return true
+                            return@LabGlideListener true
                         }
-                        if (0 != app.appIcon && app.appTitle.equals("WIP")) {
+                        if (0 != app.appIcon && app.appTitle == "WIP") {
                             viewBinding.ivItemDetail?.setImageDrawable(
                                 ContextCompat.getDrawable(
                                     this@MainActivity,
@@ -452,18 +392,55 @@ class MainActivity : AppCompatActivity(),
                                 )
                             )
                             viewBinding.itemDetailBtn?.visibility = View.GONE
-                            return true
+                            return@LabGlideListener true
                         }
-                        return false
-                    }
-                })
-                .into(it)
-        }
 
-        viewBinding.tvTitleDetail?.text =
-            if (!Validator.isEmpty(app.appTitle)) app.appTitle else app.appName
-        viewBinding.tvDescriptionDetail?.text =
-            if (!Validator.isEmpty(app.appVersion)) app.appVersion else app.appDescription
+                        false
+
+                    })
+            )
+        }
+    }
+
+
+    /////////////////////////////////////
+    //
+    // IMPLEMENTS
+    //
+    /////////////////////////////////////
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        Timber.d("onMenuItemClick()")
+        when (item?.itemId) {
+            R.id.action_connection_settings -> networkManager.changeWifiState(
+                this.applicationContext,
+                this@MainActivity
+            )
+            R.id.action_location_settings -> if (!isGPS) mGpsUtils.turnGPSOn(this)
+            R.id.action_settings -> UIManager.showActionInToast(this, "Settings clicked")
+            R.id.action_info_settings -> showBottomSheetDialogFragment()
+            R.id.action_force_crash -> throw RuntimeException("This is a crash")
+            else -> {
+            }
+        }
+        return true
+    }
+
+    override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+        if (scrollRange == -1) {
+            scrollRange = appBarLayout!!.totalScrollRange
+        }
+        if (scrollRange + verticalOffset == 0) {
+            // Toolbar is collapsed
+            viewBinding.includeToolbarLayout?.collapsingToolbar?.title =
+                this@MainActivity.resources.getString(R.string.app_name)
+            menu?.let { menu -> UIManager.showMenuButtons(menu) }
+            isShow = true
+        } else if (isShow) {
+            // Toolbar is expanded
+            viewBinding.includeToolbarLayout?.collapsingToolbar?.title = " "
+            menu?.let { menu -> UIManager.hideMenuButtons(menu) }
+            isShow = false
+        }
     }
 
     override fun onAppItemCLickListener(view: View, item: App, position: Int) {
@@ -500,4 +477,14 @@ class MainActivity : AppCompatActivity(),
                     )
             }
     }
+
+    override fun gpsStatus(isGPSEnable: Boolean) {
+        Timber.d("gpsStatus()")
+        Timber.d("turn on/off GPS - isGPSEnable : $isGPSEnable")
+        isGPS = isGPSEnable
+
+        if (isGPS) menu?.findItem(R.id.action_location_settings)?.icon =
+            ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_location_on)
+    }
+
 }
