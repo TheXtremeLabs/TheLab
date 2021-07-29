@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/oil"
     android:orientation="vertical">
 
     <!-- Background view (delete buttons) -->
@@ -19,10 +18,8 @@
             android:layout_width="@dimen/ic_delete"
             android:layout_height="@dimen/ic_delete"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/row_padding"
-            android:layout_marginRight="@dimen/row_padding"
             app:srcCompat="@drawable/ic_delete" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -30,9 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/row_padding"
-            android:layout_marginRight="@dimen/row_padding"
             android:layout_toStartOf="@id/delete_icon"
-            android:layout_toLeftOf="@id/delete_icon"
             android:text="@string/delete"
             android:textColor="#fff"
             android:textSize="13sp" />
@@ -50,8 +45,8 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            app:cardPreventCornerOverlap="true"
-            tools:cardBackgroundColor="@color/oil">
+            app:cardBackgroundColor="@color/oil"
+            app:cardPreventCornerOverlap="true">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -67,7 +62,6 @@
                     android:layout_height="@dimen/thumbnail"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/row_padding"
-                    android:layout_marginRight="@dimen/row_padding"
                     android:src="@mipmap/ic_launcher_lab_icon_round" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -75,7 +69,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@id/iv_contact_thumbnail"
-                    android:layout_toRightOf="@id/iv_contact_thumbnail"
                     android:fontFamily="sans-serif-medium"
                     android:text="@string/app_name"
                     android:textColor="@color/white"
@@ -88,7 +81,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_contact_name"
                     android:layout_toEndOf="@id/iv_contact_thumbnail"
-                    android:layout_toRightOf="@id/iv_contact_thumbnail"
                     android:textColor="@color/base"
                     android:textSize="@dimen/contact_number"
                     tools:ignore="SpUsage"

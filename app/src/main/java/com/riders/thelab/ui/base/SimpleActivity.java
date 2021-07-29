@@ -2,11 +2,14 @@ package com.riders.thelab.ui.base;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.appbar.MaterialToolbar;
+
+;
 
 public class SimpleActivity extends AppCompatActivity {
 
-    public void setupToolBar(Toolbar toolbar, final String title, final String subTitle, final boolean showButtonHome) {
+    public void setupToolBar(MaterialToolbar toolbar, final String title, final String subTitle, final boolean showButtonHome) {
         // Set up the layout_toolbar.
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();

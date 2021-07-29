@@ -8,5 +8,5 @@
         android:startColor="@color/bg_gradient_start"
         android:type="linear" />
 
-    <corners android:radius="@dimen/extra_small_margin_tablet"/>
+    <corners android:radius="@dimen/extra_small_margin_tablet" />
 </shape>
