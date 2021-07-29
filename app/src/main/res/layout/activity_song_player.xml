@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="songModel"
+            type="com.riders.thelab.data.local.model.music.SongModel" />
+
+    </data>
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_file_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:scrollbars="vertical"
+            tools:layout_height="480dp" />
+
+
+        <!-- Motion Layout main -->
+        <androidx.constraintlayout.motion.widget.MotionLayout
+            android:id="@+id/motionLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutDescription="@xml/song_player_scene"
+            tools:context=".MainActivity"
+            tools:motionDebug="SHOW_ALL"
+            tools:visibility="visible">
+
+            <!-- Collapsed GuidelinesStuff -->
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/collapsed_guideline_thumb"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.2" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/collapsed_guideline_seek_bar"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.94" />
+
+
+            <!-- Extended GuidelinesStuff -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_header"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.08" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_thumb"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.15" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_left"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.2" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_right"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.8" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_song_info"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_seek_bar"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.6" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_controls"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.7" />
+
+
+            <!-- card view to animate -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_song_player"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="bottom"
+                android:layout_margin="16dp"
+                android:focusable="true"
+                android:visibility="invisible"
+                app:cardBackgroundColor="@color/transparent"
+                app:cardCornerRadius="8dp"
+                app:cardPreventCornerOverlap="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:strokeColor="@color/white"
+                app:strokeWidth="1dp"
+                tools:cardBackgroundColor="@color/transparent">
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Constraint Layout that tracks card view bounds-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_song_player"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/jet"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/cv_song_player"
+                app:layout_constraintEnd_toEndOf="@id/cv_song_player"
+                app:layout_constraintStart_toStartOf="@id/cv_song_player"
+                app:layout_constraintTop_toTopOf="@id/cv_song_player"
+                tools:background="@color/teal_700" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_arrow_down"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="16dp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_arrow_down" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_thumb"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:scaleType="centerInside"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/collapsed_guideline_seek_bar"
+                app:layout_constraintEnd_toStartOf="@id/collapsed_guideline_thumb"
+                app:layout_constraintStart_toStartOf="@id/cl_song_player"
+                app:layout_constraintTop_toTopOf="@id/cl_song_player"
+                tools:src="@drawable/youtube_icon_like" />
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_song_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ellipsize="marquee"
+                android:gravity="center_vertical|start"
+                android:maxLines="1"
+                android:text="@{songModel.name}"
+                android:textColor="@color/white"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toStartOf="@id/btn_previous"
+                app:layout_constraintStart_toEndOf="@id/collapsed_guideline_thumb"
+                app:layout_constraintTop_toTopOf="@id/cl_song_player"
+                tools:text="Sunny Window" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_song_path"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:ellipsize="marquee"
+                android:gravity="center_vertical|start"
+                android:maxLines="1"
+                android:text="@{songModel.path}"
+                android:textColor="@color/base"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toStartOf="@id/btn_previous"
+                app:layout_constraintStart_toEndOf="@id/collapsed_guideline_thumb"
+                app:layout_constraintTop_toBottomOf="@id/tv_song_name"
+                tools:text="T.Lion" />
+
+
+            <!-- Controls -->
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_previous"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/collapsed_guideline_seek_bar"
+                app:layout_constraintEnd_toStartOf="@id/btn_play_pause"
+                app:layout_constraintTop_toTopOf="@id/cl_song_player"
+                app:srcCompat="@drawable/ic_previous" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_play_pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/collapsed_guideline_seek_bar"
+                app:layout_constraintEnd_toStartOf="@id/btn_next"
+                app:layout_constraintTop_toTopOf="@id/cl_song_player"
+                app:srcCompat="@drawable/ic_play" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/collapsed_guideline_seek_bar"
+                app:layout_constraintEnd_toStartOf="@id/btn_queue"
+                app:layout_constraintTop_toTopOf="@id/cl_song_player"
+                app:srcCompat="@drawable/ic_next" />
+
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_queue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/collapsed_guideline_seek_bar"
+                app:layout_constraintEnd_toEndOf="@id/cl_song_player"
+                app:layout_constraintEnd_toStartOf="@id/btn_close"
+                app:layout_constraintTop_toTopOf="@id/cl_song_player"
+                app:srcCompat="@drawable/ic_queue_music"
+                tools:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/collapsed_guideline_seek_bar"
+                app:layout_constraintEnd_toEndOf="@id/cl_song_player"
+                app:layout_constraintTop_toTopOf="@id/cl_song_player"
+                app:srcCompat="@drawable/ic_close" />
+
+            <androidx.appcompat.widget.AppCompatSeekBar
+                android:id="@+id/song_progressBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:backgroundTint="@color/white"
+                android:progress="45"
+                android:progressTint="@color/white"
+                android:progressTintMode="src_in"
+                android:visibility="invisible"
+                app:indicatorColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/cl_song_player"
+                app:layout_constraintEnd_toEndOf="@id/cl_song_player"
+                app:layout_constraintStart_toStartOf="@id/cl_song_player"
+                app:layout_constraintTop_toBottomOf="@id/collapsed_guideline_seek_bar" />
+
+        </androidx.constraintlayout.motion.widget.MotionLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

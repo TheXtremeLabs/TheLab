@@ -32,7 +32,7 @@
         <!-- First Item -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/news_card_view_1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/small_margin"
             android:layout_weight="1"
@@ -46,39 +46,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/big_medium_margin"
-                android:layout_marginLeft="@dimen/big_medium_margin"
                 android:layout_marginEnd="-16dp"
-                android:layout_marginRight="-16dp"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 tools:background="@color/default_dark"
-                tools:srcCompat="@drawable/ic_fingerprint" />
+                tools:srcCompat="@drawable/openweathermap" />
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/ultra_big_margin"
-                    android:background="@drawable/maps_loading_gradient" />
+                android:background="@drawable/bottom_gradient">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/news_text_view_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="@dimen/medium_margin"
                     android:gravity="center"
                     android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     tools:text="Recycler" />
-            </RelativeLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Second Item -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/news_card_view_2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/small_margin"
             android:layout_weight="1"
@@ -93,39 +88,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/big_medium_margin"
-                android:layout_marginLeft="@dimen/big_medium_margin"
                 android:layout_marginEnd="-16dp"
-                android:layout_marginRight="-16dp"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 tools:background="@color/default_dark"
                 tools:srcCompat="@drawable/ic_filter_list" />
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/ultra_big_margin"
-                    android:background="@drawable/maps_loading_gradient" />
+                android:background="@drawable/bottom_gradient">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/news_text_view_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="@dimen/medium_margin"
                     android:gravity="center"
                     android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     tools:text="Recycler" />
-            </RelativeLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Third Item -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/news_card_view_3"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/small_margin"
             android:layout_weight="1"
@@ -140,33 +130,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/big_medium_margin"
-                android:layout_marginLeft="@dimen/big_medium_margin"
                 android:layout_marginEnd="-16dp"
-                android:layout_marginRight="-16dp"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 tools:background="@color/default_dark"
                 tools:srcCompat="@drawable/ic_open_in_new" />
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/ultra_big_margin"
-                    android:background="@drawable/maps_loading_gradient" />
+                android:background="@drawable/bottom_gradient">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/news_text_view_3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="@dimen/medium_margin"
                     android:gravity="center"
                     android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     tools:text="Recycler" />
-            </RelativeLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:shape="rectangle">
 
     <gradient
         android:angle="90"
-        android:centerColor="@color/oil"
+        android:centerColor="@color/transparent"
         android:endColor="@color/transparent"
-        android:startColor="@color/transparent"
+        android:startColor="@color/black"
         android:type="linear"
-        tools:startColor="@color/white" />
+        tools:startColor="@color/black" />
 
-    <corners android:radius="@dimen/big_margin" />
+    <corners android:radius="@dimen/small_margin" />
 </shape>
