@@ -100,6 +100,7 @@ class LabLocationManager constructor(
 
     @JvmName("getLocation1")
     fun getLocation(): Location? {
+        Timber.d("getLocation1()")
 
         // run dexter permission
         Dexter
@@ -124,19 +125,25 @@ class LabLocationManager constructor(
                         // no network provider is enabled
                         Timber.e("no network provider is enabled")
                     } else {
-                        try {
 
+                        try {
                             // if Network Enabled get lat/long using Network
                             if (isNetworkEnabled) {
                                 getLocationViaNetwork()
                             }
+                            EventBus.getDefault().post(location?.let { LocationFetchedEvent(it) })
 
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+                        try {
                             // if GPS Enabled get lat/long using GPS Services
                             if (isGPSEnabled) {
                                 getLocationViaGPS()
                             }
-
                             EventBus.getDefault().post(location?.let { LocationFetchedEvent(it) })
+
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
