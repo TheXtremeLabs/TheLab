@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="1000">
+        <KeyFrameSet />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint android:id="@+id/cv_song_player">
+            <PropertySet motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/cl_song_player">
+            <PropertySet motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/iv_thumb">
+            <PropertySet motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/tv_song_name">
+            <PropertySet motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/tv_song_path">
+            <PropertySet motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/song_progressBar">
+            <PropertySet motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/btn_previous">
+            <PropertySet motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/btn_play_pause">
+            <PropertySet motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/btn_next">
+            <PropertySet motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/btn_close">
+            <PropertySet motion:visibilityMode="ignore" />
+        </Constraint>
+
+    </ConstraintSet>
+
+    <ConstraintSet
+        android:id="@+id/end"
+        motion:deriveConstraintsFrom="@id/start">
+
+        <Constraint android:id="@+id/cv_song_player">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp" />
+
+            <CustomAttribute
+                motion:attributeName="cardCornersRadius"
+                motion:customPixelDimension="0dp" />
+        </Constraint>
+
+        <Constraint android:id="@+id/cl_song_player">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp" />
+        </Constraint>
+
+        <Constraint android:id="@+id/btn_arrow_down">
+            <PropertySet android:visibility="visible" />
+            <Layout
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintBottom_toBottomOf="@+id/guideline_header"
+                motion:layout_constraintStart_toStartOf="@+id/guideline_right" />
+        </Constraint>
+        <Constraint android:id="@+id/iv_thumb">
+            <Layout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                motion:layout_constraintBottom_toBottomOf="@+id/guideline_song_info"
+                motion:layout_constraintEnd_toEndOf="@+id/guideline_right"
+                motion:layout_constraintStart_toStartOf="@+id/guideline_left"
+                motion:layout_constraintTop_toTopOf="@+id/guideline_thumb" />
+        </Constraint>
+        <Constraint android:id="@+id/tv_song_name">
+            <Layout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                motion:layout_constraintEnd_toEndOf="@+id/guideline_right"
+                motion:layout_constraintStart_toStartOf="@+id/guideline_left"
+                motion:layout_constraintTop_toTopOf="@+id/guideline_song_info" />
+        </Constraint>
+        <Constraint android:id="@+id/tv_song_path">
+            <Layout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                motion:layout_constraintEnd_toEndOf="@+id/guideline_right"
+                motion:layout_constraintStart_toStartOf="@+id/guideline_left"
+                motion:layout_constraintTop_toBottomOf="@id/tv_song_name" />
+        </Constraint>
+        <Constraint android:id="@+id/song_progressBar">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                motion:layout_constraintBottom_toBottomOf="@+id/guideline_controls"
+                motion:layout_constraintEnd_toEndOf="@+id/cl_song_player"
+                motion:layout_constraintStart_toStartOf="@+id/cl_song_player"
+                motion:layout_constraintTop_toTopOf="@+id/guideline_seek_bar" />
+        </Constraint>
+        <Constraint android:id="@+id/btn_previous">
+            <Layout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                motion:layout_constraintBottom_toBottomOf="@+id/cl_song_player"
+                motion:layout_constraintEnd_toStartOf="@+id/btn_play_pause"
+                motion:layout_constraintStart_toStartOf="@+id/cl_song_player"
+                motion:layout_constraintTop_toTopOf="@+id/guideline_controls" />
+        </Constraint>
+        <Constraint android:id="@+id/btn_play_pause">
+            <Layout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                motion:layout_constraintBottom_toBottomOf="@+id/cl_song_player"
+                motion:layout_constraintEnd_toStartOf="@+id/btn_next"
+                motion:layout_constraintStart_toEndOf="@+id/btn_previous"
+                motion:layout_constraintTop_toTopOf="@+id/guideline_controls" />
+        </Constraint>
+        <Constraint android:id="@+id/btn_next">
+            <Layout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                motion:layout_constraintBottom_toBottomOf="@+id/cl_song_player"
+                motion:layout_constraintEnd_toStartOf="@+id/btn_queue"
+                motion:layout_constraintStart_toEndOf="@+id/iv_play_pause"
+                motion:layout_constraintTop_toTopOf="@+id/guideline_controls" />
+        </Constraint>
+        <Constraint android:id="@+id/btn_queue">
+            <PropertySet android:visibility="visible" />
+            <Layout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                motion:layout_constraintBottom_toBottomOf="@+id/cl_song_player"
+                motion:layout_constraintEnd_toEndOf="@+id/cl_song_player"
+                motion:layout_constraintStart_toEndOf="@+id/btn_next"
+                motion:layout_constraintTop_toTopOf="@+id/guideline_controls" />
+        </Constraint>
+        <Constraint android:id="@+id/btn_close">
+            <PropertySet android:visibility="invisible" />
+            <Layout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                motion:layout_constraintBottom_toBottomOf="@+id/cl_song_player"
+                motion:layout_constraintEnd_toEndOf="@+id/cl_song_player" />
+        </Constraint>
+    </ConstraintSet>
+</MotionScene>
