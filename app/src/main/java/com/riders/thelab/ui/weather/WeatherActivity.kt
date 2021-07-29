@@ -77,7 +77,6 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         context = this
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.activity_title_weather)
 
         initViewModelObservers()
         listener = this

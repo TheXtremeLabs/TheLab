@@ -33,8 +33,6 @@ class ScheduleActivity : AppCompatActivity() {
         viewBinding = ActivityScheduleBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        supportActionBar?.title = getString(R.string.activity_title_schedule_jobs)
-
         mViewModel.getCountDown().observe(
             this,
             { countDown ->

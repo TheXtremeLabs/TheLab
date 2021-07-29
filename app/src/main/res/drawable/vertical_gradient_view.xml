@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:shape="rectangle">
 
     <gradient
@@ -8,7 +9,8 @@
         android:centerColor="@color/oil"
         android:endColor="@color/transparent"
         android:startColor="@color/transparent"
-        android:type="linear" />
+        android:type="linear"
+        tools:startColor="@color/white" />
 
     <corners android:radius="@dimen/big_margin" />
 </shape>
