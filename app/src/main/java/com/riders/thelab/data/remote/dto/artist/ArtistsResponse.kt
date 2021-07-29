@@ -1,20 +1,17 @@
-package com.riders.thelab.data.remote.dto.artist;
+package com.riders.thelab.data.remote.dto.artist
 
-import com.squareup.moshi.FromJson;
-import com.squareup.moshi.ToJson;
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
 
-import java.util.List;
-
-public class ArtistsResponse {
-    private List<Artist> artists;
-
+class ArtistsResponse {
+    private val artists: List<Artist>? = null
     @FromJson
-    List<Artist> artistsFromJson(List<Artist> artistsEventJson) {
-        return artistsEventJson;
+    fun artistsFromJson(artistsEventJson: List<Artist>): List<Artist> {
+        return artistsEventJson
     }
 
     @ToJson
-    String artistsToJson(List<Artist> artists) {
-        return artists.toString();
+    fun artistsToJson(artists: List<Artist?>): String {
+        return artists.toString()
     }
 }

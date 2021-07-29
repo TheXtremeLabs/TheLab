@@ -1,12 +1,9 @@
-package com.riders.thelab.data.remote.dto.directions;
+package com.riders.thelab.data.remote.dto.directions
 
-import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.Expose
+import java.util.*
 
-import java.util.ArrayList;
-
-
-public class Legs {
-
+data class Legs(
     @Expose
-    ArrayList<Steps> steps;
-}
+    var steps: ArrayList<Steps>? = null
+)

@@ -1,13 +1,11 @@
-package com.riders.thelab.data.remote.dto.directions;
+package com.riders.thelab.data.remote.dto.directions
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-
-public class Coordinates {
-
+class Coordinates(
     @SerializedName("lng")
-    double longitude;
+    var longitude: Double = 0.0,
 
     @SerializedName("lat")
-    double latitude;
-}
+    var latitude: Double = 0.0,
+)

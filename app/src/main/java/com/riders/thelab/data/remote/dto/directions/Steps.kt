@@ -1,16 +1,14 @@
-package com.riders.thelab.data.remote.dto.directions;
+package com.riders.thelab.data.remote.dto.directions
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-
-public class Steps {
-
+data class Steps(
     @SerializedName(value = "travel_mode")
-    String travelMode;
+    var travelMode: String? = null,
 
     @SerializedName(value = "start_location")
-    Coordinates startLocation;
+    var startLocation: Coordinates? = null,
 
     @SerializedName(value = "end_location")
-    Coordinates endLocation;
-}
+    var endLocation: Coordinates? = null
+)

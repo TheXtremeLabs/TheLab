@@ -8,6 +8,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
+import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
 import androidx.activity.viewModels
@@ -122,6 +123,23 @@ class SongPlayerActivity : AppCompatActivity(),
         Timber.e("onDestroy()")
 
         _viewBinding = null
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
+    }
+
+    override fun onBackPressed() {
+        if (isToggle) {
+            toggleAnimation(binding.btnArrowDown)
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun checkPermissions() {

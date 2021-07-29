@@ -1,134 +1,120 @@
-package com.riders.thelab.core.views;
+package com.riders.thelab.core.views
 
-import android.content.Context;
-import android.util.DisplayMetrics;
-import android.view.View;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.Scroller;
+import android.content.Context
+import android.util.DisplayMetrics
+import android.view.View
+import android.view.animation.DecelerateInterpolator
+import android.widget.Scroller
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.OrientationHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SmoothScroller
+import androidx.recyclerview.widget.RecyclerView.SmoothScroller.ScrollVectorProvider
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearSmoothScroller;
-import androidx.recyclerview.widget.LinearSnapHelper;
-import androidx.recyclerview.widget.OrientationHelper;
-import androidx.recyclerview.widget.RecyclerView;
+class ItemSnapHelper : LinearSnapHelper() {
 
-public class ItemSnapHelper extends LinearSnapHelper {
+    private var context: Context? = null
+    private var helper: OrientationHelper? = null
+    private var scroller: Scroller? = null
+    private var maxScrollDistance = 0
 
-
-    private static final float MILLISECONDS_PER_INCH = 100f;
-    private static final int MAX_SCROLL_ON_FLING_DURATION_MS = 1000;
-
-    private Context context;
-
-    private OrientationHelper helper;
-    private Scroller scroller = null;
-    private int maxScrollDistance;
-
-    @Override
-    public void attachToRecyclerView(@Nullable RecyclerView recyclerView) throws IllegalStateException {
-
+    @Throws(IllegalStateException::class)
+    override fun attachToRecyclerView(recyclerView: RecyclerView?) {
         if (recyclerView != null) {
-            context = recyclerView.getContext();
-            scroller = new Scroller(context, new DecelerateInterpolator());
+            context = recyclerView.context
+            scroller = Scroller(context, DecelerateInterpolator())
         } else {
-            scroller = null;
-            context = null;
+            scroller = null
+            context = null
         }
-
-        super.attachToRecyclerView(recyclerView);
+        super.attachToRecyclerView(recyclerView)
     }
 
-    @Override
-    public View findSnapView(RecyclerView.LayoutManager layoutManager) {
-        return findFirstView(layoutManager, helper(layoutManager));
+    override fun findSnapView(layoutManager: RecyclerView.LayoutManager): View? {
+        return findFirstView(layoutManager, helper(layoutManager))
     }
 
-    private View findFirstView(RecyclerView.LayoutManager layoutManager, OrientationHelper helper) {
-        if (layoutManager == null) return null;
-
-        int childCount = layoutManager.getChildCount();
-        if (childCount == 0) return null;
-
-        int absClosest = Integer.MAX_VALUE;
-        View closestView = null;
-        int start = helper.getStartAfterPadding();
-
-        for (int i = 0; i < childCount; i++) {
-            View child = layoutManager.getChildAt(i);
-            int childStart = helper.getDecoratedStart(child);
-            int absDistanceToStart = Math.abs(childStart - start);
+    private fun findFirstView(
+        layoutManager: RecyclerView.LayoutManager?,
+        helper: OrientationHelper?
+    ): View? {
+        if (layoutManager == null) return null
+        val childCount = layoutManager.childCount
+        if (childCount == 0) return null
+        var absClosest = Int.MAX_VALUE
+        var closestView: View? = null
+        val start = helper!!.startAfterPadding
+        for (i in 0 until childCount) {
+            val child = layoutManager.getChildAt(i)
+            val childStart = helper.getDecoratedStart(child)
+            val absDistanceToStart = Math.abs(childStart - start)
             if (absDistanceToStart < absClosest) {
-                absClosest = absDistanceToStart;
-                closestView = child;
+                absClosest = absDistanceToStart
+                closestView = child
             }
-
         }
-
-        return closestView;
+        return closestView
     }
 
-    private OrientationHelper helper(RecyclerView.LayoutManager layoutManager) {
+    private fun helper(layoutManager: RecyclerView.LayoutManager): OrientationHelper? {
         if (helper == null) {
-            helper = OrientationHelper.createHorizontalHelper(layoutManager);
+            helper = OrientationHelper.createHorizontalHelper(layoutManager)
         }
-        return helper;
+        return helper
     }
 
-    @Override
-    public int[] calculateDistanceToFinalSnap(@NonNull RecyclerView.LayoutManager layoutManager, @NonNull View targetView) {
-
-        int[] out = new int[2];
-        out[0] = distanceToStart(targetView, helper(layoutManager));
-        return out;
+    override fun calculateDistanceToFinalSnap(
+        layoutManager: RecyclerView.LayoutManager,
+        targetView: View
+    ): IntArray {
+        val out = IntArray(2)
+        out[0] = distanceToStart(targetView, helper(layoutManager))
+        return out
     }
 
-    @Override
-    public int[] calculateScrollDistance(int velocityX, int velocityY) {
-        int[] out = new int[2];
-
-        if (null == helper) return out;
-
+    override fun calculateScrollDistance(velocityX: Int, velocityY: Int): IntArray {
+        val out = IntArray(2)
+        if (null == helper) return out
         if (maxScrollDistance == 0) {
-            maxScrollDistance = (helper.getEndAfterPadding() - helper.getStartAfterPadding()) / 2;
+            maxScrollDistance = (helper!!.endAfterPadding - helper!!.startAfterPadding) / 2
         }
-
-        scroller.fling(0, 0, velocityX, velocityY, -maxScrollDistance, maxScrollDistance, 0, 0);
-        out[0] = scroller.getFinalX();
-        out[1] = scroller.getFinalX();
-        return out;
+        scroller!!.fling(0, 0, velocityX, velocityY, -maxScrollDistance, maxScrollDistance, 0, 0)
+        out[0] = scroller!!.finalX
+        out[1] = scroller!!.finalX
+        return out
     }
 
-    @Nullable
-    @Override
-    protected RecyclerView.SmoothScroller createScroller(RecyclerView.LayoutManager layoutManager) {
-        if (layoutManager instanceof RecyclerView.SmoothScroller.ScrollVectorProvider)
-            return super.createScroller(layoutManager);
-
-        if (null == context) return null;
-
-        return new LinearSmoothScroller(context) {
-
-            @Override
-            protected void onTargetFound(View targetView, RecyclerView.State state, Action action) {
-                int[] snapDistance = calculateDistanceToFinalSnap(layoutManager, targetView);
-                int dx = snapDistance[0];
-                int dy = snapDistance[1];
-                int dt = calculateTimeForDeceleration(Math.abs(dx));
-                int time = Math.max(1, Math.min(MAX_SCROLL_ON_FLING_DURATION_MS, dt));
-                action.update(dx, dy, time, mDecelerateInterpolator);
+    override fun createScroller(layoutManager: RecyclerView.LayoutManager): SmoothScroller? {
+        if (layoutManager is ScrollVectorProvider) return super.createScroller(layoutManager)
+        return if (null == context) null else object : LinearSmoothScroller(context) {
+            override fun onTargetFound(
+                targetView: View,
+                state: RecyclerView.State,
+                action: Action
+            ) {
+                val snapDistance = calculateDistanceToFinalSnap(layoutManager, targetView)
+                val dx = snapDistance[0]
+                val dy = snapDistance[1]
+                val dt = calculateTimeForDeceleration(Math.abs(dx))
+                val time = Math.max(1, Math.min(MAX_SCROLL_ON_FLING_DURATION_MS, dt))
+                action.update(dx, dy, time, mDecelerateInterpolator)
             }
 
-            @Override
-            protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-                return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
+            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                return MILLISECONDS_PER_INCH / displayMetrics.densityDpi
             }
-        };
+        }
     }
 
-    private int distanceToStart(View targetView, OrientationHelper helper) {
-        int childStart = helper.getDecoratedStart(targetView);
-        int containerStart = helper.getStartAfterPadding();
-        return childStart - containerStart;
+    private fun distanceToStart(targetView: View, helper: OrientationHelper?): Int {
+        val childStart = helper!!.getDecoratedStart(targetView)
+        val containerStart = helper.startAfterPadding
+        return childStart - containerStart
+    }
+
+    companion object {
+        private const val MILLISECONDS_PER_INCH = 100f
+        private const val MAX_SCROLL_ON_FLING_DURATION_MS = 1000
     }
 }
