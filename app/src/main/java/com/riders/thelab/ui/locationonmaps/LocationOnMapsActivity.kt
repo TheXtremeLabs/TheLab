@@ -105,10 +105,6 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         viewBinding = ActivityLocationOnMapsBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.activity_title_location_on_maps)
-
         Dexter.withContext(this)
             .withPermissions(
                 Manifest.permission.ACCESS_COARSE_LOCATION,

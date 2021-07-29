@@ -150,7 +150,7 @@
                 android:layout_height="wrap_content"
                 motion:layout_constraintBottom_toBottomOf="@+id/cl_song_player"
                 motion:layout_constraintEnd_toStartOf="@+id/btn_queue"
-                motion:layout_constraintStart_toEndOf="@+id/iv_play_pause"
+                motion:layout_constraintStart_toEndOf="@+id/btn_play_pause"
                 motion:layout_constraintTop_toTopOf="@+id/guideline_controls" />
         </Constraint>
         <Constraint android:id="@+id/btn_queue">

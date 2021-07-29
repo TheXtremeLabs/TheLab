@@ -25,8 +25,6 @@ class ColorActivity : AppCompatActivity() {
         viewBinding = ActivityColorBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = getString(R.string.activity_title_colors)
         colors = LabColorsManager.getDefaultColors(this)
 
         viewBinding.changeColorButton.setOnClickListener {

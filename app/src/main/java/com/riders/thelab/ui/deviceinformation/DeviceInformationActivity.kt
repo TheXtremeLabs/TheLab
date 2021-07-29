@@ -24,9 +24,6 @@ class DeviceInformationActivity : AppCompatActivity() {
         viewBinding = ActivityDeviceInformationBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.activity_title_device_information)
-
         mViewModel
             .getDeviceInformation()
             .observe(this, {

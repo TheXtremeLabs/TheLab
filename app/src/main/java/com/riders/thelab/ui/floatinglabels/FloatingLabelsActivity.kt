@@ -36,9 +36,6 @@ open class FloatingLabelsActivity : AppCompatActivity() {
         viewBinding = ActivityFloatingLabelsBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setTitle(getString(R.string.activity_title_floating_labels))
-
         viewBinding.inputName.addTextChangedListener(
             MyTextWatcher(
                 this@FloatingLabelsActivity,

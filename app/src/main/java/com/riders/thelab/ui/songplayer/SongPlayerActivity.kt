@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.songplayer
 
+import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -16,6 +17,12 @@ import androidx.core.animation.addListener
 import androidx.core.view.marginTop
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.DexterError
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.SongsManager
 import com.riders.thelab.data.local.model.music.SongModel
@@ -80,7 +87,7 @@ class SongPlayerActivity : AppCompatActivity(),
         setListeners()
         initViewModelsObservers()
 
-        viewModel.retrieveSongFiles(this)
+        checkPermissions()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -115,6 +122,35 @@ class SongPlayerActivity : AppCompatActivity(),
         Timber.e("onDestroy()")
 
         _viewBinding = null
+    }
+
+    private fun checkPermissions() {
+        Dexter.withContext(this)
+            .withPermissions(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            .withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(multiplePermissionsReport: MultiplePermissionsReport) {
+                    if (multiplePermissionsReport.areAllPermissionsGranted()) {
+                        Timber.i("All permissions are granted")
+
+                        viewModel.retrieveSongFiles(this@SongPlayerActivity)
+                    } else {
+                        Timber.e("All permissions are not granted")
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    list: List<PermissionRequest>,
+                    permissionToken: PermissionToken
+                ) {
+                    permissionToken.continuePermissionRequest()
+                }
+            })
+            .withErrorListener { dexterError: DexterError -> Timber.e(dexterError.toString()) }
+            .onSameThread()
+            .check()
     }
 
     private fun setListeners() {
