@@ -32,9 +32,6 @@ class MultipaneActivity : AppCompatActivity(), MovieClickListener {
         viewBinding = ActivityMultiPaneBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.title = getString(R.string.activity_title_multipane)
-
         if (LabCompatibilityManager.isTablet(this)) {
             bindTabletViews()
         }

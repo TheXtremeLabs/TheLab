@@ -23,7 +23,7 @@ class NewsFragment : Fragment(), View.OnClickListener {
 
     private val mNewsViewModel: NewsViewModel by viewModels()
 
-    private val recentAppsNames = arrayOf("Chat", "Spring", "Weather")
+    private val recentAppsNames = arrayOf("Music", "Spring", "Weather")
     private var mRecentApps: List<App>? = null
 
     /**
@@ -111,9 +111,9 @@ class NewsFragment : Fragment(), View.OnClickListener {
         app: App
     ) {
         if (app.appDrawableIcon != null) {
-            imageView.setBackgroundDrawable(app.appDrawableIcon)
+            imageView.setImageDrawable(app.appDrawableIcon)
         } else {
-            imageView.setBackgroundResource(app.appIcon)
+            imageView.setImageResource(app.appIcon)
         }
         textView.text = if (app.appName != null) app.appName else app.appTitle
     }

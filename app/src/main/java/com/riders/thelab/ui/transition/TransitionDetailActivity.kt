@@ -10,18 +10,14 @@ class TransitionDetailActivity : AppCompatActivity() {
 
     lateinit var viewBinding: ActivityTransitionDetailBinding
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityTransitionDetailBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        supportActionBar?.title = getString(R.string.activity_title_transition_detail)
-
         viewBinding.buttonDetail.setOnClickListener {
             onBackPressed()
         }
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

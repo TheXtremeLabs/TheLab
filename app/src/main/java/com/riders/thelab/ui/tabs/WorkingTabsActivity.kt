@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.riders.thelab.R
 import com.riders.thelab.databinding.ActivityTabsBinding
 import com.riders.thelab.ui.tabs.fragment.OneFragment
 import com.riders.thelab.ui.tabs.fragment.ThreeFragment
@@ -25,8 +24,6 @@ class WorkingTabsActivity : AppCompatActivity() {
         setContentView(viewBinding.root)
 
         setSupportActionBar(viewBinding.tabToolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.activity_title_tabs)
 
         setupViewPager(viewBinding.tabViewPager)
 

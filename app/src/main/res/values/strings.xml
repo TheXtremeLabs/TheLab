@@ -72,6 +72,11 @@
     <string name="version_placeholder">"v "</string>
     <string name="splash_version_to_time_transition_name">splash_version_to_time_transition_name</string>
 
+
+    <!-- Main Activity Screen -->
+    <string name="last_features_title_placeholder">Discover the last 3 features</string>
+
+
     <!-- Colors -->
     <string name="activity_title_colors">Colors</string>
     <string name="colors_text_placeholder">Yoo Pi\'erre you want to come out here ?</string>
@@ -196,6 +201,10 @@
     <string name="populationlabel">"Population : "</string>
 
 
+    <!-- Floating View -->
+    <string name="activity_title_floating_view">Floating Widget</string>
+    <string name="notify_me">Notify Me !</string>
+
     <!-- MultiPane -->
     <string name="activity_title_multipane">MultiPane</string>
     <string name="activity_title_multipane_detail">MultiPane Detail</string>
@@ -203,6 +212,8 @@
     <string name="multipane_row_genre_placeholder">Movie\'s genre</string>
     <string name="multipane_row_year_placeholder">Movie\'s Year</string>
 
+    <!-- Speech To Text -->
+    <string name="activity_title_speech_to_text">Speech To Text</string>
 
     <!-- Search box -->
     <string name="search_box_today_we_are">Aujourd\'hui nous sommes le</string>
@@ -279,10 +290,6 @@
     <string name="title_transition_name">yt_title</string>
     <string name="description_transition_name">yt_desc</string>
 
-    <!-- Floating View -->
-    <string name="activity_title_floating_view">Floating Widget</string>
-    <string name="notify_me">Notify Me !</string>
-
 
     <!-- Custom Toast -->
     <string name="activity_title_custom_toast">Custom Toast</string>
@@ -291,10 +298,18 @@
 
     <!-- Vector Drawables -->
     <string name="activity_title_vector_drawables">Vector Drawables</string>
-
     <!-- Handwriting paths -->
     <string name="path_funky_six">M302.14,60.72C302.29,61.46 276.46,97.06 270.1,112.55C260.87,138.44 278.6,149.83 284.3,152.76C299.15,160.38 316.85,150.27 323.08,141.43C329.3,132.59 333.05,109.99 316.85,100.57C306.85,94.75 290.54,97.32 290.2,97.06C289.85,96.79 276.32,81.31 276.46,80.88C276.6,80.45 294.73,77.62 302.88,84.28C315.76,92.99 315.62,114.99 306.84,127.42C298.06,139.85 276.46,144.38 260.54,130.73C238.46,111.79 259.06,85.64 260.87,83.1C260.87,83.1 286.23,46.19 286.83,46.03C287.43,45.87 301.99,59.99 302.14,60.72Z</string>
     <string name="path_one_googleio">M211,45L235,45A2,2 0,0 1,237 47L237,155A2,2 0,0 1,235 157L211,157A2,2 0,0 1,209 155L209,47A2,2 0,0 1,211 45z</string>
+
+    <!-- Spring -->
+    <string name="activity_title_spring">Spring</string>
+
+    <!-- Chat -->
+    <string name="activity_title_kat">Chat</string>
+
+    <!-- Music Player -->
+    <string name="activity_title_music">Music</string>
 
 
 </resources>

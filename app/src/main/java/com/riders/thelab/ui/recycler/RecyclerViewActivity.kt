@@ -37,9 +37,6 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
         viewBinding = ActivityRecyclerViewBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.activity_title_recycler_view)
-
         initViewModelObservers()
 
         mRecyclerViewModel.getFirebaseJSONURL(this)
