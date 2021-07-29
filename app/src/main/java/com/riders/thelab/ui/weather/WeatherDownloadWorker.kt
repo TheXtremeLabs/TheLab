@@ -130,7 +130,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
             .subscribe(
                 { longs ->
 
-                    mRepository.insertWeatherData(WeatherData(0,true))
+                    mRepository.insertWeatherData(WeatherData(0, true))
                     outputData = createOutputData(WORK_RESULT, WORK_SUCCESS)
                     future!!.set(Result.success(outputData!!))
                 },

@@ -21,10 +21,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.R
 import com.riders.thelab.core.views.toast.TheLabToast
 import com.riders.thelab.core.views.toast.ToastTypeEnum
+import com.riders.thelab.data.local.bean.SnackBarType
 import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
 

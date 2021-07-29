@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.palette.graphics.Palette
-import butterknife.ButterKnife
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -66,7 +65,7 @@ class YoutubeLikeDetailActivity : AppCompatActivity() {
     }
 
     private fun loadContent() {
-        Objects.requireNonNull(supportActionBar)!!.title = item.name
+        Objects.requireNonNull(supportActionBar)?.title = item.name
 
         //Load the background  thumb image
         Glide.with(this)

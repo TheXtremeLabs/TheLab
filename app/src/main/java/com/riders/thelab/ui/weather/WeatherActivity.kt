@@ -182,7 +182,6 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                     ) { v -> }
             }
             R.id.action_search -> Timber.d("noinspection SimplifiableIfStatement")
-
         }
         return true
     }
@@ -335,11 +334,14 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
         viewBinding.tvSunrise.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(
+                oneCallWeatherResponse.timezone,
                 oneCallWeatherResponse.currentWeather.sunrise
             )
-        viewBinding.tvSunset.text = DateTimeUtils.formatMillisToTimeHoursMinutes(
-            oneCallWeatherResponse.currentWeather.sunset
-        )
+        viewBinding.tvSunset.text =
+            DateTimeUtils.formatMillisToTimeHoursMinutes(
+                oneCallWeatherResponse.timezone,
+                oneCallWeatherResponse.currentWeather.sunset
+            )
 
         val hourlyWeather: List<CurrentWeather> = oneCallWeatherResponse.hourlyWeather
 

@@ -1,12 +1,13 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-}
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+    id 'dagger.hilt.android.plugin'
 
-apply plugin: 'com.jakewharton.butterknife'
+}
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
 apply plugin: 'com.google.gms.google-services'
 // Apply the Crashlytics Gradle plugin
 apply plugin: 'com.google.firebase.crashlytics'
@@ -92,10 +93,10 @@ android {
     buildFeatures {
         // Determines whether to support View Binding.
         // Note that the viewBinding.enabled property is now deprecated.
-        viewBinding = true
+        viewBinding true
         // Determines whether to support Data Binding.
         // Note that the dataBinding.enabled property is now deprecated.
-        //dataBinding = false
+        dataBinding true
     }
 
     lintOptions {
@@ -112,15 +113,9 @@ android {
         jvmTarget = "1.8"
     }
 
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    // Add for using latest experimental build of Android Extensions
-    androidExtensions {
-        experimental = true
     }
 }
 
@@ -198,16 +193,11 @@ dependencies {
     // Hilt
     implementation rootProject.ext.generalDependencies.hilt
     kapt(rootProject.ext.generalDependencies.hiltKaptCompiler)
-    implementation rootProject.ext.generalDependencies.hiltLifecycle
+//    implementation rootProject.ext.generalDependencies.hiltLifecycle
     // Worker
     implementation rootProject.ext.generalDependencies.hiltWorkerManager
     kapt rootProject.ext.generalDependencies.hiltKaptAndroidXCompiler
 
-
-    // Butterknife : Views binding
-    //noinspection AnnotationProcessorOnCompilePath
-    implementation rootProject.ext.generalDependencies.butterknife
-    annotationProcessor rootProject.ext.generalDependencies.butterknifeAnnotation
 
     // Glide
     implementation rootProject.ext.generalDependencies.glide

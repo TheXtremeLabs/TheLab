@@ -64,8 +64,12 @@ class ScheduleActivity : AppCompatActivity() {
         viewBinding.button.setOnClickListener {
             viewBinding.time.text.toString().isNotBlank().let {
                 if (it)
-                mViewModel.startAlert(this,  viewBinding.time.text.toString())
-                else UIManager.showCustomToast(this,ToastTypeEnum.WARNING, "Field cannot be empty. Please enter a valid number")
+                    mViewModel.startAlert(this, viewBinding.time.text.toString())
+                else UIManager.showCustomToast(
+                    this,
+                    ToastTypeEnum.WARNING,
+                    "Field cannot be empty. Please enter a valid number"
+                )
             }
         }
     }
@@ -84,7 +88,7 @@ class ScheduleActivity : AppCompatActivity() {
         try {
             mViewModel.unregisterReceiver(this)
 
-        }catch (exception: Exception) {
+        } catch (exception: Exception) {
             exception.printStackTrace()
         }
         super.onPause()
@@ -97,7 +101,7 @@ class ScheduleActivity : AppCompatActivity() {
         }
         try {
             mViewModel.registerReceiver(this)
-        }catch (exception: Exception) {
+        } catch (exception: Exception) {
             exception.printStackTrace()
         }
     }

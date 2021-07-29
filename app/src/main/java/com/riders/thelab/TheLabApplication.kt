@@ -3,10 +3,8 @@ package com.riders.thelab
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
-import androidx.hilt.work.HiltWorker
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.multidex.MultiDexApplication
-import androidx.work.WorkerFactory
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -31,7 +29,6 @@ class TheLabApplication : MultiDexApplication(), androidx.work.Configuration.Pro
 
             return mInstance as TheLabApplication
         }
-
     }
 
 

@@ -32,6 +32,6 @@ class WeatherForecastViewHolder(val context: Context, itemView: View) :
             .into(viewBinding.rowIvForecastWeather)
 
         viewBinding.rowTvForecastTemperature.text =
-            "${dailyWeather.temperature.day.toInt()} + ${context.getString(R.string.degree_placeholder)}"
+            "${dailyWeather.temperature.day.toInt()} ${context.getString(R.string.degree_placeholder)}"
     }
 }

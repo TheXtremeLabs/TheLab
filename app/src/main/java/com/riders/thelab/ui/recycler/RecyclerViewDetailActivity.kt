@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.recycler
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -106,6 +107,16 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
         viewDetailBinding.tvFullNameDetail.text = sb.toString()
         viewDetailBinding.tvActivitiesDetail.text = item.activities
         viewDetailBinding.tvDescriptionDetail.text = item.description
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                supportFinishAfterTransition()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
