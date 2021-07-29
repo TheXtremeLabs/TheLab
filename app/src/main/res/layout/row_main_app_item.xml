@@ -1,134 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_frame_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/row_item_cardView"
+    <data>
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="app"
+            type="com.riders.thelab.data.local.model.app.App" />
+    </data>
+
+    <FrameLayout
+        android:id="@+id/card_frame_layout"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginTop="@dimen/extra_small_margin"
-        android:clickable="true"
-        android:focusable="true"
-        app:cardBackgroundColor="@color/dark_grey"
-        app:cardCornerRadius="@dimen/small_margin"
-        app:cardPreventCornerOverlap="true"
-        app:cardUseCompatPadding="true"
-        tools:cardBackgroundColor="@color/dark_grey"
-        tools:rippleColor="@color/oil">
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/row_item_cardView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <!-- Background image -->
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_row_item_background"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical|end"
-                android:alpha="0.75"
-                android:scaleType="centerCrop"
-                android:src="@mipmap/ic_launcher"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/constraint_guideline_left"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearance="@style/AppItemImageViewShape"
-                tools:src="@drawable/logo_colors" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/constraint_guideline_left"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.7" />
+            android:layout_height="120dp"
+            android:layout_marginTop="@dimen/extra_small_margin"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardBackgroundColor="@color/dark_grey"
+            app:cardCornerRadius="@dimen/small_margin"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true"
+            tools:cardBackgroundColor="@color/dark_grey"
+            tools:rippleColor="@color/oil">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/right_background_gradient"
-                android:paddingVertical="@dimen/small_margin">
+                android:layout_height="match_parent">
 
-                <!-- Icon -->
+                <!-- Background image -->
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/row_icon_imageView"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:layout_marginStart="@dimen/small_margin"
-                    android:adjustViewBounds="true"
-                    android:fitsSystemWindows="true"
-                    android:padding="@dimen/small_margin"
-                    android:scaleType="fitCenter"
+                    android:id="@+id/iv_row_item_background"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical|end"
+                    android:alpha="0.75"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/front_image_guideline"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/constraint_guideline_left"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/the_lab_icon_white" />
+                    app:shapeAppearance="@style/AppItemImageViewShape"
+                    tools:src="@drawable/logo_colors" />
 
                 <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/front_image_guideline"
+                    android:id="@+id/constraint_guideline_left"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.2" />
+                    app:layout_constraintGuide_percent="0.7" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/right_background_gradient"
+                    android:paddingVertical="@dimen/small_margin">
+
+                    <!-- Icon -->
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/row_icon_imageView"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:layout_marginStart="@dimen/small_margin"
+                        android:adjustViewBounds="true"
+                        android:fitsSystemWindows="true"
+                        android:padding="@dimen/small_margin"
+                        android:scaleType="fitCenter"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@id/front_image_guideline"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:src="@drawable/the_lab_icon_white" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/front_image_guideline"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.2" />
 
 
-                <!-- app Details -->
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/row_title_textView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/small_margin"
-                    android:gravity="center|start"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/arrow_icon_guideline"
-                    app:layout_constraintStart_toEndOf="@id/front_image_guideline"
-                    app:layout_constraintTop_toBottomOf="@id/row_description_textView"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Title app"
-                    tools:textColor="@color/white" />
+                    <!-- app Details -->
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/row_title_textView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/small_margin"
+                        android:gravity="center|start"
+                        android:text="@{!TextUtils.isEmpty(app.appTitle) ? app.appTitle : app.appName}"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@id/arrow_icon_guideline"
+                        app:layout_constraintStart_toEndOf="@id/front_image_guideline"
+                        app:layout_constraintTop_toBottomOf="@id/row_description_textView"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Title app"
+                        tools:textColor="@color/white" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/row_description_textView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/small_margin"
-                    android:gravity="center|start"
-                    android:textColor="@color/white"
-                    android:textStyle="normal"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/arrow_icon_guideline"
-                    app:layout_constraintStart_toEndOf="@id/front_image_guideline"
-                    app:layout_constraintTop_toBottomOf="@id/row_title_textView"
-                    tools:text="App description"
-                    tools:textColor="@color/white" />
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/row_description_textView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/small_margin"
+                        android:gravity="center|start"
+                        android:text="@{!TextUtils.isEmpty(app.appVersion)  ? app.appVersion : app.appDescription}"
+                        android:textColor="@color/white"
+                        android:textStyle="normal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/arrow_icon_guideline"
+                        app:layout_constraintStart_toEndOf="@id/front_image_guideline"
+                        app:layout_constraintTop_toBottomOf="@id/row_title_textView"
+                        tools:text="App description"
+                        tools:textColor="@color/white" />
 
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/arrow_icon_guideline"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.9" />
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/arrow_icon_guideline"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.9" />
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/arrow_icon"
-                    android:layout_width="@dimen/big_margin"
-                    android:layout_height="@dimen/big_margin"
-                    android:adjustViewBounds="true"
-                    android:alpha="1"
-                    android:fitsSystemWindows="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/arrow_icon_guideline"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/arrow_icon"
+                        android:layout_width="@dimen/big_margin"
+                        android:layout_height="@dimen/big_margin"
+                        android:adjustViewBounds="true"
+                        android:alpha="1"
+                        android:fitsSystemWindows="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/arrow_icon_guideline"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
 
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-</FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+</layout>
