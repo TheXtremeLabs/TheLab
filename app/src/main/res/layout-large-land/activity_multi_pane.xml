@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        tools:layout="@layout/fragment_multi_pane_main"/>
+        tools:layout="@layout/fragment_multi_pane_main" />
 
     <!-- Movie Detail fragment -->
     <androidx.fragment.app.FragmentContainerView

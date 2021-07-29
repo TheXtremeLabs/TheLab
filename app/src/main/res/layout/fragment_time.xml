@@ -41,4 +41,17 @@
             tools:text="jeu. 24 Décembre 2020" />
     </LinearLayout>
 
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/big_margin"
+        android:indeterminate="true"
+        android:indeterminateOnly="true"
+        app:indicatorColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:progress="98" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
