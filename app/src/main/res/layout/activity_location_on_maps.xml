@@ -11,7 +11,7 @@
 
         <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
             android:id="@+id/google_maps_fragment"
-            android:name="com.google.android.gms.maps.MapFragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/tv_location"
@@ -63,7 +63,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rl_maps_laoding"
+        android:id="@+id/rl_maps_loading"
         android:layout_width="match_parent"
         android:layout_height="96dp"
         android:layout_gravity="bottom|center_horizontal"

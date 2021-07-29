@@ -8,6 +8,7 @@ public class WeatherLiveDataHelper {
     private static WeatherLiveDataHelper liveDataHelper;
     private final MediatorLiveData<Integer> downloadPercent =
             new MediatorLiveData<>();
+
     private WeatherLiveDataHelper() {
     }
 
