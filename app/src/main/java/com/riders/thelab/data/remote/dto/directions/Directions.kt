@@ -1,19 +1,16 @@
-package com.riders.thelab.data.remote.dto.directions;
+package com.riders.thelab.data.remote.dto.directions
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import java.util.*
 
-import java.util.ArrayList;
-
-
-public class Directions {
+data class Directions(
+    @Expose
+    var route: ArrayList<Route>? = null,
 
     @Expose
-    ArrayList<Route> route;
-
-    @Expose
-    String status;
+    var status: String? = null,
 
     @SerializedName("overview_polyline")
-    String overviewPolyline;
-}
+    var overviewPolyline: String? = null
+)

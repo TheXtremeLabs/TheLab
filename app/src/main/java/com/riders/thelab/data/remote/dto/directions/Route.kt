@@ -1,28 +1,30 @@
-package com.riders.thelab.data.remote.dto.directions;
+package com.riders.thelab.data.remote.dto.directions
 
-import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.Expose
+import java.util.*
 
-import java.util.ArrayList;
+data class Route(
+    @Expose
+    var legs: ArrayList<Legs>? = null,
 
+    @Expose
+    var startName: String,
 
-public class Route {
+    @Expose
+    var endName: String,
 
     @Expose
-    ArrayList<Legs> legs;
-    @Expose
-    String startName = "";
-    @Expose
-    String endName = "";
-    @Expose
-    Double startLat;
-    @Expose
-    Double startLng;
-    @Expose
-    Double endLat;
-    @Expose
-    Double endLng;
-    @Expose
-    String overviewPolyline;
+    var startLat: Double? = null,
 
+    @Expose
+    var startLng: Double? = null,
 
-}
+    @Expose
+    var endLat: Double? = null,
+
+    @Expose
+    var endLng: Double? = null,
+
+    @Expose
+    var overviewPolyline: String? = null
+)
