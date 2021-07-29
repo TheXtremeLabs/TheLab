@@ -59,50 +59,7 @@ class GpsUtils(private val context: Context) {
                     onGpsListener.gpsStatus(true)
                 }
                 ?.addOnFailureListener((context as Activity)) { exception ->
-                    val statusCode: Int = (exception as ApiException).statusCode
 
-                    when (statusCode) {
-                        LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
-
-                            try {
-                                // Show the dialog by calling startResolutionForResult(), and check the
-                                // result in onActivityResult().
-                                val rae: ResolvableApiException =
-                                    exception as ResolvableApiException
-                                rae.startResolutionForResult(context, GPS_REQUEST)
-
-                            } catch (sie: IntentSender.SendIntentException) {
-                                Timber.i("PendingIntent unable to execute request.");
-                            }
-                        }
-
-                        LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-
-                            val errorMessage =
-                                "Location settings are inadequate, and cannot be " +
-                                        "fixed here. Fix in Settings.";
-                            Timber.e(errorMessage);
-                            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG)
-                                .show();
-                        }
-                    }
-                }
-        }
-    }
-
-    // method for turn off GPS
-    fun turnGPSOff(onGpsListener: OnGpsListener) {
-        Timber.d("turnGPSOn()")
-        if (locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true) {
-            onGpsListener.gpsStatus(false)
-        } else {
-            mSettingsClient
-                ?.checkLocationSettings(mLocationSettingsRequest!!)
-                ?.addOnSuccessListener((context as Activity)) {
-                    //  GPS is already enable, callback GPS status through listener
-                    onGpsListener.gpsStatus(false)
-                }
-                ?.addOnFailureListener(context) { exception ->
                     when ((exception as ApiException).statusCode) {
                         LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
 
@@ -119,6 +76,7 @@ class GpsUtils(private val context: Context) {
                         }
 
                         LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+
                             val errorMessage =
                                 "Location settings are inadequate, and cannot be " +
                                         "fixed here. Fix in Settings.";

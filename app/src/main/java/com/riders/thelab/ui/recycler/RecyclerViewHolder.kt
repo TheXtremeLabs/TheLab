@@ -11,8 +11,9 @@ import com.riders.thelab.databinding.RowRecyclerViewBinding
 import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
 
-class RecyclerViewHolder constructor(val context: Context, itemView: View) :
-    RecyclerView.ViewHolder(itemView) {
+class RecyclerViewHolder(
+    val context: Context, itemView: View
+) : RecyclerView.ViewHolder(itemView) {
 
     val viewBinding: RowRecyclerViewBinding = RowRecyclerViewBinding.bind(itemView)
 
