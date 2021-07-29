@@ -8,6 +8,9 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.drawable.Drawable
 import android.location.Location
+import android.net.wifi.ScanResult
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.google.firebase.storage.StorageReference
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.data.local.DbImpl
@@ -123,6 +126,23 @@ class RepositoryImpl @Inject constructor(
         return true;
         */
     }
+
+
+    private val mLocationData: MediatorLiveData<Boolean>
+        get() = MediatorLiveData()
+
+    override fun getLocationStatusData(): LiveData<Boolean> {
+        return mLocationData
+    }
+
+    override fun addLocationStatusDataSource(data: LiveData<Boolean>) {
+        mLocationData.addSource(data, mLocationData::setValue)
+    }
+
+    override fun removeLocationStatusDataSource(data: LiveData<Boolean>) {
+        mLocationData.removeSource(data)
+    }
+
 
     override fun insertContact(contact: Contact) {
         mDbImpl.insertContact(contact)
