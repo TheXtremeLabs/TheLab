@@ -190,14 +190,14 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
 
     fun startTheLabAnimation() {
         Timber.e("startTheLaPartAnimation()")
-        viewBinding.ivThe?.visibility = View.VISIBLE
-        viewBinding.ivLab?.visibility = View.VISIBLE
+        viewBinding.ivThe.visibility = View.VISIBLE
+        viewBinding.ivLab.visibility = View.VISIBLE
 
         theAnimator = ObjectAnimator.ofFloat(viewBinding.ivThe, "alpha", 1f)
         theAnimator.duration = LabAnimationsManager.getInstance().longAnimationDuration.toLong()
         theAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
-                viewBinding.ivThe?.alpha = 1f
+                viewBinding.ivThe.alpha = 1f
             }
         })
         theAnimator.start()
@@ -207,7 +207,7 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         labAnimator.duration = LabAnimationsManager.getInstance().longAnimationDuration.toLong()
         labAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
-                viewBinding.ivLab?.alpha = 1f
+                viewBinding.ivLab.alpha = 1f
             }
         })
         labAnimator.start()
@@ -250,7 +250,7 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
 
         Timber.d("Use coroutines to clear animations then launch Main Activity")
         // Use coroutines to clear animations then launch Main Activity
-        GlobalScope.launch(Dispatchers.IO) {
+        GlobalScope.launch(Dispatchers.Main) {
             Timber.d("Use coroutines to clear animations")
             LabAnimationsManager.getInstance().clearAnimations(
                 theAnimator, labAnimator, versionTextAnimator, fadeProgressAnimator
