@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.riders.thelab.R
 import com.riders.thelab.data.local.model.WorldPopulation
 import com.riders.thelab.databinding.ActivityFilterListviewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,11 +30,7 @@ class FilterListViewActivity : AppCompatActivity(), TextWatcher {
         viewBinding = ActivityFilterListviewBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.activity_title_filter_list_view)
-
         setAdapter()
-
 
         mFilterViewModel
             .getPopulations()

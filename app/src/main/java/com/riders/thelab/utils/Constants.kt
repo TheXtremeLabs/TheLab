@@ -37,6 +37,11 @@ class Constants {
         const val DETECTION_INTERVAL_IN_MILLISECONDS = (30 * 1000).toLong()
         const val CONFIDENCE = 70
 
+        const val SZ_SEPARATOR = "/"
+
+        const val GPS_REQUEST = 5214
+
+
         private var instance: Constants? = null
 
         // Factory method to provide the users with instances

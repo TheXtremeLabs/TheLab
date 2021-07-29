@@ -48,9 +48,6 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
     }
 
     fun setupToolbar() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.activity_title_youtube_like)
-
         supportActionBar?.setBackgroundDrawable(
             ColorDrawable(
                 ContextCompat.getColor(
