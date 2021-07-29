@@ -12,7 +12,6 @@ import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.data.remote.dto.artist.Artist
 import timber.log.Timber
-import java.util.function.Predicate
 
 class RecyclerViewAdapter(
     val context: Context,

@@ -45,6 +45,7 @@ class WeatherViewModel @Inject constructor(
     private var weatherCursor: MutableLiveData<Cursor> = MutableLiveData()
     private var oneCallWeather: MutableLiveData<OneCallWeatherResponse> = MutableLiveData()
 
+    @SuppressLint("StaticFieldLeak")
     private lateinit var labLocationManager: LabLocationManager
 
     /* RxJava / RxAndroid */

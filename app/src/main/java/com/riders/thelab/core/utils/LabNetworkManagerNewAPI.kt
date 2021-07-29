@@ -1,8 +1,5 @@
 package com.riders.thelab.core.utils
 
-import android.app.Activity
-import android.content.Context
-import android.net.ConnectivityManager
 import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import com.riders.thelab.core.interfaces.ConnectivityListener

@@ -8,26 +8,26 @@ ext {
     // version information
     versionMajor = 6
     versionMinor = 2
-    versionPatch = 4
+    versionPatch = 5
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
     // Kotlin
-    kotlinVersion = '1.5.0'
+    kotlinVersion = '1.5.21'
     activityKtxVersion = '1.2.3'
-    fragmentKtxVersion = '1.3.3'
+    fragmentKtxVersion = '1.3.5'
 
     // App dependencies
     multidexVersion = '2.0.1'
-    coreVersion = '1.6.0-alpha03'
-    appCompatVersion = '1.2.0'
-    materialVersion = '1.3.0'
+    coreVersion = '1.7.0-alpha01'
+    appCompatVersion = '1.3.0'
+    materialVersion = '1.4.0'
     paletteVersion = '1.0.0'
     constraintLayoutVersion = '2.0.4'
     navigationFragmentVersion = '2.3.5'
     navigationUiVersion = '2.3.5'
-    recyclerViewVersion = '1.2.0'
+    recyclerViewVersion = '1.2.1'
     cardViewVersion = "1.0.0"
-    fragmentVersion = '1.3.3'
+    fragmentVersion = '1.3.5'
     viewPager2Version = '1.0.0'
     dynamicanimationVersion = '1.0.0'
 
@@ -39,26 +39,24 @@ ext {
 
     roomVersion = '2.3.0'
 
-    hiltVersion = '2.35.1'
-    hiltAndroidXVersion = '1.0.0-alpha03'
+    hiltVersion = '2.38'
+    hiltAndroidXVersion = '1.0.0'
 
     googlePlayServicesBaseVersion = '16.0.0'
 
-    googleApiClientVersion = '1.31.5'
+    googleApiClientVersion = '1.32.1'
     mapsVersion = '17.0.1'
-    mapsUtilsVersion = '2.2.3'
+    mapsUtilsVersion = '2.2.5'
     locationVersion = '18.0.0'
     placesVersion = "2.4.0"
 
     firebaseBomVersion = '26.0.0'
-    adsVersion = '20.1.0'
+    adsVersion = '20.2.0'
 
     parcelerVersion = '1.1.13'
 
-    rxjavaVersion = '2.2.21'
+    rxjavaVersion = '3.0.13'
     rxandroidVersion = '3.0.0'
-
-    butterknifeVersion = '10.2.3'
 
     retrofit2Version = '2.9.0'
     okhttpBomVersion = '5.0.0-alpha.2'
@@ -72,7 +70,7 @@ ext {
 
     eventBusVersion = '3.2.0'
 
-    dexterVersion = '6.2.2'
+    dexterVersion = '6.2.3'
 
     mpAndroidChartVersion = '3.1.0'
 
@@ -86,8 +84,8 @@ ext {
 
     //Tests
     junitVersion = '4.13.2'
-    testJUnitVersion = '1.1.2'
-    testEspressoVersion = '3.3.0'
+    testJUnitVersion = '1.1.3'
+    testEspressoVersion = '3.4.0'
 
     generalDependencies = [
             // Kotlin
@@ -134,7 +132,7 @@ ext {
              * the following dependencies */
             hilt                         : "com.google.dagger:hilt-android:$hiltVersion",
             hiltKaptCompiler             : "com.google.dagger:hilt-android-compiler:$hiltVersion",
-            hiltLifecycle                : "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion",
+           // hiltLifecycle                : "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion",
             hiltKaptAndroidXCompiler     : "androidx.hilt:hilt-compiler:1.0.0",// if you use the support libraries
 //            hiltKaptAndroidCompiler : "com.google.dagger:hilt-android-compiler:$hiltVersion",
             //Hilt with workManager
@@ -166,11 +164,6 @@ ext {
             // RxJava / RxAndroid
             rxjava                       : "io.reactivex.rxjava3:rxjava:$rxjavaVersion",
             rxandroid                    : "io.reactivex.rxjava3:rxandroid:$rxandroidVersion",
-
-            // Butterknife : Views binding
-            //noinspection AnnotationProcessorOnCompilePath
-            butterknife                  : "com.jakewharton:butterknife:$butterknifeVersion",
-            butterknifeAnnotation        : "com.jakewharton:butterknife-compiler:$butterknifeVersion",
 
             /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
             retrofit                     : "com.squareup.retrofit2:retrofit:$retrofit2Version",
@@ -235,8 +228,8 @@ ext {
 
 buildscript {
 
-    ext.kotlin_version = "1.4.32"
-    ext.hiltVersion = "2.32-alpha"
+    ext.kotlin_version = "1.5.21"
+    ext.hiltVersion = "2.38"
     ext.navigationVersion = "2.3.4"
 
     repositories {
@@ -246,7 +239,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath 'com.android.tools.build:gradle:4.2.2'
 
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
@@ -255,15 +248,12 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
 
-        // Butterknife
-        classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.3'
-
         // Google Services
         classpath 'com.google.gms:google-services:4.3.8'
 
         // Add the Crashlytics Gradle plugin (be sure to add version
         // 2.0.0 or later if you built your app with Android Studio 4.1).
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.6.1'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.1'
 
         // Add the dependency for the Performance Monitoring plugin
         classpath 'com.google.firebase:perf-plugin:1.4.0'  // Performance Monitoring plugin

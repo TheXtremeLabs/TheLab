@@ -28,11 +28,11 @@
                 android:id="@+id/iv_image_detail_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:transitionName="icon"
                 android:fitsSystemWindows="true"
                 android:minHeight="100dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/image5"
+                android:transitionName="icon"
                 app:layout_collapseMode="parallax"
                 app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
 

@@ -25,6 +25,14 @@ class DateTimeUtils {
             return format.format(date)
         }
 
+        fun formatMillisToTimeHoursMinutes(timeZoneId: String, millis: Long): String {
+            val time = millis * 1000.toLong()
+            val date = Date(time)
+            val format = SimpleDateFormat(HH_mm)
+            format.timeZone = TimeZone.getTimeZone(timeZoneId)
+            return format.format(date)
+        }
+
         fun formatMillisToTimeDayMonth(millis: Long): String {
             return SimpleDateFormat(dd_MM).format(Date(millis * 1000.toLong()))
         }

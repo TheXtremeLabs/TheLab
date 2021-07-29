@@ -1,9 +1,9 @@
 package com.riders.thelab.di
 
 import android.content.res.AssetManager
-import com.riders.thelab.data.local.bean.TimeOut
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.utils.LabFileManager
+import com.riders.thelab.data.local.bean.TimeOut
 import com.riders.thelab.data.local.model.weather.WeatherKey
 import com.riders.thelab.data.remote.api.*
 import com.riders.thelab.data.remote.dto.artist.ArtistsResponseJsonAdapter
@@ -56,8 +56,8 @@ internal object ApiModule {
 
                 val mAssetManager: AssetManager =
                     TheLabApplication.getInstance().getContext()
-                    .resources
-                    .assets
+                        .resources
+                        .assets
 
                 try {
 
@@ -132,6 +132,7 @@ internal object ApiModule {
             .addInterceptor(provideOkHttpLogger())
             .build()
     }
+
     @Provides
     @Singleton
     fun provideOkHttpArtists(): OkHttpClient {
