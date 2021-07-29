@@ -12,7 +12,6 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.riders.thelab.R
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.databinding.ActivityPaletteBinding
 import com.riders.thelab.utils.Constants
@@ -28,9 +27,6 @@ class PaletteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityPaletteBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.activity_title_palette)
 
         Glide.with(this)
             .load(Constants.PALETTE_URL)

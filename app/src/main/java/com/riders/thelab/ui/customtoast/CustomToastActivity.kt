@@ -40,9 +40,6 @@ class CustomToastActivity : AppCompatActivity() {
 
         context = this
 
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = getString(R.string.activity_title_custom_toast)
-
         viewBinding.buttonCustom.setOnClickListener {
             viewBinding.progressIndicator.animate()
                 .setDuration(2000)

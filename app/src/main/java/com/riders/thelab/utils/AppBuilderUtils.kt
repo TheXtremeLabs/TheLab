@@ -18,6 +18,7 @@ import com.riders.thelab.ui.multipane.MultipaneActivity
 import com.riders.thelab.ui.palette.PaletteActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.schedule.ScheduleActivity
+import com.riders.thelab.ui.songplayer.SongPlayerActivity
 import com.riders.thelab.ui.speechtotext.SpeechToTextActivity
 import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.ui.tabs.WorkingTabsActivity
@@ -254,6 +255,17 @@ class AppBuilderUtils {
                     .withActivityClass(KatActivity::class.java)
                     .build()
             list.add(kat)
+
+
+            // SongPlayer
+            val songPlayer =
+                AppBuilder
+                    .withActivityTitle("Music Player")
+                    .withActivityDescription("Play music that is stored on your phone (Live Streaming wip)...")
+                    .withActivityIcon(R.drawable.ic_music)
+                    .withActivityClass(SongPlayerActivity::class.java)
+                    .build()
+            list.add(songPlayer)
 
             // Wip
             val wip =
