@@ -63,13 +63,14 @@
     <string name="error_busy">busy</string>
     <string name="error_server">servere side error</string>
     <string name="error_understand">do\'t understand</string>
-    <string name="speech_recording">Recording...</string>
+    <string name="speech_recording">Recording…</string>
 
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
     <!-- Splash Screen -->
     <string name="version_placeholder">"v "</string>
+    <string name="splash_version_to_time_transition_name">splash_version_to_time_transition_name</string>
 
     <!-- Colors -->
     <string name="activity_title_colors">Colors</string>

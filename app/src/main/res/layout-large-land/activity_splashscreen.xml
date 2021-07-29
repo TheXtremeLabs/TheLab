@@ -90,6 +90,7 @@
                 android:alpha="0"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/white"
+                android:transitionName="@string/splash_version_to_time_transition_name"
                 tools:alpha="1"
                 tools:text="v 1.0.3" />
         </LinearLayout>

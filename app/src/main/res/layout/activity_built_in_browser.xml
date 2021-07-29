@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -23,7 +23,9 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_built_in_browser_full" />
+    <include
+        android:id="@+id/content_built_in_browser"
+        layout="@layout/content_built_in_browser_full" />
 
     <ProgressBar
         android:id="@+id/built_in_browser_progressBar"

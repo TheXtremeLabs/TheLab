@@ -71,13 +71,13 @@
                 android:layout_marginStart="@dimen/extra_small_margin"
                 android:layout_marginLeft="@dimen/extra_small_margin"
                 android:text="@string/degree_placeholder"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tv_weather_city_temperature"
-                app:layout_constraintTop_toTopOf="parent"
-                android:textColor="@color/white" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- Weather Temperature icon -->
@@ -90,19 +90,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_margin"
             android:layout_marginLeft="@dimen/medium_margin"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@id/middle_guideline"
             app:layout_constraintStart_toEndOf="@id/temperature_container"
-            tools:text="Paris, "
-            android:textColor="@color/white" />
+            tools:text="Paris, " />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_weather_city_country"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@id/middle_guideline"
             app:layout_constraintStart_toEndOf="@id/tv_weather_city_name"
-            tools:text="FR"
-            android:textColor="@color/white" />
+            tools:text="FR" />
         <!-- Weather City data -->
 
 
@@ -114,10 +114,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_margin"
             android:layout_marginLeft="@dimen/medium_margin"
+            android:textColor="@color/white"
             app:layout_constraintStart_toEndOf="@id/temperature_container"
             app:layout_constraintTop_toBottomOf="@id/middle_guideline"
-            tools:text="light rain, "
-            android:textColor="@color/white" />
+            tools:text="light rain, " />
         <!-- Weather Description -->
 
         <androidx.constraintlayout.widget.Guideline

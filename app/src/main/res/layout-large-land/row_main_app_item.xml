@@ -96,7 +96,6 @@
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    tools:ignore="NewApi"
                     tools:text="Title app"
                     tools:textColor="@color/white" />
 
@@ -107,7 +106,6 @@
                     android:gravity="center|start"
                     android:textColor="@color/white"
                     android:textStyle="normal"
-                    tools:ignore="NewApi"
                     tools:text="App description"
                     tools:textColor="@color/white" />
             </LinearLayout>

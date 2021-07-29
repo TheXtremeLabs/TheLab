@@ -5,11 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-import lombok.Getter;
-import lombok.ToString;
 
-@Getter
-@ToString
 public class Directions {
 
     @Expose
