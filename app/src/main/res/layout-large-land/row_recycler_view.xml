@@ -39,7 +39,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/logo_colors" />
+                tools:src="@drawable/logo_colors"
+                tools:visibility="visible" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,11 +77,11 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/big_margin"
                     android:text="@{artist.artistName}"
-                    tools:text="@string/app_name"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/bottom_guideline" />
+                    app:layout_constraintTop_toBottomOf="@id/bottom_guideline"
+                    tools:text="@string/app_name" />
 
                 <RelativeLayout
                     android:id="@+id/row_details_linear_layout"
