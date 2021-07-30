@@ -23,7 +23,7 @@ class NewsFragment : Fragment(), View.OnClickListener {
 
     private val mNewsViewModel: NewsViewModel by viewModels()
 
-    private val recentAppsNames = arrayOf("Music", "Spring", "Weather")
+    private val recentAppsNames = arrayOf("Music", "Google", "Weather")
     private var mRecentApps: List<App>? = null
 
     /**

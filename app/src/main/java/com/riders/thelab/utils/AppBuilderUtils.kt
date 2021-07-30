@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.riders.thelab.R
-import com.riders.thelab.TheLabApplication
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.data.local.model.app.AppBuilder
 import com.riders.thelab.ui.biometric.BiometricActivity
@@ -16,6 +15,7 @@ import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity
 import com.riders.thelab.ui.floatingview.FloatingViewActivity
+import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
 import com.riders.thelab.ui.kat.KatActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
 import com.riders.thelab.ui.multipane.MultipaneActivity
@@ -54,7 +54,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Biometric")
                     .withActivityDescription("Check biometric hardware and test it...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_fingerprint))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_fingerprint
+                        )
+                    )
                     .withActivityClass(BiometricActivity::class.java)
                     .build()
             list.add(biometric)
@@ -64,7 +69,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Recycler")
                     .withActivityDescription("Recycler Basics and best practices...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_filter_list))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_filter_list
+                        )
+                    )
                     .withActivityClass(RecyclerViewActivity::class.java)
                     .build()
             list.add(recycler)
@@ -84,7 +94,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Transitions")
                     .withActivityDescription("Start a new activity with awesome animations...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_flip_to_back))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_flip_to_back
+                        )
+                    )
                     .withActivityClass(TransitionActivity::class.java)
                     .build()
             list.add(transitions)
@@ -94,7 +109,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Floating Labels")
                     .withActivityDescription("Floating Labels Form...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_outline_label))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_outline_label
+                        )
+                    )
                     .withActivityClass(FloatingLabelsActivity::class.java)
                     .build()
             list.add(floatingsLabels)
@@ -114,7 +134,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Location On Maps")
                     .withActivityDescription("Display User location on map...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_location_on))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_location_on
+                        )
+                    )
                     .withActivityClass(LocationOnMapsActivity::class.java)
                     .build()
             list.add(locationOnMaps)
@@ -134,7 +159,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Devices Information")
                     .withActivityDescription("Display device info...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_device_information))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_device_information
+                        )
+                    )
                     .withActivityClass(DeviceInformationActivity::class.java)
                     .build()
             list.add(deviceInformation)
@@ -154,7 +184,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Filter ListView")
                     .withActivityDescription("ListView with filter...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_filter_list))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_filter_list
+                        )
+                    )
                     .withActivityClass(FilterListViewActivity::class.java)
                     .build()
             list.add(filterListView)
@@ -164,7 +199,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Multi Pane")
                     .withActivityDescription("Display content on split screen...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_aspect_ratio))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_aspect_ratio
+                        )
+                    )
                     .withActivityClass(MultipaneActivity::class.java)
                     .build()
             list.add(multiPane)
@@ -184,7 +224,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Built-in Web View")
                     .withActivityDescription("Display web view in activity directly...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_alternate_email))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_alternate_email
+                        )
+                    )
                     .withActivityClass(BuiltInWebViewActivity::class.java)
                     .build()
             list.add(builtInWebView)
@@ -194,7 +239,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Youtube")
                     .withActivityDescription("Youtube look like...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.youtube_icon_like))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.youtube_icon_like
+                        )
+                    )
                     .withActivityClass(YoutubeLikeActivity::class.java)
                     .build()
             list.add(youtubeLike)
@@ -205,7 +255,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Weather")
                     .withActivityDescription("Current weather forecast in your city...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.openweathermap))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.openweathermap
+                        )
+                    )
                     .withActivityClass(WeatherActivity::class.java)
                     .build()
             list.add(weather)
@@ -215,7 +270,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Floating Widget")
                     .withActivityDescription("Create a floating widget that you can move around on the screen...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_flip_to_back))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_flip_to_back
+                        )
+                    )
                     .withActivityClass(FloatingViewActivity::class.java)
                     .build()
             list.add(floatingWidgets)
@@ -225,7 +285,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Custom Toast")
                     .withActivityDescription("Custom Toast Layout...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_announcement))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_announcement
+                        )
+                    )
                     .withActivityClass(CustomToastActivity::class.java)
                     .build()
             list.add(customToast)
@@ -235,7 +300,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Vector Drawables")
                     .withActivityDescription("Animated, scale, transform vector drawables...")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_aspect_ratio))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_aspect_ratio
+                        )
+                    )
                     .withActivityClass(VectorDrawablesActivity::class.java)
                     .build()
             list.add(vectorDrawables)
@@ -245,7 +315,12 @@ class AppBuilderUtils {
                 AppBuilder
                     .withActivityTitle("Spring")
                     .withActivityDescription("Physics-based motion is driven by force. Spring force is one such force that guides interactivity and motion....")
-                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_filter_center_focus))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_filter_center_focus
+                        )
+                    )
                     .withActivityClass(SpringActivity::class.java)
                     .build()
             list.add(spring)
@@ -270,6 +345,16 @@ class AppBuilderUtils {
                     .withActivityClass(SongPlayerActivity::class.java)
                     .build()
             list.add(songPlayer)
+
+            // Google
+            val google =
+                AppBuilder
+                    .withActivityTitle("Google Drive API")
+                    .withActivityDescription("Exploring Google Drive Api...")
+                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.googleg_color))
+                    .withActivityClass(GoogleSignInActivity::class.java)
+                    .build()
+            list.add(google)
 
             // Wip
             val wip =

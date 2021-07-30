@@ -167,7 +167,10 @@ dependencies {
 
     // Google Play
     // Maps
+    implementation rootProject.ext.generalDependencies.googlePlayServices
     implementation rootProject.ext.generalDependencies.googleAPIClient
+    implementation rootProject.ext.generalDependencies.googleAPIClientAndroid
+    implementation rootProject.ext.generalDependencies.playServicesAuth
     implementation rootProject.ext.generalDependencies.maps
     implementation rootProject.ext.generalDependencies.mapsUtils
     implementation rootProject.ext.generalDependencies.location
