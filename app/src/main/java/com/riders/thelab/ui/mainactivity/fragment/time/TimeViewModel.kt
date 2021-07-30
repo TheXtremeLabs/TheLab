@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
+import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.RepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TimeViewModel @Inject constructor(
-    val repositoryImpl: RepositoryImpl
+    private val repository: IRepository
 ) : ViewModel() {
 
     private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
@@ -28,7 +29,6 @@ class TimeViewModel @Inject constructor(
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    private val mRepositoryImpl: RepositoryImpl = repositoryImpl
 
     fun getProgressVisibility(): LiveData<Boolean> {
         return progressVisibility
@@ -55,7 +55,7 @@ class TimeViewModel @Inject constructor(
         progressVisibility.value = true
 
         val disposable: Disposable =
-            mRepositoryImpl.getStorageReference(context)
+            repository.getStorageReference(context)
                 .subscribe({ storageReference ->
                     // Create a child reference
                     // imagesRef now points to "images"
