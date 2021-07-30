@@ -17,9 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -27,9 +25,7 @@ import com.riders.thelab.R
 import com.riders.thelab.core.views.toast.TheLabToast
 import com.riders.thelab.core.views.toast.ToastTypeEnum
 import com.riders.thelab.data.local.bean.SnackBarType
-import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
-
 
 class UIManager private constructor() {
     companion object {
@@ -262,18 +258,30 @@ class UIManager private constructor() {
             }
         }
 
+        //@BindingAdapter("android:src", "error", requireAll = false)
+        public fun loadImage(
+            targetImageView: ShapeableImageView,
+            iconIntRes: Int,
+            error: Drawable,
+        ) {
+            LabGlideUtils.loadImage(targetImageView, iconIntRes, error)
+        }
+
+        //@BindingAdapter("imageUrl", "error", requireAll = false)
+        public fun loadImage(
+            targetImageView: ShapeableImageView,
+            iconResDrawable: Drawable,
+            error: Drawable,
+        ) {
+            LabGlideUtils.loadImage(targetImageView, iconResDrawable, error)
+        }
+
         fun loadImage(
             context: Context,
             iconResDrawable: Any,
             targetImageView: ShapeableImageView
         ) {
-            //Load the background  thumb image
-            Glide.with(context)
-                .load(iconResDrawable)
-                .apply {
-                    dontTransform()
-                }
-                .into(targetImageView)
+            LabGlideUtils.loadImage(context, iconResDrawable, targetImageView)
         }
 
         fun loadImage(
@@ -282,14 +290,7 @@ class UIManager private constructor() {
             targetImageView: ShapeableImageView,
             listener: RequestListener<Drawable>
         ) {
-            //Load the background  thumb image
-            Glide.with(context)
-                .load(iconResDrawable)
-                .listener(listener)
-                .apply {
-                    dontTransform()
-                }
-                .into(targetImageView)
+            LabGlideUtils.loadImage(context, iconResDrawable, targetImageView, listener)
         }
 
         /**
@@ -300,11 +301,7 @@ class UIManager private constructor() {
             imageURL: Any,
             targetImageView: ShapeableImageView
         ) {
-            //Load the background  thumb image
-            Glide.with(context)
-                .load(imageURL)
-                .apply(RequestOptions.bitmapTransform(BlurTransformation(5, 5)))
-                .into(targetImageView)
+            LabGlideUtils.loadImageBlurred(context, imageURL, targetImageView)
         }
 
         /**

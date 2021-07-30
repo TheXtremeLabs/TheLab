@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.drawable.Drawable
 import android.location.Location
-import android.net.wifi.ScanResult
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.google.firebase.storage.StorageReference
@@ -100,7 +99,7 @@ class RepositoryImpl @Inject constructor(
 
         for (packageInfo in packages) {
             for (packageItem in targetPackages) {
-                if (packageInfo.packageName.contains(packageItem!!)) {
+                if (packageInfo.packageName.contains(packageItem)) {
 
                     // Store found app package name
                     val appToAdd = packageInfo.packageName
