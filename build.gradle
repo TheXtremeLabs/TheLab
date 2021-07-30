@@ -8,7 +8,7 @@ ext {
     // version information
     versionMajor = 6
     versionMinor = 5
-    versionPatch = 0
+    versionPatch = 1
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
     // Kotlin
@@ -44,7 +44,9 @@ ext {
 
     googlePlayServicesBaseVersion = '16.0.0'
 
-    googleApiClientVersion = '1.32.1'
+    googleApiClientVersion = '1.30.5'
+    googleApiClientVersionAndroid = '1.30.5'
+    playServicesAuthVersion = '19.2.0'
     mapsVersion = '17.0.1'
     mapsUtilsVersion = '2.2.5'
     locationVersion = '18.0.0'
@@ -89,127 +91,129 @@ ext {
 
     generalDependencies = [
             // Kotlin
-            kotlinStdLib                 : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
+            kotlinStdLib            : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
 
             // KTX framework
-            activityKTX                  : "androidx.activity:activity-ktx:$activityKtxVersion",
-            fragmentKTX                  : "androidx.fragment:fragment-ktx:$fragmentKtxVersion",
-            navigationKTX                : "androidx.navigation:navigation-ui-ktx:$navigationUiVersion",
-            navigationFragmentKTX        : "androidx.navigation:navigation-fragment-ktx:$navigationFragmentVersion",
+            activityKTX             : "androidx.activity:activity-ktx:$activityKtxVersion",
+            fragmentKTX             : "androidx.fragment:fragment-ktx:$fragmentKtxVersion",
+            navigationKTX           : "androidx.navigation:navigation-ui-ktx:$navigationUiVersion",
+            navigationFragmentKTX   : "androidx.navigation:navigation-fragment-ktx:$navigationFragmentVersion",
 
-            multidex                     : "androidx.multidex:multidex:$multidexVersion",
-            core                         : "androidx.core:core:$coreVersion",
-            appcompat                    : "androidx.appcompat:appcompat:$appCompatVersion",
-            material                     : "com.google.android.material:material:$materialVersion",
-            palette                      : "androidx.palette:palette:$paletteVersion",
-            constraintLayout             : "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion",
-            navigationFragment           : "androidx.navigation:navigation-fragment:$navigationFragmentVersion",
-            navigationUi                 : "androidx.navigation:navigation-ui:$navigationUiVersion",
-            recyclerView                 : "androidx.recyclerview:recyclerview:$recyclerViewVersion",
-            cardView                     : "androidx.cardview:cardview:$cardViewVersion",
-            fragment                     : "androidx.fragment:fragment:$fragmentVersion",
-            springForce                  : "androidx.dynamicanimation:dynamicanimation:$dynamicanimationVersion",
-            viewPager2                   : "androidx.viewpager2:viewpager2:$viewPager2Version",
+            multidex                : "androidx.multidex:multidex:$multidexVersion",
+            core                    : "androidx.core:core:$coreVersion",
+            appcompat               : "androidx.appcompat:appcompat:$appCompatVersion",
+            material                : "com.google.android.material:material:$materialVersion",
+            palette                 : "androidx.palette:palette:$paletteVersion",
+            constraintLayout        : "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion",
+            navigationFragment      : "androidx.navigation:navigation-fragment:$navigationFragmentVersion",
+            navigationUi            : "androidx.navigation:navigation-ui:$navigationUiVersion",
+            recyclerView            : "androidx.recyclerview:recyclerview:$recyclerViewVersion",
+            cardView                : "androidx.cardview:cardview:$cardViewVersion",
+            fragment                : "androidx.fragment:fragment:$fragmentVersion",
+            springForce             : "androidx.dynamicanimation:dynamicanimation:$dynamicanimationVersion",
+            viewPager2              : "androidx.viewpager2:viewpager2:$viewPager2Version",
 
-            autoFill                     : "androidx.autofill:autofill:$autoFillVersion",
+            autoFill                : "androidx.autofill:autofill:$autoFillVersion",
 
             // Worker
-            workerRuntime                : "androidx.work:work-runtime:$workerVersion",
-            workerRxJava3                : "androidx.work:work-rxjava3:$workerVersion",
-            workerMultiprocess           : "androidx.work:work-multiprocess:$workerVersion",
-            concurrent                   : "androidx.concurrent:concurrent-futures:$concurrentVersion",
+            workerRuntime           : "androidx.work:work-runtime:$workerVersion",
+            workerRxJava3           : "androidx.work:work-rxjava3:$workerVersion",
+            workerMultiprocess      : "androidx.work:work-multiprocess:$workerVersion",
+            concurrent              : "androidx.concurrent:concurrent-futures:$concurrentVersion",
 
 
             /* Android Architecture Component - Room Persistance Lib  */
-            roomRuntime                  : "androidx.room:room-runtime:$roomVersion",
-            roomRX                       : "androidx.room:room-rxjava3:$roomVersion",
-            roomCompiler                 : "androidx.room:room-compiler:$roomVersion",
+            roomRuntime             : "androidx.room:room-runtime:$roomVersion",
+            roomRX                  : "androidx.room:room-rxjava3:$roomVersion",
+            roomCompiler            : "androidx.room:room-compiler:$roomVersion",
             // optional - Kotlin Extensions and Coroutines support for Room
-            roomExtCoroutinesSupport     : "androidx.room:room-ktx:$roomVersion",
+            roomExtCoroutinesSupport: "androidx.room:room-ktx:$roomVersion",
 
             /* Hilt - We are going to use hilt.android which includes
              * support for Activity and fragment injection so we need to include
              * the following dependencies */
-            hilt                         : "com.google.dagger:hilt-android:$hiltVersion",
-            hiltKaptCompiler             : "com.google.dagger:hilt-android-compiler:$hiltVersion",
-           // hiltLifecycle                : "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion",
-            hiltKaptAndroidXCompiler     : "androidx.hilt:hilt-compiler:1.0.0",// if you use the support libraries
+            hilt                    : "com.google.dagger:hilt-android:$hiltVersion",
+            hiltKaptCompiler        : "com.google.dagger:hilt-android-compiler:$hiltVersion",
+            // hiltLifecycle                : "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion",
+            hiltKaptAndroidXCompiler: "androidx.hilt:hilt-compiler:1.0.0",// if you use the support libraries
 //            hiltKaptAndroidCompiler : "com.google.dagger:hilt-android-compiler:$hiltVersion",
             //Hilt with workManager
-            hiltWorkerManager            : "androidx.hilt:hilt-work:$hiltAndroidXVersion",
+            hiltWorkerManager       : "androidx.hilt:hilt-work:$hiltAndroidXVersion",
 
             // Maps
-            googlePlayServices           : "com.google.android.gms:play-services-base:$googlePlayServicesBaseVersion",
-            googleAPIClient              : "com.google.api-client:google-api-client:$googleApiClientVersion",
-            maps                         : "com.google.android.gms:play-services-maps:$mapsVersion",
-            mapsUtils                    : "com.google.maps.android:android-maps-utils:$mapsUtilsVersion",
-            location                     : "com.google.android.gms:play-services-location:$locationVersion",
-            places                       : "com.google.android.libraries.places:places:$placesVersion",
+            googlePlayServices      : "com.google.android.gms:play-services-base:$googlePlayServicesBaseVersion",
+            googleAPIClient         : "com.google.api-client:google-api-client:$googleApiClientVersion",
+            googleAPIClientAndroid  : "com.google.api-client:google-api-client-android:$googleApiClientVersionAndroid",
+            playServicesAuth        : "com.google.android.gms:play-services-auth:$playServicesAuthVersion",
+            maps                    : "com.google.android.gms:play-services-maps:$mapsVersion",
+            mapsUtils               : "com.google.maps.android:android-maps-utils:$mapsUtilsVersion",
+            location                : "com.google.android.gms:play-services-location:$locationVersion",
+            places                  : "com.google.android.libraries.places:places:$placesVersion",
 
-            firebasePlatform             : "com.google.firebase:firebase-bom:$firebaseBomVersion",
-            firebaseAnalitycs            : "com.google.firebase:firebase-analytics",
-            firebaseAuth                 : "com.google.firebase:firebase-auth",
-            firebaseCraslytics           : "com.google.firebase:firebase-crashlytics",
-            firebaseMessaging            : "com.google.firebase:firebase-messaging",
-            firebasePerf                 : "com.google.firebase:firebase-perf",
-            firebaseCloudstorage         : "com.google.firebase:firebase-storage",
-            firebaseDatabase             : "com.google.firebase:firebase-database",
-            firebaseAds                  : "com.google.android.gms:play-services-ads:$adsVersion",
+            firebasePlatform        : "com.google.firebase:firebase-bom:$firebaseBomVersion",
+            firebaseAnalitycs       : "com.google.firebase:firebase-analytics",
+            firebaseAuth            : "com.google.firebase:firebase-auth",
+            firebaseCraslytics      : "com.google.firebase:firebase-crashlytics",
+            firebaseMessaging       : "com.google.firebase:firebase-messaging",
+            firebasePerf            : "com.google.firebase:firebase-perf",
+            firebaseCloudstorage    : "com.google.firebase:firebase-storage",
+            firebaseDatabase        : "com.google.firebase:firebase-database",
+            firebaseAds             : "com.google.android.gms:play-services-ads:$adsVersion",
 
 
             // Parceler
-            parceler                     : "org.parceler:parceler-api:$parcelerVersion",
-            parcelerAnnotation           : "org.parceler:parceler:$parcelerVersion",
+            parceler                : "org.parceler:parceler-api:$parcelerVersion",
+            parcelerAnnotation      : "org.parceler:parceler:$parcelerVersion",
 
             // RxJava / RxAndroid
-            rxjava                       : "io.reactivex.rxjava3:rxjava:$rxjavaVersion",
-            rxandroid                    : "io.reactivex.rxjava3:rxandroid:$rxandroidVersion",
+            rxjava                  : "io.reactivex.rxjava3:rxjava:$rxjavaVersion",
+            rxandroid               : "io.reactivex.rxjava3:rxandroid:$rxandroidVersion",
 
             /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
-            retrofit                     : "com.squareup.retrofit2:retrofit:$retrofit2Version",
-            retrofitConverterMoshi       : "com.squareup.retrofit2:converter-moshi:$retrofit2Version",
-            retrofitRxJava3              : "com.squareup.retrofit2:adapter-rxjava3:$retrofit2Version",
+            retrofit                : "com.squareup.retrofit2:retrofit:$retrofit2Version",
+            retrofitConverterMoshi  : "com.squareup.retrofit2:converter-moshi:$retrofit2Version",
+            retrofitRxJava3         : "com.squareup.retrofit2:adapter-rxjava3:$retrofit2Version",
 
             // OkHttp
-            okHttpBom                    : "com.squareup.okhttp3:okhttp-bom:$okhttpBomVersion",
-            okHttp                       : "com.squareup.okhttp3:okhttp",
-            okHttpLogging                : "com.squareup.okhttp3:logging-interceptor",
+            okHttpBom               : "com.squareup.okhttp3:okhttp-bom:$okhttpBomVersion",
+            okHttp                  : "com.squareup.okhttp3:okhttp",
+            okHttpLogging           : "com.squareup.okhttp3:logging-interceptor",
 
             // Moshi
-            moshi                        : "com.squareup.moshi:moshi:$moshiVersion",
-            moshiKotlin                  : "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion",
+            moshi                   : "com.squareup.moshi:moshi:$moshiVersion",
+            moshiKotlin             : "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion",
 
             // EventBus
-            eventBus                     : "org.greenrobot:eventbus:$eventBusVersion",
+            eventBus                : "org.greenrobot:eventbus:$eventBusVersion",
 
             // MPAndroidChart
-            androidChart                 : "com.github.PhilJay:MPAndroidChart:v$mpAndroidChartVersion",
+            androidChart            : "com.github.PhilJay:MPAndroidChart:v$mpAndroidChartVersion",
 
             // Dexter
-            dexter                       : "com.karumi:dexter:$dexterVersion",
+            dexter                  : "com.karumi:dexter:$dexterVersion",
 
             //ThreeTen : Alternative to Android Calendar API
-            threeten                     : "com.jakewharton.threetenabp:threetenabp:$threetenVersion",
+            threeten                : "com.jakewharton.threetenabp:threetenabp:$threetenVersion",
 
             // Glide
-            glide                        : "com.github.bumptech.glide:glide:$glideVersion",
-            glideAnnotation              : "com.github.bumptech.glide:compiler:$glideVersion",
+            glide                   : "com.github.bumptech.glide:glide:$glideVersion",
+            glideAnnotation         : "com.github.bumptech.glide:compiler:$glideVersion",
 
             // Blurry
-            blurry                       : "jp.wasabeef:blurry:$blurryVersion",
-            glideTransformation          : "jp.wasabeef:glide-transformations:$glideTransformationVersion",
+            blurry                  : "jp.wasabeef:blurry:$blurryVersion",
+            glideTransformation     : "jp.wasabeef:glide-transformations:$glideTransformationVersion",
 
             // GoldFinger
-            goldfinger                   : "co.infinum:goldfinger:$goldfingerVersion",
-            goldfingerRX                 : "co.infinum:goldfinger-rx:$goldfingerVersion",
+            goldfinger              : "co.infinum:goldfinger:$goldfingerVersion",
+            goldfingerRX            : "co.infinum:goldfinger-rx:$goldfingerVersion",
 
 
             // Lombok
-            lombok                       : "org.projectlombok:lombok:$lombokVersion",
-            lombokAnnotation             : "org.projectlombok:lombok:$lombokVersion",
+            lombok                  : "org.projectlombok:lombok:$lombokVersion",
+            lombokAnnotation        : "org.projectlombok:lombok:$lombokVersion",
 
             // Timber : Logging library
-            timber                       : "com.jakewharton.timber:timber:$timberVersion"
+            timber                  : "com.jakewharton.timber:timber:$timberVersion"
     ]
 
     testDependencies = [
