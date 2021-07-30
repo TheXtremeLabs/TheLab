@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.riders.thelab.core.utils.LabCompatibilityManager
+import com.riders.thelab.core.utils.LabGlideUtils
+import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.RowMainAppItemBinding
 
@@ -25,12 +27,15 @@ class MainActivityAdapter constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainActivityViewHolder {
         val viewBinding: RowMainAppItemBinding =
-            RowMainAppItemBinding.inflate(LayoutInflater.from(parent.context))
+            RowMainAppItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MainActivityViewHolder(mContext, viewBinding)
     }
 
     override fun onBindViewHolder(holder: MainActivityViewHolder, position: Int) {
         val item = mAppList[position]
+
+        holder.viewBinding.app = item
+        holder.viewBinding.executePendingBindings()
 
         if (!LabCompatibilityManager.isTablet(mContext)) {
 
@@ -62,23 +67,23 @@ class MainActivityAdapter constructor(
     private fun bindTabletViewHolder(holder: MainActivityViewHolder, item: App, position: Int) {
         if (position == lastPosition) {
             // Item selected
-            holder.viewBinding.cardFrameLayout.alpha = 1f
+            holder.viewBinding.cardFrameLayout?.alpha = 1f
             holder.viewBinding.llCardSelectedBackground?.visibility = View.VISIBLE
-            holder.viewBinding.cardFrameLayout.animate()
-                .setDuration(500)
-                .scaleX(1.25f)
-                .scaleY(1.25f)
-                .start()
+            holder.viewBinding.cardFrameLayout?.animate()
+                ?.setDuration(500)
+                ?.scaleX(1.25f)
+                ?.scaleY(1.25f)
+                ?.start()
             holder.viewBinding.rowItemCardView.cardElevation = 4f
         } else {
             if (lastPosition == -1) // Check first launch nothing is selected
-                holder.viewBinding.cardFrameLayout.alpha = 1f else {
+                holder.viewBinding.cardFrameLayout?.alpha = 1f else {
                 // Item not selected
                 holder.viewBinding.llCardSelectedBackground?.visibility = View.INVISIBLE
-                holder.viewBinding.cardFrameLayout.alpha = 0.5f
+                holder.viewBinding.cardFrameLayout?.alpha = 0.5f
                 //                holder.frameLayout.setStrokeWidth((int) 0f);
-                holder.viewBinding.cardFrameLayout.scaleX = 1f
-                holder.viewBinding.cardFrameLayout.scaleY = 1f
+                holder.viewBinding.cardFrameLayout?.scaleX = 1f
+                holder.viewBinding.cardFrameLayout?.scaleY = 1f
                 holder.viewBinding.rowItemCardView.cardElevation = 0f
             }
         }
