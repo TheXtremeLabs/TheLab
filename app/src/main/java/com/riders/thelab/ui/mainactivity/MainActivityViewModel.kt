@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.mainactivity
 
 import android.app.Activity
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -56,11 +57,11 @@ class MainActivityViewModel @Inject constructor(
         repository.removeLocationStatusDataSource(locationStatus)
     }
 
-    fun retrieveApplications() {
+    fun retrieveApplications(context: Context) {
         val appList: MutableList<App> = ArrayList()
 
         // Get constants activities
-        appList.addAll(Constants.getInstance().getActivityList())
+        appList.addAll(Constants(context).getActivityList())
         appList.addAll(repository.getPackageList())
 
         if (appList.isEmpty()) {

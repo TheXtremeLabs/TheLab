@@ -7,7 +7,7 @@ data class App(
     var appName: String, var appDrawableIcon: Drawable?,
     var appVersion: String, var appPackageName: String,
     var appTitle: String, var appDescription: String,
-    var appIcon: Int = 0, var appActivity: Class<out Activity?>?
+    var appActivity: Class<out Activity?>?
 ) {
 
     // From Packages
@@ -19,7 +19,6 @@ data class App(
     // From activities
     private var title: String? = null
     private var description: String? = null
-    private var icon = 0
     private var activity: Class<out Activity?>? = null
 
     constructor(
@@ -29,7 +28,7 @@ data class App(
         packageName: String
     ) : this(
         name, drawableIcon, version, packageName,
-        "", "", 0, null
+        "", "", null
     ) {
         this.name = name
         this.drawableIcon = drawableIcon
@@ -40,19 +39,21 @@ data class App(
     constructor(
         title: String,
         description: String,
-        icon: Int,
+        icon: Drawable,
         activity: Class<out Activity>?
     ) : this(
-        "", null, "", "",
-        title, description, icon, activity
+        "", icon, "", "",
+        title, description, activity
     ) {
         this.title = title
         this.description = description
-        this.icon = icon
+        this.drawableIcon = icon
         this.activity = activity
     }
 
     override fun toString(): String {
-        return "App(appName=$appName, appDrawableIcon=$appDrawableIcon, appVersion=$appVersion, appPackageName=$appPackageName, appTitle=$appTitle, appDescription=$appDescription, appIcon=$appIcon, appActivity=$appActivity, name=$name, drawableIcon=$drawableIcon, version=$version, packageName=$packageName, title=$title, description=$description, icon=$icon, activity=$activity)"
+        return "App(appName='$appName', appDrawableIcon=$appDrawableIcon, appVersion='$appVersion', appPackageName='$appPackageName', appTitle='$appTitle', appDescription='$appDescription', appActivity=$appActivity, name=$name, drawableIcon=$drawableIcon, version=$version, packageName=$packageName, title=$title, description=$description, activity=$activity)"
     }
+
+
 }

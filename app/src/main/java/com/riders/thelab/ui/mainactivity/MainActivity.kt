@@ -30,6 +30,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.riders.thelab.R
+import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.interfaces.ConnectivityListener
 import com.riders.thelab.core.location.GpsUtils
@@ -116,7 +117,7 @@ class MainActivity : AppCompatActivity(),
 
         // ViewModel
         initViewModelsObservers()
-        mViewModel.retrieveApplications()
+        mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
     }
 
     override fun onStart() {
@@ -325,7 +326,7 @@ class MainActivity : AppCompatActivity(),
                 else LinearLayoutManager.HORIZONTAL, false
             )
 
-        viewBinding.appRecyclerView?.layoutManager = linearLayoutManager
+        viewBinding.includeContentLayout?.appRecyclerView?.layoutManager = linearLayoutManager
 
         val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         divider.setDrawable(
@@ -335,14 +336,14 @@ class MainActivity : AppCompatActivity(),
             )!!
         )
         if (!LabCompatibilityManager.isTablet(this))
-            viewBinding.appRecyclerView?.addItemDecoration(divider)
+            viewBinding.includeContentLayout?.appRecyclerView?.addItemDecoration(divider)
         else {
             val helper = ItemSnapHelper()
-            helper.attachToRecyclerView(viewBinding.appRecyclerView)
+            helper.attachToRecyclerView(viewBinding.includeContentLayout?.appRecyclerView)
         }
 
-        viewBinding.appRecyclerView?.itemAnimator = DefaultItemAnimator()
-        viewBinding.appRecyclerView?.adapter = adapter
+        viewBinding.includeContentLayout?.appRecyclerView?.itemAnimator = DefaultItemAnimator()
+        viewBinding.includeContentLayout?.appRecyclerView?.adapter = adapter
     }
 
     fun showBottomSheetDialogFragment() {
@@ -365,7 +366,7 @@ class MainActivity : AppCompatActivity(),
         viewBinding.ivItemDetail?.let {
             UIManager.loadImage(
                 this,
-                (if (0 != app.appIcon) app.appIcon else app.appDrawableIcon)!!,
+                app.appDrawableIcon!!,
                 it,
                 LabGlideListener(
                     onLoadingSuccess = { resource ->
@@ -374,7 +375,7 @@ class MainActivity : AppCompatActivity(),
                             viewBinding.itemDetailBtn?.visibility = View.VISIBLE
                         }
 
-                        if (0 != app.appIcon && app.appTitle == "Palette") {
+                        if (app.appTitle == "Palette") {
                             val myBitmap: Bitmap = UIManager.drawableToBitmap(resource!!)
                             val newBitmap =
                                 UIManager.addGradientToImageView(this@MainActivity, myBitmap)
@@ -384,7 +385,7 @@ class MainActivity : AppCompatActivity(),
                             )
                             return@LabGlideListener true
                         }
-                        if (0 != app.appIcon && app.appTitle == "WIP") {
+                        if (app.appTitle == "WIP") {
                             viewBinding.ivItemDetail?.setImageDrawable(
                                 ContextCompat.getDrawable(
                                     this@MainActivity,
