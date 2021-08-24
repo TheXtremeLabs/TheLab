@@ -7,8 +7,8 @@ ext {
 
     // version information
     versionMajor = 6
-    versionMinor = 5
-    versionPatch = 1
+    versionMinor = 6
+    versionPatch = 0
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
     // Kotlin
@@ -42,7 +42,8 @@ ext {
     hiltVersion = '2.38.1'
     hiltAndroidXVersion = '1.0.0'
 
-    googlePlayServicesBaseVersion = '16.0.0'
+    googlePlayServicesBaseVersion = '17.6.0'
+    googlePlayServicesVersion = '16.0.0'
 
     googleApiClientVersion = '1.30.5'
     googleApiClientVersionAndroid = '1.30.5'
@@ -141,7 +142,7 @@ ext {
             hiltWorkerManager       : "androidx.hilt:hilt-work:$hiltAndroidXVersion",
 
             // Maps
-            googlePlayServices      : "com.google.android.gms:play-services-base:$googlePlayServicesBaseVersion",
+            googleBasePlayServices  : "com.google.android.gms:play-services-base:$googlePlayServicesBaseVersion",
             googleAPIClient         : "com.google.api-client:google-api-client:$googleApiClientVersion",
             googleAPIClientAndroid  : "com.google.api-client:google-api-client-android:$googleApiClientVersionAndroid",
             playServicesAuth        : "com.google.android.gms:play-services-auth:$playServicesAuthVersion",
@@ -240,6 +241,7 @@ buildscript {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com' }
         mavenCentral()
     }
     dependencies {
@@ -269,6 +271,7 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com' }
         mavenCentral()
     }
 }

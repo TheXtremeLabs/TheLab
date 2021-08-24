@@ -340,9 +340,16 @@
             android:label="@string/activity_title_music"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
+
+        <!-- Google -->
         <activity
             android:name=".ui.googlesignin.GoogleSignInActivity"
             android:label="@string/activity_title_google_sign_in"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+        <activity
+            android:name=".ui.googledrive.GoogleDriveActivity"
+            android:label="@string/activity_title_google_drive"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
         <!-- ////////////// ACTIVITIES ////////////// -->
