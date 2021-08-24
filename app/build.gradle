@@ -165,18 +165,26 @@ dependencies {
     kapt rootProject.ext.generalDependencies.roomCompiler
     implementation rootProject.ext.generalDependencies.roomExtCoroutinesSupport
 
+    //Lifecycle
+    implementation rootProject.ext.generalDependencies.lifecycleViewModel
+    implementation rootProject.ext.generalDependencies.lifecycleLiveData
+    implementation rootProject.ext.generalDependencies.lifecycleRuntime
+    kapt rootProject.ext.generalDependencies.lifecycleCompiler
+    implementation rootProject.ext.generalDependencies.lifecycleService
+
+
+
     // Google Play
     // Maps
     implementation rootProject.ext.generalDependencies.googleBasePlayServices
     implementation rootProject.ext.generalDependencies.googleAPIClient
     implementation rootProject.ext.generalDependencies.googleAPIClientAndroid
     implementation rootProject.ext.generalDependencies.playServicesAuth
-
     // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty
-    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.31.5'
+    implementation rootProject.ext.generalDependencies.googleAPIClientOAuthJetty
     // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-java6
-    implementation 'com.google.oauth-client:google-oauth-client-java6:1.31.5'
-    implementation 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
+    implementation rootProject.ext.generalDependencies.googleAPIClientOAuthJava6
+    implementation rootProject.ext.generalDependencies.googleAPIDrive
 
     implementation rootProject.ext.generalDependencies.maps
     implementation rootProject.ext.generalDependencies.mapsUtils
