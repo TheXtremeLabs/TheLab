@@ -15,6 +15,7 @@ import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity
 import com.riders.thelab.ui.floatingview.FloatingViewActivity
+import com.riders.thelab.ui.googledrive.GoogleDriveActivity
 import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
 import com.riders.thelab.ui.kat.KatActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
@@ -347,14 +348,23 @@ class AppBuilderUtils {
             list.add(songPlayer)
 
             // Google
-            val google =
+            val googleSignIn =
+                AppBuilder
+                    .withActivityTitle("Google Sign In")
+                    .withActivityDescription("Exploring Google Sign In Api...")
+                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.googleg_color))
+                    .withActivityClass(GoogleSignInActivity::class.java)
+                    .build()
+            list.add(googleSignIn)
+
+            val googleDrive =
                 AppBuilder
                     .withActivityTitle("Google Drive API")
                     .withActivityDescription("Exploring Google Drive Api...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.googleg_color))
-                    .withActivityClass(GoogleSignInActivity::class.java)
+                    .withActivityClass(GoogleDriveActivity::class.java)
                     .build()
-            list.add(google)
+            list.add(googleDrive)
 
             // Wip
             val wip =
