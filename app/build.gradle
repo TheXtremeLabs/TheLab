@@ -203,9 +203,6 @@ dependencies {
     implementation rootProject.ext.generalDependencies.firebaseDatabase
     implementation rootProject.ext.generalDependencies.firebaseAds
 
-    // RxJava / RxAndroid
-    implementation rootProject.ext.generalDependencies.rxjava
-    implementation rootProject.ext.generalDependencies.rxandroid
 
     /* Hilt - We are going to use hilt.android which includes
      * support for Activity and fragment injection so we need to include
