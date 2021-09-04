@@ -5,7 +5,6 @@ import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.riders.thelab.R
 import com.riders.thelab.data.remote.dto.weather.DailyWeather
 import com.riders.thelab.databinding.RowWeatherForecastBinding
 import com.riders.thelab.utils.DateTimeUtils
@@ -19,7 +18,7 @@ class WeatherForecastViewHolder(
 
     @SuppressLint("SetTextI18n")
     fun bindData(dailyWeather: DailyWeather) {
-        viewBinding.weather  = dailyWeather
+        viewBinding.weather = dailyWeather
         // now bind the companion object to the variable declared in the XML
         viewBinding.dateUtils = DateTimeUtils.Companion
 
@@ -37,7 +36,7 @@ class WeatherForecastViewHolder(
             )
             .into(viewBinding.rowIvForecastWeather)
 
-       /* viewBinding.rowTvForecastTemperature.text =
-            "${dailyWeather.temperature.day.toInt()} ${context.getString(R.string.degree_placeholder)}"*/
+        /* viewBinding.rowTvForecastTemperature.text =
+             "${dailyWeather.temperature.day.toInt()} ${context.getString(R.string.degree_placeholder)}"*/
     }
 }

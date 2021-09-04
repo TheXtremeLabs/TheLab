@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.youtubelike
 
+
 import android.content.Intent
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
@@ -7,31 +8,30 @@ import androidx.core.util.Pair
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.RepositoryImpl
+import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class YoutubeLikeViewModel @Inject constructor(
-    val repositoryImpl: RepositoryImpl
+    val repositoryImpl: IRepository
 ) : ViewModel() {
 
     private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val youtubeVideos: MutableLiveData<List<Video>> = MutableLiveData()
     private val youtubeVideosFailed: MutableLiveData<Boolean> = MutableLiveData()
-
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     fun getProgressBarVisibility(): LiveData<Boolean> {
         return progressVisibility
@@ -65,26 +65,26 @@ class YoutubeLikeViewModel @Inject constructor(
 
 
         Timber.e("Fetch Content")
-        val disposable: Disposable =
-            repositoryImpl.getVideos()
-                .subscribe(
-                    { videos ->
-                        if (videos.isEmpty()) {
-                            youtubeVideosFailed.value = true
-                            progressVisibility.value = false
-                            youtubeVideos.value = videos
-                        } else {
-                            progressVisibility.value = false
-                            youtubeVideos.value = videos
-                        }
-                    },
-                    { throwable ->
-                        Timber.e(throwable)
-                        progressVisibility.value = false
-                        youtubeVideosFailed.value = true
-                    })
 
-        compositeDisposable.add(disposable)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+
+                val videos = repositoryImpl.getVideos()
+                if (videos.isEmpty()) {
+                    youtubeVideosFailed.value = true
+                    progressVisibility.value = false
+                    youtubeVideos.value = videos
+                } else {
+                    progressVisibility.value = false
+                    youtubeVideos.value = videos
+                }
+            } catch (throwable: Exception) {
+                Timber.e(throwable)
+                progressVisibility.value = false
+                youtubeVideosFailed.value = true
+
+            }
+        }
     }
 
 
@@ -130,10 +130,5 @@ class YoutubeLikeViewModel @Inject constructor(
                 it
             )
         }
-    }
-
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
     }
 }
