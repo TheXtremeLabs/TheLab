@@ -447,7 +447,16 @@ class MainActivity : AppCompatActivity(),
     override fun onAppItemCLickListener(view: View, item: App, position: Int) {
         Timber.d("Clicked item : $item, at position : $position")
 
-        if (!LabCompatibilityManager.isTablet(this@MainActivity)) {
+        //TODO : Please check this functionality later. Problem using Drive REST API v3
+        if (item.appTitle.lowercase().contains("drive")){
+            UIManager.showActionInToast(
+                this@MainActivity,
+                "Please check this functionality later. Problem using Drive REST API v3")
+
+            return
+        }
+
+        else if (!LabCompatibilityManager.isTablet(this@MainActivity)) {
             mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
         } else {
             showItemDetail(item)
