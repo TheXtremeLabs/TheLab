@@ -60,11 +60,12 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         private const val REQUEST_CHECK_SETTINGS = 100
     }
 
-    private lateinit var viewBinding: ActivityLocationOnMapsBinding
+    private var _viewBinding: ActivityLocationOnMapsBinding? = null
 
+    private val binding get() = _viewBinding!!
 
     private lateinit var mapFragment: SupportMapFragment
-    var geocoder: Geocoder? = null
+    private var geocoder: Geocoder? = null
     private lateinit var mMap: GoogleMap
     private lateinit var mLocation: Location
     private lateinit var mLocationManager: LocationManager
@@ -80,7 +81,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private var mCurrentLocation: Location? = null
 
     // boolean flag to toggle the ui
-    private var mRequestingLocationUpdates: Boolean? = null
+    private var mRequestingLocationUpdates: Boolean = false
 
     // location last updated time
     private var mLastUpdateTime: String? = null
@@ -102,8 +103,8 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         }
 
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityLocationOnMapsBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivityLocationOnMapsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         Dexter.withContext(this)
             .withPermissions(
@@ -137,24 +138,24 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Timber.e("onActivityResult()")
         // Check for the integer request code originally supplied to startResolutionForResult().
-        // Check for the integer request code originally supplied to startResolutionForResult().
-        if (requestCode == REQUEST_CHECK_SETTINGS) {
-            when (resultCode) {
-                RESULT_OK -> Timber.e("User agreed to make required location settings changes.")
-                RESULT_CANCELED -> {
-                    Timber.e("User chose not to make required location settings changes.")
-                    mRequestingLocationUpdates = false
-                }
-                else -> {
-                    super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CHECK_SETTINGS -> {
+                when (resultCode) {
+                    RESULT_OK -> Timber.e("User agreed to make required location settings changes.")
+                    RESULT_CANCELED -> {
+                        Timber.e("User chose not to make required location settings changes.")
+                        mRequestingLocationUpdates = false
+                    }
                 }
             }
         }
+
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onPause() {
         Timber.e("onPause()")
-        if (mRequestingLocationUpdates!!) {
+        if (mRequestingLocationUpdates) {
             // pausing location updates
             stopLocationUpdates()
         }
@@ -165,9 +166,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         super.onResume()
         // Resuming location updates depending on button state and
         // allowed permissions
-        // Resuming location updates depending on button state and
-        // allowed permissions
-        if (mRequestingLocationUpdates!!) {
+        if (mRequestingLocationUpdates) {
             startLocationUpdates()
         }
 
@@ -181,6 +180,11 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             }
         }
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
     }
 
 
@@ -273,7 +277,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
         mMap.animateCamera(CameraUpdateFactory.zoomTo(750f), 2000, null)
         mMap.uiSettings.isScrollGesturesEnabled = true
-        viewBinding.tvLocation.text = "Latitude:$latitude\nLongitude:$longitude"
+        binding.tvLocation.text = "Latitude:$latitude\nLongitude:$longitude"
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -330,7 +334,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         mapFragment.getMapAsync(this)
     }
 
-    fun setLocationSettings() {
+    private fun setLocationSettings() {
         Timber.i("setLocationSettings()")
         mLocationManager = getSystemService(LOCATION_SERVICE) as LocationManager
         mCriteria = Criteria()
@@ -360,12 +364,12 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun hideLoading() {
-        if (viewBinding.rlMapsLoading.visibility == View.VISIBLE)
-            startAnimation(viewBinding.rlMapsLoading)
+        if (binding.rlMapsLoading.visibility == View.VISIBLE)
+            startAnimation(binding.rlMapsLoading)
 
     }
 
-    fun startAnimation(view: View) {
+    private fun startAnimation(view: View) {
         Timber.d("startAnimation()")
         val animFadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out)
         animFadeOut.setAnimationListener(object : Animation.AnimationListener {
@@ -397,7 +401,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private fun startLocationUpdates() {
         mSettingsClient
             ?.checkLocationSettings(mLocationSettingsRequest!!)
-            ?.addOnSuccessListener(this) { locationSettingsResponse: LocationSettingsResponse? ->
+            ?.addOnSuccessListener(this) { _: LocationSettingsResponse? ->
 
                 Timber.i("All location settings are satisfied.")
                 UIManager.showActionInToast(this, "Started location updates!")
@@ -435,11 +439,11 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             }
     }
 
-    fun stopLocationUpdates() {
+    private fun stopLocationUpdates() {
         // Removing location updates
         mFusedLocationClient
             ?.removeLocationUpdates(mLocationCallback!!)
-            ?.addOnCompleteListener(this) { task ->
+            ?.addOnCompleteListener(this) {
                 UIManager.showActionInToast(this, "Location updates stopped!")
             }
     }

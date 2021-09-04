@@ -27,6 +27,10 @@
 
 
     <!-- Device -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.MODIFY_PHONE_STATE"
@@ -34,10 +38,9 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <!-- User Data -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+    <!-- Permissions required by GoogleAuthUtil -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 
     <!-- System Data -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
@@ -338,6 +341,18 @@
         <activity
             android:name=".ui.songplayer.SongPlayerActivity"
             android:label="@string/activity_title_music"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+
+        <!-- Google -->
+        <activity
+            android:name=".ui.googlesignin.GoogleSignInActivity"
+            android:label="@string/activity_title_google_sign_in"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+        <activity
+            android:name=".ui.googledrive.GoogleDriveActivity"
+            android:label="@string/activity_title_google_drive"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
         <!-- ////////////// ACTIVITIES ////////////// -->

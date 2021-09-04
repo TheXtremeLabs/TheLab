@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabAddressesUtils
 import com.riders.thelab.core.utils.LabLocationUtils
-import com.riders.thelab.data.RepositoryImpl
+import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.model.weather.CityWeather
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val repositoryImpl: RepositoryImpl
+    private val repository: IRepository
 ) : ViewModel() {
 
     var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
@@ -30,8 +30,6 @@ class WeatherViewModel @Inject constructor(
     var weatherFailed: MutableLiveData<Boolean> = MutableLiveData()
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-
-    private val mRepositoryImpl: RepositoryImpl = repositoryImpl
 
     fun getProgressBarVisibility(): LiveData<Boolean> {
         return progressVisibility
@@ -47,9 +45,9 @@ class WeatherViewModel @Inject constructor(
 
     fun getCityWeather(context: FragmentActivity, location: Location) {
         val disposable: Disposable? =
-            mRepositoryImpl
+            repository
                 .getWeatherOneCallAPI(location)
-                .subscribe(
+                ?.subscribe(
                     { response ->
 
                         val address: Address? =

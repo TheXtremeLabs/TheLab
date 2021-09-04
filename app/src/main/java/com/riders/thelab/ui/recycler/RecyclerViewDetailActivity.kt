@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.riders.thelab.R
@@ -15,17 +14,19 @@ import com.riders.thelab.databinding.ActivityRecyclerViewDetailBinding
 import timber.log.Timber
 import java.util.*
 
-class RecyclerViewDetailActivity : AppCompatActivity() {
+class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener {
 
     companion object {
         const val EXTRA_RECYCLER_ITEM = "recycler_item"
         const val EXTRA_TRANSITION_ICON_NAME = "icon"
+        var isShow = false
     }
 
     private lateinit var viewDetailBinding: ActivityRecyclerViewDetailBinding
 
     private lateinit var item: Artist
 
+    var scrollRange = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,34 +53,21 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
     private fun initCollapsingToolbar() {
 
         setSupportActionBar(viewDetailBinding.toolbarRecyclerViewDetail)
-        Objects.requireNonNull(supportActionBar)!!.setDisplayHomeAsUpEnabled(true)
+        Objects.requireNonNull(supportActionBar)?.setDisplayHomeAsUpEnabled(true)
 
         viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = item.artistName
         viewDetailBinding.collapsingToolbarRecyclerViewDetail
             .setExpandedTitleColor(ContextCompat.getColor(this, R.color.transparent))
         viewDetailBinding.appBarLayout.setExpanded(true)
-        viewDetailBinding.appBarLayout.addOnOffsetChangedListener(object : OnOffsetChangedListener {
-            var isShow = false
-            var scrollRange = -1
-            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = item.artistName
-                    isShow = true
-                } else if (isShow) {
-                    viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = " "
-                    isShow = false
-                }
-            }
-        })
+        viewDetailBinding.appBarLayout.addOnOffsetChangedListener(this)
     }
 
     /**
      * Display artist value
      */
     private fun bindData() {
+        viewDetailBinding.artist = item
+
         if (LabCompatibilityManager.isTablet(this)) {
             //Load the background  thumb image
             viewDetailBinding.ivBackgroundBlurred?.let {
@@ -89,24 +77,19 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
                     it
                 )
             }
-            viewDetailBinding.tvDebutesDetail?.text = String.format("Since : %s", item.debutes)
+            //viewDetailBinding.tvDebutesDetail?.text = String.format("Since : %s", item.debutes)
         }
 
         // Display image
-        Glide.with(this)
-            .load(item.urlThumb)
-            .into(viewDetailBinding.transitionImageView)
+        UIManager.loadImage(this, item.urlThumb, viewDetailBinding.transitionImageView)
 
-        viewDetailBinding.tvNameDetail.text = item.artistName
 
-        val sb = StringBuilder()
+        /*val sb = StringBuilder()
         sb.append(item.firstName)
         if (item.secondName.isNotBlank()) sb.append(", ").append(item.secondName)
         sb.append(" ").append(item.lastName)
 
-        viewDetailBinding.tvFullNameDetail.text = sb.toString()
-        viewDetailBinding.tvActivitiesDetail.text = item.activities
-        viewDetailBinding.tvDescriptionDetail.text = item.description
+        viewDetailBinding.tvFullNameDetail.text = sb.toString()*/
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -123,5 +106,18 @@ class RecyclerViewDetailActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finishAfterTransition()
+    }
+
+    override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+        if (scrollRange == -1) {
+            scrollRange = appBarLayout!!.totalScrollRange
+        }
+        if (scrollRange + verticalOffset == 0) {
+            viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = item.artistName
+            isShow = true
+        } else if (isShow) {
+            viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = " "
+            isShow = false
+        }
     }
 }

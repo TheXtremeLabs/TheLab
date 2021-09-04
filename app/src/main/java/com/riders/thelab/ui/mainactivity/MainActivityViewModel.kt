@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.mainactivity
 
 import android.app.Activity
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,28 +20,48 @@ class MainActivityViewModel @Inject constructor(
     private val repository: RepositoryImpl
 ) : ViewModel() {
 
-    private val applications: MutableLiveData<List<App>> = MutableLiveData()
-
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
 
+    private val applications: MutableLiveData<List<App>> = MutableLiveData()
 
-    fun getApplications(): LiveData<List<App>> {
-        return applications
-    }
 
     fun getConnectionStatus(): LiveData<Boolean> {
         return connectionStatus
     }
 
+    fun getLocationData(): LiveData<Boolean> {
+        Timber.d("getLocationData()")
+
+        // for simplicity return data directly to view
+        return repository.getLocationStatusData()
+    }
+
+    fun getApplications(): LiveData<List<App>> {
+        return applications
+    }
+
+
+
     fun checkConnection() {
         connectionStatus.value = LabNetworkManagerNewAPI.isConnected
     }
 
-    fun retrieveApplications() {
+
+    fun addDataSource(locationStatus: LiveData<Boolean>) {
+        Timber.d("addLocationStatusDataSource()")
+        repository.addLocationStatusDataSource(locationStatus)
+    }
+
+    fun removeDataSource(locationStatus: LiveData<Boolean>) {
+        Timber.e("removeLocationStatusDataSource()")
+        repository.removeLocationStatusDataSource(locationStatus)
+    }
+
+    fun retrieveApplications(context: Context) {
         val appList: MutableList<App> = ArrayList()
 
         // Get constants activities
-        appList.addAll(Constants.getInstance().getActivityList())
+        appList.addAll(Constants(context).getActivityList())
         appList.addAll(repository.getPackageList())
 
         if (appList.isEmpty()) {

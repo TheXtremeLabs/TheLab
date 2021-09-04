@@ -27,6 +27,15 @@
         android:background="@color/default_dark">
 
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_six_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:fitsSystemWindows="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/the_lab_6_background" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/left_guideline"
             android:layout_width="0dp"
@@ -34,66 +43,56 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.2" />
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivThe"
+            android:layout_width="250dp"
+            android:layout_height="160dp"
+            android:alpha="0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/middle_guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_lab_6_the"
+            app:tint="@color/iron"
+            tools:alpha="1" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/middle_guideline"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_height="0dp"
             android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivLab"
+            android:layout_width="250dp"
+            android:layout_height="160dp"
+            android:alpha="0"
+            android:maxHeight="120dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/right_guideline"
-            app:layout_constraintStart_toEndOf="@id/left_guideline"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintStart_toEndOf="@id/middle_guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_lab_6_lab"
+            app:tint="@color/light"
+            tools:alpha="1" />
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <!-- Image -->
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/iv_the_la_part"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:adjustViewBounds="true"
-                    android:alpha="0"
-                    android:scaleType="fitCenter"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_the_la_part"
-                    tools:alpha="1"
-                    tools:translationX="350dp"
-                    tools:visibility="visible" />
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/iv_five_number"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:adjustViewBounds="true"
-                    android:background="@color/default_dark"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/ic_five_number" />
-
-            </LinearLayout>
-
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_app_version"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/small_margin"
-                android:alpha="0"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/white"
-                android:transitionName="@string/splash_version_to_time_transition_name"
-                tools:alpha="1"
-                tools:text="v 1.0.3" />
-        </LinearLayout>
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_app_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/big_margin_tablet"
+            android:alpha="0"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/white"
+            android:transitionName="@string/splash_version_to_time_transition_name"
+            app:layout_constraintBottom_toTopOf="@id/bottom_guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:alpha="1"
+            tools:text="v 1.0.3" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/right_guideline"

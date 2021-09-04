@@ -128,8 +128,8 @@
         </Constraint>
         <Constraint android:id="@+id/btn_previous">
             <Layout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 motion:layout_constraintBottom_toBottomOf="@+id/cl_song_player"
                 motion:layout_constraintEnd_toStartOf="@+id/btn_play_pause"
                 motion:layout_constraintStart_toStartOf="@+id/cl_song_player"
@@ -137,8 +137,8 @@
         </Constraint>
         <Constraint android:id="@+id/btn_play_pause">
             <Layout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 motion:layout_constraintBottom_toBottomOf="@+id/cl_song_player"
                 motion:layout_constraintEnd_toStartOf="@+id/btn_next"
                 motion:layout_constraintStart_toEndOf="@+id/btn_previous"
@@ -146,8 +146,8 @@
         </Constraint>
         <Constraint android:id="@+id/btn_next">
             <Layout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 motion:layout_constraintBottom_toBottomOf="@+id/cl_song_player"
                 motion:layout_constraintEnd_toStartOf="@+id/btn_queue"
                 motion:layout_constraintStart_toEndOf="@+id/btn_play_pause"
@@ -156,8 +156,8 @@
         <Constraint android:id="@+id/btn_queue">
             <PropertySet android:visibility="visible" />
             <Layout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 motion:layout_constraintBottom_toBottomOf="@+id/cl_song_player"
                 motion:layout_constraintEnd_toEndOf="@+id/cl_song_player"
                 motion:layout_constraintStart_toEndOf="@+id/btn_next"
