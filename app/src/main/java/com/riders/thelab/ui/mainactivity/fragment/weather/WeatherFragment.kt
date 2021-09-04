@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.bumptech.glide.Glide
 import com.riders.thelab.core.bus.LocationFetchedEvent
 import com.riders.thelab.core.utils.LabLocationManager
 import com.riders.thelab.core.utils.UIManager
@@ -119,21 +118,21 @@ class WeatherFragment : Fragment(), LocationListener {
 
     private fun updateUI(cityWeather: CityWeather) {
         Timber.d("updateUI()")
+
+        viewBinding.cityWeather = cityWeather
+
         UIManager.showView(viewBinding.weatherDataContainer)
 
         // Load weather icon
-        Glide.with(requireActivity())
-            .load(WeatherUtils.getWeatherIconFromApi(cityWeather.weatherIconURL))
-            .into(viewBinding.ivWeatherIcon)
+        UIManager.loadImage(
+            requireActivity(),
+            WeatherUtils.getWeatherIconFromApi(cityWeather.weatherIconURL),
+            viewBinding.ivWeatherIcon
+        )
 
         viewBinding.tvWeatherCityTemperature.text =
             String.format(Locale.getDefault(), "%d", cityWeather.cityTemperature.roundToInt())
         viewBinding.tvDegreePlaceholder.visibility = View.VISIBLE
-
-        // Load city name
-        viewBinding.tvWeatherCityName.text = cityWeather.cityName
-        viewBinding.tvWeatherCityCountry.text = cityWeather.cityCountry
-        viewBinding.tvWeatherMainDescription.text = cityWeather.cityWeatherDescription
     }
 
     override fun onLocationChanged(location: Location) {

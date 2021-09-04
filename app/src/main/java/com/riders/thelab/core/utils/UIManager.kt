@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.view.Menu
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -16,8 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.RequestListener
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -25,18 +25,19 @@ import com.riders.thelab.R
 import com.riders.thelab.core.views.toast.TheLabToast
 import com.riders.thelab.core.views.toast.ToastTypeEnum
 import com.riders.thelab.data.local.bean.SnackBarType
-import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
 
 class UIManager private constructor() {
     companion object {
 
         fun showView(view: View) {
-            view.visibility = View.VISIBLE
+            if (View.VISIBLE != view.visibility)
+                view.visibility = View.VISIBLE
         }
 
         fun hideView(view: View) {
-            view.visibility = View.GONE
+            if (View.VISIBLE == view.visibility)
+                view.visibility = View.GONE
         }
 
 
@@ -221,6 +222,9 @@ class UIManager private constructor() {
             return updatedBitmap
         }
 
+        /**
+         * Convert drawable to bitmap
+         */
         fun drawableToBitmap(drawable: Drawable): Bitmap {
             if (drawable is BitmapDrawable) {
                 return drawable.bitmap
@@ -236,17 +240,84 @@ class UIManager private constructor() {
             return bitmap
         }
 
+        fun convertVectorToBitmap(drawable: Drawable): Bitmap? {
+            return try {
+                val bitmap: Bitmap = Bitmap.createBitmap(
+                    drawable.intrinsicWidth,
+                    drawable.intrinsicHeight,
+                    Bitmap.Config.ARGB_8888
+                )
+                val canvas = Canvas(bitmap)
+                drawable.setBounds(0, 0, canvas.width, canvas.height)
+                drawable.draw(canvas)
+                bitmap
+            } catch (e: OutOfMemoryError) {
+                // Handle the error
+                e.printStackTrace()
+                null
+            }
+        }
 
+        //@BindingAdapter("android:src", "error", requireAll = false)
+        public fun loadImage(
+            targetImageView: ShapeableImageView,
+            iconIntRes: Int,
+            error: Drawable,
+        ) {
+            LabGlideUtils.loadImage(targetImageView, iconIntRes, error)
+        }
+
+        //@BindingAdapter("imageUrl", "error", requireAll = false)
+        public fun loadImage(
+            targetImageView: ShapeableImageView,
+            iconResDrawable: Drawable,
+            error: Drawable,
+        ) {
+            LabGlideUtils.loadImage(targetImageView, iconResDrawable, error)
+        }
+
+        fun loadImage(
+            context: Context,
+            iconResDrawable: Any,
+            targetImageView: ShapeableImageView
+        ) {
+            LabGlideUtils.loadImage(context, iconResDrawable, targetImageView)
+        }
+
+        fun loadImage(
+            context: Context,
+            iconResDrawable: Any,
+            targetImageView: ShapeableImageView,
+            listener: RequestListener<Drawable>
+        ) {
+            LabGlideUtils.loadImage(context, iconResDrawable, targetImageView, listener)
+        }
+
+        /**
+         * Load Image in view and apply a blurry effect
+         */
         fun loadImageBlurred(
             context: Context,
             imageURL: Any,
             targetImageView: ShapeableImageView
         ) {
-            //Load the background  thumb image
-            Glide.with(context)
-                .load(imageURL)
-                .apply(RequestOptions.bitmapTransform(BlurTransformation(5, 5)))
-                .into(targetImageView)
+            LabGlideUtils.loadImageBlurred(context, imageURL, targetImageView)
+        }
+
+        /**
+         * Display menu buttons when collapsing toolbar is collapsed
+         */
+        fun showMenuButtons(menu: Menu) {
+            // Or true to be visible
+            menu.setGroupVisible(R.id.menu_main_group, true)
+        }
+
+        /**
+         * Hide menu buttons when collapse toolbar is expanded
+         */
+        fun hideMenuButtons(menu: Menu) {
+            // Or true to be visible
+            menu.setGroupVisible(R.id.menu_main_group, false)
         }
     }
 }

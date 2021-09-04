@@ -16,18 +16,6 @@ class SongPlayerViewHolder(
 
     val viewBinding: RowSongPlayerBinding get() = itemBinding
 
-    /*init {
-        itemBinding.run {
-            this.listener = mListener
-        }
-    }*/
-
-    fun bindData(songModel: SongModel) {
-        viewBinding.songModel = songModel
-
-        viewBinding.ivSongPlayStatus.setImageResource(if (!songModel.isPlaying) 0 else R.drawable.ic_equalizer)
-    }
-
     fun bindData(songModel: SongModel, selected: Boolean) {
         viewBinding.songModel = songModel
 
@@ -37,6 +25,8 @@ class SongPlayerViewHolder(
             viewBinding.cvSong.strokeWidth = 2
             viewBinding.cvSong.strokeColor =
                 ContextCompat.getColor(context, R.color.teal_200)
+
+            viewBinding.tvSongTitle.setTextColor(ContextCompat.getColor(context, R.color.teal_200))
         } else {
             // nothing is selected
             viewBinding.cvSong.strokeWidth = 0
@@ -44,6 +34,8 @@ class SongPlayerViewHolder(
                 ContextCompat.getColor(context, R.color.transparent)
 
             viewBinding.ivSongPlayStatus.setImageResource(0)
+
+            viewBinding.tvSongTitle.setTextColor(ContextCompat.getColor(context, R.color.white))
         }
     }
 }
