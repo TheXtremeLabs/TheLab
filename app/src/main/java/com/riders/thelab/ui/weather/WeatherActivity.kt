@@ -42,9 +42,10 @@ import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.databinding.ActivityWeatherBinding
 import com.riders.thelab.utils.DateTimeUtils
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -56,7 +57,9 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
-    private lateinit var viewBinding: ActivityWeatherBinding
+    private var _viewBinding: ActivityWeatherBinding? = null
+    
+    private val binding get() = _viewBinding!!
 
     private val mWeatherViewModel: WeatherViewModel by viewModels()
 
@@ -71,8 +74,8 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.d("onCreate()")
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityWeatherBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivityWeatherBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         context = this
 
@@ -125,20 +128,18 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             private fun getCitiesFromDb(queryText: String) {
                 val searchText = "%$queryText%"
 
-                Observable
-                    .just(searchText)
-                    .map { searchQueryText: String ->
-                        repositoryImpl.getCitiesCursor(searchQueryText)
+                CoroutineScope(Dispatchers.IO).launch {
+
+                    try {
+                        val cursor = repositoryImpl.getCitiesCursor(searchText)
+
+                        withContext(Dispatchers.Main) {
+                            handleResults(cursor)
+                        }
+                    } catch (exception: Exception) {
+                        handleError(exception)
                     }
-                    .subscribeOn(Schedulers.computation())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        { cursor: Any ->
-                            handleResults(cursor as Cursor)
-                        },
-                        { t: Throwable ->
-                            handleError(t)
-                        })
+                }
             }
 
             private fun handleResults(cursor: Cursor) {
@@ -178,7 +179,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                         "Cannot get location please enable device's position setting.",
                         SnackBarType.ALERT,
                         getString(R.string.action_ok)
-                    ) { v -> }
+                    ) { }
             }
             R.id.action_search -> Timber.d("noinspection SimplifiableIfStatement")
         }
@@ -187,8 +188,9 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
     override fun onDestroy() {
         Timber.e("onDestroy()")
-        mWeatherViewModel.clearDisposables()
         super.onDestroy()
+
+        _viewBinding = null
     }
 
     /////////////////////////////////////
@@ -220,8 +222,8 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         mWeatherViewModel.getProgressBarVisibility().observe(
             this,
             {
-                if (!it) UIManager.hideView(viewBinding.progressBar)
-                else UIManager.showView(viewBinding.progressBar)
+                if (!it) UIManager.hideView(binding.progressBar)
+                else UIManager.showView(binding.progressBar)
             })
 
         mWeatherViewModel.getConnectionStatus().observe(
@@ -229,7 +231,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             {
                 if (!it) layoutInflater.inflate(
                     R.layout.no_internet_connection,
-                    viewBinding.root,
+                    binding.root,
                     true
                 )
             })
@@ -237,18 +239,18 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         mWeatherViewModel.getDownloadStatus().observe(
             this,
             { statusMessage ->
-                viewBinding.tvDownloadStatus.text = statusMessage
+                binding.tvDownloadStatus.text = statusMessage
             })
 
         mWeatherViewModel.getDownloadDone().observe(this, {
-            viewBinding.tvDownloadStatus.visibility = View.GONE
+            binding.tvDownloadStatus.visibility = View.GONE
         })
         mWeatherViewModel.getIsWeatherData().observe(this, {
             if (!it) {
                 mWeatherViewModel.startWork(this)
             } else {
-                viewBinding.tvDownloadStatus.visibility = View.GONE
-                viewBinding.weatherDataContainer.visibility = View.VISIBLE
+                binding.tvDownloadStatus.visibility = View.GONE
+                binding.weatherDataContainer.visibility = View.VISIBLE
             }
         })
         mWeatherViewModel.getWorkerStatus().observe(this, {
@@ -295,7 +297,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                     return false
                 }
             })
-            .into(viewBinding.ivWeatherIcon)
+            .into(binding.ivWeatherIcon)
 
         val address: Address =
             mWeatherViewModel.getCityNameWithCoordinates(
@@ -307,10 +309,10 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         // Load city name
         val cityName =
             address.locality + context.resources.getString(R.string.separator_placeholder)
-        viewBinding.tvWeatherCityName.text = cityName
+        binding.tvWeatherCityName.text = cityName
         val country = address.countryName
-        viewBinding.tvWeatherCityCountry.text = country
-        viewBinding.tvWeatherMainDescription.text =
+        binding.tvWeatherCityCountry.text = country
+        binding.tvWeatherMainDescription.text =
             oneCallWeatherResponse
                 .currentWeather
                 .weather[0]
@@ -321,7 +323,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         // Temperatures
         val temperature =
             "${oneCallWeatherResponse.currentWeather.temperature.roundToInt()} ${getString(R.string.degree_placeholder)}"
-        viewBinding.tvWeatherCityTemperature.text = temperature
+        binding.tvWeatherCityTemperature.text = temperature
 
         val realFeels =
             "${oneCallWeatherResponse.currentWeather.feelsLike.roundToInt()} ${
@@ -329,14 +331,14 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                     R.string.degree_placeholder
                 )
             }"
-        viewBinding.tvWeatherCityRealFeels.text = realFeels
+        binding.tvWeatherCityRealFeels.text = realFeels
 
-        viewBinding.tvSunrise.text =
+        binding.tvSunrise.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(
                 oneCallWeatherResponse.timezone,
                 oneCallWeatherResponse.currentWeather.sunrise
             )
-        viewBinding.tvSunset.text =
+        binding.tvSunset.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(
                 oneCallWeatherResponse.timezone,
                 oneCallWeatherResponse.currentWeather.sunset
@@ -348,21 +350,21 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         buildChart(hourlyWeather)
         val cloudiness: String = oneCallWeatherResponse.currentWeather.clouds
             .toString() + " " + resources.getString(R.string.percent_placeholder)
-        viewBinding.tvWeatherExtraCloudiness.text = cloudiness
+        binding.tvWeatherExtraCloudiness.text = cloudiness
 
         val humidity: String = oneCallWeatherResponse.currentWeather.humidity
             .toString() + " " + resources.getString(R.string.percent_placeholder)
-        viewBinding.tvWeatherExtraHumidity.text = humidity
+        binding.tvWeatherExtraHumidity.text = humidity
 
         val pressure: String = oneCallWeatherResponse.currentWeather.pressure
             .toString() + " " + resources.getString(R.string.pressure_unit_placeholder)
-        viewBinding.tvWeatherExtraPressure.text = pressure
+        binding.tvWeatherExtraPressure.text = pressure
 
         // Wind
         val wind: String =
             (oneCallWeatherResponse.currentWeather.windSpeed.toString() + " "
                     + resources.getString(R.string.meter_unit_placeholder))
-        viewBinding.tvWeatherExtraWindSpeed.text = wind
+        binding.tvWeatherExtraWindSpeed.text = wind
         val windDirection: WindDirection = WindDirection.getWindDirectionToTextualDescription(
             oneCallWeatherResponse.currentWeather.windDegree
         )
@@ -391,10 +393,10 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                     return false
                 }
             })
-            .into(viewBinding.ivWeatherExtraWindDirectionIcon)
+            .into(binding.ivWeatherExtraWindDirectionIcon)
 
         val windDirectionShortName: String = windDirection.shortName + " "
-        viewBinding.tvWeatherExtraWindDirectionShortName.text = windDirectionShortName
+        binding.tvWeatherExtraWindDirectionShortName.text = windDirectionShortName
 
         val mAdapter = WeatherForecastAdapter(
             this,
@@ -405,8 +407,8 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
         val linearLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        viewBinding.rvForecastFiveDays.layoutManager = linearLayoutManager
-        viewBinding.rvForecastFiveDays.adapter = mAdapter
+        binding.rvForecastFiveDays.layoutManager = linearLayoutManager
+        binding.rvForecastFiveDays.adapter = mAdapter
     }
 
     fun buildChart(hourlyWeather: List<CurrentWeather>) {

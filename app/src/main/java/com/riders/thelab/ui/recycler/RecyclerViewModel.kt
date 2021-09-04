@@ -10,29 +10,26 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.Task
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.RepositoryImpl
+import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.remote.dto.artist.Artist
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.core.SingleObserver
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class RecyclerViewModel @Inject constructor(
-    val repositoryImpl: RepositoryImpl
+    val repositoryImpl: IRepository
 ) : ViewModel() {
 
     private var JSONURLFetched: MutableLiveData<String> = MutableLiveData()
@@ -42,7 +39,6 @@ class RecyclerViewModel @Inject constructor(
     private var artists: MutableLiveData<List<Artist>> = MutableLiveData()
     private var artistsError: MutableLiveData<Boolean> = MutableLiveData()
 
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     fun getJSONURLFetched(): LiveData<String> {
         return JSONURLFetched
@@ -69,152 +65,138 @@ class RecyclerViewModel @Inject constructor(
     }
 
     fun getFirebaseJSONURL(activity: Activity) {
-        val disposable: Disposable =
-            repositoryImpl.getStorageReference(activity)
-                .subscribe(
-                    {
-                        // Create a child reference
-                        // imagesRef now points to "images"
-                        val artistsRef: StorageReference = it.child("bulk/artists.json")
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val job = repositoryImpl.getStorageReference(activity)
 
-                        artistsRef
-                            .downloadUrl
-                            .addOnCompleteListener { artistTask: Task<Uri> ->
-                                Timber.d("result : %s", artistTask.result.toString())
-                                val result = artistTask.result.toString()
-                                var url = ""
-                                try {
-                                    url = result.replace("%3D", "?")
-                                } catch (ex: Exception) {
-                                    ex.printStackTrace()
-                                }
-                                JSONURLFetched.value = url
-                            }
-                    },
-                    {
-                        Timber.e(it)
-                        JSONURLError.value = true
+                // Create a child reference
+                // imagesRef now points to "images"
+                val artistsRef: StorageReference = job?.child("bulk/artists.json")!!
+
+                artistsRef
+                    .downloadUrl
+                    .addOnCompleteListener { artistTask: Task<Uri> ->
+                        Timber.d("result : %s", artistTask.result.toString())
+                        val result = artistTask.result.toString()
+                        var url = ""
+                        try {
+                            url = result.replace("%3D", "?")
+                        } catch (ex: Exception) {
+                            ex.printStackTrace()
+                        }
+                        JSONURLFetched.value = url
                     }
-                )
-
-        compositeDisposable.add(disposable)
+            } catch (throwable: Exception) {
+                Timber.e(throwable)
+                JSONURLError.value = true
+            }
+        }
     }
 
     /**
      * Fetch Firebase Storage files and load background image from REST database
      */
     fun getFirebaseFiles(activity: Activity) {
-
         Timber.d("getFirebaseFiles()")
+        viewModelScope.launch(Dispatchers.IO) {
 
-        val disposable: Disposable =
-            repositoryImpl
-                .getStorageReference(activity)
-                .subscribe(
-                    { storageReference ->
-                        Timber.d("signInAnonymously:success")
+            try {
+                val job = repositoryImpl.getStorageReference(activity)!!
+                Timber.d("signInAnonymously:success")
 
-                        // Create a child reference
-                        // imagesRef now points to "images"
-                        val imagesRef: StorageReference = storageReference.child("images/artists")
-                        imagesRef
-                            .listAll()
-                            .addOnSuccessListener { listResult: ListResult? -> Timber.d("onSuccess()") }
-                            .addOnFailureListener { t: java.lang.Exception? -> Timber.e(t) }
-                            .addOnCompleteListener { taskResult: Task<ListResult> ->
-                                if (!taskResult.isSuccessful) {
-                                    Timber.e("error occurred. Please check logs.")
+                // Create a child reference
+                // imagesRef now points to "images"
+                val imagesRef: StorageReference = job.child("images/artists")
+
+                imagesRef
+                    .listAll()
+                    .addOnSuccessListener { listResult: ListResult? -> Timber.d("onSuccess()") }
+                    .addOnFailureListener { t: java.lang.Exception? -> Timber.e(t) }
+                    .addOnCompleteListener { taskResult: Task<ListResult> ->
+                        if (!taskResult.isSuccessful) {
+                            Timber.e("error occurred. Please check logs.")
+                        } else {
+                            Timber.d(
+                                "onComplete() - with size of : %d element(s)",
+                                taskResult.result.items.size
+                            )
+
+                            viewModelScope.launch {
+                                // links: List<String>
+                                val job = buildArtistsThumbnailsList(taskResult.result.items)
+
+                                if (null == job) {
+                                    artistsThumbnailsError.value = true
                                 } else {
-                                    Timber.d(
-                                        "onComplete() - with size of : %d element(s)",
-                                        taskResult.result.items.size
-                                    )
-                                    buildArtistsThumbnailsList(taskResult.result.items)
-                                        .subscribe(
-                                            { links: List<String> ->
-                                                Timber.d("Links : %s", links.toString())
-                                                if (taskResult.result.items.size == links.size) {
-                                                    artistsThumbnails.value = links
-                                                }
-                                            },
-                                            { throwable: Throwable? ->
-                                                Timber.e(throwable)
-//                                                getView().hideLoader()
-                                                artistsThumbnailsError.value = true
-                                            })
+                                    Timber.d("Links : %s", job.toString())
+                                    if (taskResult.result.items.size == job.size) {
+                                        artistsThumbnails.value = job!!
+                                    }
                                 }
                             }
-                    },
-                    Timber::e
-                )
-
-        compositeDisposable.add(disposable)
-    }
-
-    private fun buildArtistsThumbnailsList(storageReferences: List<StorageReference>): Single<List<String>> {
-        return object : Single<List<String>>() {
-            @SuppressLint("NewApi")
-            override fun subscribeActual(observer: SingleObserver<in List<String>>) {
-                val thumbnailsLinks: MutableList<String> = ArrayList()
-                if (!LabCompatibilityManager.isNougat()) {
-                    for (element in storageReferences) {
-                        element
-                            .downloadUrl
-                            .addOnSuccessListener { artistThumbUrl: Uri ->
-                                thumbnailsLinks.add(
-                                    artistThumbUrl.toString()
-                                )
-                            }
-                            .addOnFailureListener { throwable: java.lang.Exception? ->
-                                Timber.e(throwable)
-                                observer.onError(throwable!!)
-                            }
-                            .addOnCompleteListener { taskResult: Task<Uri?>? ->
-                                observer.onSuccess(
-                                    thumbnailsLinks
-                                )
-                            }
-                    }
-                } else {
-                    storageReferences
-                        .stream()
-                        .forEach { itemReference: StorageReference ->
-                            itemReference
-                                .downloadUrl
-                                .addOnSuccessListener { artistThumbUrl: Uri ->
-                                    thumbnailsLinks.add(
-                                        artistThumbUrl.toString()
-                                    )
-                                }
-                                .addOnFailureListener { throwable: java.lang.Exception? ->
-                                    Timber.e(throwable)
-                                    observer.onError(throwable!!)
-                                }
-                                .addOnCompleteListener { task1: Task<Uri?>? ->
-                                    observer.onSuccess(
-                                        thumbnailsLinks
-                                    )
-                                }
                         }
-                }
+                    }
+            } catch (throwable: Exception) {
+                Timber.e(throwable)
             }
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    @SuppressLint("NewApi")
+    private suspend fun buildArtistsThumbnailsList(storageReferences: List<StorageReference>): List<String>? {
+        val thumbnailsLinks: MutableList<String> = ArrayList()
+        if (!LabCompatibilityManager.isNougat()) {
+            for (element in storageReferences) {
+                element
+                    .downloadUrl
+                    .addOnSuccessListener { artistThumbUrl: Uri ->
+                        thumbnailsLinks.add(
+                            artistThumbUrl.toString()
+                        )
+                    }
+                    .addOnFailureListener { throwable: java.lang.Exception? ->
+                        Timber.e(throwable)
+                        return@addOnFailureListener
+                    }
+                    .addOnCompleteListener { taskResult: Task<Uri?>? ->
+                        return@addOnCompleteListener
+
+                    }
+            }
+        } else {
+            storageReferences
+                .stream()
+                .forEach { itemReference: StorageReference ->
+                    itemReference
+                        .downloadUrl
+                        .addOnSuccessListener { artistThumbUrl: Uri ->
+                            thumbnailsLinks.add(
+                                artistThumbUrl.toString()
+                            )
+                        }
+                        .addOnFailureListener { throwable: java.lang.Exception? ->
+                            Timber.e(throwable)
+                            return@addOnFailureListener
+                        }
+                        .addOnCompleteListener { task1: Task<Uri?>? ->
+                            return@addOnCompleteListener
+                        }
+                }
+        }
+        return thumbnailsLinks
     }
 
     fun fetchArtists(urlPath: String) {
-        val disposable: Disposable =
-            repositoryImpl
-                .getArtists(urlPath)
-                .subscribe(
-                    {
-                        artists.value = it
-                    }, { throwable ->
-                        Timber.e(throwable)
-                        artistsError.value = true
-                    })
-        compositeDisposable.add(disposable)
+        Timber.d("fetchArtists()")
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val job = repositoryImpl.getArtists(urlPath)
+                artists.value = job
+            } catch (throwable: Exception) {
+                Timber.e(throwable)
+                artistsError.value = true
+            }
+        }
     }
 
 
@@ -271,10 +253,5 @@ class RecyclerViewModel @Inject constructor(
             // undo is selected, restore the deleted item
             adapter.restoreItem(item, position)
         }
-    }
-
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
     }
 }

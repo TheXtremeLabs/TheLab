@@ -3,7 +3,6 @@ package com.riders.thelab.ui.transition
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.riders.thelab.R
 import com.riders.thelab.databinding.ActivityTransitionDetailBinding
 
 class TransitionDetailActivity : AppCompatActivity() {

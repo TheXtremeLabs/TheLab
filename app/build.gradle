@@ -173,7 +173,6 @@ dependencies {
     implementation rootProject.ext.generalDependencies.lifecycleService
 
 
-
     // Google Play
     // Maps
     implementation rootProject.ext.generalDependencies.googleBasePlayServices

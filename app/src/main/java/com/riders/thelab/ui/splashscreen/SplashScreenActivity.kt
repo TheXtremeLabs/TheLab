@@ -20,10 +20,7 @@ import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.databinding.ActivitySplashscreenBinding
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -217,6 +214,7 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         fadeProgressAnimator.start()
     }
 
+    @DelicateCoroutinesApi
     private fun clearAllAnimations() {
         Timber.d("clearAllAnimations()")
 
