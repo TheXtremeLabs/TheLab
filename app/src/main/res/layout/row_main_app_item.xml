@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_frame_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="app"
+            type="com.riders.thelab.data.local.model.app.App" />
+    </data>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/row_item_cardView"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_marginTop="@dimen/extra_small_margin"
-        android:clickable="true"
-        android:focusable="true"
         app:cardBackgroundColor="@color/dark_grey"
         app:cardCornerRadius="@dimen/small_margin"
         app:cardPreventCornerOverlap="true"
@@ -32,12 +37,13 @@
                 android:layout_gravity="center_vertical|end"
                 android:alpha="0.75"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/ic_launcher"
+                app:error="@{@drawable/ic_warning}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/constraint_guideline_left"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearance="@style/AppItemImageViewShape"
+                bind:imageResource="@{app.appDrawableIcon ?? @drawable/ic_warning}"
                 tools:src="@drawable/logo_colors" />
 
             <androidx.constraintlayout.widget.Guideline
@@ -84,6 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/small_margin"
                     android:gravity="center|start"
+                    android:text="@{!TextUtils.isEmpty(app.appTitle) ? app.appTitle : app.appName}"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -100,6 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/small_margin"
                     android:gravity="center|start"
+                    android:text="@{!TextUtils.isEmpty(app.appVersion)  ? app.appVersion : app.appDescription}"
                     android:textColor="@color/white"
                     android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -131,4 +139,4 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-</FrameLayout>
+</layout>

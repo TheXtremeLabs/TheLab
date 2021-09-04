@@ -7,22 +7,22 @@ ext {
 
     // version information
     versionMajor = 6
-    versionMinor = 3
-    versionPatch = 3
+    versionMinor = 6
+    versionPatch = 1
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
     // Kotlin
-    kotlinVersion = '1.5.21'
-    activityKtxVersion = '1.2.4'
+    kotlinVersion = '1.5.30'
+    activityKtxVersion = '1.3.1'
     fragmentKtxVersion = '1.3.6'
 
     // App dependencies
     multidexVersion = '2.0.1'
-    coreVersion = '1.7.0-alpha01'
+    coreVersion = '1.6.0'
     appCompatVersion = '1.3.1'
     materialVersion = '1.4.0'
     paletteVersion = '1.0.0'
-    constraintLayoutVersion = '2.0.4'
+    constraintLayoutVersion = '2.1.0'
     navigationFragmentVersion = '2.3.5'
     navigationUiVersion = '2.3.5'
     recyclerViewVersion = '1.2.1'
@@ -34,28 +34,42 @@ ext {
     autoFillVersion = '1.1.0'
 
     // Worker
-    workerVersion = '2.5.0'
+    workerVersion = '2.6.0'
     concurrentVersion = '1.1.0'
 
     roomVersion = '2.3.0'
 
+    lifecycleVersion = '2.4.0-alpha03'
+
     hiltVersion = '2.38.1'
     hiltAndroidXVersion = '1.0.0'
 
-    googlePlayServicesBaseVersion = '16.0.0'
+    googlePlayServicesBaseVersion = '17.6.0'
+    googlePlayServicesVersion = '16.0.0'
 
     googleApiClientVersion = '1.32.1'
+    googleApiClientAndroidVersion = '1.32.1'
+    googleApiClientOAuthVersion = '1.32.1'
+    googleApiDriveV3Version = 'v3-rev20210725-1.32.1'
+    googleApiClientJackson2Version = '1.20.0'
+    googleHttpClientVersion = '1.39.2-sp.1'
+//    googleApiClientJackson2Version = '1.32.1'
+//    googleApiClientVersion = '1.30.5'
+//    googleApiClientAndroidVersion = '1.30.5'
+//    googleApiClientOAuthVersion = '1.31.5'
+//    googleApiDriveV3Version = 'v3-rev110-1.23.0'
+    playServicesAuthVersion = '19.2.0'
     mapsVersion = '17.0.1'
     mapsUtilsVersion = '2.2.5'
     locationVersion = '18.0.0'
     placesVersion = "2.4.0"
 
     firebaseBomVersion = '26.0.0'
-    adsVersion = '20.2.0'
+    adsVersion = '20.3.0'
 
     parcelerVersion = '1.1.13'
 
-    rxjavaVersion = '3.0.13'
+    rxjavaVersion = '3.1.0'
     rxandroidVersion = '3.0.0'
 
     retrofit2Version = '2.9.0'
@@ -80,7 +94,7 @@ ext {
     threetenVersion = '1.3.1'
 
     lombokVersion = '1.18.20'
-    timberVersion = '4.7.1'
+    timberVersion = '5.0.1'
 
     //Tests
     junitVersion = '4.13.2'
@@ -89,127 +103,141 @@ ext {
 
     generalDependencies = [
             // Kotlin
-            kotlinStdLib                 : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
+            kotlinStdLib             : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
 
             // KTX framework
-            activityKTX                  : "androidx.activity:activity-ktx:$activityKtxVersion",
-            fragmentKTX                  : "androidx.fragment:fragment-ktx:$fragmentKtxVersion",
-            navigationKTX                : "androidx.navigation:navigation-ui-ktx:$navigationUiVersion",
-            navigationFragmentKTX        : "androidx.navigation:navigation-fragment-ktx:$navigationFragmentVersion",
+            activityKTX              : "androidx.activity:activity-ktx:$activityKtxVersion",
+            fragmentKTX              : "androidx.fragment:fragment-ktx:$fragmentKtxVersion",
+            navigationKTX            : "androidx.navigation:navigation-ui-ktx:$navigationUiVersion",
+            navigationFragmentKTX    : "androidx.navigation:navigation-fragment-ktx:$navigationFragmentVersion",
 
-            multidex                     : "androidx.multidex:multidex:$multidexVersion",
-            core                         : "androidx.core:core:$coreVersion",
-            appcompat                    : "androidx.appcompat:appcompat:$appCompatVersion",
-            material                     : "com.google.android.material:material:$materialVersion",
-            palette                      : "androidx.palette:palette:$paletteVersion",
-            constraintLayout             : "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion",
-            navigationFragment           : "androidx.navigation:navigation-fragment:$navigationFragmentVersion",
-            navigationUi                 : "androidx.navigation:navigation-ui:$navigationUiVersion",
-            recyclerView                 : "androidx.recyclerview:recyclerview:$recyclerViewVersion",
-            cardView                     : "androidx.cardview:cardview:$cardViewVersion",
-            fragment                     : "androidx.fragment:fragment:$fragmentVersion",
-            springForce                  : "androidx.dynamicanimation:dynamicanimation:$dynamicanimationVersion",
-            viewPager2                   : "androidx.viewpager2:viewpager2:$viewPager2Version",
+            multidex                 : "androidx.multidex:multidex:$multidexVersion",
+            core                     : "androidx.core:core:$coreVersion",
+            appcompat                : "androidx.appcompat:appcompat:$appCompatVersion",
+            material                 : "com.google.android.material:material:$materialVersion",
+            palette                  : "androidx.palette:palette:$paletteVersion",
+            constraintLayout         : "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion",
+            navigationFragment       : "androidx.navigation:navigation-fragment:$navigationFragmentVersion",
+            navigationUi             : "androidx.navigation:navigation-ui:$navigationUiVersion",
+            recyclerView             : "androidx.recyclerview:recyclerview:$recyclerViewVersion",
+            cardView                 : "androidx.cardview:cardview:$cardViewVersion",
+            fragment                 : "androidx.fragment:fragment:$fragmentVersion",
+            springForce              : "androidx.dynamicanimation:dynamicanimation:$dynamicanimationVersion",
+            viewPager2               : "androidx.viewpager2:viewpager2:$viewPager2Version",
 
-            autoFill                     : "androidx.autofill:autofill:$autoFillVersion",
+            autoFill                 : "androidx.autofill:autofill:$autoFillVersion",
 
             // Worker
-            workerRuntime                : "androidx.work:work-runtime:$workerVersion",
-            workerRxJava3                : "androidx.work:work-rxjava3:$workerVersion",
-            workerMultiprocess           : "androidx.work:work-multiprocess:$workerVersion",
-            concurrent                   : "androidx.concurrent:concurrent-futures:$concurrentVersion",
+            workerRuntime            : "androidx.work:work-runtime:$workerVersion",
+            workerRxJava3            : "androidx.work:work-rxjava3:$workerVersion",
+            workerMultiprocess       : "androidx.work:work-multiprocess:$workerVersion",
+            concurrent               : "androidx.concurrent:concurrent-futures:$concurrentVersion",
 
 
             /* Android Architecture Component - Room Persistance Lib  */
-            roomRuntime                  : "androidx.room:room-runtime:$roomVersion",
-            roomRX                       : "androidx.room:room-rxjava3:$roomVersion",
-            roomCompiler                 : "androidx.room:room-compiler:$roomVersion",
+            roomRuntime              : "androidx.room:room-runtime:$roomVersion",
+            roomRX                   : "androidx.room:room-rxjava3:$roomVersion",
+            roomCompiler             : "androidx.room:room-compiler:$roomVersion",
             // optional - Kotlin Extensions and Coroutines support for Room
-            roomExtCoroutinesSupport     : "androidx.room:room-ktx:$roomVersion",
+            roomExtCoroutinesSupport : "androidx.room:room-ktx:$roomVersion",
+
+            /* Lifecycle */
+            lifecycleViewModel       : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion",
+            lifecycleLiveData        : "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion",
+            lifecycleRuntime         : "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion",
+            lifecycleCompiler        : "androidx.lifecycle:lifecycle-compiler:$lifecycleVersion",
+            lifecycleService         : "androidx.lifecycle:lifecycle-service:$lifecycleVersion",
+
 
             /* Hilt - We are going to use hilt.android which includes
              * support for Activity and fragment injection so we need to include
              * the following dependencies */
-            hilt                         : "com.google.dagger:hilt-android:$hiltVersion",
-            hiltKaptCompiler             : "com.google.dagger:hilt-android-compiler:$hiltVersion",
-           // hiltLifecycle                : "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion",
-            hiltKaptAndroidXCompiler     : "androidx.hilt:hilt-compiler:1.0.0",// if you use the support libraries
+            hilt                     : "com.google.dagger:hilt-android:$hiltVersion",
+            hiltKaptCompiler         : "com.google.dagger:hilt-android-compiler:$hiltVersion",
+            // hiltLifecycle                : "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion",
+            hiltKaptAndroidXCompiler : "androidx.hilt:hilt-compiler:1.0.0",// if you use the support libraries
 //            hiltKaptAndroidCompiler : "com.google.dagger:hilt-android-compiler:$hiltVersion",
             //Hilt with workManager
-            hiltWorkerManager            : "androidx.hilt:hilt-work:$hiltAndroidXVersion",
-
+            hiltWorkerManager        : "androidx.hilt:hilt-work:$hiltAndroidXVersion",
             // Maps
-            googlePlayServices           : "com.google.android.gms:play-services-base:$googlePlayServicesBaseVersion",
-            googleAPIClient              : "com.google.api-client:google-api-client:$googleApiClientVersion",
-            maps                         : "com.google.android.gms:play-services-maps:$mapsVersion",
-            mapsUtils                    : "com.google.maps.android:android-maps-utils:$mapsUtilsVersion",
-            location                     : "com.google.android.gms:play-services-location:$locationVersion",
-            places                       : "com.google.android.libraries.places:places:$placesVersion",
+            googleBasePlayServices   : "com.google.android.gms:play-services-base:$googlePlayServicesBaseVersion",
+            googleAPIClientJackson2  : "com.google.api-client:google-api-client-jackson2:$googleApiClientJackson2Version",
+            googleHttpClient         : "com.google.http-client:google-http-client-android:$googleHttpClientVersion",
+            googleAPIClient          : "com.google.api-client:google-api-client:$googleApiClientVersion",
+            googleAPIClientAndroid   : "com.google.api-client:google-api-client-android:$googleApiClientAndroidVersion",
+            googleAPIClientOAuthJetty: "com.google.oauth-client:google-oauth-client-jetty:$googleApiClientOAuthVersion",
+            googleAPIClientOAuthJava6: "com.google.oauth-client:google-oauth-client-java6:$googleApiClientOAuthVersion",
+            googleAPIDrive           : "com.google.apis:google-api-services-drive:$googleApiDriveV3Version",
+            playServicesAuth         : "com.google.android.gms:play-services-auth:$playServicesAuthVersion",
+            maps                     : "com.google.android.gms:play-services-maps:$mapsVersion",
+            mapsUtils                : "com.google.maps.android:android-maps-utils:$mapsUtilsVersion",
+            location                 : "com.google.android.gms:play-services-location:$locationVersion",
+            places                   : "com.google.android.libraries.places:places:$placesVersion",
 
-            firebasePlatform             : "com.google.firebase:firebase-bom:$firebaseBomVersion",
-            firebaseAnalitycs            : "com.google.firebase:firebase-analytics",
-            firebaseAuth                 : "com.google.firebase:firebase-auth",
-            firebaseCraslytics           : "com.google.firebase:firebase-crashlytics",
-            firebaseMessaging            : "com.google.firebase:firebase-messaging",
-            firebasePerf                 : "com.google.firebase:firebase-perf",
-            firebaseCloudstorage         : "com.google.firebase:firebase-storage",
-            firebaseDatabase             : "com.google.firebase:firebase-database",
-            firebaseAds                  : "com.google.android.gms:play-services-ads:$adsVersion",
+            firebasePlatform         : "com.google.firebase:firebase-bom:$firebaseBomVersion",
+            firebaseAnalitycs        : "com.google.firebase:firebase-analytics",
+            firebaseAuth             : "com.google.firebase:firebase-auth",
+            firebaseCraslytics       : "com.google.firebase:firebase-crashlytics",
+            firebaseMessaging        : "com.google.firebase:firebase-messaging",
+            firebasePerf             : "com.google.firebase:firebase-perf",
+            firebaseCloudstorage     : "com.google.firebase:firebase-storage",
+            firebaseDatabase         : "com.google.firebase:firebase-database",
+            firebaseAds              : "com.google.android.gms:play-services-ads:$adsVersion",
 
 
             // Parceler
-            parceler                     : "org.parceler:parceler-api:$parcelerVersion",
-            parcelerAnnotation           : "org.parceler:parceler:$parcelerVersion",
+            parceler                 : "org.parceler:parceler-api:$parcelerVersion",
+            parcelerAnnotation       : "org.parceler:parceler:$parcelerVersion",
 
             // RxJava / RxAndroid
-            rxjava                       : "io.reactivex.rxjava3:rxjava:$rxjavaVersion",
-            rxandroid                    : "io.reactivex.rxjava3:rxandroid:$rxandroidVersion",
+            rxjava                   : "io.reactivex.rxjava3:rxjava:$rxjavaVersion",
+            rxandroid                : "io.reactivex.rxjava3:rxandroid:$rxandroidVersion",
 
             /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
-            retrofit                     : "com.squareup.retrofit2:retrofit:$retrofit2Version",
-            retrofitConverterMoshi       : "com.squareup.retrofit2:converter-moshi:$retrofit2Version",
-            retrofitRxJava3              : "com.squareup.retrofit2:adapter-rxjava3:$retrofit2Version",
+            retrofit                 : "com.squareup.retrofit2:retrofit:$retrofit2Version",
+            retrofitConverterMoshi   : "com.squareup.retrofit2:converter-moshi:$retrofit2Version",
+            retrofitRxJava3          : "com.squareup.retrofit2:adapter-rxjava3:$retrofit2Version",
 
             // OkHttp
-            okHttpBom                    : "com.squareup.okhttp3:okhttp-bom:$okhttpBomVersion",
-            okHttp                       : "com.squareup.okhttp3:okhttp",
-            okHttpLogging                : "com.squareup.okhttp3:logging-interceptor",
+            okHttpBom                : "com.squareup.okhttp3:okhttp-bom:$okhttpBomVersion",
+            okHttp                   : "com.squareup.okhttp3:okhttp",
+            okHttpLogging            : "com.squareup.okhttp3:logging-interceptor",
 
             // Moshi
-            moshi                        : "com.squareup.moshi:moshi:$moshiVersion",
-            moshiKotlin                  : "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion",
+            moshi                    : "com.squareup.moshi:moshi:$moshiVersion",
+            moshiKotlin              : "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion",
 
             // EventBus
-            eventBus                     : "org.greenrobot:eventbus:$eventBusVersion",
+            eventBus                 : "org.greenrobot:eventbus:$eventBusVersion",
 
             // MPAndroidChart
-            androidChart                 : "com.github.PhilJay:MPAndroidChart:v$mpAndroidChartVersion",
+            androidChart             : "com.github.PhilJay:MPAndroidChart:v$mpAndroidChartVersion",
 
             // Dexter
-            dexter                       : "com.karumi:dexter:$dexterVersion",
+            dexter                   : "com.karumi:dexter:$dexterVersion",
 
             //ThreeTen : Alternative to Android Calendar API
-            threeten                     : "com.jakewharton.threetenabp:threetenabp:$threetenVersion",
+            threeten                 : "com.jakewharton.threetenabp:threetenabp:$threetenVersion",
 
             // Glide
-            glide                        : "com.github.bumptech.glide:glide:$glideVersion",
-            glideAnnotation              : "com.github.bumptech.glide:compiler:$glideVersion",
+            glide                    : "com.github.bumptech.glide:glide:$glideVersion",
+            glideAnnotation          : "com.github.bumptech.glide:compiler:$glideVersion",
 
             // Blurry
-            blurry                       : "jp.wasabeef:blurry:$blurryVersion",
-            glideTransformation          : "jp.wasabeef:glide-transformations:$glideTransformationVersion",
+            blurry                   : "jp.wasabeef:blurry:$blurryVersion",
+            glideTransformation      : "jp.wasabeef:glide-transformations:$glideTransformationVersion",
 
             // GoldFinger
-            goldfinger                   : "co.infinum:goldfinger:$goldfingerVersion",
-            goldfingerRX                 : "co.infinum:goldfinger-rx:$goldfingerVersion",
+            goldfinger               : "co.infinum:goldfinger:$goldfingerVersion",
+            goldfingerRX             : "co.infinum:goldfinger-rx:$goldfingerVersion",
 
 
             // Lombok
-            lombok                       : "org.projectlombok:lombok:$lombokVersion",
-            lombokAnnotation             : "org.projectlombok:lombok:$lombokVersion",
+            lombok                   : "org.projectlombok:lombok:$lombokVersion",
+            lombokAnnotation         : "org.projectlombok:lombok:$lombokVersion",
 
             // Timber : Logging library
-            timber                       : "com.jakewharton.timber:timber:$timberVersion"
+            timber                   : "com.jakewharton.timber:timber:$timberVersion"
     ]
 
     testDependencies = [
@@ -236,6 +264,7 @@ buildscript {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com' }
         mavenCentral()
     }
     dependencies {
@@ -249,7 +278,7 @@ buildscript {
         // in the individual module build.gradle files
 
         // Google Services
-        classpath 'com.google.gms:google-services:4.3.8'
+        classpath 'com.google.gms:google-services:4.3.10'
 
         // Add the Crashlytics Gradle plugin (be sure to add version
         // 2.0.0 or later if you built your app with Android Studio 4.1).
@@ -265,6 +294,7 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com' }
         mavenCentral()
     }
 }

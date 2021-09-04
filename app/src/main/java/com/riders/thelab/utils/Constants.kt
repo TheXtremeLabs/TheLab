@@ -1,10 +1,14 @@
 package com.riders.thelab.utils
 
+import android.content.Context
 import com.riders.thelab.data.local.model.app.App
-import timber.log.Timber
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
+import javax.inject.Inject
 
-class Constants {
+class Constants @Inject constructor(
+    @ApplicationContext val context: Context
+) {
 
     companion object {
         const val EMULATOR_DEVICE_TAG = "sdk"
@@ -40,28 +44,12 @@ class Constants {
         const val SZ_SEPARATOR = "/"
 
         const val GPS_REQUEST = 5214
-
-
-        private var instance: Constants? = null
-
-        // Factory method to provide the users with instances
-        fun getInstance(): Constants {
-            if (null == instance) instance = Constants()
-            return instance!!
-        }
-    }
-
-    private var activityItems: List<App>
-
-    init {
-        Timber.d("Constructor constants()")
-        activityItems = ArrayList(AppBuilderUtils.buildActivities())
     }
 
     /**
      * Return app testing list
      */
     fun getActivityList(): List<App> {
-        return activityItems
+        return ArrayList(AppBuilderUtils.buildActivities(context))
     }
 }

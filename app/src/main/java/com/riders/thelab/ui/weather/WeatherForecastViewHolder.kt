@@ -10,15 +10,21 @@ import com.riders.thelab.data.remote.dto.weather.DailyWeather
 import com.riders.thelab.databinding.RowWeatherForecastBinding
 import com.riders.thelab.utils.DateTimeUtils
 
-class WeatherForecastViewHolder(val context: Context, itemView: View) :
-    RecyclerView.ViewHolder(itemView) {
+class WeatherForecastViewHolder(
+    val context: Context,
+    itemView: View
+) : RecyclerView.ViewHolder(itemView) {
 
     val viewBinding: RowWeatherForecastBinding = RowWeatherForecastBinding.bind(itemView)
 
     @SuppressLint("SetTextI18n")
     fun bindData(dailyWeather: DailyWeather) {
-        viewBinding.rowTvForecastDay.text =
-            DateTimeUtils.formatMillisToTimeDayMonth(dailyWeather.dateTimeUTC)
+        viewBinding.weather  = dailyWeather
+        // now bind the companion object to the variable declared in the XML
+        viewBinding.dateUtils = DateTimeUtils.Companion
+
+        /*viewBinding.rowTvForecastDay.text =
+            DateTimeUtils.formatMillisToTimeDayMonth(dailyWeather.dateTimeUTC)*/
 
         // Load weather icon
         Glide.with(context)
@@ -31,7 +37,7 @@ class WeatherForecastViewHolder(val context: Context, itemView: View) :
             )
             .into(viewBinding.rowIvForecastWeather)
 
-        viewBinding.rowTvForecastTemperature.text =
-            "${dailyWeather.temperature.day.toInt()} ${context.getString(R.string.degree_placeholder)}"
+       /* viewBinding.rowTvForecastTemperature.text =
+            "${dailyWeather.temperature.day.toInt()} ${context.getString(R.string.degree_placeholder)}"*/
     }
 }
