@@ -177,6 +177,8 @@ dependencies {
     // Google Play
     // Maps
     implementation rootProject.ext.generalDependencies.googleBasePlayServices
+    implementation rootProject.ext.generalDependencies.googleAPIClientJackson2
+    implementation rootProject.ext.generalDependencies.googleHttpClient
     implementation rootProject.ext.generalDependencies.googleAPIClient
     implementation rootProject.ext.generalDependencies.googleAPIClientAndroid
     implementation rootProject.ext.generalDependencies.playServicesAuth
@@ -219,7 +221,7 @@ dependencies {
 
     // Glide
     implementation rootProject.ext.generalDependencies.glide
-    annotationProcessor rootProject.ext.generalDependencies.glideAnnotation
+    kapt rootProject.ext.generalDependencies.glideAnnotation
     implementation rootProject.ext.generalDependencies.blurry
     implementation rootProject.ext.generalDependencies.glideTransformation
 

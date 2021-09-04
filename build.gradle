@@ -8,17 +8,17 @@ ext {
     // version information
     versionMajor = 6
     versionMinor = 6
-    versionPatch = 0
+    versionPatch = 1
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
     // Kotlin
-    kotlinVersion = '1.5.21'
+    kotlinVersion = '1.5.30'
     activityKtxVersion = '1.3.1'
     fragmentKtxVersion = '1.3.6'
 
     // App dependencies
     multidexVersion = '2.0.1'
-    coreVersion = '1.7.0-alpha01'
+    coreVersion = '1.6.0'
     appCompatVersion = '1.3.1'
     materialVersion = '1.4.0'
     paletteVersion = '1.0.0'
@@ -34,7 +34,7 @@ ext {
     autoFillVersion = '1.1.0'
 
     // Worker
-    workerVersion = '2.5.0'
+    workerVersion = '2.6.0'
     concurrentVersion = '1.1.0'
 
     roomVersion = '2.3.0'
@@ -48,9 +48,16 @@ ext {
     googlePlayServicesVersion = '16.0.0'
 
     googleApiClientVersion = '1.32.1'
-    googleApiClientVersionAndroid = '1.32.1'
+    googleApiClientAndroidVersion = '1.32.1'
     googleApiClientOAuthVersion = '1.32.1'
     googleApiDriveV3Version = 'v3-rev20210725-1.32.1'
+    googleApiClientJackson2Version = '1.20.0'
+    googleHttpClientVersion = '1.39.2-sp.1'
+//    googleApiClientJackson2Version = '1.32.1'
+//    googleApiClientVersion = '1.30.5'
+//    googleApiClientAndroidVersion = '1.30.5'
+//    googleApiClientOAuthVersion = '1.31.5'
+//    googleApiDriveV3Version = 'v3-rev110-1.23.0'
     playServicesAuthVersion = '19.2.0'
     mapsVersion = '17.0.1'
     mapsUtilsVersion = '2.2.5'
@@ -135,11 +142,11 @@ ext {
             roomExtCoroutinesSupport : "androidx.room:room-ktx:$roomVersion",
 
             /* Lifecycle */
-            lifecycleViewModel : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion",
-            lifecycleLiveData : "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion",
-            lifecycleRuntime : "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion",
-            lifecycleCompiler : "androidx.lifecycle:lifecycle-compiler:$lifecycleVersion",
-            lifecycleService : "androidx.lifecycle:lifecycle-service:$lifecycleVersion",
+            lifecycleViewModel       : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion",
+            lifecycleLiveData        : "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion",
+            lifecycleRuntime         : "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion",
+            lifecycleCompiler        : "androidx.lifecycle:lifecycle-compiler:$lifecycleVersion",
+            lifecycleService         : "androidx.lifecycle:lifecycle-service:$lifecycleVersion",
 
 
             /* Hilt - We are going to use hilt.android which includes
@@ -152,11 +159,12 @@ ext {
 //            hiltKaptAndroidCompiler : "com.google.dagger:hilt-android-compiler:$hiltVersion",
             //Hilt with workManager
             hiltWorkerManager        : "androidx.hilt:hilt-work:$hiltAndroidXVersion",
-
             // Maps
             googleBasePlayServices   : "com.google.android.gms:play-services-base:$googlePlayServicesBaseVersion",
+            googleAPIClientJackson2  : "com.google.api-client:google-api-client-jackson2:$googleApiClientJackson2Version",
+            googleHttpClient         : "com.google.http-client:google-http-client-android:$googleHttpClientVersion",
             googleAPIClient          : "com.google.api-client:google-api-client:$googleApiClientVersion",
-            googleAPIClientAndroid   : "com.google.api-client:google-api-client-android:$googleApiClientVersionAndroid",
+            googleAPIClientAndroid   : "com.google.api-client:google-api-client-android:$googleApiClientAndroidVersion",
             googleAPIClientOAuthJetty: "com.google.oauth-client:google-oauth-client-jetty:$googleApiClientOAuthVersion",
             googleAPIClientOAuthJava6: "com.google.oauth-client:google-oauth-client-java6:$googleApiClientOAuthVersion",
             googleAPIDrive           : "com.google.apis:google-api-services-drive:$googleApiDriveV3Version",
@@ -270,7 +278,7 @@ buildscript {
         // in the individual module build.gradle files
 
         // Google Services
-        classpath 'com.google.gms:google-services:4.3.8'
+        classpath 'com.google.gms:google-services:4.3.10'
 
         // Add the Crashlytics Gradle plugin (be sure to add version
         // 2.0.0 or later if you built your app with Android Studio 4.1).

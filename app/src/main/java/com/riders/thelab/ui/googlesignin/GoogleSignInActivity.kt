@@ -18,7 +18,6 @@ import timber.log.Timber
 class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
 
     companion object {
-        private const val TAG = "IdTokenActivity"
         private const val RC_GET_TOKEN = 9002
     }
 
@@ -77,9 +76,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         // ID token. Cross-device single sign on will occur in this branch.
         mGoogleSignInClient?.silentSignIn()
             ?.addOnCompleteListener(this) { completedTask: Task<GoogleSignInAccount> ->
-                handleSignInResult(
-                    completedTask
-                )
+                handleSignInResult(completedTask)
             }
     }
 
