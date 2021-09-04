@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.imageview.ShapeableImageView
-import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.remote.dto.artist.Artist
@@ -25,7 +24,7 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
 
     lateinit var viewBinding: ActivityRecyclerViewBinding
 
-    private var adapter: RecyclerViewAdapter? = null
+    private lateinit var adapter: RecyclerViewAdapter
 
     private val mRecyclerViewModel: RecyclerViewModel by viewModels()
 
@@ -113,6 +112,6 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
     }
 
     override fun onDeleteClick(artist: Artist, position: Int) {
-        mRecyclerViewModel.onDeleteClick(this, artist, adapter!!, position)
+        mRecyclerViewModel.onDeleteClick(this, artist, adapter, position)
     }
 }

@@ -23,7 +23,7 @@ class NewsFragment : Fragment(), View.OnClickListener {
 
     private val mNewsViewModel: NewsViewModel by viewModels()
 
-    private val recentAppsNames = arrayOf("Music", "Spring", "Weather")
+    private val recentAppsNames = arrayOf("Music", "Google", "Weather")
     private var mRecentApps: List<App>? = null
 
     /**
@@ -82,7 +82,7 @@ class NewsFragment : Fragment(), View.OnClickListener {
                     setupCards(recentApps)
                 })
 
-        mNewsViewModel.fetchRecentApps(recentAppsNames)
+        mNewsViewModel.fetchRecentApps(requireContext(), recentAppsNames)
     }
 
     override fun onDestroyView() {
@@ -112,8 +112,6 @@ class NewsFragment : Fragment(), View.OnClickListener {
     ) {
         if (app.appDrawableIcon != null) {
             imageView.setImageDrawable(app.appDrawableIcon)
-        } else {
-            imageView.setImageResource(app.appIcon)
         }
         textView.text = if (app.appName != null) app.appName else app.appTitle
     }

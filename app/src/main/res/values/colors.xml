@@ -34,6 +34,14 @@
     <color name="white">#ffffff</color>
 
 
+    <!-- Google palette -->
+    <color name="blue_grey_500">#607D8B</color>
+    <color name="blue_grey_600">#546E7A</color>
+    <color name="blue_grey_700">#455A64</color>
+    <color name="blue_grey_800">#37474F</color>
+    <color name="blue_grey_900">#263238</color>
+
+
     <color name="red">#CF3B0A</color>
     <color name="blue">#0A9ECF</color>
     <color name="green">#00A424</color>

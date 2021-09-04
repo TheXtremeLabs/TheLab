@@ -15,7 +15,7 @@ object AppBuilder {
     // From activities
     private var title: String? = null
     private var description: String? = null
-    private var icon = 0
+    private var icon: Drawable? = null
     private var activity: Class<out Activity?>? = null
 
 
@@ -53,7 +53,7 @@ object AppBuilder {
         return this
     }
 
-    fun withActivityIcon(activityIcon: Int): AppBuilder {
+    fun withActivityIcon(activityIcon: Drawable): AppBuilder {
         this.icon = activityIcon
         return this
     }
@@ -64,6 +64,7 @@ object AppBuilder {
     }
 
 
+    @Throws(LabApplicationInitializedException::class)
     fun build(): App {
 
         name?.let { appName: String ->
@@ -77,16 +78,17 @@ object AppBuilder {
         }
 
         title?.let { activityTitle: String ->
-            description?.let { activityDescription ->
-                activity?.let { targetActivity ->
-                    return App(activityTitle, activityDescription, icon, targetActivity)
+            icon?.let { activityIcon ->
+                description?.let { activityDescription ->
+                    activity?.let { targetActivity ->
+                        return App(activityTitle, activityDescription, activityIcon, targetActivity)
+                    }
                 }
-
             }
         }
 
         if (title == "WIP" && activity == null)
-            return App(title!!, description!!, icon, activity)
+            return App(title!!, description!!, icon!!, null)
 
         throw LabApplicationInitializedException()
     }
