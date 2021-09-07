@@ -16,7 +16,7 @@ import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MainActivityAdapter constructor(
+class MainActivityStaggeredAdapter constructor(
     private val mContext: Context,
     private val mAppList: List<App>,
     private val mListener: MainActivityAppClickListener
@@ -44,15 +44,14 @@ class MainActivityAdapter constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowAppViewHolder {
         val viewBinding: RowMainAppItemBinding =
             RowMainAppItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return RowAppViewHolder(mContext, viewBinding, mListener)
+        return RowAppViewHolder(mContext, viewBinding)
     }
 
-    override fun onBindViewHolder(
-        holder: RowAppViewHolder,
-        @SuppressLint("RecyclerView") position: Int
-    ) {
+    override fun onBindViewHolder(holder: RowAppViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val item = appFilteredList!![position]
 
+        holder.viewBinding.app = item
+        holder.viewBinding.executePendingBindings()
 
         if (!LabCompatibilityManager.isTablet(mContext)) {
 
@@ -64,11 +63,11 @@ class MainActivityAdapter constructor(
             // If the bound view wasn't previously displayed on screen, it's animated
             if (position > lastPosition) {
                 val animation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left)
-                holder.viewBinding.rowItemCardView?.startAnimation(animation)
+                holder.viewBinding.rowItemCardView.startAnimation(animation)
                 lastPosition = position
             }
             holder.bindData(item)
-            holder.viewBinding.rowItemCardView?.setOnClickListener { view: View? ->
+            holder.viewBinding.rowItemCardView.setOnClickListener { view: View? ->
                 mListener.onAppItemCLickListener(
                     view!!,
                     item,
@@ -81,7 +80,6 @@ class MainActivityAdapter constructor(
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun bindTabletViewHolder(holder: RowAppViewHolder, item: App, position: Int) {
         if (position == lastPosition) {
             // Item selected
@@ -92,7 +90,7 @@ class MainActivityAdapter constructor(
                 ?.scaleX(1.25f)
                 ?.scaleY(1.25f)
                 ?.start()
-            holder.viewBinding.rowItemCardView?.cardElevation = 4f
+            holder.viewBinding.rowItemCardView.cardElevation = 4f
         } else {
             if (lastPosition == -1) // Check first launch nothing is selected
                 holder.viewBinding.cardFrameLayout?.alpha = 1f else {
@@ -102,15 +100,15 @@ class MainActivityAdapter constructor(
                 //                holder.frameLayout.setStrokeWidth((int) 0f);
                 holder.viewBinding.cardFrameLayout?.scaleX = 1f
                 holder.viewBinding.cardFrameLayout?.scaleY = 1f
-                holder.viewBinding.rowItemCardView?.cardElevation = 0f
+                holder.viewBinding.rowItemCardView.cardElevation = 0f
             }
         }
-
-        holder.viewBinding.rowItemCardView?.setOnClickListener { view: View? ->
-            lastPosition = position
-            notifyDataSetChanged()
-            mListener.onAppItemCLickListener(view!!, item, holder.adapterPosition)
-        }
+        holder.viewBinding.rowItemCardView
+            .setOnClickListener { view: View? ->
+                lastPosition = position
+                notifyDataSetChanged()
+                mListener.onAppItemCLickListener(view!!, item, holder.adapterPosition)
+            }
     }
 
     override fun getFilter(): Filter {
