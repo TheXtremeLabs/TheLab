@@ -15,16 +15,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import androidx.transition.TransitionInflater
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -98,6 +96,8 @@ class MainActivity : AppCompatActivity(),
 
 
     private var adapter: RecyclerView.Adapter<*>? = null
+    private var mFetchedApps: List<App>? = null
+    private var isStaggeredLayout: Boolean = false
 
     /////////////////////////////////////
     //
@@ -183,7 +183,7 @@ class MainActivity : AppCompatActivity(),
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GPS_REQUEST) {
-                isGPS = true; // flag maintain before get location
+                isGPS = true // flag maintain before get location
             }
         }
     }
@@ -205,7 +205,7 @@ class MainActivity : AppCompatActivity(),
         Timber.d("onDestroy()")
         Timber.d("unregister network callback()")
         try {
-            networkManager.let { mConnectivityManager?.unregisterNetworkCallback(it) };
+            networkManager.let { mConnectivityManager?.unregisterNetworkCallback(it) }
         } catch (exception: RuntimeException) {
             Timber.e("NetworkCallback was already unregistered")
         }
@@ -247,6 +247,8 @@ class MainActivity : AppCompatActivity(),
                 this,
                 { appList ->
                     Timber.d("onSuccessPackageList()")
+
+                    this.mFetchedApps = appList
 
                     if (appList.isEmpty()) {
                         Timber.d("App list is empty")
@@ -329,7 +331,7 @@ class MainActivity : AppCompatActivity(),
 
         binding.includeToolbarLayout?.tabLayout?.let { tabLayout ->
             binding.includeToolbarLayout?.viewPager?.let { viewPager2 ->
-                TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+                TabLayoutMediator(tabLayout, viewPager2) { _, _ ->
                     //Some implementation
                 }.attach()
             }
@@ -341,41 +343,62 @@ class MainActivity : AppCompatActivity(),
         /*binding.includeToolbarLayout?.ivInternetStatus.setOnClickListener(this)
         binding.includeToolbarLayout?.ivLocationStatus.setOnClickListener(this)*/
         binding.includeToolbarLayout?.searchView?.setOnQueryTextListener(this)
-        /*binding.contentMain.ivLinearLayout.setOnClickListener(this)
-        binding.contentMain.ivStaggeredLayout.setOnClickListener(this)*/
+        binding.includeContentLayout?.ivLinearLayout?.setOnClickListener(this)
+        binding.includeContentLayout?.ivStaggeredLayout?.setOnClickListener(this)
     }
 
     private fun bindApps(appList: List<App>) {
         Timber.d("bindApps()")
 
-        adapter = MainActivityAdapter(this, appList, this)
-
-        val linearLayoutManager =
-            LinearLayoutManager(
-                this,
-                if (!LabCompatibilityManager.isTablet(this)) LinearLayoutManager.VERTICAL
-                else LinearLayoutManager.HORIZONTAL, false
-            )
-
-        binding.includeContentLayout?.appRecyclerView?.layoutManager = linearLayoutManager
-
-        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(
-            ContextCompat.getDrawable(
-                this,
-                R.drawable.item_separator_view_gradient
-            )!!
-        )
-        if (!LabCompatibilityManager.isTablet(this))
-            binding.includeContentLayout?.appRecyclerView?.addItemDecoration(divider)
-        else {
+        binding.includeContentLayout?.appRecyclerView?.setHasFixedSize(true)
+        if (LabCompatibilityManager.isTablet(this)) {
             val helper = ItemSnapHelper()
             helper.attachToRecyclerView(binding.includeContentLayout?.appRecyclerView)
+            binding.includeContentLayout?.appRecyclerView?.itemAnimator = DefaultItemAnimator()
         }
 
-        binding.includeContentLayout?.appRecyclerView?.itemAnimator = DefaultItemAnimator()
+        applyRecycler()
+    }
+
+
+    private fun applyRecycler() {
+        Timber.d("applyRecycler()")
+        var layoutManager: RecyclerView.LayoutManager? = null
+
+        if (!LabCompatibilityManager.isTablet(this)) {
+
+            if (!isStaggeredLayout) {
+                adapter = mFetchedApps?.let { MainActivityAdapter(this, it, this) }
+                // Classic Linear layout manager
+                layoutManager = LinearLayoutManager(
+                    this,
+                    if (!LabCompatibilityManager.isTablet(this)) LinearLayoutManager.VERTICAL
+                    else LinearLayoutManager.HORIZONTAL, false
+                )
+
+                with(binding.includeContentLayout?.appRecyclerView?.layoutParams) {
+                    this!!.width = ViewGroup.LayoutParams.MATCH_PARENT
+                    this.height = ViewGroup.LayoutParams.MATCH_PARENT
+                }
+            } else {
+                adapter = mFetchedApps?.let { MainActivityStaggeredAdapter(this, it, this) }
+                // set a StaggeredGridLayoutManager with 3 number of columns and vertical orientation
+                layoutManager =
+                    StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+
+                with(binding.includeContentLayout?.appRecyclerView?.layoutParams) {
+                    this!!.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    this.height = ViewGroup.LayoutParams.MATCH_PARENT
+                }
+            }
+            // set LayoutManager to RecyclerView
+            binding.includeContentLayout?.appRecyclerView?.layoutManager = layoutManager
+            adapter?.notifyItemRangeChanged(0, adapter?.itemCount ?: 0)
+        }
+
         binding.includeContentLayout?.appRecyclerView?.adapter = adapter
     }
+
 
     private fun showBottomSheetDialogFragment() {
         val bottomSheetFragment = BottomSheetFragment()
@@ -432,6 +455,47 @@ class MainActivity : AppCompatActivity(),
     }
 
 
+    private fun toggleRecyclerViewLinearLayout() {
+        Timber.d("toggleRecyclerViewLinearLayout()")
+        this.isStaggeredLayout = false
+
+        // clear staggered icon
+        UIManager.setBackgroundColor(
+            this,
+            binding.includeContentLayout?.ivStaggeredLayout!!,
+            R.color.transparent
+        )
+
+        //Apply selected background color
+        UIManager.setBackgroundColor(
+            this,
+            binding.includeContentLayout?.ivLinearLayout!!,
+            R.color.teal_700
+        )
+        applyRecycler()
+    }
+
+    private fun toggleRecyclerViewStaggeredLayout() {
+        Timber.d("toggleRecyclerViewStaggeredLayout()")
+        this.isStaggeredLayout = true
+
+        // clear staggered icon
+        UIManager.setBackgroundColor(
+            this,
+            binding.includeContentLayout?.ivLinearLayout!!,
+            R.color.transparent
+        )
+
+        //Apply selected background color
+        UIManager.setBackgroundColor(
+            this,
+            binding.includeContentLayout?.ivStaggeredLayout!!,
+            R.color.teal_700
+        )
+        applyRecycler()
+    }
+
+
     /////////////////////////////////////
     //
     // IMPLEMENTS
@@ -482,10 +546,10 @@ class MainActivity : AppCompatActivity(),
 
             R.id.iv_location_status -> {
                 Timber.e("Location icon status clicked")
-            }
+            }*/
 
             R.id.iv_linear_layout -> toggleRecyclerViewLinearLayout()
-            R.id.iv_staggered_layout -> toggleRecyclerViewStaggeredLayout()*/
+            R.id.iv_staggered_layout -> toggleRecyclerViewStaggeredLayout()
         }
     }
 
@@ -500,12 +564,33 @@ class MainActivity : AppCompatActivity(),
 
     override fun onQueryTextChange(newText: String?): Boolean {
         Timber.d(newText.toString())
-        /*(if (!isStaggeredLayout) adapter as MainAdapter else adapter as MainStaggeredAdapter).filter
+        (if (!isStaggeredLayout) adapter as MainActivityAdapter else adapter as MainActivityStaggeredAdapter).filter
             ?.filter(
                 newText.toString()
-            )*/
-        (adapter as MainActivityAdapter).filter?.filter(newText.toString())
+            )
         return true
+    }
+
+    override fun onAppItemClickListener(cardView: View, item: App) {
+        Timber.d("element : $item")
+
+        //TODO : Please check this functionality later. Problem using Drive REST API v3
+        if (item.appTitle.lowercase().contains("drive")) {
+            UIManager.showActionInToast(
+                this@MainActivity,
+                "Please check this functionality later. Problem using Drive REST API v3"
+            )
+
+            return
+        } else if (!LabCompatibilityManager.isTablet(this@MainActivity) and (-1L != item.id)) {
+            mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
+        } else {
+            Timber.e("Item id == -1 , not app activity. Should launch package intent.")
+            showItemDetail(item)
+            binding.itemDetailBtn?.setOnClickListener {
+                mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
+            }
+        }
     }
 
 
