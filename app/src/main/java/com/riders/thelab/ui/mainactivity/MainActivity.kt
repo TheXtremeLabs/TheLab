@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -94,6 +95,9 @@ class MainActivity : AppCompatActivity(),
 
     private var isShow = false
     private var scrollRange = -1
+
+
+    private var adapter: RecyclerView.Adapter<*>? = null
 
     /////////////////////////////////////
     //
@@ -344,7 +348,7 @@ class MainActivity : AppCompatActivity(),
     private fun bindApps(appList: List<App>) {
         Timber.d("bindApps()")
 
-        val adapter = MainActivityAdapter(this, appList, this)
+        adapter = MainActivityAdapter(this, appList, this)
 
         val linearLayoutManager =
             LinearLayoutManager(
@@ -373,12 +377,9 @@ class MainActivity : AppCompatActivity(),
         binding.includeContentLayout?.appRecyclerView?.adapter = adapter
     }
 
-    fun showBottomSheetDialogFragment() {
+    private fun showBottomSheetDialogFragment() {
         val bottomSheetFragment = BottomSheetFragment()
-        bottomSheetFragment.show(
-            this.supportFragmentManager,
-            bottomSheetFragment.tag
-        )
+        bottomSheetFragment.show(this.supportFragmentManager, bottomSheetFragment.tag)
     }
 
 
@@ -488,12 +489,23 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    /////////// Search View Listener ///////////
     override fun onQueryTextSubmit(query: String?): Boolean {
-        TODO("Not yet implemented")
+        if (!query.isNullOrEmpty()) {
+            Timber.d(query.toString())
+            UIManager.hideKeyboard(this@MainActivity, binding.root)
+        }
+        return true
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        TODO("Not yet implemented")
+        Timber.d(newText.toString())
+        /*(if (!isStaggeredLayout) adapter as MainAdapter else adapter as MainStaggeredAdapter).filter
+            ?.filter(
+                newText.toString()
+            )*/
+        (adapter as MainActivityAdapter).filter?.filter(newText.toString())
+        return true
     }
 
 
