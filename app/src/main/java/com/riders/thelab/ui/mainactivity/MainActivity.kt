@@ -367,7 +367,9 @@ class MainActivity : AppCompatActivity(),
                         }
                     }
                 }
-                resetProgressBars()
+                val job = resetProgressBars()
+                job.join()
+
                 binding.includeToolbarLayout?.viewPager?.currentItem = 0
                 launchProgressBars()
             }
@@ -385,51 +387,31 @@ class MainActivity : AppCompatActivity(),
     }
 
 
-    private fun resetProgressBars() {
-        Timber.d("resetProgressBars()")
+    private fun resetProgressBars() =
+        GlobalScope.launch(Dispatchers.Main) {
+            Timber.d("resetProgressBars()")
 
-        binding.includeToolbarLayout?.llProgressBarContainer?.children?.let {
-            val size = it.count() - 1
+            binding.includeToolbarLayout?.llProgressBarContainer?.children?.let {
+                val size = it.count() - 1
 
-            for (i in size downTo 0) {
-                Timber.d("View number : $i, contains : ${it.toList().toString()}")
-                if (it.toList()[i] is LinearLayout) {
-                    val linearLayout = it.toList()[i] as LinearLayout
-                    val progressBar: ProgressBar =
-                        linearLayout.getChildAt(1) as ProgressBar
+                for (i in size downTo 0) {
+                    Timber.d("View number : $i, contains : ${it.toList().toString()}")
+                    if (it.toList()[i] is LinearLayout) {
+                        val linearLayout = it.toList()[i] as LinearLayout
+                        val progressBar: ProgressBar =
+                            linearLayout.getChildAt(1) as ProgressBar
 
-                    progressBar.progress = 100
+                        progressBar.progress = 100
 
-                    for (j in 100 downTo 0) {
-                        progressBar.progress = j
-
+                        for (j in 100 downTo 0) {
+                            progressBar.progress = j
+                            delay(50)
+                        }
                     }
                 }
             }
+
         }
-
-        /*binding.includeToolbarLayout?.llProgressBarContainer?.children?.forEach {
-            Timber.d("${it}")
-            if (it is LinearLayout) {
-                val progressBar: ProgressBar =
-                    (it as LinearLayout).getChildAt(1) as ProgressBar
-
-                progressBar.progress = 100
-
-                for (j in 100 until 0) {
-                    progressBar.progress = j
-
-                }
-            }
-
-        }*/
-        /*binding.contentMainHeader.llProgressBarContainer.children.forEach {
-            if (it is LinearLayout) {
-                val progressBar: ProgressBar = it.getChildAt(1) as ProgressBar
-                progressBar.progress = 0
-            }
-        }*/
-    }
 
 
     private fun initViewModelsObservers() {
