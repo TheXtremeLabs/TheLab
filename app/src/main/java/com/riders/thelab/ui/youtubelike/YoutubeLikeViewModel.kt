@@ -26,10 +26,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class YoutubeLikeViewModel @Inject constructor(
-    val repositoryImpl: IRepository
+    private val repositoryImpl: IRepository
 ) : ViewModel() {
 
-    private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
+    private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val youtubeVideos: MutableLiveData<List<Video>> = MutableLiveData()
     private val youtubeVideosFailed: MutableLiveData<Boolean> = MutableLiveData()

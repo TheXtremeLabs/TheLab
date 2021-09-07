@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.bean.MovieEnum
 import com.riders.thelab.data.local.model.Movie
 import com.riders.thelab.navigator.Navigator
@@ -13,11 +12,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MultiPaneViewModel @Inject constructor(
-    val repositoryImpl: IRepository
-) : ViewModel() {
+class MultiPaneViewModel @Inject constructor() : ViewModel() {
 
-    private var movies: MutableLiveData<List<Movie>> = MutableLiveData()
+    private val movies: MutableLiveData<List<Movie>> = MutableLiveData()
 
     fun getMovies(): LiveData<List<Movie>> {
         return movies

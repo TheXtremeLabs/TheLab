@@ -17,15 +17,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ContactViewModel @Inject constructor(
-    val repositoryImpl: IRepository
+    private val repositoryImpl: IRepository
 ) : ViewModel() {
 
-    private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
-    private var hideContactsLayout: MutableLiveData<Boolean> = MutableLiveData()
-    private var showContactsLayout: MutableLiveData<Boolean> = MutableLiveData()
-    private var noContactFound: MutableLiveData<List<Contact>> = MutableLiveData()
-    private var contacts: MutableLiveData<List<Contact>> = MutableLiveData()
-    private var contactsFailed: MutableLiveData<Boolean> = MutableLiveData()
+    private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
+    private val hideContactsLayout: MutableLiveData<Boolean> = MutableLiveData()
+    private val showContactsLayout: MutableLiveData<Boolean> = MutableLiveData()
+    private val noContactFound: MutableLiveData<List<Contact>> = MutableLiveData()
+    private val contacts: MutableLiveData<List<Contact>> = MutableLiveData()
+    private val contactsFailed: MutableLiveData<Boolean> = MutableLiveData()
 
 
     fun getProgressBarVisibility(): LiveData<Boolean> {
