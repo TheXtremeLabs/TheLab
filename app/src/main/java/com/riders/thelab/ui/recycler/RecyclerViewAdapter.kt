@@ -14,24 +14,15 @@ import com.riders.thelab.data.remote.dto.artist.Artist
 import timber.log.Timber
 
 class RecyclerViewAdapter(
-    val context: Context,
-    artistList: List<Artist>,
-    artistThumbnails: List<String>,
-    listener: RecyclerClickListener
+    private val context: Context,
+    private val artistList: List<Artist>,
+    private val artistThumbnails: List<String>,
+    private val listener: RecyclerClickListener
 ) : RecyclerView.Adapter<RecyclerViewHolder>() {
 
     private lateinit var transitionImageView: ShapeableImageView
-    private var artistList: List<Artist> = ArrayList()
-    private lateinit var artistThumbnails: List<String>
-    private lateinit var listener: RecyclerClickListener
     private var mRecyclerView: RecyclerView? = null
     private var mExpandedPosition = -1
-
-    init {
-        this.artistList = artistList
-        this.artistThumbnails = artistThumbnails
-        this.listener = listener
-    }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -91,7 +82,7 @@ class RecyclerViewAdapter(
         holder.itemView.isActivated = isExpanded
 
         // Click event for each item (itemView is an in-built variable of holder class)
-        holder.viewBinding.rowCardView.setOnClickListener { v: View? ->
+        holder.viewBinding.rowCardView.setOnClickListener {
             listener.onRecyclerClick(artist)
 
             // if the clicked item is already expanded then return -1
@@ -103,7 +94,7 @@ class RecyclerViewAdapter(
             holder.storeItem(artist, position)
             transitionImageView = holder.viewBinding.transitionImageView
         }
-        holder.viewBinding.rowDetailBtn.setOnClickListener { detailView: View? ->
+        holder.viewBinding.rowDetailBtn.setOnClickListener {
             Timber.e("setOnClickListener detailView ")
             listener.onDetailClick(
                 artist,

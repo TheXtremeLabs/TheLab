@@ -1,18 +1,19 @@
 package com.riders.thelab.ui.mainactivity.fragment.time
 
+
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
 import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.RepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -22,12 +23,10 @@ class TimeViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
 
-    private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
+    private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
     private val imagesFetchedDone: MutableLiveData<Boolean> = MutableLiveData()
     private val imagesFetchedFailed: MutableLiveData<Boolean> = MutableLiveData()
     private val imageUrl: MutableLiveData<String> = MutableLiveData()
-
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
 
     fun getProgressVisibility(): LiveData<Boolean> {
@@ -54,12 +53,15 @@ class TimeViewModel @Inject constructor(
         Timber.d("getFirebaseFiles()")
         progressVisibility.value = true
 
-        val disposable: Disposable =
-            repository.getStorageReference(context)
-                .subscribe({ storageReference ->
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val storageReference: StorageReference? = repository.getStorageReference(context)
+
+                storageReference?.let {
+
                     // Create a child reference
                     // imagesRef now points to "images"
-                    val imagesRef: StorageReference = storageReference.child("images/dark_theme")
+                    val imagesRef: StorageReference = it.child("images/dark_theme")
                     imagesRef.list(5)
                         .addOnSuccessListener { listResult: ListResult ->
                             Timber.d("onSuccess()")
@@ -88,10 +90,12 @@ class TimeViewModel @Inject constructor(
                             imagesFetchedDone.value = true
                             progressVisibility.value = false
                         }
-                }, Timber::e)
+                }
 
-        compositeDisposable.add(disposable)
+            } catch (throwable: Exception) {
+                Timber.e(throwable)
+            }
+        }
     }
-
 
 }

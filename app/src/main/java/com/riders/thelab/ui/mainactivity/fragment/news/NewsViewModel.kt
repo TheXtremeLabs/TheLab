@@ -10,7 +10,7 @@ import java.util.*
 
 class NewsViewModel : ViewModel() {
 
-    var recentApps: MutableLiveData<List<App>> = MutableLiveData()
+    private val recentApps: MutableLiveData<List<App>> = MutableLiveData()
 
     fun getRecentApps(): LiveData<List<App>> {
         return recentApps

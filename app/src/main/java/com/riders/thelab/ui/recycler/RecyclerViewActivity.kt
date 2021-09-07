@@ -13,11 +13,11 @@ import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.databinding.ActivityRecyclerViewBinding
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
@@ -69,34 +69,37 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
         })
         mRecyclerViewModel.getArtists().observe(this, {
 
-            Completable.complete()
-                .delay(3, TimeUnit.SECONDS)
-                .doOnComplete {
-                    this@RecyclerViewActivity.runOnUiThread {
-                        UIManager.hideView(viewBinding.progressBar)
-                        adapter = RecyclerViewAdapter(
-                            this,
-                            it,
-                            artistThumbnails!!,
-                            this
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(3000)
+                UIManager.hideView(viewBinding.progressBar)
+                adapter = RecyclerViewAdapter(
+                    this@RecyclerViewActivity,
+                    it,
+                    artistThumbnails!!,
+                    this@RecyclerViewActivity
+                )
+
+                val layoutManager: LinearLayoutManager =
+                    if (!LabCompatibilityManager.isTablet(this@RecyclerViewActivity))
+                        LinearLayoutManager(
+                            this@RecyclerViewActivity,
+                            LinearLayoutManager.VERTICAL,
+                            false
+                        )
+                    else
+                        GridLayoutManager(
+                            this@RecyclerViewActivity,
+                            3,
+                            GridLayoutManager.VERTICAL,
+                            false
                         )
 
-                        val layoutManager: LinearLayoutManager =
-                            if (!LabCompatibilityManager.isTablet(this))
-                                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                            else
-                                GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false)
-
-                        viewBinding.recyclerView.layoutManager = layoutManager
-                        viewBinding.recyclerView.itemAnimator = DefaultItemAnimator()
-                        viewBinding.recyclerView.adapter = adapter
-                    }
-                }
-                .doOnError { t: Throwable? -> Timber.e(t) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe()
+                viewBinding.recyclerView.layoutManager = layoutManager
+                viewBinding.recyclerView.itemAnimator = DefaultItemAnimator()
+                viewBinding.recyclerView.adapter = adapter
+            }
         })
+
         mRecyclerViewModel.getArtistsError().observe(this, {
 
         })

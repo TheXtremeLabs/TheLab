@@ -448,15 +448,14 @@ class MainActivity : AppCompatActivity(),
         Timber.d("Clicked item : $item, at position : $position")
 
         //TODO : Please check this functionality later. Problem using Drive REST API v3
-        if (item.appTitle.lowercase().contains("drive")){
+        if (item.appTitle.lowercase().contains("drive")) {
             UIManager.showActionInToast(
                 this@MainActivity,
-                "Please check this functionality later. Problem using Drive REST API v3")
+                "Please check this functionality later. Problem using Drive REST API v3"
+            )
 
             return
-        }
-
-        else if (!LabCompatibilityManager.isTablet(this@MainActivity)) {
+        } else if (!LabCompatibilityManager.isTablet(this@MainActivity)) {
             mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
         } else {
             showItemDetail(item)

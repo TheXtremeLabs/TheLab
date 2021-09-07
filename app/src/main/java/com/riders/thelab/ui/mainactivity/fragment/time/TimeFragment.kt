@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.databinding.FragmentTimeBinding
+import com.riders.thelab.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -17,7 +18,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 
 @AndroidEntryPoint
-class TimeFragment : Fragment() {
+class TimeFragment : BaseFragment() {
     lateinit var viewBinding: FragmentTimeBinding
 
     private val mTimeViewModel: TimeViewModel by viewModels()
@@ -131,5 +132,9 @@ class TimeFragment : Fragment() {
         }
 
         super.onDestroyView()
+    }
+
+    override fun onConnected(isConnected: Boolean) {
+
     }
 }

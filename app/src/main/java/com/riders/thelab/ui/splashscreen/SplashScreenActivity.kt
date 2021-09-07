@@ -20,10 +20,7 @@ import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.databinding.ActivitySplashscreenBinding
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -44,8 +41,6 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
     private val position = 0
 
     // Animators
-    private lateinit var theAnimator: ObjectAnimator
-    private lateinit var labAnimator: ObjectAnimator
     private lateinit var versionTextAnimator: ObjectAnimator
     private lateinit var fadeProgressAnimator: ObjectAnimator
 
@@ -182,37 +177,11 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
                 override fun onAnimationEnd(animation: Animator) {
                     Timber.e("onAnimationEnd()")
                     viewBinding.splashVideo.visibility = View.GONE
-                    startTheLabAnimation()
+                    displayAppVersion()
                 }
             })
     }
 
-
-    fun startTheLabAnimation() {
-        Timber.e("startTheLaPartAnimation()")
-        viewBinding.ivThe.visibility = View.VISIBLE
-        viewBinding.ivLab.visibility = View.VISIBLE
-
-        theAnimator = ObjectAnimator.ofFloat(viewBinding.ivThe, "alpha", 1f)
-        theAnimator.duration = LabAnimationsManager.getInstance().longAnimationDuration.toLong()
-        theAnimator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
-                viewBinding.ivThe.alpha = 1f
-            }
-        })
-        theAnimator.start()
-
-
-        labAnimator = ObjectAnimator.ofFloat(viewBinding.ivLab, "alpha", 1f)
-        labAnimator.duration = LabAnimationsManager.getInstance().longAnimationDuration.toLong()
-        labAnimator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
-                viewBinding.ivLab.alpha = 1f
-            }
-        })
-        labAnimator.start()
-        displayAppVersion()
-    }
 
     fun displayAppVersion() {
         Timber.e("displayAppVersion()")
@@ -245,6 +214,7 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         fadeProgressAnimator.start()
     }
 
+    @DelicateCoroutinesApi
     private fun clearAllAnimations() {
         Timber.d("clearAllAnimations()")
 
@@ -253,7 +223,7 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         GlobalScope.launch(Dispatchers.Main) {
             Timber.d("Use coroutines to clear animations")
             LabAnimationsManager.getInstance().clearAnimations(
-                theAnimator, labAnimator, versionTextAnimator, fadeProgressAnimator
+                versionTextAnimator, fadeProgressAnimator
             )
 
             delay(TimeUnit.SECONDS.toMillis(3))

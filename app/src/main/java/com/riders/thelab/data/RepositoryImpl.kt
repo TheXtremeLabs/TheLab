@@ -22,8 +22,9 @@ import com.riders.thelab.data.remote.ApiImpl
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.data.remote.dto.weather.City
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
-import io.reactivex.rxjava3.core.Maybe
-import io.reactivex.rxjava3.core.Single
+import kotlinx.coroutines.flow.Flow
+
+
 import okhttp3.ResponseBody
 import timber.log.Timber
 import java.util.*
@@ -147,7 +148,7 @@ class RepositoryImpl @Inject constructor(
         mDbImpl.insertContact(contact)
     }
 
-    override fun insertContactRX(contact: Contact): Maybe<Long> {
+    override suspend fun insertContactRX(contact: Contact): Long {
         return mDbImpl.insertContactRX(contact)
     }
 
@@ -159,7 +160,7 @@ class RepositoryImpl @Inject constructor(
         return mDbImpl.getContacts()
     }
 
-    override fun getAllContacts(): Single<List<Contact>> {
+    override suspend fun getAllContacts(): List<Contact> {
         return mDbImpl.getAllContacts()
     }
 
@@ -167,23 +168,23 @@ class RepositoryImpl @Inject constructor(
         mDbImpl.clearData()
     }
 
-    override fun insertWeatherData(isWeatherData: WeatherData): Maybe<Long> {
+    override suspend fun insertWeatherData(isWeatherData: WeatherData): Long {
         return mDbImpl.insertWeatherData(isWeatherData)
     }
 
-    override fun saveCity(city: CityModel): Maybe<Long> {
+    override suspend fun saveCity(city: CityModel): Long {
         return mDbImpl.saveCity(city)
     }
 
-    override fun saveCities(dtoCities: List<City>): Maybe<List<Long>> {
+    override suspend fun saveCities(dtoCities: List<City>): List<Long> {
         return mDbImpl.saveCities(dtoCities)
     }
 
-    override fun getWeatherData(): Single<WeatherData> {
+    override suspend fun getWeatherData(): WeatherData {
         return mDbImpl.getWeatherData()
     }
 
-    override fun getCities(): Single<List<CityModel>> {
+    override suspend fun getCities(): List<CityModel> {
         return mDbImpl.getCities()
     }
 
@@ -195,23 +196,23 @@ class RepositoryImpl @Inject constructor(
         mDbImpl.deleteAll()
     }
 
-    override fun getStorageReference(activity: Activity): Single<StorageReference> {
+    override suspend fun getStorageReference(activity: Activity): StorageReference? {
         return mApiImpl.getStorageReference(activity)
     }
 
-    override fun getArtists(url: String): Single<List<Artist>> {
+    override suspend fun getArtists(url: String): List<Artist> {
         return mApiImpl.getArtists(url)
     }
 
-    override fun getVideos(): Single<List<Video>> {
+    override suspend fun getVideos(): List<Video> {
         return mApiImpl.getVideos()
     }
 
-    override fun getWeatherOneCallAPI(location: Location): Single<OneCallWeatherResponse> {
+    override suspend fun getWeatherOneCallAPI(location: Location): OneCallWeatherResponse {
         return mApiImpl.getWeatherOneCallAPI(location)
     }
 
-    override fun getBulkWeatherCitiesFile(): Single<ResponseBody> {
+    override suspend fun getBulkWeatherCitiesFile(): ResponseBody {
         return mApiImpl.getBulkWeatherCitiesFile()
     }
 }

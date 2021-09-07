@@ -14,12 +14,12 @@ import com.riders.thelab.core.views.toast.TheLabToast
 import com.riders.thelab.core.views.toast.ToastTypeEnum
 import com.riders.thelab.databinding.ActivityCustomToastBinding
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class CustomToastActivity : AppCompatActivity() {
@@ -56,30 +56,21 @@ class CustomToastActivity : AppCompatActivity() {
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
-                        Completable.complete()
-                            .delay(2, TimeUnit.SECONDS)
-                            .doOnComplete {
-                                runOnUiThread {
-                                    viewBinding.progressIndicator.animate()
-                                        .setDuration(1500)
-                                        .alpha(0.0f)
-                                        .setListener(object : Animator.AnimatorListener {
-                                            override fun onAnimationStart(animation: Animator) {}
-                                            override fun onAnimationEnd(animation: Animator) {
-                                                viewBinding.progressIndicator.visibility = View.GONE
-                                            }
+                        CoroutineScope(Dispatchers.Main).launch {
+                            delay(2000)
+                            viewBinding.progressIndicator.animate()
+                                .setDuration(1500)
+                                .alpha(0.0f)
+                                .setListener(object : Animator.AnimatorListener {
+                                    override fun onAnimationStart(animation: Animator) {}
+                                    override fun onAnimationEnd(animation: Animator) {
+                                        viewBinding.progressIndicator.visibility = View.GONE
+                                    }
 
-                                            override fun onAnimationCancel(animation: Animator) {}
-                                            override fun onAnimationRepeat(animation: Animator) {}
-                                        })
-                                }
-                            }
-                            .doOnError {
-                                Timber.e(it)
-                            }
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe()
+                                    override fun onAnimationCancel(animation: Animator) {}
+                                    override fun onAnimationRepeat(animation: Animator) {}
+                                })
+                        }
                     }
 
                     override fun onAnimationCancel(animation: Animator) {}
