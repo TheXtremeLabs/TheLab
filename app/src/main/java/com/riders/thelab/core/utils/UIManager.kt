@@ -319,5 +319,15 @@ class UIManager private constructor() {
             // Or true to be visible
             menu.setGroupVisible(R.id.menu_main_group, false)
         }
+
+        fun getDrawable(context: Context, drawableRedId: Int): Bitmap? {
+            if (0 == drawableRedId)
+                return null
+            return drawableToBitmap(ContextCompat.getDrawable(context, drawableRedId)!!)
+        }
+
+        fun setBackgroundColor(context: Context, targetView: View, colorResID: Int) {
+            targetView.setBackgroundColor(ContextCompat.getColor(context, colorResID))
+        }
     }
 }
