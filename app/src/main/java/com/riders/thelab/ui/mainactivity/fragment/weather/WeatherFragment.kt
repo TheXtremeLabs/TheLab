@@ -13,6 +13,7 @@ import com.riders.thelab.core.utils.LabLocationManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.weather.CityWeather
 import com.riders.thelab.databinding.FragmentWeatherBinding
+import com.riders.thelab.ui.base.BaseFragment
 import com.riders.thelab.ui.weather.WeatherUtils
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
@@ -23,7 +24,7 @@ import java.util.*
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
-class WeatherFragment : Fragment(), LocationListener {
+class WeatherFragment : BaseFragment(), LocationListener {
 
     companion object {
         fun newInstance(): WeatherFragment {
@@ -35,7 +36,10 @@ class WeatherFragment : Fragment(), LocationListener {
         }
     }
 
-    lateinit var viewBinding: FragmentWeatherBinding
+    private var  _viewBinding: FragmentWeatherBinding? =  null
+
+    private val binding get() = _viewBinding!!
+
 
     private val mWeatherViewModel: WeatherViewModel by viewModels()
 
@@ -45,8 +49,8 @@ class WeatherFragment : Fragment(), LocationListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewBinding = FragmentWeatherBinding.inflate(inflater, container, false)
-        return viewBinding.root
+        _viewBinding = FragmentWeatherBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,8 +59,8 @@ class WeatherFragment : Fragment(), LocationListener {
         mWeatherViewModel
             .getProgressBarVisibility()
             .observe(viewLifecycleOwner, {
-                if (!it) UIManager.hideView(viewBinding.progressBar)
-                else UIManager.showView(viewBinding.progressBar)
+                if (!it) UIManager.hideView(binding.progressBar)
+                else UIManager.showView(binding.progressBar)
             })
 
         mWeatherViewModel
@@ -95,8 +99,8 @@ class WeatherFragment : Fragment(), LocationListener {
     }
 
     override fun onDestroyView() {
-        mWeatherViewModel.clearDisposable()
         super.onDestroyView()
+        _viewBinding = null
     }
 
 
@@ -119,20 +123,20 @@ class WeatherFragment : Fragment(), LocationListener {
     private fun updateUI(cityWeather: CityWeather) {
         Timber.d("updateUI()")
 
-        viewBinding.cityWeather = cityWeather
+        binding.cityWeather = cityWeather
 
-        UIManager.showView(viewBinding.weatherDataContainer)
+        UIManager.showView(binding.weatherDataContainer)
 
         // Load weather icon
         UIManager.loadImage(
             requireActivity(),
             WeatherUtils.getWeatherIconFromApi(cityWeather.weatherIconURL),
-            viewBinding.ivWeatherIcon
+            binding.ivWeatherIcon
         )
 
-        viewBinding.tvWeatherCityTemperature.text =
+        binding.tvWeatherCityTemperature.text =
             String.format(Locale.getDefault(), "%d", cityWeather.cityTemperature.roundToInt())
-        viewBinding.tvDegreePlaceholder.visibility = View.VISIBLE
+        binding.tvDegreePlaceholder.visibility = View.VISIBLE
     }
 
     override fun onLocationChanged(location: Location) {
@@ -144,4 +148,8 @@ class WeatherFragment : Fragment(), LocationListener {
     override fun onProviderDisabled(provider: String) {}
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+
+    override fun onConnected(isConnected: Boolean) {
+
+    }
 }

@@ -19,7 +19,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.apache.http.HttpHeaders
 import org.jetbrains.annotations.NotNull
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
 import java.io.InputStream
@@ -183,7 +182,6 @@ internal object ApiModule {
             .baseUrl(url)
             .client(provideOkHttp())
             .addConverterFactory(MoshiConverterFactory.create())
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
     }
 
@@ -196,7 +194,6 @@ internal object ApiModule {
         return Retrofit.Builder()
             .baseUrl(url)
             .client(provideOkHttpArtists())
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
@@ -209,7 +206,6 @@ internal object ApiModule {
             .baseUrl(url)
             .client(provideWeatherOkHttp())
             .addConverterFactory(MoshiConverterFactory.create())
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
     }
 

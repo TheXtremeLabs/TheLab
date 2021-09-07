@@ -1,32 +1,31 @@
 package com.riders.thelab.ui.contacts
 
+
 import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.riders.thelab.data.RepositoryImpl
+import androidx.lifecycle.viewModelScope
+import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.model.Contact
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class ContactViewModel @Inject constructor(
-    val repositoryImpl: RepositoryImpl
+    private val repositoryImpl: IRepository
 ) : ViewModel() {
 
-    private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
-    private var hideContactsLayout: MutableLiveData<Boolean> = MutableLiveData()
-    private var showContactsLayout: MutableLiveData<Boolean> = MutableLiveData()
-    private var noContactFound: MutableLiveData<List<Contact>> = MutableLiveData()
-    private var contacts: MutableLiveData<List<Contact>> = MutableLiveData()
-    private var contactsFailed: MutableLiveData<Boolean> = MutableLiveData()
-
-    val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
+    private val hideContactsLayout: MutableLiveData<Boolean> = MutableLiveData()
+    private val showContactsLayout: MutableLiveData<Boolean> = MutableLiveData()
+    private val noContactFound: MutableLiveData<List<Contact>> = MutableLiveData()
+    private val contacts: MutableLiveData<List<Contact>> = MutableLiveData()
+    private val contactsFailed: MutableLiveData<Boolean> = MutableLiveData()
 
 
     fun getProgressBarVisibility(): LiveData<Boolean> {
@@ -58,31 +57,28 @@ class ContactViewModel @Inject constructor(
         Timber.d("getContactList()")
         progressVisibility.value = true
 
-        val disposable: Disposable =
-            repositoryImpl
-                .getAllContacts()
-                .subscribe(
-                    { dbContacts ->
-                        if (dbContacts.isEmpty()) {
-                            Timber.e("Contact list is empty")
-                            progressVisibility.value = false
-                            hideContactsLayout.value = true
-                            noContactFound.value = dbContacts
-                        } else {
-                            Timber.d("contacts  : %s", contacts)
-                            progressVisibility.value = false
-                            showContactsLayout.value = true
-                            showContactsLayout.value = true
-                            contacts.value = dbContacts
-                        }
-                    },
-                    { throwable ->
-                        Timber.e(throwable)
-                        progressVisibility.value = false
-                        hideContactsLayout.value = true
-                        contactsFailed.value = true
-                    })
-        compositeDisposable.add(disposable)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val dbContacts = repositoryImpl.getAllContacts()
+                if (dbContacts.isEmpty()) {
+                    Timber.e("Contact list is empty")
+                    progressVisibility.value = false
+                    hideContactsLayout.value = true
+                    noContactFound.value = dbContacts
+                } else {
+                    Timber.d("contacts  : %s", contacts)
+                    progressVisibility.value = false
+                    showContactsLayout.value = true
+                    showContactsLayout.value = true
+                    contacts.value = dbContacts
+                }
+            } catch (throwable: Exception) {
+                Timber.e(throwable)
+                progressVisibility.value = false
+                hideContactsLayout.value = true
+                contactsFailed.value = true
+            }
+        }
     }
 
     fun addNewContact(navigator: Navigator) {
@@ -97,10 +93,5 @@ class ContactViewModel @Inject constructor(
         intent.putExtra(ContactDetailActivity.CONTACT_EMAIL, contact.email)
         intent.putExtra(ContactDetailActivity.CONTACT_IMAGE, "")
         navigator.callContactDetailActivity(intent)
-    }
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
     }
 }

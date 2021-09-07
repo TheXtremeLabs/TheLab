@@ -39,7 +39,7 @@ class WeatherSearchViewAdapter(
 
         val countryURL: String =
             (Constants.BASE_ENDPOINT_WEATHER_FLAG
-                    + country.toLowerCase()
+                    + country.lowercase()
                     + Constants.WEATHER_FLAG_PNG_SUFFIX)
 
         val tvCityName: MaterialTextView = view.findViewById(R.id.row_tv_city_name)
@@ -59,8 +59,8 @@ class WeatherSearchViewAdapter(
                     mSearchView.isIconified = true
                 }
             } else {
-                Objects.requireNonNull((context as WeatherActivity).supportActionBar)!!
-                    .collapseActionView()
+                Objects.requireNonNull((context as WeatherActivity).supportActionBar)
+                    ?.collapseActionView()
             }
             mListener.onWeatherItemClicked(CityModel(cursor))
         }

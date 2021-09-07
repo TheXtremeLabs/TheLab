@@ -5,8 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.riders.thelab.data.local.model.Contact
-import io.reactivex.rxjava3.core.Maybe
-import io.reactivex.rxjava3.core.Single
+
 
 @Dao
 interface ContactDao {
@@ -14,7 +13,7 @@ interface ContactDao {
     fun insert(contact: Contact)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertRX(contact: Contact): Maybe<Long>
+    suspend fun insertRX(contact: Contact): Long
 
     /* Method to insert contacts fetched from api to room */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -25,7 +24,7 @@ interface ContactDao {
 
     /* Method to fetch contacts stored locally */
     @Query("SELECT * FROM Contact")
-    fun getContacts(): Single<List<Contact>>
+    suspend fun getContacts(): List<Contact>
 
 
     @Query("DELETE FROM Contact")

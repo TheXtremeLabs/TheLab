@@ -42,7 +42,7 @@ class YoutubeLikeListAdapter(
 
         holder.bind(itemYoutubeVideo)
 
-        holder.viewBinding.cardViewItem.setOnClickListener { v ->
+        holder.viewBinding.cardViewItem.setOnClickListener {
             listener.onYoutubeItemClicked(
                 holder.getImageView(),
                 holder.getNameTextView(),

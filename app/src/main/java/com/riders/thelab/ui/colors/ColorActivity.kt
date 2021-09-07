@@ -3,7 +3,6 @@ package com.riders.thelab.ui.colors
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabAnimationsManager
 import com.riders.thelab.core.utils.LabColorsManager
 import com.riders.thelab.databinding.ActivityColorBinding

@@ -9,12 +9,11 @@ class SongPlayerUtils {
          * @param totalDuration
          */
         fun getProgressPercentage(currentDuration: Long, totalDuration: Long): Int {
-            var percentage = 0.0
             val currentSeconds: Long = (currentDuration / 1000)
             val totalSeconds: Long = (totalDuration / 1000)
 
             // calculating percentage
-            percentage = currentSeconds.toDouble() / totalSeconds * 100
+            val percentage = currentSeconds.toDouble() / totalSeconds * 100
 
             // return percentage
             return percentage.toInt()
@@ -28,9 +27,8 @@ class SongPlayerUtils {
          */
         fun progressToTimer(progress: Int, totalDuration: Int): Int {
             var mTotalDuration = totalDuration
-            var currentDuration = 0
             mTotalDuration = (mTotalDuration / 1000)
-            currentDuration = (progress.toDouble() / 100 * mTotalDuration).toInt()
+            val currentDuration: Int = (progress.toDouble() / 100 * mTotalDuration).toInt()
 
             // return current duration in milliseconds
             return currentDuration * 1000
