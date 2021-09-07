@@ -53,7 +53,6 @@ class MainActivityAdapter constructor(
     ) {
         val item = appFilteredList!![position]
 
-
         if (!LabCompatibilityManager.isTablet(mContext)) {
 
             /*
@@ -62,19 +61,13 @@ class MainActivityAdapter constructor(
              *
              */
             // If the bound view wasn't previously displayed on screen, it's animated
-            if (position > lastPosition) {
+            /*if (position > lastPosition) {
                 val animation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left)
                 holder.viewBinding.rowItemCardView?.startAnimation(animation)
                 lastPosition = position
-            }
+            }*/
+
             holder.bindData(item)
-            holder.viewBinding.rowItemCardView?.setOnClickListener { view: View? ->
-                mListener.onAppItemCLickListener(
-                    view!!,
-                    item,
-                    position
-                )
-            }
         } else {
             holder.bindTabletData(item)
             bindTabletViewHolder(holder, item, position)

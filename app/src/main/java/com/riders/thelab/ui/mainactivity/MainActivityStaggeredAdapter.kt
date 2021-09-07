@@ -3,15 +3,12 @@ package com.riders.thelab.ui.mainactivity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
-import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.data.local.model.app.App
-import com.riders.thelab.databinding.RowMainAppItemBinding
+import com.riders.thelab.databinding.RowMainAppStaggeredItemBinding
 import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
@@ -20,7 +17,7 @@ class MainActivityStaggeredAdapter constructor(
     private val mContext: Context,
     private val mAppList: List<App>,
     private val mListener: MainActivityAppClickListener
-) : RecyclerView.Adapter<RowAppViewHolder>(), Filterable {
+) : RecyclerView.Adapter<RowAppStaggeredViewHolder>(), Filterable {
 
     private var appFilteredList: MutableList<App>? = mAppList as MutableList<App>
 
@@ -41,74 +38,23 @@ class MainActivityStaggeredAdapter constructor(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowAppViewHolder {
-        val viewBinding: RowMainAppItemBinding =
-            RowMainAppItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return RowAppViewHolder(mContext, viewBinding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowAppStaggeredViewHolder {
+        val viewBinding: RowMainAppStaggeredItemBinding =
+            RowMainAppStaggeredItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        return RowAppStaggeredViewHolder(mContext, viewBinding, mListener)
     }
 
-    override fun onBindViewHolder(holder: RowAppViewHolder, @SuppressLint("RecyclerView") position: Int) {
+    override fun onBindViewHolder(
+        holder: RowAppStaggeredViewHolder,
+        @SuppressLint("RecyclerView") position: Int
+    ) {
         val item = appFilteredList!![position]
 
-        holder.viewBinding.app = item
-        holder.viewBinding.executePendingBindings()
-
-        if (!LabCompatibilityManager.isTablet(mContext)) {
-
-            /*
-             *
-             * Reference : https://levelup.gitconnected.com/android-recyclerview-animations-in-kotlin-1e323ffd39be
-             *
-             */
-            // If the bound view wasn't previously displayed on screen, it's animated
-            if (position > lastPosition) {
-                val animation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left)
-                holder.viewBinding.rowItemCardView.startAnimation(animation)
-                lastPosition = position
-            }
-            holder.bindData(item)
-            holder.viewBinding.rowItemCardView.setOnClickListener { view: View? ->
-                mListener.onAppItemCLickListener(
-                    view!!,
-                    item,
-                    position
-                )
-            }
-        } else {
-            holder.bindTabletData(item)
-            bindTabletViewHolder(holder, item, position)
-        }
-    }
-
-    private fun bindTabletViewHolder(holder: RowAppViewHolder, item: App, position: Int) {
-        if (position == lastPosition) {
-            // Item selected
-            holder.viewBinding.cardFrameLayout?.alpha = 1f
-            holder.viewBinding.llCardSelectedBackground?.visibility = View.VISIBLE
-            holder.viewBinding.cardFrameLayout?.animate()
-                ?.setDuration(500)
-                ?.scaleX(1.25f)
-                ?.scaleY(1.25f)
-                ?.start()
-            holder.viewBinding.rowItemCardView.cardElevation = 4f
-        } else {
-            if (lastPosition == -1) // Check first launch nothing is selected
-                holder.viewBinding.cardFrameLayout?.alpha = 1f else {
-                // Item not selected
-                holder.viewBinding.llCardSelectedBackground?.visibility = View.INVISIBLE
-                holder.viewBinding.cardFrameLayout?.alpha = 0.5f
-                //                holder.frameLayout.setStrokeWidth((int) 0f);
-                holder.viewBinding.cardFrameLayout?.scaleX = 1f
-                holder.viewBinding.cardFrameLayout?.scaleY = 1f
-                holder.viewBinding.rowItemCardView.cardElevation = 0f
-            }
-        }
-        holder.viewBinding.rowItemCardView
-            .setOnClickListener { view: View? ->
-                lastPosition = position
-                notifyDataSetChanged()
-                mListener.onAppItemCLickListener(view!!, item, holder.adapterPosition)
-            }
+        holder.bindData(item)
     }
 
     override fun getFilter(): Filter {
