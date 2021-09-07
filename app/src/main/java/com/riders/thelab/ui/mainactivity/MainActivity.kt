@@ -17,12 +17,14 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -49,16 +51,31 @@ import com.riders.thelab.ui.mainactivity.fragment.time.TimeFragment
 import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment
 import com.riders.thelab.utils.Constants.Companion.GPS_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 import kotlin.system.exitProcess
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(),
+    CoroutineScope,
+    View.OnClickListener, SearchView.OnQueryTextListener,
     Toolbar.OnMenuItemClickListener, OnOffsetChangedListener,
-    ConnectivityListener, MainActivityAppClickListener, OnGpsListener {
+    ConnectivityListener, OnGpsListener,
+    MainActivityAppClickListener {
 
-    private lateinit var viewBinding: ActivityMainBinding
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + Job()
+
+
+    private var _viewBinding: ActivityMainBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _viewBinding!!
 
     private val mViewModel: MainActivityViewModel by viewModels()
 
@@ -78,6 +95,9 @@ class MainActivity : AppCompatActivity(),
 
     private var isShow = false
     private var scrollRange = -1
+
+
+    private var adapter: RecyclerView.Adapter<*>? = null
 
     /////////////////////////////////////
     //
@@ -101,8 +121,8 @@ class MainActivity : AppCompatActivity(),
         }
         window.navigationBarColor = ContextCompat.getColor(this, R.color.default_dark)
 
-        viewBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Variables
         locationReceiver = LocationBroadcastReceiver()
@@ -190,6 +210,8 @@ class MainActivity : AppCompatActivity(),
             Timber.e("NetworkCallback was already unregistered")
         }
         super.onDestroy()
+
+        _viewBinding = null
     }
 
 
@@ -242,6 +264,7 @@ class MainActivity : AppCompatActivity(),
         initCollapsingToolbar()
         initToolbar()
         setupViewPager()
+        setListeners()
     }
 
     private fun bindTabletViews() {
@@ -260,11 +283,11 @@ class MainActivity : AppCompatActivity(),
      * Will show and hide the toolbar txtPostTitle on scroll
      */
     private fun initCollapsingToolbar() {
-        viewBinding.includeToolbarLayout?.collapsingToolbar?.title = " "
-        viewBinding.includeToolbarLayout?.appbar?.setExpanded(true)
+        binding.includeToolbarLayout?.collapsingToolbar?.title = " "
+        binding.includeToolbarLayout?.appbar?.setExpanded(true)
 
         // hiding & showing the txtPostTitle when toolbar expanded & collapsed
-        viewBinding.includeToolbarLayout?.appbar?.addOnOffsetChangedListener(this)
+        binding.includeToolbarLayout?.appbar?.addOnOffsetChangedListener(this)
     }
 
 
@@ -276,12 +299,12 @@ class MainActivity : AppCompatActivity(),
      * https://stackoverflow.com/questions/10692755/how-do-i-hide-a-menu-item-in-the-actionbar#:~:text=The%20best%20way%20to%20hide,menu%20inside%20the%20same%20group.&text=Then%2C%20on%20your%20activity%20(preferable,visibility%20to%20false%20or%20true.
      */
     private fun initToolbar() {
-        viewBinding.includeToolbarLayout?.toolbar?.inflateMenu(R.menu.menu_main)
-        menu = viewBinding.includeToolbarLayout?.toolbar?.menu
+        binding.includeToolbarLayout?.toolbar?.inflateMenu(R.menu.menu_main)
+        menu = binding.includeToolbarLayout?.toolbar?.menu
 
         menu?.let { menu -> UIManager.hideMenuButtons(menu) }
 
-        viewBinding.includeToolbarLayout?.toolbar?.setOnMenuItemClickListener(this)
+        binding.includeToolbarLayout?.toolbar?.setOnMenuItemClickListener(this)
     }
 
     private fun setupViewPager() {
@@ -301,11 +324,11 @@ class MainActivity : AppCompatActivity(),
         pagerAdapter = ViewPager2Adapter(this@MainActivity, fragmentList as ArrayList<Fragment>)
 
         // set Orientation in your ViewPager2
-        viewBinding.includeToolbarLayout?.viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        viewBinding.includeToolbarLayout?.viewPager?.adapter = pagerAdapter
+        binding.includeToolbarLayout?.viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        binding.includeToolbarLayout?.viewPager?.adapter = pagerAdapter
 
-        viewBinding.includeToolbarLayout?.tabLayout?.let { tabLayout ->
-            viewBinding.includeToolbarLayout?.viewPager?.let { viewPager2 ->
+        binding.includeToolbarLayout?.tabLayout?.let { tabLayout ->
+            binding.includeToolbarLayout?.viewPager?.let { viewPager2 ->
                 TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
                     //Some implementation
                 }.attach()
@@ -313,11 +336,19 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    private fun setListeners() {
+        Timber.d("setListeners()")
+        /*binding.includeToolbarLayout?.ivInternetStatus.setOnClickListener(this)
+        binding.includeToolbarLayout?.ivLocationStatus.setOnClickListener(this)*/
+        binding.includeToolbarLayout?.searchView?.setOnQueryTextListener(this)
+        /*binding.contentMain.ivLinearLayout.setOnClickListener(this)
+        binding.contentMain.ivStaggeredLayout.setOnClickListener(this)*/
+    }
 
     private fun bindApps(appList: List<App>) {
         Timber.d("bindApps()")
 
-        val adapter = MainActivityAdapter(this, appList, this)
+        adapter = MainActivityAdapter(this, appList, this)
 
         val linearLayoutManager =
             LinearLayoutManager(
@@ -326,7 +357,7 @@ class MainActivity : AppCompatActivity(),
                 else LinearLayoutManager.HORIZONTAL, false
             )
 
-        viewBinding.includeContentLayout?.appRecyclerView?.layoutManager = linearLayoutManager
+        binding.includeContentLayout?.appRecyclerView?.layoutManager = linearLayoutManager
 
         val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         divider.setDrawable(
@@ -336,34 +367,31 @@ class MainActivity : AppCompatActivity(),
             )!!
         )
         if (!LabCompatibilityManager.isTablet(this))
-            viewBinding.includeContentLayout?.appRecyclerView?.addItemDecoration(divider)
+            binding.includeContentLayout?.appRecyclerView?.addItemDecoration(divider)
         else {
             val helper = ItemSnapHelper()
-            helper.attachToRecyclerView(viewBinding.includeContentLayout?.appRecyclerView)
+            helper.attachToRecyclerView(binding.includeContentLayout?.appRecyclerView)
         }
 
-        viewBinding.includeContentLayout?.appRecyclerView?.itemAnimator = DefaultItemAnimator()
-        viewBinding.includeContentLayout?.appRecyclerView?.adapter = adapter
+        binding.includeContentLayout?.appRecyclerView?.itemAnimator = DefaultItemAnimator()
+        binding.includeContentLayout?.appRecyclerView?.adapter = adapter
     }
 
-    fun showBottomSheetDialogFragment() {
+    private fun showBottomSheetDialogFragment() {
         val bottomSheetFragment = BottomSheetFragment()
-        bottomSheetFragment.show(
-            this.supportFragmentManager,
-            bottomSheetFragment.tag
-        )
+        bottomSheetFragment.show(this.supportFragmentManager, bottomSheetFragment.tag)
     }
 
 
     private fun showItemDetail(app: App) {
-        viewBinding.app = app
+        binding.app = app
 
-        if (View.INVISIBLE == viewBinding.clDetailItem?.visibility)
-            viewBinding.clDetailItem?.visibility = View.VISIBLE
-        viewBinding.clDetailItem?.let { UIManager.showView(it) }
+        if (View.INVISIBLE == binding.clDetailItem?.visibility)
+            binding.clDetailItem?.visibility = View.VISIBLE
+        binding.clDetailItem?.let { UIManager.showView(it) }
 
 
-        viewBinding.ivItemDetail?.let {
+        binding.ivItemDetail?.let {
             UIManager.loadImage(
                 this,
                 app.appDrawableIcon!!,
@@ -371,8 +399,8 @@ class MainActivity : AppCompatActivity(),
                 LabGlideListener(
                     onLoadingSuccess = { resource ->
                         Timber.d("dskjfnodsnv")
-                        if (viewBinding.itemDetailBtn?.visibility == View.GONE) {
-                            viewBinding.itemDetailBtn?.visibility = View.VISIBLE
+                        if (binding.itemDetailBtn?.visibility == View.GONE) {
+                            binding.itemDetailBtn?.visibility = View.VISIBLE
                         }
 
                         if (app.appTitle == "Palette") {
@@ -380,19 +408,19 @@ class MainActivity : AppCompatActivity(),
                             val newBitmap =
                                 UIManager.addGradientToImageView(this@MainActivity, myBitmap)
 
-                            viewBinding.ivItemDetail?.setImageDrawable(
+                            binding.ivItemDetail?.setImageDrawable(
                                 BitmapDrawable(this@MainActivity.resources, newBitmap)
                             )
                             return@LabGlideListener true
                         }
                         if (app.appTitle == "WIP") {
-                            viewBinding.ivItemDetail?.setImageDrawable(
+                            binding.ivItemDetail?.setImageDrawable(
                                 ContextCompat.getDrawable(
                                     this@MainActivity,
                                     R.drawable.logo_testing
                                 )
                             )
-                            viewBinding.itemDetailBtn?.visibility = View.GONE
+                            binding.itemDetailBtn?.visibility = View.GONE
                             return@LabGlideListener true
                         }
 
@@ -432,17 +460,54 @@ class MainActivity : AppCompatActivity(),
         }
         if (scrollRange + verticalOffset == 0) {
             // Toolbar is collapsed
-            viewBinding.includeToolbarLayout?.collapsingToolbar?.title =
+            binding.includeToolbarLayout?.collapsingToolbar?.title =
                 this@MainActivity.resources.getString(R.string.app_name)
             menu?.let { menu -> UIManager.showMenuButtons(menu) }
             isShow = true
         } else if (isShow) {
             // Toolbar is expanded
-            viewBinding.includeToolbarLayout?.collapsingToolbar?.title = " "
+            binding.includeToolbarLayout?.collapsingToolbar?.title = " "
             menu?.let { menu -> UIManager.hideMenuButtons(menu) }
             isShow = false
         }
     }
+
+    /////////// OnClick Listener ///////////
+    override fun onClick(view: View?) {
+        when (view?.id) {
+
+            /*R.id.iv_internet_status -> {
+                Timber.e("Internet wifi icon status clicked")
+            }
+
+            R.id.iv_location_status -> {
+                Timber.e("Location icon status clicked")
+            }
+
+            R.id.iv_linear_layout -> toggleRecyclerViewLinearLayout()
+            R.id.iv_staggered_layout -> toggleRecyclerViewStaggeredLayout()*/
+        }
+    }
+
+    /////////// Search View Listener ///////////
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if (!query.isNullOrEmpty()) {
+            Timber.d(query.toString())
+            UIManager.hideKeyboard(this@MainActivity, binding.root)
+        }
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        Timber.d(newText.toString())
+        /*(if (!isStaggeredLayout) adapter as MainAdapter else adapter as MainStaggeredAdapter).filter
+            ?.filter(
+                newText.toString()
+            )*/
+        (adapter as MainActivityAdapter).filter?.filter(newText.toString())
+        return true
+    }
+
 
     override fun onAppItemCLickListener(view: View, item: App, position: Int) {
         Timber.d("Clicked item : $item, at position : $position")
@@ -459,7 +524,7 @@ class MainActivity : AppCompatActivity(),
             mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
         } else {
             showItemDetail(item)
-            viewBinding.itemDetailBtn?.setOnClickListener {
+            binding.itemDetailBtn?.setOnClickListener {
                 mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
             }
         }
