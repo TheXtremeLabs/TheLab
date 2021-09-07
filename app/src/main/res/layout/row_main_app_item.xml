@@ -55,8 +55,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    bind:imageResource="@{app.appDrawableIcon ?? @drawable/ic_warning}"
                     android:scaleType="fitCenter"
+                    bind:error="@{@drawable/ic_warning}"
+                    bind:imageResource="@{app.appDrawableIcon ?? @drawable/ic_warning}"
                     tools:srcCompat="@drawable/ic_fingerprint" />
 
             </com.google.android.material.card.MaterialCardView>
