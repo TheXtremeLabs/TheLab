@@ -6,6 +6,8 @@ import com.riders.thelab.core.exception.LabApplicationInitializedException
 
 object AppBuilder {
 
+    private var id: Long = -1L
+
     // From Packages
     private var name: String? = null
     private var drawableIcon: Drawable? = null
@@ -43,6 +45,11 @@ object AppBuilder {
 
 
     // From activities
+    fun withId(activityID: Long): AppBuilder {
+        this.id = activityID
+        return this
+    }
+
     fun withActivityTitle(activityTitle: String): AppBuilder {
         this.title = activityTitle
         return this
@@ -76,19 +83,26 @@ object AppBuilder {
                 }
             }
         }
-
-        title?.let { activityTitle: String ->
-            icon?.let { activityIcon ->
-                description?.let { activityDescription ->
-                    activity?.let { targetActivity ->
-                        return App(activityTitle, activityDescription, activityIcon, targetActivity)
+        id.let {
+            title?.let { activityTitle: String ->
+                icon?.let { activityIcon ->
+                    description?.let { activityDescription ->
+                        activity?.let { targetActivity ->
+                            return App(
+                                id,
+                                activityTitle,
+                                activityDescription,
+                                activityIcon,
+                                targetActivity
+                            )
+                        }
                     }
                 }
             }
         }
 
         if (title == "WIP" && activity == null)
-            return App(title!!, description!!, icon!!, null)
+            return App(id, title!!, description!!, icon!!, null)
 
         throw LabApplicationInitializedException()
     }
