@@ -22,6 +22,7 @@ import com.riders.thelab.data.remote.ApiImpl
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.data.remote.dto.weather.City
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
+import kotlinx.coroutines.flow.Flow
 
 
 import okhttp3.ResponseBody
@@ -195,7 +196,7 @@ class RepositoryImpl @Inject constructor(
         mDbImpl.deleteAll()
     }
 
-    override suspend fun getStorageReference(activity: Activity): StorageReference {
+    override suspend fun getStorageReference(activity: Activity): StorageReference? {
         return mApiImpl.getStorageReference(activity)
     }
 

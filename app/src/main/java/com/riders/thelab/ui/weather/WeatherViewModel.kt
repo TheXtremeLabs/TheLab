@@ -11,7 +11,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.rxjava3.EmptyResultSetException
 import androidx.work.*
 import com.riders.thelab.core.utils.*
 import com.riders.thelab.data.IRepository
@@ -151,13 +150,13 @@ class WeatherViewModel @Inject constructor(
                 } catch (throwable: Exception) {
                     Timber.e("Error while fetching records in database")
 
-                    if (throwable is EmptyResultSetException) {
-                        Timber.e(throwable)
-                        Timber.e("weatherData is empty. No Record found in database")
-                        isWeatherData.value = false
-                    } else {
-                        Timber.e(throwable)
-                    }
+//                    if (throwable is EmptyResultSetException) {
+//                        Timber.e(throwable)
+//                        Timber.e("weatherData is empty. No Record found in database")
+//                        isWeatherData.value = false
+//                    } else {
+                    Timber.e(throwable)
+//                    }
                 }
             }
         }
