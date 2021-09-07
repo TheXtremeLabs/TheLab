@@ -1,26 +1,44 @@
 package com.riders.thelab.ui.mainactivity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.RowMainAppItemBinding
+import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivityAdapter constructor(
     private val mContext: Context,
     private val mAppList: List<App>,
     private val mListener: MainActivityAppClickListener
-) : RecyclerView.Adapter<MainActivityViewHolder>() {
+) : RecyclerView.Adapter<MainActivityViewHolder>(), Filterable {
+
+    private var appFilteredList: MutableList<App>? = mAppList as MutableList<App>
 
     // Allows to remember the last item shown on screen
     private var lastPosition = -1
 
+    override fun getItemId(position: Int): Long {
+        return appFilteredList
+            ?.get(position)
+            ?.id!!
+    }
+
     override fun getItemCount(): Int {
-        return mAppList.size
+        return if (null != appFilteredList) {
+            appFilteredList!!.size
+        } else {
+            0
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainActivityViewHolder {
@@ -29,8 +47,8 @@ class MainActivityAdapter constructor(
         return MainActivityViewHolder(mContext, viewBinding)
     }
 
-    override fun onBindViewHolder(holder: MainActivityViewHolder, position: Int) {
-        val item = mAppList[position]
+    override fun onBindViewHolder(holder: MainActivityViewHolder, @SuppressLint("RecyclerView") position: Int) {
+        val item = appFilteredList!![position]
 
         holder.viewBinding.app = item
         holder.viewBinding.executePendingBindings()
@@ -92,4 +110,49 @@ class MainActivityAdapter constructor(
                 mListener.onAppItemCLickListener(view!!, item, holder.adapterPosition)
             }
     }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(charSequence: CharSequence): FilterResults {
+                Timber.d("performFiltering()")
+                val charString = charSequence.toString()
+                if (charString.isEmpty()) {
+                    Timber.d("charString.isEmpty()")
+                    appFilteredList = mAppList as MutableList<App>
+                } else {
+                    val filteredList: MutableList<App> = ArrayList()
+
+                    for (row in mAppList) {
+                        Timber.d("row : %s", row.toString())
+
+                        // name match condition. this might differ depending on your requirement
+                        // here we are looking for name or phone number match
+                        if (row.appName.lowercase(Locale.ROOT)
+                                .contains(charString.lowercase(Locale.ROOT))
+                            || row.appTitle.lowercase(Locale.ROOT)
+                                .contains(charString.lowercase(Locale.ROOT))
+                        ) {
+                            filteredList.add(row)
+                        }
+                    }
+
+                    appFilteredList = filteredList
+                    Timber.d("contactListFiltered size : %s", appFilteredList!!.size)
+                }
+                val filterResults = FilterResults()
+                filterResults.values = appFilteredList
+                return filterResults
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
+                Timber.d("publishResults()")
+                appFilteredList = filterResults.values as MutableList<App>?
+
+                // refresh the list with filtered data
+                notifyDataSetChanged()
+            }
+        }
+    }
+
 }

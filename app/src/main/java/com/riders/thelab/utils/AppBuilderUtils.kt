@@ -43,6 +43,7 @@ class AppBuilderUtils {
             // Colors
             val colors =
                 AppBuilder
+                    .withId(0L)
                     .withActivityTitle("Colors")
                     .withActivityDescription("Change color programmatically...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.logo_colors))
@@ -53,6 +54,7 @@ class AppBuilderUtils {
             //Biometric
             val biometric =
                 AppBuilder
+                    .withId(1L)
                     .withActivityTitle("Biometric")
                     .withActivityDescription("Check biometric hardware and test it...")
                     .withActivityIcon(
@@ -68,6 +70,7 @@ class AppBuilderUtils {
             //Recycler
             val recycler =
                 AppBuilder
+                    .withId(2L)
                     .withActivityTitle("Recycler")
                     .withActivityDescription("Recycler Basics and best practices...")
                     .withActivityIcon(
@@ -83,6 +86,7 @@ class AppBuilderUtils {
             //Tabs
             val tabs =
                 AppBuilder
+                    .withId(3L)
                     .withActivityTitle("Tabs")
                     .withActivityDescription("ViewPager Fragments Tabs...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_tab))
@@ -93,6 +97,7 @@ class AppBuilderUtils {
             //Transitions
             val transitions =
                 AppBuilder
+                    .withId(4L)
                     .withActivityTitle("Transitions")
                     .withActivityDescription("Start a new activity with awesome animations...")
                     .withActivityIcon(
@@ -108,6 +113,7 @@ class AppBuilderUtils {
             //Floating Labels
             val floatingsLabels =
                 AppBuilder
+                    .withId(5L)
                     .withActivityTitle("Floating Labels")
                     .withActivityDescription("Floating Labels Form...")
                     .withActivityIcon(
@@ -123,6 +129,7 @@ class AppBuilderUtils {
             //Contact List
             val contactList =
                 AppBuilder
+                    .withId(6L)
                     .withActivityTitle("Contact List")
                     .withActivityDescription("Fetch contacts from database, add one and more...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_contacts))
@@ -133,6 +140,7 @@ class AppBuilderUtils {
             //Location On Maps
             val locationOnMaps =
                 AppBuilder
+                    .withId(7L)
                     .withActivityTitle("Location On Maps")
                     .withActivityDescription("Display User location on map...")
                     .withActivityIcon(
@@ -148,6 +156,7 @@ class AppBuilderUtils {
             //Schedule Job
             val scheduleJob =
                 AppBuilder
+                    .withId(8L)
                     .withActivityTitle("Schedule Job")
                     .withActivityDescription("Own alarm to remind user...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_schedule))
@@ -158,6 +167,7 @@ class AppBuilderUtils {
             //Devices Information
             val deviceInformation =
                 AppBuilder
+                    .withId(9L)
                     .withActivityTitle("Devices Information")
                     .withActivityDescription("Display device info...")
                     .withActivityIcon(
@@ -173,6 +183,7 @@ class AppBuilderUtils {
             // Palette
             val palette =
                 AppBuilder
+                    .withId(10L)
                     .withActivityTitle("Palette")
                     .withActivityDescription("Get different color from an image...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_palette))
@@ -183,6 +194,7 @@ class AppBuilderUtils {
             // Filter ListView
             val filterListView =
                 AppBuilder
+                    .withId(11L)
                     .withActivityTitle("Filter ListView")
                     .withActivityDescription("ListView with filter...")
                     .withActivityIcon(
@@ -198,6 +210,7 @@ class AppBuilderUtils {
             // Multi Pane
             val multiPane =
                 AppBuilder
+                    .withId(12L)
                     .withActivityTitle("Multi Pane")
                     .withActivityDescription("Display content on split screen...")
                     .withActivityIcon(
@@ -213,6 +226,7 @@ class AppBuilderUtils {
             //Speech to Text
             val speechToText =
                 AppBuilder
+                    .withId(13L)
                     .withActivityTitle("My Speech To Text")
                     .withActivityDescription("Own speech to text implementation...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_mic))
@@ -223,6 +237,7 @@ class AppBuilderUtils {
             // Built-In Web View
             val builtInWebView =
                 AppBuilder
+                    .withId(14L)
                     .withActivityTitle("Built-in Web View")
                     .withActivityDescription("Display web view in activity directly...")
                     .withActivityIcon(
@@ -238,6 +253,7 @@ class AppBuilderUtils {
             // Youtube
             val youtubeLike =
                 AppBuilder
+                    .withId(15L)
                     .withActivityTitle("Youtube")
                     .withActivityDescription("Youtube look like...")
                     .withActivityIcon(
@@ -254,6 +270,7 @@ class AppBuilderUtils {
             // Weather
             val weather =
                 AppBuilder
+                    .withId(16L)
                     .withActivityTitle("Weather")
                     .withActivityDescription("Current weather forecast in your city...")
                     .withActivityIcon(
@@ -269,6 +286,7 @@ class AppBuilderUtils {
             // Floating Widgets
             val floatingWidgets =
                 AppBuilder
+                    .withId(17L)
                     .withActivityTitle("Floating Widget")
                     .withActivityDescription("Create a floating widget that you can move around on the screen...")
                     .withActivityIcon(
@@ -284,6 +302,7 @@ class AppBuilderUtils {
             // Custom Toast
             val customToast =
                 AppBuilder
+                    .withId(18L)
                     .withActivityTitle("Custom Toast")
                     .withActivityDescription("Custom Toast Layout...")
                     .withActivityIcon(
@@ -299,6 +318,7 @@ class AppBuilderUtils {
             // Vector Drawables
             val vectorDrawables =
                 AppBuilder
+                    .withId(19L)
                     .withActivityTitle("Vector Drawables")
                     .withActivityDescription("Animated, scale, transform vector drawables...")
                     .withActivityIcon(
@@ -314,6 +334,7 @@ class AppBuilderUtils {
             // Spring
             val spring =
                 AppBuilder
+                    .withId(20L)
                     .withActivityTitle("Spring")
                     .withActivityDescription("Physics-based motion is driven by force. Spring force is one such force that guides interactivity and motion....")
                     .withActivityIcon(
@@ -329,6 +350,7 @@ class AppBuilderUtils {
             // Kat
             val kat =
                 AppBuilder
+                    .withId(21L)
                     .withActivityTitle("Chat")
                     .withActivityDescription("Realtime chat using firebase realtime database features")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_k_at))
@@ -340,6 +362,7 @@ class AppBuilderUtils {
             // SongPlayer
             val songPlayer =
                 AppBuilder
+                    .withId(22L)
                     .withActivityTitle("Music Player")
                     .withActivityDescription("Play music that is stored on your phone (Live Streaming wip)...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_music))
@@ -350,6 +373,7 @@ class AppBuilderUtils {
             // Google
             val googleSignIn =
                 AppBuilder
+                    .withId(23L)
                     .withActivityTitle("Google Sign In")
                     .withActivityDescription("Exploring Google Sign In Api...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.googleg_color))
@@ -359,6 +383,7 @@ class AppBuilderUtils {
 
             val googleDrive =
                 AppBuilder
+                    .withId(24L)
                     .withActivityTitle("Google Drive API")
                     .withActivityDescription("Exploring Google Drive Api...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.googleg_color))
@@ -369,6 +394,7 @@ class AppBuilderUtils {
             // Wip
             val wip =
                 AppBuilder
+                    .withId(25L)
                     .withActivityTitle("WIP")
                     .withActivityDescription("Coming soon...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_warning))
