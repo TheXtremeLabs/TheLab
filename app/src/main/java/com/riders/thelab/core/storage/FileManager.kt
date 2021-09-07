@@ -13,7 +13,7 @@ import androidx.core.os.EnvironmentCompat
 import java.io.File
 
 
-class FileManager private constructor(){
+class FileManager private constructor() {
     companion object {
 
         /**
@@ -21,9 +21,13 @@ class FileManager private constructor(){
          *
          * @param includePrimaryExternalStorage set to true if you wish to also include the path of the primary external storage
          */
-        fun getSdCardPaths(context: Context, includePrimaryExternalStorage: Boolean): List<String>? {
+        fun getSdCardPaths(
+            context: Context,
+            includePrimaryExternalStorage: Boolean
+        ): List<String>? {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
+                val storageManager =
+                    context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
                 val storageVolumes = storageManager.storageVolumes
                 if (!storageVolumes.isNullOrEmpty()) {
                     val primaryVolume = storageManager.primaryStorageVolume
@@ -66,7 +70,8 @@ class FileManager private constructor(){
 
         fun getRootOfInnerSdCardFolder(context: Context, inputFile: File): String {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
+                val storageManager =
+                    context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
                 storageManager.getStorageVolume(inputFile)?.let {
                     val result = getVolumePath(it)
                     if (result != null)

@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.riders.thelab.core.utils.LabCompatibilityManager
-import com.riders.thelab.core.utils.LabGlideUtils
-import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.RowMainAppItemBinding
 

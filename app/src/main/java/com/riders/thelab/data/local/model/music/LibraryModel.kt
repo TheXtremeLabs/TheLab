@@ -1,9 +1,9 @@
 package com.riders.thelab.data.local.model.music
 
 import android.os.Parcelable
+import com.riders.thelab.data.local.bean.ReleaseType
 import com.riders.thelab.data.remote.dto.music.Artist
 import com.riders.thelab.data.remote.dto.music.Release
-import com.riders.thelab.data.local.bean.ReleaseType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

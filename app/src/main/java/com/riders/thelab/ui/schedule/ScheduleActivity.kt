@@ -8,15 +8,14 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.riders.thelab.R
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver
 import com.riders.thelab.core.bus.AlarmEvent
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.core.views.toast.ToastTypeEnum
 import com.riders.thelab.databinding.ActivityScheduleBinding
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -41,22 +40,18 @@ class ScheduleActivity : AppCompatActivity() {
 
                 val millsFuture = (countDown * 1000).toLong()
 
-                Completable.complete()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        {
-                            object : CountDownTimer(millsFuture, 1000) {
-                                override fun onTick(millisUntilFinished: Long) {
-                                    updateContDownUI(millisUntilFinished / 1000)
-                                }
+                CoroutineScope(Dispatchers.Main).launch {
+                    object : CountDownTimer(millsFuture, 1000) {
+                        override fun onTick(millisUntilFinished: Long) {
+                            updateContDownUI(millisUntilFinished / 1000)
+                        }
 
-                                override fun onFinish() {
-                                    Timber.d("Count down finished")
-                                }
-                            }.start()
-                        },
-                        { t: Throwable? -> Timber.e(t) })
+                        override fun onFinish() {
+                            Timber.d("Count down finished")
+                        }
+                    }.start()
+                }
+
             })
 
         viewBinding.button.setOnClickListener {

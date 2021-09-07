@@ -3,7 +3,7 @@ package com.riders.thelab.data.remote.api
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.data.remote.dto.weather.Weather
 import com.riders.thelab.data.remote.dto.weather.WeatherResponse
-import io.reactivex.rxjava3.core.Single
+
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -37,7 +37,7 @@ interface WeatherApiService {
     /*@GET("/data/2.5/weather?")
     Call<WeatherResponse> getCurrentWeatherByCityName(@Query("q") String cityName);*/
     @GET("/data/2.5/weather?")
-    fun getCurrentWeatherByCityName(@Query("q") cityName: String): Single<WeatherResponse>
+    suspend fun getCurrentWeatherByCityName(@Query("q") cityName: String): WeatherResponse
 
     /**
      * We recommend to call API by city ID to get unambiguous result for your city.
@@ -73,10 +73,10 @@ interface WeatherApiService {
             @Query("lat") int lat,
             @Query("lon") int lon);*/
     @GET("/data/2.5/weather?")
-    fun getCurrentWeatherByGeographicCoordinates(
+    suspend fun getCurrentWeatherByGeographicCoordinates(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double
-    ): Single<WeatherResponse>
+    ): WeatherResponse
 
 
     /**
@@ -101,8 +101,8 @@ interface WeatherApiService {
      * @return
      */
     @GET("/data/2.5/onecall?")
-    fun getCurrentWeatherWithNewOneCallAPI(
+    suspend fun getCurrentWeatherWithNewOneCallAPI(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double
-    ): Single<OneCallWeatherResponse>
+    ): OneCallWeatherResponse
 }

@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.weather
 
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
@@ -9,24 +10,25 @@ import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.room.rxjava3.EmptyResultSetException
+import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.riders.thelab.core.utils.*
-import com.riders.thelab.data.RepositoryImpl
+import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.model.weather.WeatherData
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    val repositoryImpl: RepositoryImpl
+    private val repositoryImpl: IRepository
 ) : ViewModel() {
 
     companion object {
@@ -36,32 +38,17 @@ class WeatherViewModel @Inject constructor(
         private const val WORK_RESULT = "work_result"
     }
 
-    private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
+    private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
-    private var downloadStatus: MutableLiveData<String> = MutableLiveData()
-    private var workerStatus: MutableLiveData<WorkInfo.State> = MutableLiveData()
-    private var downloadDone: MutableLiveData<Boolean> = MutableLiveData()
-    private var isWeatherData: MutableLiveData<Boolean> = MutableLiveData()
-    private var weatherCursor: MutableLiveData<Cursor> = MutableLiveData()
-    private var oneCallWeather: MutableLiveData<OneCallWeatherResponse> = MutableLiveData()
+    private val downloadStatus: MutableLiveData<String> = MutableLiveData()
+    private val workerStatus: MutableLiveData<WorkInfo.State> = MutableLiveData()
+    private val downloadDone: MutableLiveData<Boolean> = MutableLiveData()
+    private val isWeatherData: MutableLiveData<Boolean> = MutableLiveData()
+    private val weatherCursor: MutableLiveData<Cursor> = MutableLiveData()
+    private val oneCallWeather: MutableLiveData<OneCallWeatherResponse> = MutableLiveData()
 
     @SuppressLint("StaticFieldLeak")
     private lateinit var labLocationManager: LabLocationManager
-
-    /* RxJava / RxAndroid */
-
-    // Disposable is used to dispose the subscription when an Observer
-    // no longer wants to listen to Observable
-    // To prevent memory leak, for example when a task is done
-    // and the activity/fragment is already destroyed,
-    // the observer try to update the activity/fragment's UI that has been destroyed
-
-    // CompositeDisposable can maintain list of subscriptions in  pool
-    // and can dispose them all at once
-    // Disposing them in Destroy one bye one is a tedious task and it can be error
-    // prone as you might forgot to dispose.
-    // In this case we can use CompositeDisposable.
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
 
     fun getProgressBarVisibility(): LiveData<Boolean> {
@@ -135,65 +122,68 @@ class WeatherViewModel @Inject constructor(
         } else {
 
             showLoader()
-            // First step
-            // Call repository to check if there is data in database
-            val disposable: Disposable =
-                repositoryImpl
-                    .getWeatherData()
-                    .subscribe(
-                        { weatherData ->
-                            if (!weatherData.isWeatherData) {
 
-                                // In this case record's return is null
-                                // then we have to call our Worker to perform
-                                // the web service call to retrieve data from api
-                                Timber.e("List is empty. No Record found in database")
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    // First step
+                    // Call repository to check if there is data in database
+                    val weatherData = repositoryImpl.getWeatherData()
 
-                                // Only for debug purposes
-                                // Use worker to make long job operation in background
-                                Timber.e("Use worker to make long job operation in background...")
-                                isWeatherData.value = false
-                            } else {
-                                // In this case data already exists in database
-                                // Load data then let the the user perform his request
-                                Timber.d("Record found in database. Continue...")
-                                hideLoader()
-                                isWeatherData.value = true
-                            }
-                        },
-                        { throwable ->
-                            Timber.e("Error while fetching records in database")
+                    if (!weatherData.isWeatherData) {
 
-                            if (throwable is EmptyResultSetException) {
-                                Timber.e(throwable)
-                                Timber.e("weatherData is empty. No Record found in database")
-                                isWeatherData.value = false
-                            } else {
-                                Timber.e(throwable)
-                            }
-                        })
+                        // In this case record's return is null
+                        // then we have to call our Worker to perform
+                        // the web service call to retrieve data from api
+                        Timber.e("List is empty. No Record found in database")
 
-            compositeDisposable.add(disposable)
+                        // Only for debug purposes
+                        // Use worker to make long job operation in background
+                        Timber.e("Use worker to make long job operation in background...")
+                        isWeatherData.value = false
+                    } else {
+                        // In this case data already exists in database
+                        // Load data then let the the user perform his request
+                        Timber.d("Record found in database. Continue...")
+                        hideLoader()
+                        isWeatherData.value = true
+                    }
+                } catch (throwable: Exception) {
+                    Timber.e("Error while fetching records in database")
+
+//                    if (throwable is EmptyResultSetException) {
+//                        Timber.e(throwable)
+//                        Timber.e("weatherData is empty. No Record found in database")
+//                        isWeatherData.value = false
+//                    } else {
+                    Timber.e(throwable)
+//                    }
+                }
+            }
         }
     }
 
 
     fun fetchWeather(location: Location) {
         Timber.d("fetchWeather()")
-        val disposable: Disposable =
-            repositoryImpl
-                .getWeatherOneCallAPI(location)
-                .subscribe(
-                    { weatherResponse ->
-                        hideLoader()
-                        oneCallWeather.value = weatherResponse
-                    },
-                    { throwable ->
-                        Timber.e(throwable)
-                        hideLoader()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val weatherResponse = repositoryImpl.getWeatherOneCallAPI(location)
+
+                withContext(Dispatchers.Main) {
+                    hideLoader()
+                    weatherResponse?.let {
+                        oneCallWeather.value = it
                     }
-                )
-        compositeDisposable.add(disposable)
+                }
+            } catch (throwable: Exception) {
+
+                Timber.e(throwable)
+                withContext(Dispatchers.Main) {
+
+                    hideLoader()
+                }
+            }
+        }
     }
 
 
@@ -257,12 +247,10 @@ class WeatherViewModel @Inject constructor(
                         }
                         WorkInfo.State.SUCCEEDED -> {
 
-                            val disposable: Disposable =
-                                repositoryImpl
-                                    .insertWeatherData(WeatherData(true))
-                                    .subscribe()
-
-                            compositeDisposable.add(disposable)
+                            // Save data in database
+                            viewModelScope.launch(Dispatchers.IO) {
+                                repositoryImpl.insertWeatherData(WeatherData(true))
+                            }
 
                             hideLoader()
                             downloadDone.value = true
@@ -292,12 +280,7 @@ class WeatherViewModel @Inject constructor(
     }
 
     fun clearBackgroundResources(activity: WeatherActivity) {
-        clearDisposables()
         cancelWorker(activity)
-    }
-
-    fun clearDisposables() {
-        compositeDisposable.clear()
     }
 
     private fun cancelWorker(activity: WeatherActivity) {

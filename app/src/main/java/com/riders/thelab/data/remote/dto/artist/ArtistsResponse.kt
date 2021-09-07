@@ -5,6 +5,7 @@ import com.squareup.moshi.ToJson
 
 class ArtistsResponse {
     private val artists: List<Artist>? = null
+
     @FromJson
     fun artistsFromJson(artistsEventJson: List<Artist>): List<Artist> {
         return artistsEventJson

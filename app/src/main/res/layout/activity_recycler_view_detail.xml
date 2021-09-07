@@ -97,7 +97,7 @@
                         android:layout_marginLeft="@dimen/spacing_large"
                         android:layout_marginTop="@dimen/spacing_large"
                         android:layout_marginRight="@dimen/spacing_large"
-                        android:text="@{!TextUtils.isEmpty(artist.secondName) ? `artist.artistName , artist.secondName` : artist.artistName}"
+                        android:text='@{!TextUtils.isEmpty(artist.secondName) ? artist.artistName + `,` + artist.secondName : artist.artistName}'
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="@color/white"
                         tools:text="The Shooter" />

@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.riders.thelab.R
 import com.riders.thelab.databinding.ActivityVectorDrawablesBinding
 
 class VectorDrawablesActivity : AppCompatActivity() {
