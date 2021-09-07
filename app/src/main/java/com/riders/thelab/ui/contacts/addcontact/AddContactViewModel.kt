@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddContactViewModel @Inject constructor(
-    val repositoryImpl: IRepository
+    private val repositoryImpl: IRepository
 ) : ViewModel() {
 
     private val addContact: MutableLiveData<Boolean> = MutableLiveData()

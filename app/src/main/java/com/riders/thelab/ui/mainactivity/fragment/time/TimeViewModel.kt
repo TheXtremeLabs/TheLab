@@ -23,7 +23,7 @@ class TimeViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
 
-    private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
+    private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
     private val imagesFetchedDone: MutableLiveData<Boolean> = MutableLiveData()
     private val imagesFetchedFailed: MutableLiveData<Boolean> = MutableLiveData()
     private val imageUrl: MutableLiveData<String> = MutableLiveData()

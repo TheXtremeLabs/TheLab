@@ -28,10 +28,10 @@ class WeatherViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
 
-    var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
+    private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
 
-    var weather: MutableLiveData<CityWeather> = MutableLiveData()
-    var weatherFailed: MutableLiveData<Boolean> = MutableLiveData()
+    private val weather: MutableLiveData<CityWeather> = MutableLiveData()
+    private val weatherFailed: MutableLiveData<Boolean> = MutableLiveData()
 
     fun getProgressBarVisibility(): LiveData<Boolean> {
         return progressVisibility

@@ -23,7 +23,6 @@ import com.riders.thelab.data.remote.dto.artist.Artist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -32,15 +31,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecyclerViewModel @Inject constructor(
-    val repository: IRepository
+    private val repository: IRepository
 ) : ViewModel() {
 
-    private var JSONURLFetched: MutableLiveData<String> = MutableLiveData()
-    private var JSONURLError: MutableLiveData<Boolean> = MutableLiveData()
-    private var artistsThumbnails: MutableLiveData<List<String>> = MutableLiveData()
-    private var artistsThumbnailsError: MutableLiveData<Boolean> = MutableLiveData()
-    private var artists: MutableLiveData<List<Artist>> = MutableLiveData()
-    private var artistsError: MutableLiveData<Boolean> = MutableLiveData()
+    private val JSONURLFetched: MutableLiveData<String> = MutableLiveData()
+    private val JSONURLError: MutableLiveData<Boolean> = MutableLiveData()
+    private val artistsThumbnails: MutableLiveData<List<String>> = MutableLiveData()
+    private val artistsThumbnailsError: MutableLiveData<Boolean> = MutableLiveData()
+    private val artists: MutableLiveData<List<Artist>> = MutableLiveData()
+    private val artistsError: MutableLiveData<Boolean> = MutableLiveData()
 
 
     fun getJSONURLFetched(): LiveData<String> {
@@ -71,7 +70,7 @@ class RecyclerViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
 
-                var storageReference: StorageReference?= repository.getStorageReference(activity)
+                var storageReference: StorageReference? = repository.getStorageReference(activity)
 
                 // Create a child reference
                 // imagesRef now points to "images"
@@ -113,7 +112,7 @@ class RecyclerViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
 
             try {
-                var storageReference: StorageReference? =repository.getStorageReference(activity)
+                var storageReference: StorageReference? = repository.getStorageReference(activity)
 
                 Timber.d("signInAnonymously:success")
 

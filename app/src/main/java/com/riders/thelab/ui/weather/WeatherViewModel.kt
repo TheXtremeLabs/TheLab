@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    val repositoryImpl: IRepository
+    private val repositoryImpl: IRepository
 ) : ViewModel() {
 
     companion object {
@@ -38,14 +38,14 @@ class WeatherViewModel @Inject constructor(
         private const val WORK_RESULT = "work_result"
     }
 
-    private var progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
+    private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
-    private var downloadStatus: MutableLiveData<String> = MutableLiveData()
-    private var workerStatus: MutableLiveData<WorkInfo.State> = MutableLiveData()
-    private var downloadDone: MutableLiveData<Boolean> = MutableLiveData()
-    private var isWeatherData: MutableLiveData<Boolean> = MutableLiveData()
-    private var weatherCursor: MutableLiveData<Cursor> = MutableLiveData()
-    private var oneCallWeather: MutableLiveData<OneCallWeatherResponse> = MutableLiveData()
+    private val downloadStatus: MutableLiveData<String> = MutableLiveData()
+    private val workerStatus: MutableLiveData<WorkInfo.State> = MutableLiveData()
+    private val downloadDone: MutableLiveData<Boolean> = MutableLiveData()
+    private val isWeatherData: MutableLiveData<Boolean> = MutableLiveData()
+    private val weatherCursor: MutableLiveData<Cursor> = MutableLiveData()
+    private val oneCallWeather: MutableLiveData<OneCallWeatherResponse> = MutableLiveData()
 
     @SuppressLint("StaticFieldLeak")
     private lateinit var labLocationManager: LabLocationManager
