@@ -73,4 +73,13 @@
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
 
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"
+        app:defaultQueryHint="Search"
+        app:iconifiedByDefault="true"
+        app:queryHint="Look for an app ..."
+        app:voiceIcon="@drawable/ic_mic" />
 </com.google.android.material.appbar.AppBarLayout>
