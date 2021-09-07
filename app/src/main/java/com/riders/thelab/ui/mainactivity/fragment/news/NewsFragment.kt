@@ -110,14 +110,14 @@ class NewsFragment : BaseFragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         if (view != null) {
             when (view.id) {
-               R.id.root_container -> listener!!.onAppItemClickListener(view, item)
+                R.id.root_container -> listener!!.onAppItemClickListener(view, item)
             }
 
         }
     }
 
     override fun onConnected(isConnected: Boolean) {
-
+        // Ignored
     }
 
 }
