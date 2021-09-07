@@ -9,7 +9,7 @@ import kotlinx.parcelize.RawValue
 @Parcelize
 data class App(
     var id: Long,
-    var appName: String, var appDrawableIcon: @RawValue Drawable?,
+    var appName: String, var appDrawableIcon: @RawValue Drawable,
     var appVersion: String, var appPackageName: String,
     var appTitle: String, var appDescription: String,
     var appActivity: Class<out Activity?>?
