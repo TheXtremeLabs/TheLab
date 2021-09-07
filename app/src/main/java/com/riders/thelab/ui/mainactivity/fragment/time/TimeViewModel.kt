@@ -55,7 +55,7 @@ class TimeViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val storageReference = repository.getStorageReference(context)
+                val storageReference: StorageReference? = repository.getStorageReference(context)
 
                 storageReference?.let {
 

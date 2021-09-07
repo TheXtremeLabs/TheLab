@@ -18,6 +18,7 @@ class MultiPaneViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var movies: MutableLiveData<List<Movie>> = MutableLiveData()
+
     fun getMovies(): LiveData<List<Movie>> {
         return movies
     }

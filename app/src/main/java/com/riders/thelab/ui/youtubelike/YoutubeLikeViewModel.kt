@@ -20,6 +20,7 @@ import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -71,17 +72,23 @@ class YoutubeLikeViewModel @Inject constructor(
 
                 val videos = repositoryImpl.getVideos()
                 if (videos.isEmpty()) {
-                    youtubeVideosFailed.value = true
-                    progressVisibility.value = false
-                    youtubeVideos.value = videos
+                    withContext(Dispatchers.Main) {
+                        youtubeVideosFailed.value = true
+                        progressVisibility.value = false
+                        youtubeVideos.value = videos
+                    }
                 } else {
-                    progressVisibility.value = false
-                    youtubeVideos.value = videos
+                    withContext(Dispatchers.Main) {
+                        progressVisibility.value = false
+                        youtubeVideos.value = videos
+                    }
                 }
             } catch (throwable: Exception) {
                 Timber.e(throwable)
-                progressVisibility.value = false
-                youtubeVideosFailed.value = true
+                withContext(Dispatchers.Main) {
+                    progressVisibility.value = false
+                    youtubeVideosFailed.value = true
+                }
 
             }
         }

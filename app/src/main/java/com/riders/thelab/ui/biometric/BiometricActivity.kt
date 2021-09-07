@@ -24,13 +24,15 @@ class BiometricActivity : AppCompatActivity() {
     private lateinit var context: Context
 
     // Views
-    private lateinit var viewBinding: ActivityBiometricBinding
+    private var _viewBinding: ActivityBiometricBinding? = null
+
+    private val binding get() = _viewBinding!!
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityBiometricBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivityBiometricBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         init()
 
@@ -47,6 +49,11 @@ class BiometricActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
+    }
+
 
     ///////////////////////
     //
@@ -59,7 +66,7 @@ class BiometricActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = getString(R.string.activity_title_biometric)
 
-        viewBinding.fingerPrintBtn.setOnClickListener {
+        binding.fingerPrintBtn.setOnClickListener {
             Timber.d("on fingerprint button clicked")
 
             if (!LabDeviceManager.getRxGoldFinger()?.canAuthenticate()!!) {
@@ -80,7 +87,7 @@ class BiometricActivity : AppCompatActivity() {
             showSnackBar(
                 "The device doesn't have finger print hardware", SnackBarType.ALERT,
                 "LEAVE"
-            ) { v: View? -> finish() }
+            ) { finish() }
             return
         }
         Timber.d("Fingerprint hardware ok")
@@ -92,7 +99,7 @@ class BiometricActivity : AppCompatActivity() {
                 "Cannot authenticate",
                 SnackBarType.ALERT,
                 "QUIT"
-            ) { v: View? -> finish() }
+            ) { finish() }
             return
         }
 
@@ -101,16 +108,16 @@ class BiometricActivity : AppCompatActivity() {
             "Fingerprint initialization successfully executed",
             SnackBarType.NORMAL,
             "CONTINUE"
-        ) { v: View? -> Timber.d("User action validate") }
+        ) { Timber.d("User action validate") }
     }
 
-    fun showSnackBar(
+    private fun showSnackBar(
         message: String,
         type: SnackBarType,
         actionText: String,
         listener: View.OnClickListener
     ) {
-        UIManager.showActionInSnackBar(this, viewBinding.root, message, type, actionText, listener)
+        UIManager.showActionInSnackBar(this, binding.root, message, type, actionText, listener)
     }
 
     private fun authenticateWithRX() {

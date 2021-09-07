@@ -13,6 +13,7 @@ import com.riders.thelab.core.utils.LabLocationManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.weather.CityWeather
 import com.riders.thelab.databinding.FragmentWeatherBinding
+import com.riders.thelab.ui.base.BaseFragment
 import com.riders.thelab.ui.weather.WeatherUtils
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
@@ -23,7 +24,7 @@ import java.util.*
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
-class WeatherFragment : Fragment(), LocationListener {
+class WeatherFragment : BaseFragment(), LocationListener {
 
     companion object {
         fun newInstance(): WeatherFragment {
@@ -147,4 +148,8 @@ class WeatherFragment : Fragment(), LocationListener {
     override fun onProviderDisabled(provider: String) {}
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+
+    override fun onConnected(isConnected: Boolean) {
+
+    }
 }

@@ -22,14 +22,17 @@ import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.remote.dto.artist.Artist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class RecyclerViewModel @Inject constructor(
-    val repositoryImpl: IRepository
+    val repository: IRepository
 ) : ViewModel() {
 
     private var JSONURLFetched: MutableLiveData<String> = MutableLiveData()
@@ -67,28 +70,37 @@ class RecyclerViewModel @Inject constructor(
     fun getFirebaseJSONURL(activity: Activity) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val job = repositoryImpl.getStorageReference(activity)
+
+                var storageReference: StorageReference?= repository.getStorageReference(activity)
 
                 // Create a child reference
                 // imagesRef now points to "images"
-                val artistsRef: StorageReference = job?.child("bulk/artists.json")!!
+                storageReference?.let {
+                    val artistsRef: StorageReference = it.child("bulk/artists.json")
 
-                artistsRef
-                    .downloadUrl
-                    .addOnCompleteListener { artistTask: Task<Uri> ->
-                        Timber.d("result : %s", artistTask.result.toString())
-                        val result = artistTask.result.toString()
-                        var url = ""
-                        try {
-                            url = result.replace("%3D", "?")
-                        } catch (ex: Exception) {
-                            ex.printStackTrace()
-                        }
-                        JSONURLFetched.value = url
+                    withContext(Dispatchers.Main) {
+                        artistsRef
+                            .downloadUrl
+                            .addOnCompleteListener { artistTask: Task<Uri> ->
+                                Timber.d("result : %s", artistTask.result.toString())
+                                val result = artistTask.result.toString()
+                                var url = ""
+                                try {
+                                    url = result.replace("%3D", "?")
+                                } catch (ex: Exception) {
+                                    ex.printStackTrace()
+                                }
+
+                                JSONURLFetched.value = url
+                            }
                     }
+                }
+
             } catch (throwable: Exception) {
                 Timber.e(throwable)
-                JSONURLError.value = true
+                withContext(Dispatchers.Main) {
+                    JSONURLError.value = true
+                }
             }
         }
     }
@@ -101,41 +113,49 @@ class RecyclerViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
 
             try {
-                val job = repositoryImpl.getStorageReference(activity)!!
+                var storageReference: StorageReference? =repository.getStorageReference(activity)
+
                 Timber.d("signInAnonymously:success")
 
-                // Create a child reference
-                // imagesRef now points to "images"
-                val imagesRef: StorageReference = job.child("images/artists")
+                storageReference?.let {
+                    // Create a child reference
+                    // imagesRef now points to "images"
+                    val imagesRef: StorageReference = it.child("images/artists")
 
-                imagesRef
-                    .listAll()
-                    .addOnSuccessListener { listResult: ListResult? -> Timber.d("onSuccess()") }
-                    .addOnFailureListener { t: java.lang.Exception? -> Timber.e(t) }
-                    .addOnCompleteListener { taskResult: Task<ListResult> ->
-                        if (!taskResult.isSuccessful) {
-                            Timber.e("error occurred. Please check logs.")
-                        } else {
-                            Timber.d(
-                                "onComplete() - with size of : %d element(s)",
-                                taskResult.result.items.size
-                            )
+                    imagesRef
+                        .listAll()
+                        .addOnSuccessListener { Timber.d("onSuccess()") }
+                        .addOnFailureListener { t: java.lang.Exception? -> Timber.e(t) }
+                        .addOnCompleteListener { taskResult: Task<ListResult> ->
+                            if (!taskResult.isSuccessful) {
+                                Timber.e("error occurred. Please check logs.")
+                            } else {
+                                Timber.d(
+                                    "onComplete() - with size of : %d element(s)",
+                                    taskResult.result.items.size
+                                )
 
-                            viewModelScope.launch {
-                                // links: List<String>
-                                val job = buildArtistsThumbnailsList(taskResult.result.items)
+                                viewModelScope.launch {
+                                    // links: List<String>
+                                    val job = buildArtistsThumbnailsList(taskResult.result.items)
 
-                                if (null == job) {
-                                    artistsThumbnailsError.value = true
-                                } else {
-                                    Timber.d("Links : %s", job.toString())
-                                    if (taskResult.result.items.size == job.size) {
-                                        artistsThumbnails.value = job!!
+                                    if (null == job) {
+                                        withContext(Dispatchers.Main) {
+                                            artistsThumbnailsError.value = true
+                                        }
+                                    } else {
+                                        Timber.d("Links : %s", job.toString())
+                                        if (taskResult.result.items.size == job.size) {
+                                            withContext(Dispatchers.Main) {
+                                                artistsThumbnails.value = job!!
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
+                }
+
             } catch (throwable: Exception) {
                 Timber.e(throwable)
             }
@@ -183,6 +203,7 @@ class RecyclerViewModel @Inject constructor(
                         }
                 }
         }
+        delay(4000)
         return thumbnailsLinks
     }
 
@@ -190,11 +211,16 @@ class RecyclerViewModel @Inject constructor(
         Timber.d("fetchArtists()")
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val job = repositoryImpl.getArtists(urlPath)
-                artists.value = job
+                val job = repository.getArtists(urlPath)
+
+                withContext(Dispatchers.Main) {
+                    artists.value = job
+                }
             } catch (throwable: Exception) {
                 Timber.e(throwable)
-                artistsError.value = true
+                withContext(Dispatchers.Main) {
+                    artistsError.value = true
+                }
             }
         }
     }

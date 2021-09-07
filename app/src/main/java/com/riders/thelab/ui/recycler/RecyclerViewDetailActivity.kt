@@ -12,7 +12,6 @@ import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.databinding.ActivityRecyclerViewDetailBinding
 import timber.log.Timber
-import java.util.*
 
 class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener {
 
@@ -22,7 +21,8 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
         var isShow = false
     }
 
-    private lateinit var viewDetailBinding: ActivityRecyclerViewDetailBinding
+    private var _viewDetailBinding: ActivityRecyclerViewDetailBinding? = null
+    private val binding get() = _viewDetailBinding!!
 
     private lateinit var item: Artist
 
@@ -30,12 +30,17 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewDetailBinding = ActivityRecyclerViewDetailBinding.inflate(layoutInflater)
-        setContentView(viewDetailBinding.root)
+        _viewDetailBinding = ActivityRecyclerViewDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         getBundle()
         initCollapsingToolbar()
         bindData()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewDetailBinding = null
     }
 
 
@@ -52,25 +57,25 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
 
     private fun initCollapsingToolbar() {
 
-        setSupportActionBar(viewDetailBinding.toolbarRecyclerViewDetail)
-        Objects.requireNonNull(supportActionBar)?.setDisplayHomeAsUpEnabled(true)
+        setSupportActionBar(binding.toolbarRecyclerViewDetail)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = item.artistName
-        viewDetailBinding.collapsingToolbarRecyclerViewDetail
+        binding.collapsingToolbarRecyclerViewDetail.title = item.artistName
+        binding.collapsingToolbarRecyclerViewDetail
             .setExpandedTitleColor(ContextCompat.getColor(this, R.color.transparent))
-        viewDetailBinding.appBarLayout.setExpanded(true)
-        viewDetailBinding.appBarLayout.addOnOffsetChangedListener(this)
+        binding.appBarLayout.setExpanded(true)
+        binding.appBarLayout.addOnOffsetChangedListener(this)
     }
 
     /**
      * Display artist value
      */
     private fun bindData() {
-        viewDetailBinding.artist = item
+        binding.artist = item
 
         if (LabCompatibilityManager.isTablet(this)) {
             //Load the background  thumb image
-            viewDetailBinding.ivBackgroundBlurred?.let {
+            binding.ivBackgroundBlurred?.let {
                 UIManager.loadImageBlurred(
                     this,
                     item.urlThumb,
@@ -81,7 +86,7 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
         }
 
         // Display image
-        UIManager.loadImage(this, item.urlThumb, viewDetailBinding.transitionImageView)
+        UIManager.loadImage(this, item.urlThumb, binding.transitionImageView)
 
 
         /*val sb = StringBuilder()
@@ -113,10 +118,10 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
             scrollRange = appBarLayout!!.totalScrollRange
         }
         if (scrollRange + verticalOffset == 0) {
-            viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = item.artistName
+            binding.collapsingToolbarRecyclerViewDetail.title = item.artistName
             isShow = true
         } else if (isShow) {
-            viewDetailBinding.collapsingToolbarRecyclerViewDetail.title = " "
+            binding.collapsingToolbarRecyclerViewDetail.title = " "
             isShow = false
         }
     }

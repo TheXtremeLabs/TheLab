@@ -16,6 +16,7 @@ import com.riders.thelab.data.local.model.weather.CityWeather
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 import timber.log.Timber
@@ -79,14 +80,19 @@ class WeatherViewModel @Inject constructor(
                         cityWeatherDescription
                     )
 
-                    progressVisibility.value = false
-                    weather.value = cityWeather
+                    withContext(Dispatchers.Main) {
+                        progressVisibility.value = false
+                        weather.value = cityWeather
+                    }
                 }
 
             } catch (throwable: Exception) {
                 Timber.e(throwable)
-                progressVisibility.value = false
-                weatherFailed.value = true
+
+                withContext(Dispatchers.Main) {
+                    progressVisibility.value = false
+                    weatherFailed.value = true
+                }
             }
         }
     }
