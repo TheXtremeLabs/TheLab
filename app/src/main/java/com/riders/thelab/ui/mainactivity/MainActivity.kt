@@ -7,6 +7,7 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.location.Location
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -24,7 +25,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.*
 import androidx.transition.TransitionInflater
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
@@ -44,6 +44,7 @@ import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.ActivityMainBinding
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.bottomsheet.BottomSheetFragment
+import com.riders.thelab.ui.mainactivity.fragment.home.HomeFragment
 import com.riders.thelab.ui.mainactivity.fragment.news.NewsFragment
 import com.riders.thelab.ui.mainactivity.fragment.time.TimeFragment
 import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment
@@ -77,27 +78,39 @@ class MainActivity : AppCompatActivity(),
 
     private val mViewModel: MainActivityViewModel by viewModels()
 
-    /**
-     * The pager adapter, which provides the pages to the view pager widget.
-     */
-    private var pagerAdapter: FragmentStateAdapter? = null
-    private var mConnectivityManager: ConnectivityManager? = null
-    private lateinit var networkManager: LabNetworkManagerNewAPI
-
-    private var menu: Menu? = null
-    private var fragmentList: MutableList<Fragment>? = null
-
-    private lateinit var locationReceiver: LocationBroadcastReceiver
-    private lateinit var mGpsUtils: GpsUtils
-    private var isGPS: Boolean = false
-
+    // Toolbar
+    // Collapsing Toolbar
     private var isShow = false
     private var scrollRange = -1
 
+    // Menu
+    private var menu: Menu? = null
+    // ViewPager
+    /**
+     * The pager adapter, which provides the pages to the view pager widget.
+     */
+    private var mViewPagerAdapter: ViewPager2Adapter? = null
+    private var fragmentList: MutableList<Fragment>? = null
 
+    // Location
+    private lateinit var locationReceiver: LocationBroadcastReceiver
+    private lateinit var mGpsUtils: GpsUtils
+    private var isGPS: Boolean = false
+    private var lastKnowLocation: Location? = null
+
+    // Network
+    private var mConnectivityManager: ConnectivityManager? = null
+    private lateinit var networkManager: LabNetworkManagerNewAPI
+
+    // Time
+    private var isTimeUpdatedStarted: Boolean = false
+    private var isConnected: Boolean = true
+
+    // Content
     private var adapter: RecyclerView.Adapter<*>? = null
     private var mFetchedApps: List<App>? = null
     private var isStaggeredLayout: Boolean = false
+
 
     /////////////////////////////////////
     //
@@ -250,6 +263,9 @@ class MainActivity : AppCompatActivity(),
 
                     this.mFetchedApps = appList
 
+                    setupLastFeaturesApps()
+                    initViewPager()
+
                     if (appList.isEmpty()) {
                         Timber.d("App list is empty")
                     } else {
@@ -265,7 +281,7 @@ class MainActivity : AppCompatActivity(),
     private fun initViews() {
         initCollapsingToolbar()
         initToolbar()
-        setupViewPager()
+        //setupViewPager()
         setListeners()
     }
 
@@ -309,39 +325,71 @@ class MainActivity : AppCompatActivity(),
         binding.includeToolbarLayout?.toolbar?.setOnMenuItemClickListener(this)
     }
 
-    private fun setupViewPager() {
+    private fun setupLastFeaturesApps() {
+        Timber.d("setupLastFeaturesApps()")
 
-        // Instantiate a ViewPager2 and a PagerAdapter.
-        fragmentList = ArrayList()
+        val recentAppsNames = arrayOf("Music", "Google", "Weather")
+        val mRecentApps: List<App> = mViewModel.fetchRecentApps(this, recentAppsNames)
 
-        val timeFragment = TimeFragment.newInstance()
-        timeFragment.sharedElementEnterTransition =
-            TransitionInflater.from(this).inflateTransition(R.transition.change_image_transform)
+        fragmentList = mutableListOf()
 
-        // add Fragments in your ViewPagerFragmentAdapter class
-        fragmentList!!.add(timeFragment)
-        fragmentList!!.add(WeatherFragment.newInstance())
-        fragmentList!!.add(NewsFragment.newInstance())
+        fragmentList?.let {
+            it.add(HomeFragment())
+            it.add(NewsFragment.newInstance(mRecentApps[0]))
+            it.add(NewsFragment.newInstance(mRecentApps[1]))
+            it.add(NewsFragment.newInstance(mRecentApps[2]))
+        }
+    }
 
-        pagerAdapter = ViewPager2Adapter(this@MainActivity, fragmentList as ArrayList<Fragment>)
+    private fun initViewPager() {
+        Timber.d("initViewPager()")
 
-        // set Orientation in your ViewPager2
-        binding.includeToolbarLayout?.viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        binding.includeToolbarLayout?.viewPager?.adapter = pagerAdapter
+        fragmentList?.let {
+            // Instantiate a ViewPager2 and a PagerAdapter.
+            mViewPagerAdapter = ViewPager2Adapter(this, it)
+            binding.includeToolbarLayout?.viewPager?.adapter = mViewPagerAdapter
 
-        binding.includeToolbarLayout?.tabLayout?.let { tabLayout ->
-            binding.includeToolbarLayout?.viewPager?.let { viewPager2 ->
-                TabLayoutMediator(tabLayout, viewPager2) { _, _ ->
-                    //Some implementation
-                }.attach()
+            binding.includeToolbarLayout?.viewPager?.registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    val iPage = position + 1
+                    val pages = iPage.toString() + ""
+                    Timber.d(" changeinfopage : $pages")
+                }
+
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                }
+
+                override fun onPageScrollStateChanged(state: Int) {}
+            })
+
+//        binding.contentMainHeader.viewPager2.setOnTouchListener(OnTouchListener { arg0, arg1 -> true })
+            // Ref : https://stackoverflow.com/questions/7814017/is-it-possible-to-disable-scrolling-on-a-viewpager
+            //  binding.contentMainHeader.viewPager2.isUserInputEnabled = false
+
+
+            binding.includeToolbarLayout?.viewPager?.setPageTransformer { page, position ->
+                Timber.d("setPageTransformer()")
+                page.alpha = 0f
+                page.visibility = View.VISIBLE
+
+                // Start Animation for a short period of time
+                page.animate()
+                    .alpha(1f).duration =
+                    page.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
             }
         }
+
     }
 
     private fun setListeners() {
         Timber.d("setListeners()")
-        /*binding.includeToolbarLayout?.ivInternetStatus.setOnClickListener(this)
-        binding.includeToolbarLayout?.ivLocationStatus.setOnClickListener(this)*/
+        binding.includeToolbarLayout?.ivInternetStatus?.setOnClickListener(this)
+        binding.includeToolbarLayout?.ivLocationStatus?.setOnClickListener(this)
         binding.includeToolbarLayout?.searchView?.setOnQueryTextListener(this)
         binding.includeContentLayout?.ivLinearLayout?.setOnClickListener(this)
         binding.includeContentLayout?.ivStaggeredLayout?.setOnClickListener(this)

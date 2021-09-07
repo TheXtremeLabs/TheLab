@@ -70,6 +70,23 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+
+    fun fetchRecentApps(context: Context, recentAppsNames: Array<String>):List<App> {
+        val recentAppList: MutableList<App> = ArrayList()
+
+        val constants = Constants(context)
+
+        // Setup last 3 features added
+        for (element in constants.getActivityList()) {
+            for (item in recentAppsNames) {
+                if (element.appTitle.contains(item))
+                    (recentAppList as ArrayList<App>).add(element)
+            }
+        }
+
+        return recentAppList
+    }
+
     fun launchActivityOrPackage(navigator: Navigator, item: App) {
         if (item.appPackageName.isNotBlank()) {
             Timber.d("launchIntentForPackage(%s)", item.appPackageName)
