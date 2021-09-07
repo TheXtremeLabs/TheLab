@@ -12,12 +12,13 @@ import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.R
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.FragmentNewsBinding
+import com.riders.thelab.ui.base.BaseFragment
 import com.riders.thelab.ui.mainactivity.MainActivityAppClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class NewsFragment : Fragment(), View.OnClickListener {
+class NewsFragment : BaseFragment(), View.OnClickListener {
 
     lateinit var viewBinding: FragmentNewsBinding
 
@@ -143,4 +144,9 @@ class NewsFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
+    override fun onConnected(isConnected: Boolean) {
+
+    }
+
 }

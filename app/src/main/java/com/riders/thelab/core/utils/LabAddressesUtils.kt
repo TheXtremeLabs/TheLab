@@ -3,10 +3,6 @@ package com.riders.thelab.core.utils
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.core.SingleObserver
-import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
@@ -35,29 +31,24 @@ class LabAddressesUtils private constructor() {
         }
 
 
-        fun getRXAddress(
+        suspend fun getRXAddress(
             geoCoder: Geocoder,
             latitude: Double,
             longitude: Double
-        ): Single<List<Address>> {
-            return object : Single<List<Address>>() {
-                override fun subscribeActual(observer: SingleObserver<in List<Address>>) {
-                    var addressList: List<Address> = ArrayList()
-                    try {
-                        addressList = geoCoder.getFromLocation(latitude, longitude, 1)
-                    } catch (exception: Exception) {
-                        Timber.e(exception)
-                    }
-                    if (addressList.isEmpty()) {
-                        observer.onSuccess(addressList)
-                    } else {
-                        observer.onError(Throwable())
-                    }
-                }
+        ): List<Address>? {
+            var addressList: List<Address> = ArrayList()
+            try {
+                addressList = geoCoder.getFromLocation(latitude, longitude, 1)
+            } catch (exception: Exception) {
+                Timber.e(exception)
             }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            return if (addressList.isEmpty()) {
+                null
+            } else {
+                addressList
+            }
         }
+
 
         fun buildAddress(address: Address): String? {
             val finalCity = ""

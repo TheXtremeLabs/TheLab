@@ -16,7 +16,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center" />
-
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,15 +25,19 @@
         android:layout_gravity="center"
         android:background="@color/default_dark">
 
-
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_six_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/iv_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
+            android:elevation="16dp"
             android:fitsSystemWindows="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/the_lab_6_background" />
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_lab_six_round"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/left_guideline"
@@ -43,40 +46,12 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.2" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivThe"
-            android:layout_width="250dp"
-            android:layout_height="160dp"
-            android:alpha="0"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/middle_guideline"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_lab_6_the"
-            app:tint="@color/iron"
-            tools:alpha="1" />
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/middle_guideline"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivLab"
-            android:layout_width="250dp"
-            android:layout_height="160dp"
-            android:alpha="0"
-            android:maxHeight="120dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/middle_guideline"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_lab_6_lab"
-            app:tint="@color/light"
-            tools:alpha="1" />
-
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_app_version"
@@ -101,14 +76,12 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.8" />
 
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/bottom_guideline"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.8" />
-
 
         <!-- ProgressBar -->
         <com.google.android.material.progressindicator.LinearProgressIndicator

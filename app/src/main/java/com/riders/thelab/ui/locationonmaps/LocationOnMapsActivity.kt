@@ -37,14 +37,14 @@ import com.riders.thelab.core.utils.LabLocationUtils
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.bean.MapsEnum
 import com.riders.thelab.databinding.ActivityLocationOnMapsBinding
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.IOException
 import java.text.DateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     android.location.LocationListener {
@@ -236,18 +236,13 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         mMap.setMinZoomPreference(MapsEnum.WORLD.distance)
         mMap.setMaxZoomPreference(MapsEnum.DEFAULT_MAX_ZOOM.distance)
         mMap.moveCamera(CameraUpdateFactory.zoomTo(MapsEnum.WORLD.distance))
-        Completable.complete()
-            .delay(3, TimeUnit.SECONDS)
-            .doOnComplete { this@LocationOnMapsActivity.runOnUiThread { this.setLocationSettings() } }
-            .doOnError { t: Throwable? ->
-                Timber.e(
-                    t
-                )
-            }
-            .doAfterTerminate { this@LocationOnMapsActivity.runOnUiThread { this.hideLoading() } }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(3000)
+            setLocationSettings()
+            delay(800)
+            hideLoading()
+        }
     }
 
     @SuppressLint("MissingPermission", "SetTextI18n")
