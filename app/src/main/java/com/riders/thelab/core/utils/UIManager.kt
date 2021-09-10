@@ -264,7 +264,7 @@ class UIManager private constructor() {
             iconIntRes: Int,
             error: Drawable,
         ) {
-            LabGlideUtils.loadImage(targetImageView, iconIntRes, error)
+            LabGlideUtils.getInstance().loadImage(targetImageView, iconIntRes, error)
         }
 
         //@BindingAdapter("imageUrl", "error", requireAll = false)
@@ -273,7 +273,7 @@ class UIManager private constructor() {
             iconResDrawable: Drawable,
             error: Drawable,
         ) {
-            LabGlideUtils.loadImage(targetImageView, iconResDrawable, error)
+            LabGlideUtils.getInstance().loadImage(targetImageView, iconResDrawable, error)
         }
 
         fun loadImage(
@@ -281,7 +281,7 @@ class UIManager private constructor() {
             iconResDrawable: Any,
             targetImageView: ShapeableImageView
         ) {
-            LabGlideUtils.loadImage(context, iconResDrawable, targetImageView)
+            LabGlideUtils.getInstance().loadImage(context, iconResDrawable, targetImageView)
         }
 
         fun loadImage(
@@ -290,7 +290,7 @@ class UIManager private constructor() {
             targetImageView: ShapeableImageView,
             listener: RequestListener<Drawable>
         ) {
-            LabGlideUtils.loadImage(context, iconResDrawable, targetImageView, listener)
+            LabGlideUtils.getInstance().loadImage(context, iconResDrawable, targetImageView, listener)
         }
 
         /**
@@ -301,7 +301,7 @@ class UIManager private constructor() {
             imageURL: Any,
             targetImageView: ShapeableImageView
         ) {
-            LabGlideUtils.loadImageBlurred(context, imageURL, targetImageView)
+            LabGlideUtils.getInstance().loadImageBlurred(context, imageURL, targetImageView)
         }
 
         /**
