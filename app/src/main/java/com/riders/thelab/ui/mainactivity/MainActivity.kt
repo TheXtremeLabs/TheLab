@@ -251,7 +251,6 @@ class MainActivity : AppCompatActivity(),
         when (item.itemId) {
             R.id.action_connection_settings -> {
                 Timber.e("Internet wifi icon status clicked")
-
                 toggleWifi()
                 return true
             }
@@ -778,6 +777,14 @@ class MainActivity : AppCompatActivity(),
         applyRecycler()
     }
 
+    private fun updateFragmentConnectionStatus(isConnected: Boolean) {
+        if (binding.includeToolbarLayout?.viewPager?.currentItem == 0) {
+            val homeFragment: HomeFragment =
+                mViewPagerAdapter?.getFragment(0) as HomeFragment
+            homeFragment.onConnected(isConnected)
+        }
+    }
+
 
     /////////////////////////////////////
     //
@@ -901,23 +908,22 @@ class MainActivity : AppCompatActivity(),
     override fun onConnected() {
         UIManager.showConnectionStatusInSnackBar(this@MainActivity, true)
         updateToolbarConnectionIcon(true)
+        updateFragmentConnectionStatus(true)
     }
 
     override fun onLostConnection() {
         UIManager.showConnectionStatusInSnackBar(this@MainActivity, false)
         updateToolbarConnectionIcon(false)
+        updateFragmentConnectionStatus(false)
     }
 
     private fun updateToolbarConnectionIcon(isConnected: Boolean) {
         Timber.e("updateToolbarConnectionIcon, is connected : %s", isConnected)
         if (!LabCompatibilityManager.isTablet(this))
-            this.runOnUiThread {
-                menu?.getItem(0)?.icon =
-                    ContextCompat.getDrawable(
-                        this@MainActivity,
-                        if (isConnected) R.drawable.ic_wifi else R.drawable.ic_wifi_off
-                    )
-            }
+            menu?.findItem(R.id.action_connection_settings)?.icon = ContextCompat.getDrawable(
+                this@MainActivity,
+                if (isConnected) R.drawable.ic_wifi else R.drawable.ic_wifi_off
+            )
     }
 
     override fun gpsStatus(isGPSEnable: Boolean) {
