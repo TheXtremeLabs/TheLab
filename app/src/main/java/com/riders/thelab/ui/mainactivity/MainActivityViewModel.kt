@@ -2,16 +2,26 @@ package com.riders.thelab.ui.mainactivity
 
 import android.app.Activity
 import android.content.Context
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.riders.thelab.core.utils.LabAddressesUtils
+import com.riders.thelab.core.utils.LabLocationUtils
 import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.data.RepositoryImpl
 import com.riders.thelab.data.local.model.app.App
+import com.riders.thelab.data.local.model.weather.ProcessedWeather
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import timber.log.Timber
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
@@ -20,6 +30,7 @@ class MainActivityViewModel @Inject constructor(
     private val repository: RepositoryImpl
 ) : ViewModel() {
 
+    private val weather: MutableLiveData<ProcessedWeather> = MutableLiveData()
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
 
     private val applications: MutableLiveData<List<App>> = MutableLiveData()
@@ -34,6 +45,10 @@ class MainActivityViewModel @Inject constructor(
 
         // for simplicity return data directly to view
         return repository.getLocationStatusData()
+    }
+
+    fun getWeather(): LiveData<ProcessedWeather> {
+        return weather
     }
 
     fun getApplications(): LiveData<List<App>> {
@@ -56,6 +71,49 @@ class MainActivityViewModel @Inject constructor(
         repository.removeLocationStatusDataSource(locationStatus)
     }
 
+    // Suspend functions are only allowed to be called from a coroutine or another suspend function.
+    // You can see that the async function which includes the keyword suspend.
+    // So, in order to use that, we need to make our function suspend too.
+    fun fetchWeather(context: Context, latitude: Double, longitude: Double) {
+        Timber.d("suspend fetchWeather()")
+        viewModelScope.launch {
+            try {
+                supervisorScope {
+
+                    val fetchWeather =
+                        repository.getWeatherOneCallAPI(Location("").apply {
+                            this.latitude = latitude
+                            this.longitude = longitude
+                        }) // fetch on IO thread
+
+                    val address: Address? =
+                        LabAddressesUtils.getDeviceAddress(
+                            Geocoder(context, Locale.getDefault()),
+                            LabLocationUtils.buildTargetLocationObject(
+                                fetchWeather.latitude,
+                                fetchWeather.longitude
+                            )
+                        )
+                    val cityName: String =
+                        address?.locality.orEmpty()
+                    val cityCountry: String = address?.countryName.orEmpty()
+
+                    val mProcessedWeather = ProcessedWeather(cityName, cityCountry, fetchWeather)
+
+                    // back on UI thread
+                    weather.value = mProcessedWeather
+                }
+            } catch (exception: Exception) {
+                if (exception is UnknownHostException) {
+                    Timber.e("Check your connection cannot reach host")
+                }
+
+                Timber.e(exception.message)
+            }
+        }
+
+    }
+
     fun retrieveApplications(context: Context) {
         val appList: MutableList<App> = ArrayList()
 
@@ -68,6 +126,23 @@ class MainActivityViewModel @Inject constructor(
         } else {
             applications.value = appList
         }
+    }
+
+
+    fun fetchRecentApps(context: Context, recentAppsNames: Array<String>): List<App> {
+        val recentAppList: MutableList<App> = ArrayList()
+
+        val constants = Constants(context)
+
+        // Setup last 3 features added
+        for (element in constants.getActivityList()) {
+            for (item in recentAppsNames) {
+                if (element.appTitle.contains(item))
+                    (recentAppList as ArrayList<App>).add(element)
+            }
+        }
+
+        return recentAppList
     }
 
     fun launchActivityOrPackage(navigator: Navigator, item: App) {
