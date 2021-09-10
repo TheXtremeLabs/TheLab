@@ -14,6 +14,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.addListener
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabAnimationsManager
 import com.riders.thelab.core.utils.LabCompatibilityManager
@@ -34,7 +35,11 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         private const val SEPARATOR = "/"
     }
 
-    private lateinit var viewBinding: ActivitySplashscreenBinding
+    private var _viewBinding: ActivitySplashscreenBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _viewBinding!!
 
     private val mViewModel: SplashScreenViewModel by viewModels()
 
@@ -44,6 +49,12 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
     private lateinit var versionTextAnimator: ObjectAnimator
     private lateinit var fadeProgressAnimator: ObjectAnimator
 
+
+    /////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    /////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val w = window
@@ -53,8 +64,8 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         )
 
         super.onCreate(savedInstanceState)
-        viewBinding = ActivitySplashscreenBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivitySplashscreenBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initViewModelsObservers()
 
@@ -70,8 +81,8 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         super.onSaveInstanceState(savedInstanceState, outPersistentState)
 
         //we use onSaveInstanceState in order to store the video playback position for orientation change
-        savedInstanceState.putInt("Position", viewBinding.splashVideo.currentPosition)
-        viewBinding.splashVideo.pause()
+        savedInstanceState.putInt("Position", binding.splashVideo.currentPosition)
+        binding.splashVideo.pause()
     }
 
     override fun onRestoreInstanceState(
@@ -83,30 +94,23 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         //we use onRestoreInstanceState in order to play the video playback from the stored position
         val position = savedInstanceState?.getInt("Position")
         if (position != null) {
-            viewBinding.splashVideo.seekTo(position)
+            binding.splashVideo.seekTo(position)
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.e("onDestroy()")
 
-    override fun onPrepared(mp: MediaPlayer?) {
-        //if we have a position on savedInstanceState, the video playback should start from here
-
-        //if we have a position on savedInstanceState, the video playback should start from here
-        viewBinding.splashVideo.seekTo(position)
-        if (position == 0) {
-            viewBinding.splashVideo.start()
-        } else {
-            //if we come from a resumed activity, video playback will be paused
-            viewBinding.splashVideo.pause()
-        }
+        _viewBinding = null
     }
 
-    override fun onCompletion(mp: MediaPlayer?) {
-        Timber.e("Video completed")
 
-        mViewModel.onVideoEnd()
-    }
-
+    /////////////////////////////////////
+    //
+    // CLASSES METHODS
+    //
+    /////////////////////////////////////
     @SuppressLint("SetTextI18n")
     private fun initViewModelsObservers() {
         mViewModel
@@ -114,13 +118,13 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
             .observe(this, { appVersion ->
                 Timber.d("Version : %s", appVersion)
 
-                viewBinding.tvAppVersion.text =
+                binding.tvAppVersion.text =
                     this.getString(R.string.version_placeholder) + appVersion
             })
 
         mViewModel.getOnVideoEnd().observe(this, { finished ->
             Timber.d("getOnVideoEnd : %s", finished)
-            crossFadeViews(viewBinding.clSplashContent)
+            crossFadeViews(binding.clSplashContent)
         })
     }
 
@@ -129,7 +133,7 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         Timber.i("startVideo()")
         try {
             //set the uri of the video to be played
-            viewBinding.splashVideo
+            binding.splashVideo
                 .setVideoURI(
                     Uri.parse(
                         (
@@ -146,9 +150,9 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
             Timber.e(e)
         }
 
-        viewBinding.splashVideo.requestFocus()
-        viewBinding.splashVideo.setOnPreparedListener(this)
-        viewBinding.splashVideo.setOnCompletionListener(this)
+        binding.splashVideo.requestFocus()
+        binding.splashVideo.setOnPreparedListener(this)
+        binding.splashVideo.setOnCompletionListener(this)
     }
 
 
@@ -170,13 +174,13 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         // Animate the loading view to 0% opacity. After the animation ends,
         // set its visibility to GONE as an optimization step (it won't
         // participate in layout passes, etc.)
-        viewBinding.splashVideo.animate()
+        binding.splashVideo.animate()
             .alpha(0f)
             .setDuration(LabAnimationsManager.getInstance().shortAnimationDuration.toLong())
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     Timber.e("onAnimationEnd()")
-                    viewBinding.splashVideo.visibility = View.GONE
+                    binding.splashVideo.visibility = View.GONE
                     displayAppVersion()
                 }
             })
@@ -185,32 +189,40 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
 
     fun displayAppVersion() {
         Timber.e("displayAppVersion()")
-        versionTextAnimator = ObjectAnimator.ofFloat(viewBinding.tvAppVersion, "alpha", 1f)
-        versionTextAnimator.duration =
-            LabAnimationsManager.getInstance().longAnimationDuration.toLong()
-        versionTextAnimator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
-                viewBinding.tvAppVersion.alpha = 1f
-                startProgressAnimation()
-            }
-        })
-        versionTextAnimator.startDelay =
-            LabAnimationsManager.getInstance().longAnimationDuration.toLong()
+
+        versionTextAnimator =
+            ObjectAnimator
+                .ofFloat(binding.tvAppVersion, "alpha", 0f, 1f)
+                .apply {
+                    duration =
+                        LabAnimationsManager.getInstance().longAnimationDuration.toLong()
+
+                    addListener(onEnd = {
+                        Timber.e("onAnimationEnd()")
+                        binding.tvAppVersion.alpha = 1f
+                        startProgressAnimation()
+                    })
+                    startDelay =
+                        LabAnimationsManager.getInstance().longAnimationDuration.toLong()
+                }
+
         versionTextAnimator.start()
     }
 
-    fun startProgressAnimation() {
+    private fun startProgressAnimation() {
         Timber.e("startProgressAnimation()")
-        fadeProgressAnimator = ObjectAnimator.ofFloat(viewBinding.progressBar, "alpha", 0f, 1f)
-        fadeProgressAnimator.duration =
-            LabAnimationsManager.getInstance().mediumAnimationDuration.toLong()
-        fadeProgressAnimator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
-                viewBinding.progressBar.alpha = 1f
+        fadeProgressAnimator =
+            ObjectAnimator
+                .ofFloat(binding.progressBar, "alpha", 0f, 1f)
+                .apply {
+                    duration =
+                        LabAnimationsManager.getInstance().mediumAnimationDuration.toLong()
+                    addListener(onEnd = {
+                        binding.progressBar.alpha = 1f
 
-                clearAllAnimations()
-            }
-        })
+                        clearAllAnimations()
+                    })
+                }
         fadeProgressAnimator.start()
     }
 
@@ -234,5 +246,30 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
     private fun launchActivity() {
         Navigator(this).callMainActivity()
         finish()
+    }
+
+
+    /////////////////////////////////////
+    //
+    // IMPLEMENTS
+    //
+    /////////////////////////////////////
+    override fun onPrepared(mp: MediaPlayer?) {
+        //if we have a position on savedInstanceState, the video playback should start from here
+
+        //if we have a position on savedInstanceState, the video playback should start from here
+        binding.splashVideo.seekTo(position)
+        if (position == 0) {
+            binding.splashVideo.start()
+        } else {
+            //if we come from a resumed activity, video playback will be paused
+            binding.splashVideo.pause()
+        }
+    }
+
+    override fun onCompletion(mp: MediaPlayer?) {
+        Timber.e("Video completed")
+
+        mViewModel.onVideoEnd()
     }
 }
