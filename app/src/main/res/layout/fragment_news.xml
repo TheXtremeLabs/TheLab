@@ -1,157 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/detail_backdrop_height"
-    android:background="?android:attr/colorBackground"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:background="@color/default_dark">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_news_title"
-        style="@style/TextAppearance.AppCompat.Large"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/big_margin"
-        android:text="@string/last_features_title_placeholder"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:textColor="@color/white" />
+    <data>
 
-    <LinearLayout
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="app"
+            type="com.riders.thelab.data.local.model.app.App" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="@dimen/medium_margin"
-        android:layout_marginVertical="@dimen/big_margin"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_news_title">
+        android:layout_height="match_parent"
+        android:id="@+id/root_container"
+        android:layout_marginBottom="32dp"
+        android:padding="64dp">
 
-        <!-- First Item -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/news_card_view_1"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_app"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/small_margin"
-            android:layout_weight="1"
-            app:cardCornerRadius="@dimen/small_margin"
-            app:cardPreventCornerOverlap="true"
-            app:cardUseCompatPadding="true"
-            tools:background="@color/default_dark">
+            android:layout_margin="16dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/logo_colors" />
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/news_image_view_1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/big_medium_margin"
-                android:layout_marginEnd="-16dp"
-                android:scaleType="fitCenter"
-                tools:background="@color/default_dark"
-                tools:srcCompat="@drawable/openweathermap" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:background="@drawable/bottom_gradient">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/news_text_view_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/medium_margin"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    tools:text="Recycler" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Second Item -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/news_card_view_2"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/small_margin"
-            android:layout_weight="1"
-            app:cardCornerRadius="@dimen/small_margin"
-            app:cardPreventCornerOverlap="true"
-            app:cardUseCompatPadding="true"
-            tools:background="@color/default_dark">
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.4" />
 
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/news_image_view_2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/big_medium_margin"
-                android:layout_marginEnd="-16dp"
-                android:scaleType="fitCenter"
-                tools:background="@color/default_dark"
-                tools:srcCompat="@drawable/ic_filter_list" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:background="@drawable/bottom_gradient">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/news_text_view_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/medium_margin"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    tools:text="Recycler" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Third Item -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/news_card_view_3"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_app_title"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/small_margin"
-            android:layout_weight="1"
-            app:cardCornerRadius="@dimen/small_margin"
-            app:cardPreventCornerOverlap="true"
-            app:cardUseCompatPadding="true"
-            tools:background="@color/default_dark">
+            android:layout_height="wrap_content"
+            android:text='@{!TextUtils.isEmpty(app.appTitle) ? app.appTitle : app.appName}'
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@id/tv_app_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="App Title" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_app_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text='@{!TextUtils.isEmpty(app.appDescription) ? app.appDescription : app.appVersion}'
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/tv_app_title"
+            tools:text="App Description" />
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/news_image_view_3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/big_medium_margin"
-                android:layout_marginEnd="-16dp"
-                android:scaleType="fitCenter"
-                tools:background="@color/default_dark"
-                tools:srcCompat="@drawable/ic_open_in_new" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:background="@drawable/bottom_gradient">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/news_text_view_3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/medium_margin"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    tools:text="Recycler" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
