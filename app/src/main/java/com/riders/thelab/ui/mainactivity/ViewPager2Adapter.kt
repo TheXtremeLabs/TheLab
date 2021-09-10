@@ -14,6 +14,14 @@ class ViewPager2Adapter constructor(
         mFragmentList.add(fragment)
     }
 
+    fun getFragment(position: Int): Fragment {
+        return mFragmentList[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
     override fun getItemCount(): Int {
         return if (mFragmentList.isNotEmpty()) mFragmentList.size else 0
     }
