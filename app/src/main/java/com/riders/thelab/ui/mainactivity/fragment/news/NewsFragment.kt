@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.android.material.imageview.ShapeableImageView
-import com.google.android.material.textview.MaterialTextView
+import com.bumptech.glide.Glide
 import com.riders.thelab.R
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.FragmentNewsBinding
@@ -20,28 +18,35 @@ import timber.log.Timber
 @AndroidEntryPoint
 class NewsFragment : BaseFragment(), View.OnClickListener {
 
-    lateinit var viewBinding: FragmentNewsBinding
+    companion object {
+
+        private const val EXTRA_APP = "EXTRA_APP"
+
+        fun newInstance(app: App): NewsFragment {
+            val args = Bundle()
+            args.putParcelable(EXTRA_APP, app)
+            val fragment = NewsFragment()
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+
+    private var _viewBinding: FragmentNewsBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _viewBinding!!
 
     private val mNewsViewModel: NewsViewModel by viewModels()
 
-    private val recentAppsNames = arrayOf("Music", "Google", "Weather")
-    private var mRecentApps: List<App>? = null
+    private var item: App? = null
 
     /**
      * passing data between fragments
      */
     private var listener: MainActivityAppClickListener? = null
 
-
-    companion object {
-        fun newInstance(): NewsFragment {
-            val args = Bundle()
-
-            val fragment = NewsFragment()
-            fragment.arguments = args
-            return fragment
-        }
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -57,96 +62,68 @@ class NewsFragment : BaseFragment(), View.OnClickListener {
     }
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val extras = arguments
+
+        if (extras == null) {
+            Timber.e("bundle is null - check the data you are trying to pass through please !")
+        } else {
+            Timber.e("get the data one by one")
+            (extras.getParcelable(EXTRA_APP) as App?)?.let {
+                item = it
+            }
+
+        }
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewBinding = FragmentNewsBinding.inflate(inflater, container, false)
-        return viewBinding.root
+        _viewBinding = FragmentNewsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(rootView: View, savedInstanceState: Bundle?) {
         super.onViewCreated(rootView, savedInstanceState)
         Timber.d("onViewCreated()")
 
-        viewBinding.newsCardView1.setOnClickListener(this)
-        viewBinding.newsCardView2.setOnClickListener(this)
-        viewBinding.newsCardView3.setOnClickListener(this)
+        binding.app = item
 
-        mNewsViewModel
-            .getRecentApps()
-            .observe(
-                requireActivity(),
-                { recentApps ->
-                    mRecentApps = recentApps
-                    setupCards(recentApps)
-                })
+        item?.let {
+            Glide.with(requireContext())
+                .load(it.appDrawableIcon)
+                .placeholder(R.mipmap.ic_launcher_round)
+                .apply {
+                    dontTransform()
+                }
+                .into(binding.ivApp)
+        }
 
-        mNewsViewModel.fetchRecentApps(requireContext(), recentAppsNames)
     }
 
     override fun onDestroyView() {
-        Timber.d("onDestroyView()")
         super.onDestroyView()
-    }
+        Timber.e("onDestroyView()")
 
-
-    private fun setupCards(appList: List<App>) {
-        for (i in appList.indices) {
-            if (i == 0) {
-                bindData(viewBinding.newsImageView1, viewBinding.newsTextView1, appList[i])
-            }
-            if (i == 1) {
-                bindData(viewBinding.newsImageView2, viewBinding.newsTextView2, appList[i])
-            }
-            if (i == 2) {
-                bindData(viewBinding.newsImageView3, viewBinding.newsTextView3, appList[i])
-            }
-        }
-    }
-
-    private fun bindData(
-        imageView: ShapeableImageView,
-        textView: MaterialTextView,
-        app: App
-    ) {
-        if (app.appDrawableIcon != null) {
-            imageView.setImageDrawable(app.appDrawableIcon)
-        }
-        textView.text = if (app.appName != null) app.appName else app.appTitle
+        _viewBinding = null
     }
 
     override fun onClick(view: View?) {
         if (view != null) {
             when (view.id) {
-                R.id.news_card_view_1 -> mRecentApps?.let {
-                    listener!!.onAppItemCLickListener(
-                        requireView(),
-                        it[0],
-                        0
-                    )
-                }
-                R.id.news_card_view_2 -> mRecentApps?.let {
-                    listener!!.onAppItemCLickListener(
-                        requireView(),
-                        it[1],
-                        0
-                    )
-                }
-                R.id.news_card_view_3 -> mRecentApps?.let {
-                    listener!!.onAppItemCLickListener(
-                        requireView(),
-                        it[2],
-                        0
-                    )
-                }
+                R.id.root_container -> item?.let { listener!!.onAppItemClickListener(view, it) }
             }
+
         }
     }
 
     override fun onConnected(isConnected: Boolean) {
-
+        // Ignored
     }
 
 }
