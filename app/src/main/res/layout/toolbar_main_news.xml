@@ -62,6 +62,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textSize="12sp"
                             tools:text="App 1" />
 
                         <ProgressBar
@@ -88,7 +89,8 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="App 1" />
+                            android:textSize="12sp"
+                            tools:text="Google Sign In" />
 
                         <ProgressBar
                             android:id="@+id/progressBar2"
@@ -114,6 +116,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textSize="12sp"
                             tools:text="App 1" />
 
 
@@ -140,6 +143,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textSize="12sp"
                             tools:text="App 1" />
 
                         <ProgressBar

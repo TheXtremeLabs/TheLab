@@ -186,6 +186,7 @@ class MainActivity : AppCompatActivity(),
         super.onPause()
     }
 
+    @DelicateCoroutinesApi
     override fun onResume() {
         super.onResume()
         Timber.i("onResume()")
@@ -228,17 +229,13 @@ class MainActivity : AppCompatActivity(),
         // add data source
         mViewModel.addDataSource(locationReceiver.getLocationStatus())
         registerReceiver(locationReceiver, intentFilter)
-
-        launchProgressBars()
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == GPS_REQUEST) {
-                isGPS = true // flag maintain before get location
-            }
+        if (resultCode == Activity.RESULT_OK && requestCode == GPS_REQUEST) {
+            isGPS = true // flag maintain before get location
         }
     }
 
@@ -387,6 +384,7 @@ class MainActivity : AppCompatActivity(),
     }
 
 
+    @DelicateCoroutinesApi
     private fun resetProgressBars() =
         GlobalScope.launch(Dispatchers.Main) {
             Timber.d("resetProgressBars()")
@@ -395,7 +393,7 @@ class MainActivity : AppCompatActivity(),
                 val size = it.count() - 1
 
                 for (i in size downTo 0) {
-                    Timber.d("View number : $i, contains : ${it.toList().toString()}")
+                    Timber.d("View number : $i, contains : ${it.toList()}")
                     if (it.toList()[i] is LinearLayout) {
                         val linearLayout = it.toList()[i] as LinearLayout
                         val progressBar: ProgressBar =
@@ -405,7 +403,7 @@ class MainActivity : AppCompatActivity(),
 
                         for (j in 100 downTo 0) {
                             progressBar.progress = j
-                            delay(50)
+                            delay(20)
                         }
                     }
                 }
@@ -467,6 +465,7 @@ class MainActivity : AppCompatActivity(),
 
                     setupLastFeaturesApps()
                     initViewPager()
+                    launchProgressBars()
 
                     if (appList.isEmpty()) {
                         Timber.d("App list is empty")
@@ -555,9 +554,9 @@ class MainActivity : AppCompatActivity(),
             binding.includeToolbarLayout?.viewPager?.registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
-//                    val iPage = position + 1
-//                    val pages = iPage.toString() + ""
-//                    Timber.d(" changeinfopage : $pages")
+                    /*val iPage = position + 1
+                    val pages = iPage.toString() + ""
+                    Timber.d(" changeinfopage : $pages")*/
                     // Ignored
                 }
 
@@ -579,7 +578,7 @@ class MainActivity : AppCompatActivity(),
             //  binding.contentMainHeader.viewPager2.isUserInputEnabled = false
 
 
-            binding.includeToolbarLayout?.viewPager?.setPageTransformer { page, position ->
+            binding.includeToolbarLayout?.viewPager?.setPageTransformer { page, _ ->
 //                Timber.d("setPageTransformer()")
                 page.alpha = 0f
                 page.visibility = View.VISIBLE
@@ -810,12 +809,12 @@ class MainActivity : AppCompatActivity(),
             // Toolbar is collapsed
             binding.includeToolbarLayout?.collapsingToolbar?.title =
                 this@MainActivity.resources.getString(R.string.app_name)
-            menu?.let { menu -> UIManager.showMenuButtons(menu) }
+            //menu?.let { menu -> UIManager.showMenuButtons(menu) }
             isShow = true
         } else if (isShow) {
             // Toolbar is expanded
             binding.includeToolbarLayout?.collapsingToolbar?.title = " "
-            menu?.let { menu -> UIManager.hideMenuButtons(menu) }
+            //menu?.let { menu -> UIManager.hideMenuButtons(menu) }
             isShow = false
         }
     }
