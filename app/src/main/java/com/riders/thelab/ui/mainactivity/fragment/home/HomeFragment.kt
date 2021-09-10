@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -21,10 +21,13 @@ import timber.log.Timber
 class HomeFragment : BaseFragment() {
 
     private var _viewBinding: FragmentHomeBinding? = null
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _viewBinding!!
+
+    private val mHomeViewModel: HomeViewModel by viewModels()
+
+    private var isConnected: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,9 +45,57 @@ class HomeFragment : BaseFragment() {
 
         postponeEnterTransition()
 
+        if (!isConnected) {
+            loadImage(null)
+        } else {
+            initViewModelsObservers()
+            mHomeViewModel.getWallpaperImages(requireActivity())
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Timber.e("onDestroyView()")
+
+        _viewBinding = null
+    }
+
+    private fun initViewModelsObservers() {
+        Timber.d("initViewModelsObservers() ")
+
+        mHomeViewModel
+            .getImagesFetchedDone()
+            .observe(
+                requireActivity(),
+                {
+                    Timber.d("getImagesFetchedDone() ")
+                })
+
+        mHomeViewModel
+            .getImagesFetchedFailed()
+            .observe(
+                requireActivity(),
+                {
+                    Timber.e("getImagesFetchedFailed() ")
+                })
+
+        mHomeViewModel
+            .getImageUrl()
+            .observe(
+                requireActivity()
+            ) { url ->
+                // Display image
+                loadImage(url)
+
+            }
+    }
+
+
+    private fun loadImage(url: String?) {
+        Timber.i("loadImage($url) ")
         LabGlideUtils.getInstance().loadImage(
             requireActivity(),
-            R.drawable.logo_colors,
+            url ?: R.drawable.logo_colors,
             binding.ivBackground,
             object : RequestListener<Drawable> {
                 override fun onLoadFailed(
@@ -70,14 +121,7 @@ class HomeFragment : BaseFragment() {
             })
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Timber.e("onDestroyView()")
-
-        _viewBinding = null
-    }
-
     override fun onConnected(isConnected: Boolean) {
-        // TODO("Not yet implemented")
+        this.isConnected = isConnected
     }
 }
