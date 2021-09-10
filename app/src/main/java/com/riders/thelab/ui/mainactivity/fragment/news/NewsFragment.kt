@@ -40,7 +40,7 @@ class NewsFragment : BaseFragment(), View.OnClickListener {
 
     private val mNewsViewModel: NewsViewModel by viewModels()
 
-    private lateinit var item: App
+    private var item: App? = null
 
     /**
      * passing data between fragments
@@ -71,7 +71,10 @@ class NewsFragment : BaseFragment(), View.OnClickListener {
             Timber.e("bundle is null - check the data you are trying to pass through please !")
         } else {
             Timber.e("get the data one by one")
-            item = extras.getParcelable(EXTRA_APP)!!
+            (extras.getParcelable(EXTRA_APP) as App?)?.let {
+                item = it
+            }
+
         }
     }
 
@@ -91,13 +94,16 @@ class NewsFragment : BaseFragment(), View.OnClickListener {
 
         binding.app = item
 
-        Glide.with(requireContext())
-            .load(item.appDrawableIcon)
-            .placeholder(R.mipmap.ic_launcher_round)
-            .apply {
-                dontTransform()
-            }
-            .into(binding.ivApp)
+        item?.let {
+            Glide.with(requireContext())
+                .load(it.appDrawableIcon)
+                .placeholder(R.mipmap.ic_launcher_round)
+                .apply {
+                    dontTransform()
+                }
+                .into(binding.ivApp)
+        }
+
     }
 
     override fun onDestroyView() {
@@ -110,7 +116,7 @@ class NewsFragment : BaseFragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         if (view != null) {
             when (view.id) {
-                R.id.root_container -> listener!!.onAppItemClickListener(view, item)
+                R.id.root_container -> item?.let { listener!!.onAppItemClickListener(view, it) }
             }
 
         }
