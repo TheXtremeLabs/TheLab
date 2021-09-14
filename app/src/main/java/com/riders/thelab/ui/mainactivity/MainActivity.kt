@@ -127,6 +127,7 @@ class MainActivity : AppCompatActivity(),
     // OVERRIDE
     //
     /////////////////////////////////////
+    @DelicateCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val w = window
@@ -411,6 +412,7 @@ class MainActivity : AppCompatActivity(),
         }
 
 
+    @DelicateCoroutinesApi
     private fun initViewModelsObservers() {
         mViewModel
             .getConnectionStatus()
@@ -553,9 +555,6 @@ class MainActivity : AppCompatActivity(),
             binding.includeToolbarLayout?.viewPager?.registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
-                    /*val iPage = position + 1
-                    val pages = iPage.toString() + ""
-                    Timber.d(" changeinfopage : $pages")*/
                     // Ignored
                 }
 
@@ -578,7 +577,6 @@ class MainActivity : AppCompatActivity(),
 
 
             binding.includeToolbarLayout?.viewPager?.setPageTransformer { page, _ ->
-//                Timber.d("setPageTransformer()")
                 page.alpha = 0f
                 page.visibility = View.VISIBLE
 
@@ -816,12 +814,10 @@ class MainActivity : AppCompatActivity(),
             // Toolbar is collapsed
             binding.includeToolbarLayout?.collapsingToolbar?.title =
                 this@MainActivity.resources.getString(R.string.app_name)
-            //menu?.let { menu -> UIManager.showMenuButtons(menu) }
             isShow = true
         } else if (isShow) {
             // Toolbar is expanded
             binding.includeToolbarLayout?.collapsingToolbar?.title = " "
-            //menu?.let { menu -> UIManager.hideMenuButtons(menu) }
             isShow = false
         }
     }
@@ -865,20 +861,24 @@ class MainActivity : AppCompatActivity(),
         Timber.d("element : $item")
 
         //TODO : Please check this functionality later. Problem using Drive REST API v3
-        if (item.appTitle.lowercase().contains("drive")) {
-            UIManager.showActionInToast(
-                this@MainActivity,
-                "Please check this functionality later. Problem using Drive REST API v3"
-            )
+        when {
+            item.appTitle.lowercase().contains("drive") -> {
+                UIManager.showActionInToast(
+                    this@MainActivity,
+                    "Please check this functionality later. Problem using Drive REST API v3"
+                )
 
-            return
-        } else if (!LabCompatibilityManager.isTablet(this@MainActivity) and (-1L != item.id)) {
-            mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
-        } else {
-            Timber.e("Item id == -1 , not app activity. Should launch package intent.")
-            showItemDetail(item)
-            binding.itemDetailBtn?.setOnClickListener {
+                return
+            }
+            !LabCompatibilityManager.isTablet(this@MainActivity) and (-1L != item.id) -> {
                 mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
+            }
+            else -> {
+                Timber.e("Item id == -1 , not app activity. Should launch package intent.")
+                showItemDetail(item)
+                binding.itemDetailBtn?.setOnClickListener {
+                    mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
+                }
             }
         }
     }

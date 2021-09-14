@@ -33,6 +33,18 @@
     <string name="network_status_lost">Lost! Connection lost. Try to reconnect</string>
     <string name="network_check_connection">Please check your cellular network or Wi-Fi network</string>
 
+    <!-- Notification -->
+    <string name="main_channel_name">KTesting Notification Main Channel</string>
+    <string name="main_channel_description">App Main notification channel</string>
+
+    <string name="notification_title">The Lab is live</string>
+    <string name="notification_content_text">Welcome to The Lab, explore several features in this app</string>
+    <string name="notification_big_text">"Welcome to The Lab, explore several features in this app that implements a lot of cool things</string>
+
+
+    <!-- Transition names -->
+    <string name="splash_background_transition_name">splash_background_transition_name</string>
+
 
     <string name="title_main_page">Choose your testing app</string>
 
