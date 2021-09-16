@@ -326,6 +326,12 @@
 
     <!-- Music Player -->
     <string name="activity_title_music">Music</string>
+    <string name="action_play">play</string>
+    <string name="action_pause">pause</string>
+    <string name="action_previous">previous</string>
+    <string name="action_next">next</string>
+    <string name="music_channel_name">Music Player</string>
+    <string name="music_channel_description">Music Player Channel Description</string>
 
 
     <!-- Google -->
