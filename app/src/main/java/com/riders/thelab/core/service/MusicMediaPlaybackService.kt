@@ -17,15 +17,17 @@ class MusicMediaPlaybackService : Service() {
 
     override fun onBind(intent: Intent?): IBinder {
         Timber.d("onBind()")
-        mMediaSessionCompat =
-            MediaSessionCompat(this, "MediaPlaybackService")
+        mMediaSessionCompat = MediaSessionCompat(this, "MediaPlaybackService")
         return mBinder
     }
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.d("onStartCommand()")
-        MediaButtonReceiver.handleIntent(mMediaSessionCompat, intent)
+        // TODO : Fix notification media player buttons event
+        if (null != mMediaSessionCompat) {
+            MediaButtonReceiver.handleIntent(mMediaSessionCompat, intent)
+        }
         return super.onStartCommand(intent, flags, startId)
     }
 
