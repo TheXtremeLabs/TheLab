@@ -16,7 +16,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.wifi.WifiManager
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
@@ -203,7 +202,8 @@ class MainActivity : AppCompatActivity(),
 
         mConnectivityManager!!.registerNetworkCallback(request, networkManager)
 
-        val labLocationManager = LabLocationManager(this@MainActivity, this@MainActivity, this)
+        val labLocationManager =
+            LabLocationManager(this@MainActivity, this@MainActivity, this)
 
         if (!labLocationManager.canGetLocation()) {
             Timber.e("Cannot get location please enable position")
@@ -429,9 +429,14 @@ class MainActivity : AppCompatActivity(),
                 this,
                 { locationStatus ->
                     Timber.d("getLocationData().observe : $locationStatus")
-                    menu?.findItem(R.id.action_location_settings)?.setIcon(
+
+                    UIManager.updateToolbarIcon(
+                        this@MainActivity,
+                        menu!!,
+                        R.id.action_location_settings,
                         if (!locationStatus) R.drawable.ic_location_off else R.drawable.ic_location_on
                     )
+
                 })
 
         mViewModel.getWeather().observe(
@@ -707,9 +712,10 @@ class MainActivity : AppCompatActivity(),
         if (!isGPS) mGpsUtils.turnGPSOn(this)
     }
 
+    @SuppressLint("InlinedApi")
     private fun toggleWifi() {
         Timber.d("toggleWifi()")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (LabCompatibilityManager.isAndroid10()) {
             val panelIntent = Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY)
             startActivityForResult(panelIntent, 0)
         } else {
