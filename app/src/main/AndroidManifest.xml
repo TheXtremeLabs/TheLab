@@ -365,6 +365,13 @@
             android:label="@string/activity_title_google_drive"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
+
+        <activity
+            android:name=".ui.download.DownloadActivity"
+            android:label="@string/activity_title_download"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
@@ -459,8 +466,8 @@
         <provider
             android:name="androidx.work.impl.WorkManagerInitializer"
             android:authorities="${applicationId}.workmanager-init"
-            tools:node="remove"
-            tools:ignore="MissingClass" />
+            tools:ignore="MissingClass"
+            tools:node="remove" />
     </application>
 
 </manifest>
