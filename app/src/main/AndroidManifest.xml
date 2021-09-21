@@ -27,6 +27,7 @@
 
 
     <!-- Device -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -35,7 +36,6 @@
     <uses-permission
         android:name="android.permission.MODIFY_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -64,7 +64,7 @@
 
     <!-- Hardware -->
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <!-- Media Notification Foreground Service -->
@@ -371,11 +371,14 @@
         <!-- ////////////// BROADCAST RECEIVER ////////////// -->
         <!-- Broadcast Receiver -->
         <receiver
-            android:name=".core.broadcast.NotificationBuilderReceiver"
+            android:name=".core.broadcast.TheLabBootBroadcastReceiver"
             android:enabled="true"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.REBOOT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 
@@ -394,6 +397,14 @@
         <receiver
             android:name=".core.broadcast.ScheduleAlarmReceiver"
             android:exported="true" />
+
+        <!-- Media Receiver -->
+        <receiver android:name="androidx.mediarouter.media.MediaTransferReceiver" />
+        <receiver android:name="androidx.media.session.MediaButtonReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
         <!-- ////////////// BROADCAST RECEIVER ////////////// -->
 
 
@@ -407,12 +418,23 @@
 
         <service android:name=".services.BackgroundDetectedActivitiesService" />-->
 
+        <service
+            android:name=".core.service.TheLabBootService"
+            android:exported="true" />
+
         <service android:name=".core.service.ScheduleAlarmService" />
 
         <service
             android:name=".core.service.FloatingViewService"
             android:enabled="true"
             android:exported="false" />
+
+        <service android:name=".core.service.MusicMediaPlaybackService">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
         <!-- ////////////// SERVICES ////////////// -->
 
 
@@ -437,7 +459,8 @@
         <provider
             android:name="androidx.work.impl.WorkManagerInitializer"
             android:authorities="${applicationId}.workmanager-init"
-            tools:node="remove" />
+            tools:node="remove"
+            tools:ignore="MissingClass" />
     </application>
 
 </manifest>

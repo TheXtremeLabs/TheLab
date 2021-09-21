@@ -1,5 +1,10 @@
 package com.riders.thelab.core.utils
 
+import android.content.ContentResolver
+import android.content.Context
+import android.net.Uri
+import androidx.annotation.AnyRes
+import androidx.annotation.NonNull
 import okhttp3.ResponseBody
 import okhttp3.internal.io.FileSystem
 import okio.buffer
@@ -113,6 +118,18 @@ class LabFileManager private constructor() {
                 e.printStackTrace()
             }
             return json
+        }
+
+
+        fun getDrawableURI(@NonNull context: Context, @AnyRes drawableId: Int): String {
+            val imageUri: Uri = Uri.parse(
+                ContentResolver.SCHEME_ANDROID_RESOURCE +
+                        "://" + context.resources.getResourcePackageName(drawableId)
+                        + '/' + context.resources.getResourceTypeName(drawableId)
+                        + '/' + context.resources.getResourceEntryName(drawableId)
+            )
+
+            return imageUri.toString()
         }
     }
 }
