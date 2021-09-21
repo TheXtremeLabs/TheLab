@@ -6,13 +6,21 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.riders.thelab.TheLabApplication
+import com.riders.thelab.data.local.model.Download
 import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.data.remote.api.*
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import okhttp3.ResponseBody
 import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 
 class ApiImpl @Inject constructor(
@@ -91,4 +99,81 @@ class ApiImpl @Inject constructor(
         Timber.e("get cities bulk file()")
         return mWeatherBulkApiService.getCitiesGZipFile()
     }
+
+
+    override suspend fun getBulkDownload(): Flow<Download> {
+        return mWeatherBulkApiService.getCitiesGZipFile()
+            .downloadCitiesFile(
+                TheLabApplication.getInstance().getContext().externalCacheDir!!,
+                "my_file"
+            )
+    }
+
+
+    private suspend fun ResponseBody.downloadCitiesFile(
+        directory: File,
+        filename: String
+    ): Flow<Download> = flow {
+
+        emit(Download.Started(true))
+        Timber.d("downloadToFileWithProgress()")
+        emit(Download.Progress(0))
+
+        // flag to delete file if download errors or is cancelled
+        var deleteFile = true
+        val file = File(directory, "${filename}.${contentType()?.subtype}")
+
+        try {
+
+            byteStream().use { inputStream ->
+                file.outputStream().use { outputStream ->
+                    val totalBytes = contentLength()
+                    val data = ByteArray(8_192)
+                    var progressBytes = 0L
+
+                    while (true) {
+                        val bytes = inputStream.read(data)
+
+                        if (bytes == -1) {
+                            break
+                        }
+
+                        outputStream.channel
+                        outputStream.write(data, 0, bytes)
+                        progressBytes += bytes
+
+                        emit(Download.Progress(percent = ((progressBytes * 100) / totalBytes).toInt()))
+                    }
+
+                    when {
+                        progressBytes < totalBytes -> {
+                            emit(Download.Done(true))
+                            throw Exception("missing bytes")
+                        }
+                        progressBytes > totalBytes -> {
+                            emit(Download.Done(true))
+                            throw Exception("too many bytes")
+                        }
+                        else ->
+                            deleteFile = false
+                    }
+                }
+            }
+
+            emit(Download.Finished(file))
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            emit(Download.Error(true))
+        } finally {
+            // check if download was successful
+            emit(Download.Done(true))
+
+            if (deleteFile) {
+                file.delete()
+            }
+        }
+    }
+        .flowOn(Dispatchers.IO)
+        .distinctUntilChanged()
+
 }

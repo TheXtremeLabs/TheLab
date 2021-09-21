@@ -370,4 +370,7 @@
 
     <string name="activity_title_google_drive">Google Drive</string>
 
+    <!-- Download -->
+    <string name="activity_title_download">Download</string>
+
 </resources>
