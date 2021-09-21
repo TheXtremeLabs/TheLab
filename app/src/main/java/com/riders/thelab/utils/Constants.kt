@@ -44,6 +44,11 @@ class Constants @Inject constructor(
         const val SZ_SEPARATOR = "/"
 
         const val GPS_REQUEST = 5214
+
+        const val NOTIFICATION_ID: Int = 45532
+        const val NOTIFICATION_CHANNEL_ID: String = "45532"
+        const val NOTIFICATION_MUSIC_ID: Int = 3432
+        const val NOTIFICATION_MUSIC_CHANNEL_ID: String = "3432"
     }
 
     /**

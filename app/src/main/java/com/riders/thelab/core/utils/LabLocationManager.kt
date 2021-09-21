@@ -61,7 +61,6 @@ class LabLocationManager constructor(
     init {
         locationManager = mActivity.getSystemService(LOCATION_SERVICE) as LocationManager
         mLocationListener = this
-//        getLocation()
     }
 
     constructor(
