@@ -4,10 +4,15 @@ import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.app.NotificationManager
+import android.content.*
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
@@ -15,8 +20,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.animation.addListener
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.marginTop
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import androidx.media.session.MediaButtonReceiver
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -25,9 +33,13 @@ import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
+import com.riders.thelab.core.service.MusicMediaPlaybackService
+import com.riders.thelab.core.utils.LabNotificationManager
 import com.riders.thelab.core.utils.SongsManager
+import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.music.SongModel
 import com.riders.thelab.databinding.ActivitySongPlayerBinding
+import com.riders.thelab.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -45,7 +57,6 @@ class SongPlayerActivity : AppCompatActivity(),
         get() = Dispatchers.Main + Job()
 
     private var _viewBinding: ActivitySongPlayerBinding? = null
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _viewBinding!!
@@ -75,6 +86,27 @@ class SongPlayerActivity : AppCompatActivity(),
 
     private lateinit var mAdapter: SongPlayerAdapter
 
+
+    private lateinit var controller: MediaControllerCompat
+    private lateinit var mServiceMusic: MusicMediaPlaybackService
+    private var mBound: Boolean = false
+
+    /** Defines callbacks for service binding, passed to bindService()  */
+    private val connection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            val binder = service as MusicMediaPlaybackService.LocalBinder
+            mServiceMusic = binder.getService()
+            mBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mBound = false
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _viewBinding = ActivitySongPlayerBinding.inflate(layoutInflater)
@@ -89,6 +121,15 @@ class SongPlayerActivity : AppCompatActivity(),
         initViewModelsObservers()
 
         checkPermissions()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Bind to LocalService
+        Intent(this, MusicMediaPlaybackService::class.java).also { intent ->
+            bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -108,6 +149,12 @@ class SongPlayerActivity : AppCompatActivity(),
         super.onPause()
     }
 
+    override fun onResume() {
+        super.onResume()
+        Timber.d("onResume()")
+        registerReceiver(MediaButtonReceiver(), IntentFilter(Intent.ACTION_MEDIA_BUTTON))
+    }
+
     override fun onStop() {
         super.onStop()
         if (mp.isPlaying) {
@@ -116,6 +163,9 @@ class SongPlayerActivity : AppCompatActivity(),
             mp.release()
         }
         mHandler = null
+
+        unbindService(connection)
+        mBound = false
     }
 
     override fun onDestroy() {
@@ -140,6 +190,23 @@ class SongPlayerActivity : AppCompatActivity(),
         } else {
             super.onBackPressed()
         }
+    }
+
+
+    ///////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    ///////////////////////////////
+    private fun setListeners() {
+        binding.tvSongPath.setOnClickListener(this)
+        binding.btnArrowDown.setOnClickListener(this)
+        binding.btnPlayPause.setOnClickListener(this)
+        binding.btnPrevious.setOnClickListener(this)
+        binding.btnNext.setOnClickListener(this)
+        binding.songProgressBar.setOnSeekBarChangeListener(this) // Important
+        mp.setOnCompletionListener(this) // Important
+        binding.motionLayout.addTransitionListener(this)
     }
 
     private fun checkPermissions() {
@@ -171,30 +238,27 @@ class SongPlayerActivity : AppCompatActivity(),
             .check()
     }
 
-    private fun setListeners() {
-        binding.cvSongPlayer.setOnClickListener(this)
-        binding.btnArrowDown.setOnClickListener(this)
-        binding.btnPlayPause.setOnClickListener(this)
-        binding.btnPrevious.setOnClickListener(this)
-        binding.btnNext.setOnClickListener(this)
-        binding.songProgressBar.setOnSeekBarChangeListener(this) // Important
-        mp.setOnCompletionListener(this) // Important
-        binding.motionLayout.addTransitionListener(this)
-    }
-
     private fun initViewModelsObservers() {
-
-
+        Timber.i("initViewModelsObservers()")
         viewModel.getFiles().observe(this, { fileList ->
+            Timber.e("getFiles().observe")
+            if (null == fileList) {
+                Timber.e("File list is null")
+            } else {
+                if (fileList.isEmpty()) {
+                    Timber.e("File list is empty")
+                } else {
+                    songsList = fileList as ArrayList<SongModel>
 
-            songsList = fileList as ArrayList<SongModel>
-
-            bindData(songsList)
+                    bindData(songsList)
+                }
+            }
         })
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun bindData(list: List<SongModel>) {
+        Timber.i("bindData()")
 
         mAdapter = SongPlayerAdapter(this, list as ArrayList<SongModel>, this)
 
@@ -208,6 +272,7 @@ class SongPlayerActivity : AppCompatActivity(),
      * Function to play a song
      * @param item - index of song
      */
+    @SuppressLint("InlinedApi")
     private fun playSong(item: SongModel) {
         Timber.d("playSong()")
 
@@ -240,9 +305,28 @@ class SongPlayerActivity : AppCompatActivity(),
             mp.setDataSource(item.path)
             mp.prepare()
             mp.start()
-            // Displaying Song title
-            /*val songTitle: String = songsList[songIndex].get("songTitle")
-            songTitleLabel.setText(songTitle)*/
+
+            // Displaying Song title via Notification
+            LabNotificationManager.createNotificationChannel(
+                this@SongPlayerActivity,
+                getString(R.string.music_channel_name),
+                getString(R.string.music_channel_description),
+                NotificationManager.IMPORTANCE_HIGH,
+                Constants.NOTIFICATION_MUSIC_CHANNEL_ID
+            )
+
+            val mediaSession = SongPlayerUtils.createMediaSession(this, mp)
+            val mediaController = SongPlayerUtils.createMediaController(mediaSession)
+
+            LabNotificationManager.displayMusicNotification(
+                this@SongPlayerActivity,
+                mediaSession,
+                mediaController,
+                mServiceMusic,
+                item
+            )
+
+            //displaySessionNotification(item)
 
             // Changing Button Image to pause image
             binding.btnPlayPause.setImageResource(R.drawable.ic_pause)
@@ -332,6 +416,117 @@ class SongPlayerActivity : AppCompatActivity(),
             mAdapter.setClickable(true)
         }
 
+    }
+
+    @SuppressLint("NewApi")
+    private fun displaySessionNotification(songModel: SongModel) {
+        Timber.d("displaySessionNotification()")
+
+        // Given a media session and its context (usually the component containing the session)
+        val mediaSession: MediaSessionCompat = SongPlayerUtils.createMediaSession(this, mp)
+
+        // Create a NotificationCompat.Builder
+
+        // Get the session's metadata
+        // var mediaSession: MediaSessionCompat = MediaSessionCompat(this, TAG)
+        controller = SongPlayerUtils.createMediaController(mediaSession)
+        /*val controlsCallback: MediaControllerCompat.Callback =
+            object : MediaControllerCompat.Callback() {
+                override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+                    super.onPlaybackStateChanged(state)
+
+                    when (state?.state?.toLong()) {
+                        PlaybackState.ACTION_PLAY -> {
+                            Timber.d("controlsCallback -  PlaybackState.ACTION_PLAY")
+                        }
+                        PlaybackState.ACTION_PAUSE -> {
+                            Timber.e("controlsCallback -  PlaybackState.ACTION_PAUSE")
+                        }
+                    }
+                }
+            }*/
+        //controller.registerCallback(controlsCallback)
+
+        val mediaMetadata = controller.metadata
+        val description = mediaMetadata?.description
+
+
+        val notification =
+            NotificationCompat.Builder(this, Constants.NOTIFICATION_MUSIC_CHANNEL_ID).apply {
+
+                // Add the metadata for the currently playing track
+                setContentTitle(description?.title)
+                setContentText(description?.subtitle)
+                setSubText(description?.description)
+                setLargeIcon(description?.iconBitmap)
+
+                // Enable launching the player by clicking the notification
+                setContentIntent(controller.sessionActivity)
+
+                // Stop the service when the notification is swiped away
+                setDeleteIntent(
+                    MediaButtonReceiver.buildMediaButtonPendingIntent(
+                        this@SongPlayerActivity,
+                        PlaybackStateCompat.ACTION_STOP
+                    )
+                )
+
+                // Show controls on lock screen even when user hides sensitive content.
+                setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+
+                // Add an app icon and set its accent color
+                // Be careful about the color
+                setSmallIcon(R.drawable.ic_music)
+
+                // Add a pause button
+                addAction(
+                    NotificationCompat.Action(
+                        R.drawable.ic_pause,
+                        getString(R.string.action_pause),
+                        MediaButtonReceiver.buildMediaButtonPendingIntent(
+                            this@SongPlayerActivity,
+                            PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        )
+                    )
+                )
+
+
+                // Add media control buttons that invoke intents in your media service
+                //.addAction(R.drawable.ic_previous, "Previous", prevPendingIntent) // #0
+                //.addAction(R.drawable.ic_pause, "Pause", pausePendingIntent) // #1
+                //.addAction(R.drawable.ic_next, "Next", nextPendingIntent) // #2
+                // Apply the media style template
+                setStyle(
+                    // Take advantage of MediaStyle features
+                    androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(0 /* #1: pause button */)
+                        .setMediaSession(mediaSession.sessionToken)
+
+                        // Add a cancel button
+                        .setShowCancelButton(true)
+                        .setCancelButtonIntent(
+                            MediaButtonReceiver.buildMediaButtonPendingIntent(
+                                this@SongPlayerActivity,
+                                PlaybackStateCompat.ACTION_STOP
+                            )
+                        )
+                )
+                setContentTitle(songModel.name)
+                setContentText(songModel.path)
+                setLargeIcon(
+                    UIManager.getDrawable(
+                        this@SongPlayerActivity,
+                        R.drawable.logo_colors
+                    )!!
+                )
+            }
+
+        with(NotificationManagerCompat.from(this)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(Constants.NOTIFICATION_MUSIC_ID, notification.build())
+            // Provide a unique integer for the "notificationId" of each notification.
+            mServiceMusic.startForeground(Constants.NOTIFICATION_MUSIC_ID, notification.build())
+        }
     }
 
     /**
@@ -469,7 +664,6 @@ class SongPlayerActivity : AppCompatActivity(),
     }
 
     override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
-
         Timber.i("onTransitionStarted()")
     }
 
@@ -485,5 +679,4 @@ class SongPlayerActivity : AppCompatActivity(),
     override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
         Timber.i("onTransitionTrigger()")
     }
-
 }
