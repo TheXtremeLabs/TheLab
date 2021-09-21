@@ -20,6 +20,7 @@ import com.riders.thelab.ui.googledrive.GoogleDriveActivity
 import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
 import com.riders.thelab.ui.kat.KatActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
+import com.riders.thelab.ui.lottie.LottieActivity
 import com.riders.thelab.ui.multipane.MultipaneActivity
 import com.riders.thelab.ui.palette.PaletteActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
@@ -402,6 +403,22 @@ class AppBuilderUtils {
                     .withActivityClass(DownloadActivity::class.java)
                     .build()
             list.add(download)
+
+            // lottie
+            val lottie =
+                AppBuilder
+                    .withId(26L)
+                    .withActivityTitle("Lottie")
+                    .withActivityDescription("Lottie is a mobile library for Android and iOS that parses Adobe After Effects animations and renders them natively on mobile!...")
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_lottie_icon
+                        )
+                    )
+                    .withActivityClass(LottieActivity::class.java)
+                    .build()
+            list.add(lottie)
 
             // Wip
             val wip =

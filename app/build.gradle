@@ -255,6 +255,9 @@ dependencies {
     implementation rootProject.ext.generalDependencies.goldfinger
     implementation rootProject.ext.generalDependencies.goldfingerRX
 
+    // Lottie
+    implementation rootProject.ext.generalDependencies.lottie
+
 
     //ThreeTen : Alternative to Android Calendar API
     implementation rootProject.ext.generalDependencies.threeten
