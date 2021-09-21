@@ -372,6 +372,12 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".ui.lottie.LottieActivity"
+            android:label="@string/activity_title_lottie"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="fullSensor" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 

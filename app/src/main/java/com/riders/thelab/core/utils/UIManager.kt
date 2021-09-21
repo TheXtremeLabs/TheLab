@@ -312,6 +312,12 @@ class UIManager private constructor() {
             menu.setGroupVisible(R.id.menu_main_group, true)
         }
 
+        fun getBitmapFromDrawable(context: Context, drawableResId: Int): Bitmap? {
+            if (0 == drawableResId)
+                return null
+            return drawableToBitmap(ContextCompat.getDrawable(context, drawableResId)!!)
+        }
+
         /**
          * Hide menu buttons when collapse toolbar is expanded
          */
@@ -329,5 +335,10 @@ class UIManager private constructor() {
         fun setBackgroundColor(context: Context, targetView: View, colorResID: Int) {
             targetView.setBackgroundColor(ContextCompat.getColor(context, colorResID))
         }
+
+        fun updateToolbarIcon(activity: Activity, menu: Menu, actionId: Int, drawableResId: Int) {
+            menu.findItem(actionId)?.icon = ContextCompat.getDrawable(activity, drawableResId)
+        }
+
     }
 }

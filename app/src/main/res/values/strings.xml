@@ -373,4 +373,7 @@
     <!-- Download -->
     <string name="activity_title_download">Download</string>
 
+    <!-- Lottie -->
+    <string name="activity_title_lottie">Lottie</string>
+
 </resources>
