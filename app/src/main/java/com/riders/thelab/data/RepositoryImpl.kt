@@ -14,6 +14,7 @@ import com.google.firebase.storage.StorageReference
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.data.local.DbImpl
 import com.riders.thelab.data.local.model.Contact
+import com.riders.thelab.data.local.model.Download
 import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.data.local.model.weather.CityModel
@@ -214,5 +215,9 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun getBulkWeatherCitiesFile(): ResponseBody {
         return mApiImpl.getBulkWeatherCitiesFile()
+    }
+
+    override suspend fun getBulkDownload(): Flow<Download> {
+        return mApiImpl.getBulkDownload()
     }
 }
