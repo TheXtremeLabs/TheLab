@@ -613,7 +613,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun applyRecycler() {
         Timber.d("applyRecycler()")
-        var layoutManager: RecyclerView.LayoutManager?
+        val layoutManager: RecyclerView.LayoutManager?
 
         if (!LabCompatibilityManager.isTablet(this)) {
 
@@ -720,15 +720,27 @@ class MainActivity : AppCompatActivity(),
                     if (!isWifiEnabled) {
                         Timber.d("(this.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager) $isWifiEnabled")
                         Timber.d("This should activate wifi")
+
                         isWifiEnabled = true
-                        menu?.findItem(R.id.action_connection_settings)?.icon =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_wifi)
+
+                        UIManager.updateToolbarIcon(
+                            this@MainActivity,
+                            menu!!,
+                            R.id.action_connection_settings,
+                            R.drawable.ic_wifi
+                        )
                     } else {
                         Timber.d("(this.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager) $isWifiEnabled")
                         Timber.d("This should disable wifi")
+
                         isWifiEnabled = false
-                        menu?.findItem(R.id.action_connection_settings)?.icon =
-                            ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_wifi_off)
+
+                        UIManager.updateToolbarIcon(
+                            this@MainActivity,
+                            menu!!,
+                            R.id.action_connection_settings,
+                            R.drawable.ic_wifi_off
+                        )
                     }
                     this.isWifiEnabled = !isWifiEnabled
                 }
@@ -920,10 +932,15 @@ class MainActivity : AppCompatActivity(),
     private fun updateToolbarConnectionIcon(isConnected: Boolean) {
         Timber.e("updateToolbarConnectionIcon, is connected : %s", isConnected)
         if (!LabCompatibilityManager.isTablet(this))
-            menu?.findItem(R.id.action_connection_settings)?.icon = ContextCompat.getDrawable(
-                this@MainActivity,
-                if (isConnected) R.drawable.ic_wifi else R.drawable.ic_wifi_off
-            )
+
+            runOnUiThread {
+                UIManager.updateToolbarIcon(
+                    this@MainActivity,
+                    menu!!,
+                    R.id.action_connection_settings,
+                    if (isConnected) R.drawable.ic_wifi else R.drawable.ic_wifi_off
+                )
+            }
     }
 
     override fun gpsStatus(isGPSEnable: Boolean) {
@@ -931,8 +948,14 @@ class MainActivity : AppCompatActivity(),
         Timber.d("turn on/off GPS - isGPSEnable : $isGPSEnable")
         isGPS = isGPSEnable
 
-        if (isGPS) menu?.findItem(R.id.action_location_settings)?.icon =
-            ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_location_on)
+        if (isGPS) {
+            UIManager.updateToolbarIcon(
+                this@MainActivity,
+                menu!!,
+                R.id.action_location_settings,
+                R.drawable.ic_location_on
+            )
+        }
     }
 
     override fun onLocationChanged(location: Location) {
