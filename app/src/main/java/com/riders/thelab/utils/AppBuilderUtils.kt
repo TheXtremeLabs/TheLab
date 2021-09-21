@@ -12,6 +12,7 @@ import com.riders.thelab.ui.colors.ColorActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
 import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity
+import com.riders.thelab.ui.download.DownloadActivity
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity
 import com.riders.thelab.ui.floatingview.FloatingViewActivity
@@ -390,6 +391,17 @@ class AppBuilderUtils {
                     .withActivityClass(GoogleDriveActivity::class.java)
                     .build()
             list.add(googleDrive)
+
+            // download
+            val download =
+                AppBuilder
+                    .withId(25L)
+                    .withActivityTitle("Download")
+                    .withActivityDescription("Download file using Kotlin Flow...")
+                    .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_download))
+                    .withActivityClass(DownloadActivity::class.java)
+                    .build()
+            list.add(download)
 
             // Wip
             val wip =
