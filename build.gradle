@@ -92,6 +92,8 @@ ext {
     // GoldFinger
     goldfingerVersion = '2.0.1'
 
+    lottieVersion = '4.1.0'
+
     threetenVersion = '1.3.1'
 
     timberVersion = '5.0.1'
@@ -107,7 +109,7 @@ ext {
             kotlinCoroutines         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
             kotlinCoroutinesAndroid  : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion",
             kotlinParcelize          : "org.jetbrains.kotlin:kotlin-parcelize-runtime:$kotlinVersion",
-            kotlinPlaySevices          : "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$kotlinPlayServices",
+            kotlinPlaySevices        : "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$kotlinPlayServices",
 
             // KTX framework
             activityKTX              : "androidx.activity:activity-ktx:$activityKtxVersion",
@@ -227,6 +229,9 @@ ext {
             // GoldFinger
             goldfinger               : "co.infinum:goldfinger:$goldfingerVersion",
             goldfingerRX             : "co.infinum:goldfinger-rx:$goldfingerVersion",
+
+            // Lottie
+            lottie                   : "com.airbnb.android:lottie:$lottieVersion",
 
             // Timber : Logging library
             timber                   : "com.jakewharton.timber:timber:$timberVersion"
