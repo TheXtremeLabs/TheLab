@@ -13,7 +13,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_top"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="180dp"
         android:layout_margin="@dimen/medium_margin"
         app:cardBackgroundColor="@color/transparent"
         app:cardCornerRadius="@dimen/medium_margin"
@@ -155,7 +155,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_bottom"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="180dp"
         android:layout_margin="@dimen/medium_margin"
         app:cardBackgroundColor="@color/transparent"
         app:cardCornerRadius="@dimen/medium_margin"

@@ -389,7 +389,7 @@ class MainActivity : AppCompatActivity(),
         GlobalScope.launch(Dispatchers.Main) {
             Timber.d("resetProgressBars()")
 
-            binding.includeToolbarLayout?.llProgressBarContainer?.children?.let {
+            binding.includeToolbarLayout?.llProgressBarContainer?.children?.let { it ->
                 val size = it.count() - 1
 
                 for (i in size downTo 0) {
@@ -401,9 +401,9 @@ class MainActivity : AppCompatActivity(),
 
                         progressBar.progress = 100
 
-                        for (j in 100 downTo 0) {
-                            progressBar.progress = j
-                            delay(20)
+                        (100 downTo 0).forEach { percent ->
+                            progressBar.progress = percent
+                            delay(15)
                         }
                     }
                 }
