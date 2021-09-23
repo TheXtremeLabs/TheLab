@@ -573,7 +573,7 @@ class SongPlayerActivity : AppCompatActivity(),
                     toggleAnimation(view)
             }
 
-            R.id.cv_song_player -> {
+            R.id.tv_song_path -> {
                 if (!isToggle)
                     toggleAnimation(view)
             }
