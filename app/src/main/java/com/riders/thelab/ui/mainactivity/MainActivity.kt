@@ -940,12 +940,16 @@ class MainActivity : AppCompatActivity(),
         if (!LabCompatibilityManager.isTablet(this))
 
             runOnUiThread {
-                UIManager.updateToolbarIcon(
-                    this@MainActivity,
-                    menu!!,
-                    R.id.action_connection_settings,
-                    if (isConnected) R.drawable.ic_wifi else R.drawable.ic_wifi_off
-                )
+                try {
+                    UIManager.updateToolbarIcon(
+                        this@MainActivity,
+                        menu!!,
+                        R.id.action_connection_settings,
+                        if (isConnected) R.drawable.ic_wifi else R.drawable.ic_wifi_off
+                    )
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
+                }
             }
     }
 
