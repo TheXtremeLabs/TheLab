@@ -367,8 +367,8 @@
     <string name="name_id_token_activity">IdTokenActivity</string>
     <string name="desc_id_token_activity">Retrieving an ID Token for the user.</string>
 
-
     <string name="activity_title_google_drive">Google Drive</string>
+
 
     <!-- Download -->
     <string name="activity_title_download">Download</string>
@@ -376,4 +376,11 @@
     <!-- Lottie -->
     <string name="activity_title_lottie">Lottie</string>
 
+    <!-- Bluetooth -->
+    <string name="activity_bluetooth_title">Bluetooth</string>
+    <string name="bluetooth_on">Bluetooth On</string>
+    <string name="bluetooth_off">Bluetooth Off</string>
+    <string name="bluetooth_start_discovery">Start Discovery</string>
+    <string name="bluetooth_cancel_discovery">Cancel Discovery</string>
+    <string name="bluetooth_unable_to_discover">Unable to discover devices</string>
 </resources>
