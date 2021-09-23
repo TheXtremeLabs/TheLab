@@ -7,6 +7,7 @@ import com.riders.thelab.R
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.data.local.model.app.AppBuilder
 import com.riders.thelab.ui.biometric.BiometricActivity
+import com.riders.thelab.ui.bluetooth.BluetoothActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.colors.ColorActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
@@ -419,6 +420,23 @@ class AppBuilderUtils {
                     .withActivityClass(LottieActivity::class.java)
                     .build()
             list.add(lottie)
+
+            // Bluetooth
+            val bluetooth =
+                AppBuilder
+                    .withId(27L)
+                    .withActivityTitle("Bluetooth")
+                    .withActivityDescription("Bluetooth feature, retrieve bounded devices and scan available bluetooth connections...")
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_bluetooth
+                        )
+                    )
+                    .withActivityClass(BluetoothActivity::class.java)
+                    .build()
+            list.add(bluetooth)
+
 
             // Wip
             val wip =
