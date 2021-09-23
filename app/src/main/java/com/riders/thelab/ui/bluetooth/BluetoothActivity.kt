@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
@@ -16,6 +17,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.riders.thelab.R
+import com.riders.thelab.core.utils.UIManager
+import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.databinding.ActivityBluetoothBinding
 import timber.log.Timber
 
@@ -183,6 +186,16 @@ class BluetoothActivity : AppCompatActivity(),
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
         filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED)
         registerReceiver(receiver, filter)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return true
     }
 
     override fun onStop() {
