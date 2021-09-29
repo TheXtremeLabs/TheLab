@@ -9,8 +9,6 @@ import android.widget.BaseAdapter
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.R
 import com.riders.thelab.data.local.model.WorldPopulation
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class FilterListViewAdapter(context: Context, worldPopulationList: MutableList<WorldPopulation>) :
@@ -42,31 +40,33 @@ class FilterListViewAdapter(context: Context, worldPopulationList: MutableList<W
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
 
-        var convertView: View? = convertView
-        val holder: ViewHolder
+        var mConvertView: View? = convertView
+        var holder: ViewHolder? = null
 
         if (convertView == null) {
             holder = ViewHolder()
-            convertView = mInflater?.inflate(R.layout.row_filter_listview_item, null)
+            mConvertView = mInflater?.inflate(R.layout.row_filter_listview_item, null)
 
             // Locate the TextViews in listview_item.xml
-            if (convertView != null) {
-                holder.rank = convertView.findViewById(R.id.rank)
-                holder.country = convertView.findViewById(R.id.country)
-                holder.population = convertView.findViewById(R.id.population)
-                convertView.tag = holder
+            if (mConvertView != null) {
+                holder.rank = mConvertView.findViewById(R.id.rank)
+                holder.country = mConvertView.findViewById(R.id.country)
+                holder.population = mConvertView.findViewById(R.id.population)
+                mConvertView.tag = holder
             }
         } else {
-            holder = convertView.tag as ViewHolder
+            if (mConvertView != null) {
+                holder = mConvertView.tag as ViewHolder
+            }
         }
 
         // Set the results into TextViews
-        holder.rank!!.text = mWorldPopulationList!![position].rank
+        holder?.rank!!.text = mWorldPopulationList!![position].rank
         holder.country!!.text = mWorldPopulationList!![position].country
         holder.population!!.text = mWorldPopulationList!![position].population
 
         // Listen for ListView Item Click
-        convertView?.setOnClickListener {
+        mConvertView?.setOnClickListener {
             // Send single item click data to SingleItemView Class
             val intent = Intent(
                 mContext,
@@ -83,22 +83,22 @@ class FilterListViewAdapter(context: Context, worldPopulationList: MutableList<W
             mContext?.startActivity(intent)
         }
 
-        return convertView
+        return mConvertView
     }
 
     // Filter Class
-    fun filter(charText: String) {
+    fun filter(filterText: String) {
 
-        var charText = charText
+        var charText = filterText
 
-        charText = charText.toLowerCase(Locale.getDefault())
+        charText = charText.lowercase()
         mWorldPopulationList!!.clear()
 
         if (charText.isEmpty()) {
             mWorldPopulationList!!.addAll(arraylist!!)
         } else {
             for (wp in arraylist!!) {
-                if (wp.country.toLowerCase(Locale.getDefault()).contains(charText)) {
+                if (wp.country.lowercase().contains(charText)) {
                     mWorldPopulationList!!.add(wp)
                 }
             }

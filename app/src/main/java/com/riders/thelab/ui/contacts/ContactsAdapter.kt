@@ -32,7 +32,7 @@ class ContactsAdapter(
         val item = contactListFiltered!![position]
 
         holder.bindData(item)
-        holder.viewBinding.cvContactItem.setOnClickListener { view: View? ->
+        holder.viewBinding.cvContactItem.setOnClickListener {
             listener.onContactItemCLickListener(
                 item,
                 holder.adapterPosition
@@ -61,8 +61,8 @@ class ContactsAdapter(
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        if (row.name.toLowerCase(Locale.ROOT)
-                                .contains(charString.toLowerCase(Locale.ROOT))
+                        if (row.name.lowercase()
+                                .contains(charString.lowercase())
                             || row.email.contains(charSequence)
                         ) {
                             filteredList.add(row)

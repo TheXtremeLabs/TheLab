@@ -24,33 +24,38 @@ class ContactDetailActivity : AppCompatActivity() {
 
     private var mContext: Context? = null
 
+    private var _viewBinding: ActivityContactsDetailBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _viewBinding!!
+
     var itemNameDetail: String? = null
     var itemSurnameDetail: String? = null
     var itemEmailDetail: String? = null
     var itemImage: String? = null
 
-    lateinit var viewBinding: ActivityContactsDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityContactsDetailBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivityContactsDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         mContext = this
 
         getBundle()
 
-        ViewCompat.setTransitionName(viewBinding.appBarLayout, "icon")
+        ViewCompat.setTransitionName(binding.appBarLayout, "icon")
         supportPostponeEnterTransition()
 
         /*setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);*/
-        setSupportActionBar(viewBinding.contactDetailToolbar)
+        setSupportActionBar(binding.contactDetailToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        viewBinding.contactDetailCollapsingToolbar.title = itemNameDetail
-        viewBinding.contactDetailCollapsingToolbar.setExpandedTitleColor(
+        binding.contactDetailCollapsingToolbar.title = itemNameDetail
+        binding.contactDetailCollapsingToolbar.setExpandedTitleColor(
             ContextCompat.getColor(
                 this,
                 R.color.transparent
@@ -58,8 +63,8 @@ class ContactDetailActivity : AppCompatActivity() {
         )
         //        getSupportActionBar().setTitle(itemNameDetail);
 
-        viewBinding.appBarLayout.setExpanded(true)
-        viewBinding.appBarLayout.addOnOffsetChangedListener(object : OnOffsetChangedListener {
+        binding.appBarLayout.setExpanded(true)
+        binding.appBarLayout.addOnOffsetChangedListener(object : OnOffsetChangedListener {
             var isShow = false
             var scrollRange = -1
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
@@ -67,14 +72,20 @@ class ContactDetailActivity : AppCompatActivity() {
                     scrollRange = appBarLayout.totalScrollRange
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    viewBinding.contactDetailCollapsingToolbar.title = itemNameDetail
+                    binding.contactDetailCollapsingToolbar.title = itemNameDetail
                     isShow = true
                 } else if (isShow) {
-                    viewBinding.contactDetailCollapsingToolbar.title = " "
+                    binding.contactDetailCollapsingToolbar.title = " "
                     isShow = false
                 }
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.e("onDestroy()")
+        _viewBinding = null
     }
 
     private fun getBundle() {
@@ -90,7 +101,7 @@ class ContactDetailActivity : AppCompatActivity() {
     }
 
     private fun setViews() {
-        viewBinding.tvNameDetail.text = itemNameDetail
-        viewBinding.tvEmailDetail.text = itemEmailDetail
+        binding.tvNameDetail.text = itemNameDetail
+        binding.tvEmailDetail.text = itemEmailDetail
     }
 }

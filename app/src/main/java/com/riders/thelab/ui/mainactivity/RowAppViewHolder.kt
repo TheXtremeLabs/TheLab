@@ -35,7 +35,7 @@ class RowAppViewHolder constructor(
         // Load background image
         UIManager.loadImage(
             context,
-            app.appDrawableIcon!!,
+            app.appDrawableIcon,
             view as ShapeableImageView
         )
     }

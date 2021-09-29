@@ -58,7 +58,7 @@ class GpsUtils(private val context: Context) {
                     //  GPS is already enable, callback GPS status through listener
                     onGpsListener.gpsStatus(true)
                 }
-                ?.addOnFailureListener((context as Activity)) { exception ->
+                ?.addOnFailureListener(context) { exception ->
 
                     when ((exception as ApiException).statusCode) {
                         LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
