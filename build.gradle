@@ -8,7 +8,7 @@ ext {
     // version information
     versionMajor = 10
     versionMinor = 8
-    versionPatch = 5
+    versionPatch = 6
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
     // Kotlin
@@ -71,7 +71,7 @@ ext {
 
     firebaseBomVersion = '26.0.0'
     firebaseKtxVersion = '23.0.3'
-    adsVersion = '20.4.0'
+    adsVersion = '20.3.0'
 
     retrofit2Version = '2.9.0'
     okhttpBomVersion = '5.0.0-alpha.2'
