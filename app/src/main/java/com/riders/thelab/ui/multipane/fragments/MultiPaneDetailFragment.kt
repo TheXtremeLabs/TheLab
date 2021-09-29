@@ -17,7 +17,6 @@ import com.riders.thelab.data.local.model.Movie
 import com.riders.thelab.databinding.FragmentMultiPaneDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.util.*
 
 @AndroidEntryPoint
 class MultiPaneDetailFragment : Fragment() {

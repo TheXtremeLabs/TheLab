@@ -17,8 +17,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.databinding.ActivityBluetoothBinding
 import timber.log.Timber
 

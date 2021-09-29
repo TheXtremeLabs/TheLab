@@ -2,7 +2,6 @@ package com.riders.thelab.ui.contacts
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
@@ -35,7 +34,7 @@ class ContactsAdapter(
         holder.viewBinding.cvContactItem.setOnClickListener {
             listener.onContactItemCLickListener(
                 item,
-                holder.adapterPosition
+                holder.absoluteAdapterPosition
             )
         }
     }

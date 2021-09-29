@@ -290,7 +290,8 @@ class UIManager private constructor() {
             targetImageView: ShapeableImageView,
             listener: RequestListener<Drawable>
         ) {
-            LabGlideUtils.getInstance().loadImage(context, iconResDrawable, targetImageView, listener)
+            LabGlideUtils.getInstance()
+                .loadImage(context, iconResDrawable, targetImageView, listener)
         }
 
         /**

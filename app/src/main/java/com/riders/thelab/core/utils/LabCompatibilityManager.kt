@@ -137,10 +137,9 @@ class LabCompatibilityManager private constructor() {
             }
 
             // TEST
-            fields = null
+            fields = VERSION_CODES::class.java.fields
             val builder = StringBuilder()
             builder.append("android : ").append(Build.VERSION.RELEASE)
-            fields = VERSION_CODES::class.java.fields
             for (field in fields) {
                 val fieldName = field.name
                 var fieldValue = -1

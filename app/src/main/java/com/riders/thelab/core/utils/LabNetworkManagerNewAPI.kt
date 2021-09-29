@@ -20,9 +20,8 @@ class LabNetworkManagerNewAPI constructor(
         var isConnected = false
     }
 
-    init {
-        val mListener: ConnectivityListener = listener
-    }
+    val mListener: ConnectivityListener get() = listener
+
 
     /**
      * Check the Internet connection
@@ -38,7 +37,7 @@ class LabNetworkManagerNewAPI constructor(
         super.onAvailable(network)
         Timber.d("onAvailable()")
         isConnected = true
-        listener.onConnected()
+        mListener.onConnected()
     }
 
     override fun onBlockedStatusChanged(network: Network, blocked: Boolean) {
@@ -55,7 +54,7 @@ class LabNetworkManagerNewAPI constructor(
         super.onLost(network)
         Timber.e("onLost()")
         isConnected = false
-        listener.onLostConnection()
+        mListener.onLostConnection()
     }
 
     override fun onUnavailable() {
@@ -65,7 +64,7 @@ class LabNetworkManagerNewAPI constructor(
     }
 
 
-    @SuppressLint("WifiManagerPotentialLeak")
+    @SuppressLint("WifiManagerPotentialLeak", "InlinedApi")
     fun changeWifiState(applicationContext: Context, activity: Activity) {
         Timber.d("changeWifiState()")
 

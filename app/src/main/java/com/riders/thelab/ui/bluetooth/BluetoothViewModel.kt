@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.bluetooth
 
-import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,33 +16,40 @@ class BluetoothViewModel : ViewModel() {
         return isBluetoothEnabled
     }
 
-    fun setBluetooth(enable: Boolean) {
-        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        val isEnabled = bluetoothAdapter.isEnabled
+    fun setBluetooth(context: Context, enable: Boolean) {
+
+        /* Source : https://stackoverflow.com/questions/69122978/what-do-i-use-now-that-bluetoothadapter-getdefaultadapter-is-deprecated*/
+        val bluetoothManager =
+            context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+
+        val isEnabled = bluetoothManager.adapter.isEnabled
         if (enable && !isEnabled) {
-            isBluetoothEnabled.value = bluetoothAdapter.enable()
+            isBluetoothEnabled.value = bluetoothManager.adapter.enable()
         } else if (!enable && isEnabled) {
-            isBluetoothEnabled.value = bluetoothAdapter.disable()
+            isBluetoothEnabled.value = bluetoothManager.adapter.disable()
         }
         // No need to change bluetooth state
         // isBluetoothEnabled.value = true
     }
 
-    fun getBluetoothState(): Boolean {
-        val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        return bluetoothAdapter.isEnabled
+    fun getBluetoothState(context: Context): Boolean {
+        val bluetoothManager =
+            context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        return bluetoothManager.adapter.isEnabled
     }
 
-    fun startDiscovery() {
-        val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+    fun startDiscovery(context: Context) {
+        val bluetoothManager =
+            context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
 
-        if (!bluetoothAdapter.isDiscovering) {
-            bluetoothAdapter.startDiscovery()
+        if (!bluetoothManager.adapter.isDiscovering) {
+            bluetoothManager.adapter.startDiscovery()
         }
     }
 
-    fun stopDiscovery() {
-        val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        bluetoothAdapter.cancelDiscovery()
+    fun stopDiscovery(context: Context) {
+        val bluetoothManager =
+            context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothManager.adapter.cancelDiscovery()
     }
 }
