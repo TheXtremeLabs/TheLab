@@ -35,12 +35,6 @@ android {
         versionCode buildDateTime
         versionName rootProject.ext.versionName
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                includeCompileClasspath false
-            }
-        }
-
         // Enabling multidex support.
         multiDexEnabled true
 

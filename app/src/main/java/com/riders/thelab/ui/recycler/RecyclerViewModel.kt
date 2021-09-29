@@ -227,8 +227,7 @@ class RecyclerViewModel @Inject constructor(
     fun onDetailClick(
         activity: Activity,
         item: Artist,
-        sharedImageView: ShapeableImageView,
-        position: Int
+        sharedImageView: ShapeableImageView
     ) {
         Timber.d("onDetailClick(item, sharedImageView, position)")
 
