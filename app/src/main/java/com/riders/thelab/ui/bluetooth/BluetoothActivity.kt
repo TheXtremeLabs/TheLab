@@ -199,7 +199,7 @@ class BluetoothActivity : AppCompatActivity(),
     override fun onStop() {
         super.onStop()
 
-        mViewModel.stopDiscovery()
+        mViewModel.stopDiscovery(this@BluetoothActivity)
     }
 
     override fun onDestroy() {
@@ -234,12 +234,14 @@ class BluetoothActivity : AppCompatActivity(),
 
     private fun initSwitch() {
         binding.switchBluetooth.text =
-            if (!mViewModel.getBluetoothState()) getString(R.string.bluetooth_off) else getString(R.string.bluetooth_on)
-        binding.switchBluetooth.isChecked = mViewModel.getBluetoothState()
+            if (!mViewModel.getBluetoothState(this@BluetoothActivity)) getString(R.string.bluetooth_off) else getString(
+                R.string.bluetooth_on
+            )
+        binding.switchBluetooth.isChecked = mViewModel.getBluetoothState(this@BluetoothActivity)
     }
 
     private fun initButton() {
-        val isBluetoothEnabled = mViewModel.getBluetoothState()
+        val isBluetoothEnabled = mViewModel.getBluetoothState(this@BluetoothActivity)
         changeButton(
             if (!isBluetoothEnabled) getString(R.string.bluetooth_unable_to_discover) else getString(
                 R.string.bluetooth_start_discovery
@@ -272,7 +274,7 @@ class BluetoothActivity : AppCompatActivity(),
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         if (binding.switchBluetooth.isShown) {
-            mViewModel.setBluetooth(isChecked)
+            mViewModel.setBluetooth(this@BluetoothActivity, isChecked)
         }
     }
 

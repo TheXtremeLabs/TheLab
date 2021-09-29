@@ -14,7 +14,6 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.common.api.internal.OnConnectionFailedListener
-import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
@@ -242,7 +241,7 @@ class GoogleDriveActivity
             // and GoogleAccountCredential as parameters
             return Drive
                 .Builder(
-                    AndroidHttp.newCompatibleTransport(),
+                    NetHttpTransport.Builder().build(),
                     JacksonFactory.getDefaultInstance(),
                     credential
                 )

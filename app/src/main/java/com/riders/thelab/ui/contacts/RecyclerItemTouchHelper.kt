@@ -72,7 +72,7 @@ class RecyclerItemTouchHelper constructor(
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        listener!!.onSwiped(viewHolder, direction, viewHolder.adapterPosition)
+        listener!!.onSwiped(viewHolder, direction, viewHolder.absoluteAdapterPosition)
     }
 
     override fun convertToAbsoluteDirection(flags: Int, layoutDirection: Int): Int {
