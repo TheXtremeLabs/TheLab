@@ -182,14 +182,14 @@ class ContactsActivity
 
         if (viewHolder is ContactsViewHolder) {
             // get the removed item name to display it in snack bar
-            val name: String? = contactList?.get(viewHolder.getAdapterPosition())?.name
+            val name: String? = contactList?.get(viewHolder.absoluteAdapterPosition)?.name
 
             // backup of removed item for undo purpose
-            val deletedItem: Contact? = contactList?.get(viewHolder.getAdapterPosition())
-            val deletedIndex = viewHolder.getAdapterPosition()
+            val deletedItem: Contact? = contactList?.get(viewHolder.absoluteAdapterPosition)
+            val deletedIndex = viewHolder.absoluteAdapterPosition
 
             // remove the item from recycler view
-            mAdapter!!.removeItem(viewHolder.getAdapterPosition())
+            mAdapter!!.removeItem(viewHolder.absoluteAdapterPosition)
 
             // showing snack bar with Undo option
             UIManager.showActionInSnackBar(

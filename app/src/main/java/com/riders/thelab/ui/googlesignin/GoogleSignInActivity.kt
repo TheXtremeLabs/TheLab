@@ -85,6 +85,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         try {
             val account = completedTask.getResult(ApiException::class.java)
             val idToken = account.idToken
+            Timber.d("Token fetched : $idToken")
 
             // TODO(developer): send ID Token to server and validate
             updateUI(account)

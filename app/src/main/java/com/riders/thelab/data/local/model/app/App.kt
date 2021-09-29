@@ -51,7 +51,7 @@ data class App(
             // Custom write implementation
             parcel.writeLong(id)
             var bitmap: Bitmap? = null
-            
+
             if (appDrawableIcon is BitmapDrawable) {
                 bitmap = (appDrawableIcon as BitmapDrawable).bitmap as Bitmap
             } else if (appDrawableIcon is VectorDrawable) {

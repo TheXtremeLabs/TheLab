@@ -149,8 +149,7 @@ class LabDeviceManager private constructor() {
 
         @SuppressLint("NewApi")
         fun getScreenHeight(activity: Activity): Int {
-            var screenHeight = 0
-            screenHeight = if (LabCompatibilityManager.isAndroid10()
+            val screenHeight: Int = if (LabCompatibilityManager.isAndroid10()
                 && getModel().trim { it <= ' ' }.lowercase()
                     .contains(Constants.EMULATOR_DEVICE_TAG)
             ) {
@@ -165,8 +164,7 @@ class LabDeviceManager private constructor() {
 
         @SuppressLint("NewApi")
         fun getScreenWidth(activity: Activity): Int {
-            var screenWidth = 0
-            screenWidth = if (LabCompatibilityManager.isAndroid10()
+            val screenWidth: Int = if (LabCompatibilityManager.isAndroid10()
                 && getModel().trim { it <= ' ' }.lowercase()
                     .contains(Constants.EMULATOR_DEVICE_TAG)
             ) {

@@ -11,8 +11,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
@@ -20,8 +18,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.animation.addListener
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.marginTop
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.media.session.MediaButtonReceiver
@@ -36,7 +32,6 @@ import com.riders.thelab.R
 import com.riders.thelab.core.service.MusicMediaPlaybackService
 import com.riders.thelab.core.utils.LabNotificationManager
 import com.riders.thelab.core.utils.SongsManager
-import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.music.SongModel
 import com.riders.thelab.databinding.ActivitySongPlayerBinding
 import com.riders.thelab.utils.Constants
@@ -57,6 +52,7 @@ class SongPlayerActivity : AppCompatActivity(),
         get() = Dispatchers.Main + Job()
 
     private var _viewBinding: ActivitySongPlayerBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _viewBinding!!
@@ -67,11 +63,11 @@ class SongPlayerActivity : AppCompatActivity(),
     private lateinit var mp: MediaPlayer
 
     // Handler to update UI timer, progress bar etc,.
-    private var mHandler: Handler? = Handler()
+    private var mHandler: Handler? = null
     private var songManager: SongsManager? = null
-    private val seekForwardTime = 5000 // 5000 milliseconds
+    // private val seekForwardTime = 5000 // 5000 milliseconds
 
-    private val seekBackwardTime = 5000 // 5000 milliseconds
+    // private val seekBackwardTime = 5000 // 5000 milliseconds
 
     private var currentSongIndex = 0
     private val isShuffle = false
@@ -86,6 +82,29 @@ class SongPlayerActivity : AppCompatActivity(),
 
     private lateinit var mAdapter: SongPlayerAdapter
 
+    /**
+     * Background Runnable thread
+     */
+    private val mUpdateTimeTask: Runnable = object : Runnable {
+        override fun run() {
+            val totalDuration = mp.duration.toLong()
+            val currentDuration = mp.currentPosition.toLong()
+
+            // Displaying Total Duration time
+            //songTotalDurationLabel.setText("" + utils.milliSecondsToTimer(totalDuration))
+            // Displaying time completed playing
+            //songCurrentDurationLabel.setText("" + utils.milliSecondsToTimer(currentDuration))
+
+            // Updating progress bar
+            val progress = SongPlayerUtils.getProgressPercentage(currentDuration, totalDuration)
+            //Log.d("Progress", ""+progress);
+            if (_viewBinding != null) binding.songProgressBar.progress = progress
+
+            mHandler = Handler()
+            // Running this thread after 100 milliseconds
+            mHandler?.postDelayed(this, 100)
+        }
+    }
 
     private lateinit var controller: MediaControllerCompat
     private lateinit var mServiceMusic: MusicMediaPlaybackService
@@ -418,117 +437,6 @@ class SongPlayerActivity : AppCompatActivity(),
 
     }
 
-    @SuppressLint("NewApi")
-    private fun displaySessionNotification(songModel: SongModel) {
-        Timber.d("displaySessionNotification()")
-
-        // Given a media session and its context (usually the component containing the session)
-        val mediaSession: MediaSessionCompat = SongPlayerUtils.createMediaSession(this, mp)
-
-        // Create a NotificationCompat.Builder
-
-        // Get the session's metadata
-        // var mediaSession: MediaSessionCompat = MediaSessionCompat(this, TAG)
-        controller = SongPlayerUtils.createMediaController(mediaSession)
-        /*val controlsCallback: MediaControllerCompat.Callback =
-            object : MediaControllerCompat.Callback() {
-                override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-                    super.onPlaybackStateChanged(state)
-
-                    when (state?.state?.toLong()) {
-                        PlaybackState.ACTION_PLAY -> {
-                            Timber.d("controlsCallback -  PlaybackState.ACTION_PLAY")
-                        }
-                        PlaybackState.ACTION_PAUSE -> {
-                            Timber.e("controlsCallback -  PlaybackState.ACTION_PAUSE")
-                        }
-                    }
-                }
-            }*/
-        //controller.registerCallback(controlsCallback)
-
-        val mediaMetadata = controller.metadata
-        val description = mediaMetadata?.description
-
-
-        val notification =
-            NotificationCompat.Builder(this, Constants.NOTIFICATION_MUSIC_CHANNEL_ID).apply {
-
-                // Add the metadata for the currently playing track
-                setContentTitle(description?.title)
-                setContentText(description?.subtitle)
-                setSubText(description?.description)
-                setLargeIcon(description?.iconBitmap)
-
-                // Enable launching the player by clicking the notification
-                setContentIntent(controller.sessionActivity)
-
-                // Stop the service when the notification is swiped away
-                setDeleteIntent(
-                    MediaButtonReceiver.buildMediaButtonPendingIntent(
-                        this@SongPlayerActivity,
-                        PlaybackStateCompat.ACTION_STOP
-                    )
-                )
-
-                // Show controls on lock screen even when user hides sensitive content.
-                setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-
-                // Add an app icon and set its accent color
-                // Be careful about the color
-                setSmallIcon(R.drawable.ic_music)
-
-                // Add a pause button
-                addAction(
-                    NotificationCompat.Action(
-                        R.drawable.ic_pause,
-                        getString(R.string.action_pause),
-                        MediaButtonReceiver.buildMediaButtonPendingIntent(
-                            this@SongPlayerActivity,
-                            PlaybackStateCompat.ACTION_PLAY_PAUSE
-                        )
-                    )
-                )
-
-
-                // Add media control buttons that invoke intents in your media service
-                //.addAction(R.drawable.ic_previous, "Previous", prevPendingIntent) // #0
-                //.addAction(R.drawable.ic_pause, "Pause", pausePendingIntent) // #1
-                //.addAction(R.drawable.ic_next, "Next", nextPendingIntent) // #2
-                // Apply the media style template
-                setStyle(
-                    // Take advantage of MediaStyle features
-                    androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(0 /* #1: pause button */)
-                        .setMediaSession(mediaSession.sessionToken)
-
-                        // Add a cancel button
-                        .setShowCancelButton(true)
-                        .setCancelButtonIntent(
-                            MediaButtonReceiver.buildMediaButtonPendingIntent(
-                                this@SongPlayerActivity,
-                                PlaybackStateCompat.ACTION_STOP
-                            )
-                        )
-                )
-                setContentTitle(songModel.name)
-                setContentText(songModel.path)
-                setLargeIcon(
-                    UIManager.getDrawable(
-                        this@SongPlayerActivity,
-                        R.drawable.logo_colors
-                    )!!
-                )
-            }
-
-        with(NotificationManagerCompat.from(this)) {
-            // notificationId is a unique int for each notification that you must define
-            notify(Constants.NOTIFICATION_MUSIC_ID, notification.build())
-            // Provide a unique integer for the "notificationId" of each notification.
-            mServiceMusic.startForeground(Constants.NOTIFICATION_MUSIC_ID, notification.build())
-        }
-    }
-
     /**
      * Update timer on seekbar
      */
@@ -536,28 +444,6 @@ class SongPlayerActivity : AppCompatActivity(),
         mHandler?.postDelayed(mUpdateTimeTask, 100)
     }
 
-    /**
-     * Background Runnable thread
-     */
-    private val mUpdateTimeTask: Runnable = object : Runnable {
-        override fun run() {
-            val totalDuration = mp.duration.toLong()
-            val currentDuration = mp.currentPosition.toLong()
-
-            // Displaying Total Duration time
-            //songTotalDurationLabel.setText("" + utils.milliSecondsToTimer(totalDuration))
-            // Displaying time completed playing
-            //songCurrentDurationLabel.setText("" + utils.milliSecondsToTimer(currentDuration))
-
-            // Updating progress bar
-            val progress = SongPlayerUtils.getProgressPercentage(currentDuration, totalDuration)
-            //Log.d("Progress", ""+progress);
-            if (_viewBinding != null) binding.songProgressBar.progress = progress
-
-            // Running this thread after 100 milliseconds
-            mHandler?.postDelayed(this, 100)
-        }
-    }
 
     override fun onSongClick(view: View, item: SongModel) {
         Timber.d("onFileClick() - $item")
@@ -650,7 +536,6 @@ class SongPlayerActivity : AppCompatActivity(),
     }
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
         mHandler?.removeCallbacks(mUpdateTimeTask)
         val totalDuration = mp.duration
         val currentPosition: Int =

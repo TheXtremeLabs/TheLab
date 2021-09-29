@@ -19,7 +19,6 @@ import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.databinding.ActivityYoutubeDetailBinding
 import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
-import java.util.*
 
 class YoutubeLikeDetailActivity : AppCompatActivity() {
 

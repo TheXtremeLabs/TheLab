@@ -58,7 +58,7 @@ import kotlin.math.roundToInt
 class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
     private var _viewBinding: ActivityWeatherBinding? = null
-    
+
     private val binding get() = _viewBinding!!
 
     private val mWeatherViewModel: WeatherViewModel by viewModels()
