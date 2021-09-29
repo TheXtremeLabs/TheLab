@@ -59,7 +59,7 @@ data class App(
             }
             parcel.writeParcelable(bitmap, flags)
 
-            appName?.let { parcel.writeString(appName) }
+            appName.let { parcel.writeString(appName) }
             parcel.writeString(appVersion)
             parcel.writeString(appPackageName)
             parcel.writeString(appTitle)
@@ -73,7 +73,7 @@ data class App(
     @IgnoredOnParcel
     private var name: String? = null
 
-    //@IgnoredOnParcel
+    @IgnoredOnParcel
     private var drawableIcon: Drawable? = null
 
     @IgnoredOnParcel

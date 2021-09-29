@@ -27,7 +27,7 @@ class WeatherRestClient {
             .addInterceptor(Interceptor { chain: Interceptor.Chain ->
                 val original = chain.request()
                 val originalHttpUrl = original.url
-                var url: HttpUrl? = null
+                var url: HttpUrl?
 
                 // Request customization: add request headers
                 url = originalHttpUrl.newBuilder()

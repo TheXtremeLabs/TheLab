@@ -84,7 +84,7 @@ class MultiPaneDetailFragment : Fragment() {
 
         Timber.e("URL RECEIVE : %s", movie.urlThumbnail)
 
-        Glide.with(Objects.requireNonNull(activity)!!)
+        Glide.with(requireActivity())
             .load(movie.urlThumbnail)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(

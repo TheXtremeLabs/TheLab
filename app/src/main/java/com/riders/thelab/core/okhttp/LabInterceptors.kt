@@ -45,7 +45,7 @@ class LabInterceptors {
                 .newBuilder()
                 .body(
                     ResponseBody.create(
-                        Objects.requireNonNull(response.body)!!.contentType(),
+                        response.body?.contentType(),
                         jsonResponse
                     )
                 )

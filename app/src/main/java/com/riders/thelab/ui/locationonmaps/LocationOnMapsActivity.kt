@@ -71,7 +71,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var mLocation: Location
     private lateinit var mLocationManager: LocationManager
     private var mCriteria: Criteria? = null
-    private var mProvider = ""
+    private var mProvider: String? = null
 
     // bunch of location related apis
     private var mFusedLocationClient: FusedLocationProviderClient? = null
@@ -341,14 +341,14 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             labLocationManager.showSettingsAlert()
         } else {
             try {
-                mLocation = mLocationManager.getLastKnownLocation(mProvider)!!
+                mLocation = mLocationManager.getLastKnownLocation(mProvider!!)!!
             } catch (e: SecurityException) {
                 e.printStackTrace()
             }
             onLocationChanged(mLocation)
             try {
                 mLocationManager.requestLocationUpdates(
-                    mProvider,
+                    mProvider!!,
                     20000,
                     0f,
                     this

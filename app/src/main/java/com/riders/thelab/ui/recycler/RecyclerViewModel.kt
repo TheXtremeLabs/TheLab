@@ -177,7 +177,7 @@ class RecyclerViewModel @Inject constructor(
                         Timber.e(throwable)
                         return@addOnFailureListener
                     }
-                    .addOnCompleteListener { taskResult: Task<Uri?>? ->
+                    .addOnCompleteListener {
                         return@addOnCompleteListener
 
                     }
@@ -197,7 +197,7 @@ class RecyclerViewModel @Inject constructor(
                             Timber.e(throwable)
                             return@addOnFailureListener
                         }
-                        .addOnCompleteListener { task1: Task<Uri?>? ->
+                        .addOnCompleteListener {
                             return@addOnCompleteListener
                         }
                 }
@@ -274,7 +274,7 @@ class RecyclerViewModel @Inject constructor(
             activity, activity.findViewById(android.R.id.content),
             "$name removed from cart!", SnackBarType.WARNING,
             "UNDO"
-        ) { view: View? ->
+        ) {
             // undo is selected, restore the deleted item
             adapter.restoreItem(item, position)
         }

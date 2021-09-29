@@ -268,7 +268,7 @@ class GoogleDriveActivity
                 try {
                     Timber.d("googleDriveService.files()")
 
-                    var pageToken: String? = null
+                    var pageToken: String?
 
                     do {
                         val result: FileList = googleDriveService.files().list().apply {
