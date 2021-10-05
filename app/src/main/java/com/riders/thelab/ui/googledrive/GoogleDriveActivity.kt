@@ -5,6 +5,7 @@ import android.content.IntentSender
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.GoogleAuthException
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -174,6 +175,8 @@ class GoogleDriveActivity
             // From the GoogleSignInClient object we can get the signInIntent
             // which we can use in startActivityForResult to trigger the login flow
             val signInIntent = mGoogleSignInClient?.signInIntent
+
+            @Suppress("DEPRECATION")
             startActivityForResult(signInIntent, CONST_SIGN_IN)
         }
     }
@@ -263,7 +266,7 @@ class GoogleDriveActivity
     private fun accessDriveFiles() {
         Timber.i("accessDriveFiles()")
         checkLastSignedInAccount()?.let { googleDriveService ->
-            GlobalScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     Timber.d("googleDriveService.files()")
 
@@ -292,6 +295,7 @@ class GoogleDriveActivity
                     ex.printStackTrace()
 
                     withContext(Dispatchers.Main) {
+                        @Suppress("DEPRECATION")
                         startActivityForResult(ex.intent, REQUEST_SIGN_IN)
                     }
                 } catch (transientEx: IOException) {

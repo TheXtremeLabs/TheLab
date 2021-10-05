@@ -36,7 +36,6 @@
             tools:motionDebug="SHOW_ALL">
 
             <!-- Collapsed GuidelinesStuff -->
-
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/collapsed_guideline_thumb"
                 android:layout_width="0dp"

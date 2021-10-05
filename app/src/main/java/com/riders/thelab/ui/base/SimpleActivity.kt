@@ -21,6 +21,6 @@ class SimpleActivity : AppCompatActivity() {
             ab.title = title
             if (subTitle != null) ab.subtitle = subTitle
         }
-        toolbar.setNavigationOnClickListener { view: View? -> onBackPressed() }
+        toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 }

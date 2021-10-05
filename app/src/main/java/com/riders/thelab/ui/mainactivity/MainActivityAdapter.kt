@@ -101,7 +101,7 @@ class MainActivityAdapter constructor(
         holder.viewBinding.rowItemCardView?.setOnClickListener { view: View? ->
             lastPosition = position
             notifyDataSetChanged()
-            mListener.onAppItemCLickListener(view!!, item, holder.adapterPosition)
+            mListener.onAppItemCLickListener(view!!, item, holder.absoluteAdapterPosition)
         }
     }
 

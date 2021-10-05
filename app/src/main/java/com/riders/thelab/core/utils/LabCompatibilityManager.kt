@@ -140,6 +140,7 @@ class LabCompatibilityManager private constructor() {
             fields = VERSION_CODES::class.java.fields
             val builder = StringBuilder()
             builder.append("android : ").append(Build.VERSION.RELEASE)
+
             for (field in fields) {
                 val fieldName = field.name
                 var fieldValue = -1
@@ -158,7 +159,7 @@ class LabCompatibilityManager private constructor() {
                         .append("sdk=").append(fieldValue)
                 }
             }
-            fields = null
+
             Timber.e("OS: %s", builder.toString())
             // TEST
             return OSName

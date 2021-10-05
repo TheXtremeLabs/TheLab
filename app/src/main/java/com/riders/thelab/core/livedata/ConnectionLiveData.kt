@@ -16,6 +16,7 @@ class ConnectionLiveData(
 
     override fun onActive() {
         super.onActive()
+        @Suppress("DEPRECATION")
         val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         context.registerReceiver(networkReceiver, filter)
     }
@@ -28,12 +29,15 @@ class ConnectionLiveData(
     private val networkReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             if (intent.extras != null) {
+                @Suppress("DEPRECATION")
                 val activeNetwork =
                     intent.extras!![ConnectivityManager.EXTRA_NETWORK_INFO] as NetworkInfo?
+                @Suppress("DEPRECATION")
                 val isConnected = activeNetwork != null &&
                         activeNetwork.isConnectedOrConnecting
 
                 if (isConnected) {
+                    @Suppress("DEPRECATION")
                     when (activeNetwork!!.type) {
                         ConnectivityManager.TYPE_WIFI ->
                             value = ConnectionModel(ConnectivityManager.TYPE_WIFI, true)

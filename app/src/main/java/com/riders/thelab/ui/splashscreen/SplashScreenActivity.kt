@@ -15,6 +15,7 @@ import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
+import androidx.lifecycle.lifecycleScope
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabAnimationsManager
 import com.riders.thelab.core.utils.LabCompatibilityManager
@@ -24,11 +25,17 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
 
 
 @AndroidEntryPoint
-class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
+class SplashScreenActivity : AppCompatActivity(),
+    CoroutineScope,
+    OnPreparedListener,
     OnCompletionListener {
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + Job()
 
     companion object {
         private const val ANDROID_RES_PATH = "android.resource://"
@@ -226,13 +233,11 @@ class SplashScreenActivity : AppCompatActivity(), OnPreparedListener,
         fadeProgressAnimator.start()
     }
 
-    @DelicateCoroutinesApi
     private fun clearAllAnimations() {
-        Timber.d("clearAllAnimations()")
+        Timber.d("clearAllAnimations() - Use coroutines to clear animations then launch Main Activity")
 
-        Timber.d("Use coroutines to clear animations then launch Main Activity")
         // Use coroutines to clear animations then launch Main Activity
-        GlobalScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch(coroutineContext) {
             Timber.d("Use coroutines to clear animations")
             LabAnimationsManager.getInstance().clearAnimations(
                 versionTextAnimator, fadeProgressAnimator

@@ -151,6 +151,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             }
         }
 
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -309,6 +310,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             }
         }
         mRequestingLocationUpdates = false
+        @Suppress("DEPRECATION")
         mLocationRequest = LocationRequest()
         mLocationRequest!!.interval = UPDATE_INTERVAL_IN_MILLISECONDS
         mLocationRequest!!.fastestInterval = FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS
