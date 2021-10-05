@@ -21,6 +21,7 @@ import timber.log.Timber
 class HomeFragment : BaseFragment() {
 
     private var _viewBinding: FragmentHomeBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _viewBinding!!

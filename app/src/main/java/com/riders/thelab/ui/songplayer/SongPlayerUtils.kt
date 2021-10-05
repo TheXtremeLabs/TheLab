@@ -83,9 +83,11 @@ class SongPlayerUtils {
             }
             mediaSession.setCallback(callback)
 
+            @Suppress("DEPRECATION")
             mediaSession.setFlags(
                 MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
             )
+
             mediaSession.setPlaybackState(
                 PlaybackStateCompat.Builder()
                     .setState(

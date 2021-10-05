@@ -3,31 +3,35 @@ package com.riders.thelab.ui.tabs
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayoutMediator
 import com.riders.thelab.databinding.ActivityTabsBinding
 import com.riders.thelab.ui.tabs.fragment.OneFragment
 import com.riders.thelab.ui.tabs.fragment.ThreeFragment
 import com.riders.thelab.ui.tabs.fragment.TwoFragment
-import java.util.*
+import timber.log.Timber
 
 class WorkingTabsActivity : AppCompatActivity() {
 
-    lateinit var viewBinding: ActivityTabsBinding
+    private var _viewBinding: ActivityTabsBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _viewBinding!!
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityTabsBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivityTabsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setSupportActionBar(viewBinding.tabToolbar)
+        setSupportActionBar(binding.tabToolbar)
 
-        setupViewPager(viewBinding.tabViewPager)
+        setupViewPager(binding.tabViewPager2)
 
-        viewBinding.tabs.setupWithViewPager(viewBinding.tabViewPager)
+        TabLayoutMediator(binding.tabs, binding.tabViewPager2) { tab, position ->
+            tab.text = "OBJECT ${(position + 1)}"
+        }.attach()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -39,39 +43,18 @@ class WorkingTabsActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.e("onDestroy()")
+        _viewBinding = null
+    }
 
-    private fun setupViewPager(viewPager: ViewPager) {
-        val adapter = ViewPagerAdapter(supportFragmentManager)
+
+    private fun setupViewPager(viewPager: ViewPager2) {
+        val adapter = WorkingTabsAdapter(supportFragmentManager, lifecycle)
         adapter.addFragment(OneFragment.newInstance(), "ONE")
         adapter.addFragment(TwoFragment.newInstance(), "TWO")
         adapter.addFragment(ThreeFragment.newInstance(), "THREE")
         viewPager.adapter = adapter
-    }
-
-
-    private class ViewPagerAdapter(manager: FragmentManager?) :
-        FragmentPagerAdapter(manager!!) {
-
-        private val mFragmentList: MutableList<Fragment> = ArrayList()
-        private val mFragmentTitleList: MutableList<String> = ArrayList()
-
-        override fun getItem(position: Int): Fragment {
-            return mFragmentList[position]
-        }
-
-        override fun getCount(): Int {
-            return mFragmentList.size
-        }
-
-        fun addFragment(fragment: Fragment, title: String) {
-            mFragmentList.add(fragment)
-            mFragmentTitleList.add(title)
-        }
-
-        override fun getPageTitle(position: Int): CharSequence? {
-
-            // return null to display only the icon (if there's icons)
-            return mFragmentTitleList[position]
-        }
     }
 }

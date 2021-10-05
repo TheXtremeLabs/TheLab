@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
@@ -81,7 +80,7 @@ class BuiltInWebViewActivity : AppCompatActivity() {
         viewBinding.contentBuiltInWebview.builtInWebView.clearHistory()
         viewBinding.contentBuiltInWebview.builtInWebView.settings.javaScriptEnabled = true
         viewBinding.contentBuiltInWebview.builtInWebView.isHorizontalScrollBarEnabled = false
-        viewBinding.contentBuiltInWebview.builtInWebView.setOnTouchListener(OnTouchListener { v: View?, event: MotionEvent ->
+        viewBinding.contentBuiltInWebview.builtInWebView.setOnTouchListener { _: View?, event: MotionEvent ->
             if (event.pointerCount > 1) {
                 //Multi touch detected
                 true
@@ -92,7 +91,7 @@ class BuiltInWebViewActivity : AppCompatActivity() {
                     event.setLocation(m_downX, event.y)
             }
             false
-        })
+        }
     }
 
     private fun renderPost() {

@@ -21,6 +21,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -70,7 +71,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var mLocation: Location
     private lateinit var mLocationManager: LocationManager
     private var mCriteria: Criteria? = null
-    private var mProvider = ""
+    private var mProvider: String? = null
 
     // bunch of location related apis
     private var mFusedLocationClient: FusedLocationProviderClient? = null
@@ -150,6 +151,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             }
         }
 
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -308,6 +310,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             }
         }
         mRequestingLocationUpdates = false
+        @Suppress("DEPRECATION")
         mLocationRequest = LocationRequest()
         mLocationRequest!!.interval = UPDATE_INTERVAL_IN_MILLISECONDS
         mLocationRequest!!.fastestInterval = FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS
@@ -340,14 +343,14 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             labLocationManager.showSettingsAlert()
         } else {
             try {
-                mLocation = mLocationManager.getLastKnownLocation(mProvider)!!
+                mLocation = mLocationManager.getLastKnownLocation(mProvider!!)!!
             } catch (e: SecurityException) {
                 e.printStackTrace()
             }
             onLocationChanged(mLocation)
             try {
                 mLocationManager.requestLocationUpdates(
-                    mProvider,
+                    mProvider!!,
                     20000,
                     0f,
                     this

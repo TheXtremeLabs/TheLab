@@ -149,9 +149,8 @@ class LabDeviceManager private constructor() {
 
         @SuppressLint("NewApi")
         fun getScreenHeight(activity: Activity): Int {
-            var screenHeight = 0
-            screenHeight = if (LabCompatibilityManager.isAndroid10()
-                && getModel().trim { it <= ' ' }.toLowerCase()
+            val screenHeight: Int = if (LabCompatibilityManager.isAndroid10()
+                && getModel().trim { it <= ' ' }.lowercase()
                     .contains(Constants.EMULATOR_DEVICE_TAG)
             ) {
                 val metrics = getDisplayMetricsAndroid10(activity)
@@ -165,9 +164,8 @@ class LabDeviceManager private constructor() {
 
         @SuppressLint("NewApi")
         fun getScreenWidth(activity: Activity): Int {
-            var screenWidth = 0
-            screenWidth = if (LabCompatibilityManager.isAndroid10()
-                && getModel().trim { it <= ' ' }.toLowerCase()
+            val screenWidth: Int = if (LabCompatibilityManager.isAndroid10()
+                && getModel().trim { it <= ' ' }.lowercase()
                     .contains(Constants.EMULATOR_DEVICE_TAG)
             ) {
                 val metrics = getDisplayMetricsAndroid10(activity)
@@ -186,9 +184,10 @@ class LabDeviceManager private constructor() {
          * @param activity
          * @return
          */
-        fun getDisplayMetrics(activity: Activity): DisplayMetrics {
+        private fun getDisplayMetrics(activity: Activity): DisplayMetrics {
             //Retrieve Screen's height and width
             val metrics = DisplayMetrics()
+            @Suppress("DEPRECATION")
             activity
                 .windowManager
                 .defaultDisplay

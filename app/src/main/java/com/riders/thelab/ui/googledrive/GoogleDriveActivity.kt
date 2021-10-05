@@ -5,6 +5,7 @@ import android.content.IntentSender
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.GoogleAuthException
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -14,7 +15,6 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.common.api.internal.OnConnectionFailedListener
-import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
@@ -175,6 +175,8 @@ class GoogleDriveActivity
             // From the GoogleSignInClient object we can get the signInIntent
             // which we can use in startActivityForResult to trigger the login flow
             val signInIntent = mGoogleSignInClient?.signInIntent
+
+            @Suppress("DEPRECATION")
             startActivityForResult(signInIntent, CONST_SIGN_IN)
         }
     }
@@ -242,7 +244,7 @@ class GoogleDriveActivity
             // and GoogleAccountCredential as parameters
             return Drive
                 .Builder(
-                    AndroidHttp.newCompatibleTransport(),
+                    NetHttpTransport.Builder().build(),
                     JacksonFactory.getDefaultInstance(),
                     credential
                 )
@@ -264,11 +266,11 @@ class GoogleDriveActivity
     private fun accessDriveFiles() {
         Timber.i("accessDriveFiles()")
         checkLastSignedInAccount()?.let { googleDriveService ->
-            GlobalScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     Timber.d("googleDriveService.files()")
 
-                    var pageToken: String? = null
+                    var pageToken: String?
 
                     do {
                         val result: FileList = googleDriveService.files().list().apply {
@@ -293,6 +295,7 @@ class GoogleDriveActivity
                     ex.printStackTrace()
 
                     withContext(Dispatchers.Main) {
+                        @Suppress("DEPRECATION")
                         startActivityForResult(ex.intent, REQUEST_SIGN_IN)
                     }
                 } catch (transientEx: IOException) {

@@ -19,7 +19,6 @@ import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.databinding.ActivityYoutubeDetailBinding
 import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
-import java.util.*
 
 class YoutubeLikeDetailActivity : AppCompatActivity() {
 
@@ -65,7 +64,7 @@ class YoutubeLikeDetailActivity : AppCompatActivity() {
     }
 
     private fun loadContent() {
-        Objects.requireNonNull(supportActionBar)?.title = item.name
+        supportActionBar?.title = item.name
 
         //Load the background  thumb image
         Glide.with(this)
@@ -123,8 +122,7 @@ class YoutubeLikeDetailActivity : AppCompatActivity() {
             //il se peut que la palette ne génère pas tous les swatch
             if (muted != null) {
                 //j'utilise getRgb() en tant que couleur de fond de ma toolbar
-                Objects.requireNonNull(supportActionBar)
-                    ?.setBackgroundDrawable(ColorDrawable(muted.rgb))
+                supportActionBar?.setBackgroundDrawable(ColorDrawable(muted.rgb))
             }
         }
         run {

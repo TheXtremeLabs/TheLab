@@ -64,6 +64,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         // If the GoogleSignInOptions only asks for IDToken and/or profile and/or email then no
         // consent screen will be shown here.
         val signInIntent: Intent = mGoogleSignInClient?.signInIntent!!
+        @Suppress("DEPRECATION")
         startActivityForResult(signInIntent, RC_GET_TOKEN)
     }
 
@@ -85,6 +86,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         try {
             val account = completedTask.getResult(ApiException::class.java)
             val idToken = account.idToken
+            Timber.d("Token fetched : $idToken")
 
             // TODO(developer): send ID Token to server and validate
             updateUI(account)
@@ -110,6 +112,7 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
 
     @Deprecated("")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_GET_TOKEN) {
             // [START get_id_token]

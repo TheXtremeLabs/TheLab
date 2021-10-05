@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.spring
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MenuItem
@@ -8,16 +9,31 @@ import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.animation.BounceInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.DynamicAnimation.ViewProperty
+import androidx.dynamicanimation.animation.FloatPropertyCompat
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
+import com.riders.thelab.R
 import com.riders.thelab.databinding.ActivitySpringBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class SpringActivity : AppCompatActivity() {
+class SpringActivity : AppCompatActivity(), View.OnClickListener {
 
-    lateinit var viewBinding: ActivitySpringBinding
+    private var _viewBinding: ActivitySpringBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _viewBinding!!
+
+    private var isTopAnimationToggle: Boolean = false
+    private var isBottomAnimationToggle: Boolean = false
 
     private var xAnimation: SpringAnimation? = null
     private var yAnimation: SpringAnimation? = null
@@ -25,14 +41,13 @@ class SpringActivity : AppCompatActivity() {
     private var dX = 0f
     private var dY = 0f
 
-
     private val globalLayoutListener = OnGlobalLayoutListener {
         xAnimation = createSpringAnimation(
-            viewBinding.imageView, DynamicAnimation.X, viewBinding.imageView.getX(),
+            binding.imageView, DynamicAnimation.X, binding.imageView.getX(),
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         yAnimation = createSpringAnimation(
-            viewBinding.imageView, DynamicAnimation.Y, viewBinding.imageView.getY(),
+            binding.imageView, DynamicAnimation.Y, binding.imageView.getY(),
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
     }
@@ -51,7 +66,7 @@ class SpringActivity : AppCompatActivity() {
             }
             MotionEvent.ACTION_MOVE -> {
                 //  a different approach would be to change the view's LayoutParams.
-                viewBinding.imageView.animate()
+                binding.imageView.animate()
                     .x(event.rawX + dX)
                     .y(event.rawY + dY)
                     .setDuration(0)
@@ -76,11 +91,13 @@ class SpringActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.d("onCreate()")
+        _viewBinding = ActivitySpringBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        viewBinding = ActivitySpringBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        setListeners()
 
-        viewBinding.imageView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
+        binding.imageView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
         chainedSpringAnimation()
     }
 
@@ -94,7 +111,38 @@ class SpringActivity : AppCompatActivity() {
     }
 
 
-    fun createSpringAnimation(
+    override fun onBackPressed() {
+        Timber.d("onBackPressed()")
+
+        if (isTopAnimationToggle) {
+            revertTopAnimation()
+            setListeners()
+            return
+        }
+
+        if (isBottomAnimationToggle) {
+            revertBottomAnimation()
+            setListeners()
+            return
+        }
+
+
+        super.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.e("onDestroy()")
+        _viewBinding = null
+    }
+
+    private fun setListeners() {
+        Timber.d("setListeners()")
+        binding.clTop.setOnClickListener(this)
+        binding.clBottom.setOnClickListener(this)
+    }
+
+    private fun createSpringAnimation(
         view: View?,
         property: ViewProperty?,
         finalPosition: Float,
@@ -112,75 +160,76 @@ class SpringActivity : AppCompatActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun chainedSpringAnimation() {
+        Timber.d("chainedSpringAnimation()")
         val xAnimation2 = createSpringAnimation(
-            viewBinding.imageView2, DynamicAnimation.X, viewBinding.imageView2.getX(),
+            binding.imageView2, DynamicAnimation.X, binding.imageView2.x,
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         val yAnimation2 = createSpringAnimation(
-            viewBinding.imageView2, DynamicAnimation.Y, viewBinding.imageView2.getY(),
+            binding.imageView2, DynamicAnimation.Y, binding.imageView2.y,
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         val xAnimation3 = createSpringAnimation(
-            viewBinding.imageView3, DynamicAnimation.X, viewBinding.imageView3.getX(),
+            binding.imageView3, DynamicAnimation.X, binding.imageView3.x,
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         val yAnimation3 = createSpringAnimation(
-            viewBinding.imageView3, DynamicAnimation.Y, viewBinding.imageView3.getY(),
+            binding.imageView3, DynamicAnimation.Y, binding.imageView3.y,
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         val xAnimation4 = createSpringAnimation(
-            viewBinding.imageView4, DynamicAnimation.X, viewBinding.imageView4.getX(),
+            binding.imageView4, DynamicAnimation.X, binding.imageView4.x,
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         val yAnimation4 = createSpringAnimation(
-            viewBinding.imageView4, DynamicAnimation.Y, viewBinding.imageView4.getY(),
+            binding.imageView4, DynamicAnimation.Y, binding.imageView4.y,
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         val xAnimation5 = createSpringAnimation(
-            viewBinding.imageView5, DynamicAnimation.X, viewBinding.imageView5.getX(),
+            binding.imageView5, DynamicAnimation.X, binding.imageView5.x,
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         val yAnimation5 = createSpringAnimation(
-            viewBinding.imageView5, DynamicAnimation.Y, viewBinding.imageView5.getY(),
+            binding.imageView5, DynamicAnimation.Y, binding.imageView5.y,
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
 
-        val imageView2Params = viewBinding.imageView2.getLayoutParams() as MarginLayoutParams
-        val imageView3Params = viewBinding.imageView3.getLayoutParams() as MarginLayoutParams
-        val imageView4Params = viewBinding.imageView4.getLayoutParams() as MarginLayoutParams
-        val imageView5Params = viewBinding.imageView5.getLayoutParams() as MarginLayoutParams
-        xAnimation2.addUpdateListener { dynamicAnimation: DynamicAnimation<*>?, v: Float, v1: Float ->
+        val imageView2Params = binding.imageView2.layoutParams as MarginLayoutParams
+        val imageView3Params = binding.imageView3.layoutParams as MarginLayoutParams
+        val imageView4Params = binding.imageView4.layoutParams as MarginLayoutParams
+        val imageView5Params = binding.imageView5.layoutParams as MarginLayoutParams
+        xAnimation2.addUpdateListener { _: DynamicAnimation<*>?, v: Float, _: Float ->
             xAnimation3.animateToFinalPosition(
-                v + (viewBinding.imageView2.width - viewBinding.imageView3.width) / 2
+                v + (binding.imageView2.width - binding.imageView3.width) / 2
             )
         }
-        yAnimation2.addUpdateListener { dynamicAnimation: DynamicAnimation<*>?, v: Float, v1: Float ->
+        yAnimation2.addUpdateListener { _: DynamicAnimation<*>?, v: Float, _: Float ->
             yAnimation3.animateToFinalPosition(
-                v + viewBinding.imageView2.height + imageView3Params.topMargin
+                v + binding.imageView2.height + imageView3Params.topMargin
             )
         }
-        xAnimation3.addUpdateListener { dynamicAnimation: DynamicAnimation<*>?, v: Float, v1: Float ->
+        xAnimation3.addUpdateListener { _: DynamicAnimation<*>?, v: Float, _: Float ->
             xAnimation4.animateToFinalPosition(
-                v + (viewBinding.imageView3.width - viewBinding.imageView4.width) / 2
+                v + (binding.imageView3.width - binding.imageView4.width) / 2
             )
         }
-        yAnimation3.addUpdateListener { dynamicAnimation: DynamicAnimation<*>?, v: Float, v1: Float ->
+        yAnimation3.addUpdateListener { _: DynamicAnimation<*>?, v: Float, _: Float ->
             yAnimation4.animateToFinalPosition(
-                v + viewBinding.imageView3.height + imageView4Params.topMargin
+                v + binding.imageView3.height + imageView4Params.topMargin
             )
         }
-        xAnimation4.addUpdateListener { dynamicAnimation: DynamicAnimation<*>?, v: Float, v1: Float ->
+        xAnimation4.addUpdateListener { _: DynamicAnimation<*>?, v: Float, _: Float ->
             xAnimation5.animateToFinalPosition(
-                v + (viewBinding.imageView4.width - viewBinding.imageView5.width) / 2
+                v + (binding.imageView4.width - binding.imageView5.width) / 2
             )
         }
-        yAnimation4.addUpdateListener { dynamicAnimation: DynamicAnimation<*>?, v: Float, v1: Float ->
+        yAnimation4.addUpdateListener { _: DynamicAnimation<*>?, v: Float, _: Float ->
             yAnimation5.animateToFinalPosition(
-                v + viewBinding.imageView4.height + imageView5Params.topMargin
+                v + binding.imageView4.height + imageView5Params.topMargin
             )
         }
 
-        viewBinding.imageView.setOnTouchListener { view: View, motionEvent: MotionEvent ->
+        binding.imageView.setOnTouchListener { view: View, motionEvent: MotionEvent ->
             when (motionEvent.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     dX = view.x - motionEvent.rawX
@@ -196,14 +245,164 @@ class SpringActivity : AppCompatActivity() {
                         .setDuration(0)
                         .start()
                     xAnimation2.animateToFinalPosition(
-                        newX + (viewBinding.imageView.width - viewBinding.imageView2.width) / 2
+                        newX + (binding.imageView.width - binding.imageView2.width) / 2
                     )
                     yAnimation2.animateToFinalPosition(
-                        newY + viewBinding.imageView2.height + imageView2Params.topMargin
+                        newY + binding.imageView2.height + imageView2Params.topMargin
                     )
                 }
             }
             true
         }
     }
+
+
+    override fun onClick(view: View?) {
+        when (view?.id) {
+            R.id.cl_top -> {
+                Timber.d("Click on top then Dismiss bottom")
+                toggleTopAnimation()
+            }
+
+            R.id.cl_bottom -> {
+                Timber.d("Click on bottom then Dismiss top")
+                toggleBottomAnimation()
+            }
+        }
+    }
+
+    private fun removeListeners() {
+        binding.clTop.setOnClickListener(null)
+        binding.clBottom.setOnClickListener(null)
+    }
+
+
+    /**
+     * This function moves the top card view to the center of the screen while fading out the bottom card view
+     * and display the multiple views in full screen
+     */
+    private fun toggleTopAnimation() {
+        Timber.d("toggleTopAnimation()")
+        removeListeners()
+        isTopAnimationToggle = !isTopAnimationToggle
+        startChainedAnimations(R.id.start, R.id.bottom_dismiss_end, R.id.cl_views_container_end)
+        launchAnimations()
+    }
+
+
+    /**
+     * This function moves the bottom card view to the center of the screen while fading out the top card view
+     * and display the dot container in full screen
+     */
+    private fun toggleBottomAnimation() {
+        Timber.d("toggleBottomAnimation()")
+        removeListeners()
+        isBottomAnimationToggle = !isBottomAnimationToggle
+        startChainedAnimations(R.id.start, R.id.top_dismiss_end, R.id.cl_dot_container_end)
+    }
+
+
+    /**
+     * This function should collapse the multiple spring views into the card view
+     * and then display the two buttons
+     */
+    private fun revertTopAnimation() {
+        Timber.d("revertTopAnimation()")
+        startChainedAnimations(R.id.cl_views_container_end, R.id.bottom_dismiss_end, R.id.start)
+        isTopAnimationToggle = !isTopAnimationToggle
+    }
+
+    /**
+     * This function should collapse the dot container view into the card view
+     * and then display the two buttons
+     */
+    private fun revertBottomAnimation() {
+        Timber.d("revertBottomAnimation()")
+        startChainedAnimations(R.id.cl_dot_container_end, R.id.top_dismiss_end, R.id.start)
+        isBottomAnimationToggle = !isBottomAnimationToggle
+    }
+
+
+    /**
+     * Used to run animations avoid code redundancy
+     */
+    private fun startChainedAnimations(
+        idTransitionStart: Int,
+        idTransitionEnd: Int,
+        idOnEndListenerTransitionEnd: Int
+    ) {
+        // Use idTransitionEnd as idOnEndListenerTransitionStart because the end point of the first animation
+        // will be the start point of the end listener animation
+        val idOnEndListenerTransitionStart: Int = idTransitionEnd
+
+        binding.springMotionLayout.setTransition(idTransitionStart, idTransitionEnd)
+        binding.springMotionLayout.transitionToEnd {
+            Runnable {
+                Timber.d("Expand bottom")
+                binding.springMotionLayout.setTransition(
+                    idOnEndListenerTransitionStart,
+                    idOnEndListenerTransitionEnd
+                )
+                binding.springMotionLayout.transitionToEnd()
+            }.run()
+        }
+    }
+
+
+    private fun launchAnimations() {
+        CoroutineScope(Dispatchers.Main).launch {
+            launch {
+                delay(450)
+                setBounceAnimation(binding.tvTopLeft, "translationY")
+            }
+            launch {
+                delay(750)
+                getSpringAnimation(
+                    binding.tvTopRight,
+                    SpringAnimation.TRANSLATION_Y,
+                    100f
+                ).start()
+            }
+
+            launch {
+                delay(500)
+                // Translation on bottom left
+                setBounceAnimation(binding.tvBottomLeft, "translationX")
+            }
+            launch {
+                delay(750)
+                // Scale on bottom right
+                getSpringAnimation(binding.tvBottomRight, SpringAnimation.SCALE_X, 0.8f).start()
+                getSpringAnimation(binding.tvBottomRight, SpringAnimation.SCALE_Y, 0.8f).start()
+            }
+        }
+    }
+
+    private fun setBounceAnimation(targetView: View, propertyName: String) {
+        val bounceInterpolator = BounceInterpolator()
+        val anim: ObjectAnimator =
+            ObjectAnimator.ofFloat(targetView, propertyName, 0f, -50f, 50f, 0f)
+        anim.interpolator = bounceInterpolator
+        anim
+            .setDuration(450)
+            .start()
+    }
+
+
+    private fun getSpringAnimation(
+        view: View,
+        springAnimationType: FloatPropertyCompat<View>,
+        finalPosition: Float
+    ): SpringAnimation {
+        val animation = SpringAnimation(view, springAnimationType)
+        // create a spring with desired parameters
+        val spring = SpringForce()
+        spring.finalPosition = finalPosition
+        spring.stiffness = SpringForce.STIFFNESS_MEDIUM // optional
+        spring.dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY // optional
+        // set your animation's spring
+        animation.spring = spring
+        return animation
+    }
+
 }
