@@ -241,8 +241,6 @@ class SpeechToTextActivity : AppCompatActivity(), RecognitionListener {
     override fun onResults(results: Bundle?) {
         Timber.e("onResults()")
 
-        var result = ""
-
         val matches = results!!.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
         for (element in matches!!) Timber.d(element)
 
@@ -260,7 +258,7 @@ class SpeechToTextActivity : AppCompatActivity(), RecognitionListener {
             hideEq()
         }
 
-        result = matches[0]
+        val result: String = matches[0]
         viewBinding.speechInputTextView.text = result
     }
 

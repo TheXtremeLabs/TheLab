@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.riders.thelab.R
 import com.riders.thelab.data.local.model.Download
 import com.riders.thelab.databinding.ActivityDownloadBinding
@@ -98,7 +99,7 @@ class DownloadActivity
     @DelicateCoroutinesApi
     private fun downloadFile() {
 
-        GlobalScope.launch {
+        lifecycleScope.launch(coroutineContext) {
             try {
                 supervisorScope {
                     mViewModel.downloadFile()

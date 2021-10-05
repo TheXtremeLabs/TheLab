@@ -20,9 +20,8 @@ class LabNetworkManagerNewAPI constructor(
         var isConnected = false
     }
 
-    init {
-        val mListener: ConnectivityListener = listener
-    }
+    val mListener: ConnectivityListener get() = listener
+
 
     /**
      * Check the Internet connection
@@ -38,7 +37,7 @@ class LabNetworkManagerNewAPI constructor(
         super.onAvailable(network)
         Timber.d("onAvailable()")
         isConnected = true
-        listener.onConnected()
+        mListener.onConnected()
     }
 
     override fun onBlockedStatusChanged(network: Network, blocked: Boolean) {
@@ -55,7 +54,7 @@ class LabNetworkManagerNewAPI constructor(
         super.onLost(network)
         Timber.e("onLost()")
         isConnected = false
-        listener.onLostConnection()
+        mListener.onLostConnection()
     }
 
     override fun onUnavailable() {
@@ -65,7 +64,7 @@ class LabNetworkManagerNewAPI constructor(
     }
 
 
-    @SuppressLint("WifiManagerPotentialLeak")
+    @SuppressLint("WifiManagerPotentialLeak", "InlinedApi")
     fun changeWifiState(applicationContext: Context, activity: Activity) {
         Timber.d("changeWifiState()")
 
@@ -74,6 +73,7 @@ class LabNetworkManagerNewAPI constructor(
             applicationContext.getSystemService(AppCompatActivity.WIFI_SERVICE) as WifiManager
         if (!LabCompatibilityManager.isAndroid10()) {
             val isWifi = wifiManager.isWifiEnabled
+            @Suppress("DEPRECATION")
             wifiManager.isWifiEnabled = !isWifi
         } else {
             Timber.e("For applications targeting android.os.Build.VERSION_CODES Q or above, this API will always fail and return false")

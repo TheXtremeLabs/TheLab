@@ -50,6 +50,10 @@ class ApiImpl @Inject constructor(
 
             val task = mAuth.signInAnonymously().await()
 
+            task.user?.let {
+                Timber.d("signInAnonymously:success : $it")
+            }
+
             if (null != mAuth.currentUser) {
                 // Sign in success, update UI with the signed-in user's information
                 Timber.d("signInAnonymously:success")

@@ -95,7 +95,7 @@ class FloatingViewService : Service() {
 
         //Set the next button.
         val nextButton = mFloatingView!!.findViewById<View>(R.id.next_btn) as ImageView
-        nextButton.setOnClickListener { v: View? ->
+        nextButton.setOnClickListener {
             Toast.makeText(
                 this@FloatingViewService,
                 "Playing next song.",
@@ -107,7 +107,7 @@ class FloatingViewService : Service() {
 
         //Set the pause button.
         val prevButton = mFloatingView!!.findViewById<View>(R.id.prev_btn) as ImageView
-        prevButton.setOnClickListener { v: View? ->
+        prevButton.setOnClickListener {
             Toast.makeText(
                 this@FloatingViewService,
                 "Playing previous song.",
@@ -119,7 +119,7 @@ class FloatingViewService : Service() {
 
         //Set the close button
         val closeButton = mFloatingView!!.findViewById<View>(R.id.close_button) as ImageView
-        closeButton.setOnClickListener { view: View? ->
+        closeButton.setOnClickListener {
             collapsedView.visibility = View.VISIBLE
             expandedView.visibility = View.GONE
         }
@@ -127,7 +127,7 @@ class FloatingViewService : Service() {
 
         //Open the application on thi button click
         val openButton = mFloatingView!!.findViewById<View>(R.id.open_button) as ImageView
-        openButton.setOnClickListener { view: View? ->
+        openButton.setOnClickListener {
             //Open the application  click.
             val intent = Intent(this@FloatingViewService, FloatingViewActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

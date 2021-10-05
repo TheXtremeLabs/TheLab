@@ -6,7 +6,6 @@ import com.bumptech.glide.Glide
 import com.riders.thelab.data.local.model.Movie
 import com.riders.thelab.databinding.ActivityMultiPaneDetailBinding
 import timber.log.Timber
-import java.util.*
 
 class MultipaneDetailActivity : AppCompatActivity() {
     companion object {
@@ -28,10 +27,13 @@ class MultipaneDetailActivity : AppCompatActivity() {
             Timber.e("Bundle is null exit activity.")
             finish()
         }
-        val movie: Movie? = Objects.requireNonNull(bundle)!!.getParcelable(EXTRA_MOVIE)
-        if (movie != null) {
-            supportActionBar?.title = movie.title
-            setViews(movie)
+
+        bundle?.let {
+            val movie: Movie? = it.getParcelable(EXTRA_MOVIE)
+            if (movie != null) {
+                supportActionBar?.title = movie.title
+                setViews(movie)
+            }
         }
     }
 

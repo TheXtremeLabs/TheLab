@@ -267,7 +267,7 @@ class LabLocationManager constructor(
         // On pressing Settings button
         alertDialog.setPositiveButton(
             "Settings"
-        ) { dialog: DialogInterface?, which: Int ->
+        ) { _: DialogInterface?, _: Int ->
             val intent = Intent(
                 Settings.ACTION_LOCATION_SOURCE_SETTINGS
             )
@@ -277,7 +277,7 @@ class LabLocationManager constructor(
         // on pressing cancel button
         alertDialog.setNegativeButton(
             "Cancel"
-        ) { dialog: DialogInterface, which: Int -> dialog.cancel() }
+        ) { dialog: DialogInterface, _: Int -> dialog.cancel() }
 
         // Showing Alert Message
         alertDialog.show()

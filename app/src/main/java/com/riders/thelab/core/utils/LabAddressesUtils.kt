@@ -49,9 +49,7 @@ class LabAddressesUtils private constructor() {
             }
         }
 
-
         fun buildAddress(address: Address): String? {
-            val finalCity = ""
             val addressStringBuilder = StringBuilder()
             val street = address.featureName + ", " + address.thoroughfare
             val locality = address.locality
@@ -66,7 +64,8 @@ class LabAddressesUtils private constructor() {
                 .append(departmentName).append(" - ")
                 .append(regionName).append(" - ")
                 .append(countryName)
-            Timber.d(addressStringBuilder.toString())
+            val finalAddress = addressStringBuilder.toString()
+            Timber.d(finalAddress)
             return locality
         }
     }

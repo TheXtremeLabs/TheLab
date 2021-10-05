@@ -18,7 +18,7 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel  @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
 

@@ -17,7 +17,6 @@ import com.riders.thelab.data.local.model.Movie
 import com.riders.thelab.databinding.FragmentMultiPaneDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.util.*
 
 @AndroidEntryPoint
 class MultiPaneDetailFragment : Fragment() {
@@ -84,7 +83,7 @@ class MultiPaneDetailFragment : Fragment() {
 
         Timber.e("URL RECEIVE : %s", movie.urlThumbnail)
 
-        Glide.with(Objects.requireNonNull(activity)!!)
+        Glide.with(requireActivity())
             .load(movie.urlThumbnail)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
