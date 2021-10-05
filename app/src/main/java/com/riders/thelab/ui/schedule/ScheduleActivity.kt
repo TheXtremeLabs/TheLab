@@ -23,14 +23,16 @@ import timber.log.Timber
 
 class ScheduleActivity : AppCompatActivity() {
 
-    private lateinit var viewBinding: ActivityScheduleBinding
+    private var _viewBinding: ActivityScheduleBinding? = null
+
+    private val binding get() = _viewBinding!!
 
     private val mViewModel: ScheduleViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityScheduleBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivityScheduleBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         mViewModel.getCountDown().observe(
             this,
@@ -54,12 +56,12 @@ class ScheduleActivity : AppCompatActivity() {
 
             })
 
-        viewBinding.button.setOnClickListener {
-            viewBinding.time.text.toString().isNotBlank().let {
+        binding.button.setOnClickListener {
+            binding.time.text.toString().isNotBlank().let {
                 if (it)
-                    mViewModel.startAlert(this, viewBinding.time.text.toString())
+                    mViewModel.startAlert(this, binding.time.text.toString())
                 else UIManager.showCustomToast(
-                    this,
+                    this@ScheduleActivity,
                     ToastTypeEnum.WARNING,
                     "Field cannot be empty. Please enter a valid number"
                 )
@@ -68,6 +70,7 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         if (ScheduleAlarmReceiver.REQUEST_CODE == resultCode) {
             Timber.e("result code caught !!!!");
@@ -111,20 +114,22 @@ class ScheduleActivity : AppCompatActivity() {
     override fun onDestroy() {
         mViewModel.unbindService(this)
         super.onDestroy()
+
+        _viewBinding = null
     }
 
 
     private fun showCountDownView() {
-        viewBinding.llDelayTimeContainer.visibility = View.VISIBLE
+        binding.llDelayTimeContainer.visibility = View.VISIBLE
     }
 
     private fun hideCountDownView() {
-        viewBinding.llDelayTimeContainer.visibility = View.GONE
+        binding.llDelayTimeContainer.visibility = View.GONE
     }
 
     @SuppressLint("SetTextI18n")
     fun updateContDownUI(millisUntilFinished: Long) {
-        runOnUiThread { viewBinding.tvDelayTime.text = "" + millisUntilFinished }
+        runOnUiThread { binding.tvDelayTime.text = "" + millisUntilFinished }
     }
 
     ////////////////////////////

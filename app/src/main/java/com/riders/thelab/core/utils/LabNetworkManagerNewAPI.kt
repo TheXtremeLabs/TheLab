@@ -73,6 +73,7 @@ class LabNetworkManagerNewAPI constructor(
             applicationContext.getSystemService(AppCompatActivity.WIFI_SERVICE) as WifiManager
         if (!LabCompatibilityManager.isAndroid10()) {
             val isWifi = wifiManager.isWifiEnabled
+            @Suppress("DEPRECATION")
             wifiManager.isWifiEnabled = !isWifi
         } else {
             Timber.e("For applications targeting android.os.Build.VERSION_CODES Q or above, this API will always fail and return false")

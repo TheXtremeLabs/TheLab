@@ -184,9 +184,10 @@ class LabDeviceManager private constructor() {
          * @param activity
          * @return
          */
-        fun getDisplayMetrics(activity: Activity): DisplayMetrics {
+        private fun getDisplayMetrics(activity: Activity): DisplayMetrics {
             //Retrieve Screen's height and width
             val metrics = DisplayMetrics()
+            @Suppress("DEPRECATION")
             activity
                 .windowManager
                 .defaultDisplay

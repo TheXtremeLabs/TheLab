@@ -100,6 +100,7 @@ class SongPlayerActivity : AppCompatActivity(),
             //Log.d("Progress", ""+progress);
             if (_viewBinding != null) binding.songProgressBar.progress = progress
 
+            @Suppress("DEPRECATION")
             mHandler = Handler()
             // Running this thread after 100 milliseconds
             mHandler?.postDelayed(this, 100)
@@ -152,6 +153,7 @@ class SongPlayerActivity : AppCompatActivity(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == 100) {
@@ -434,7 +436,6 @@ class SongPlayerActivity : AppCompatActivity(),
             binding.cvSongPlayer.isClickable = true
             mAdapter.setClickable(true)
         }
-
     }
 
     /**

@@ -79,6 +79,7 @@ class TheLabBootService : Service() {
             )
 
             val mBuilder: NotificationCompat.Builder =
+                @Suppress("DEPRECATION")
                 NotificationCompat.Builder(this).apply {
                     setSmallIcon(R.mipmap.ic_lab_six_round)
                     setContentTitle(getString(R.string.notification_title))

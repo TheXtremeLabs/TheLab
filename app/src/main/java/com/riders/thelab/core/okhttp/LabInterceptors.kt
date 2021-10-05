@@ -40,6 +40,7 @@ class LabInterceptors {
             Timber.d("Received response : %s", jsonResponse)
 
             // Re-create the response before returning it because body can be read only once
+            @Suppress("DEPRECATION")
             return response
                 .newBuilder()
                 .body(

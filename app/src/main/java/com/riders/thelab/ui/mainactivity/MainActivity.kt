@@ -186,7 +186,6 @@ class MainActivity : AppCompatActivity(),
         super.onPause()
     }
 
-    @DelicateCoroutinesApi
     override fun onResume() {
         super.onResume()
         Timber.i("onResume()")
@@ -234,6 +233,7 @@ class MainActivity : AppCompatActivity(),
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == GPS_REQUEST) {
             isGPS = true // flag maintain before get location
@@ -717,6 +717,7 @@ class MainActivity : AppCompatActivity(),
         Timber.d("toggleWifi()")
         if (LabCompatibilityManager.isAndroid10()) {
             val panelIntent = Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY)
+            @Suppress("DEPRECATION")
             startActivityForResult(panelIntent, 0)
         } else {
             // use previous solution, add appropriate permissions to AndroidManifest file (see answers above)
@@ -727,6 +728,7 @@ class MainActivity : AppCompatActivity(),
                         Timber.d("(this.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager) $isWifiEnabled")
                         Timber.d("This should activate wifi")
 
+                        @Suppress("DEPRECATION")
                         isWifiEnabled = true
 
                         UIManager.updateToolbarIcon(
@@ -739,6 +741,7 @@ class MainActivity : AppCompatActivity(),
                         Timber.d("(this.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager) $isWifiEnabled")
                         Timber.d("This should disable wifi")
 
+                        @Suppress("DEPRECATION")
                         isWifiEnabled = false
 
                         UIManager.updateToolbarIcon(
@@ -748,6 +751,7 @@ class MainActivity : AppCompatActivity(),
                             R.drawable.ic_wifi_off
                         )
                     }
+                    @Suppress("DEPRECATION")
                     this.isWifiEnabled = !isWifiEnabled
                 }
         }

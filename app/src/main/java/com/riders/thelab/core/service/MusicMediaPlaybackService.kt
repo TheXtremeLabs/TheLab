@@ -13,7 +13,7 @@ class MusicMediaPlaybackService : Service() {
     //binder given to client
     private val mBinder: IBinder = LocalBinder()
 
-    private lateinit var mMediaSessionCompat: MediaSessionCompat
+    private var mMediaSessionCompat: MediaSessionCompat? = null
 
     override fun onBind(intent: Intent?): IBinder {
         Timber.d("onBind()")
