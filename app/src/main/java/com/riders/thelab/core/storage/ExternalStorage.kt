@@ -25,6 +25,7 @@ class ExternalStorage {
             return false
         }
 
+        @Suppress("DEPRECATION")
         fun getSdCardPath(): String {
             return Environment.getExternalStorageDirectory().path + "/"
         }
@@ -134,6 +135,7 @@ class ExternalStorage {
             mMounts.clear()
 
             if (map.isEmpty()) {
+                @Suppress("DEPRECATION")
                 map[SD_CARD] = Environment.getExternalStorageDirectory()
             }
             return map;

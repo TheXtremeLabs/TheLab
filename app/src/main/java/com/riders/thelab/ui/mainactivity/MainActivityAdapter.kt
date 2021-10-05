@@ -5,7 +5,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
@@ -102,7 +101,7 @@ class MainActivityAdapter constructor(
         holder.viewBinding.rowItemCardView?.setOnClickListener { view: View? ->
             lastPosition = position
             notifyDataSetChanged()
-            mListener.onAppItemCLickListener(view!!, item, holder.adapterPosition)
+            mListener.onAppItemCLickListener(view!!, item, holder.absoluteAdapterPosition)
         }
     }
 

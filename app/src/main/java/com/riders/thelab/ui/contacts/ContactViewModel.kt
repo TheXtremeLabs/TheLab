@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.contacts
 
-
 import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

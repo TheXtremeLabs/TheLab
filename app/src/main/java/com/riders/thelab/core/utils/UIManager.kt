@@ -78,7 +78,7 @@ class UIManager private constructor() {
 
             // Setting Dialog Message
             alertDialog.setMessage(message)
-            alertDialog.setNegativeButton(negativeMessage) { dialog: DialogInterface, which: Int ->
+            alertDialog.setNegativeButton(negativeMessage) { dialog: DialogInterface, _: Int ->
                 showActionInToast(context, negativeMessage)
                 if (negativeMessage.equals("Réessayer", ignoreCase = true)) {
                     //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
@@ -89,7 +89,7 @@ class UIManager private constructor() {
                     dialog.dismiss()
                 }
             }
-            alertDialog.setPositiveButton(positiveMessage) { dialog: DialogInterface?, which: Int ->
+            alertDialog.setPositiveButton(positiveMessage) { _: DialogInterface?, _: Int ->
                 showActionInToast(context, positiveMessage)
                 activity?.onBackPressed()
                 if (negativeMessage.equals("Quitter", ignoreCase = true)) {
@@ -290,7 +290,8 @@ class UIManager private constructor() {
             targetImageView: ShapeableImageView,
             listener: RequestListener<Drawable>
         ) {
-            LabGlideUtils.getInstance().loadImage(context, iconResDrawable, targetImageView, listener)
+            LabGlideUtils.getInstance()
+                .loadImage(context, iconResDrawable, targetImageView, listener)
         }
 
         /**

@@ -42,6 +42,7 @@ class FloatingViewActivity : AppCompatActivity() {
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:$packageName")
             )
+            @Suppress("DEPRECATION")
             startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION)
         }
 
@@ -74,6 +75,8 @@ class FloatingViewActivity : AppCompatActivity() {
                 finish()
             }
         } else {
+
+            @Suppress("DEPRECATION")
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -92,7 +95,7 @@ class FloatingViewActivity : AppCompatActivity() {
      */
     private fun initializeView() {
         Timber.d("initializeView()")
-        findViewById<View>(R.id.notify_me).setOnClickListener { view: View? ->
+        findViewById<View>(R.id.notify_me).setOnClickListener {
             startService(
                 Intent(
                     this@FloatingViewActivity,

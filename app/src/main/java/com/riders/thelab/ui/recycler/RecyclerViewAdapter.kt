@@ -102,7 +102,7 @@ class RecyclerViewAdapter(
                 position
             )
         }
-        holder.viewBinding.rowDeleteBtn.setOnClickListener { deleteView: View? ->
+        holder.viewBinding.rowDeleteBtn.setOnClickListener {
             Timber.e("setOnClickListener deleteView ")
             listener.onDeleteClick(artist, position)
         }

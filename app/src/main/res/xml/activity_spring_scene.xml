@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetStart="@id/start"
+        motion:duration="1000">
+        <KeyFrameSet />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start" />
+
+
+    <!-- ///// Derives from start ///// -->
+    <!-- Dismiss top constraintSet -->
+    <ConstraintSet
+        android:id="@+id/top_dismiss_end"
+        motion:deriveConstraintsFrom="@id/start">
+
+        <Constraint android:id="@+id/cv_top">
+            <PropertySet
+                android:alpha="0"
+                android:visibility="invisible" />
+        </Constraint>
+        <Constraint android:id="@+id/cl_top">
+            <PropertySet
+                android:alpha="0"
+                android:visibility="invisible" />
+        </Constraint>
+
+        <!-- Bottom move to middle -->
+        <Constraint android:id="@+id/cv_bottom">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+        </Constraint>
+        <Constraint android:id="@+id/cl_bottom">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+        </Constraint>
+    </ConstraintSet>
+    <!-- Dismiss top constraintSet -->
+
+    <!-- Dismiss bottom constraintSet -->
+    <ConstraintSet
+        android:id="@+id/bottom_dismiss_end"
+        motion:deriveConstraintsFrom="@id/start">
+
+        <Constraint android:id="@+id/cv_bottom">
+            <PropertySet
+                android:alpha="0"
+                android:visibility="invisible" />
+        </Constraint>
+        <Constraint android:id="@+id/cl_bottom">
+            <PropertySet
+                android:alpha="0"
+                android:visibility="invisible" />
+        </Constraint>
+
+        <!-- Top move to middle -->
+        <Constraint android:id="@+id/cv_top">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+        </Constraint>
+        <Constraint android:id="@+id/cl_top">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+        </Constraint>
+    </ConstraintSet>
+    <!-- Dismiss bottom constraintSet -->
+    <!-- ///// Derives from start ///// -->
+
+
+    <!-- ///// Derives from dismiss animations ///// -->
+
+    <!-- Dismiss top constraintSet -->
+    <ConstraintSet
+        android:id="@+id/cl_views_container_end"
+        motion:deriveConstraintsFrom="@id/bottom_dismiss_end">
+        <!-- Top move to full screen -->
+        <Constraint android:id="@+id/cv_top">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+        </Constraint>
+        <Constraint android:id="@+id/cl_top">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+        </Constraint>
+        <Constraint android:id="@+id/cl_views_container">
+            <PropertySet
+                android:alpha="1"
+                android:visibility="visible" />
+        </Constraint>
+    </ConstraintSet>
+    <!-- Dismiss top constraintSet -->
+
+    <!-- Derives from bottom dismiss -->
+    <ConstraintSet
+        android:id="@+id/cl_dot_container_end"
+        motion:deriveConstraintsFrom="@id/top_dismiss_end">
+        <!--  Display dot view -->
+        <Constraint android:id="@id/cl_dot_container">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+            <PropertySet
+                android:alpha="1"
+                android:visibility="visible" />
+        </Constraint>
+
+        <!-- When bottom sliid dismiss bottom -->
+        <Constraint android:id="@+id/cv_bottom">
+            <PropertySet
+                android:alpha="0"
+                android:visibility="invisible" />
+        </Constraint>
+        <Constraint android:id="@+id/cl_bottom">
+            <PropertySet
+                android:alpha="0"
+                android:visibility="invisible" />
+        </Constraint>
+    </ConstraintSet>
+    <!-- Derives from bottom dismiss -->
+    <!-- ///// Derives from dismiss animations ///// -->
+
+</MotionScene>

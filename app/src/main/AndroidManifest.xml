@@ -39,7 +39,8 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="Manifest.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
 
     <!-- User Data -->
@@ -146,6 +147,7 @@
         <!-- ////////////// ACTIVITIES ////////////// -->
         <activity
             android:name=".ui.splashscreen.SplashScreenActivity"
+            android:exported="true"
             android:theme="@style/Theme.TheLab.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -194,6 +196,7 @@
 
         <activity
             android:name=".ui.contacts.ContactsActivity"
+            android:exported="true"
             android:label="@string/activity_title_database_contacts"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab.NoActionBar">
@@ -294,6 +297,7 @@
 
         <activity
             android:name=".ui.weather.WeatherActivity"
+            android:exported="true"
             android:label="@string/activity_title_weather"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab">
@@ -393,6 +397,7 @@
         <receiver
             android:name=".core.broadcast.TheLabBootBroadcastReceiver"
             android:enabled="true"
+            android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -405,7 +410,8 @@
         <!-- Connection -->
         <receiver
             android:name=".core.broadcast.ConnectivityReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action
                     android:name="android.net.conn.CONNECTIVITY_CHANGE"
@@ -420,7 +426,9 @@
 
         <!-- Media Receiver -->
         <receiver android:name="androidx.mediarouter.media.MediaTransferReceiver" />
-        <receiver android:name="androidx.media.session.MediaButtonReceiver">
+        <receiver
+            android:name="androidx.media.session.MediaButtonReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
@@ -449,7 +457,9 @@
             android:enabled="true"
             android:exported="false" />
 
-        <service android:name=".core.service.MusicMediaPlaybackService">
+        <service
+            android:name=".core.service.MusicMediaPlaybackService"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.browse.MediaBrowserService" />

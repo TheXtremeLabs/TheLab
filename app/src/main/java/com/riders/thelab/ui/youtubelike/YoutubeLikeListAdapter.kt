@@ -48,7 +48,7 @@ class YoutubeLikeListAdapter(
                 holder.getNameTextView(),
                 holder.getDescriptionView(),
                 itemYoutubeVideo,
-                holder.adapterPosition
+                holder.absoluteAdapterPosition
             )
         }
 

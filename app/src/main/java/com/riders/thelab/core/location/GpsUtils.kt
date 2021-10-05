@@ -32,8 +32,8 @@ class GpsUtils(private val context: Context) {
         this.mSettingsClient = LocationServices.getSettingsClient(mContext!!)
         this.locationRequest = LocationRequest.create()
         locationRequest?.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest?.interval = 10 * 1000
-        locationRequest?.fastestInterval = 2 * 1000
+        locationRequest?.interval = (10 * 1000).toLong()
+        locationRequest?.fastestInterval = (2 * 1000).toLong()
 
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest!!)
@@ -58,7 +58,7 @@ class GpsUtils(private val context: Context) {
                     //  GPS is already enable, callback GPS status through listener
                     onGpsListener.gpsStatus(true)
                 }
-                ?.addOnFailureListener((context as Activity)) { exception ->
+                ?.addOnFailureListener(context) { exception ->
 
                     when ((exception as ApiException).statusCode) {
                         LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {

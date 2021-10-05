@@ -7,7 +7,6 @@ import okio.GzipSink
 import okio.buffer
 import timber.log.Timber
 import java.io.IOException
-import java.util.*
 
 class LabInterceptors {
 
@@ -41,11 +40,12 @@ class LabInterceptors {
             Timber.d("Received response : %s", jsonResponse)
 
             // Re-create the response before returning it because body can be read only once
+            @Suppress("DEPRECATION")
             return response
                 .newBuilder()
                 .body(
                     ResponseBody.create(
-                        Objects.requireNonNull(response.body)!!.contentType(),
+                        response.body?.contentType(),
                         jsonResponse
                     )
                 )

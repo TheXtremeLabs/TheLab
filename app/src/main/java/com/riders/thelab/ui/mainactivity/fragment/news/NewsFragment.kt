@@ -71,10 +71,12 @@ class NewsFragment : BaseFragment(), View.OnClickListener {
             Timber.e("bundle is null - check the data you are trying to pass through please !")
         } else {
             Timber.e("get the data one by one")
-            (extras.getParcelable(EXTRA_APP) as App?)?.let {
-                item = it
+            if (null != extras.getParcelable(EXTRA_APP)) {
+                item = extras.getParcelable(EXTRA_APP)
             }
-
+            /*(extras.getParcelable(EXTRA_APP) as App?)?.let {
+                item = it
+            }*/
         }
     }
 

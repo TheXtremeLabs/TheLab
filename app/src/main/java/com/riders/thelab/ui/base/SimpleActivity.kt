@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.base
 
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
 
@@ -21,6 +20,6 @@ class SimpleActivity : AppCompatActivity() {
             ab.title = title
             if (subTitle != null) ab.subtitle = subTitle
         }
-        toolbar.setNavigationOnClickListener { view: View? -> onBackPressed() }
+        toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 }

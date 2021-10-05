@@ -50,7 +50,6 @@
         <Constraint android:id="@+id/btn_close">
             <PropertySet motion:visibilityMode="ignore" />
         </Constraint>
-
     </ConstraintSet>
 
     <ConstraintSet

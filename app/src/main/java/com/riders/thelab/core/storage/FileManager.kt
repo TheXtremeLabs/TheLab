@@ -1,8 +1,6 @@
 package com.riders.thelab.core.storage
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
@@ -103,25 +101,22 @@ class FileManager private constructor() {
         }
     }
 
-    fun getMetaDataImage() {
+    /*fun getMetaDataImage() {
         val mmr = MediaMetadataRetriever()
-        // mmr.setDataSource(songsList.get(songIndex).get("songPath"))
-
-        val data = mmr.embeddedPicture
-        //coverart is an Imageview object
+         mmr.setDataSource(songsList.get(songIndex).get("songPath"))
 
         // convert the byte array to a bitmap
-        //coverart is an Imageview object
+        val data = mmr.embeddedPicture
 
         // convert the byte array to a bitmap
         if (data != null) {
             val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-            //coverart.setImageBitmap(bitmap) //associated cover art in bitmap
+            coverart.setImageBitmap(bitmap) //associated cover art in bitmap
         } else {
-            //coverart.setImageResource(R.drawable.fallback_cover) //any default cover resourse folder
+            coverart.setImageResource(R.drawable.fallback_cover) //any default cover resourse folder
         }
 
-        //coverart.setAdjustViewBounds(true)
-        //coverart.setLayoutParams(LinearLayout.LayoutParams(500, 500))
-    }
+        coverart.setAdjustViewBounds(true)
+        coverart.setLayoutParams(LinearLayout.LayoutParams(500, 500))
+    }*/
 }

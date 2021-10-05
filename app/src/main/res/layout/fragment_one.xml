@@ -7,10 +7,12 @@
     tools:context=".ui.tabs.fragment.OneFragment">
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="@string/one"
+        android:textColor="@color/white"
         android:textSize="40sp"
         android:textStyle="bold" />
 
