@@ -32,6 +32,7 @@ class ConnectionLiveData(
                 @Suppress("DEPRECATION")
                 val activeNetwork =
                     intent.extras!![ConnectivityManager.EXTRA_NETWORK_INFO] as NetworkInfo?
+
                 @Suppress("DEPRECATION")
                 val isConnected = activeNetwork != null &&
                         activeNetwork.isConnectedOrConnecting

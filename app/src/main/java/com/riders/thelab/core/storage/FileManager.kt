@@ -1,8 +1,6 @@
 package com.riders.thelab.core.storage
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager

@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.base
 
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
 
