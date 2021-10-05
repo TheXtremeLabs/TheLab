@@ -9,7 +9,7 @@ class BrowserUtils private constructor() {
 
     companion object {
         fun isSameDomain(url: String, url1: String): Boolean {
-            return getRootDomainUrl(url.toLowerCase()) == getRootDomainUrl(url1.toLowerCase())
+            return getRootDomainUrl(url.lowercase()) == getRootDomainUrl(url1.lowercase())
         }
 
         private fun getRootDomainUrl(url: String): String {

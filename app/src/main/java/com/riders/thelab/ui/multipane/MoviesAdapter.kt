@@ -31,6 +31,6 @@ class MoviesAdapter(
     override fun onBindViewHolder(holder: MultiPaneViewHolder, position: Int) {
         val movie: Movie = moviesList[position]
         holder.bind(movie)
-        holder.viewBinding.cvMultiPaneItem.setOnClickListener { v -> listener.onMovieClicked(movie) }
+        holder.viewBinding.cvMultiPaneItem.setOnClickListener { listener.onMovieClicked(movie) }
     }
 }

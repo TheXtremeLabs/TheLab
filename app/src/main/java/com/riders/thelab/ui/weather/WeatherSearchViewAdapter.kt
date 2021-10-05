@@ -15,7 +15,6 @@ import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.data.local.model.weather.CityModel
 import com.riders.thelab.utils.Constants
-import java.util.*
 
 @SuppressLint("RestrictedApi")
 class WeatherSearchViewAdapter(
@@ -52,15 +51,14 @@ class WeatherSearchViewAdapter(
             .load(countryURL)
             .into(ivCityFlag)
 
-        view.setOnClickListener { view1: View? ->
+        view.setOnClickListener {
             //take next action based user selected item
             if (!LabCompatibilityManager.isOreo()) {
                 if (!mSearchView.isIconified) {
                     mSearchView.isIconified = true
                 }
             } else {
-                Objects.requireNonNull((context as WeatherActivity).supportActionBar)
-                    ?.collapseActionView()
+                (context as WeatherActivity).supportActionBar?.collapseActionView()
             }
             mListener.onWeatherItemClicked(CityModel(cursor))
         }

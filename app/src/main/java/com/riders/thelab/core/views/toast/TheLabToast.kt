@@ -4,18 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.PorterDuff
 import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.TranslateAnimation
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
-import com.google.android.material.imageview.ShapeableImageView
-import com.google.android.material.textview.MaterialTextView
-import com.riders.thelab.R
+import com.riders.thelab.databinding.CustomToastLayoutBinding
 import timber.log.Timber
 
 /**
@@ -24,12 +19,33 @@ import timber.log.Timber
 class TheLabToast(
     private val context: Context
 ) : Toast(context) {
+    private var _viewBinding: CustomToastLayoutBinding? = null
+    private val binding get() = _viewBinding!!
 
-    private val container: LinearLayout
-    private val imageView: ShapeableImageView
-    private val textView: MaterialTextView
+
+    /**
+     * Construct an empty Toast object.  You must call [.setView] before you
+     * can call [.show].
+     *
+     * @param context The context to use.  Usually your [Application]
+     * or [Activity] object.
+     */
+    init {
+
+        run {
+            _viewBinding = CustomToastLayoutBinding.inflate((context as Activity).layoutInflater)
+
+            // Ref : https://developer.android.com/reference/android/widget/Toast#setGravity(int,%20int,%20int)
+            setGravity(Gravity.BOTTOM, 0, 250)
+            this.duration = LENGTH_LONG
+
+            @Suppress("DEPRECATION")
+            this.view = binding.root
+        }
+    }
+
     override fun setText(s: CharSequence) {
-        textView.text = s
+        binding.text.text = s
     }
 
     fun setType(toastTypeEnum: ToastTypeEnum?) {
@@ -39,7 +55,7 @@ class TheLabToast(
     }
 
     fun setImageResource(drawableResourceID: Int) {
-        imageView.setImageDrawable(ContextCompat.getDrawable(context, drawableResourceID))
+        binding.ivLol.setImageDrawable(ContextCompat.getDrawable(context, drawableResourceID))
     }
 
     /**
@@ -48,7 +64,7 @@ class TheLabToast(
      * @param color
      */
     fun setBackgroundColor(color: Int) {
-        container
+        binding.customToastContainer
             .background
             .setColorFilter(
                 ContextCompat.getColor(context, color),
@@ -59,7 +75,7 @@ class TheLabToast(
     override fun show() {
         Timber.d("show()")
         val translateAnimation = TranslateAnimation(
-            0f, 0f, 180f, container.top
+            0f, 0f, 180f, binding.customToastContainer.top
                 .toFloat()
         )
 
@@ -78,13 +94,14 @@ class TheLabToast(
         })
         val animationSet = AnimationSet(true)
         animationSet.addAnimation(translateAnimation)
-        container.startAnimation(animationSet)
+        binding.customToastContainer.startAnimation(animationSet)
         super.show()
     }
 
     override fun cancel() {
         Timber.e("cancel()")
         super.cancel()
+        _viewBinding = null
     }
 
     class Builder(var context: Context) {
@@ -108,26 +125,4 @@ class TheLabToast(
         }
     }
 
-    /**
-     * Construct an empty Toast object.  You must call [.setView] before you
-     * can call [.show].
-     *
-     * @param context The context to use.  Usually your [Application]
-     * or [Activity] object.
-     */
-    init {
-        val inflater = (context as Activity).layoutInflater
-        val layout = inflater.inflate(
-            R.layout.custom_toast_layout,
-            context.findViewById<View>(R.id.custom_toast_container) as ViewGroup
-        )
-        container = layout.findViewById<View>(R.id.custom_toast_container) as LinearLayout
-        imageView = layout.findViewById(R.id.ivLol)
-        textView = layout.findViewById(R.id.text)
-
-        // Ref : https://developer.android.com/reference/android/widget/Toast#setGravity(int,%20int,%20int)
-        setGravity(Gravity.BOTTOM, 0, 250)
-        this.duration = LENGTH_LONG
-        this.view = layout
-    }
 }

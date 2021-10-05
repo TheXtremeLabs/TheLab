@@ -24,26 +24,29 @@ import timber.log.Timber
 import java.util.*
 
 @AndroidEntryPoint
-class ContactsActivity : AppCompatActivity(), ContactsClickListener,
-    RecyclerItemTouchHelperListener {
+class ContactsActivity
+    : AppCompatActivity(), ContactsClickListener, RecyclerItemTouchHelperListener {
 
-    lateinit var viewBinding: ActivityContactsBinding
+    private var _viewBinding: ActivityContactsBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _viewBinding!!
+
     private var searchView: SearchView? = null
-
-    private var mAdapter: ContactsAdapter? = null
 
     private val mContactViewModel: ContactViewModel by viewModels()
 
-
     private var contactList: List<Contact>? = null
+    private var mAdapter: ContactsAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewBinding = ActivityContactsBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivityContactsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setSupportActionBar(viewBinding.toolbar)
+        setSupportActionBar(binding.toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -57,7 +60,7 @@ class ContactsActivity : AppCompatActivity(), ContactsClickListener,
         mContactViewModel
             .getNoContactFound()
             .observe(this, {
-                viewBinding.noContactFoundLayoutContainer.layoutNoContactsFound.visibility =
+                binding.noContactFoundLayoutContainer.layoutNoContactsFound.visibility =
                     View.VISIBLE
             })
 
@@ -80,9 +83,9 @@ class ContactsActivity : AppCompatActivity(), ContactsClickListener,
                 )
 
                 val linearLayoutManager = LinearLayoutManager(this@ContactsActivity)
-                viewBinding.contactsLayoutContainer.rvContacts.layoutManager = linearLayoutManager
-                viewBinding.contactsLayoutContainer.rvContacts.itemAnimator = DefaultItemAnimator()
-                viewBinding.contactsLayoutContainer.rvContacts.adapter = mAdapter
+                binding.contactsLayoutContainer.rvContacts.layoutManager = linearLayoutManager
+                binding.contactsLayoutContainer.rvContacts.itemAnimator = DefaultItemAnimator()
+                binding.contactsLayoutContainer.rvContacts.adapter = mAdapter
 
                 // adding item touch helper
                 // only ItemTouchHelper.LEFT added to detect Right to Left swipe
@@ -91,10 +94,10 @@ class ContactsActivity : AppCompatActivity(), ContactsClickListener,
                 val itemTouchHelperCallback: ItemTouchHelper.SimpleCallback =
                     RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this)
                 ItemTouchHelper(itemTouchHelperCallback)
-                    .attachToRecyclerView(viewBinding.contactsLayoutContainer.rvContacts)
+                    .attachToRecyclerView(binding.contactsLayoutContainer.rvContacts)
             })
 
-        viewBinding.noContactFoundLayoutContainer.btnAddNewContact.setOnClickListener {
+        binding.noContactFoundLayoutContainer.btnAddNewContact.setOnClickListener {
             Navigator(this).callAddContactActivity()
         }
     }
@@ -163,6 +166,12 @@ class ContactsActivity : AppCompatActivity(), ContactsClickListener,
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.e("onDestroy()")
+        _viewBinding = null
+    }
+
 
     override fun onContactItemCLickListener(item: Contact, position: Int) {
         Timber.d("contact %s clicked", item.toString())
@@ -173,19 +182,19 @@ class ContactsActivity : AppCompatActivity(), ContactsClickListener,
 
         if (viewHolder is ContactsViewHolder) {
             // get the removed item name to display it in snack bar
-            val name: String? = contactList?.get(viewHolder.getAdapterPosition())?.name
+            val name: String? = contactList?.get(viewHolder.absoluteAdapterPosition)?.name
 
             // backup of removed item for undo purpose
-            val deletedItem: Contact? = contactList?.get(viewHolder.getAdapterPosition())
-            val deletedIndex = viewHolder.getAdapterPosition()
+            val deletedItem: Contact? = contactList?.get(viewHolder.absoluteAdapterPosition)
+            val deletedIndex = viewHolder.absoluteAdapterPosition
 
             // remove the item from recycler view
-            mAdapter!!.removeItem(viewHolder.getAdapterPosition())
+            mAdapter!!.removeItem(viewHolder.absoluteAdapterPosition)
 
             // showing snack bar with Undo option
             UIManager.showActionInSnackBar(
                 this,
-                viewBinding.coordinator,
+                binding.coordinator,
                 "$name removed from cart!",
                 SnackBarType.WARNING,
                 "UNDO"
@@ -197,6 +206,4 @@ class ContactsActivity : AppCompatActivity(), ContactsClickListener,
             }
         }
     }
-
-
 }

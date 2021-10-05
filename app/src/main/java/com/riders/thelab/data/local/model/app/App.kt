@@ -31,12 +31,13 @@ data class App(
             var drawable: BitmapDrawable?
 
             val bitmap = parcel.readValue(Bitmap::class.java.classLoader)!! as Bitmap
-            if (bitmap != null) {
+            if (null != bitmap) {
                 drawable =
                     BitmapDrawable(TheLabApplication.getInstance().getContext().resources, bitmap)
             } else {
                 drawable = null
             }
+
             // Custom read implementation
             return App(
                 parcel.readLong(),
@@ -51,7 +52,7 @@ data class App(
             // Custom write implementation
             parcel.writeLong(id)
             var bitmap: Bitmap? = null
-            
+
             if (appDrawableIcon is BitmapDrawable) {
                 bitmap = (appDrawableIcon as BitmapDrawable).bitmap as Bitmap
             } else if (appDrawableIcon is VectorDrawable) {
@@ -59,7 +60,7 @@ data class App(
             }
             parcel.writeParcelable(bitmap, flags)
 
-            appName?.let { parcel.writeString(appName) }
+            appName.let { parcel.writeString(it) }
             parcel.writeString(appVersion)
             parcel.writeString(appPackageName)
             parcel.writeString(appTitle)
@@ -73,7 +74,7 @@ data class App(
     @IgnoredOnParcel
     private var name: String? = null
 
-    //@IgnoredOnParcel
+    @IgnoredOnParcel
     private var drawableIcon: Drawable? = null
 
     @IgnoredOnParcel

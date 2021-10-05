@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.view.View
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
@@ -116,10 +115,10 @@ class RecyclerViewModel @Inject constructor(
 
                 Timber.d("signInAnonymously:success")
 
-                storageReference?.let {
+                storageReference?.let { ref ->
                     // Create a child reference
                     // imagesRef now points to "images"
-                    val imagesRef: StorageReference = it.child("images/artists")
+                    val imagesRef: StorageReference = ref.child("images/artists")
 
                     imagesRef
                         .listAll()
@@ -146,7 +145,7 @@ class RecyclerViewModel @Inject constructor(
                                         Timber.d("Links : %s", job.toString())
                                         if (taskResult.result.items.size == job.size) {
                                             withContext(Dispatchers.Main) {
-                                                artistsThumbnails.value = job!!
+                                                job.also { artistsThumbnails.value = it }
                                             }
                                         }
                                     }
@@ -177,7 +176,7 @@ class RecyclerViewModel @Inject constructor(
                         Timber.e(throwable)
                         return@addOnFailureListener
                     }
-                    .addOnCompleteListener { taskResult: Task<Uri?>? ->
+                    .addOnCompleteListener {
                         return@addOnCompleteListener
 
                     }
@@ -197,7 +196,7 @@ class RecyclerViewModel @Inject constructor(
                             Timber.e(throwable)
                             return@addOnFailureListener
                         }
-                        .addOnCompleteListener { task1: Task<Uri?>? ->
+                        .addOnCompleteListener {
                             return@addOnCompleteListener
                         }
                 }
@@ -228,8 +227,7 @@ class RecyclerViewModel @Inject constructor(
     fun onDetailClick(
         activity: Activity,
         item: Artist,
-        sharedImageView: ShapeableImageView,
-        position: Int
+        sharedImageView: ShapeableImageView
     ) {
         Timber.d("onDetailClick(item, sharedImageView, position)")
 
@@ -274,7 +272,7 @@ class RecyclerViewModel @Inject constructor(
             activity, activity.findViewById(android.R.id.content),
             "$name removed from cart!", SnackBarType.WARNING,
             "UNDO"
-        ) { view: View? ->
+        ) {
             // undo is selected, restore the deleted item
             adapter.restoreItem(item, position)
         }

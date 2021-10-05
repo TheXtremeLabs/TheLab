@@ -111,7 +111,7 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
     }
 
     override fun onDetailClick(artist: Artist, sharedImageView: ShapeableImageView, position: Int) {
-        mRecyclerViewModel.onDetailClick(this, artist, sharedImageView, position)
+        mRecyclerViewModel.onDetailClick(this, artist, sharedImageView)
     }
 
     override fun onDeleteClick(artist: Artist, position: Int) {

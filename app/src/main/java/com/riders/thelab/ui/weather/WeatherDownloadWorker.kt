@@ -130,8 +130,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val job = mRepository.saveCities(dtoCities)
-
+                mRepository.saveCities(dtoCities)
                 mRepository.insertWeatherData(WeatherData(0, true))
                 outputData = createOutputData(WORK_RESULT, WORK_SUCCESS)
                 future!!.set(Result.success(outputData!!))

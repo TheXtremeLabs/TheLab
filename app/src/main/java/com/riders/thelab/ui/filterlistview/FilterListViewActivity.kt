@@ -16,19 +16,22 @@ import java.util.*
 @AndroidEntryPoint
 class FilterListViewActivity : AppCompatActivity(), TextWatcher {
 
-    var mWorldPopulationList: ArrayList<WorldPopulation>? = null
-    lateinit var adapter: FilterListViewAdapter
+    private var _viewBinding: ActivityFilterListviewBinding? = null
 
-    lateinit var viewBinding: ActivityFilterListviewBinding
-
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _viewBinding!!
 
     private val mFilterViewModel: FilterListViewModel by viewModels()
+
+    var mWorldPopulationList: ArrayList<WorldPopulation>? = null
+    lateinit var adapter: FilterListViewAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityFilterListviewBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivityFilterListviewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setAdapter()
 
@@ -40,10 +43,10 @@ class FilterListViewActivity : AppCompatActivity(), TextWatcher {
                 adapter = FilterListViewAdapter(this, list as MutableList<WorldPopulation>)
 
                 // Binds the Adapter to the ListView
-                viewBinding.lvFilterListview.adapter = adapter
+                binding.lvFilterListview.adapter = adapter
 
                 // Capture Text in EditText
-                viewBinding.etFilterListviewSearch.addTextChangedListener(this)
+                binding.etFilterListviewSearch.addTextChangedListener(this)
             })
     }
 
@@ -56,6 +59,13 @@ class FilterListViewActivity : AppCompatActivity(), TextWatcher {
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.e("onDestroy()")
+        _viewBinding = null
+    }
+
+
     private fun setAdapter() {
         mFilterViewModel.generatePopulationList()
     }
@@ -67,8 +77,7 @@ class FilterListViewActivity : AppCompatActivity(), TextWatcher {
     }
 
     override fun afterTextChanged(s: Editable?) {
-        val text: String =
-            viewBinding.etFilterListviewSearch.text.toString().toLowerCase(Locale.getDefault())
+        val text: String = binding.etFilterListviewSearch.text.toString().lowercase()
         adapter.filter(text)
     }
 }

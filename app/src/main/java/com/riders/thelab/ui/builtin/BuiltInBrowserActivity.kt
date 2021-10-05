@@ -81,7 +81,7 @@ class BuiltInBrowserActivity : AppCompatActivity() {
         viewBinding.contentBuiltInBrowser.browserWebView.clearHistory()
         viewBinding.contentBuiltInBrowser.browserWebView.settings.javaScriptEnabled = true
         viewBinding.contentBuiltInBrowser.browserWebView.isHorizontalScrollBarEnabled = false
-        viewBinding.contentBuiltInBrowser.browserWebView.setOnTouchListener { view: View?, event: MotionEvent ->
+        viewBinding.contentBuiltInBrowser.browserWebView.setOnTouchListener { _: View?, event: MotionEvent ->
             if (event.pointerCount > 1) {
                 //Multi touch detected
                 return@setOnTouchListener true

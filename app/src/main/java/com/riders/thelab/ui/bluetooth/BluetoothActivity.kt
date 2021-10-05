@@ -2,6 +2,7 @@ package com.riders.thelab.ui.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -17,8 +18,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.databinding.ActivityBluetoothBinding
 import timber.log.Timber
 
@@ -33,6 +32,7 @@ class BluetoothActivity : AppCompatActivity(),
 
     private val mViewModel: BluetoothViewModel by viewModels()
 
+    private lateinit var bluetoothManager: BluetoothManager
     private lateinit var bluetoothDevicesSearchList: ArrayList<String>
 
 
@@ -145,32 +145,19 @@ class BluetoothActivity : AppCompatActivity(),
         _viewBinding = ActivityBluetoothBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        /* Source : https://stackoverflow.com/questions/69122978/what-do-i-use-now-that-bluetoothadapter-getdefaultadapter-is-deprecated*/
+        bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+
         bluetoothDevicesSearchList = mutableListOf<String>() as ArrayList<String>
 
-        binding.switchBluetooth.setOnCheckedChangeListener(this)
-        binding.btnDiscovery.setOnClickListener(this)
+        setListeners()
 
         initViewModelsObservers()
 
         initSwitch()
         initButton()
 
-        val pairedDevices = BluetoothAdapter.getDefaultAdapter().bondedDevices
-        if (pairedDevices.size > 0) {
-
-            val boundedDevices: ArrayList<String> = mutableListOf<String>() as ArrayList<String>
-
-            for (d in pairedDevices) {
-                val deviceName = d.name
-                val macAddress = d.address
-                Timber.i("paired device: $deviceName at $macAddress")
-                // do what you need/want this these list items
-
-                boundedDevices.add(deviceName)
-            }
-
-            bindListView(binding.lvBoundedDevices, boundedDevices)
-        }
+        mViewModel.fetchBoundedDevices(bluetoothManager)
     }
 
     override fun onResume() {
@@ -201,7 +188,7 @@ class BluetoothActivity : AppCompatActivity(),
     override fun onStop() {
         super.onStop()
 
-        mViewModel.stopDiscovery()
+        mViewModel.stopDiscovery(bluetoothManager)
     }
 
     override fun onDestroy() {
@@ -211,6 +198,11 @@ class BluetoothActivity : AppCompatActivity(),
 
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver)
+    }
+
+    private fun setListeners() {
+        binding.switchBluetooth.setOnCheckedChangeListener(this)
+        binding.btnDiscovery.setOnClickListener(this)
     }
 
     private fun initViewModelsObservers() {
@@ -232,16 +224,27 @@ class BluetoothActivity : AppCompatActivity(),
                 it
             )
         })
+
+        mViewModel.getBoundedDevices().observe(this, {
+            if (it.isEmpty()) {
+                Timber.e("Bluetooth bounded devices size = 0")
+
+            } else {
+                bindListView(binding.lvBoundedDevices, it)
+            }
+        })
     }
 
     private fun initSwitch() {
         binding.switchBluetooth.text =
-            if (!mViewModel.getBluetoothState()) getString(R.string.bluetooth_off) else getString(R.string.bluetooth_on)
-        binding.switchBluetooth.isChecked = mViewModel.getBluetoothState()
+            if (!mViewModel.getBluetoothState(bluetoothManager)) getString(R.string.bluetooth_off) else getString(
+                R.string.bluetooth_on
+            )
+        binding.switchBluetooth.isChecked = mViewModel.getBluetoothState(bluetoothManager)
     }
 
     private fun initButton() {
-        val isBluetoothEnabled = mViewModel.getBluetoothState()
+        val isBluetoothEnabled = mViewModel.getBluetoothState(bluetoothManager)
         changeButton(
             if (!isBluetoothEnabled) getString(R.string.bluetooth_unable_to_discover) else getString(
                 R.string.bluetooth_start_discovery
@@ -274,7 +277,7 @@ class BluetoothActivity : AppCompatActivity(),
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         if (binding.switchBluetooth.isShown) {
-            mViewModel.setBluetooth(isChecked)
+            mViewModel.setBluetooth(bluetoothManager, isChecked)
         }
     }
 
@@ -282,14 +285,12 @@ class BluetoothActivity : AppCompatActivity(),
         when (view?.id) {
 
             R.id.btn_discovery -> {
-                val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-
-                if (!bluetoothAdapter.isEnabled) {
+                if (!bluetoothManager.adapter.isEnabled) {
                     Timber.e("Bluetooth not enable cannot start discovery")
                 } else {
 
-                    if (!bluetoothAdapter.isDiscovering) {
-                        bluetoothAdapter.startDiscovery()
+                    if (!bluetoothManager.adapter.isDiscovering) {
+                        bluetoothManager.adapter.startDiscovery()
                         changeButton(
                             getString(R.string.bluetooth_cancel_discovery),
                             ContextCompat.getDrawable(
@@ -300,7 +301,7 @@ class BluetoothActivity : AppCompatActivity(),
                         )
                         binding.progressSearchedDevices.visibility = View.VISIBLE
                     } else {
-                        bluetoothAdapter.cancelDiscovery()
+                        bluetoothManager.adapter.cancelDiscovery()
                         changeButton(
                             getString(R.string.bluetooth_start_discovery),
                             ContextCompat.getDrawable(
