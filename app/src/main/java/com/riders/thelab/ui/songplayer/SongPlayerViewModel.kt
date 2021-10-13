@@ -1,11 +1,10 @@
 package com.riders.thelab.ui.songplayer
 
 import android.content.Context
-import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.riders.thelab.core.storage.FileManager
+import com.riders.thelab.core.storage.LabFileManager
 import com.riders.thelab.data.local.model.music.SongModel
 import com.riders.thelab.utils.Constants.Companion.SZ_SEPARATOR
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +14,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SongPlayerViewModel @Inject constructor() : ViewModel() {
+    companion object {
+        const val MUSIC_PLACEHOLDER = "Music"
+        const val PROD_PLACEHOLDER = "Prod"
+
+    }
 
     private val fileList: MutableLiveData<List<SongModel>> = MutableLiveData()
 
@@ -23,8 +27,9 @@ class SongPlayerViewModel @Inject constructor() : ViewModel() {
     }
 
     fun retrieveSongFiles(context: Context) {
+        Timber.d("retrieveSongFiles()")
         try {
-            FileManager.getSdCardPaths(context, true)?.forEach { volumePath ->
+            LabFileManager.getSdCardPaths(context, true)?.forEach { volumePath ->
                 Timber.e("volumePath:$volumePath")
 
                 if (volumePath.contains("0000")) {
@@ -39,70 +44,65 @@ class SongPlayerViewModel @Inject constructor() : ViewModel() {
 
 
     private fun getFilesWithPath(path: String): List<SongModel>? {
+        Timber.d("getFilesWithPath()")
 
         val fileList = mutableListOf<SongModel>()
 
-        // Create file with path (can be either a folder or a file)
-        val f = File(path)
-        // Get list if it's a directory
-        val files = f.listFiles() ?: return null
+        try {
 
-        for (inFile in files) {
-            if (inFile.isDirectory && inFile.name == "Music") {
-                val musicPath = path + SZ_SEPARATOR + inFile.name
-                Timber.e("musicPathname : $musicPath")
+            // Create file with path (can be either a folder or a file)
+            val f = File(path)
+            // Get list if it's a directory
+            val files = f.listFiles() ?: return null
 
-                val musicDirectory = File(musicPath)
+            // Root Music directory path
+            val musicPath =
+                files.find { inFile -> inFile.isDirectory && inFile.name == MUSIC_PLACEHOLDER }.toString()
+                    ?: ""
+            Timber.e("musicPathname : $musicPath")
+            if (musicPath.isBlank())
+                return null
 
-                val musicFiles = musicDirectory.listFiles() ?: return null
-                for (musicFile in musicFiles) {
-                    if (musicFile.isDirectory && musicFile.name == "Prod") {
-                        val prodPath =
-                            musicPath + SZ_SEPARATOR + musicFile.name
-                        Timber.e("prodPathname : $prodPath")
+            val musicDirectory = File(musicPath)
+            val musicFiles = musicDirectory.listFiles() ?: return null
 
-                        val prodDirectory = File(prodPath)
+            // Root Prod directory path
+            val prodPath =
+                musicFiles.find { musicFile -> musicFile.isDirectory && musicFile.name == PROD_PLACEHOLDER }.toString()
+                    ?: ""
+            Timber.e("prodPathname : $prodPath")
+            if (prodPath.isBlank())
+                return null
 
-                        val prodFiles = prodDirectory.listFiles() ?: return null
-                        for (prodFile in prodFiles) {
-                            if (prodFile.isDirectory) {
-                                // is directory
-                                Timber.e("$prodFile is directory")
-                            } else if (prodFile.isFile) {
-                                Timber.d("$prodFile is A file")
+            val prodDirectory = File(prodPath)
+            val prodFiles = prodDirectory.listFiles() ?: return null
 
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    // LogManager.logSongObject(prodPath, prodFile.name)
-                                }
-                                fileList.add(
-                                    SongModel(
-                                        parseSongName(prodFile.name)
-                                        /*if (prodFile.name.endsWith(".mp3", true) || prodFile.name.endsWith(".m4a", true))
-                                            prodFile.name.split(".mp3")[0] else ""*/,
-                                        prodPath + SZ_SEPARATOR + prodFile.name,
-                                        "",
-                                        false
-                                    )
-                                )
-                            }
-                        }
-
-                    }
-                }
-            }
+            fileList.addAll(prodFiles.map { prodFile ->
+                SongModel(
+                    parseSongName(prodFile.name),
+                    prodPath + SZ_SEPARATOR + prodFile.name,
+                    "",
+                    false
+                )
+            })
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
 
         return fileList
     }
 
     private fun parseSongName(fileName: String): String {
-
-        if (fileName.endsWith(".mp3", true)) {
-            return fileName.split(".mp3")[0]
-        } else if (fileName.endsWith(".m4a", true)) {
-            return fileName.split(".m4a")[0]
-        } else {
-            return ""
+        return when {
+            fileName.endsWith(".mp3", true) -> {
+                fileName.split(".mp3")[0]
+            }
+            fileName.endsWith(".m4a", true) -> {
+                fileName.split(".m4a")[0]
+            }
+            else -> {
+                ""
+            }
         }
     }
 }
