@@ -175,6 +175,16 @@ dependencies {
     implementation rootProject.ext.generalDependencies.composeUI
     implementation rootProject.ext.generalDependencies.composeUITooling
 
+    // CameraX core library using camera2 implementation
+    implementation rootProject.ext.generalDependencies.camera2
+    // CameraX Lifecycle Library
+    implementation rootProject.ext.generalDependencies.cameraLifecyle
+    // CameraX View class
+    implementation rootProject.ext.generalDependencies.cameraView
+    // CameraX Extensions
+    implementation rootProject.ext.generalDependencies.cameraExtensions
+
+
     implementation rootProject.ext.generalDependencies.media
     implementation rootProject.ext.generalDependencies.mediaRouter
 
