@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">The Lab</string>
 
     <!-- Google API Keys -->
@@ -19,12 +19,15 @@
     <string name="action_yes">Yes</string>
     <string name="action_no">No</string>
     <string name="action_ok">OK</string>
+    <string name="action_cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="action_continue">Continue</string>
     <string name="action_later">Later</string>
     <string name="action_enter">Enter</string>
     <string name="action_exit">Quit</string>
     <string name="action_retry">Retry</string>
     <string name="action_go">GO !</string>
+    <string name="action_save">Save</string>
+    <string name="action_remove">Remove</string>
 
     <!-- Network connection status -->
     <string name="network_status_connected">Good! Connected to Internet</string>
@@ -384,4 +387,6 @@
     <string name="bluetooth_cancel_discovery">Cancel Discovery</string>
     <string name="bluetooth_unable_to_discover">Unable to discover devices</string>
     <string name="activity_compose_title">Jetpack Compose</string>
+    <string name="activity_camera_title">Camera</string>
+    <string name="activity_camera_detail_title">Camera Detail</string>
 </resources>
