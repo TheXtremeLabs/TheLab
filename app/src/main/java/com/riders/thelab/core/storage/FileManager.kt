@@ -8,6 +8,8 @@ import android.os.storage.StorageVolume
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.os.EnvironmentCompat
+import com.riders.thelab.R
+import timber.log.Timber
 import java.io.File
 
 
@@ -99,6 +101,21 @@ class FileManager private constructor() {
             }
             return null
         }
+
+        fun getOutputDirectory(context: Context): File {
+            Timber.e("getOutputDirectory()")
+            /*val mediaDir = externalMediaDirs.firstOrNull()?.let {
+                File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
+            }*/
+
+            val mediaDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).let {
+                File(it, context.resources.getString(R.string.app_name)).apply { mkdirs() }
+            }
+
+            return if (mediaDir != null && mediaDir.exists())
+                mediaDir else context.filesDir
+        }
+
     }
 
     /*fun getMetaDataImage() {

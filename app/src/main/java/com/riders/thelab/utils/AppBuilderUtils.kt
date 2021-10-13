@@ -28,6 +28,7 @@ import com.riders.thelab.ui.multipane.MultipaneActivity
 import com.riders.thelab.ui.palette.PaletteActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.schedule.ScheduleActivity
+import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.songplayer.SongPlayerActivity
 import com.riders.thelab.ui.speechtotext.SpeechToTextActivity
 import com.riders.thelab.ui.spring.SpringActivity
@@ -445,10 +446,12 @@ class AppBuilderUtils {
                     .withId(28L)
                     .withActivityTitle("Compose")
                     .withActivityDescription("Jetpack Compose is Android’s modern toolkit for building native UI with less code, powerful tools, and intuitive Kotlin APIs...")
-                    .withActivityIcon(  getDrawableFromIntResource(
-                        context,
-                        R.drawable.jetpack_compose
-                    ))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.jetpack_compose
+                        )
+                    )
                     .withActivityClass(ComposeActivity::class.java)
                     .build()
             list.add(jetpackCompose)
@@ -460,13 +463,31 @@ class AppBuilderUtils {
                     .withId(29L)
                     .withActivityTitle("Camera")
                     .withActivityDescription("CameraX is a Jetpack support library, built to help you make camera app development easier....")
-                    .withActivityIcon( getDrawableFromIntResource(
-                        context,
-                        R.drawable.ic_camera
-                    ))
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_camera
+                        )
+                    )
                     .withActivityClass(CameraActivity::class.java)
                     .build()
             list.add(camera)
+
+            // Screen Shot
+            val screenShot =
+                AppBuilder
+                    .withId(30L)
+                    .withActivityTitle("Screen Shot")
+                    .withActivityDescription("Screen Shot the device display programmatically...")
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.ic_fullscreen
+                        )
+                    )
+                    .withActivityClass(ScreenShotActivity::class.java)
+                    .build()
+            list.add(screenShot)
 
             // Wip
             val wip =

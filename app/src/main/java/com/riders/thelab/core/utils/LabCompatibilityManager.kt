@@ -90,9 +90,28 @@ class LabCompatibilityManager private constructor() {
 
         /**
          * Determine if the device is running API level 29 or higher.
+         * Quince Tart
          */
         fun isAndroid10(): Boolean {
             return getSdkVersion() >= VERSION_CODES.Q
+        }
+
+
+        /**
+         * Determine if the device is running API level 30 or higher.
+         * Red Velvet Cake
+         */
+        fun isR(): Boolean {
+            return getSdkVersion() == VERSION_CODES.R
+        }
+
+
+        /**
+         * Determine if the device is running API level 31 or higher.
+         * Snow Cone
+         */
+        fun isS(): Boolean {
+            return getSdkVersion() == VERSION_CODES.S
         }
 
 
