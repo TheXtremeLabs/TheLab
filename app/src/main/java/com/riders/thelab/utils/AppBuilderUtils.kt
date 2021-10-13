@@ -10,6 +10,7 @@ import com.riders.thelab.ui.biometric.BiometricActivity
 import com.riders.thelab.ui.bluetooth.BluetoothActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.colors.ColorActivity
+import com.riders.thelab.ui.compose.ComposeActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
 import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity
@@ -436,6 +437,20 @@ class AppBuilderUtils {
                     .withActivityClass(BluetoothActivity::class.java)
                     .build()
             list.add(bluetooth)
+
+            // Jetpack Compose
+            val jetpackCompose =
+                AppBuilder
+                    .withId(28L)
+                    .withActivityTitle("Compose")
+                    .withActivityDescription("Jetpack Compose is Android’s modern toolkit for building native UI with less code, powerful tools, and intuitive Kotlin APIs...")
+                    .withActivityIcon(  getDrawableFromIntResource(
+                        context,
+                        R.drawable.jetpack_compose
+                    ))
+                    .withActivityClass(ComposeActivity::class.java)
+                    .build()
+            list.add(jetpackCompose)
 
 
             // Wip
