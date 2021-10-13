@@ -7,7 +7,7 @@ ext {
 
     // version information
     versionMajor = 10
-    versionMinor = 9
+    versionMinor = 10
     versionPatch = 0
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
@@ -33,6 +33,8 @@ ext {
     viewPager2Version = '1.0.0'
     dynamicanimationVersion = '1.0.0'
     composeVersion = '1.0.3'
+    cameraVersion = '1.0.2'
+    cameraAlphaVersion = '1.0.0-alpha29'
 
     mediaVersion = '1.4.2'
     mediaRouterVersion = '1.2.5'
@@ -144,6 +146,11 @@ ext {
             composeUI                   : "androidx.compose.ui:ui:$composeVersion",
             composeUITooling            : "androidx.compose.ui:ui-tooling:$composeVersion",
 
+            // Camera
+            camera2                     : "androidx.camera:camera-camera2:$cameraVersion",
+            cameraLifecyle              : "androidx.camera:camera-lifecycle:$cameraVersion",
+            cameraView                  : "androidx.camera:camera-view:$cameraAlphaVersion",
+            cameraExtensions            : "androidx.camera:camera-extensions:$cameraAlphaVersion",
 
             media                       : "androidx.media:media:$mediaVersion",
             mediaRouter                 : "androidx.mediarouter:mediarouter:$mediaRouterVersion",
