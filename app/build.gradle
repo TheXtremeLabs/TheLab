@@ -189,7 +189,7 @@ dependencies {
     //Room
     implementation rootProject.ext.generalDependencies.roomRuntime
     kapt rootProject.ext.generalDependencies.roomCompiler
-    //implementation rootProject.ext.generalDependencies.roomExtCoroutinesSupport
+    implementation rootProject.ext.generalDependencies.roomExtCoroutinesSupport
 
     //Lifecycle
     implementation rootProject.ext.generalDependencies.lifecycleViewModel

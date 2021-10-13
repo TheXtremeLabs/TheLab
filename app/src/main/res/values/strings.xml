@@ -383,4 +383,5 @@
     <string name="bluetooth_start_discovery">Start Discovery</string>
     <string name="bluetooth_cancel_discovery">Cancel Discovery</string>
     <string name="bluetooth_unable_to_discover">Unable to discover devices</string>
+    <string name="activity_compose_title">Jetpack Compose</string>
 </resources>
