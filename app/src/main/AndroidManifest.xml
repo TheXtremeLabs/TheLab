@@ -389,6 +389,13 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".ui.compose.ComposeActivity"
+            android:label="@string/activity_compose_title"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 

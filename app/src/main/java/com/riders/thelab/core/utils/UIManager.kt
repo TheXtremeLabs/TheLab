@@ -259,7 +259,7 @@ class UIManager private constructor() {
         }
 
         //@BindingAdapter("android:src", "error", requireAll = false)
-        public fun loadImage(
+        fun loadImage(
             targetImageView: ShapeableImageView,
             iconIntRes: Int,
             error: Drawable,
@@ -268,7 +268,7 @@ class UIManager private constructor() {
         }
 
         //@BindingAdapter("imageUrl", "error", requireAll = false)
-        public fun loadImage(
+        fun loadImage(
             targetImageView: ShapeableImageView,
             iconResDrawable: Drawable,
             error: Drawable,
