@@ -90,6 +90,9 @@ android {
         // Determines whether to support Data Binding.
         // Note that the dataBinding.enabled property is now deprecated.
         dataBinding true
+
+        // Enables Jetpack Compose for this module
+        compose = true
     }
 
     lintOptions {
@@ -104,6 +107,10 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.0.1"
     }
 
     compileOptions {
@@ -156,6 +163,18 @@ dependencies {
 
     implementation rootProject.ext.generalDependencies.viewPager2
 
+    // Compose
+    implementation rootProject.ext.generalDependencies.composeAnimation
+    implementation rootProject.ext.generalDependencies.composeCompiler
+    implementation rootProject.ext.generalDependencies.composeFoundation
+    implementation rootProject.ext.generalDependencies.composeMaterial
+    implementation rootProject.ext.generalDependencies.composeMaterialIconsCore
+    implementation rootProject.ext.generalDependencies.composeMaterialIconsExtended
+    implementation rootProject.ext.generalDependencies.composeRuntime
+    implementation rootProject.ext.generalDependencies.composeRuntimeLiveData
+    implementation rootProject.ext.generalDependencies.composeUI
+    implementation rootProject.ext.generalDependencies.composeUITooling
+
     implementation rootProject.ext.generalDependencies.media
     implementation rootProject.ext.generalDependencies.mediaRouter
 
@@ -170,7 +189,7 @@ dependencies {
     //Room
     implementation rootProject.ext.generalDependencies.roomRuntime
     kapt rootProject.ext.generalDependencies.roomCompiler
-    //implementation rootProject.ext.generalDependencies.roomExtCoroutinesSupport
+    implementation rootProject.ext.generalDependencies.roomExtCoroutinesSupport
 
     //Lifecycle
     implementation rootProject.ext.generalDependencies.lifecycleViewModel
