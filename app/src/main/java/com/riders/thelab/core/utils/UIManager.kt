@@ -22,6 +22,7 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.riders.thelab.R
+import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.views.toast.TheLabToast
 import com.riders.thelab.core.views.toast.ToastTypeEnum
 import com.riders.thelab.data.local.bean.SnackBarType
@@ -325,6 +326,15 @@ class UIManager private constructor() {
         fun hideMenuButtons(menu: Menu) {
             // Or true to be visible
             menu.setGroupVisible(R.id.menu_main_group, false)
+        }
+
+        fun getDrawable(drawableResId: Int): Drawable? {
+            if (0 == drawableResId)
+                return null
+            return ContextCompat.getDrawable(
+                TheLabApplication.getInstance().getContext(),
+                drawableResId
+            )
         }
 
         fun getDrawable(context: Context, drawableRedId: Int): Bitmap? {

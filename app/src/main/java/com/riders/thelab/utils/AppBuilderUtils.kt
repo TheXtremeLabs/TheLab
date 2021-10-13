@@ -9,6 +9,7 @@ import com.riders.thelab.data.local.model.app.AppBuilder
 import com.riders.thelab.ui.biometric.BiometricActivity
 import com.riders.thelab.ui.bluetooth.BluetoothActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
+import com.riders.thelab.ui.camera.CameraActivity
 import com.riders.thelab.ui.colors.ColorActivity
 import com.riders.thelab.ui.compose.ComposeActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
@@ -452,6 +453,20 @@ class AppBuilderUtils {
                     .build()
             list.add(jetpackCompose)
 
+
+            // Camera
+            val camera =
+                AppBuilder
+                    .withId(29L)
+                    .withActivityTitle("Camera")
+                    .withActivityDescription("CameraX is a Jetpack support library, built to help you make camera app development easier....")
+                    .withActivityIcon( getDrawableFromIntResource(
+                        context,
+                        R.drawable.ic_camera
+                    ))
+                    .withActivityClass(CameraActivity::class.java)
+                    .build()
+            list.add(camera)
 
             // Wip
             val wip =
