@@ -264,8 +264,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
                     geocoder?.let {
                         LabLocationUtils.getDeviceLocationToString(
                             it,
-                            location,
-                            this
+                            location
                         )
                     }
                 )

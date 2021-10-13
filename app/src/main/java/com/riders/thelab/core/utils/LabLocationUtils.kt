@@ -20,8 +20,7 @@ class LabLocationUtils private constructor() {
 
         fun getDeviceLocationToString(
             geocoder: Geocoder,
-            location: Location,
-            context: Context
+            location: Location
         ): String {
             Timber.i("getDeviceLocationToString")
             var finalAddress = "" //This is the complete address.

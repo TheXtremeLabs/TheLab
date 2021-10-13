@@ -1,7 +1,9 @@
 package com.riders.thelab.core.views.toast
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.BlendMode
 import android.graphics.PorterDuff
 import android.view.Gravity
 import android.view.animation.Animation
@@ -10,6 +12,7 @@ import android.view.animation.TranslateAnimation
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.databinding.CustomToastLayoutBinding
 import timber.log.Timber
 
@@ -63,13 +66,21 @@ class TheLabToast(
      *
      * @param color
      */
+    @SuppressLint("NewApi")
+    @Suppress("DEPRECATION")
     fun setBackgroundColor(color: Int) {
-        binding.customToastContainer
-            .background
-            .setColorFilter(
-                ContextCompat.getColor(context, color),
-                PorterDuff.Mode.SRC_IN
-            )
+        if (LabCompatibilityManager.isAndroid10()) {
+            binding.customToastContainer
+                .background
+                .setTintBlendMode(BlendMode.SRC_IN)
+        } else {
+            binding.customToastContainer
+                .background
+                .setColorFilter(
+                    ContextCompat.getColor(context, color),
+                    PorterDuff.Mode.SRC_IN
+                )
+        }
     }
 
     override fun show() {

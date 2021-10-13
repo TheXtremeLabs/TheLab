@@ -419,6 +419,13 @@
             android:parentActivityName=".ui.camera.CameraActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".ui.screenshot.ScreenShotActivity"
+            android:label="@string/activity_title_floating_view"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
