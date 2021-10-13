@@ -180,7 +180,7 @@ class CameraActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    fun switchFlashState(view: View) {
+    fun onSwitchFlashStateClicked(view: View) {
         if (3 == flashStateClicked) {
             // reset
             flashStateClicked = 0
