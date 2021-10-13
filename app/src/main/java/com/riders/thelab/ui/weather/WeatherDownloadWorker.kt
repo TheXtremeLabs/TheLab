@@ -9,7 +9,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.common.util.concurrent.ListenableFuture
 import com.riders.thelab.core.parser.LabParser
-import com.riders.thelab.core.utils.LabFileManager
+import com.riders.thelab.core.storage.LabFileManager
 import com.riders.thelab.data.RepositoryImpl
 import com.riders.thelab.data.local.model.weather.WeatherData
 import com.riders.thelab.data.remote.dto.weather.City
