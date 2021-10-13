@@ -4,27 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="CameraActivity">
+    tools:context=".ui.camera.CameraActivity">
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/btn_flash_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="switchFlashState"
         android:layout_margin="16dp"
         android:background="@null"
         android:elevation="2dp"
+        android:onClick="onSwitchFlashStateClicked"
         android:src="@drawable/ic_flash_off"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="OnClick" />
 
     <Button
         android:id="@+id/camera_capture_button"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginBottom="50dp"
-        android:onClick="takePhoto"
         android:elevation="2dp"
+        android:onClick="takePhoto"
         android:scaleType="fitCenter"
         android:text="Take Photo"
         app:layout_constraintBottom_toBottomOf="parent"
