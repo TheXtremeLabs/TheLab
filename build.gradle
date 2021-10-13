@@ -34,7 +34,7 @@ ext {
     dynamicanimationVersion = '1.0.0'
     composeVersion = '1.0.3'
     cameraVersion = '1.0.2'
-    cameraAlphaVersion = '1.0.2'
+    cameraAlphaVersion = '1.0.0-alpha29'
 
     mediaVersion = '1.4.2'
     mediaRouterVersion = '1.2.5'
