@@ -1,8 +1,9 @@
 package com.riders.thelab.di
 
 import android.content.res.AssetManager
+import com.google.common.net.HttpHeaders
 import com.riders.thelab.TheLabApplication
-import com.riders.thelab.core.utils.LabFileManager
+import com.riders.thelab.core.storage.LabFileManager
 import com.riders.thelab.data.local.bean.TimeOut
 import com.riders.thelab.data.local.model.weather.WeatherKey
 import com.riders.thelab.data.remote.api.*
@@ -16,7 +17,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
-import org.apache.http.HttpHeaders
 import org.jetbrains.annotations.NotNull
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory

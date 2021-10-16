@@ -30,6 +30,7 @@ class LabDeviceManager private constructor() {
         private var rxGoldFinger: RxGoldfinger? = null
         private var params: PromptParams? = null
 
+        @Suppress("DEPRECATION")
         fun logDeviceInfo() {
             Timber.d("logDeviceInfo()")
             Timber.i("SERIAL: %s ", Build.SERIAL)
