@@ -1,8 +1,6 @@
 package com.riders.thelab.ui.weather
 
-
 import android.annotation.SuppressLint
-import android.content.Context
 import android.database.Cursor
 import android.location.Address
 import android.location.Geocoder
@@ -12,7 +10,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
-import com.riders.thelab.core.utils.*
+import com.riders.thelab.core.utils.LabAddressesUtils
+import com.riders.thelab.core.utils.LabLocationUtils
+import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
+import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.model.weather.WeatherData
@@ -40,9 +41,6 @@ class WeatherViewModel @Inject constructor(
     private val isWeatherData: MutableLiveData<Boolean> = MutableLiveData()
     private val weatherCursor: MutableLiveData<Cursor> = MutableLiveData()
     private val oneCallWeather: MutableLiveData<OneCallWeatherResponse> = MutableLiveData()
-
-    @SuppressLint("StaticFieldLeak")
-    private lateinit var labLocationManager: LabLocationManager
 
 
     ///////////////////////////
@@ -104,17 +102,6 @@ class WeatherViewModel @Inject constructor(
                 LabLocationUtils.buildTargetLocationObject(latitude, longitude)
             )
     }
-
-    fun canGetLocation(activity: WeatherActivity, context: Context): Boolean {
-        Timber.d("canGetLocation()")
-        this.labLocationManager = LabLocationManager(activity, context)
-        return this.labLocationManager.canGetLocation()
-    }
-
-    fun getCurrentWeather() {
-        this.labLocationManager.getLocation()
-    }
-
 
     fun fetchCities() {
         Timber.d("fetchCities()")

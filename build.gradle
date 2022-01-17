@@ -2,8 +2,8 @@
 ext {
 
     minSdkVersion = 23
-    targetSdkVersion = 31
-    compileSdkVersion = 31
+    targetSdkVersion = 32
+    compileSdkVersion = 32
     buildToolsVersion = "30.0.3"
 
     // version information
@@ -134,6 +134,7 @@ ext {
             viewPager2                  : "androidx.viewpager2:viewpager2:$viewPager2Version",
 
             // Compose
+            composeActivity             : "androidx.activity:activity-compose:1.4.0",
             composeAnimation            : "androidx.compose.animation:animation:$composeVersion",
             composeCompiler             : "androidx.compose.compiler:compiler:$composeVersion",
             composeFoundation           : "androidx.compose.foundation:foundation:$composeVersion",

@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.weather
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.database.Cursor
@@ -30,8 +31,15 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.DexterError
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
 import com.riders.thelab.core.bus.LocationFetchedEvent
+import com.riders.thelab.core.utils.LabLocationManager
 import com.riders.thelab.core.utils.LabLocationUtils
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.RepositoryImpl
@@ -59,16 +67,18 @@ import kotlin.math.roundToInt
 class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
     private var _viewBinding: ActivityWeatherBinding? = null
-
     private val binding get() = _viewBinding!!
+
+    private lateinit var mSearchView: SearchView
+
+    private lateinit var context: WeatherActivity
 
     private val mWeatherViewModel: WeatherViewModel by viewModels()
 
     @Inject
     lateinit var repositoryImpl: RepositoryImpl
 
-    private lateinit var context: WeatherActivity
-    private lateinit var mSearchView: SearchView
+    private var labLocationManager: LabLocationManager? = null
 
     private lateinit var listener: WeatherClickListener
 
@@ -82,7 +92,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        initViewModelObservers()
+        checkLocationPermissions()
         listener = this
     }
 
@@ -170,9 +180,10 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             android.R.id.home -> {
                 onBackPressed()
             }
+
             R.id.action_position -> {
-                if (mWeatherViewModel.canGetLocation(this, context))
-                    mWeatherViewModel.getCurrentWeather()
+                if (labLocationManager?.canGetLocation() == true)
+                    labLocationManager?.getLocation()
                 else
                     UIManager.showActionInSnackBar(
                         this,
@@ -216,6 +227,51 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         )
     }
 
+    /////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    /////////////////////////////////////
+    private fun checkLocationPermissions() {
+        Timber.d("checkLocationPermissions()")
+        // run dexter permission
+        Dexter
+            .withContext(this)
+            .withPermissions(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            .withListener(object : MultiplePermissionsListener {
+                @SuppressLint("MissingPermission")
+                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                    // check if all permissions are granted
+                    if (report.areAllPermissionsGranted()) {
+                        // do you work now
+                    }
+
+                    // check for permanent denial of any permission
+                    if (report.isAnyPermissionPermanentlyDenied) {
+                        // permission is denied permanently, navigate user to app settings
+                    }
+
+                    initViewModelObservers()
+
+                    labLocationManager = LabLocationManager(this@WeatherActivity)
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: List<PermissionRequest>,
+                    token: PermissionToken
+                ) {
+                    token.continuePermissionRequest()
+                }
+            })
+            .withErrorListener { error: DexterError ->
+                UIManager.showActionInToast(this, "Error occurred! $error")
+            }
+            .onSameThread()
+            .check()
+    }
 
     @SuppressLint("NewApi")
     fun initViewModelObservers() {
@@ -422,7 +478,6 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                 }
             })
             .into(binding.ivWeatherExtraWindDirectionIcon)
-
 
 
         val windDirectionShortName: String = windDirection.shortName + " "

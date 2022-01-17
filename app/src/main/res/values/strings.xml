@@ -396,4 +396,7 @@
 
     <!-- Screen shot -->
     <string name="activity_screenshot_title">Screenshot</string>
+
+    <!-- Widget -->
+    <string name="the_lab_appwidget_description">TheLab Widget Description</string>
 </resources>

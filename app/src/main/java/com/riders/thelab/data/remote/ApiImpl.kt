@@ -23,6 +23,7 @@ import retrofit2.Call
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
+import kotlin.coroutines.Continuation
 
 class ApiImpl @Inject constructor(
     artistsAPIService: ArtistsAPIService,

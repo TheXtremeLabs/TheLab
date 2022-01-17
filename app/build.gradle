@@ -151,6 +151,7 @@ dependencies {
     implementation rootProject.ext.generalDependencies.viewPager2
 
     // Compose
+    implementation rootProject.ext.generalDependencies.composeActivity
     implementation rootProject.ext.generalDependencies.composeAnimation
     implementation rootProject.ext.generalDependencies.composeCompiler
     implementation rootProject.ext.generalDependencies.composeFoundation

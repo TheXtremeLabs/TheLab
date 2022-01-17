@@ -31,6 +31,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
@@ -202,7 +203,7 @@ class MainActivity : AppCompatActivity(),
         mConnectivityManager!!.registerNetworkCallback(request, networkManager)
 
         val labLocationManager =
-            LabLocationManager(this@MainActivity, this@MainActivity, this)
+            LabLocationManager(this@MainActivity, this)
 
         if (!labLocationManager.canGetLocation()) {
             Timber.e("Cannot get location please enable position")
@@ -329,7 +330,8 @@ class MainActivity : AppCompatActivity(),
     @DelicateCoroutinesApi
     private fun launchProgressBars() {
         Timber.d("launchProgressBars()")
-        GlobalScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch {
+
             binding.includeToolbarLayout?.llProgressBarContainer?.children?.let { linearContainer ->
                 linearContainer.forEachIndexed { index, view ->
                     if (view is LinearLayout) {

@@ -32,8 +32,4 @@ data class OneCallWeatherResponse constructor(
 
     @Json(name = "daily")
     val dailyWeather: List<DailyWeather>,
-) {
-    override fun toString(): String {
-        return "OneCallWeatherResponse(latitude=$latitude, longitude=$longitude, timezone='$timezone', timezoneOffset=$timezoneOffset, currentWeather=$currentWeather, hourlyWeather=$hourlyWeather, dailyWeather=$dailyWeather)"
-    }
-}
+)

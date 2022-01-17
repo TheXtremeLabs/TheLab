@@ -86,7 +86,7 @@ class WeatherFragment : BaseFragment(), LocationListener {
         Timber.d("onResume()")
         EventBus.getDefault().register(this)
 
-        val labLocationManager = LabLocationManager(requireActivity(), requireContext(), this)
+        val labLocationManager = LabLocationManager(requireActivity(), this)
 
         if (!labLocationManager.canGetLocation()) {
             Timber.e("Cannot get location please enable position")
