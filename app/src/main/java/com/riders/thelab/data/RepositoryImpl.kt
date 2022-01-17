@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.Flow
 
 
 import okhttp3.ResponseBody
+import retrofit2.Call
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -181,7 +182,7 @@ class RepositoryImpl @Inject constructor(
         return mDbImpl.saveCities(dtoCities)
     }
 
-    override suspend fun getWeatherData(): WeatherData {
+    override suspend fun getWeatherData(): WeatherData? {
         return mDbImpl.getWeatherData()
     }
 
@@ -213,7 +214,7 @@ class RepositoryImpl @Inject constructor(
         return mApiImpl.getWeatherOneCallAPI(location)
     }
 
-    override suspend fun getBulkWeatherCitiesFile(): ResponseBody {
+    override  fun getBulkWeatherCitiesFile(): Call<ResponseBody> {
         return mApiImpl.getBulkWeatherCitiesFile()
     }
 

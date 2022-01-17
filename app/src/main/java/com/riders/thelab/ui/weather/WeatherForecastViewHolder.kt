@@ -18,7 +18,7 @@ class WeatherForecastViewHolder(
 
     @SuppressLint("SetTextI18n")
     fun bindData(dailyWeather: DailyWeather) {
-        viewBinding.weather = dailyWeather
+        viewBinding.dailyWeather = dailyWeather
         // now bind the companion object to the variable declared in the XML
         viewBinding.dateUtils = DateTimeUtils.Companion
 
@@ -26,7 +26,7 @@ class WeatherForecastViewHolder(
             DateTimeUtils.formatMillisToTimeDayMonth(dailyWeather.dateTimeUTC)*/
 
         // Load weather icon
-        Glide.with(context)
+        /*Glide.with(context)
             .load(
                 WeatherUtils.getWeatherIconFromApi(
                     dailyWeather
@@ -34,7 +34,7 @@ class WeatherForecastViewHolder(
                         .icon
                 )
             )
-            .into(viewBinding.rowIvForecastWeather)
+            .into(viewBinding.rowIvForecastWeather)*/
 
         /* viewBinding.rowTvForecastTemperature.text =
              "${dailyWeather.temperature.day.toInt()} ${context.getString(R.string.degree_placeholder)}"*/

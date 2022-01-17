@@ -61,7 +61,7 @@ class DbImpl @Inject constructor(
         return mWeatherDao.insertAllRX(citiesToDatabase)
     }
 
-    override suspend fun getWeatherData(): WeatherData {
+    override suspend fun getWeatherData(): WeatherData? {
         return mWeatherDao.getWeatherData()
     }
 

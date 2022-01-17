@@ -1,93 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view_item"
-    android:layout_width="match_parent"
-    android:layout_height="180dp"
-    android:layout_margin="@dimen/extra_small_margin_tablet"
-    app:cardCornerRadius="@dimen/small_margin_tablet"
-    app:cardElevation="@dimen/extra_small_margin_tablet"
-    app:cardPreventCornerOverlap="true"
-    app:cardUseCompatPadding="true"
-    tools:cardBackgroundColor="@color/default_dark">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+
+        <variable
+            name="video"
+            type="com.riders.thelab.data.local.model.Video" />
+
+        <variable
+            name="mListener"
+            type="com.riders.thelab.ui.youtubelike.YoutubeListClickListener" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_view_item"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="180dp"
+        android:layout_margin="@dimen/extra_small_margin_tablet"
+        android:onClick="@{(view) -> mListener.onYoutubeItemClicked(view, video)}"
+        app:cardCornerRadius="@dimen/small_margin_tablet"
+        app:cardElevation="@dimen/extra_small_margin_tablet"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true"
+        tools:cardBackgroundColor="@color/default_dark">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/image_guideline"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="@id/image_item" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/loader_item"
-            style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/image_guideline"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/image_guideline"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="@id/image_item" />
 
-        <!--  Image thumbnail -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/image_item"
-            style="@style/YoutubeItemImageViewShape"
-            android:layout_width="270dp"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:transitionName="@string/thumb_transition_name"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/youtube_icon_like"
-            tools:targetApi="lollipop"
-            tools:visibility="visible" />
-
-
-        <!-- Title and description container -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/thumb_margin"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/image_guideline"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/name_item"
+            <ProgressBar
+                android:id="@+id/loader_item"
+                style="@style/Widget.MaterialComponents.CircularProgressIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/small_margin"
-                android:maxLines="1"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:transitionName="@string/title_transition_name"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/image_guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
+
+            <!--  Image thumbnail -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/image_item"
+                style="@style/YoutubeItemImageViewShape"
+                android:layout_width="270dp"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:transitionName="@string/thumb_transition_name"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/youtube_icon_like"
                 tools:targetApi="lollipop"
-                tools:text="name" />
+                tools:visibility="visible" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/description_item"
-                android:layout_width="wrap_content"
+
+            <!-- Title and description container -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:textSize="20sp"
-                android:transitionName="@string/description_transition_name"
-                tools:hint="description"
-                tools:targetApi="lollipop" />
+                android:layout_margin="@dimen/thumb_margin"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/image_guideline"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/name_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/small_margin"
+                    android:maxLines="1"
+                    android:text="@{video.name}"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:transitionName="@string/title_transition_name"
+                    tools:targetApi="lollipop"
+                    tools:text="name" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/description_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:text="@{video.description}"
+                    android:textSize="20sp"
+                    android:transitionName="@string/description_transition_name"
+                    tools:hint="description"
+                    tools:targetApi="lollipop" />
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

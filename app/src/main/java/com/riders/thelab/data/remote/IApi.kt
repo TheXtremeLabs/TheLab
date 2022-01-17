@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 
 import okhttp3.ResponseBody
+import retrofit2.Call
 
 interface IApi {
 
@@ -22,7 +23,6 @@ interface IApi {
     suspend fun getArtists(url: String): List<Artist>
     suspend fun getVideos(): List<Video>
     suspend fun getWeatherOneCallAPI(location: Location): OneCallWeatherResponse?
-    suspend fun getBulkWeatherCitiesFile(): ResponseBody
+    fun getBulkWeatherCitiesFile(): Call<ResponseBody>
     suspend fun getBulkDownload(): Flow<Download>
-
 }

@@ -2,32 +2,29 @@ package com.riders.thelab.ui.weather
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.concurrent.futures.ResolvableFuture
+import androidx.annotation.NonNull
 import androidx.hilt.work.HiltWorker
+import androidx.work.CoroutineWorker
 import androidx.work.Data
-import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
-import com.google.common.util.concurrent.ListenableFuture
 import com.riders.thelab.core.parser.LabParser
 import com.riders.thelab.core.storage.LabFileManager
-import com.riders.thelab.data.RepositoryImpl
+import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.model.weather.WeatherData
 import com.riders.thelab.data.remote.dto.weather.City
 import com.riders.thelab.utils.Validator
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
 @SuppressLint("RestrictedApi")
 @HiltWorker
 class WeatherDownloadWorker @AssistedInject constructor(
-    @Assisted context: Context?,
-    @Assisted workerParams: WorkerParameters?
-) : ListenableWorker(context!!, workerParams!!) {
+    @Assisted @NonNull val context: Context,
+    @Assisted @NonNull val workerParams: WorkerParameters
+) : CoroutineWorker(context, workerParams) {
 
     companion object {
         const val MESSAGE_STATUS = "message_status"
@@ -38,19 +35,14 @@ class WeatherDownloadWorker @AssistedInject constructor(
         const val WORK_RESULT = "work_result"
     }
 
-    var future: ResolvableFuture<Result>? = null
-    var taskData: Data? = null
+    private var taskData: Data? = null
     var taskDataString: String? = null
     var outputData: Data? = null
 
     @Inject
-    lateinit var mRepository: RepositoryImpl
+    lateinit var mRepository : IRepository
 
-    init {
-        future = ResolvableFuture.create()
-    }
-
-    override fun startWork(): ListenableFuture<Result> {
+    override suspend fun doWork(): Result {
         Timber.d("startWork()")
 
         taskData = inputData
@@ -59,58 +51,65 @@ class WeatherDownloadWorker @AssistedInject constructor(
         }
         taskDataString = taskData!!.getString(MESSAGE_STATUS)
 
-        val urlRequest = taskData!!.getString(URL_REQUEST)
-        if (urlRequest == null) {
-            future!!.set(Result.failure())
-        }
+        val urlRequest = taskData!!.getString(URL_REQUEST) ?: return Result.failure()
 
+        try {
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val responseFile = mRepository.getBulkWeatherCitiesFile()
-                Timber.d("observer.onSuccess(responseFile)")
-                try {
-                    Timber.d("Unzipped downloaded file...")
-                    // Step 1 : Unzip
-                    val unzippedGZipResult = LabFileManager.unzipGzip(responseFile)
-                    if (Validator.isEmpty(unzippedGZipResult)) {
-                        Timber.e("String unzippedGZipResult is empty")
-                        return@launch
-                    }
-                    val dtoCities: List<City>? = unzippedGZipResult?.let {
-                        LabParser
-                            .getInstance()
-                            .parseJsonFileListWithMoshi(it)
-                    }
-                    if (Validator.isNullOrEmpty(dtoCities)) {
-                        Timber.e("List<City> dtoCities is empty")
-                        return@launch
-                    }
-                    Timber.d("Save in database...")
-                    // Step 3 save in database
-                    if (null != dtoCities) {
-                        saveCities(dtoCities)
-                    }
+            val responseFile = mRepository.getBulkWeatherCitiesFile().execute().body()
+            Timber.d("observer.onSuccess(responseFile)")
 
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
-            } catch (throwable: Exception) {
-                Timber.e(WORK_DOWNLOAD_FAILED)
-                Timber.e(throwable)
-                outputData = createOutputData(
-                    WORK_RESULT,
-                    WORK_DOWNLOAD_FAILED
-                )
-                future!!.set(Result.failure(outputData!!))
+            if (null == responseFile) {
+                return Result.failure()
             }
-        }
 
-        return future!!
+            try {
+                Timber.d("Unzipped downloaded file...")
+
+                // Step 1 : Unzip
+                val unzippedGZipResult = LabFileManager.unzipGzip(responseFile)
+                if (Validator.isEmpty(unzippedGZipResult)) {
+                    Timber.e("String unzippedGZipResult is empty")
+                    return Result.failure()
+                }
+
+                // Step 2 : Parse JSON File
+                val dtoCities: List<City>? = unzippedGZipResult?.let {
+                    LabParser
+                        .getInstance()
+                        .parseJsonFileListWithMoshi(it)
+                }
+                if (Validator.isNullOrEmpty(dtoCities)) {
+                    Timber.e("List<City> dtoCities is empty")
+                    return Result.failure()
+                }
+
+                Timber.d("Save in database...")
+
+                // Step 3 save in database
+                if (null != dtoCities) {
+                    saveCities(dtoCities)
+                }
+
+                outputData = createOutputData(WORK_RESULT, WORK_SUCCESS)
+                return Result.success(outputData!!)
+
+            } catch (e: Exception) {
+                Timber.e(e)
+                return Result.failure()
+            }
+        } catch (throwable: Exception) {
+            Timber.e(WORK_DOWNLOAD_FAILED)
+            Timber.e(throwable)
+            outputData = createOutputData(
+                WORK_RESULT,
+                WORK_DOWNLOAD_FAILED
+            )
+            return Result.failure(outputData!!)
+        }
     }
 
     /**
-     * Creates ouput data to send back to the activity / presenter which's listening to it
+     * Creates ouput data to send back to the activity / presenter which is listening to it
      *
      * @param outputDataKey
      * @param message
@@ -128,15 +127,13 @@ class WeatherDownloadWorker @AssistedInject constructor(
     fun saveCities(dtoCities: List<City>) {
         Timber.d("saveCities()")
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
+        try {
+            runBlocking {
                 mRepository.saveCities(dtoCities)
                 mRepository.insertWeatherData(WeatherData(0, true))
-                outputData = createOutputData(WORK_RESULT, WORK_SUCCESS)
-                future!!.set(Result.success(outputData!!))
-            } catch (throwable: Exception) {
-                Timber.e(throwable)
             }
+        } catch (throwable: Exception) {
+            Timber.e(throwable)
         }
     }
 }
