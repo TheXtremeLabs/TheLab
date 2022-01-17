@@ -58,7 +58,6 @@ class YoutubeLikeViewModel @Inject constructor(
     }
 
 
-
     ///////////////////////////
     //
     // Class methods

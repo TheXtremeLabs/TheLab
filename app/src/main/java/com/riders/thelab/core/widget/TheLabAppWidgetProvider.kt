@@ -8,7 +8,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Bundle
 import android.widget.RemoteViews
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -17,6 +16,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.ui.mainactivity.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -39,6 +42,9 @@ class TheLabAppWidgetProvider : AppWidgetProvider() {
             The hierarchy is inflated from a layout resource file, and this class provides some
             basic operations for modifying the content of the inflated hierarchy.
     */
+
+    // Time
+    private var isTimeUpdatedStarted: Boolean = false
 
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
@@ -162,7 +168,7 @@ class TheLabAppWidgetProvider : AppWidgetProvider() {
         // provider.
         appWidgetIds?.forEach { appWidgetId ->
             // Create an Intent to launch ExampleActivity.
-            val pendingIntent: PendingIntent = if (LabCompatibilityManager.isS()) {
+            val pendingIntent: PendingIntent =
                 PendingIntent.getActivity(
                     /* context = */ context,
                     /* requestCode = */
@@ -171,20 +177,9 @@ class TheLabAppWidgetProvider : AppWidgetProvider() {
                     Intent(context, MainActivity::class.java),
 //                    Intent(context, TheLabAppWidgetConfigurationActivity::class.java),
                     /* flags = */
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    if (LabCompatibilityManager.isMarshmallow()) PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT else PendingIntent.FLAG_UPDATE_CURRENT
                 )
-            } else {
-                PendingIntent.getActivity(
-                    /* context = */ context,
-                    /* requestCode = */
-                    0,
-                    /* intent = */
-                    Intent(context, MainActivity::class.java),
-//                    Intent(context, TheLabAppWidgetConfigurationActivity::class.java),
-                    /* flags = */
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-            }
+
 
             // Get the layout for the widget and attach an on-click listener
             // to the button.
@@ -192,6 +187,22 @@ class TheLabAppWidgetProvider : AppWidgetProvider() {
                 context?.packageName,
                 R.layout.widget_the_lab_preview
             ).apply {
+                CoroutineScope(Dispatchers.Main).launch {
+                    Timber.d("updateTime()")
+
+                    isTimeUpdatedStarted = true
+
+                    while (isTimeUpdatedStarted) {
+                        val date = Date(System.currentTimeMillis())
+                        val time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
+
+                        setTextViewText(
+                            R.id.tv_time,
+                            time
+                        )
+                        delay(1000)
+                    }
+                }
                 setTextViewText(
                     R.id.tv_time,
                     SimpleDateFormat("HH:mm", Locale.FRENCH)

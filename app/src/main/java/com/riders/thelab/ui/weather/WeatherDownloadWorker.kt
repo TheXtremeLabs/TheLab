@@ -40,7 +40,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
     var outputData: Data? = null
 
     @Inject
-    lateinit var mRepository : IRepository
+    lateinit var mRepository: IRepository
 
     override suspend fun doWork(): Result {
         Timber.d("startWork()")

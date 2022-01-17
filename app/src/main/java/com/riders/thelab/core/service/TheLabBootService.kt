@@ -71,12 +71,13 @@ class TheLabBootService : Service() {
                         or Intent.FLAG_ACTIVITY_SINGLE_TOP
             )
 
-            val contentIntent: PendingIntent = PendingIntent.getActivity(
-                this@TheLabBootService,
-                0,
-                notificationIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT
-            )
+            val contentIntent: PendingIntent =
+                PendingIntent.getActivity(
+                    this@TheLabBootService,
+                    0,
+                    notificationIntent,
+                    if (LabCompatibilityManager.isMarshmallow()) PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT else PendingIntent.FLAG_CANCEL_CURRENT
+                )
 
             val mBuilder: NotificationCompat.Builder =
                 @Suppress("DEPRECATION")
@@ -104,8 +105,14 @@ class TheLabBootService : Service() {
                     .apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
+
             mPendingIntent =
-                PendingIntent.getActivity(this@TheLabBootService, 0, mIntent, 0)
+                PendingIntent.getActivity(
+                    this@TheLabBootService,
+                    0,
+                    mIntent,
+                    if (LabCompatibilityManager.isMarshmallow()) PendingIntent.FLAG_IMMUTABLE else 0
+                )
 
             val notification: NotificationCompat.Builder =
                 LabNotificationManager.buildMainNotification(this, mPendingIntent)

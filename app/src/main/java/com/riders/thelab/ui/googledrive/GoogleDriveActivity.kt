@@ -47,7 +47,8 @@ class GoogleDriveActivity
     companion object {
 
         private const val APPLICATION_NAME: String = "Google Drive API Java Quickstart"
-//        private val JSON_FACTORY: JsonFactory = JacksonFactory.getDefaultInstance()
+
+        //        private val JSON_FACTORY: JsonFactory = JacksonFactory.getDefaultInstance()
         private val JSON_FACTORY: JsonFactory? = null
         private const val TOKENS_DIRECTORY_PATH: String = "tokens"
 
