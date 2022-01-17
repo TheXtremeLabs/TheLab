@@ -42,9 +42,12 @@ class TheLabAppWidgetConfigurationActivity : ComponentActivity() {
                 // of the newly-pinned widget (EXTRA_APPWIDGET_ID).
                 val successCallback = PendingIntent.getBroadcast(
                     /* context = */ this,
-                    /* requestCode = */ 0,
-                    /* intent = */ Intent(this, MainActivity::class.java),
-                    /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    /* requestCode = */
+                    0,
+                    /* intent = */
+                    Intent(this, MainActivity::class.java),
+                    /* flags = */
+                    if (LabCompatibilityManager.isMarshmallow()) PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT else PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
                 appWidgetManager.requestPinAppWidget(myProvider, null, successCallback)

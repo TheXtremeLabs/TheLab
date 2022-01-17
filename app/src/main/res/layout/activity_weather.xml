@@ -7,6 +7,8 @@
 
     <data>
 
+        <import type="android.text.TextUtils" />
+
         <variable
             name="weather"
             type="com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse" />
@@ -15,6 +17,10 @@
         <variable
             name="dateTimeUtils"
             type="com.riders.thelab.utils.DateTimeUtils.Companion" />
+
+        <variable
+            name="weatherUtils"
+            type="com.riders.thelab.ui.weather.WeatherUtils" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -90,11 +96,11 @@
                         android:minWidth="64dp"
                         android:minHeight="64dp"
                         android:scaleType="fitCenter"
-                        bind:imageUrl='@{weather.currentWeather.weather[0].icon}'
+                        bind:imageUrl='@{!TextUtils.isEmpty(weather.currentWeather.weather[0].icon) ? weatherUtils.Companion.getWeatherIconFromApi(weather.currentWeather.weather[0].icon) : ""}'
+                        tools:backgroundTint="@color/white"
                         tools:layout_height="72dp"
                         tools:layout_width="72dp"
-                        tools:src="@drawable/ic_humidity"
-                        tools:backgroundTint="@color/white" />
+                        tools:src="@drawable/ic_humidity" />
                     <!-- Weather icon -->
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -170,7 +176,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/medium_margin"
-                    android:layout_marginBottom="@dimen/extra_small_margin"
+                    android:layout_marginBottom="@dimen/small_margin"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toTopOf="@id/container_sun_data"
@@ -208,7 +214,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/medium_margin"
-                    android:layout_marginVertical="@dimen/medium_margin"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toTopOf="@id/tv_trends_placeholder"
                     app:layout_constraintTop_toBottomOf="@id/container_city_country">
@@ -216,6 +221,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/small_margin"
                         android:layout_weight="1">
 
                         <com.google.android.material.imageview.ShapeableImageView
@@ -252,6 +258,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/small_margin"
                         android:layout_weight="1">
 
                         <com.google.android.material.imageview.ShapeableImageView

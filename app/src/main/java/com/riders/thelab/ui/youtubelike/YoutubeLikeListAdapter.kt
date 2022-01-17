@@ -40,7 +40,10 @@ class YoutubeLikeListAdapter(
     }
 
 
-    override fun onBindViewHolder(holder: YoutubeLikeViewHolder, @SuppressLint("RecyclerView") position: Int) {
+    override fun onBindViewHolder(
+        holder: YoutubeLikeViewHolder,
+        @SuppressLint("RecyclerView") position: Int
+    ) {
         val itemYoutubeVideo = youtubeList[position]
 
         holder.bind(itemYoutubeVideo)
