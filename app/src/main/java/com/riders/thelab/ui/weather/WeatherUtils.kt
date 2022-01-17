@@ -88,7 +88,5 @@ class WeatherUtils private constructor() {
             }
             return temperaturesQuarters.toTypedArray()
         }
-
     }
-
 }

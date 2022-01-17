@@ -28,6 +28,7 @@ data class App(
     private companion object : Parceler<App> {
 
         override fun create(parcel: Parcel): App {
+            /* Source : https://stackoverflow.com/questions/9033764/how-to-add-a-drawable-object-to-a-parcel-object-in-android*/
             var drawable: BitmapDrawable?
 
             val bitmap = parcel.readValue(Bitmap::class.java.classLoader)!! as Bitmap
@@ -125,10 +126,6 @@ data class App(
         this.description = description
         this.drawableIcon = icon
         this.activity = activity
-    }
-
-    override fun toString(): String {
-        return "App(id=$id, appName='$appName', appDrawableIcon=$appDrawableIcon, appVersion='$appVersion', appPackageName='$appPackageName', appTitle='$appTitle', appDescription='$appDescription', appActivity=$appActivity, name=$name, drawableIcon=$drawableIcon, version=$version, packageName=$packageName, title=$title, description=$description, activity=$activity)"
     }
 
     private fun getBitmap(vectorDrawable: VectorDrawable): Bitmap? {

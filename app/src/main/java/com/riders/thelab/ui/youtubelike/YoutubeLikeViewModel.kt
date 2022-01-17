@@ -20,6 +20,7 @@ import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -34,6 +35,12 @@ class YoutubeLikeViewModel @Inject constructor(
     private val youtubeVideos: MutableLiveData<List<Video>> = MutableLiveData()
     private val youtubeVideosFailed: MutableLiveData<Boolean> = MutableLiveData()
 
+
+    ///////////////////////////
+    //
+    // Observers
+    //
+    ///////////////////////////
     fun getProgressBarVisibility(): LiveData<Boolean> {
         return progressVisibility
     }
@@ -50,6 +57,12 @@ class YoutubeLikeViewModel @Inject constructor(
         return youtubeVideosFailed
     }
 
+
+    ///////////////////////////
+    //
+    // Class methods
+    //
+    ///////////////////////////
     fun fetchVideos(activity: YoutubeLikeActivity) {
 
         progressVisibility.value = true
@@ -64,36 +77,80 @@ class YoutubeLikeViewModel @Inject constructor(
             )
         }
 
-
         Timber.e("Fetch Content")
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioContext) {
             try {
+                supervisorScope {
+                    val videos = repositoryImpl.getVideos()
 
-                val videos = repositoryImpl.getVideos()
-                if (videos.isEmpty()) {
-                    withContext(Dispatchers.Main) {
-                        youtubeVideosFailed.value = true
-                        progressVisibility.value = false
-                        youtubeVideos.value = videos
-                    }
-                } else {
-                    withContext(Dispatchers.Main) {
-                        progressVisibility.value = false
-                        youtubeVideos.value = videos
+                    if (videos.isEmpty()) {
+                        withContext(mainContext) {
+                            youtubeVideosFailed.value = true
+                            progressVisibility.value = false
+                            youtubeVideos.value = videos
+                        }
+                    } else {
+                        withContext(mainContext) {
+                            progressVisibility.value = false
+                            youtubeVideos.value = videos
+                        }
                     }
                 }
+
             } catch (throwable: Exception) {
                 Timber.e(throwable)
                 withContext(Dispatchers.Main) {
                     progressVisibility.value = false
                     youtubeVideosFailed.value = true
                 }
-
             }
         }
     }
 
+
+    fun onYoutubeItemClicked(
+        activity: YoutubeLikeActivity,
+        navigator: Navigator,
+        thumbShapeableImageView: ShapeableImageView,
+        titleTextView: MaterialTextView,
+        descriptionTextView: MaterialTextView,
+        video: Video
+    ) {
+
+        Timber.e("Click on : ${video.name}")
+
+        val intent = Intent(activity, YoutubeLikeDetailActivity::class.java)
+        intent.putExtra(YoutubeLikeDetailActivity.VIDEO_OBJECT_ARG, video)
+
+        val sePairThumb: Pair<View, String> =
+            Pair.create(
+                thumbShapeableImageView,
+                activity.getString(R.string.thumb_transition_name)
+            )
+        val sePairTitle: Pair<View, String> =
+            Pair.create(
+                titleTextView,
+                activity.getString(R.string.title_transition_name)
+            )
+        val sePairDescription: Pair<View, String> =
+            Pair.create(
+                descriptionTextView,
+                activity.getString(R.string.description_transition_name)
+            )
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            activity, sePairThumb, sePairTitle, sePairDescription
+        )
+
+        // Call navigator to switch activity with or without transition according
+        // to the device's version running the application
+        options.toBundle()?.let {
+            navigator.callYoutubeDetailActivity(
+                intent,
+                it
+            )
+        }
+    }
 
     fun onYoutubeItemClicked(
         activity: YoutubeLikeActivity,
@@ -137,5 +194,10 @@ class YoutubeLikeViewModel @Inject constructor(
                 it
             )
         }
+    }
+
+    companion object {
+        val ioContext = Dispatchers.IO
+        val mainContext = Dispatchers.Main
     }
 }

@@ -15,9 +15,4 @@ data class City(
     val country: String,
     @Json(name = "coord")
     val coordinates: Coordinates
-) {
-
-    override fun toString(): String {
-        return "City(id=$id, name=$name, state=$state, country=$country, coordinates=$coordinates)"
-    }
-}
+)

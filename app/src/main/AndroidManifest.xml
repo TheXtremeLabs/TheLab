@@ -426,6 +426,15 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+
+        <!-- Widget -->
+        <activity
+            android:name=".core.widget.TheLabAppWidgetConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
@@ -469,6 +478,18 @@
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
+        </receiver>
+
+        <!-- Widget -->
+        <receiver
+            android:name=".core.widget.TheLabAppWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/the_lab_app_widget" />
         </receiver>
         <!-- ////////////// BROADCAST RECEIVER ////////////// -->
 
@@ -515,19 +536,20 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
-            tools:node="merge">
-            &lt;!&ndash; If you are using androidx.startup to initialize other components &ndash;&gt;
-            <meta-data
-                android:name="androidx.work.impl.WorkManagerInitializer"
-                android:value="androidx.startup"
-                tools:node="remove" />
+            tools:node="merge">-->
+        <!-- If you are using androidx.startup to initialize other components -->
+        <!--<meta-data
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:value="androidx.startup"
+            tools:node="remove" />
         </provider>-->
 
+        <!-- In order to use hilt injection in Worker -->
+        <!-- If you want to disable android.startup completely. -->
         <provider
-            android:name="androidx.work.impl.WorkManagerInitializer"
-            android:authorities="${applicationId}.workmanager-init"
-            tools:ignore="MissingClass"
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
             tools:node="remove" />
-    </application>
 
+    </application>
 </manifest>

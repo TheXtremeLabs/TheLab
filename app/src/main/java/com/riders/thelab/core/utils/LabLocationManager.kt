@@ -1,8 +1,6 @@
 package com.riders.thelab.core.utils
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Service
 import android.content.Context
 import android.content.DialogInterface
@@ -11,13 +9,9 @@ import android.location.*
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
+import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.DexterError
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import androidx.core.content.ContextCompat
 import com.riders.thelab.core.bus.LocationFetchedEvent
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
@@ -25,7 +19,6 @@ import java.util.*
 
 
 class LabLocationManager constructor(
-    private var mActivity: Activity,
     private var mContext: Context
 ) : Service(), LocationListener {
 
@@ -40,7 +33,7 @@ class LabLocationManager constructor(
 
     // Declaring a Location Manager
     private var locationManager: LocationManager =
-        mActivity.getSystemService(LOCATION_SERVICE) as LocationManager
+        mContext.getSystemService(LOCATION_SERVICE) as LocationManager
 
     // flag for GPS status
     var isGPSEnabled = false
@@ -59,17 +52,14 @@ class LabLocationManager constructor(
     private var mLocationListener: LocationListener? = null
 
     init {
-        locationManager = mActivity.getSystemService(LOCATION_SERVICE) as LocationManager
+        locationManager = mContext.getSystemService(LOCATION_SERVICE) as LocationManager
         mLocationListener = this
     }
 
     constructor(
-        activity: Activity,
         context: Context,
         locationListener: LocationListener
-    ) : this(activity, context) {
-        this.mActivity = activity
-        this.mContext = context
+    ) : this(context) {
         mLocationListener = this
     }
 
@@ -97,71 +87,38 @@ class LabLocationManager constructor(
         mLocationListener = this
     }
 
+    @WorkerThread
     @JvmName("getLocation1")
     fun getLocation(): Location? {
         Timber.d("getLocation1()")
 
-        // run dexter permission
-        Dexter
-            .withContext(mActivity)
-            .withPermissions(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-            .withListener(object : MultiplePermissionsListener {
-                @SuppressLint("MissingPermission")
-                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                    // check if all permissions are granted
-                    if (report.areAllPermissionsGranted()) {
-                        // do you work now
-                    }
+        if (!canGetLocation()) {
+            // no network provider is enabled
+            Timber.e("no network provider is enabled")
+        } else {
 
-                    // check for permanent denial of any permission
-                    if (report.isAnyPermissionPermanentlyDenied) {
-                        // permission is denied permanently, navigate user to app settings
-                    }
-                    if (!canGetLocation()) {
-                        // no network provider is enabled
-                        Timber.e("no network provider is enabled")
-                    } else {
-
-                        try {
-                            // if Network Enabled get lat/long using Network
-                            if (isNetworkEnabled) {
-                                getLocationViaNetwork()
-                            }
-                            EventBus.getDefault().post(location?.let { LocationFetchedEvent(it) })
-
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-
-                        try {
-                            // if GPS Enabled get lat/long using GPS Services
-                            if (isGPSEnabled) {
-                                getLocationViaGPS()
-                            }
-                            EventBus.getDefault().post(location?.let { LocationFetchedEvent(it) })
-
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
+            try {
+                // if Network Enabled get lat/long using Network
+                if (isNetworkEnabled) {
+                    getLocationViaNetwork()
                 }
+                EventBus.getDefault().post(location?.let { LocationFetchedEvent(it) })
 
-                override fun onPermissionRationaleShouldBeShown(
-                    permissions: List<PermissionRequest>,
-                    token: PermissionToken
-                ) {
-                    token.continuePermissionRequest()
-                }
-            })
-            .withErrorListener { error: DexterError ->
-                UIManager.showActionInToast(mContext, "Error occurred! $error")
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            .onSameThread()
-            .check()
 
+            try {
+                // if GPS Enabled get lat/long using GPS Services
+                if (isGPSEnabled) {
+                    getLocationViaGPS()
+                }
+                EventBus.getDefault().post(location?.let { LocationFetchedEvent(it) })
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
         // return location object
         return this.location
@@ -169,12 +126,17 @@ class LabLocationManager constructor(
 
     @SuppressLint("MissingPermission")
     private fun getLocationViaNetwork() {
-        locationManager.requestLocationUpdates(
-            LocationManager.NETWORK_PROVIDER,
-            MIN_TIME_BW_UPDATES,
-            MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
-            mLocationListener!!
-        )
+        ContextCompat.getMainExecutor(mContext).execute {
+            // This is where your UI code goes.
+            locationManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                MIN_TIME_BW_UPDATES,
+                MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
+                mLocationListener!!
+            )
+        }
+
+
         Timber.d("Network Enabled")
         this.location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!
         latitude = this.location!!.latitude
@@ -184,12 +146,17 @@ class LabLocationManager constructor(
 
     @SuppressLint("MissingPermission")
     private fun getLocationViaGPS() {
-        locationManager.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER,
-            MIN_TIME_BW_UPDATES,
-            MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
-            mLocationListener!!
-        )
+        ContextCompat.getMainExecutor(mContext).execute {
+            // This is where your UI code goes.
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                MIN_TIME_BW_UPDATES,
+                MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
+                mLocationListener!!
+
+            )
+        }
+
         Timber.d("GPS Enabled")
         this.location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
         latitude = this.location!!.latitude
