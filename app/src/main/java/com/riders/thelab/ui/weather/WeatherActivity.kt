@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -99,12 +100,12 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_weather, menu)
 
         // Associate searchable configuration with the SearchView
         val searchManager = this.getSystemService(SEARCH_SERVICE) as SearchManager
-        mSearchView = menu!!.findItem(R.id.action_search).actionView as SearchView
+        mSearchView = menu.findItem(R.id.action_search).actionView as SearchView
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         mSearchView.maxWidth = Int.MAX_VALUE
 
@@ -216,6 +217,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
     }
 
 
+    @SuppressLint("NewApi")
     fun initViewModelObservers() {
         Timber.d("initViewModelObservers()")
 
@@ -231,7 +233,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             {
                 if (!it) layoutInflater.inflate(
                     R.layout.no_internet_connection,
-                    binding.root,
+                    binding.weatherRootView,
                     true
                 )
             })
@@ -253,20 +255,46 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                 binding.weatherDataContainer.visibility = View.VISIBLE
             }
         })
+
         mWeatherViewModel.getWorkerStatus().observe(this, {
 
+            when (it) {
+                WorkInfo.State.SUCCEEDED -> {
+                    binding.progressBar.visibility = View.GONE
+                }
+
+                WorkInfo.State.FAILED -> {
+                    binding.progressBar.isIndeterminate = false
+                    binding.progressBar.setProgress(100, true)
+                    binding.progressBar.setIndicatorColor(
+                        ContextCompat.getColor(
+                            this@WeatherActivity,
+                            R.color.error
+                        )
+                    )
+                }
+
+                else -> {
+                    Timber.e("else branch")
+                }
+            }
         })
+
         mWeatherViewModel.getOneCalWeather().observe(this, {
             updateOneCallUI(it)
         })
     }
 
 
-    fun updateOneCallUI(oneCallWeatherResponse: OneCallWeatherResponse) {
+    private fun updateOneCallUI(oneCallWeatherResponse: OneCallWeatherResponse) {
         Timber.d("updateOneCallUI()")
 
+        binding.weather = oneCallWeatherResponse
+
+        binding.dateTimeUtils = DateTimeUtils.Companion
+
         // Load weather icon
-        Glide.with(context)
+        /*Glide.with(context)
             .load(
                 WeatherUtils.getWeatherIconFromApi(
                     oneCallWeatherResponse
@@ -297,7 +325,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                     return false
                 }
             })
-            .into(binding.ivWeatherIcon)
+            .into(binding.ivWeatherIcon)*/
 
         val address: Address =
             mWeatherViewModel.getCityNameWithCoordinates(
@@ -312,11 +340,11 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         binding.tvWeatherCityName.text = cityName
         val country = address.countryName
         binding.tvWeatherCityCountry.text = country
-        binding.tvWeatherMainDescription.text =
+        /*binding.tvWeatherMainDescription.text =
             oneCallWeatherResponse
                 .currentWeather
                 .weather[0]
-                .description
+                .description*/
 
         supportActionBar?.title = "$cityName $country"
 
@@ -333,11 +361,11 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             }"
         binding.tvWeatherCityRealFeels.text = realFeels
 
-        binding.tvSunrise.text =
+        /*binding.tvSunrise.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(
                 oneCallWeatherResponse.timezone,
                 oneCallWeatherResponse.currentWeather.sunrise
-            )
+            )*/
         binding.tvSunset.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(
                 oneCallWeatherResponse.timezone,
@@ -395,6 +423,8 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             })
             .into(binding.ivWeatherExtraWindDirectionIcon)
 
+
+
         val windDirectionShortName: String = windDirection.shortName + " "
         binding.tvWeatherExtraWindDirectionShortName.text = windDirectionShortName
 
@@ -411,7 +441,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         binding.rvForecastFiveDays.adapter = mAdapter
     }
 
-    fun buildChart(hourlyWeather: List<CurrentWeather>) {
+    private fun buildChart(hourlyWeather: List<CurrentWeather>) {
         Timber.d("buildChart()")
 
         // in this example, a LineChart is initialized from xml

@@ -5,8 +5,4 @@ data class SongModel(
     val path: String,
     val drawableUri: String,
     var isPlaying: Boolean
-) {
-    override fun toString(): String {
-        return "SongModel(name='$name', path='$path', drawableUri='$drawableUri')"
-    }
-}
+)

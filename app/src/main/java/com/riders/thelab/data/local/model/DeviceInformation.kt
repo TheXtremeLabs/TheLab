@@ -16,8 +16,4 @@ data class DeviceInformation constructor(
     var sdkVersion: Int = 0,
     var androidRelease: String,
     var rooted: Boolean = false
-) {
-    override fun toString(): String {
-        return "DeviceInformation(name=$name, brand=$brand, model=$model, serial=$serial, fingerPrint=$fingerPrint, hardware=$hardware, IMEI=$IMEI, id=$id, screenWidth=$screenWidth, screenHeight=$screenHeight, androidVersionName=$androidVersionName, sdkVersion=$sdkVersion, androidRelease=$androidRelease, rooted=$rooted)"
-    }
-}
+)
