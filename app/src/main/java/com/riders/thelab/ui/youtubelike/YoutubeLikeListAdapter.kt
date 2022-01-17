@@ -1,12 +1,13 @@
 package com.riders.thelab.ui.youtubelike
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
-import com.riders.thelab.R
 import com.riders.thelab.data.local.model.Video
+import com.riders.thelab.databinding.RowYoutubeLikeItemBinding
 
 class YoutubeLikeListAdapter(
     private val context: Context,
@@ -28,21 +29,26 @@ class YoutubeLikeListAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): YoutubeLikeViewHolder {
-        return YoutubeLikeViewHolder(
-            context,
-            LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.row_youtube_like_item, parent, false)
-        )
+        val binding: RowYoutubeLikeItemBinding =
+            RowYoutubeLikeItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+
+        return YoutubeLikeViewHolder(context, binding, listener)
     }
 
 
-    override fun onBindViewHolder(holder: YoutubeLikeViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: YoutubeLikeViewHolder,
+        @SuppressLint("RecyclerView") position: Int
+    ) {
         val itemYoutubeVideo = youtubeList[position]
 
         holder.bind(itemYoutubeVideo)
 
-        holder.viewBinding.cardViewItem.setOnClickListener {
+        /*holder.viewBinding.cardViewItem.setOnClickListener {
             listener.onYoutubeItemClicked(
                 holder.getImageView(),
                 holder.getNameTextView(),
@@ -50,7 +56,7 @@ class YoutubeLikeListAdapter(
                 itemYoutubeVideo,
                 holder.absoluteAdapterPosition
             )
-        }
+        }*/
 
         // If the bound view wasn't previously displayed on screen, it's animated
         if (position > lastPosition) {

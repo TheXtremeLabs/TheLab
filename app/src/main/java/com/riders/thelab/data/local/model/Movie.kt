@@ -29,8 +29,4 @@ data class Movie constructor(
         year = movieEnum.year
         urlThumbnail = movieEnum.url
     }
-
-    override fun toString(): String {
-        return "Movie(title=$title, genre=$genre, year=$year, urlThumbnail=$urlThumbnail)"
-    }
 }

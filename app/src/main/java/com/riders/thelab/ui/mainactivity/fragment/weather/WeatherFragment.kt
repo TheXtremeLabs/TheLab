@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.mainactivity.fragment.weather
 
+import android.annotation.SuppressLint
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
@@ -81,12 +82,13 @@ class WeatherFragment : BaseFragment(), LocationListener {
         super.onPause()
     }
 
+    @SuppressLint("WrongThread")
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()")
         EventBus.getDefault().register(this)
 
-        val labLocationManager = LabLocationManager(requireActivity(), requireContext(), this)
+        val labLocationManager = LabLocationManager(requireActivity(), this)
 
         if (!labLocationManager.canGetLocation()) {
             Timber.e("Cannot get location please enable position")
@@ -129,7 +131,7 @@ class WeatherFragment : BaseFragment(), LocationListener {
         // Load weather icon
         UIManager.loadImage(
             requireActivity(),
-            WeatherUtils.getWeatherIconFromApi(cityWeather.weatherIconURL),
+            WeatherUtils.getWeatherIconFromApi(cityWeather.weatherIconURL)!!,
             binding.ivWeatherIcon
         )
 

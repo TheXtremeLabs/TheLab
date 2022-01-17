@@ -11,19 +11,57 @@ import com.riders.thelab.TheLabApplication
 import jp.wasabeef.glide.transformations.BlurTransformation
 
 @BindingAdapter("imageResource", "error", requireAll = false)
-public fun loadImage(
+fun loadImage(
     targetImageView: ShapeableImageView,
-    iconResDrawable: Drawable,
+    iconResDrawable: Drawable?,
     error: Drawable,
 ) {
-    //Load the background  thumb image
-    Glide.with(TheLabApplication.getInstance().getContext())
-        .load(iconResDrawable)
-        .error(error)
-        .apply {
-            dontTransform()
-        }
-        .into(targetImageView)
+    if (null != iconResDrawable) {
+        //Load the background  thumb image
+        Glide.with(TheLabApplication.getInstance().getContext())
+            .load(iconResDrawable)
+            .error(error)
+            .apply {
+                dontTransform()
+            }
+            .into(targetImageView)
+    }
+}
+
+@BindingAdapter("imageUrl", "error", requireAll = false)
+fun loadImage(
+    targetImageView: ShapeableImageView,
+    imageUrl: String?,
+    error: Drawable,
+) {
+    if (null != imageUrl) {
+        //Load the background  thumb image
+        Glide.with(TheLabApplication.getInstance().getContext())
+            .load(imageUrl)
+            .error(error)
+            .apply {
+                dontTransform()
+            }
+            .into(targetImageView)
+    }
+}
+
+@BindingAdapter("imageUrl", "error", requireAll = false)
+fun loadImage(
+    targetImageView: ShapeableImageView,
+    imageUrl: String?,
+    error: Int,
+) {
+    if (null != imageUrl) {
+        //Load the background  thumb image
+        Glide.with(TheLabApplication.getInstance().getContext())
+            .load(imageUrl)
+            .error(error)
+            .apply {
+                dontTransform()
+            }
+            .into(targetImageView)
+    }
 }
 
 class LabGlideUtils {
@@ -39,10 +77,7 @@ class LabGlideUtils {
         }
     }
 
-
-    /*@JvmStatic
-    @BindingAdapter("android:src", "error", requireAll = false)*/
-    public fun loadImage(
+    fun loadImage(
         targetImageView: ShapeableImageView,
         iconIntRes: Int,
         error: Drawable,
@@ -57,8 +92,7 @@ class LabGlideUtils {
             .into(targetImageView)
     }
 
-    // @BindingAdapter("app:srcCompat", "error", requireAll = false)
-    public fun loadImage(
+    fun loadImage(
         targetImageView: ShapeableImageView,
         iconIntVectorRes: Int,
         error: Drawable,
@@ -74,9 +108,7 @@ class LabGlideUtils {
             .into(targetImageView)
     }
 
-    /*@JvmStatic
-    @BindingAdapter("imageUrl", "error", requireAll = false)*/
-    public fun loadImage(
+    fun loadImage(
         targetImageView: ShapeableImageView,
         iconResDrawable: Drawable,
         error: Drawable,

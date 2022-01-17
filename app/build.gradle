@@ -13,11 +13,6 @@ apply plugin: 'com.google.firebase.crashlytics'
 // Apply the Performance Monitoring plugin
 apply plugin: 'com.google.firebase.firebase-perf'
 
-def buildDateTime =
-        project.hasProperty('devBuild')
-                ? 100
-                : new Date().format('yyMMddHHmm').toInteger()
-
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -32,7 +27,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 
-        versionCode buildDateTime
+        versionCode 1
         versionName rootProject.ext.versionName
 
         // Enabling multidex support.
@@ -54,10 +49,10 @@ android {
             // Enables resource shrinking, which is performed by the
             // Android Gradle plugin.
             shrinkResources true
+            debuggable false
 
-            // Includes the default ProGuard rules files that are packaged with
-            // the Android Gradle plugin. To learn more, go to the section about
-            // R8 configuration files.
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type.
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro'
         }
@@ -100,10 +95,10 @@ android {
     }
 
     // Watch the memory
-    dexOptions {
+    /*dexOptions {
         javaMaxHeapSize = '4g'
         preDexLibraries = false
-    }
+    }*/
 
     kotlinOptions {
         jvmTarget = '1.8'
@@ -116,14 +111,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-}
-
-allprojects {
-    repositories {
-        flatDir {
-            dirs 'libs'
-        }
     }
 }
 
@@ -164,6 +151,7 @@ dependencies {
     implementation rootProject.ext.generalDependencies.viewPager2
 
     // Compose
+    implementation rootProject.ext.generalDependencies.composeActivity
     implementation rootProject.ext.generalDependencies.composeAnimation
     implementation rootProject.ext.generalDependencies.composeCompiler
     implementation rootProject.ext.generalDependencies.composeFoundation
@@ -192,7 +180,7 @@ dependencies {
 
     // Worker
     implementation rootProject.ext.generalDependencies.workerRuntime
-    implementation rootProject.ext.generalDependencies.workerRxJava3
+//    implementation rootProject.ext.generalDependencies.workerRxJava3
     implementation rootProject.ext.generalDependencies.workerMultiprocess
     implementation rootProject.ext.generalDependencies.concurrent
 
@@ -244,7 +232,8 @@ dependencies {
      * the following dependencies */
     // Hilt
     implementation rootProject.ext.generalDependencies.hilt
-    kapt(rootProject.ext.generalDependencies.hiltKaptCompiler)
+    kapt rootProject.ext.generalDependencies.hiltCompiler
+    kapt rootProject.ext.generalDependencies.hiltKaptCompiler
 //    implementation rootProject.ext.generalDependencies.hiltLifecycle
     // Worker
     implementation rootProject.ext.generalDependencies.hiltWorkerManager
@@ -281,10 +270,6 @@ dependencies {
 
     // Dexter : permissions
     implementation rootProject.ext.generalDependencies.dexter
-
-    // GoldFinger
-    implementation rootProject.ext.generalDependencies.goldfinger
-    implementation rootProject.ext.generalDependencies.goldfingerRX
 
     // Lottie
     implementation rootProject.ext.generalDependencies.lottie

@@ -19,9 +19,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import okhttp3.ResponseBody
+import retrofit2.Call
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
+import kotlin.coroutines.Continuation
 
 class ApiImpl @Inject constructor(
     artistsAPIService: ArtistsAPIService,
@@ -99,9 +101,9 @@ class ApiImpl @Inject constructor(
             )
     }
 
-    override suspend fun getBulkWeatherCitiesFile(): ResponseBody {
+    override fun getBulkWeatherCitiesFile(): Call<ResponseBody> {
         Timber.e("get cities bulk file()")
-        return mWeatherBulkApiService.getCitiesGZipFile()
+        return mWeatherBulkApiService.getCitiesZipFile()
     }
 
 

@@ -26,6 +26,7 @@ class WorkingTabsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.tabToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupViewPager(binding.tabViewPager2)
 

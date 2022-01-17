@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:shape="rectangle">
 
-    <solid tools:color="@color/petrol" />
+    <solid
+        android:color="@color/petrol"
+        tools:color="@color/petrol" />
     <corners android:radius="@dimen/small_margin" />
 </shape>

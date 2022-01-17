@@ -111,13 +111,13 @@ class ContactsActivity
         mContactViewModel.fetchContacts()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_contacts_database, menu)
 
         // Associate searchable configuration with the SearchView
         val searchManager = this.getSystemService(SEARCH_SERVICE) as SearchManager
 
-        searchView = menu!!.findItem(R.id.action_search).actionView as SearchView
+        searchView = menu.findItem(R.id.action_search).actionView as SearchView
         searchView!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView!!.maxWidth = Int.MAX_VALUE
 

@@ -34,8 +34,7 @@ class SplashScreenActivity : AppCompatActivity(),
     OnPreparedListener,
     OnCompletionListener {
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + Job()
+    override val coroutineContext: CoroutineContext get() = Dispatchers.Main + Job()
 
     companion object {
         private const val ANDROID_RES_PATH = "android.resource://"

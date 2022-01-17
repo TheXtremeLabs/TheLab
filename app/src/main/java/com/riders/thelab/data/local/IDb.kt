@@ -28,7 +28,7 @@ interface IDb {
     suspend fun insertWeatherData(isWeatherData: WeatherData): Long
     suspend fun saveCity(city: CityModel): Long
     suspend fun saveCities(dtoCities: List<City>): List<Long>
-    suspend fun getWeatherData(): WeatherData
+    suspend fun getWeatherData(): WeatherData?
     suspend fun getCities(): List<CityModel>
     fun getCitiesCursor(query: String): Cursor
     fun deleteAll()

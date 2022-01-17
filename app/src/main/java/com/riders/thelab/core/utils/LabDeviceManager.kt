@@ -9,26 +9,15 @@ import android.view.WindowManager
 import android.view.WindowMetrics
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
-import co.infinum.goldfinger.Goldfinger
-import co.infinum.goldfinger.Goldfinger.PromptParams
-import co.infinum.goldfinger.crypto.CipherCrypter
-import co.infinum.goldfinger.crypto.CipherFactory
-import co.infinum.goldfinger.crypto.impl.AesCipherFactory
-import co.infinum.goldfinger.crypto.impl.Base64CipherCrypter
-import co.infinum.goldfinger.rx.RxGoldfinger
 import com.riders.thelab.utils.Constants
 import timber.log.Timber
 import java.io.File
 
 class LabDeviceManager private constructor() {
+
+    // TODO : GoldFinger deprecated
+
     companion object {
-
-        //FingerPrint variables
-        private var goldFinger: Goldfinger? = null
-
-        // RX approach
-        private var rxGoldFinger: RxGoldfinger? = null
-        private var params: PromptParams? = null
 
         @Suppress("DEPRECATION")
         fun logDeviceInfo() {
@@ -269,11 +258,6 @@ class LabDeviceManager private constructor() {
         @RequiresApi(api = Build.VERSION_CODES.M)
         fun initFingerPrint(context: Context?, activity: FragmentActivity) {
 
-            // fingerprint instantiation
-            goldFinger = Goldfinger.Builder(context!!).build()
-
-            // fingerprint prompt instantiation
-            initGoldFingerPromptParams(activity)
         }
 
         /**
@@ -284,25 +268,11 @@ class LabDeviceManager private constructor() {
          */
         @RequiresApi(api = Build.VERSION_CODES.M)
         fun initFingerPrintWithRx(context: Context?, activity: FragmentActivity) {
-            val factory: CipherFactory = AesCipherFactory(context!!)
-            val crypter: CipherCrypter = Base64CipherCrypter()
-            rxGoldFinger = RxGoldfinger.Builder(context)
-                .logEnabled(true)
-                .cipherFactory(factory)
-                .cipherCrypter(crypter)
-                .build()
 
-            // fingerprint prompt instantiation
-            initGoldFingerPromptParams(activity)
         }
 
         private fun initGoldFingerPromptParams(activity: FragmentActivity) {
-            params = PromptParams.Builder(activity)
-                .title("Title")
-                .negativeButtonText("Cancel")
-                .description("Description")
-                .subtitle("Subtitle")
-                .build()
+
         }
 
         /**
@@ -311,35 +281,7 @@ class LabDeviceManager private constructor() {
          * @return
          */
         fun hasFingerPrintHardware(): Boolean {
-            if (null != goldFinger) return goldFinger!!.hasFingerprintHardware() else if (null != rxGoldFinger) return rxGoldFinger!!.hasFingerprintHardware()
             return false
-        }
-
-        /**
-         * Returns GoldFinger (using the basic approach) variable
-         *
-         * @return
-         */
-        fun getGoldFinger(): Goldfinger? {
-            return goldFinger
-        }
-
-        /**
-         * Returns GoldFinger (using the reactiveX approach) variable
-         *
-         * @return
-         */
-        fun getRxGoldFinger(): RxGoldfinger? {
-            return rxGoldFinger
-        }
-
-        /**
-         * Returns GoldFinger prompt params
-         *
-         * @return
-         */
-        fun getGoldFingerPromptParams(): PromptParams? {
-            return params
         }
     }
 }
