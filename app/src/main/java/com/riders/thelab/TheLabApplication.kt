@@ -1,5 +1,6 @@
 package com.riders.thelab
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
@@ -9,12 +10,14 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.riders.thelab.core.worker.WeatherWorker
 import com.riders.thelab.ui.weather.WeatherDownloadWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.Duration
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -72,6 +75,7 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
         }
     }
 
+    @SuppressLint("NewApi")
     private fun setupWork() {
         Timber.d("setupWork()")
         val workRequest: OneTimeWorkRequest =
@@ -83,6 +87,19 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
                 WeatherDownloadWorker::class.java.simpleName,
                 ExistingWorkPolicy.KEEP,
                 workRequest
+            )
+
+
+        // Setup periodic worker to update widget
+        val periodicWeatherWorkRequest: PeriodicWorkRequest =
+            PeriodicWorkRequestBuilder<WeatherWorker>(Duration.ofMinutes(15L)).build()
+
+        WorkManager
+            .getInstance(applicationContext)
+            .enqueueUniquePeriodicWork(
+                WeatherWorker::class.java.simpleName,
+                ExistingPeriodicWorkPolicy.KEEP,
+                periodicWeatherWorkRequest
             )
     }
 
@@ -110,6 +127,17 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
 
     private fun notifyAppInBackground() {
         Timber.e("App went in background")
+
+        val workRequest: OneTimeWorkRequest =
+            OneTimeWorkRequestBuilder<WeatherWorker>().build()
+
+        WorkManager
+            .getInstance(applicationContext)
+            .enqueueUniqueWork(
+                "WeatherWorker_when_app_in_background_${workRequest.id}",
+                ExistingWorkPolicy.REPLACE,
+                workRequest
+            )
     }
 
     companion object {

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 
 import okhttp3.ResponseBody
 import retrofit2.Call
+import kotlin.coroutines.Continuation
 
 interface IApi {
 
