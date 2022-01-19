@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.weather
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.database.Cursor
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -29,8 +31,15 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.DexterError
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
 import com.riders.thelab.core.bus.LocationFetchedEvent
+import com.riders.thelab.core.utils.LabLocationManager
 import com.riders.thelab.core.utils.LabLocationUtils
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.RepositoryImpl
@@ -58,16 +67,18 @@ import kotlin.math.roundToInt
 class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
     private var _viewBinding: ActivityWeatherBinding? = null
-
     private val binding get() = _viewBinding!!
+
+    private lateinit var mSearchView: SearchView
+
+    private lateinit var context: WeatherActivity
 
     private val mWeatherViewModel: WeatherViewModel by viewModels()
 
     @Inject
     lateinit var repositoryImpl: RepositoryImpl
 
-    private lateinit var context: WeatherActivity
-    private lateinit var mSearchView: SearchView
+    private var labLocationManager: LabLocationManager? = null
 
     private lateinit var listener: WeatherClickListener
 
@@ -81,7 +92,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        initViewModelObservers()
+        checkLocationPermissions()
         listener = this
     }
 
@@ -99,12 +110,12 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_weather, menu)
 
         // Associate searchable configuration with the SearchView
         val searchManager = this.getSystemService(SEARCH_SERVICE) as SearchManager
-        mSearchView = menu!!.findItem(R.id.action_search).actionView as SearchView
+        mSearchView = menu.findItem(R.id.action_search).actionView as SearchView
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         mSearchView.maxWidth = Int.MAX_VALUE
 
@@ -169,9 +180,10 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             android.R.id.home -> {
                 onBackPressed()
             }
+
             R.id.action_position -> {
-                if (mWeatherViewModel.canGetLocation(this, context))
-                    mWeatherViewModel.getCurrentWeather()
+                if (labLocationManager?.canGetLocation() == true)
+                    labLocationManager?.getLocation()
                 else
                     UIManager.showActionInSnackBar(
                         this,
@@ -215,7 +227,53 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         )
     }
 
+    /////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    /////////////////////////////////////
+    private fun checkLocationPermissions() {
+        Timber.d("checkLocationPermissions()")
+        // run dexter permission
+        Dexter
+            .withContext(this)
+            .withPermissions(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            .withListener(object : MultiplePermissionsListener {
+                @SuppressLint("MissingPermission")
+                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                    // check if all permissions are granted
+                    if (report.areAllPermissionsGranted()) {
+                        // do you work now
+                    }
 
+                    // check for permanent denial of any permission
+                    if (report.isAnyPermissionPermanentlyDenied) {
+                        // permission is denied permanently, navigate user to app settings
+                    }
+
+                    initViewModelObservers()
+
+                    labLocationManager = LabLocationManager(this@WeatherActivity)
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: List<PermissionRequest>,
+                    token: PermissionToken
+                ) {
+                    token.continuePermissionRequest()
+                }
+            })
+            .withErrorListener { error: DexterError ->
+                UIManager.showActionInToast(this, "Error occurred! $error")
+            }
+            .onSameThread()
+            .check()
+    }
+
+    @SuppressLint("NewApi")
     fun initViewModelObservers() {
         Timber.d("initViewModelObservers()")
 
@@ -231,7 +289,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             {
                 if (!it) layoutInflater.inflate(
                     R.layout.no_internet_connection,
-                    binding.root,
+                    binding.weatherRootView,
                     true
                 )
             })
@@ -253,20 +311,46 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                 binding.weatherDataContainer.visibility = View.VISIBLE
             }
         })
+
         mWeatherViewModel.getWorkerStatus().observe(this, {
 
+            when (it) {
+                WorkInfo.State.SUCCEEDED -> {
+                    binding.progressBar.visibility = View.GONE
+                }
+
+                WorkInfo.State.FAILED -> {
+                    binding.progressBar.isIndeterminate = false
+                    binding.progressBar.setProgress(100, true)
+                    binding.progressBar.setIndicatorColor(
+                        ContextCompat.getColor(
+                            this@WeatherActivity,
+                            R.color.error
+                        )
+                    )
+                }
+
+                else -> {
+                    Timber.e("else branch")
+                }
+            }
         })
+
         mWeatherViewModel.getOneCalWeather().observe(this, {
             updateOneCallUI(it)
         })
     }
 
 
-    fun updateOneCallUI(oneCallWeatherResponse: OneCallWeatherResponse) {
+    private fun updateOneCallUI(oneCallWeatherResponse: OneCallWeatherResponse) {
         Timber.d("updateOneCallUI()")
 
+        binding.weather = oneCallWeatherResponse
+
+        binding.dateTimeUtils = DateTimeUtils.Companion
+
         // Load weather icon
-        Glide.with(context)
+        /*Glide.with(context)
             .load(
                 WeatherUtils.getWeatherIconFromApi(
                     oneCallWeatherResponse
@@ -297,7 +381,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                     return false
                 }
             })
-            .into(binding.ivWeatherIcon)
+            .into(binding.ivWeatherIcon)*/
 
         val address: Address =
             mWeatherViewModel.getCityNameWithCoordinates(
@@ -312,11 +396,11 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         binding.tvWeatherCityName.text = cityName
         val country = address.countryName
         binding.tvWeatherCityCountry.text = country
-        binding.tvWeatherMainDescription.text =
+        /*binding.tvWeatherMainDescription.text =
             oneCallWeatherResponse
                 .currentWeather
                 .weather[0]
-                .description
+                .description*/
 
         supportActionBar?.title = "$cityName $country"
 
@@ -333,11 +417,11 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             }"
         binding.tvWeatherCityRealFeels.text = realFeels
 
-        binding.tvSunrise.text =
+        /*binding.tvSunrise.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(
                 oneCallWeatherResponse.timezone,
                 oneCallWeatherResponse.currentWeather.sunrise
-            )
+            )*/
         binding.tvSunset.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(
                 oneCallWeatherResponse.timezone,
@@ -395,6 +479,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             })
             .into(binding.ivWeatherExtraWindDirectionIcon)
 
+
         val windDirectionShortName: String = windDirection.shortName + " "
         binding.tvWeatherExtraWindDirectionShortName.text = windDirectionShortName
 
@@ -411,7 +496,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         binding.rvForecastFiveDays.adapter = mAdapter
     }
 
-    fun buildChart(hourlyWeather: List<CurrentWeather>) {
+    private fun buildChart(hourlyWeather: List<CurrentWeather>) {
         Timber.d("buildChart()")
 
         // in this example, a LineChart is initialized from xml

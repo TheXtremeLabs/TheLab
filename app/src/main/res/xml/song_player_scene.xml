@@ -85,7 +85,7 @@
             <Layout
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
                 motion:layout_constraintBottom_toBottomOf="@+id/guideline_header"
                 motion:layout_constraintStart_toStartOf="@+id/guideline_right" />
         </Constraint>

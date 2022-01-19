@@ -5,14 +5,20 @@
 
     <data>
 
+        <import type="android.text.TextUtils" />
+
         <!-- Declare your "variable" that hold the Companion object itself -->
         <variable
             name="dateUtils"
             type="com.riders.thelab.utils.DateTimeUtils.Companion" />
 
         <variable
-            name="weather"
+            name="dailyWeather"
             type="com.riders.thelab.data.remote.dto.weather.DailyWeather" />
+
+        <variable
+            name="weatherUtils"
+            type="com.riders.thelab.ui.weather.WeatherUtils" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,7 +31,7 @@
             android:id="@+id/row_tv_forecast_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{dateUtils.formatMillisToTimeDayMonth(weather.dateTimeUTC)}"
+            android:text="@{dateUtils.formatMillisToTimeDayMonth(dailyWeather.dateTimeUTC)}"
             android:textColor="@color/base"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,6 +40,7 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/row_iv_forecast_weather"
+            imageUrl='@{!TextUtils.isEmpty(dailyWeather.weather[0].icon) ? weatherUtils.Companion.getWeatherIconFromApi(dailyWeather.weather[0].icon): ""}'
             android:layout_width="@dimen/extra_big_margin"
             android:layout_height="@dimen/extra_big_margin"
             android:adjustViewBounds="true"
@@ -50,12 +57,11 @@
             android:id="@+id/row_tv_forecast_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='@{String.format("%s", weather.temperature.day) + @string/degree_placeholder}'
+            android:text='@{String.format("%s", dailyWeather.temperature.day) + @string/degree_placeholder}'
             android:textColor="@color/light"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/row_iv_forecast_weather"
             tools:text="2°c" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

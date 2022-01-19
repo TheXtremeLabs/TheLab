@@ -24,7 +24,6 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.google.api.client.http.HttpRequestInitializer
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.JsonFactory
-import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
@@ -48,7 +47,9 @@ class GoogleDriveActivity
     companion object {
 
         private const val APPLICATION_NAME: String = "Google Drive API Java Quickstart"
-        private val JSON_FACTORY: JsonFactory = JacksonFactory.getDefaultInstance()
+
+        //        private val JSON_FACTORY: JsonFactory = JacksonFactory.getDefaultInstance()
+        private val JSON_FACTORY: JsonFactory? = null
         private const val TOKENS_DIRECTORY_PATH: String = "tokens"
 
         /**
@@ -242,14 +243,14 @@ class GoogleDriveActivity
             // we need to create the Drive service instance via its builder
             // where need to pass AndroidHttp, JacksonFactory,
             // and GoogleAccountCredential as parameters
-            return Drive
+            /*return Drive
                 .Builder(
                     NetHttpTransport.Builder().build(),
                     JacksonFactory.getDefaultInstance(),
                     credential
                 )
                 .setApplicationName(getString(R.string.app_name))
-                .build()
+                .build()*/
 
         }
 

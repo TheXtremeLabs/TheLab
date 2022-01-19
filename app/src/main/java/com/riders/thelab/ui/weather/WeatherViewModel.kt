@@ -1,8 +1,6 @@
 package com.riders.thelab.ui.weather
 
-
 import android.annotation.SuppressLint
-import android.content.Context
 import android.database.Cursor
 import android.location.Address
 import android.location.Geocoder
@@ -12,7 +10,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
-import com.riders.thelab.core.utils.*
+import com.riders.thelab.core.utils.LabAddressesUtils
+import com.riders.thelab.core.utils.LabLocationUtils
+import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
+import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.model.weather.WeatherData
@@ -21,6 +22,7 @@ import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
@@ -31,13 +33,6 @@ class WeatherViewModel @Inject constructor(
     private val repositoryImpl: IRepository
 ) : ViewModel() {
 
-    companion object {
-
-        const val MESSAGE_STATUS = "message_status"
-        const val URL_REQUEST = "url_request"
-        private const val WORK_RESULT = "work_result"
-    }
-
     private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val downloadStatus: MutableLiveData<String> = MutableLiveData()
@@ -47,10 +42,12 @@ class WeatherViewModel @Inject constructor(
     private val weatherCursor: MutableLiveData<Cursor> = MutableLiveData()
     private val oneCallWeather: MutableLiveData<OneCallWeatherResponse> = MutableLiveData()
 
-    @SuppressLint("StaticFieldLeak")
-    private lateinit var labLocationManager: LabLocationManager
 
-
+    ///////////////////////////
+    //
+    // Observers
+    //
+    ///////////////////////////
     fun getProgressBarVisibility(): LiveData<Boolean> {
         return progressVisibility
     }
@@ -75,11 +72,16 @@ class WeatherViewModel @Inject constructor(
         return workerStatus
     }
 
-
     fun getOneCalWeather(): LiveData<OneCallWeatherResponse> {
         return oneCallWeather
     }
 
+
+    ///////////////////////////
+    //
+    // Class methods
+    //
+    ///////////////////////////
     private fun showLoader() {
         progressVisibility.value = true
     }
@@ -87,7 +89,6 @@ class WeatherViewModel @Inject constructor(
     private fun hideLoader() {
         progressVisibility.value = false
     }
-
 
     fun getCityNameWithCoordinates(
         activity: WeatherActivity,
@@ -102,17 +103,6 @@ class WeatherViewModel @Inject constructor(
             )
     }
 
-    fun canGetLocation(activity: WeatherActivity, context: Context): Boolean {
-        Timber.d("canGetLocation()")
-        this.labLocationManager = LabLocationManager(activity, context)
-        return this.labLocationManager.canGetLocation()
-    }
-
-    fun getCurrentWeather() {
-        this.labLocationManager.getLocation()
-    }
-
-
     fun fetchCities() {
         Timber.d("fetchCities()")
         if (!LabNetworkManagerNewAPI.isConnected) {
@@ -123,13 +113,13 @@ class WeatherViewModel @Inject constructor(
 
             showLoader()
 
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(ioContext) {
                 try {
                     // First step
                     // Call repository to check if there is data in database
                     val weatherData = repositoryImpl.getWeatherData()
 
-                    if (!weatherData.isWeatherData) {
+                    if (null == weatherData || !weatherData.isWeatherData) {
 
                         // In this case record's return is null
                         // then we have to call our Worker to perform
@@ -139,13 +129,16 @@ class WeatherViewModel @Inject constructor(
                         // Only for debug purposes
                         // Use worker to make long job operation in background
                         Timber.e("Use worker to make long job operation in background...")
-                        isWeatherData.value = false
+                        withContext(mainContext) { isWeatherData.value = false }
+
                     } else {
                         // In this case data already exists in database
                         // Load data then let the the user perform his request
                         Timber.d("Record found in database. Continue...")
-                        hideLoader()
-                        isWeatherData.value = true
+                        withContext(mainContext) {
+                            hideLoader()
+                            isWeatherData.value = true
+                        }
                     }
                 } catch (throwable: Exception) {
                     Timber.e("Error while fetching records in database")
@@ -165,20 +158,22 @@ class WeatherViewModel @Inject constructor(
 
     fun fetchWeather(location: Location) {
         Timber.d("fetchWeather()")
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioContext) {
             try {
-                val weatherResponse = repositoryImpl.getWeatherOneCallAPI(location)
+                supervisorScope {
+                    val weatherResponse = repositoryImpl.getWeatherOneCallAPI(location)
 
-                withContext(Dispatchers.Main) {
-                    hideLoader()
-                    weatherResponse?.let {
-                        oneCallWeather.value = it
+                    withContext(mainContext) {
+                        hideLoader()
+                        weatherResponse?.let {
+                            oneCallWeather.value = it
+                        }
                     }
                 }
             } catch (throwable: Exception) {
 
                 Timber.e(throwable)
-                withContext(Dispatchers.Main) {
+                withContext(mainContext) {
 
                     hideLoader()
                 }
@@ -289,5 +284,15 @@ class WeatherViewModel @Inject constructor(
         WorkManager
             .getInstance(activity)
             .cancelAllWork()
+    }
+
+
+    companion object {
+        private val ioContext = Dispatchers.IO
+        private val mainContext = Dispatchers.Main
+
+        const val MESSAGE_STATUS = "message_status"
+        const val URL_REQUEST = "url_request"
+        private const val WORK_RESULT = "work_result"
     }
 }

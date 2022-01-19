@@ -18,8 +18,4 @@ data class Video constructor(
     var imageUrl: String,
     @Json(name = "videoUrl")
     var videoUrl: String
-) : Parcelable {
-    override fun toString(): String {
-        return "Video(id='$id', name='$name', description='$description', imageUrl='$imageUrl', videoUrl='$videoUrl')"
-    }
-}
+) : Parcelable

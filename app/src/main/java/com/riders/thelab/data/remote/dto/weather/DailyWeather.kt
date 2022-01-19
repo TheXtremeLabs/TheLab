@@ -65,7 +65,7 @@ data class DailyWeather(
     val rain: Double? = 0.0,
 
     @Json(name = "snow")
-    val snow: Snow? = null,
+    val snow: Double? = 0.0,
 
     // Probability of precipitation
     @Json(name = "pop")

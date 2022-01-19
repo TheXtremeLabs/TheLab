@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver
 import com.riders.thelab.core.service.ScheduleAlarmService
+import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.UIManager
 import timber.log.Timber
 
@@ -43,8 +44,9 @@ class ScheduleViewModel : ViewModel() {
                     TheLabApplication.getInstance().getContext(),
                     ScheduleAlarmReceiver.REQUEST_CODE,
                     mBroadcastIntent,
-                    0
+                    if (LabCompatibilityManager.isMarshmallow()) PendingIntent.FLAG_IMMUTABLE else 0
                 )
+
 
         mAlarmManager =
             (activity as ScheduleActivity).getSystemService(Context.ALARM_SERVICE) as AlarmManager

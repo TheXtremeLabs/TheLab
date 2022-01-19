@@ -90,6 +90,22 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
 
     }
 
+    override fun onYoutubeItemClicked(view: View, video: Video) {
+
+        val iv = view.findViewById<ShapeableImageView>(R.id.image_item)
+        val tv = view.findViewById<MaterialTextView>(R.id.name_item)
+        val desc = view.findViewById<MaterialTextView>(R.id.description_item)
+
+        mYoutubeViewModel.onYoutubeItemClicked(
+            this,
+            Navigator(this),
+            iv,
+            tv,
+            desc,
+            video
+        )
+    }
+
 
     override fun onYoutubeItemClicked(
         thumbShapeableImageView: ShapeableImageView,
