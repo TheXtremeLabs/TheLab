@@ -1,622 +1,675 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/weather_root_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/oil">
+    tools:ignore="HardcodedText">
 
-    <!-- ProgressBar -->
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progressBar"
+    <data>
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="weather"
+            type="com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse" />
+
+        <!-- Declare your "variable" that hold the Companion object itself -->
+        <variable
+            name="dateTimeUtils"
+            type="com.riders.thelab.utils.DateTimeUtils.Companion" />
+
+        <variable
+            name="weatherUtils"
+            type="com.riders.thelab.ui.weather.WeatherUtils" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/weather_root_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|center"
-        android:indeterminate="true"
-        android:indeterminateOnly="true"
-        app:indicatorColor="@color/white"
-        tools:ignore="UnusedAttribute"
-        tools:visibility="visible" />
+        android:layout_height="match_parent"
+        android:background="@color/carbon">
 
-    <!-- Download Status -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvDownloadStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textColor="@color/iron_light"
-        tools:text="Downloading..."
-        tools:visibility="visible" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!-- Weather Data -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/weather_data_container"
+        <!-- ProgressBar -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/medium_margin"
-            android:paddingBottom="@dimen/medium_margin"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:layout_gravity="top|center"
+            android:indeterminate="true"
+            app:indicatorColor="@color/white"
+            tools:ignore="UnusedAttribute"
+            tools:visibility="visible" />
 
-            <LinearLayout
-                android:id="@+id/weather_description_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+        <!-- Download Status -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvDownloadStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/iron_light"
+            tools:text="Downloading..."
+            tools:visibility="visible" />
 
-                <!-- Weather icon -->
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/iv_weather_icon"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="center"
-                    tools:src="@drawable/ic_humidity"
-                    tools:tint="@color/white" />
-                <!-- Weather icon -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_weather_main_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/iron_light"
-                    android:textSize="16sp"
-                    tools:text="@string/weather_main_description_placeholder" />
-
-            </LinearLayout>
-
-            <!-- Weather temperature -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_weather_city_temperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/extra_small_margin"
-                android:layout_marginLeft="@dimen/extra_small_margin"
-                android:textColor="@color/white"
-                android:textSize="52sp"
-                app:layout_constraintBottom_toTopOf="@id/container_real_feels"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/weather_description_container"
-                tools:text="2°C" />
-            <!-- Weather temperature -->
-
-            <!-- Real Feels Container -->
-            <LinearLayout
-                android:id="@+id/container_real_feels"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/extra_small_margin"
-                android:layout_marginBottom="@dimen/extra_small_margin"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@id/container_city_country"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_weather_city_temperature">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/temperature_real_feels_placeholder"
-                    android:textColor="@color/base"
-                    android:textSize="16sp" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_weather_city_real_feels"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/extra_small_margin"
-                    android:layout_marginLeft="@dimen/extra_small_margin"
-                    android:textColor="@color/base"
-                    android:textSize="16sp"
-                    tools:text="2°C" />
-            </LinearLayout>
-            <!-- Real Feels Container -->
-
-
-            <!-- City Country Container -->
+            <!-- Weather Data -->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/container_city_country"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginBottom="@dimen/extra_small_margin"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@id/container_sun_data"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/container_real_feels">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_weather_city_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Paris, " />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_weather_city_country"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tv_weather_city_name"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="FR" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <!-- City Country Container -->
-
-            <LinearLayout
-                android:id="@+id/container_sun_data"
+                android:id="@+id/weather_data_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/medium_margin"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@id/tv_trends_placeholder"
-                app:layout_constraintTop_toBottomOf="@id/container_city_country">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/iv_sunrise"
-                        android:layout_width="@dimen/ultra_big_margin"
-                        android:layout_height="@dimen/ultra_big_margin"
-                        android:adjustViewBounds="true"
-                        android:tint="@color/white"
-                        app:layout_constraintBottom_toTopOf="@id/tv_sunrise"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_sunrise" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tv_sunrise"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/iv_sunrise"
-                        tools:text="06:30" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                android:paddingBottom="@dimen/medium_margin"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/vertical_gradient_view" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/iv_sunset"
-                        android:layout_width="@dimen/ultra_big_margin"
-                        android:layout_height="@dimen/ultra_big_margin"
-                        android:adjustViewBounds="true"
-                        android:tint="@color/white"
-                        app:layout_constraintBottom_toTopOf="@id/tv_sunset"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_sunset" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tv_sunset"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/iv_sunset"
-                        tools:text="17:30" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_trends_placeholder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginBottom="@dimen/small_margin"
-                android:text="Trends for today"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toTopOf="@id/cv_hourly_chart_container"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/container_sun_data" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cv_hourly_chart_container"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/thumb_height_content"
-                app:cardBackgroundColor="@color/default_dark"
-                app:cardCornerRadius="@dimen/medium_margin"
-                app:cardElevation="@dimen/small_margin"
-                app:cardPreventCornerOverlap="true"
-                app:cardUseCompatPadding="true"
-                app:layout_constraintBottom_toTopOf="@id/grid_layout"
-                app:layout_constraintTop_toBottomOf="@id/tv_trends_placeholder">
-
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/weather_hourly_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/medium_margin" />
-            </com.google.android.material.card.MaterialCardView>
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="@dimen/small_margin"
+                    android:background="@color/dark_grey"
+                    app:layout_constraintBottom_toTopOf="@id/container_sun_data"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:background="@color/dark_grey" />
 
-
-            <!-- Weather More Data Container-->
-            <GridLayout
-                android:id="@+id/grid_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/medium_margin"
-                android:columnCount="2"
-                android:orientation="horizontal"
-                android:rowCount="2"
-                app:layout_constraintBottom_toTopOf="@id/container_forecast"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cv_hourly_chart_container">
-
-                <!--First child -->
-                <!-- Clouds Data Container-->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/container_clouds_data"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_marginVertical="@dimen/small_margin"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    tools:ignore="UnusedAttribute">
-
-                    <!-- Cloud icon -->
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/iv_clouds"
-                        android:layout_width="@dimen/extra_big_margin"
-                        android:layout_height="@dimen/extra_big_margin"
-                        android:adjustViewBounds="true"
-                        android:scaleType="center"
-                        android:tint="@color/white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_cloud" />
-                    <!-- Cloud icon -->
-
-                    <!-- Temperature Container -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/extra_small_margin"
-                        android:layout_marginBottom="@dimen/extra_small_margin"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/iv_clouds"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/cloudiness_placeholder"
-                            android:textColor="@color/iron"
-                            android:textSize="12sp" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/tv_weather_extra_cloudiness"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:textSize="16sp"
-                            tools:text="25 % " />
-                    </LinearLayout>
-                    <!-- Temperature Container -->
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <!-- Clouds Data Container -->
-
-                <!--Second child -->
-                <!-- Pressure Container-->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/container_pressure_data"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_marginVertical="@dimen/small_margin"
-                    android:orientation="horizontal">
-
-                    <!-- Pressure icon -->
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/iv_pressure"
-                        android:layout_width="@dimen/extra_big_margin"
-                        android:layout_height="@dimen/extra_big_margin"
-                        android:adjustViewBounds="true"
-                        android:scaleType="center"
-                        android:tint="@color/white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_pressure" />
-                    <!-- Pressure icon -->
-
-                    <!-- Pressure Container -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/extra_small_margin"
-                        android:layout_marginBottom="@dimen/extra_small_margin"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/iv_pressure"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/pressure_placeholder"
-                            android:textColor="@color/iron"
-                            android:textSize="12sp" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/tv_weather_extra_pressure"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:textSize="16sp"
-                            tools:text="29.9 inHg" />
-                    </LinearLayout>
-                    <!-- Pressure Container -->
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <!-- Pressure Container -->
-
-
-                <!--Third child -->
-                <!-- Wind Container-->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/container_wind_data"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_marginVertical="@dimen/small_margin"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <!-- Cloud icon -->
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/iv_wind"
-                        android:layout_width="@dimen/extra_big_margin"
-                        android:layout_height="@dimen/extra_big_margin"
-                        android:adjustViewBounds="true"
-                        android:scaleType="center"
-                        android:tint="@color/white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_wind" />
-                    <!-- Cloud icon -->
-
-
-                    <!-- Temperature Container -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/extra_small_margin"
-                        android:layout_marginBottom="@dimen/extra_small_margin"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/iv_wind"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/wind_placeholder"
-                            android:textColor="@color/iron"
-                            android:textSize="12sp" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/tv_weather_extra_wind_speed"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            tools:text="6.43 m/h" />
-
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:id="@+id/iv_weather_extra_wind_direction_icon"
-                            android:layout_width="@dimen/big_margin"
-                            android:layout_height="@dimen/big_margin"
-                            android:layout_margin="@dimen/extra_small_margin"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitCenter"
-                            app:tint="@color/white"
-                            tools:srcCompat="@drawable/ic_wind_north" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/tv_weather_extra_wind_direction_short_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            tools:text="SSW" />
-                    </LinearLayout>
-                    <!-- Temperature Container -->
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <!-- Weather Data Container -->
-
-
-                <!--Forth child -->
-                <!-- Humidity Data Container-->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/container_humidity_data"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_row="1"
-                    android:layout_column="1"
-                    android:layout_columnWeight="1"
-                    android:layout_marginVertical="@dimen/small_margin"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <!-- humidity icon -->
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/iv_humidity"
-                        android:layout_width="@dimen/extra_big_margin"
-                        android:layout_height="@dimen/extra_big_margin"
-                        android:adjustViewBounds="true"
-                        android:scaleType="center"
-                        android:tint="@color/white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_humidity" />
-                    <!-- humidity icon -->
-
-                    <!-- Temperature Container -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/extra_small_margin"
-                        android:layout_marginBottom="@dimen/extra_small_margin"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/iv_humidity"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/humidity_placeholder"
-                            android:textColor="@color/iron"
-                            android:textSize="12sp" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/tv_weather_extra_humidity"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:textSize="16sp"
-                            tools:text="25 % " />
-                    </LinearLayout>
-                    <!-- Temperature Container -->
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <!-- Weather Data Container -->
-            </GridLayout>
-
-
-            <!-- Weather Forecast Container -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/container_forecast"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/small_margin"
-                app:layout_constraintBottom_toTopOf="@id/container_provided_by"
-                app:layout_constraintTop_toBottomOf="@id/grid_layout">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_forecast_placeholder"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/weather_description_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/small_margin"
-                    android:text="Weather info for the next 5 days"
-                    android:textColor="@color/white"
+                    android:layout_margin="@dimen/medium_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
 
+                    <!-- Weather icon -->
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_weather_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="@dimen/medium_margin"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:maxWidth="72dp"
+                        android:maxHeight="72dp"
+                        android:minWidth="64dp"
+                        android:minHeight="64dp"
+                        android:scaleType="fitCenter"
+                        bind:imageUrl='@{!TextUtils.isEmpty(weather.currentWeather.weather[0].icon) ? weatherUtils.Companion.getWeatherIconFromApi(weather.currentWeather.weather[0].icon) : ""}'
+                        tools:backgroundTint="@color/white"
+                        tools:layout_height="72dp"
+                        tools:layout_width="72dp"
+                        tools:src="@drawable/ic_humidity" />
+                    <!-- Weather icon -->
 
-                <com.google.android.material.card.MaterialCardView
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/medium_margin"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_weather_main_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/extra_small_margin"
+                            android:text='@{weather.currentWeather.weather[0].description}'
+                            android:textColor="@color/iron_light"
+                            android:textSize="16sp"
+                            tools:text="@string/weather_main_description_placeholder" />
+
+                        <!-- Weather temperature -->
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_weather_city_temperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/extra_small_margin"
+                            android:textColor="@color/white"
+                            android:textSize="52sp"
+                            app:layout_constraintBottom_toTopOf="@id/container_real_feels"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/weather_description_container"
+                            tools:text="2°C" />
+                        <!-- Weather temperature -->
+
+                        <!-- Real Feels Container -->
+                        <LinearLayout
+                            android:id="@+id/container_real_feels"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/extra_small_margin"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toTopOf="@id/container_city_country"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_weather_city_temperature">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/temperature_real_feels_placeholder"
+                                android:textColor="@color/base"
+                                android:textSize="16sp" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tv_weather_city_real_feels"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/extra_small_margin"
+                                android:layout_marginLeft="@dimen/extra_small_margin"
+                                android:textColor="@color/base"
+                                android:textSize="16sp"
+                                tools:text="2°C" />
+                        </LinearLayout>
+                        <!-- Real Feels Container -->
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <!-- City Country Container -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/container_city_country"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:layout_marginBottom="@dimen/small_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@id/container_sun_data"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/weather_description_container">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_weather_city_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Paris, " />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_weather_city_country"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/small_margin"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tv_weather_city_name"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="FR" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- City Country Container -->
+
+                <LinearLayout
+                    android:id="@+id/container_sun_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/medium_margin"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@id/tv_trends_placeholder"
+                    app:layout_constraintTop_toBottomOf="@id/container_city_country">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/small_margin"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/iv_sunrise"
+                            android:layout_width="@dimen/ultra_big_margin"
+                            android:layout_height="@dimen/ultra_big_margin"
+                            android:adjustViewBounds="true"
+                            android:tint="@color/white"
+                            app:layout_constraintBottom_toTopOf="@id/tv_sunrise"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_sunrise" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_sunrise"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text='@{dateTimeUtils.formatMillisToTimeHoursMinutes(weather.timezone, weather.currentWeather.sunrise)}'
+                            android:textColor="@color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/iv_sunrise"
+                            tools:text="06:30" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/vertical_gradient_view" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/small_margin"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/iv_sunset"
+                            android:layout_width="@dimen/ultra_big_margin"
+                            android:layout_height="@dimen/ultra_big_margin"
+                            android:adjustViewBounds="true"
+                            android:tint="@color/white"
+                            app:layout_constraintBottom_toTopOf="@id/tv_sunset"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_sunset" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_sunset"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/iv_sunset"
+                            tools:text="17:30" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_trends_placeholder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:layout_marginBottom="@dimen/small_margin"
+                    android:text="Trends for today"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toTopOf="@id/cv_hourly_chart_container"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/container_sun_data"
+                    tools:ignore="HardcodedText" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_hourly_chart_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/thumb_height_content"
                     app:cardBackgroundColor="@color/default_dark"
                     app:cardCornerRadius="@dimen/medium_margin"
                     app:cardElevation="@dimen/small_margin"
                     app:cardPreventCornerOverlap="true"
                     app:cardUseCompatPadding="true"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_forecast_placeholder">
+                    app:layout_constraintBottom_toTopOf="@id/grid_layout"
+                    app:layout_constraintTop_toBottomOf="@id/tv_trends_placeholder">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_forecast_five_days"
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/weather_hourly_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/medium_margin" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Weather More Data Container-->
+                <GridLayout
+                    android:id="@+id/grid_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/medium_margin"
+                    android:columnCount="2"
+                    android:orientation="horizontal"
+                    android:rowCount="2"
+                    app:layout_constraintBottom_toTopOf="@id/container_forecast"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cv_hourly_chart_container">
+
+                    <!--First child -->
+                    <!-- Clouds Data Container-->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/container_clouds_data"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginVertical="@dimen/small_margin"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        tools:ignore="UnusedAttribute">
+
+                        <!-- Cloud icon -->
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/iv_clouds"
+                            android:layout_width="@dimen/extra_big_margin"
+                            android:layout_height="@dimen/extra_big_margin"
+                            android:adjustViewBounds="true"
+                            android:scaleType="center"
+                            android:tint="@color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_cloud" />
+                        <!-- Cloud icon -->
+
+                        <!-- Temperature Container -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/extra_small_margin"
+                            android:layout_marginBottom="@dimen/extra_small_margin"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/iv_clouds"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/cloudiness_placeholder"
+                                android:textColor="@color/iron"
+                                android:textSize="12sp" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tv_weather_extra_cloudiness"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                tools:text="25 % " />
+                        </LinearLayout>
+                        <!-- Temperature Container -->
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- Clouds Data Container -->
+
+                    <!--Second child -->
+                    <!-- Pressure Container-->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/container_pressure_data"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginVertical="@dimen/small_margin"
+                        android:orientation="horizontal">
+
+                        <!-- Pressure icon -->
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/iv_pressure"
+                            android:layout_width="@dimen/extra_big_margin"
+                            android:layout_height="@dimen/extra_big_margin"
+                            android:adjustViewBounds="true"
+                            android:scaleType="center"
+                            android:tint="@color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_pressure" />
+                        <!-- Pressure icon -->
+
+                        <!-- Pressure Container -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/extra_small_margin"
+                            android:layout_marginBottom="@dimen/extra_small_margin"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/iv_pressure"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/pressure_placeholder"
+                                android:textColor="@color/iron"
+                                android:textSize="12sp" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tv_weather_extra_pressure"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                tools:text="29.9 inHg" />
+                        </LinearLayout>
+                        <!-- Pressure Container -->
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- Pressure Container -->
+
+
+                    <!--Third child -->
+                    <!-- Wind Container-->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/container_wind_data"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginVertical="@dimen/small_margin"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <!-- Cloud icon -->
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/iv_wind"
+                            android:layout_width="@dimen/extra_big_margin"
+                            android:layout_height="@dimen/extra_big_margin"
+                            android:adjustViewBounds="true"
+                            android:scaleType="center"
+                            android:tint="@color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_wind" />
+                        <!-- Cloud icon -->
+
+
+                        <!-- Temperature Container -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/extra_small_margin"
+                            android:layout_marginBottom="@dimen/extra_small_margin"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/iv_wind"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/wind_placeholder"
+                                android:textColor="@color/iron"
+                                android:textSize="12sp" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tv_weather_extra_wind_speed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                tools:text="6.43 m/h" />
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/iv_weather_extra_wind_direction_icon"
+                                android:layout_width="@dimen/big_margin"
+                                android:layout_height="@dimen/big_margin"
+                                android:layout_margin="@dimen/extra_small_margin"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitCenter"
+                                app:tint="@color/white"
+                                tools:srcCompat="@drawable/ic_wind_north" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tv_weather_extra_wind_direction_short_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                tools:text="SSW" />
+                        </LinearLayout>
+                        <!-- Temperature Container -->
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- Weather Data Container -->
+
+
+                    <!--Forth child -->
+                    <!-- Humidity Data Container-->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/container_humidity_data"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_row="1"
+                        android:layout_column="1"
+                        android:layout_columnWeight="1"
+                        android:layout_marginVertical="@dimen/small_margin"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <!-- humidity icon -->
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/iv_humidity"
+                            android:layout_width="@dimen/extra_big_margin"
+                            android:layout_height="@dimen/extra_big_margin"
+                            android:adjustViewBounds="true"
+                            android:scaleType="center"
+                            android:tint="@color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_humidity" />
+                        <!-- humidity icon -->
+
+                        <!-- Temperature Container -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/extra_small_margin"
+                            android:layout_marginBottom="@dimen/extra_small_margin"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/iv_humidity"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/humidity_placeholder"
+                                android:textColor="@color/iron"
+                                android:textSize="12sp" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tv_weather_extra_humidity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                tools:text="25 % " />
+                        </LinearLayout>
+                        <!-- Temperature Container -->
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- Weather Data Container -->
+                </GridLayout>
+
+
+                <!-- Weather Forecast Container -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/container_forecast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/small_margin"
+                    app:layout_constraintBottom_toTopOf="@id/container_provided_by"
+                    app:layout_constraintTop_toBottomOf="@id/grid_layout">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_forecast_placeholder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="@dimen/medium_margin"
                         android:layout_marginVertical="@dimen/small_margin"
-                        android:orientation="horizontal"
-                        android:scrollIndicators="none"
-                        android:scrollbarAlwaysDrawHorizontalTrack="false"
-                        android:scrollbarFadeDuration="@integer/config_navAnimTime"
-                        android:scrollbars="horizontal"
-                        tools:ignore="UnusedAttribute"
-                        tools:itemCount="3"
-                        tools:listitem="@layout/row_weather_forecast" />
-                </com.google.android.material.card.MaterialCardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <!-- Weather Forecast Container -->
+                        android:text="Weather info for the next 5 days"
+                        android:textColor="@color/white"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Provided By -->
-            <LinearLayout
-                android:id="@+id/container_provided_by"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_margin"
-                android:layout_marginBottom="@dimen/medium_margin"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/container_forecast">
 
-                <com.google.android.material.textview.MaterialTextView
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/default_dark"
+                        app:cardCornerRadius="@dimen/medium_margin"
+                        app:cardElevation="@dimen/small_margin"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_forecast_placeholder">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_forecast_five_days"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginVertical="@dimen/small_margin"
+                            android:orientation="horizontal"
+                            android:scrollIndicators="none"
+                            android:scrollbarAlwaysDrawHorizontalTrack="false"
+                            android:scrollbarFadeDuration="@integer/config_navAnimTime"
+                            android:scrollbars="horizontal"
+                            tools:ignore="UnusedAttribute"
+                            tools:itemCount="3"
+                            tools:listitem="@layout/row_weather_forecast" />
+                    </com.google.android.material.card.MaterialCardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- Weather Forecast Container -->
+
+                <!-- Provided By -->
+                <LinearLayout
+                    android:id="@+id/container_provided_by"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/small_margin"
-                    android:layout_marginRight="@dimen/small_margin"
-                    android:text="@string/weather_data_provided_by"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginBottom="@dimen/medium_margin"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/container_forecast">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/openweathermap_logo_white" />
-            </LinearLayout>
-            <!-- Provided By -->
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/small_margin"
+                        android:text="@string/weather_data_provided_by"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-        <!-- Weather Data -->
-    </ScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/openweathermap_logo_white" />
+                </LinearLayout>
+                <!-- Provided By -->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Weather Data -->
+        </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

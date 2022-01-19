@@ -34,7 +34,7 @@ class CameraPictureDetailActivity : AppCompatActivity() {
             return
         }
 
-       bundleImagePath = extras.getString(EXTRA_IMAGE_PATH)
+        bundleImagePath = extras.getString(EXTRA_IMAGE_PATH)
 
         /*val myBitmap = BitmapFactory.decodeFile(bundleImagePath)
         binding.image.setImageBitmap(myBitmap)*/

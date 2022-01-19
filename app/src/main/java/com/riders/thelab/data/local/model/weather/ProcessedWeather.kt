@@ -20,9 +20,4 @@ data class ProcessedWeather(
         this.temperature = oneCallWeatherResponse.currentWeather.temperature.toInt()
         this.weatherIconUrl = oneCallWeatherResponse.currentWeather.weather[0].icon
     }
-
-
-    override fun toString(): String {
-        return "ProcessedWeather(city='$city', country='$country', temperature=$temperature, weatherIconUrl='$weatherIconUrl')"
-    }
 }

@@ -17,10 +17,17 @@ import timber.log.Timber
 
 class YoutubeLikeViewHolder constructor(
     private val context: Context,
-    itemView: View
-) : RecyclerView.ViewHolder(itemView) {
+    val itemBinding: RowYoutubeLikeItemBinding,
+    private val listener: YoutubeListClickListener
+) : RecyclerView.ViewHolder(itemBinding.root) {
 
-    var viewBinding: RowYoutubeLikeItemBinding = RowYoutubeLikeItemBinding.bind(itemView)
+    val viewBinding: RowYoutubeLikeItemBinding get() = itemBinding
+
+    init {
+        viewBinding.run {
+            this.mListener = listener
+        }
+    }
 
     fun getImageView(): ShapeableImageView {
         return viewBinding.imageItem
@@ -35,8 +42,7 @@ class YoutubeLikeViewHolder constructor(
     }
 
     fun bind(itemYoutubeVideo: Video) {
-        viewBinding.nameItem.text = itemYoutubeVideo.name
-        viewBinding.descriptionItem.text = itemYoutubeVideo.description
+        viewBinding.video = itemYoutubeVideo
 
         Glide.with(context)
             .load(itemYoutubeVideo.imageUrl)
@@ -64,6 +70,5 @@ class YoutubeLikeViewHolder constructor(
                 }
             })
             .into(viewBinding.imageItem)
-
     }
 }

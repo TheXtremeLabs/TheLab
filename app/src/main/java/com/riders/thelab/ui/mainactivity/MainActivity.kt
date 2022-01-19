@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.mainactivity
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -31,11 +32,18 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.textview.MaterialTextView
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.DexterError
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
@@ -102,6 +110,7 @@ class MainActivity : AppCompatActivity(),
     private var mRecentApps: List<App>? = null
 
     // Location
+    private var labLocationManager: LabLocationManager? = null
     private lateinit var locationReceiver: LocationBroadcastReceiver
     private lateinit var mGpsUtils: GpsUtils
     private var isGPS: Boolean = false
@@ -158,9 +167,7 @@ class MainActivity : AppCompatActivity(),
             bindTabletViews()
         }
 
-        // ViewModel
-        initViewModelsObservers()
-        mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
+        checkLocationPermissions()
     }
 
     override fun onStart() {
@@ -202,7 +209,7 @@ class MainActivity : AppCompatActivity(),
         mConnectivityManager!!.registerNetworkCallback(request, networkManager)
 
         val labLocationManager =
-            LabLocationManager(this@MainActivity, this@MainActivity, this)
+            LabLocationManager(this@MainActivity, this)
 
         if (!labLocationManager.canGetLocation()) {
             Timber.e("Cannot get location please enable position")
@@ -240,7 +247,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         Timber.d("onCreateOptionsMenu()")
         this.menuInflater.inflate(R.menu.menu_main, menu)
         this.menu = menu
@@ -312,6 +319,50 @@ class MainActivity : AppCompatActivity(),
     // CLASS METHODS
     //
     /////////////////////////////////////
+    @DelicateCoroutinesApi
+    private fun checkLocationPermissions() {
+        Timber.d("checkLocationPermissions()")
+        // run dexter permission
+        Dexter
+            .withContext(this)
+            .withPermissions(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            .withListener(object : MultiplePermissionsListener {
+                @SuppressLint("MissingPermission")
+                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                    // check if all permissions are granted
+                    if (report.areAllPermissionsGranted()) {
+                        // do you work now
+                    }
+
+                    // check for permanent denial of any permission
+                    if (report.isAnyPermissionPermanentlyDenied) {
+                        // permission is denied permanently, navigate user to app settings
+                    }
+
+                    // ViewModel
+                    initViewModelsObservers()
+                    mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
+
+                    labLocationManager = LabLocationManager(this@MainActivity)
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: List<PermissionRequest>,
+                    token: PermissionToken
+                ) {
+                    token.continuePermissionRequest()
+                }
+            })
+            .withErrorListener { error: DexterError ->
+                UIManager.showActionInToast(this, "Error occurred! $error")
+            }
+            .onSameThread()
+            .check()
+    }
+
     private fun updateTime() = CoroutineScope(Dispatchers.Main).launch {
         Timber.d("updateTime()")
 
@@ -329,7 +380,8 @@ class MainActivity : AppCompatActivity(),
     @DelicateCoroutinesApi
     private fun launchProgressBars() {
         Timber.d("launchProgressBars()")
-        GlobalScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch {
+
             binding.includeToolbarLayout?.llProgressBarContainer?.children?.let { linearContainer ->
                 linearContainer.forEachIndexed { index, view ->
                     if (view is LinearLayout) {
@@ -386,7 +438,7 @@ class MainActivity : AppCompatActivity(),
 
     @DelicateCoroutinesApi
     private fun resetProgressBars() =
-        GlobalScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch {
             Timber.d("resetProgressBars()")
 
             binding.includeToolbarLayout?.llProgressBarContainer?.children?.let { it ->
@@ -408,7 +460,6 @@ class MainActivity : AppCompatActivity(),
                     }
                 }
             }
-
         }
 
 
@@ -701,7 +752,6 @@ class MainActivity : AppCompatActivity(),
                         }
 
                         false
-
                     })
             )
         }
@@ -915,7 +965,6 @@ class MainActivity : AppCompatActivity(),
                 this@MainActivity,
                 "Please check this functionality later. Problem using Drive REST API v3"
             )
-
             return
         } else if (!LabCompatibilityManager.isTablet(this@MainActivity)) {
             mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)

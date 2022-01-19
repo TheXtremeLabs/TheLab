@@ -48,8 +48,4 @@ data class CityModel constructor(
         this.latitude = (cursor.getDouble(cursor.getColumnIndexOrThrow("latitude")))
         this.longitude = (cursor.getDouble(cursor.getColumnIndexOrThrow("longitude")))
     }
-
-    override fun toString(): String {
-        return "CityModel(id=$id, name=$name, state=$state, country=$country, longitude=$longitude, latitude=$latitude)"
-    }
 }
