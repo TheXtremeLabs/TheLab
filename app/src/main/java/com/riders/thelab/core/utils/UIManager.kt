@@ -65,11 +65,11 @@ class UIManager private constructor() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         fun showAlertDialog(
             activity: Activity?,
-            context: Context?,
-            title: String?,
-            message: String?,
-            negativeMessage: String,
-            positiveMessage: String?
+            context: Context,
+            title: String,
+            message: String,
+            negativeMessage: String?,
+            positiveMessage: String
         ) {
             Timber.i("Show alert dialog")
             val alertDialog = AlertDialog.Builder(context)
@@ -85,7 +85,7 @@ class UIManager private constructor() {
                     //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
                 }
                 if (negativeMessage.equals("Réessayer", ignoreCase = true)
-                    && LabNetworkManagerNewAPI.isConnected
+                    && LabNetworkManagerNewAPI.getInstance(context).isOnline()
                 ) {
                     dialog.dismiss()
                 }

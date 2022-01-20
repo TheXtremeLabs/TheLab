@@ -253,4 +253,12 @@ internal object ApiModule {
             .create(WeatherBulkApiService::class.java)
     }
 
+    @Provides
+    @Singleton
+    @NotNull
+    fun provideUserAPIService(): UserApiService {
+        return provideRetrofit(Constants.BASE_ENDPOINT_THE_LAB_URL)
+            .create(UserApiService::class.java)
+    }
+
 }

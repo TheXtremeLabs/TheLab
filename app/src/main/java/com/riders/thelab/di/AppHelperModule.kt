@@ -30,7 +30,8 @@ object AppHelperModule {
             ApiModule.provideGoogleAPIService(),
             ApiModule.provideYoutubeApiService(),
             ApiModule.provideWeatherApiService(),
-            ApiModule.proWeatherBulkApiService()
+            ApiModule.proWeatherBulkApiService(),
+            ApiModule.provideUserAPIService()
         )
 
     @Provides

@@ -10,21 +10,24 @@ class ConnectivityReceiver(
 ) : BroadcastReceiver() {
 
     companion object {
-        private lateinit var mInstance: ConnectivityReceiver
+        private var mInstance: ConnectivityReceiver? = null
 
         fun getInstance(): ConnectivityReceiver {
-            if (null == this.mInstance) {
+            if (null == mInstance) {
                 this.mInstance = ConnectivityReceiver()
             }
-            return this.mInstance
+            return this.mInstance as ConnectivityReceiver
         }
     }
 
     constructor() : this(null) {
     }
 
-    override fun onReceive(context: Context?, arg1: Intent?) {
-        val isConnected: Boolean = LabNetworkManagerNewAPI.isConnected
+    override fun onReceive(context: Context?, intent: Intent?) {
+        var isConnected: Boolean = false
+        if (null != context) {
+            isConnected = LabNetworkManagerNewAPI.getInstance(context).isOnline()
+        }
         mConnectivityReceiverListener?.onNetworkConnectionChanged(isConnected)
     }
 

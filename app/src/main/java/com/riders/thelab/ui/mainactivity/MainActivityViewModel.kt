@@ -56,8 +56,8 @@ class MainActivityViewModel @Inject constructor(
     }
 
 
-    fun checkConnection() {
-        connectionStatus.value = LabNetworkManagerNewAPI.isConnected
+    fun checkConnection(context: Context) {
+        connectionStatus.value = LabNetworkManagerNewAPI.getInstance(context).isOnline()
     }
 
 

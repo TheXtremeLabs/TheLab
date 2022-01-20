@@ -10,6 +10,8 @@ import com.riders.thelab.TheLabApplication
 import com.riders.thelab.data.local.model.Download
 import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.data.remote.api.*
+import com.riders.thelab.data.remote.dto.LoginResponse
+import com.riders.thelab.data.remote.dto.UserDto
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +32,8 @@ class ApiImpl @Inject constructor(
     googleAPIService: GoogleAPIService,
     youtubeApiService: YoutubeApiService,
     weatherApiService: WeatherApiService,
-    weatherBulkApiService: WeatherBulkApiService
+    weatherBulkApiService: WeatherBulkApiService,
+    userApiService: UserApiService,
 ) : IApi {
 
     private var mArtistsAPIService: ArtistsAPIService = artistsAPIService
@@ -38,6 +41,7 @@ class ApiImpl @Inject constructor(
     private var mYoutubeApiService: YoutubeApiService = youtubeApiService
     private var mWeatherApiService: WeatherApiService = weatherApiService
     private var mWeatherBulkApiService: WeatherBulkApiService = weatherBulkApiService
+    private var mUserApiService: UserApiService = userApiService
 
 
     override suspend fun getStorageReference(activity: Activity): StorageReference? {
@@ -182,4 +186,6 @@ class ApiImpl @Inject constructor(
         .flowOn(Dispatchers.IO)
         .distinctUntilChanged()
 
+
+    override suspend fun login(user: UserDto): LoginResponse = mUserApiService.login(user)
 }

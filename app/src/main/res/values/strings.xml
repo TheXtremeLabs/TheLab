@@ -49,6 +49,17 @@
     <string name="splash_background_transition_name">splash_background_transition_name</string>
 
 
+    <!-- Login -->
+    <string name="title_activity_login">Login</string>
+    <string name="remember_me">Remember my credentials</string>
+    <string name="btn_sign_in">Sign In</string>
+    <string name="err_msg_wrong_email_or_password">Email or password is not correct. Please verified your credentials.</string>
+
+    <string name="no_account_register"><u>You don\'t have any account ?<br />Sign up</u></string>
+
+    <string name="action_logout">Logout</string>
+
+    <!-- Main Activity -->
     <string name="title_main_page">Choose your testing app</string>
 
     <string name="load_new_data">Load new random data</string>
