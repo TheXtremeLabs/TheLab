@@ -106,7 +106,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         super.onResume()
         Timber.d("onResume()")
         EventBus.getDefault().register(this)
-        mWeatherViewModel.fetchCities()
+        mWeatherViewModel.fetchCities(this)
     }
 
 

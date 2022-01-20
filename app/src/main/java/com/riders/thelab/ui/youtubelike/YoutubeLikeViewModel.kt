@@ -67,7 +67,7 @@ class YoutubeLikeViewModel @Inject constructor(
 
         progressVisibility.value = true
         //Test the internet's connection
-        if (!LabNetworkManagerNewAPI.isConnected) {
+        if (!LabNetworkManagerNewAPI.getInstance(activity).isOnline()) {
             Timber.e("No Internet connection")
             progressVisibility.value = false
             connectionStatus.value = false
@@ -100,7 +100,7 @@ class YoutubeLikeViewModel @Inject constructor(
 
             } catch (throwable: Exception) {
                 Timber.e(throwable)
-                withContext(Dispatchers.Main) {
+                withContext(mainContext) {
                     progressVisibility.value = false
                     youtubeVideosFailed.value = true
                 }

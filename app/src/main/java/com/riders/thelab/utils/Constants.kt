@@ -1,6 +1,7 @@
 package com.riders.thelab.utils
 
 import android.content.Context
+import com.riders.thelab.core.utils.LabDeviceManager
 import com.riders.thelab.data.local.model.app.App
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
@@ -12,6 +13,29 @@ class Constants @Inject constructor(
 
     companion object {
         const val EMULATOR_DEVICE_TAG = "sdk"
+
+
+        /////////////////////////////////////////////
+        //
+        // TheLab API
+        //
+        /////////////////////////////////////////////
+        private const val HTTP = "http://"
+
+        //    private const val IP_ADDRESS = "192.168.0.136"
+        private const val IP_ADDRESS = "192.168.0.48"
+
+        //    private const val EMULATOR_IP_ADDRESS = "192.168.0.163"
+        private const val EMULATOR_IP_ADDRESS = "192.168.0.48"
+
+        private const val PORT = ":8100"
+        private const val SEPARATOR = "/"
+
+        val BASE_ENDPOINT_THE_LAB_URL =
+            HTTP + if (LabDeviceManager.getModel().trim().lowercase()
+                    .contains("sdk")
+            ) EMULATOR_IP_ADDRESS else IP_ADDRESS + PORT
+
 
         //REST client Base URL
         const val BASE_ENDPOINT_YOUTUBE = "https://raw.githubusercontent.com"

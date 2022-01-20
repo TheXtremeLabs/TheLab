@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.media.MediaPlayer.OnPreparedListener
@@ -15,12 +16,15 @@ import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.lifecycle.lifecycleScope
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabAnimationsManager
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.databinding.ActivitySplashscreenBinding
 import com.riders.thelab.navigator.Navigator
+import com.riders.thelab.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -101,6 +105,7 @@ class SplashScreenActivity : AppCompatActivity(),
         val position = savedInstanceState?.getInt("Position")
         if (position != null) {
             binding.splashVideo.seekTo(position)
+            binding.splashVideo.start()
         }
     }
 
@@ -138,20 +143,15 @@ class SplashScreenActivity : AppCompatActivity(),
     private fun startVideo() {
         Timber.i("startVideo()")
         try {
+            val videoPath: String =
+                ANDROID_RES_PATH +
+                        packageName.toString() +
+                        SEPARATOR +
+                        //Smartphone portrait video or Tablet landscape video
+                        if (!LabCompatibilityManager.isTablet(this)) R.raw.splash_intro_testing_sound_2 else R.raw.splash_intro_testing_no_sound_tablet
+
             //set the uri of the video to be played
-            binding.splashVideo
-                .setVideoURI(
-                    Uri.parse(
-                        (
-                                ANDROID_RES_PATH
-                                        + packageName.toString()
-                                        + SEPARATOR +
-                                        if (!LabCompatibilityManager.isTablet(this))
-                                            R.raw.splash_intro_testing_sound_2 //Smartphone portrait video
-                                        else
-                                            R.raw.splash_intro_testing_no_sound_tablet)
-                    )
-                ) //Tablet landscape video
+            binding.splashVideo.setVideoURI(Uri.parse((videoPath)))
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -174,7 +174,7 @@ class SplashScreenActivity : AppCompatActivity(),
         // listener set on the view.
         view.animate()
             .alpha(1f)
-            .setDuration(LabAnimationsManager.getInstance().shortAnimationDuration.toLong())
+            .setDuration(LabAnimationsManager.getInstance().mediumAnimationDuration.toLong())
             .setListener(null)
 
         // Animate the loading view to 0% opacity. After the animation ends,
@@ -191,7 +191,6 @@ class SplashScreenActivity : AppCompatActivity(),
                 }
             })
     }
-
 
     fun displayAppVersion() {
         Timber.e("displayAppVersion()")
@@ -243,13 +242,31 @@ class SplashScreenActivity : AppCompatActivity(),
             )
 
             delay(TimeUnit.SECONDS.toMillis(3))
-            launchActivity()
+            goToLoginActivity()
         }
     }
 
-    private fun launchActivity() {
-        Navigator(this).callMainActivity()
-        finish()
+    private fun goToLoginActivity() {
+
+        val intent = Intent(this, LoginActivity::class.java)
+
+        val sePairThumb: Pair<View, String> =
+            Pair.create(
+                binding.cvLogo,
+                getString(R.string.splash_background_transition_name)
+            )
+
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sePairThumb)
+
+        // Call navigator to switch activity with or without transition according
+        // to the device's version running the application
+        options.toBundle()?.let {
+            Navigator(this).callLoginActivity(
+                intent,
+                it
+            )
+            finish()
+        }
     }
 
 
@@ -259,10 +276,10 @@ class SplashScreenActivity : AppCompatActivity(),
     //
     /////////////////////////////////////
     override fun onPrepared(mp: MediaPlayer?) {
-        //if we have a position on savedInstanceState, the video playback should start from here
 
         //if we have a position on savedInstanceState, the video playback should start from here
         binding.splashVideo.seekTo(position)
+
         if (position == 0) {
             binding.splashVideo.start()
         } else {
