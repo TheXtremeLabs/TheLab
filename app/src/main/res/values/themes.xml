@@ -58,57 +58,36 @@
         <item name="android:statusBarColor">@color/default_dark</item>
     </style>
 
-    <!-- Main App Item -->
-    <style name="AppItemImageViewShape" parent="">
-        <!-- Top Left -->
-        <item name="cornerSizeTopLeft">56dp</item>
-        <item name="cornerFamilyTopLeft">cut</item>
-        <!-- Top Right -->
-        <item name="cornerSizeTopRight">16dp</item>
-        <item name="cornerFamilyTopRight">rounded</item>
-        <!-- Bottom Right-->
-        <item name="cornerSizeBottomRight">16dp</item>
-        <item name="cornerFamilyBottomRight">rounded</item>
-    </style>
-
-
-    <!-- Main App Item -->
-    <style name="AppItemImageViewShapeTablet" parent="">
-        <!-- Top Left -->
-        <item name="cornerSizeTopLeft">16dp</item>
-        <item name="cornerFamilyTopLeft">rounded</item>
-
-        <item name="cornerSizeBottomLeft">16dp</item>
-        <item name="cornerFamilyBottomLeft">rounded</item>
-    </style>
-
-
-    <!-- Youtube Item -->
-    <style name="YoutubeItemCardViewShape" parent="">
-        <!-- Top Left -->
-        <item name="cornerSizeTopLeft">@dimen/big_margin</item>
-        <item name="cornerFamilyTopLeft">rounded</item>
-        <!-- Top Right -->
-        <item name="cornerSizeTopRight">@dimen/big_margin</item>
-        <item name="cornerFamilyTopRight">rounded</item>
-    </style>
-
-    <style name="YoutubeItemImageViewShape" parent="">
-        <!-- Top Left -->
-        <item name="cornerSizeTopLeft">@dimen/medium_margin</item>
-        <item name="cornerFamilyTopLeft">rounded</item>
-        <!-- Top Right -->
-        <item name="cornerSizeTopRight">@dimen/medium_margin</item>
-        <item name="cornerFamilyTopRight">rounded</item>
-    </style>
-
 
     <!-- Splash Theme -->
-    <style name="SplashTheme" parent="Theme.TheLab">
+    <style name="SplashTheme" parent="Theme.TheLab.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!-- Login Theme -->
+    <style name="LoginTheme" parent="Theme.TheLab.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@transition/fade</item>
+        <item name="android:windowExitTransition">@transition/fade</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/change_image_transform
+        </item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/change_image_transform
+        </item>
     </style>
 
 

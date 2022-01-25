@@ -25,7 +25,36 @@
         android:layout_gravity="center"
         android:background="@color/default_dark">
 
-        <com.google.android.material.imageview.ShapeableImageView
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:transitionName="@string/splash_background_transition_name"
+            app:cardBackgroundColor="@color/ic_lab_six_background"
+            app:cardCornerRadius="@dimen/ultra_big_margin"
+            app:cardElevation="@dimen/medium_margin"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:strokeColor="@color/white"
+            tools:strokeWidth="4dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/medium_margin"
+                android:adjustViewBounds="true"
+                android:fitsSystemWindows="true"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/ic_lab_six_round" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!--<com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +66,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />-->
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/left_guideline"
