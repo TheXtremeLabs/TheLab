@@ -1,12 +1,8 @@
 package com.riders.thelab.ui.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.remote.dto.ApiResponse
-import com.riders.thelab.data.remote.dto.LoginResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -19,6 +15,10 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val login: MutableLiveData<ApiResponse> = MutableLiveData()
+    private val dataStoreEmail = repository.getEmailPref().asLiveData()
+    private val dataStorePassword = repository.getPasswordPref().asLiveData()
+    private val dataStoreRememberCredentials = repository.isRememberCredentialsPref().asLiveData()
+
 
     ///////////////
     //
@@ -26,6 +26,9 @@ class LoginViewModel @Inject constructor(
     //
     ///////////////
     fun getLogin(): LiveData<ApiResponse> = login
+    fun getDataStoreEmail() = dataStoreEmail
+    fun getDataStorePassword() = dataStorePassword
+    fun getDataStoreRememberCredentials() = dataStoreRememberCredentials
 
 
     ///////////////
@@ -41,7 +44,7 @@ class LoginViewModel @Inject constructor(
                 LoginUtils.convertToSHA1(password)!!
             )!!
 
-        val user = UserDto(email ,password, encodedPassword)
+        val user = UserDto(email, password, encodedPassword)
 
         viewModelScope.launch(ioContext) {
             try {
@@ -60,9 +63,16 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    // TODO : save user data in Datastore in order to log faster
-    fun saveUserDataInDataStore() {
-
+    fun saveUserDataInDataStore(email: String, password: String, isChecked: Boolean) {
+        try {
+            viewModelScope.launch(ioContext) {
+                repository.saveEmailPref(email)
+                repository.savePasswordPref(password)
+                repository.saveRememberCredentialsPref(isChecked)
+            }
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     companion object {

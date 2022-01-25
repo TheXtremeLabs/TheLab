@@ -156,9 +156,6 @@ class MainActivity : AppCompatActivity(),
         _viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Variables
-        locationReceiver = LocationBroadcastReceiver()
-        mGpsUtils = GpsUtils(this)
 
         // Views
         if (!LabCompatibilityManager.isTablet(this)) {
@@ -345,6 +342,10 @@ class MainActivity : AppCompatActivity(),
                     // ViewModel
                     initViewModelsObservers()
                     mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
+
+                    // Variables
+                    locationReceiver = LocationBroadcastReceiver()
+                    mGpsUtils = GpsUtils(this@MainActivity)
 
                     labLocationManager = LabLocationManager(this@MainActivity)
                 }

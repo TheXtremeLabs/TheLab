@@ -37,6 +37,8 @@ ext {
     cameraVersion = '1.0.2'
     cameraAlphaVersion = '1.0.0-alpha32'
 
+    dataStoreVersion = '1.0.0'
+
     mediaVersion = '1.4.3'
     mediaRouterVersion = '1.2.5'
 
@@ -151,6 +153,9 @@ ext {
             cameraLifecyle              : "androidx.camera:camera-lifecycle:$cameraVersion",
             cameraView                  : "androidx.camera:camera-view:$cameraAlphaVersion",
             cameraExtensions            : "androidx.camera:camera-extensions:$cameraAlphaVersion",
+
+            datastore                   : "androidx.datastore:datastore:$dataStoreVersion",
+            datastorePreferences        : "androidx.datastore:datastore-preferences:$dataStoreVersion",
 
             media                       : "androidx.media:media:$mediaVersion",
             mediaRouter                 : "androidx.mediarouter:mediarouter:$mediaRouterVersion",

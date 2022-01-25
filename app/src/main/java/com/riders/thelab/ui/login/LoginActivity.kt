@@ -55,6 +55,8 @@ class LoginActivity : AppCompatActivity(),
     private var mNetworkManager: LabNetworkManagerNewAPI? = null
     private lateinit var navigator: Navigator
 
+    private var isChecked: Boolean = false
+
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,6 +101,11 @@ class LoginActivity : AppCompatActivity(),
 
     private fun initViewModelObservers() {
         Timber.d("initViewModelObservers()")
+        mViewModel.getDataStoreEmail().observe(this, { binding.inputEmail.setText(it) })
+        mViewModel.getDataStorePassword().observe(this, { binding.inputPassword.setText(it) })
+        mViewModel.getDataStoreRememberCredentials()
+            .observe(this, { binding.cbRememberMe.isChecked = it })
+
         mViewModel.getLogin().observe(this, {
             when (it.message) {
                 "Login okay" -> {
@@ -135,7 +142,6 @@ class LoginActivity : AppCompatActivity(),
     private fun onLoginSuccessful() {
         Timber.d("onLoginSuccessful()")
         callMainActivity()
-        finish()
     }
 
     private fun onLoginFailed() {
@@ -161,6 +167,15 @@ class LoginActivity : AppCompatActivity(),
         UIManager.hideKeyboard(this, findViewById(android.R.id.content))
 
         showLoading()
+
+        if (isChecked) {
+            Timber.d("save user credentials in datastore")
+            mViewModel.saveUserDataInDataStore(
+                binding.inputEmail.text.toString(),
+                binding.inputPassword.text.toString(),
+                isChecked
+            )
+        }
 
         mViewModel.makeCallLogin(
             binding.inputEmail.text.toString(),
@@ -308,7 +323,7 @@ class LoginActivity : AppCompatActivity(),
     }
 
     override fun onCheckedChanged(checkBox: CompoundButton?, checked: Boolean) {
-        TODO("Not yet implemented")
+        this.isChecked = checked
     }
 
     inner class MyTextWatcher(private val view: View) : TextWatcher {

@@ -95,7 +95,6 @@ class UserFormFragment : Fragment(), View.OnClickListener {
         binding.inputEmail.setText("john.doe@test.fr")
         binding.inputPassword.setText("johndoe")
         binding.inputConfirmPassword.setText("johndoe")
-        binding.inputPhoneNumber.setText("06123456789")
     }
 
     /**
@@ -120,13 +119,10 @@ class UserFormFragment : Fragment(), View.OnClickListener {
 
 
         mViewModel.setFormUser(
-            szGender!!,
             binding.inputFirstName.text.toString(),
             binding.inputLastName.text.toString(),
             binding.inputEmail.text.toString(),
-            binding.inputPassword.text.toString(),
-            binding.inputPhoneNumber.text.toString(),
-            binding.inputDateOfBirth.text.toString()
+            binding.inputPassword.text.toString()
         )
 
         Toast.makeText(context, "Thank You!", Toast.LENGTH_SHORT).show()

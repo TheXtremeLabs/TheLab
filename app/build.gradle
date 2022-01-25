@@ -172,6 +172,8 @@ dependencies {
     // CameraX Extensions
     implementation rootProject.ext.generalDependencies.cameraExtensions
 
+    implementation rootProject.ext.generalDependencies.datastore
+    implementation rootProject.ext.generalDependencies.datastorePreferences
 
     implementation rootProject.ext.generalDependencies.media
     implementation rootProject.ext.generalDependencies.mediaRouter
