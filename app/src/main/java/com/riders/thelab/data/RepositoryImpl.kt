@@ -19,15 +19,13 @@ import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.data.local.model.weather.CityModel
 import com.riders.thelab.data.local.model.weather.WeatherData
+import com.riders.thelab.data.preferences.PreferencesImpl
 import com.riders.thelab.data.remote.ApiImpl
-import com.riders.thelab.data.remote.dto.LoginResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.data.remote.dto.weather.City
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.flow.Flow
-
-
 import okhttp3.ResponseBody
 import retrofit2.Call
 import timber.log.Timber
@@ -36,7 +34,8 @@ import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
     dbImpl: DbImpl,
-    apiImpl: ApiImpl
+    apiImpl: ApiImpl,
+    preferencesImpl: PreferencesImpl
 ) : IRepository {
 
     companion object {
@@ -49,6 +48,7 @@ class RepositoryImpl @Inject constructor(
 
     private var mDbImpl: DbImpl = dbImpl
     private var mApiImpl: ApiImpl = apiImpl
+    private var mPreferencesImpl: PreferencesImpl = preferencesImpl
 
 
     override fun getPackageList(): List<App> {
@@ -227,4 +227,28 @@ class RepositoryImpl @Inject constructor(
     override suspend fun login(user: UserDto) = mApiImpl.login(user)
 
     override suspend fun saveUser(user: UserDto) = mApiImpl.saveUser(user)
+
+
+    override fun isNightMode(): Flow<Boolean> = mPreferencesImpl.isNightMode()
+
+    override suspend fun toggleNightMode() = mPreferencesImpl.toggleNightMode()
+
+    override fun getEmailPref(): Flow<String> = mPreferencesImpl.getEmailPref()
+
+    override suspend fun saveEmailPref(email: String) = mPreferencesImpl.saveEmailPref(email)
+
+    override fun getPasswordPref(): Flow<String> = mPreferencesImpl.getPasswordPref()
+
+    override suspend fun savePasswordPref(password: String) =
+        mPreferencesImpl.savePasswordPref(password)
+
+    override fun isRememberCredentialsPref(): Flow<Boolean> =
+        mPreferencesImpl.isRememberCredentialsPref()
+
+    override suspend fun saveRememberCredentialsPref(isChecked: Boolean) =
+        mPreferencesImpl.saveRememberCredentialsPref(isChecked)
+
+    override fun getUserToken(): Flow<String> = mPreferencesImpl.getUserToken()
+
+    override suspend fun saveTokenPref(token: String) = mPreferencesImpl.saveTokenPref(token)
 }

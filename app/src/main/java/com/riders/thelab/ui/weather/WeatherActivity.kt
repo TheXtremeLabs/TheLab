@@ -317,6 +317,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             when (it) {
                 WorkInfo.State.SUCCEEDED -> {
                     binding.progressBar.visibility = View.GONE
+                    binding.weatherDataContainer.visibility = View.VISIBLE
                 }
 
                 WorkInfo.State.FAILED -> {

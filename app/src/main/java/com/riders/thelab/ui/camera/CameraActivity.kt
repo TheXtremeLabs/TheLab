@@ -99,7 +99,6 @@ class CameraActivity : AppCompatActivity() {
         // Check if device has camera flash light capability
         // val hasFlashLight = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
 
-
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()
@@ -117,7 +116,6 @@ class CameraActivity : AppCompatActivity() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         initViewsModelsObservers()
-
     }
 
 
@@ -260,7 +258,7 @@ class CameraActivity : AppCompatActivity() {
 
         // This is used to bind the lifecycle of cameras to the lifecycle owner.
         // This eliminates the task of opening and closing the camera since CameraX is lifecycle-aware.
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this@CameraActivity)
 
         cameraProviderFuture.addListener({
             // Used to bind the lifecycle of cameras to the lifecycle owner

@@ -58,7 +58,7 @@
     </style>
 
     <!-- Splash Theme -->
-    <style name="SplashTheme" parent="Theme.TheLab">
+    <style name="SplashTheme" parent="Theme.TheLab.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>

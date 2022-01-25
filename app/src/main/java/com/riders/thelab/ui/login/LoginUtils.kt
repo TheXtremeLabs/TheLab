@@ -19,7 +19,7 @@ class LoginUtils private constructor() {
                 // Convert to SHA-1
                 val digest: MessageDigest = MessageDigest.getInstance("SHA-1")
                 val textByteArray: ByteArray =
-                    "${password}_prater_data".toByteArray(charset("iso-8859-1"))
+                    "${password}_the_lab_data".toByteArray(charset("iso-8859-1"))
 
                 digest.update(textByteArray, 0, textByteArray.size)
 

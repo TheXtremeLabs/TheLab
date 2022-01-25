@@ -166,7 +166,7 @@
         android:layout_marginBottom="@dimen/big_margin"
         android:indeterminate="true"
         android:indeterminateOnly="true"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:indicatorColor="@color/white"
         app:layout_constraintBottom_toTopOf="@id/btn_no_account_register"
         app:layout_constraintEnd_toEndOf="parent"

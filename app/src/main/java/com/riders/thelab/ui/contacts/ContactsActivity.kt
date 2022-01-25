@@ -53,49 +53,7 @@ class ContactsActivity
 
         supportActionBar?.title = getString(R.string.activity_title_database_contacts)
 
-        mContactViewModel
-            .getProgressBarVisibility()
-            .observe(this, {})
-
-        mContactViewModel
-            .getNoContactFound()
-            .observe(this, {
-                binding.noContactFoundLayoutContainer.layoutNoContactsFound.visibility =
-                    View.VISIBLE
-            })
-
-        mContactViewModel
-            .getContactsFailed()
-            .observe(this, {
-                Timber.d("onContactsFetchedError()")
-            })
-
-        mContactViewModel
-            .getContacts()
-            .observe(this, { contacts ->
-
-                contactList = contacts
-
-                mAdapter = ContactsAdapter(
-                    this@ContactsActivity,
-                    contactList as ArrayList<Contact>,
-                    this
-                )
-
-                val linearLayoutManager = LinearLayoutManager(this@ContactsActivity)
-                binding.contactsLayoutContainer.rvContacts.layoutManager = linearLayoutManager
-                binding.contactsLayoutContainer.rvContacts.itemAnimator = DefaultItemAnimator()
-                binding.contactsLayoutContainer.rvContacts.adapter = mAdapter
-
-                // adding item touch helper
-                // only ItemTouchHelper.LEFT added to detect Right to Left swipe
-                // if you want both Right -> Left and Left -> Right
-                // add pass ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT as param
-                val itemTouchHelperCallback: ItemTouchHelper.SimpleCallback =
-                    RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this)
-                ItemTouchHelper(itemTouchHelperCallback)
-                    .attachToRecyclerView(binding.contactsLayoutContainer.rvContacts)
-            })
+        initViewModelObservers()
 
         binding.noContactFoundLayoutContainer.btnAddNewContact.setOnClickListener {
             Navigator(this).callAddContactActivity()
@@ -103,6 +61,7 @@ class ContactsActivity
     }
 
     override fun onPause() {
+        Timber.e("onPause()")
         super.onPause()
     }
 
@@ -172,6 +131,55 @@ class ContactsActivity
         _viewBinding = null
     }
 
+
+    private fun initViewModelObservers() {
+        Timber.d("initViewModelObservers()")
+
+        mContactViewModel
+            .getProgressBarVisibility()
+            .observe(this, {})
+
+        mContactViewModel
+            .getNoContactFound()
+            .observe(this, {
+                binding.noContactFoundLayoutContainer.layoutNoContactsFound.visibility =
+                    View.VISIBLE
+            })
+
+        mContactViewModel
+            .getContactsFailed()
+            .observe(this, {
+                Timber.d("onContactsFetchedError()")
+            })
+
+        mContactViewModel
+            .getContacts()
+            .observe(this, { contacts ->
+
+                contactList = contacts
+
+                mAdapter = ContactsAdapter(
+                    this@ContactsActivity,
+                    contactList as ArrayList<Contact>,
+                    this
+                )
+
+                val linearLayoutManager = LinearLayoutManager(this@ContactsActivity)
+                binding.contactsLayoutContainer.rvContacts.layoutManager = linearLayoutManager
+                binding.contactsLayoutContainer.rvContacts.itemAnimator = DefaultItemAnimator()
+                binding.contactsLayoutContainer.rvContacts.adapter = mAdapter
+
+                // adding item touch helper
+                // only ItemTouchHelper.LEFT added to detect Right to Left swipe
+                // if you want both Right -> Left and Left -> Right
+                // add pass ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT as param
+                val itemTouchHelperCallback: ItemTouchHelper.SimpleCallback =
+                    RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this)
+                ItemTouchHelper(itemTouchHelperCallback)
+                    .attachToRecyclerView(binding.contactsLayoutContainer.rvContacts)
+            })
+
+    }
 
     override fun onContactItemCLickListener(item: Contact, position: Int) {
         Timber.d("contact %s clicked", item.toString())

@@ -1,13 +1,16 @@
 package com.riders.thelab.di
 
+import android.content.Context
 import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.RepositoryImpl
 import com.riders.thelab.data.local.DbImpl
 import com.riders.thelab.data.local.LabDatabase
+import com.riders.thelab.data.preferences.PreferencesImpl
 import com.riders.thelab.data.remote.ApiImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -35,8 +38,12 @@ object AppHelperModule {
         )
 
     @Provides
+    fun providePreferences(@ApplicationContext appContext: Context) =
+        PreferencesImpl(appContext)
+
+    @Provides
 //    @ViewModelScoped // this is new
     @Singleton
-    fun provideRepository(dbImpl: DbImpl, apiImpl: ApiImpl) =
-        RepositoryImpl(dbImpl, apiImpl) as IRepository
+    fun provideRepository(dbImpl: DbImpl, apiImpl: ApiImpl, preferencesImpl: PreferencesImpl) =
+        RepositoryImpl(dbImpl, apiImpl, preferencesImpl) as IRepository
 }

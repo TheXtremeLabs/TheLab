@@ -16,6 +16,14 @@ data class UserDto(
     @Json(name = "token")
     var token: String
 ) {
+    constructor(firstName: String, lastName: String, email: String, password: String) : this(
+        firstName,
+        lastName,
+        email,
+        password,
+        ""
+    )
+
     constructor(email: String, password: String, token: String) : this(
         "",
         "",

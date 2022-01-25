@@ -43,25 +43,18 @@ class SignUpViewModel @Inject constructor(
     /////////////////////////////////////
     // Form
     fun setFormUser(
-        gender: String,
         firstName: String,
         lastName: String,
         email: String,
-        password: String,
-        phoneNumber: String,
-        dateOfBirth: String
+        password: String
     ) {
         currentUser =
-            UserDto(gender, firstName, lastName, email, password, phoneNumber, dateOfBirth)
+            UserDto(firstName, lastName, email, password)
     }
 
     // SignUp
     fun saveUser() {
         Timber.d("saveUser()")
-
-        // TODO : Remove when done
-        currentUser.isCustomer = true
-        currentUser.isProvider = false
 
         viewModelScope.launch(ioContext) {
             try {
