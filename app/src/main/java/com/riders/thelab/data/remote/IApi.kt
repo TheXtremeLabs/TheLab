@@ -1,20 +1,19 @@
 package com.riders.thelab.data.remote
 
+
 import android.app.Activity
 import android.location.Location
 import com.google.firebase.storage.StorageReference
 import com.riders.thelab.data.local.model.Download
 import com.riders.thelab.data.local.model.Video
+import com.riders.thelab.data.remote.dto.ApiResponse
 import com.riders.thelab.data.remote.dto.LoginResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.flow.Flow
-
-
 import okhttp3.ResponseBody
 import retrofit2.Call
-import kotlin.coroutines.Continuation
 
 interface IApi {
 
@@ -31,5 +30,6 @@ interface IApi {
 
 
     // POST
-    suspend fun login(user: UserDto): LoginResponse
+    suspend fun login(user: UserDto): ApiResponse
+    suspend fun saveUser(user: UserDto): ApiResponse
 }

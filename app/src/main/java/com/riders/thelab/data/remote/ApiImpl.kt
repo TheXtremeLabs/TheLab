@@ -10,6 +10,7 @@ import com.riders.thelab.TheLabApplication
 import com.riders.thelab.data.local.model.Download
 import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.data.remote.api.*
+import com.riders.thelab.data.remote.dto.ApiResponse
 import com.riders.thelab.data.remote.dto.LoginResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import com.riders.thelab.data.remote.dto.artist.Artist
@@ -187,5 +188,8 @@ class ApiImpl @Inject constructor(
         .distinctUntilChanged()
 
 
-    override suspend fun login(user: UserDto): LoginResponse = mUserApiService.login(user)
+    override suspend fun login(user: UserDto): ApiResponse = mUserApiService.login(user)
+
+    override suspend fun saveUser(user: UserDto): ApiResponse = mUserApiService.saveUser(user)
+
 }

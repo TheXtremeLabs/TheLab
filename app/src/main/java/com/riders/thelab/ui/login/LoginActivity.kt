@@ -162,25 +162,10 @@ class LoginActivity : AppCompatActivity(),
 
         showLoading()
 
-        callMainActivity()
-
-        // TODO : Backend log user
-        /*
-        val email: String = binding.inputEmail.text.toString()
-        val password: String =
-            LoginUtils.encodedHashedPassword(
-                LoginUtils.convertToSHA1(
-                    binding.inputPassword.text.toString()
-                )
-
-        Timber.d("make rest call login with $email and $password")
-
         mViewModel.makeCallLogin(
-            UserDto(
-                email,
-                LoginUtils.encodedHashedPassword(LoginUtils.convertToSHA1(password)!!)!!
-            )
-        )*/
+            binding.inputEmail.text.toString(),
+            binding.inputPassword.text.toString()
+        )
     }
 
 

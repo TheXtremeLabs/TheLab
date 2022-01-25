@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.data.IRepository
+import com.riders.thelab.data.remote.dto.ApiResponse
 import com.riders.thelab.data.remote.dto.LoginResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,14 +18,14 @@ class LoginViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
 
-    private val login: MutableLiveData<LoginResponse> = MutableLiveData()
+    private val login: MutableLiveData<ApiResponse> = MutableLiveData()
 
     ///////////////
     //
     // Observers
     //
     ///////////////
-    fun getLogin(): LiveData<LoginResponse> = login
+    fun getLogin(): LiveData<ApiResponse> = login
 
 
     ///////////////
@@ -32,8 +33,16 @@ class LoginViewModel @Inject constructor(
     // Functions
     //
     ///////////////
-    fun makeCallLogin(user: UserDto) {
-        Timber.d("makeCallLogin()")
+    fun makeCallLogin(email: String, password: String) {
+        Timber.d("makeCallLogin() - with $email and $password")
+
+        val encodedPassword: String =
+            LoginUtils.encodedHashedPassword(
+                LoginUtils.convertToSHA1(password)!!
+            )!!
+
+        val user = UserDto(email ,password, encodedPassword)
+
         viewModelScope.launch(ioContext) {
             try {
                 supervisorScope {
@@ -52,7 +61,7 @@ class LoginViewModel @Inject constructor(
     }
 
     // TODO : save user data in Datastore in order to log faster
-    fun saveUserDataInDataStore(){
+    fun saveUserDataInDataStore() {
 
     }
 
