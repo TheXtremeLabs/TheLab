@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -24,8 +23,7 @@ import com.riders.thelab.ui.signup.NextViewPagerClickListener
 import com.riders.thelab.ui.signup.SignUpViewModel
 import timber.log.Timber
 
-class UserFormFragment : Fragment(),
-    AdapterView.OnItemSelectedListener, View.OnClickListener {
+class UserFormFragment : Fragment(), View.OnClickListener {
 
     private var _viewBinding: FragmentUserFormBinding? = null
 
@@ -69,7 +67,6 @@ class UserFormFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupSpinner()
         setListeners()
 
         if (BuildConfig.DEBUG) preloadData()
@@ -86,21 +83,10 @@ class UserFormFragment : Fragment(),
     //
     /////////////////////////////////////
     private fun setListeners() {
-        binding.spGender.onItemSelectedListener = this
         binding.btnPasswordVisibility.setOnClickListener(this)
         binding.btnContinue.setOnClickListener(this)
     }
 
-    private fun setupSpinner() {
-        val adapter: GenderSpinnerAdapter = GenderSpinnerAdapter(
-            requireActivity(),
-            android.R.layout.simple_spinner_item,
-            requireActivity().resources.getStringArray(R.array.user_form_gender).toList()
-        ).apply {
-            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        }
-        binding.spGender.adapter = adapter
-    }
 
     @SuppressLint("SetTextI18n")
     private fun preloadData() {
@@ -116,9 +102,6 @@ class UserFormFragment : Fragment(),
      * Validating form
      */
     private fun submitForm() {
-        if (!validateGender()) {
-            return
-        }
         if (!validateLastName()) {
             return
         }
@@ -134,12 +117,7 @@ class UserFormFragment : Fragment(),
         if (!validateConfirmPassword()) {
             return
         }
-        if (!validatePhone()) {
-            return
-        }
-        if (!validateDateOfBirth()) {
-            return
-        }
+
 
         mViewModel.setFormUser(
             szGender!!,
@@ -156,13 +134,6 @@ class UserFormFragment : Fragment(),
         mListener.onNextViewPagerClicked()
     }
 
-    private fun validateGender(): Boolean {
-        if (szGender.isNullOrBlank()) {
-            Toast.makeText(context, "Please select a gender", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
-    }
 
     private fun validateLastName(): Boolean {
         if (binding.inputLastName.text.toString().trim { it <= ' ' }.isEmpty()) {
@@ -223,32 +194,6 @@ class UserFormFragment : Fragment(),
         } else {
             binding.inputLayoutConfirmPassword.isErrorEnabled = false
         }
-        return true
-    }
-
-
-    private fun validatePhone(): Boolean {
-        if (binding.inputPhoneNumber.text.toString().trim { it <= ' ' }.isEmpty()) {
-            binding.inputLayoutPhoneNumber.error =
-                context!!.getString(R.string.err_msg_form_phone_number)
-            requestFocus(binding.inputPhoneNumber)
-            return false
-        } else {
-            binding.inputLayoutPhoneNumber.isErrorEnabled = false
-        }
-        return true
-    }
-
-
-    private fun validateDateOfBirth(): Boolean {
-        /*if (inputDateOfBirth.text.toString().trim().isEmpty()) {
-            inputLayoutDateOfBirth.setError(context.getString(R.string.err_msg_form_date_of_birth));
-            requestFocus(inputDateOfBirth);
-            return false;
-        } else {
-            inputLayoutDateOfBirth.setErrorEnabled(false);
-        }
-*/
         return true
     }
 
@@ -348,28 +293,6 @@ class UserFormFragment : Fragment(),
         }
     }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        Timber.d("Position : %s", position)
-
-        when (position) {
-            1 -> {
-                szGender = "Male"
-                changeButtonState(true)
-            }
-            2 -> {
-                szGender = "Female"
-                changeButtonState(true)
-            }
-            else -> {
-                Timber.e("else")
-            }
-        }
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        Timber.e("Nothing selected")
-    }
-
     companion object {
         val TAG: String = UserFormFragment::class.java.simpleName
 
@@ -380,5 +303,4 @@ class UserFormFragment : Fragment(),
             return fragment
         }
     }
-
 }

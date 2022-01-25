@@ -216,7 +216,7 @@ class RepositoryImpl @Inject constructor(
         return mApiImpl.getWeatherOneCallAPI(location)
     }
 
-    override  fun getBulkWeatherCitiesFile(): Call<ResponseBody> {
+    override fun getBulkWeatherCitiesFile(): Call<ResponseBody> {
         return mApiImpl.getBulkWeatherCitiesFile()
     }
 
@@ -224,5 +224,7 @@ class RepositoryImpl @Inject constructor(
         return mApiImpl.getBulkDownload()
     }
 
-    override suspend fun login(user: UserDto): LoginResponse = mApiImpl.login(user)
+    override suspend fun login(user: UserDto) = mApiImpl.login(user)
+
+    override suspend fun saveUser(user: UserDto) = mApiImpl.saveUser(user)
 }

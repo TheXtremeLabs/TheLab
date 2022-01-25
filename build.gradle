@@ -7,9 +7,9 @@ ext {
     buildToolsVersion = "30.0.3"
 
     // version information
-    versionMajor = 10
-    versionMinor = 12
-    versionPatch = 2
+    versionMajor = 11
+    versionMinor = 0
+    versionPatch = 0
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
     // Kotlin

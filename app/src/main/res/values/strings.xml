@@ -21,6 +21,7 @@
     <string name="action_ok">OK</string>
     <string name="action_cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="action_continue">Continue</string>
+    <string name="action_done">Done</string>
     <string name="action_later">Later</string>
     <string name="action_enter">Enter</string>
     <string name="action_exit">Quit</string>
@@ -58,6 +59,34 @@
     <string name="no_account_register"><u>You don\'t have any account ?<br />Sign up</u></string>
 
     <string name="action_logout">Logout</string>
+
+    <!-- License agreement -->
+    <string name="title_activity_license_agreement">Terms Of Service</string>
+    <string name="accept_agreement_license">I accept the terms of service displayed above</string>
+    <string name="err_msg_license_agreement_approval_mandatory">Your terms of service agreement\'s approval is mandatory in order to continue.</string>
+
+    <!-- User Inscription Form  -->
+    <string name="title_activity_user_inscription_form">User Form</string>
+    <string name="hint_gender">Gender</string>
+    <string name="hint_first_name">First Name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="hint_confirm_password">Confirm your password</string>
+    <string name="hint_phone_number">Phone Number</string>
+    <string name="hint_date_of_birth">Date Of Birth (optional)</string>
+    <string name="err_msg_form_last_name">Enter your last name</string>
+    <string name="err_msg_form_first_name">Enter your first name</string>
+    <string name="err_msg_form_email">Wrong email format, verify your email</string>
+    <string name="err_msg_form_password">Enter a correct password</string>
+    <string name="err_msg_form_confirm_password">Make sure that the password matches the one above</string>
+    <string name="err_msg_form_phone_number">Enter your phone number</string>
+    <string name="err_msg_form_date_of_birth">Enter your date of birth</string>
+
+    <!-- Successful Sign Up -->
+    <string name="title_activity_successful_sign_up">Validation</string>
+    <string name="msg_title_saving_in_progress">Saving in progress</string>
+    <string name="msg_text_please_wait">Please, wait until the process is finished…</string>
+    <string name="msg_title_congratulations">Congratulations !</string>
+    <string name="dialog_msg_successfully_signed_up">You are successfully registered to the app.<br /><br />We wish you to have a nice experience using our application.<br /><br />Fly away to the culture.</string>
 
     <!-- Main Activity -->
     <string name="title_main_page">Choose your testing app</string>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <!-- Transitions -->
+    <Transition
+        motion:constraintSetEnd="@+id/start_to_title"
+        motion:constraintSetStart="@id/start"
+        motion:duration="750">
+        <KeyFrameSet />
+    </Transition>
+
+    <Transition
+        motion:constraintSetEnd="@+id/title_to_message"
+        motion:constraintSetStart="@id/start_to_title"
+        motion:duration="750">
+        <KeyFrameSet />
+    </Transition>
+
+    <Transition
+        motion:constraintSetEnd="@+id/message_to_animated_image"
+        motion:constraintSetStart="@id/title_to_message"
+        motion:duration="750">
+        <KeyFrameSet />
+    </Transition>
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/message_to_animated_image"
+        motion:duration="750">
+        <KeyFrameSet />
+    </Transition>
+
+
+    <!-- Constraints Set -->
+    <ConstraintSet android:id="@+id/start">
+
+        <Constraint android:id="@+id/tv_title_congratulations">
+            <PropertySet
+                android:alpha="0"
+                android:visibility="invisible"
+                motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/tv_congratulations_msg">
+            <PropertySet
+                android:alpha="0"
+                android:visibility="invisible"
+                motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/iv_animated_check">
+            <PropertySet
+                android:alpha="0"
+                android:visibility="invisible"
+                motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/btn_continue">
+            <PropertySet
+                android:alpha="0"
+                android:visibility="invisible"
+                motion:visibilityMode="ignore" />
+        </Constraint>
+
+    </ConstraintSet>
+
+    <!-- ///// Derives from start ///// -->
+    <ConstraintSet
+        android:id="@+id/start_to_title"
+        motion:deriveConstraintsFrom="@id/start">
+        <Constraint
+            android:id="@id/tv_title_congratulations"
+            motion:transitionEasing="decelerate">
+            <Layout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/extra_big_margin"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+            <PropertySet
+                android:alpha="1"
+                android:visibility="visible" />
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet
+        android:id="@+id/title_to_message"
+        motion:deriveConstraintsFrom="@id/start_to_title">
+        <Constraint android:id="@id/tv_congratulations_msg">
+            <Layout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintLeft_toLeftOf="parent"
+                motion:layout_constraintRight_toRightOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+            <PropertySet
+                android:alpha="1"
+                android:visibility="visible" />
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet
+        android:id="@+id/message_to_animated_image"
+        motion:deriveConstraintsFrom="@id/title_to_message">
+        <Constraint
+            android:id="@id/iv_animated_check"
+            motion:transitionEasing="decelerate">
+            <Layout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                motion:layout_constraintBottom_toTopOf="@id/btn_continue"
+                motion:layout_constraintLeft_toLeftOf="parent"
+                motion:layout_constraintRight_toRightOf="parent"
+                motion:layout_constraintTop_toBottomOf="@id/tv_congratulations_msg" />
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet
+        android:id="@+id/end"
+        motion:deriveConstraintsFrom="@id/message_to_animated_image">
+        <Constraint
+            android:id="@id/btn_continue"
+            motion:transitionEasing="accelerate">
+            <Layout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/medium_margin"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintLeft_toLeftOf="parent"
+                motion:layout_constraintRight_toRightOf="parent" />
+        </Constraint>
+    </ConstraintSet>
+</MotionScene>
