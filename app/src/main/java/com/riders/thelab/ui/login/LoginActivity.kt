@@ -1,12 +1,8 @@
 package com.riders.thelab.ui.login
 
-//import com.riders.thelab.ui.signup.SignUpActivity
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.PorterDuff
-import android.net.ConnectivityManager
-import android.net.LinkProperties
-import android.net.Network
-import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -22,7 +18,9 @@ import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.util.Pair
 import androidx.lifecycle.lifecycleScope
 import com.riders.thelab.BuildConfig
 import com.riders.thelab.R
@@ -64,29 +62,16 @@ class LoginActivity : AppCompatActivity(),
         _viewBinding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setListeners()
-        initViewModelObservers()
-
         if (BuildConfig.DEBUG) {
-            preloadData()
-            //getConnectionInfo()
-
             mNetworkManager = LabNetworkManagerNewAPI.getInstance(this@LoginActivity)
-            /*if (!mNetworkManager?.isWifiConn!!) {
-                mNetworkManager?.changeWifiState(
-                    PraeterApplication.getInstance().applicationContext,
-                    this@LoginActivity
-                )
-            }*/
-
             val isOnline = mNetworkManager?.isOnline()
             Timber.d("Is app online : $isOnline")
         }
 
-        navigator = Navigator(this)
+        setListeners()
+        initViewModelObservers()
 
-        /*postponeEnterTransition()
-        binding.root.doOnPreDraw { startPostponedEnterTransition() }*/
+        navigator = Navigator(this)
 
         lifecycleScope.launch(coroutineContext) {
             delay(TimeUnit.MILLISECONDS.toMillis(750))
@@ -261,7 +246,20 @@ class LoginActivity : AppCompatActivity(),
 
     private fun callSignUpActivity() {
         Timber.d("callSignUpActivity()")
-//        startActivity(Intent(this@LoginActivity, SignUpActivity::class.java))
+
+        val intent = Intent(this, LoginActivity::class.java)
+
+        val sePairThumb: Pair<View, String> =
+            Pair.create(
+                binding.cvLogo,
+                getString(R.string.splash_background_transition_name)
+            )
+
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sePairThumb)
+
+        // Call navigator to switch activity with or without transition according
+        // to the device's version running the application
+        options.toBundle()?.let { navigator.callSignUpActivity(intent, it) }
     }
 
     override fun onClick(view: View?) {
@@ -344,5 +342,4 @@ class LoginActivity : AppCompatActivity(),
             }
         }
     }
-
 }
