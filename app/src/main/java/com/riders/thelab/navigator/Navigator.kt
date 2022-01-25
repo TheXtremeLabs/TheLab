@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.riders.thelab.ui.contacts.addcontact.AddContactActivity
+import com.riders.thelab.ui.login.LoginActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
 import timber.log.Timber
@@ -15,6 +16,15 @@ class Navigator constructor(
     /* Activities */
     fun callSplashActivity() {
         activity.startActivity(Intent(activity, SplashScreenActivity::class.java))
+    }
+
+    fun callLoginActivity() {
+        activity.startActivity(Intent(activity, LoginActivity::class.java))
+    }
+
+    fun callLoginActivity(intent: Intent, optionsCompat: Bundle) {
+        Timber.d("Apply login activity transition")
+        activity.startActivity(intent, optionsCompat)
     }
 
     fun callMainActivity() {

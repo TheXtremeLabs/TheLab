@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.weather
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.database.Cursor
 import android.location.Address
 import android.location.Geocoder
@@ -103,9 +104,9 @@ class WeatherViewModel @Inject constructor(
             )
     }
 
-    fun fetchCities() {
+    fun fetchCities(context: Context) {
         Timber.d("fetchCities()")
-        if (!LabNetworkManagerNewAPI.isConnected) {
+        if (!LabNetworkManagerNewAPI.getInstance(context).isOnline()) {
             hideLoader()
             connectionStatus.value = false
             return

@@ -251,7 +251,7 @@ class MainActivity : AppCompatActivity(),
         Timber.d("onCreateOptionsMenu()")
         this.menuInflater.inflate(R.menu.menu_main, menu)
         this.menu = menu
-        mViewModel.checkConnection()
+        mViewModel.checkConnection(this)
         return true
     }
 
