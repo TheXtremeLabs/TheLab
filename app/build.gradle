@@ -94,12 +94,6 @@ android {
         abortOnError false
     }
 
-    // Watch the memory
-    /*dexOptions {
-        javaMaxHeapSize = '4g'
-        preDexLibraries = false
-    }*/
-
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -182,7 +176,6 @@ dependencies {
 
     // Worker
     implementation rootProject.ext.generalDependencies.workerRuntime
-//    implementation rootProject.ext.generalDependencies.workerRxJava3
     implementation rootProject.ext.generalDependencies.workerMultiprocess
     implementation rootProject.ext.generalDependencies.concurrent
 

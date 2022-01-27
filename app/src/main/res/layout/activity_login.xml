@@ -152,7 +152,24 @@
             android:text="@string/btn_sign_in"
             android:textColor="@color/white"
             android:textStyle="bold"
-            app:cornerRadius="@dimen/small_margin" />
+            app:backgroundTint="@color/button_state_color_login"
+            app:cornerRadius="@dimen/small_margin"
+            tools:enabled="false" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_main_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:text="@string/btn_go_to_main_activity"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            app:backgroundTint="@color/purple_500"
+            app:cornerRadius="@dimen/small_margin"
+            tools:visibility="visible" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

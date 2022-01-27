@@ -4,9 +4,12 @@ import com.riders.thelab.data.remote.dto.ApiResponse
 import com.riders.thelab.data.remote.dto.LoginResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface UserApiService {
+interface TheLabBackApiService {
+    @GET("/")
+    suspend fun getApi(): ApiResponse
 
     @POST("/login")
     suspend fun login(@Body user: UserDto): ApiResponse
