@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/medium_margin"
+    app:cardElevation="@dimen/small_margin"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true"
+    tools:cardBackgroundColor="@color/default_dark"
+    tools:layout_gravity="center">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lv_exit"
+            android:layout_width="@dimen/ultra_ultra_big_margin_tablet"
+            android:layout_height="@dimen/ultra_ultra_big_margin_tablet"
+            android:layout_margin="@dimen/medium_margin"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="exit.json"
+            app:lottie_loop="true"
+            app:lottie_scale="2" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/big_margin"
+            android:layout_marginVertical="@dimen/medium_margin"
+            android:text="Do you want to leave the application ?"
+            android:textColor="@color/white"
+            tools:ignore="HardcodedText"
+            tools:text="Do you want to leave the application ?" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="@dimen/big_margin"
+            android:alpha="0.6"
+            android:background="@color/light" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dark_grey"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/small_margin"
+            android:paddingTop="@dimen/medium_margin"
+            android:paddingBottom="@dimen/small_margin">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_quit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:layout_weight="1"
+                android:text="@string/action_exit"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/transparent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:layout_weight="1"
+                android:text="@string/action_cancel"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/purple_500" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</com.google.android.material.card.MaterialCardView>
