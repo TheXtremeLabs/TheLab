@@ -30,6 +30,7 @@ import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.databinding.ActivityLoginBinding
 import com.riders.thelab.navigator.Navigator
+import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -110,6 +111,14 @@ class LoginActivity : AppCompatActivity(),
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
+        // super.onBackPressed()
+        ExitDialog(this).apply {
+            window?.setBackgroundDrawableResource(android.R.color.transparent)
+        }
+            .show()
     }
 
     override fun onDestroy() {
