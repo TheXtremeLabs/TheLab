@@ -21,6 +21,7 @@ import com.riders.thelab.data.local.model.weather.CityModel
 import com.riders.thelab.data.local.model.weather.WeatherData
 import com.riders.thelab.data.preferences.PreferencesImpl
 import com.riders.thelab.data.remote.ApiImpl
+import com.riders.thelab.data.remote.dto.ApiResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.data.remote.dto.weather.City
@@ -223,6 +224,8 @@ class RepositoryImpl @Inject constructor(
     override suspend fun getBulkDownload(): Flow<Download> {
         return mApiImpl.getBulkDownload()
     }
+
+    override suspend fun getApi(): ApiResponse = mApiImpl.getApi()
 
     override suspend fun login(user: UserDto) = mApiImpl.login(user)
 

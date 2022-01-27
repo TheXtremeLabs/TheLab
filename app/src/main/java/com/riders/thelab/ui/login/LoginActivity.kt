@@ -21,7 +21,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.BuildConfig
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
@@ -57,6 +59,8 @@ class LoginActivity : AppCompatActivity(),
 
     private var isChecked: Boolean = false
 
+    var networkState: Boolean = false
+
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +83,33 @@ class LoginActivity : AppCompatActivity(),
             delay(TimeUnit.MILLISECONDS.toMillis(750))
             binding.motionLayout.transitionToEnd()
         }
+
+        // Start a coroutine in the lifecycle scope
+        lifecycleScope.launch {
+            // repeatOnLifecycle launches the block in a new coroutine every time the
+            // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Trigger the flow and start listening for values.
+                // Note that this happens when lifecycle is STARTED and stops
+                // collecting when the lifecycle is STOPPED
+                mViewModel.networkState.collect { state ->
+                    // New value received
+                    when (state) {
+                        is NetworkState.Available -> {
+                            networkState = state.available
+                            enableButton()
+                        }
+
+                        is NetworkState.Disconnected -> {
+                            networkState = state.disconnected
+                            disableEditTexts()
+                            disableButton()
+                            showGoToMainActivityButton()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -88,6 +119,12 @@ class LoginActivity : AppCompatActivity(),
 
     private fun setListeners() {
         Timber.d("setListeners()")
+
+        binding.btnEnter.isClickable = true
+        binding.btnEnter.isEnabled = true
+        binding.btnMainActivity.isClickable = true
+        binding.btnMainActivity.isEnabled = true
+
         binding.inputEmail.addTextChangedListener(MyTextWatcher(binding.inputEmail))
         binding.inputPassword.addTextChangedListener(MyTextWatcher(binding.inputPassword))
         binding.inputPassword.setOnEditorActionListener(this)
@@ -95,6 +132,7 @@ class LoginActivity : AppCompatActivity(),
         binding.btnPasswordVisibility.setOnClickListener(this)
         binding.btnNoAccountRegister.setOnClickListener(this)
         binding.btnEnter.setOnClickListener(this)
+        binding.btnMainActivity.setOnClickListener(this)
 
         binding.cbRememberMe.setOnCheckedChangeListener(this)
     }
@@ -141,6 +179,7 @@ class LoginActivity : AppCompatActivity(),
 
     private fun onLoginSuccessful() {
         Timber.d("onLoginSuccessful()")
+        hideLoading()
         callMainActivity()
     }
 
@@ -233,6 +272,43 @@ class LoginActivity : AppCompatActivity(),
         }
     }
 
+    private fun enableButton() {
+        if (!binding.btnEnter.isEnabled) {
+            Timber.d("enableButton()")
+
+            binding.btnEnter.isClickable = true
+            binding.btnEnter.isEnabled = true
+        }
+    }
+
+    private fun disableButton() {
+        if (binding.btnEnter.isEnabled) {
+            Timber.e("disableButton()")
+
+            binding.btnEnter.isClickable = false
+            binding.btnEnter.isEnabled = false
+        }
+    }
+
+    private fun disableEditTexts() {
+        Timber.e("disableEditTexts()")
+        if (binding.inputEmail.isEnabled) {
+            binding.inputEmail.isEnabled = false
+        }
+
+        if (binding.inputPassword.isEnabled) {
+            binding.inputPassword.isEnabled = false
+        }
+    }
+
+
+    private fun showGoToMainActivityButton() {
+        if (View.VISIBLE != binding.btnMainActivity.visibility) {
+            Timber.d("showGoToMainActivityButton()")
+            binding.btnMainActivity.visibility = View.VISIBLE
+        }
+    }
+
 
     private fun callMainActivity() {
         Timber.d("callMainActivity()")
@@ -308,6 +384,11 @@ class LoginActivity : AppCompatActivity(),
             R.id.btn_enter -> {
                 login()
             }
+
+            R.id.btn_main_activity -> {
+                callMainActivity()
+            }
+
             R.id.btn_no_account_register -> {
                 callSignUpActivity()
             }

@@ -17,9 +17,15 @@
                 motion:visibilityMode="ignore" />
         </Constraint>
 
+        <Constraint android:id="@+id/btn_enter">
+            <CustomAttribute
+                motion:attributeName="enabled"
+                motion:customBoolean="false"/>
+        </Constraint>
+
         <Constraint android:id="@+id/progressBar">
             <PropertySet
-                android:visibility="invisible"
+                android:visibility="gone"
                 motion:visibilityMode="ignore" />
         </Constraint>
 
@@ -70,8 +76,13 @@
 
 
         <Constraint android:id="@+id/progressBar">
-            <PropertySet
-                android:visibility="invisible" />
+            <PropertySet android:visibility="invisible" />
+        </Constraint>
+
+        <Constraint android:id="@+id/btn_enter">
+            <CustomAttribute
+                motion:attributeName="enabled"
+                motion:customBoolean="true"/>
         </Constraint>
 
         <Constraint android:id="@id/btn_no_account_register">

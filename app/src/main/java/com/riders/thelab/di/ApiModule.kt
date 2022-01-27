@@ -256,9 +256,9 @@ internal object ApiModule {
     @Provides
     @Singleton
     @NotNull
-    fun provideUserAPIService(): UserApiService {
+    fun provideUserAPIService(): TheLabBackApiService {
         return provideRetrofit(Constants.BASE_ENDPOINT_THE_LAB_URL)
-            .create(UserApiService::class.java)
+            .create(TheLabBackApiService::class.java)
     }
 
 }
