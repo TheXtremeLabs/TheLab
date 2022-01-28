@@ -6,15 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.app.App
-import com.riders.thelab.databinding.RowMainAppItemBinding
+import com.riders.thelab.databinding.RowWhatSNewItemBinding
 
-class RowAppViewHolder constructor(
+class RowWhatsNewViewHolder constructor(
     private val context: Context,
-    private val itemBinding: RowMainAppItemBinding,
+    private val itemBinding: RowWhatSNewItemBinding,
     private val mListener: MainActivityAppClickListener
 ) : RecyclerView.ViewHolder(itemBinding.root) {
 
-    val viewBinding: RowMainAppItemBinding get() = itemBinding
+    val viewBinding: RowWhatSNewItemBinding get() = itemBinding
 
     init {
         itemBinding.run {
@@ -25,11 +25,6 @@ class RowAppViewHolder constructor(
     fun bindData(app: App) {
         viewBinding.app = app
     }
-
-    fun bindTabletData(app: App) {
-        viewBinding.ivRowItemBackground?.let { loadBackgroundImage(context, app, it) }
-    }
-
 
     private fun loadBackgroundImage(context: Context, app: App, view: ImageView) {
         // Load background image

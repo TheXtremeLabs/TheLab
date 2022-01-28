@@ -17,6 +17,8 @@ import com.riders.thelab.data.local.model.Contact
 import com.riders.thelab.data.local.model.Download
 import com.riders.thelab.data.local.model.Video
 import com.riders.thelab.data.local.model.app.App
+import com.riders.thelab.data.local.model.app.LocalApp
+import com.riders.thelab.data.local.model.app.PackageApp
 import com.riders.thelab.data.local.model.weather.CityModel
 import com.riders.thelab.data.local.model.weather.WeatherData
 import com.riders.thelab.data.preferences.PreferencesImpl
@@ -26,6 +28,10 @@ import com.riders.thelab.data.remote.dto.UserDto
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.data.remote.dto.weather.City
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -51,6 +57,46 @@ class RepositoryImpl @Inject constructor(
     private var mApiImpl: ApiImpl = apiImpl
     private var mPreferencesImpl: PreferencesImpl = preferencesImpl
 
+    override fun getAppListFromAssets(): List<App> {
+        val mAppContext = TheLabApplication.getInstance().applicationContext
+        val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+        val listType = Types.newParameterizedType(List::class.java, LocalApp::class.java)
+        val adapter: JsonAdapter<List<LocalApp>> = moshi.adapter(listType)
+
+        val file = "app_list.json"
+
+        val mJson = mAppContext.assets.open(file).bufferedReader().use { it.readText() }
+
+        val mLocalAppList = adapter.fromJson(mJson)
+
+        return if (null == mLocalAppList) {
+            Timber.e("List is null. Return emptyList")
+            arrayListOf()
+        } else {
+            val list: List<App> = mLocalAppList.map { localApp ->
+                LocalApp(
+                    localApp.id,
+                    localApp.title!!,
+                    localApp.description!!,
+                    LocalApp.getDrawableByName(localApp.icon!!),
+                    localApp.activity,
+                    localApp.date!!
+                )
+            }
+
+            if (null == list) {
+                Timber.e("List is null. Return emptyList")
+                arrayListOf()
+            } else {
+                list
+            }
+        }
+
+    }
+
 
     override fun getPackageList(): List<App> {
 
@@ -72,7 +118,7 @@ class RepositoryImpl @Inject constructor(
                     val version = pInfo.versionName
                     val packageName = appInfo.packageName
                     appList.add(
-                        App(
+                        PackageApp(
                             context.packageManager.getApplicationLabel(appInfo).toString(),
                             icon,
                             version,

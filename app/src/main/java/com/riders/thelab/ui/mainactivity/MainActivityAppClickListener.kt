@@ -5,6 +5,8 @@ import com.riders.thelab.data.local.model.app.App
 
 interface MainActivityAppClickListener {
 
+    fun onWhatsNewItemClickListener(cardView: View, item: App)
+
     fun onAppItemClickListener(cardView: View, item: App)
 
     fun onAppItemCLickListener(view: View, item: App, position: Int)

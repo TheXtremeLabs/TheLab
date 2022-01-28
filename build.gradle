@@ -35,12 +35,12 @@ ext {
     dynamicanimationVersion = '1.0.0'
     composeVersion = '1.0.5'
     cameraVersion = '1.0.2'
-    cameraAlphaVersion = '1.0.0-alpha32'
+    cameraAlphaVersion = '1.1.0-beta01'
 
     dataStoreVersion = '1.0.0'
 
     mediaVersion = '1.4.3'
-    mediaRouterVersion = '1.2.5'
+    mediaRouterVersion = '1.2.6'
 
     autoFillVersion = '1.1.0'
 
@@ -59,12 +59,12 @@ ext {
     googlePlayServicesBaseVersion = '18.0.1'
     googlePlayServicesVersion = '16.0.0'
 
-    googleApiClientVersion = '1.33.0'
-    googleApiClientAndroidVersion = '1.33.0'
-    googleApiClientOAuthVersion = '1.32.1'
+    googleApiClientVersion = '1.33.1'
+    googleApiClientAndroidVersion = '1.33.1'
+    googleApiClientOAuthVersion = '1.33.0'
     googleApiDriveV3Version = 'v3-rev20210725-1.32.1'
-    googleApiClientJackson2Version = '1.33.0'
-    googleHttpClientVersion = '1.41.0'
+    googleApiClientJackson2Version = '1.33.1'
+    googleHttpClientVersion = '1.41.2'
 //    googleApiClientJackson2Version = '1.32.1'
 //    googleApiClientVersion = '1.30.5'
 //    googleApiClientAndroidVersion = '1.30.5'
@@ -169,7 +169,7 @@ ext {
             concurrent                  : "androidx.concurrent:concurrent-futures:$concurrentVersion",
 
 
-            /* Android Architecture Component - Room Persistance Lib  */
+            /* Android Architecture Component - Room Persistence Lib  */
             roomRuntime                 : "androidx.room:room-ktx:$roomVersion",
             roomCompiler                : "androidx.room:room-compiler:$roomVersion",
             // optional - Kotlin Extensions and Coroutines support for Room
@@ -232,7 +232,8 @@ ext {
 
             // Moshi
             moshi                       : "com.squareup.moshi:moshi:$moshiVersion",
-            moshiKotlin                 : "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion",
+            moshiKotlin                 : "com.squareup.moshi:moshi-kotlin:$moshiVersion",
+            moshiKotlinCodeGen          : "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion",
 
             // EventBus
             eventBus                    : "org.greenrobot:eventbus:$eventBusVersion",

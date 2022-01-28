@@ -7,9 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -23,18 +21,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.ProgressBar
+import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
-import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.textview.MaterialTextView
@@ -54,13 +49,11 @@ import com.riders.thelab.core.location.OnGpsListener
 import com.riders.thelab.core.utils.*
 import com.riders.thelab.core.views.ItemSnapHelper
 import com.riders.thelab.data.local.model.app.App
+import com.riders.thelab.data.local.model.app.LocalApp
+import com.riders.thelab.data.local.model.app.PackageApp
 import com.riders.thelab.databinding.ActivityMainBinding
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.bottomsheet.BottomSheetFragment
-import com.riders.thelab.ui.mainactivity.fragment.home.HomeFragment
-import com.riders.thelab.ui.mainactivity.fragment.news.NewsFragment
-import com.riders.thelab.ui.mainactivity.fragment.time.TimeFragment
-import com.riders.thelab.ui.mainactivity.fragment.weather.WeatherFragment
 import com.riders.thelab.ui.weather.WeatherUtils
 import com.riders.thelab.utils.Constants.Companion.GPS_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,9 +64,11 @@ import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 import kotlin.system.exitProcess
 
+@DelicateCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(),
     CoroutineScope,
@@ -94,6 +89,8 @@ class MainActivity : AppCompatActivity(),
 
     private val mViewModel: MainActivityViewModel by viewModels()
 
+    private lateinit var navigator: Navigator
+
     // Toolbar
     // Collapsing Toolbar
     private var isShow = false
@@ -101,13 +98,6 @@ class MainActivity : AppCompatActivity(),
 
     // Menu
     private var menu: Menu? = null
-    // ViewPager
-    /**
-     * The pager adapter, which provides the pages to the view pager widget.
-     */
-    private var mViewPagerAdapter: ViewPager2Adapter? = null
-    private var mFragmentList: MutableList<Fragment>? = null
-    private var mRecentApps: List<App>? = null
 
     // Location
     private var labLocationManager: LabLocationManager? = null
@@ -126,16 +116,15 @@ class MainActivity : AppCompatActivity(),
 
     // Content
     private var adapter: RecyclerView.Adapter<*>? = null
-    private var mFetchedApps: List<App>? = null
     private var isStaggeredLayout: Boolean = false
 
+    private var mThread: Thread? = null
 
     /////////////////////////////////////
     //
     // OVERRIDE
     //
     /////////////////////////////////////
-    @DelicateCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val w = window
@@ -156,13 +145,8 @@ class MainActivity : AppCompatActivity(),
         _viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         // Views
-        if (!LabCompatibilityManager.isTablet(this)) {
-            initViews()
-        } else {
-            bindTabletViews()
-        }
+        initViews()
 
         checkLocationPermissions()
     }
@@ -187,6 +171,7 @@ class MainActivity : AppCompatActivity(),
         if (isTimeUpdatedStarted) {
             isTimeUpdatedStarted = false
         }
+
         super.onPause()
     }
 
@@ -211,7 +196,7 @@ class MainActivity : AppCompatActivity(),
         if (!labLocationManager.canGetLocation()) {
             Timber.e("Cannot get location please enable position")
 
-            binding.includeToolbarLayout?.ivLocationStatus?.setBackgroundResource(
+            binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
                 R.drawable.ic_location_off
             )
             labLocationManager.showSettingsAlert()
@@ -219,12 +204,13 @@ class MainActivity : AppCompatActivity(),
             labLocationManager.setLocationListener()
             labLocationManager.getLocation()
 
-            binding.includeToolbarLayout?.ivLocationStatus?.setBackgroundResource(
+            binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
                 R.drawable.ic_location_on
             )
         }
 
         updateTime()
+        startViewSwitcher()
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
@@ -339,9 +325,12 @@ class MainActivity : AppCompatActivity(),
                         // permission is denied permanently, navigate user to app settings
                     }
 
+                    navigator = Navigator(this@MainActivity)
+
                     // ViewModel
                     initViewModelsObservers()
-                    mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
+                    mViewModel.getWallpaperImages(this@MainActivity)
+                    retrieveApplications()
 
                     // Variables
                     locationReceiver = LocationBroadcastReceiver()
@@ -364,6 +353,38 @@ class MainActivity : AppCompatActivity(),
             .check()
     }
 
+    private fun startViewSwitcher() = CoroutineScope(Dispatchers.Main).launch {
+        Timber.d("startViewSwitcher()")
+
+        val viewSwitcher = binding.includeContentLayout.vs
+        val welcomeToTheLabContainer = binding.includeContentLayout.llWelcomeToTheLabContainer
+        val timeContainer = binding.includeContentLayout.llTimeContainer
+
+        while (isTimeUpdatedStarted) {
+            delay(TimeUnit.SECONDS.toMillis(10))
+
+            if (viewSwitcher.currentView != welcomeToTheLabContainer) {
+                // Show firstView
+                viewSwitcher.inAnimation =
+                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_up)
+                viewSwitcher.outAnimation =
+                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_down)
+                viewSwitcher.displayedChild = 0
+
+//                viewSwitcher.showPrevious()
+            } else if (viewSwitcher.currentView != timeContainer) {
+                // Show secondView
+                viewSwitcher.inAnimation =
+                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_down)
+                viewSwitcher.outAnimation =
+                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_up)
+                viewSwitcher.displayedChild = 1
+
+//                viewSwitcher.showNext()
+            }
+        }
+    }
+
     private fun updateTime() = CoroutineScope(Dispatchers.Main).launch {
         Timber.d("updateTime()")
 
@@ -372,7 +393,7 @@ class MainActivity : AppCompatActivity(),
         while (isTimeUpdatedStarted) {
             val date = Date(System.currentTimeMillis())
             val time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
-            binding.includeToolbarLayout?.tvTime?.text = time
+            binding.includeContentLayout.tvTime.text = time
 
             delay(1000)
         }
@@ -383,7 +404,7 @@ class MainActivity : AppCompatActivity(),
         Timber.d("launchProgressBars()")
         lifecycleScope.launch {
 
-            binding.includeToolbarLayout?.llProgressBarContainer?.children?.let { linearContainer ->
+            /*binding.includeToolbarLayout?.llProgressBarContainer?.children?.let { linearContainer ->
                 linearContainer.forEachIndexed { index, view ->
                     if (view is LinearLayout) {
                         val materialTextView: MaterialTextView =
@@ -422,7 +443,7 @@ class MainActivity : AppCompatActivity(),
 
                 binding.includeToolbarLayout?.viewPager?.currentItem = 0
                 launchProgressBars()
-            }
+            }*/
         }
     }
 
@@ -430,9 +451,9 @@ class MainActivity : AppCompatActivity(),
     private fun setProgressBarText(index: Int, materialTextView: MaterialTextView) {
         when (index) {
             0 -> materialTextView.text = "Home"
-            1 -> materialTextView.text = mRecentApps!![0].appTitle
+            /*1 -> materialTextView.text = mRecentApps!![0].appTitle
             2 -> materialTextView.text = mRecentApps!![1].appTitle
-            3 -> materialTextView.text = mRecentApps!![2].appTitle
+            3 -> materialTextView.text = mRecentApps!![2].appTitle*/
         }
     }
 
@@ -442,7 +463,7 @@ class MainActivity : AppCompatActivity(),
         lifecycleScope.launch {
             Timber.d("resetProgressBars()")
 
-            binding.includeToolbarLayout?.llProgressBarContainer?.children?.let { it ->
+            /*binding.includeToolbarLayout?.llProgressBarContainer?.children?.let { it ->
                 val size = it.count() - 1
 
                 for (i in size downTo 0) {
@@ -460,12 +481,67 @@ class MainActivity : AppCompatActivity(),
                         }
                     }
                 }
-            }
+            }*/
         }
 
 
+    /**
+     * Set up views (recycler views, spinner, etc...)
+     */
+    private fun initViews() {
+        // initCollapsingToolbar()
+        initToolbar()
+        setListeners()
+    }
+
     @DelicateCoroutinesApi
     private fun initViewModelsObservers() {
+
+        mViewModel
+            .getConnectionStatus()
+            .observe(
+                this,
+                { connectionStatus ->
+                    UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
+                    updateToolbarConnectionIcon(connectionStatus)
+                })
+
+        mViewModel.getProgressVisibility().observe(
+            this,
+            {
+                /*if (!it) UIManager.hideView(viewBinding.progressBar)
+                else UIManager.showView(viewBinding.progressBar)*/
+            })
+
+        mViewModel
+            .getImagesFetchedDone()
+            .observe(
+                this,
+                {
+                    Timber.d("getImagesFetchedDone() ")
+                })
+
+        mViewModel
+            .getImagesFetchedFailed()
+            .observe(
+                this,
+                {
+                    Timber.e("getImagesFetchedFailed() ")
+                })
+
+        mViewModel
+            .getImageUrl()
+            .observe(
+                this,
+                { url ->
+
+                    // Display image
+                    Glide.with(this)
+                        .load(url)
+                        .into(binding.includeContentLayout.ivHomeBackground)
+
+                })
+
         mViewModel
             .getConnectionStatus()
             .observe(
@@ -499,7 +575,7 @@ class MainActivity : AppCompatActivity(),
                 LabGlideUtils.getInstance().loadImage(
                     this@MainActivity,
                     WeatherUtils.getWeatherIconFromApi(it.weatherIconUrl),
-                    binding.includeToolbarLayout?.ivWeatherIcon!!
+                    binding.includeContentLayout.ivWeatherIcon!!
                 )
 
                 val sb: StringBuilder =
@@ -510,61 +586,47 @@ class MainActivity : AppCompatActivity(),
                         .append(it.city)
 
                 // bind data
-                binding.includeToolbarLayout?.tvWeather?.text = sb.toString()
+                binding.includeContentLayout.tvWeather.text = sb.toString()
             })
 
-        mViewModel
-            .getApplications().observe(
-                this,
-                { appList ->
-                    Timber.d("onSuccessPackageList()")
+        mViewModel.getWhatsNewApp().observe(this, { whatsNewApps ->
+            Timber.d("getWhatsNewApp.observe()")
 
-                    this.mFetchedApps = appList
+            if (whatsNewApps.isEmpty()) {
+                Timber.d("WhatsNewApps list is empty")
+            } else {
+                setupWhatsNewsRecyclerView(whatsNewApps)
+            }
+        })
 
-                    setupLastFeaturesApps()
-                    initViewPager()
-                    launchProgressBars()
+        mViewModel.getApplications().observe(this, { appList ->
+            Timber.d("onSuccessPackageList.observe()")
 
-                    if (appList.isEmpty()) {
-                        Timber.d("App list is empty")
-                    } else {
-                        bindApps()
-                    }
-                })
+            if (appList.isEmpty()) {
+                Timber.d("App list is empty")
+            } else {
+                setupAppsRecyclerView(appList)
+            }
+        })
     }
 
-
-    /**
-     * Set up views (recycler views, spinner, etc...)
-     */
-    private fun initViews() {
-        initCollapsingToolbar()
-        initToolbar()
-        setListeners()
+    private fun retrieveApplications() {
+        mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
+        mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
     }
 
-    private fun bindTabletViews() {
-        this.supportFragmentManager
-            .beginTransaction()
-            .add(R.id.fragment_time, TimeFragment.newInstance())
-            .commit()
-        this.supportFragmentManager
-            .beginTransaction()
-            .add(R.id.fragment_weather, WeatherFragment.newInstance())
-            .commit()
-    }
 
     /**
      * Initializing collapsing toolbar
      * Will show and hide the toolbar txtPostTitle on scroll
      */
-    private fun initCollapsingToolbar() {
+    /*private fun initCollapsingToolbar() {
         binding.includeToolbarLayout?.collapsingToolbar?.title = " "
         binding.includeToolbarLayout?.appbar?.setExpanded(true)
 
         // hiding & showing the txtPostTitle when toolbar expanded & collapsed
         binding.includeToolbarLayout?.appbar?.addOnOffsetChangedListener(this)
-    }
+    }*/
 
 
     /**
@@ -575,107 +637,68 @@ class MainActivity : AppCompatActivity(),
      * https://stackoverflow.com/questions/10692755/how-do-i-hide-a-menu-item-in-the-actionbar#:~:text=The%20best%20way%20to%20hide,menu%20inside%20the%20same%20group.&text=Then%2C%20on%20your%20activity%20(preferable,visibility%20to%20false%20or%20true.
      */
     private fun initToolbar() {
-        binding.includeToolbarLayout?.toolbar?.inflateMenu(R.menu.menu_main)
-        menu = binding.includeToolbarLayout?.toolbar?.menu
+        binding.includeToolbarLayout.toolbar.inflateMenu(R.menu.menu_main)
+        menu = binding.includeToolbarLayout.toolbar.menu
 
         menu?.let { menu -> UIManager.hideMenuButtons(menu) }
 
-        binding.includeToolbarLayout?.toolbar?.setOnMenuItemClickListener(this)
-    }
-
-    private fun setupLastFeaturesApps() {
-        Timber.d("setupLastFeaturesApps()")
-
-        val recentAppsNames = arrayOf("Music", "Google", "Weather")
-        mRecentApps = mViewModel.fetchRecentApps(this, recentAppsNames)
-
-        mFragmentList = mutableListOf()
-
-        mFragmentList?.let { fragmentList ->
-            mRecentApps?.let { recentApps ->
-                fragmentList.add(HomeFragment())
-                fragmentList.add(NewsFragment.newInstance(recentApps[0]))
-                fragmentList.add(NewsFragment.newInstance(recentApps[1]))
-                fragmentList.add(NewsFragment.newInstance(recentApps[2]))
-            }
-        }
-    }
-
-    private fun initViewPager() {
-        Timber.d("initViewPager()")
-
-        mFragmentList?.let {
-            // Instantiate a ViewPager2 and a PagerAdapter.
-            mViewPagerAdapter = ViewPager2Adapter(this, it)
-            binding.includeToolbarLayout?.viewPager?.adapter = mViewPagerAdapter
-
-            binding.includeToolbarLayout?.viewPager?.registerOnPageChangeCallback(object :
-                ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    // Ignored
-                }
-
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    // Ignored
-                }
-
-                override fun onPageScrollStateChanged(state: Int) {
-                    // Ignored
-                }
-            })
-
-//        binding.contentMainHeader.viewPager2.setOnTouchListener(OnTouchListener { arg0, arg1 -> true })
-            // Ref : https://stackoverflow.com/questions/7814017/is-it-possible-to-disable-scrolling-on-a-viewpager
-            //  binding.contentMainHeader.viewPager2.isUserInputEnabled = false
-
-
-            binding.includeToolbarLayout?.viewPager?.setPageTransformer { page, _ ->
-                page.alpha = 0f
-                page.visibility = View.VISIBLE
-
-                // Start Animation for a short period of time
-                page.animate()
-                    .alpha(1f).duration =
-                    page.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-            }
-        }
+        binding.includeToolbarLayout.toolbar.setOnMenuItemClickListener(this)
     }
 
     private fun setListeners() {
         Timber.d("setListeners()")
-        binding.includeToolbarLayout?.ivInternetStatus?.setOnClickListener(this)
-        binding.includeToolbarLayout?.ivLocationStatus?.setOnClickListener(this)
-        binding.includeToolbarLayout?.searchView?.setOnQueryTextListener(this)
-        binding.includeContentLayout?.ivLinearLayout?.setOnClickListener(this)
-        binding.includeContentLayout?.ivStaggeredLayout?.setOnClickListener(this)
+        binding.includeToolbarLayout.ivInternetStatus.setOnClickListener(this)
+        binding.includeToolbarLayout.ivLocationStatus.setOnClickListener(this)
+        binding.includeToolbarLayout.ivSettings.setOnClickListener(this)
+        binding.includeToolbarLayout.searchView.setOnQueryTextListener(this)
+
+        binding.includeContentLayout.btnMoreInfo.setOnClickListener(this)
+        binding.includeContentLayout.ivLinearLayout.setOnClickListener(this)
+        binding.includeContentLayout.ivStaggeredLayout.setOnClickListener(this)
     }
 
-    private fun bindApps() {
-        Timber.d("bindApps()")
+    private fun setupWhatsNewsRecyclerView(list: List<App>) {
+        Timber.d("setupWhatsNewsRecyclerView()")
 
-        binding.includeContentLayout?.appRecyclerView?.setHasFixedSize(true)
+        binding.includeContentLayout.rvWhatSNew.setHasFixedSize(true)
         if (LabCompatibilityManager.isTablet(this)) {
             val helper = ItemSnapHelper()
-            helper.attachToRecyclerView(binding.includeContentLayout?.appRecyclerView)
-            binding.includeContentLayout?.appRecyclerView?.itemAnimator = DefaultItemAnimator()
+            helper.attachToRecyclerView(binding.includeContentLayout.rvWhatSNew)
+            binding.includeContentLayout.rvWhatSNew.itemAnimator = DefaultItemAnimator()
         }
 
-        applyRecycler()
+        adapter = WhatsNewAdapter(this, list, this)
+        // Classic Linear layout manager
+        val layoutManager = LinearLayoutManager(
+            this, LinearLayoutManager.HORIZONTAL, false
+        )
+
+        with(binding.includeContentLayout.rvWhatSNew.layoutParams) {
+            this!!.width = ViewGroup.LayoutParams.MATCH_PARENT
+            this.height = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+
+        // set LayoutManager to RecyclerView
+        binding.includeContentLayout.rvWhatSNew.layoutManager = layoutManager
+        binding.includeContentLayout.rvWhatSNew.adapter = adapter
     }
 
 
-    private fun applyRecycler() {
-        Timber.d("applyRecycler()")
+    private fun setupAppsRecyclerView(appList: List<App>) {
+        Timber.d("setupAppsRecyclerView()")
+
+        binding.includeContentLayout.appRecyclerView.setHasFixedSize(true)
+        if (LabCompatibilityManager.isTablet(this)) {
+            val helper = ItemSnapHelper()
+            helper.attachToRecyclerView(binding.includeContentLayout.appRecyclerView)
+            binding.includeContentLayout.appRecyclerView.itemAnimator = DefaultItemAnimator()
+        }
+
         val layoutManager: RecyclerView.LayoutManager?
 
         if (!LabCompatibilityManager.isTablet(this)) {
-
             if (!isStaggeredLayout) {
-                adapter = mFetchedApps?.let { MainActivityAdapter(this, it, this) }
+                adapter = MainActivityAdapter(this, appList, this)
                 // Classic Linear layout manager
                 layoutManager = LinearLayoutManager(
                     this,
@@ -683,27 +706,27 @@ class MainActivity : AppCompatActivity(),
                     else LinearLayoutManager.HORIZONTAL, false
                 )
 
-                with(binding.includeContentLayout?.appRecyclerView?.layoutParams) {
+                with(binding.includeContentLayout.appRecyclerView.layoutParams) {
                     this!!.width = ViewGroup.LayoutParams.MATCH_PARENT
                     this.height = ViewGroup.LayoutParams.MATCH_PARENT
                 }
             } else {
-                adapter = mFetchedApps?.let { MainActivityStaggeredAdapter(this, it, this) }
+                adapter = MainActivityStaggeredAdapter(this, appList, this)
                 // set a StaggeredGridLayoutManager with 3 number of columns and vertical orientation
                 layoutManager =
                     StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
 
-                with(binding.includeContentLayout?.appRecyclerView?.layoutParams) {
+                with(binding.includeContentLayout.appRecyclerView.layoutParams) {
                     this!!.width = ViewGroup.LayoutParams.WRAP_CONTENT
                     this.height = ViewGroup.LayoutParams.MATCH_PARENT
                 }
             }
             // set LayoutManager to RecyclerView
-            binding.includeContentLayout?.appRecyclerView?.layoutManager = layoutManager
+            binding.includeContentLayout.appRecyclerView.layoutManager = layoutManager
             adapter?.notifyItemRangeChanged(0, adapter?.itemCount ?: 0)
         }
 
-        binding.includeContentLayout?.appRecyclerView?.adapter = adapter
+        binding.includeContentLayout.appRecyclerView.adapter = adapter
     }
 
 
@@ -714,7 +737,7 @@ class MainActivity : AppCompatActivity(),
 
 
     private fun showItemDetail(app: App) {
-        binding.app = app
+        /*binding.app = app
 
         if (View.INVISIBLE == binding.clDetailItem?.visibility)
             binding.clDetailItem?.visibility = View.VISIBLE
@@ -755,7 +778,7 @@ class MainActivity : AppCompatActivity(),
                         false
                     })
             )
-        }
+        }*/
     }
 
     private fun toggleLocation() {
@@ -815,17 +838,17 @@ class MainActivity : AppCompatActivity(),
         // clear staggered icon
         UIManager.setBackgroundColor(
             this,
-            binding.includeContentLayout?.ivStaggeredLayout!!,
+            binding.includeContentLayout.ivStaggeredLayout!!,
             R.color.transparent
         )
 
         //Apply selected background color
         UIManager.setBackgroundColor(
             this,
-            binding.includeContentLayout?.ivLinearLayout!!,
+            binding.includeContentLayout.ivLinearLayout!!,
             R.color.teal_700
         )
-        applyRecycler()
+        // applyRecycler()
     }
 
     private fun toggleRecyclerViewStaggeredLayout() {
@@ -835,25 +858,25 @@ class MainActivity : AppCompatActivity(),
         // clear staggered icon
         UIManager.setBackgroundColor(
             this,
-            binding.includeContentLayout?.ivLinearLayout!!,
+            binding.includeContentLayout.ivLinearLayout!!,
             R.color.transparent
         )
 
         //Apply selected background color
         UIManager.setBackgroundColor(
             this,
-            binding.includeContentLayout?.ivStaggeredLayout!!,
+            binding.includeContentLayout.ivStaggeredLayout!!,
             R.color.teal_700
         )
-        applyRecycler()
+        // applyRecycler()
     }
 
     private fun updateFragmentConnectionStatus(isConnected: Boolean) {
-        if (binding.includeToolbarLayout?.viewPager?.currentItem == 0) {
+        /*if (binding.includeToolbarLayout?.viewPager?.currentItem == 0) {
             val homeFragment: HomeFragment =
                 mViewPagerAdapter?.getFragment(0) as HomeFragment
             homeFragment.onConnected(isConnected)
-        }
+        }*/
     }
 
 
@@ -880,7 +903,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-        if (scrollRange == -1) {
+        /*if (scrollRange == -1) {
             scrollRange = appBarLayout!!.totalScrollRange
         }
         if (scrollRange + verticalOffset == 0) {
@@ -892,21 +915,21 @@ class MainActivity : AppCompatActivity(),
             // Toolbar is expanded
             binding.includeToolbarLayout?.collapsingToolbar?.title = " "
             isShow = false
-        }
+        }*/
     }
 
     /////////// OnClick Listener ///////////
     override fun onClick(view: View?) {
         when (view?.id) {
 
-            /*R.id.iv_internet_status -> {
+            R.id.iv_internet_status -> {
                 Timber.e("Internet wifi icon status clicked")
             }
 
             R.id.iv_location_status -> {
                 Timber.e("Location icon status clicked")
-            }*/
-
+            }
+            R.id.btn_more_info -> navigator.callWeatherActivity()
             R.id.iv_linear_layout -> toggleRecyclerViewLinearLayout()
             R.id.iv_staggered_layout -> toggleRecyclerViewStaggeredLayout()
         }
@@ -930,12 +953,17 @@ class MainActivity : AppCompatActivity(),
         return true
     }
 
+    override fun onWhatsNewItemClickListener(cardView: View, item: App) {
+        Timber.d("element : $item")
+        mViewModel.launchActivityOrPackage(navigator, item)
+    }
+
     override fun onAppItemClickListener(cardView: View, item: App) {
         Timber.d("element : $item")
 
         //TODO : Please check this functionality later. Problem using Drive REST API v3
         when {
-            item.appTitle.lowercase().contains("drive") -> {
+            item is LocalApp && item.title?.lowercase()?.contains("drive") == true -> {
                 UIManager.showActionInToast(
                     this@MainActivity,
                     "Please check this functionality later. Problem using Drive REST API v3"
@@ -943,15 +971,18 @@ class MainActivity : AppCompatActivity(),
 
                 return
             }
-            !LabCompatibilityManager.isTablet(this@MainActivity) and (-1L != item.id) -> {
-                mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
+            item is LocalApp && -1L != item.id -> {
+                mViewModel.launchActivityOrPackage(navigator, item)
+            }
+            item is PackageApp -> {
+                mViewModel.launchActivityOrPackage(navigator, item)
             }
             else -> {
                 Timber.e("Item id == -1 , not app activity. Should launch package intent.")
                 showItemDetail(item)
-                binding.itemDetailBtn?.setOnClickListener {
+                /*binding.itemDetailBtn?.setOnClickListener {
                     mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
-                }
+                }*/
             }
         }
     }
@@ -961,19 +992,23 @@ class MainActivity : AppCompatActivity(),
         Timber.d("Clicked item : $item, at position : $position")
 
         //TODO : Please check this functionality later. Problem using Drive REST API v3
-        if (item.appTitle.lowercase().contains("drive")) {
+        if (item is LocalApp && item.title?.lowercase()?.contains("drive") == true) {
             UIManager.showActionInToast(
                 this@MainActivity,
                 "Please check this functionality later. Problem using Drive REST API v3"
             )
             return
         } else if (!LabCompatibilityManager.isTablet(this@MainActivity)) {
-            mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
+            if (item is LocalApp && -1L != item.id) {
+                navigator.callIntentActivity(item.activity)
+            } else if (item is PackageApp) {
+                mViewModel.launchActivityOrPackage(navigator, item)
+            }
         } else {
             showItemDetail(item)
-            binding.itemDetailBtn?.setOnClickListener {
+            /*binding.itemDetailBtn?.setOnClickListener {
                 mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
-            }
+            }*/
         }
     }
 

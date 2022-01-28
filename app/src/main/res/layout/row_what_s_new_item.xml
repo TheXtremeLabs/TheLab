@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="app"
+            type="com.riders.thelab.data.local.model.app.App" />
+
+        <variable
+            name="listener"
+            type="com.riders.thelab.ui.mainactivity.MainActivityAppClickListener" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="@dimen/max_card_image_width"
+        android:layout_height="@dimen/max_card_image_height"
+        android:onClick="@{(view) -> listener.onAppItemClickListener(view, app)}"
+        app:cardCornerRadius="@dimen/medium_margin"
+        app:cardElevation="@dimen/small_margin"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true"
+        tools:cardBackgroundColor="@color/default_dark">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/left_background_gradient" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/medium_margin"
+                android:text='@{!TextUtils.isEmpty(app.appName) ? app.appName : app.appTitle}'
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/app_name" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_app_image"
+                android:layout_width="@dimen/ultra_ultra_big_margin_tablet"
+                android:layout_height="@dimen/ultra_ultra_big_margin_tablet"
+                android:layout_marginHorizontal="@dimen/medium_margin"
+                android:scaleType="fitCenter"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                bind:error="@{@drawable/ic_warning}"
+                bind:imageResource="@{app.appDrawableIcon ?? @drawable/ic_warning}"
+                tools:src="@drawable/ic_fingerprint" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:indicatorColor="@color/purple_500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:progress="26" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>
