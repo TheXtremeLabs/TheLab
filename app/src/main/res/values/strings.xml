@@ -92,8 +92,16 @@
 
     <!-- Main Activity -->
     <string name="title_main_page">Choose your testing app</string>
-
     <string name="load_new_data">Load new random data</string>
+
+    <string name="welcome_to_placeholder">Welcome to</string>
+    <string name="the_lab_eleven_placeholder">TheLab 11</string>
+    <string name="what_s_new_placeholder">What\s new?</string>
+    <string name="app_not_to_miss_placeholder">Most recent Applications, must watch !</string>
+    <string name="app_list_placeholder">Applications</string>
+    <string name="app_list_detail_placeholder">List of features that composes the application</string>
+    <string name="more_info">More Details</string>
+
 
     <string name="service_started">007</string>
     <string name="service_stopped">Service stopped</string>
@@ -441,4 +449,5 @@
 
     <!-- Widget -->
     <string name="the_lab_appwidget_description">TheLab Widget Description</string>
+    <string name="logo">logo</string>
 </resources>

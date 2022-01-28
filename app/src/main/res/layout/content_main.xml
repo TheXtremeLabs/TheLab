@@ -13,15 +13,225 @@
         android:layout_height="match_parent"
         android:background="@color/default_dark"
         android:orientation="vertical"
-        android:paddingTop="@dimen/medium_margin"
         android:paddingBottom="@dimen/medium_margin">
+
+        <!-- Home Background Image CardView -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/detail_backdrop_height"
+            android:layout_marginBottom="@dimen/small_margin"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:cardMaxElevation="0dp"
+            tools:cardBackgroundColor="#A52A2A">
+
+            <ImageView
+                android:id="@+id/iv_home_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="home_background"
+                android:scaleType="centerCrop"
+                tools:ignore="HardcodedText"
+                tools:src="@drawable/logo_colors" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bottom_gradient" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/left_background_gradient"
+                android:padding="@dimen/medium_margin">
+
+                <!-- View Switcher -->
+                <ViewSwitcher
+                    android:id="@+id/vs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:id="@+id/ll_welcome_to_the_lab_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        tools:visibility="invisible">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_welcome_to"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/welcome_to_placeholder"
+                            android:textColor="@color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/small_margin"
+                            android:text="@string/the_lab_eleven_placeholder"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_welcome_to" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_time_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="8dp"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            tools:text="12:02" />
+                    </LinearLayout>
+                </ViewSwitcher>
+                <!-- View Switcher -->
+
+
+                <!-- Weather Container -->
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|end"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_weather_icon"
+                        android:layout_width="@dimen/ultra_big_margin"
+                        android:layout_height="@dimen/ultra_big_margin"
+                        android:scaleType="fitCenter"
+                        tools:srcCompat="@drawable/ic_fingerprint" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_weather"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/iv_weather_icon"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="16°c Paris" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_more_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.7"
+                        android:text="@string/more_info"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:backgroundTint="@color/panther" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+                <!-- Weather Container -->
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+        <!-- Home Background Image CardView -->
+
+        <!-- What's new text container -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/medium_margin"
+            android:layout_marginVertical="@dimen/medium_margin"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_news"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/what_s_new_placeholder"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/small_margin"
+                android:text="@string/app_not_to_miss_placeholder"
+                android:textColor="@color/jumbo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_welcome_to" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <!-- What's new text container -->
+
+        <!-- What's new list item -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_what_s_new"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/medium_margin"
+            android:scrollbars="horizontal"
+            tools:itemCount="2"
+            tools:listitem="@layout/row_what_s_new_item" />
+        <!-- What's new list item -->
+
+
+        <!-- App list container -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/medium_margin"
+            android:layout_marginVertical="@dimen/medium_margin"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_app_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_list_placeholder"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/small_margin"
+                android:text="@string/app_list_detail_placeholder"
+                android:textColor="@color/jumbo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_app_list" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <!-- App list container -->
+
 
         <LinearLayout
             android:id="@+id/ll_recycler_view_display_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_margin="8dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="@dimen/medium_margin"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -40,7 +250,6 @@
                 android:src="@drawable/ic_staggered_layout" />
         </LinearLayout>
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/app_recyclerView"
             android:layout_width="match_parent"
@@ -52,6 +261,7 @@
             android:scrollbarStyle="insideOverlay"
             android:scrollbars="vertical"
             android:transitionGroup="true"
+            tools:itemCount="4"
             tools:listitem="@layout/row_main_app_item" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

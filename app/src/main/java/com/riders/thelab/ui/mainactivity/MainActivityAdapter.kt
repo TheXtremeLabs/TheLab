@@ -121,10 +121,10 @@ class MainActivityAdapter constructor(
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        if (row.appName.lowercase(Locale.ROOT)
-                                .contains(charString.lowercase(Locale.ROOT))
-                            || row.appTitle.lowercase(Locale.ROOT)
-                                .contains(charString.lowercase(Locale.ROOT))
+                        if (row.appName?.lowercase(Locale.ROOT)
+                                ?.contains(charString.lowercase(Locale.ROOT)) == true
+                            || row.appTitle?.lowercase(Locale.ROOT)
+                                ?.contains(charString.lowercase(Locale.ROOT)) == true
                         ) {
                             filteredList.add(row)
                         }

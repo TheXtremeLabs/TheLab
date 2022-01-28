@@ -2,6 +2,7 @@ package com.riders.thelab
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.multidex.MultiDexApplication
@@ -152,6 +153,31 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
             }
 
             return mInstance as TheLabApplication
+        }
+
+        @JvmStatic
+        fun getActivityPackageName(activityName: String): String? {
+            val pManager: PackageManager = getInstance().packageManager
+            val packageName: String = getInstance().applicationContext.packageName
+
+            var returnedActivityPackageToString = ""
+
+            return try {
+                val list =
+                    pManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES).activities
+                for (activityInfo in list) {
+                    val activityNameFound = activityInfo.name
+                    Timber.d("ActivityInfo = " + activityInfo.name)
+                    if (activityNameFound.lowercase().contains(activityName.lowercase())) {
+                        returnedActivityPackageToString = activityInfo.name
+                        break
+                    }
+                }
+                returnedActivityPackageToString
+            } catch (e: PackageManager.NameNotFoundException) {
+                e.printStackTrace()
+                null
+            }
         }
     }
 }

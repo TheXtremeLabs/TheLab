@@ -5,9 +5,10 @@ plugins {
     id 'kotlin-parcelize'
     id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.gms.google-services'
 }
 
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
 // Apply the Crashlytics Gradle plugin
 apply plugin: 'com.google.firebase.crashlytics'
 // Apply the Performance Monitoring plugin
@@ -240,6 +241,7 @@ dependencies {
     kapt rootProject.ext.generalDependencies.glideAnnotation
     implementation rootProject.ext.generalDependencies.blurry
     implementation rootProject.ext.generalDependencies.glideTransformation
+    implementation "com.github.skydoves:landscapist-glide:1.4.5"
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
     implementation rootProject.ext.generalDependencies.retrofit
@@ -254,7 +256,8 @@ dependencies {
 
     // Moshi
     implementation rootProject.ext.generalDependencies.moshi
-    kapt rootProject.ext.generalDependencies.moshiKotlin
+    implementation rootProject.ext.generalDependencies.moshiKotlin
+    kapt rootProject.ext.generalDependencies.moshiKotlinCodeGen
 
 
     // EventBus

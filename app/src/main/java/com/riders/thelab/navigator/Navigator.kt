@@ -7,6 +7,7 @@ import com.riders.thelab.ui.contacts.addcontact.AddContactActivity
 import com.riders.thelab.ui.login.LoginActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
+import com.riders.thelab.ui.weather.WeatherActivity
 import timber.log.Timber
 
 class Navigator constructor(
@@ -54,13 +55,23 @@ class Navigator constructor(
         activity.startActivity(intent, optionsCompat)
     }
 
+    fun callWeatherActivity() {
+        activity.startActivity(Intent(activity, WeatherActivity::class.java))
+    }
+
     /* Activities */
-    fun callIntentActivity(targetClass: Class<out Activity>) {
-        activity.startActivity(Intent(activity, targetClass))
+    fun callIntentActivity(targetClass: Class<out Activity?>?) {
+        if (null == targetClass) {
+            Timber.e("target class is null")
+            return
+        } else {
+            activity.startActivity(Intent(activity, targetClass::class.java))
+        }
     }
 
     /* Packages */
     fun callIntentForPackageActivity(intentPackageName: String) {
         activity.startActivity(activity.packageManager.getLaunchIntentForPackage(intentPackageName))
     }
+
 }

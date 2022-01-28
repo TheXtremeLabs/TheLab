@@ -3,6 +3,7 @@ package com.riders.thelab.utils
 import android.content.Context
 import com.riders.thelab.core.utils.LabDeviceManager
 import com.riders.thelab.data.local.model.app.App
+import com.riders.thelab.data.local.model.app.LocalApp
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
 import javax.inject.Inject
