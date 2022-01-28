@@ -491,6 +491,12 @@
     <!-- Strings for application settings. -->
     <string name="pref_general">General</string>
     <string name="pref_key_dark_mode" translatable="false">Dark Mode</string>
+    <string name="pref_title_dark_mode">Dark Mode</string>
+
+    <!-- Strings for user settings. -->
+    <string name="pref_user">User</string>
+    <string name="pref_key_wipe_data" translatable="false">Delete suer data</string>
+    <string name="pref_title_wipe_data">Delete user data</string>
 
     <!-- Strings for camera settings. -->
     <string name="pref_category_camera">Camera</string>

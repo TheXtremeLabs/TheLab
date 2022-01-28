@@ -856,14 +856,14 @@ class MainActivity : AppCompatActivity(),
         // clear staggered icon
         UIManager.setBackgroundColor(
             this,
-            binding.includeContentLayout.ivLinearLayout!!,
+            binding.includeContentLayout.ivLinearLayout,
             R.color.transparent
         )
 
         //Apply selected background color
         UIManager.setBackgroundColor(
             this,
-            binding.includeContentLayout.ivStaggeredLayout!!,
+            binding.includeContentLayout.ivStaggeredLayout,
             R.color.teal_700
         )
         // applyRecycler()
@@ -923,10 +923,10 @@ class MainActivity : AppCompatActivity(),
             R.id.iv_internet_status -> {
                 Timber.e("Internet wifi icon status clicked")
             }
-
             R.id.iv_location_status -> {
                 Timber.e("Location icon status clicked")
             }
+            R.id.iv_settings -> navigator.callSettingsActivity()
             R.id.btn_more_info -> navigator.callWeatherActivity()
             R.id.iv_linear_layout -> toggleRecyclerViewLinearLayout()
             R.id.iv_staggered_layout -> toggleRecyclerViewStaggeredLayout()

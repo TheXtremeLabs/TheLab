@@ -6,8 +6,10 @@ import android.os.Bundle
 import com.riders.thelab.ui.contacts.addcontact.AddContactActivity
 import com.riders.thelab.ui.login.LoginActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
+import com.riders.thelab.ui.settings.SettingsActivity
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
 import com.riders.thelab.ui.weather.WeatherActivity
+import kotlinx.coroutines.DelicateCoroutinesApi
 import timber.log.Timber
 
 class Navigator constructor(
@@ -33,8 +35,13 @@ class Navigator constructor(
         activity.startActivity(intent, optionsCompat)
     }
 
+    @DelicateCoroutinesApi
     fun callMainActivity() {
         activity.startActivity(Intent(activity, MainActivity::class.java))
+    }
+
+    fun callSettingsActivity() {
+        activity.startActivity(Intent(activity, SettingsActivity::class.java))
     }
 
     /* Detail Activities */
@@ -73,5 +80,4 @@ class Navigator constructor(
     fun callIntentForPackageActivity(intentPackageName: String) {
         activity.startActivity(activity.packageManager.getLaunchIntentForPackage(intentPackageName))
     }
-
 }
