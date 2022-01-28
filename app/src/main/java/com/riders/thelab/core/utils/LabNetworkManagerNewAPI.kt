@@ -125,11 +125,6 @@ class LabNetworkManagerNewAPI constructor(
     fun isOnline(): Boolean {
         Timber.d("isOnline()")
 
-        if (null == connectivityManager) {
-            connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        }
-
         val networkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
         return networkInfo?.isConnected == true
     }

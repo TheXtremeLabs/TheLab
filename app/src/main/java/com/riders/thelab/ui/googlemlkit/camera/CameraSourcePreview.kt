@@ -24,7 +24,7 @@ import android.view.SurfaceView
 import android.widget.FrameLayout
 import com.google.android.gms.common.images.Size
 import com.riders.thelab.R
-import com.riders.thelab.ui.googlemlkit.Utils
+import com.riders.thelab.ui.googlemlkit.utils.Utils
 import java.io.IOException
 
 /** Preview the camera image in the screen.  */

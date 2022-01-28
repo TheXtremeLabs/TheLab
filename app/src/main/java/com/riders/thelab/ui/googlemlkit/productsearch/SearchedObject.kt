@@ -20,8 +20,8 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Rect
 import com.riders.thelab.R
-import com.riders.thelab.ui.googlemlkit.Utils
 import com.riders.thelab.ui.googlemlkit.objectdetection.DetectedObjectInfo
+import com.riders.thelab.ui.googlemlkit.utils.Utils
 
 /** Hosts the detected object info and its search result.  */
 class SearchedObject(

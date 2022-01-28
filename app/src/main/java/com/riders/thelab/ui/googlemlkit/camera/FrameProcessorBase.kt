@@ -22,12 +22,10 @@ import androidx.annotation.GuardedBy
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskExecutors
-import com.riders.thelab.ui.googlemlkit.addOnFailureListener
-import com.riders.thelab.ui.googlemlkit.addOnSuccessListener
-import com.riders.thelab.ui.googlemlkit.CameraInputInfo
-import com.riders.thelab.ui.googlemlkit.InputInfo
-import com.riders.thelab.ui.googlemlkit.ScopedExecutor
 import com.google.mlkit.vision.common.InputImage
+import com.riders.thelab.ui.googlemlkit.utils.CameraInputInfo
+import com.riders.thelab.ui.googlemlkit.utils.InputInfo
+import com.riders.thelab.ui.googlemlkit.utils.ScopedExecutor
 import java.nio.ByteBuffer
 
 /** Abstract base class of [FrameProcessor].  */

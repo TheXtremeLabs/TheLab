@@ -25,12 +25,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.riders.thelab.R
-import com.riders.thelab.ui.googlemlkit.productsearch.ProductAdapter.ProductViewHolder
 
 /** Presents the list of product items from cloud product search.  */
-class ProductAdapter(private val productList: List<Product>) : Adapter<ProductViewHolder>() {
+class ProductAdapter(private val productList: List<Product>) /*: Adapter<ProductViewHolder>()*/ {
 
-    class ProductViewHolder private constructor(view: View) : RecyclerView.ViewHolder(view) {
+    /*class ProductViewHolder private constructor(view: View) : RecyclerView.ViewHolder(view) {
 
         private val imageView: ImageView = view.findViewById(R.id.product_image)
         private val titleView: TextView = view.findViewById(R.id.product_title)
@@ -61,5 +60,5 @@ class ProductAdapter(private val productList: List<Product>) : Adapter<ProductVi
         holder.bindProduct(productList[position])
     }
 
-    override fun getItemCount(): Int = productList.size
+    override fun getItemCount(): Int = productList.size*/
 }

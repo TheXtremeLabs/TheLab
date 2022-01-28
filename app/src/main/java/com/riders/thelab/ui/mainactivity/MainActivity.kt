@@ -836,14 +836,14 @@ class MainActivity : AppCompatActivity(),
         // clear staggered icon
         UIManager.setBackgroundColor(
             this,
-            binding.includeContentLayout.ivStaggeredLayout!!,
+            binding.includeContentLayout.ivStaggeredLayout,
             R.color.transparent
         )
 
         //Apply selected background color
         UIManager.setBackgroundColor(
             this,
-            binding.includeContentLayout.ivLinearLayout!!,
+            binding.includeContentLayout.ivLinearLayout,
             R.color.teal_700
         )
         // applyRecycler()
