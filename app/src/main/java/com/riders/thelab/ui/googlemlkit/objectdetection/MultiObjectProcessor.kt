@@ -16,6 +16,7 @@
 
 package com.riders.thelab.ui.googlemlkit.objectdetection
 
+import android.annotation.SuppressLint
 import android.graphics.PointF
 import android.util.Log
 import android.util.SparseArray
@@ -30,7 +31,6 @@ import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel
 import com.riders.thelab.ui.googlemlkit.camera.FrameProcessorBase
 import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 import com.google.mlkit.common.model.LocalModel
-import com.riders.thelab.ui.googlemlkit.InputInfo
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
@@ -38,6 +38,7 @@ import com.google.mlkit.vision.objects.DetectedObject
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.ObjectDetector
 import com.google.mlkit.vision.objects.ObjectDetectorOptionsBase
+import com.riders.thelab.ui.googlemlkit.utils.InputInfo
 import java.io.IOException
 import java.util.ArrayList
 import kotlin.math.hypot
@@ -96,6 +97,7 @@ class MultiObjectProcessor(
         return detector.process(image)
     }
 
+    @SuppressLint("NewApi")
     @MainThread
     override fun onSuccess(
         inputInfo: InputInfo,

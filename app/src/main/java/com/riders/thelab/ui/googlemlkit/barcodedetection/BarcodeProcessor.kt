@@ -20,7 +20,6 @@ import android.animation.ValueAnimator
 import android.util.Log
 import androidx.annotation.MainThread
 import com.google.android.gms.tasks.Task
-import com.riders.thelab.ui.googlemlkit.InputInfo
 import com.riders.thelab.ui.googlemlkit.camera.CameraReticleAnimator
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
 import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel
@@ -30,6 +29,7 @@ import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import com.riders.thelab.ui.googlemlkit.utils.InputInfo
 import java.io.IOException
 
 /** A processor to run the barcode detector.  */

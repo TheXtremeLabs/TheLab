@@ -22,7 +22,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
-import com.riders.thelab.ui.googlemlkit.Utils
+import com.riders.thelab.ui.googlemlkit.utils.Utils
 import java.util.ArrayList
 
 /**

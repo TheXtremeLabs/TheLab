@@ -59,7 +59,6 @@ class SongPlayerViewModel @Inject constructor() : ViewModel() {
             val musicPath =
                 files.find { inFile -> inFile.isDirectory && inFile.name == MUSIC_PLACEHOLDER }
                     .toString()
-                    ?: ""
             Timber.e("musicPathname : $musicPath")
             if (musicPath.isBlank())
                 return null
@@ -71,7 +70,6 @@ class SongPlayerViewModel @Inject constructor() : ViewModel() {
             val prodPath =
                 musicFiles.find { musicFile -> musicFile.isDirectory && musicFile.name == PROD_PLACEHOLDER }
                     .toString()
-                    ?: ""
             Timber.e("prodPathname : $prodPath")
             if (prodPath.isBlank())
                 return null
