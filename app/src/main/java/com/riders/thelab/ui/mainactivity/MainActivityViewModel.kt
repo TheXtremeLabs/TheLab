@@ -221,8 +221,8 @@ class MainActivityViewModel @Inject constructor(
         // Setup last 3 features added
         val mWhatsNewApps = constants
             .getActivityList()
+            .sortedByDescending { (it as LocalApp).appDate }
             .take(3)
-            .sortedByDescending { (it as LocalApp).date }
 
         this.whatsNewApps.value = mWhatsNewApps
     }
@@ -244,9 +244,9 @@ class MainActivityViewModel @Inject constructor(
             }
 
             is LocalApp -> {
-                if (null != item.localActivity) {
-                    Timber.d("launchActivity(%s)", item.localActivity.simpleName)
-                    launchActivity(navigator, item.localActivity)
+                if (null != item.appActivity) {
+                    Timber.d("launchActivity(%s)", item.appActivity!!.simpleName)
+                    launchActivity(navigator, item.appActivity!!)
                 } else {
                     // Just Log wip item
                     Timber.e("Cannot launch this activity : %s", item.toString())

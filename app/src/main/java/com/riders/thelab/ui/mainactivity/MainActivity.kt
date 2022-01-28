@@ -366,20 +366,18 @@ class MainActivity : AppCompatActivity(),
             if (viewSwitcher.currentView != welcomeToTheLabContainer) {
                 // Show firstView
                 viewSwitcher.inAnimation =
-                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_up)
+                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_in_top)
                 viewSwitcher.outAnimation =
-                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_down)
+                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_out_down)
                 viewSwitcher.displayedChild = 0
-
 //                viewSwitcher.showPrevious()
             } else if (viewSwitcher.currentView != timeContainer) {
                 // Show secondView
                 viewSwitcher.inAnimation =
-                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_down)
+                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_in_down)
                 viewSwitcher.outAnimation =
-                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_up)
+                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_out_top)
                 viewSwitcher.displayedChild = 1
-
 //                viewSwitcher.showNext()
             }
         }

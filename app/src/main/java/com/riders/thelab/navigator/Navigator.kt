@@ -65,7 +65,7 @@ class Navigator constructor(
             Timber.e("target class is null")
             return
         } else {
-            activity.startActivity(Intent(activity, targetClass::class.java))
+            activity.startActivity(Intent(activity, targetClass))
         }
     }
 
