@@ -22,7 +22,8 @@ import timber.log.Timber
 @AndroidEntryPoint
 class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
 
-    lateinit var viewBinding: ActivityRecyclerViewBinding
+    private var _viewBinding: ActivityRecyclerViewBinding? = null
+    private val binding get() = _viewBinding!!
 
     private lateinit var adapter: RecyclerViewAdapter
 
@@ -33,8 +34,8 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityRecyclerViewBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivityRecyclerViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initViewModelObservers()
 
@@ -48,6 +49,11 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
             }
         }
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
     }
 
 
@@ -71,7 +77,7 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
 
             CoroutineScope(Dispatchers.Main).launch {
                 delay(3000)
-                UIManager.hideView(viewBinding.progressBar)
+                UIManager.hideView(binding.progressBar)
                 adapter = RecyclerViewAdapter(
                     this@RecyclerViewActivity,
                     it,
@@ -94,9 +100,9 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
                             false
                         )
 
-                viewBinding.recyclerView.layoutManager = layoutManager
-                viewBinding.recyclerView.itemAnimator = DefaultItemAnimator()
-                viewBinding.recyclerView.adapter = adapter
+                binding.recyclerView.layoutManager = layoutManager
+                binding.recyclerView.itemAnimator = DefaultItemAnimator()
+                binding.recyclerView.adapter = adapter
             }
         })
 
