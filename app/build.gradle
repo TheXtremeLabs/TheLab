@@ -169,6 +169,7 @@ dependencies {
 
     implementation rootProject.ext.generalDependencies.datastore
     implementation rootProject.ext.generalDependencies.datastorePreferences
+    implementation rootProject.ext.generalDependencies.preferences
 
     implementation rootProject.ext.generalDependencies.media
     implementation rootProject.ext.generalDependencies.mediaRouter
@@ -194,7 +195,6 @@ dependencies {
 
 
     // Google Play
-    // Maps
     implementation rootProject.ext.generalDependencies.googleBasePlayServices
     implementation rootProject.ext.generalDependencies.googleAPIClientJackson2
     implementation rootProject.ext.generalDependencies.googleHttpClient
@@ -207,10 +207,17 @@ dependencies {
     implementation rootProject.ext.generalDependencies.googleAPIClientOAuthJava6
     implementation rootProject.ext.generalDependencies.googleAPIDrive
 
+    // Google Location (Maps / Places)
     implementation rootProject.ext.generalDependencies.maps
     implementation rootProject.ext.generalDependencies.mapsUtils
     implementation rootProject.ext.generalDependencies.location
     implementation rootProject.ext.generalDependencies.places
+
+    // Google ML Kit
+    implementation rootProject.ext.generalDependencies.barcodeScanningML
+    implementation rootProject.ext.generalDependencies.objectDetectionML
+    implementation rootProject.ext.generalDependencies.objectDetectionCustomML
+
     // Firebase
     implementation platform(rootProject.ext.generalDependencies.firebasePlatform)
     implementation rootProject.ext.generalDependencies.firebaseAnalitycs

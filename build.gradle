@@ -38,6 +38,7 @@ ext {
     cameraAlphaVersion = '1.1.0-beta01'
 
     dataStoreVersion = '1.0.0'
+    preferenceVersion = '1.1.1'
 
     mediaVersion = '1.4.3'
     mediaRouterVersion = '1.2.6'
@@ -71,10 +72,16 @@ ext {
 //    googleApiClientOAuthVersion = '1.31.5'
 //    googleApiDriveV3Version = 'v3-rev110-1.23.0'
     playServicesAuthVersion = '20.0.1'
+
+    // Google Location (Maps / Places)
     mapsVersion = '18.0.2'
     mapsUtilsVersion = '2.3.0'
     locationVersion = '19.0.1'
     placesVersion = '2.5.0'
+
+    // Google ML Kit
+    barcodeScanningVersion = '17.0.2'
+    objectDetectionVersion = '17.0.0'
 
     firebaseBomVersion = '26.0.0'
     firebaseKtxVersion = '23.0.3'
@@ -156,6 +163,7 @@ ext {
 
             datastore                   : "androidx.datastore:datastore:$dataStoreVersion",
             datastorePreferences        : "androidx.datastore:datastore-preferences:$dataStoreVersion",
+            preferences                 : "androidx.preference:preference-ktx:$preferenceVersion",
 
             media                       : "androidx.media:media:$mediaVersion",
             mediaRouter                 : "androidx.mediarouter:mediarouter:$mediaRouterVersion",
@@ -209,6 +217,10 @@ ext {
             mapsUtils                   : "com.google.maps.android:android-maps-utils:$mapsUtilsVersion",
             location                    : "com.google.android.gms:play-services-location:$locationVersion",
             places                      : "com.google.android.libraries.places:places:$placesVersion",
+
+            barcodeScanningML           : "com.google.mlkit:barcode-scanning:$barcodeScanningVersion",
+            objectDetectionML           : "com.google.mlkit:object-detection:$objectDetectionVersion",
+            objectDetectionCustomML     : "com.google.mlkit:object-detection-custom:$objectDetectionVersion",
 
             firebasePlatform            : "com.google.firebase:firebase-bom:$firebaseBomVersion",
             firebaseAnalitycs           : "com.google.firebase:firebase-analytics-ktx",

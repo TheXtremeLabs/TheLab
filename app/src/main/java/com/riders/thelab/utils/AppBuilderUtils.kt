@@ -21,6 +21,7 @@ import com.riders.thelab.ui.filterlistview.FilterListViewActivity
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity
 import com.riders.thelab.ui.floatingview.FloatingViewActivity
 import com.riders.thelab.ui.googledrive.GoogleDriveActivity
+import com.riders.thelab.ui.googlemlkit.LiveBarcodeScanningActivity
 import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
 import com.riders.thelab.ui.kat.KatActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
@@ -521,10 +522,27 @@ class AppBuilderUtils {
                     .build()
             list.add(screenShot)
 
+            // Google ML Kit - Live Barcode
+            val liveBarcode =
+                AppBuilder
+                    .withId(31L)
+                    .withActivityTitle("Google Ml Kit Live Barcode")
+                    .withActivityDescription("ML Kit brings Google’s machine learning expertise to mobile developers in a powerful and easy-to-use package...")
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.logo_mlkit
+                        )
+                    )
+                    .withActivityClass(LiveBarcodeScanningActivity::class.java)
+                    .withActivityDate("2022/01/28")
+                    .build()
+            list.add(liveBarcode)
+
             // Wip
             val wip =
                 AppBuilder
-                    .withId(31L)
+                    .withId(32L)
                     .withActivityTitle("WIP")
                     .withActivityDescription("Coming soon...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_warning))

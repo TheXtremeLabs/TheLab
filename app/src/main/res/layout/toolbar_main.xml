@@ -74,7 +74,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/cv_time"
                     app:layout_constraintEnd_toStartOf="@id/iv_location_status"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_settings_24" />
+                    app:srcCompat="@drawable/ic_settings" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </RelativeLayout>
 

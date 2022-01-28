@@ -450,6 +450,28 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+
+        <!-- Google ML Kit -->
+        <activity
+            android:name=".ui.googlemlkit.LiveBarcodeScanningActivity"
+            android:label="@string/activity_barcode_scanning_title"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".ui.googlemlkit.settings.SettingsActivity"
+            android:label="@string/activity_settings_title"
+            android:parentActivityName=".ui.googlemlkit.LiveBarcodeScanningActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:label="@string/activity_settings_title"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 

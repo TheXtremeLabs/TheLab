@@ -2,6 +2,7 @@ package com.riders.thelab.ui.compose
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.preference.PreferenceActivity
 import androidx.activity.ComponentActivity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -26,7 +27,7 @@ import com.riders.thelab.R
 import com.riders.thelab.data.local.model.Message
 import com.riders.thelab.databinding.ActivityComposeBinding
 
-class ComposeActivity : ComponentActivity() {
+class ComposeActivity : PreferenceActivity() {
 
     companion object {
         private const val senderPierre = "Pi'erre"
