@@ -28,7 +28,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
@@ -115,7 +118,8 @@ class MainActivity : AppCompatActivity(),
     private var isConnected: Boolean = true
 
     // Content
-    private var adapter: RecyclerView.Adapter<*>? = null
+    private var mAppsAdapter: RecyclerView.Adapter<*>? = null
+    private var mWhatsNewAdapter: WhatsNewAdapter? = null
     private var isStaggeredLayout: Boolean = false
 
     private var mThread: Thread? = null
@@ -498,96 +502,96 @@ class MainActivity : AppCompatActivity(),
         mViewModel
             .getConnectionStatus()
             .observe(
-                this,
-                { connectionStatus ->
-                    UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
-                    updateToolbarConnectionIcon(connectionStatus)
-                })
+                this
+            ) { connectionStatus ->
+                UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
+                updateToolbarConnectionIcon(connectionStatus)
+            }
 
         mViewModel.getProgressVisibility().observe(
-            this,
-            {
-                /*if (!it) UIManager.hideView(viewBinding.progressBar)
-                else UIManager.showView(viewBinding.progressBar)*/
-            })
+            this
+        ) {
+            /*if (!it) UIManager.hideView(viewBinding.progressBar)
+            else UIManager.showView(viewBinding.progressBar)*/
+        }
 
         mViewModel
             .getImagesFetchedDone()
             .observe(
-                this,
-                {
-                    Timber.d("getImagesFetchedDone() ")
-                })
+                this
+            ) {
+                Timber.d("getImagesFetchedDone() ")
+            }
 
         mViewModel
             .getImagesFetchedFailed()
             .observe(
-                this,
-                {
-                    Timber.e("getImagesFetchedFailed() ")
-                })
+                this
+            ) {
+                Timber.e("getImagesFetchedFailed() ")
+            }
 
         mViewModel
             .getImageUrl()
             .observe(
-                this,
-                { url ->
+                this
+            ) { url ->
 
-                    // Display image
-                    Glide.with(this)
-                        .load(url)
-                        .into(binding.includeContentLayout.ivHomeBackground)
+                // Display image
+                Glide.with(this)
+                    .load(url)
+                    .into(binding.includeContentLayout.ivHomeBackground)
 
-                })
+            }
 
         mViewModel
             .getConnectionStatus()
             .observe(
-                this,
-                { connectionStatus ->
-                    UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
-                    updateToolbarConnectionIcon(connectionStatus)
-                })
+                this
+            ) { connectionStatus ->
+                UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
+                updateToolbarConnectionIcon(connectionStatus)
+            }
 
         mViewModel
             .getLocationData()
             .observe(
-                this,
-                { locationStatus ->
-                    Timber.d("getLocationData().observe : $locationStatus")
+                this
+            ) { locationStatus ->
+                Timber.d("getLocationData().observe : $locationStatus")
 
-                    UIManager.updateToolbarIcon(
-                        this@MainActivity,
-                        menu!!,
-                        R.id.action_location_settings,
-                        if (!locationStatus) R.drawable.ic_location_off else R.drawable.ic_location_on
-                    )
-
-                })
-
-        mViewModel.getWeather().observe(
-            this,
-            {
-                Timber.d("getWeather().observe : $it")
-
-                LabGlideUtils.getInstance().loadImage(
+                UIManager.updateToolbarIcon(
                     this@MainActivity,
-                    WeatherUtils.getWeatherIconFromApi(it.weatherIconUrl),
-                    binding.includeContentLayout.ivWeatherIcon!!
+                    menu!!,
+                    R.id.action_location_settings,
+                    if (!locationStatus) R.drawable.ic_location_off else R.drawable.ic_location_on
                 )
 
-                val sb: StringBuilder =
-                    StringBuilder()
-                        .append(it.temperature)
-                        .append(" °c,")
-                        .append(" ")
-                        .append(it.city)
+            }
 
-                // bind data
-                binding.includeContentLayout.tvWeather.text = sb.toString()
-            })
+        mViewModel.getWeather().observe(
+            this
+        ) {
+            Timber.d("getWeather().observe : $it")
 
-        mViewModel.getWhatsNewApp().observe(this, { whatsNewApps ->
+            LabGlideUtils.getInstance().loadImage(
+                this@MainActivity,
+                WeatherUtils.getWeatherIconFromApi(it.weatherIconUrl),
+                binding.includeContentLayout.ivWeatherIcon
+            )
+
+            val sb: StringBuilder =
+                StringBuilder()
+                    .append(it.temperature)
+                    .append(" °c,")
+                    .append(" ")
+                    .append(it.city)
+
+            // bind data
+            binding.includeContentLayout.tvWeather.text = sb.toString()
+        }
+
+        mViewModel.getWhatsNewApp().observe(this) { whatsNewApps ->
             Timber.d("getWhatsNewApp.observe()")
 
             if (whatsNewApps.isEmpty()) {
@@ -595,9 +599,9 @@ class MainActivity : AppCompatActivity(),
             } else {
                 setupWhatsNewsRecyclerView(whatsNewApps)
             }
-        })
+        }
 
-        mViewModel.getApplications().observe(this, { appList ->
+        mViewModel.getApplications().observe(this) { appList ->
             Timber.d("onSuccessPackageList.observe()")
 
             if (appList.isEmpty()) {
@@ -605,7 +609,7 @@ class MainActivity : AppCompatActivity(),
             } else {
                 setupAppsRecyclerView(appList)
             }
-        })
+        }
     }
 
     private fun retrieveApplications() {
@@ -655,6 +659,7 @@ class MainActivity : AppCompatActivity(),
         binding.includeContentLayout.ivStaggeredLayout.setOnClickListener(this)
     }
 
+    @SuppressLint("NewApi")
     private fun setupWhatsNewsRecyclerView(list: List<App>) {
         Timber.d("setupWhatsNewsRecyclerView()")
 
@@ -665,7 +670,7 @@ class MainActivity : AppCompatActivity(),
             binding.includeContentLayout.rvWhatSNew.itemAnimator = DefaultItemAnimator()
         }
 
-        adapter = WhatsNewAdapter(this, list, this)
+        mWhatsNewAdapter = WhatsNewAdapter(this, list, this)
         // Classic Linear layout manager
         val layoutManager = LinearLayoutManager(
             this, LinearLayoutManager.HORIZONTAL, false
@@ -678,7 +683,7 @@ class MainActivity : AppCompatActivity(),
 
         // set LayoutManager to RecyclerView
         binding.includeContentLayout.rvWhatSNew.layoutManager = layoutManager
-        binding.includeContentLayout.rvWhatSNew.adapter = adapter
+        binding.includeContentLayout.rvWhatSNew.adapter = mWhatsNewAdapter
     }
 
 
@@ -696,7 +701,7 @@ class MainActivity : AppCompatActivity(),
 
         if (!LabCompatibilityManager.isTablet(this)) {
             if (!isStaggeredLayout) {
-                adapter = MainActivityAdapter(this, appList, this)
+                mAppsAdapter = MainActivityAdapter(this, appList, this)
                 // Classic Linear layout manager
                 layoutManager = LinearLayoutManager(
                     this,
@@ -709,7 +714,7 @@ class MainActivity : AppCompatActivity(),
                     this.height = ViewGroup.LayoutParams.MATCH_PARENT
                 }
             } else {
-                adapter = MainActivityStaggeredAdapter(this, appList, this)
+                mAppsAdapter = MainActivityStaggeredAdapter(this, appList, this)
                 // set a StaggeredGridLayoutManager with 3 number of columns and vertical orientation
                 layoutManager =
                     StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
@@ -721,10 +726,10 @@ class MainActivity : AppCompatActivity(),
             }
             // set LayoutManager to RecyclerView
             binding.includeContentLayout.appRecyclerView.layoutManager = layoutManager
-            adapter?.notifyItemRangeChanged(0, adapter?.itemCount ?: 0)
+            mAppsAdapter?.notifyItemRangeChanged(0, mAppsAdapter?.itemCount ?: 0)
         }
 
-        binding.includeContentLayout.appRecyclerView.adapter = adapter
+        binding.includeContentLayout.appRecyclerView.adapter = mAppsAdapter
     }
 
 
@@ -944,7 +949,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onQueryTextChange(newText: String?): Boolean {
         Timber.d(newText.toString())
-        (if (!isStaggeredLayout) adapter as MainActivityAdapter else adapter as MainActivityStaggeredAdapter).filter
+        (if (!isStaggeredLayout) mAppsAdapter as MainActivityAdapter else mAppsAdapter as MainActivityStaggeredAdapter).filter
             ?.filter(
                 newText.toString()
             )

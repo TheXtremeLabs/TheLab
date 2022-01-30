@@ -34,7 +34,6 @@ class UserFormFragment : Fragment(), View.OnClickListener {
     private val mViewModel: SignUpViewModel by activityViewModels()
 
     var isPasswordVisible: Boolean = false
-    private var szGender: String? = null
 
     private lateinit var mListener: NextViewPagerClickListener
 
@@ -69,7 +68,10 @@ class UserFormFragment : Fragment(), View.OnClickListener {
 
         setListeners()
 
-        if (BuildConfig.DEBUG) preloadData()
+        if (BuildConfig.DEBUG) {
+            preloadData()
+            changeButtonState(true)
+        }
     }
 
     override fun onDestroyView() {
@@ -117,7 +119,6 @@ class UserFormFragment : Fragment(), View.OnClickListener {
             return
         }
 
-
         mViewModel.setFormUser(
             binding.inputFirstName.text.toString(),
             binding.inputLastName.text.toString(),
@@ -133,7 +134,8 @@ class UserFormFragment : Fragment(), View.OnClickListener {
 
     private fun validateLastName(): Boolean {
         if (binding.inputLastName.text.toString().trim { it <= ' ' }.isEmpty()) {
-            binding.inputLayoutLastName.error = context!!.getString(R.string.err_msg_form_last_name)
+            binding.inputLayoutLastName.error =
+                requireActivity().getString(R.string.err_msg_form_last_name)
             requestFocus(binding.inputLastName)
             return false
         } else {
@@ -146,7 +148,7 @@ class UserFormFragment : Fragment(), View.OnClickListener {
     private fun validateFirstName(): Boolean {
         if (binding.inputFirstName.text.toString().trim { it <= ' ' }.isEmpty()) {
             binding.inputLayoutFirstName.error =
-                context!!.getString(R.string.err_msg_form_first_name)
+                requireActivity().getString(R.string.err_msg_form_first_name)
             requestFocus(binding.inputFirstName)
             return false
         } else {
@@ -158,7 +160,8 @@ class UserFormFragment : Fragment(), View.OnClickListener {
     private fun validateEmail(): Boolean {
         val email: String = binding.inputEmail.text.toString().trim { it <= ' ' }
         if (email.isEmpty() || !isValidEmail(email)) {
-            binding.inputLayoutEmail.error = context!!.getString(R.string.err_msg_form_email)
+            binding.inputLayoutEmail.error =
+                requireActivity().getString(R.string.err_msg_form_email)
             requestFocus(binding.inputEmail)
             return false
         } else {
@@ -169,7 +172,8 @@ class UserFormFragment : Fragment(), View.OnClickListener {
 
     private fun validatePassword(): Boolean {
         if (binding.inputPassword.text.toString().trim { it <= ' ' }.isEmpty()) {
-            binding.inputLayoutPassword.error = context!!.getString(R.string.err_msg_form_password)
+            binding.inputLayoutPassword.error =
+                requireActivity().getString(R.string.err_msg_form_password)
             requestFocus(binding.inputPassword)
             return false
         } else {
@@ -184,7 +188,7 @@ class UserFormFragment : Fragment(), View.OnClickListener {
             && binding.inputConfirmPassword.text.toString() != binding.inputPassword.text.toString()
         ) {
             binding.inputLayoutConfirmPassword.error =
-                context!!.getString(R.string.err_msg_form_confirm_password)
+                requireActivity().getString(R.string.err_msg_form_confirm_password)
             requestFocus(binding.inputConfirmPassword)
             return false
         } else {
@@ -257,7 +261,7 @@ class UserFormFragment : Fragment(), View.OnClickListener {
                     // https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android
                     binding.btnPasswordVisibility.setColorFilter(
                         ContextCompat.getColor(
-                            context!!,
+                            requireActivity(),
                             R.color.purple_200
                         ), PorterDuff.Mode.SRC_IN
                     )
@@ -272,7 +276,7 @@ class UserFormFragment : Fragment(), View.OnClickListener {
                     )
                     binding.btnPasswordVisibility.setColorFilter(
                         ContextCompat.getColor(
-                            context!!,
+                            requireActivity(),
                             R.color.white
                         ), PorterDuff.Mode.SRC_IN
                     )

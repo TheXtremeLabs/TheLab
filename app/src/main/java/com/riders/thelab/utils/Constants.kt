@@ -27,7 +27,8 @@ class Constants @Inject constructor(
         private const val HTTP = "http://"
 
         //    private const val IP_ADDRESS = "192.168.0.136"
-        private const val IP_ADDRESS = "192.168.0.48"
+//        private const val IP_ADDRESS = "192.168.0.48"
+        private const val IP_ADDRESS = "192.168.1.99"
 
         //    private const val EMULATOR_IP_ADDRESS = "192.168.0.163"
         private const val EMULATOR_IP_ADDRESS = "192.168.0.48"

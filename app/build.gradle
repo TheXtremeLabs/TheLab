@@ -6,13 +6,15 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
 }
 
 //apply plugin: 'com.google.gms.google-services'
 // Apply the Crashlytics Gradle plugin
-apply plugin: 'com.google.firebase.crashlytics'
+//apply plugin: 'com.google.firebase.crashlytics'
 // Apply the Performance Monitoring plugin
-apply plugin: 'com.google.firebase.firebase-perf'
+//apply plugin: 'com.google.firebase.firebase-perf'
 
 
 android {
@@ -40,6 +42,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            debuggable true
+
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type.
+            minifyEnabled false
+        }
         release {
             debuggable false
 
@@ -50,7 +59,6 @@ android {
             // Enables resource shrinking, which is performed by the
             // Android Gradle plugin.
             shrinkResources true
-            debuggable false
 
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
@@ -91,7 +99,7 @@ android {
         compose = true
     }
 
-    lintOptions {
+    lint {
         abortOnError false
     }
 
@@ -100,7 +108,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.1"
+        kotlinCompilerExtensionVersion = "1.0.5"
     }
 
     compileOptions {

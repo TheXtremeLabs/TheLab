@@ -23,7 +23,7 @@ class SignUpViewModel @Inject constructor(
     private val saveUserSuccessful: MutableLiveData<ApiResponse> = MutableLiveData()
     private val saveUserError: MutableLiveData<ApiResponse> = MutableLiveData()
 
-    private lateinit var currentUser: UserDto
+    private var currentUser: UserDto? = null
 
     /////////////////////////////////////
     //
@@ -48,39 +48,43 @@ class SignUpViewModel @Inject constructor(
         email: String,
         password: String
     ) {
-        currentUser =
-            UserDto(firstName, lastName, email, password)
+        Timber.d("setFormUser()")
+        this.currentUser = UserDto(firstName, lastName, email, password)
     }
 
     // SignUp
     fun saveUser() {
         Timber.d("saveUser()")
 
-        viewModelScope.launch(ioContext) {
-            try {
-                supervisorScope {
-                    val saveResponse = repository.saveUser(currentUser)
-                    Timber.d("$saveResponse")
+        if (null == currentUser) {
+            Timber.e("currentUser == null")
+        } else {
+            viewModelScope.launch(ioContext) {
+                try {
+                    supervisorScope {
+                        Timber.d("repository.saveUser() - $currentUser")
+                        val saveResponse = repository.saveUser(currentUser!!)
+                        Timber.d("$saveResponse")
 
-                    // Simulate long-time running operation
-                    delay(3000)
+                        // Simulate long-time running operation
+                        delay(3000)
 
-                    withContext(mainContext) {
-                        if (401 == saveResponse.code) {
-                            saveUserError.value = saveResponse
-                        }
-                        if (201 == saveResponse.code) {
-                            saveUserSuccessful.value = saveResponse
+                        withContext(mainContext) {
+                            if (401 == saveResponse.code) {
+                                saveUserError.value = saveResponse
+                            }
+                            if (201 == saveResponse.code) {
+                                saveUserSuccessful.value = saveResponse
+                            }
                         }
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Timber.e(e.message)
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Timber.e(e.message)
             }
         }
     }
-
 
     companion object {
         val ioContext = Dispatchers.IO + Job()

@@ -70,9 +70,6 @@ class SuccessfulSignUpFragment : Fragment(),
 
         setListeners()
         initViewModelsObservers()
-
-        mViewModel.saveUser()
-
     }
 
     override fun onDestroyView() {
@@ -92,7 +89,7 @@ class SuccessfulSignUpFragment : Fragment(),
     private fun initViewModelsObservers() {
         Timber.d("initViewModelsObservers()")
 
-        mViewModel.getSaveUserSuccessful().observe(requireActivity(), {
+        mViewModel.getSaveUserSuccessful().observe(requireActivity()) {
             Timber.e("getSaveUserSuccessful().observe")
 
             binding.clSavingUserProcess.visibility = View.GONE
@@ -102,12 +99,18 @@ class SuccessfulSignUpFragment : Fragment(),
                 delay(TimeUnit.SECONDS.toMillis(1))
                 startChainedAnimations()
             }
-        })
+        }
 
-        mViewModel.getSaveUserError().observe(requireActivity(), {
+        mViewModel.getSaveUserError().observe(requireActivity()) {
             Timber.e("getSaveUserError().observe")
             Timber.e("Error - $it")
-        })
+        }
+    }
+
+
+    fun saveUser() {
+        Timber.d("saveUser()")
+        mViewModel.saveUser()
     }
 
     private fun startChainedAnimations() {
