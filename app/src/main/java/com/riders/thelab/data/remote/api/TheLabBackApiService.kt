@@ -8,7 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface TheLabBackApiService {
-    @GET("/")
+    @GET("/connect")
     suspend fun getApi(): ApiResponse
 
     @POST("/login")

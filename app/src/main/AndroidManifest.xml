@@ -160,11 +160,11 @@
             android:name=".ui.splashscreen.SplashScreenActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
 
         <activity
@@ -173,16 +173,15 @@
             android:theme="@style/LoginTheme" />
 
         <activity
+            android:name=".ui.signup.SignUpActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.TheLab.NoActionBar" />
+
+        <activity
             android:name=".ui.mainactivity.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.TheLab.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.TheLab.NoActionBar" />
 
         <activity
             android:name=".ui.colors.ColorActivity"

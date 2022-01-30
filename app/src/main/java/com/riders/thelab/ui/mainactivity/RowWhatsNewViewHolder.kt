@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.RowWhatSNewItemBinding
@@ -24,6 +25,10 @@ class RowWhatsNewViewHolder constructor(
 
     fun bindData(app: App) {
         viewBinding.app = app
+    }
+
+    fun getProgressBar(): LinearProgressIndicator {
+        return viewBinding.progressBar
     }
 
     private fun loadBackgroundImage(context: Context, app: App, view: ImageView) {

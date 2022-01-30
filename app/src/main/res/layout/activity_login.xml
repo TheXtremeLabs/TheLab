@@ -167,7 +167,7 @@
             android:textColor="@color/white"
             android:textStyle="bold"
             android:visibility="invisible"
-            app:backgroundTint="@color/purple_500"
+            app:backgroundTint="@color/button_state_color_login"
             app:cornerRadius="@dimen/small_margin"
             tools:visibility="visible" />
 

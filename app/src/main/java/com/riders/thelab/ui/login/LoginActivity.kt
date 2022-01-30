@@ -31,6 +31,7 @@ import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.databinding.ActivityLoginBinding
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
+import com.riders.thelab.ui.signup.SignUpActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -98,7 +99,9 @@ class LoginActivity : AppCompatActivity(),
                     when (state) {
                         is NetworkState.Available -> {
                             networkState = state.available
+                            enableEditTexts()
                             enableButton()
+                            hideMainActivityButton()
                         }
 
                         is NetworkState.Disconnected -> {
@@ -139,21 +142,21 @@ class LoginActivity : AppCompatActivity(),
         binding.inputPassword.setOnEditorActionListener(this)
 
         binding.btnPasswordVisibility.setOnClickListener(this)
-        binding.btnNoAccountRegister.setOnClickListener(this)
-        binding.btnEnter.setOnClickListener(this)
-        binding.btnMainActivity.setOnClickListener(this)
-
         binding.cbRememberMe.setOnCheckedChangeListener(this)
+        binding.btnMainActivity.setOnClickListener(this)
+        binding.btnEnter.setOnClickListener(this)
+
+        binding.btnNoAccountRegister.setOnClickListener(this)
     }
 
     private fun initViewModelObservers() {
         Timber.d("initViewModelObservers()")
-        mViewModel.getDataStoreEmail().observe(this, { binding.inputEmail.setText(it) })
-        mViewModel.getDataStorePassword().observe(this, { binding.inputPassword.setText(it) })
+        mViewModel.getDataStoreEmail().observe(this) { binding.inputEmail.setText(it) }
+        mViewModel.getDataStorePassword().observe(this) { binding.inputPassword.setText(it) }
         mViewModel.getDataStoreRememberCredentials()
-            .observe(this, { binding.cbRememberMe.isChecked = it })
+            .observe(this) { binding.cbRememberMe.isChecked = it }
 
-        mViewModel.getLogin().observe(this, {
+        mViewModel.getLogin().observe(this) {
             when (it.message) {
                 "Login okay" -> {
                     hideLoading()
@@ -167,16 +170,16 @@ class LoginActivity : AppCompatActivity(),
                     Timber.e("else, ${it.message}")
                 }
             }
-        })
+        }
 
         mNetworkManager?.getConnectionState()?.observe(
-            this,
-            {
-                UIManager.showConnectionStatusInSnackBar(
-                    this,
-                    it
-                )
-            })
+            this
+        ) {
+            UIManager.showConnectionStatusInSnackBar(
+                this,
+                it
+            )
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -299,6 +302,25 @@ class LoginActivity : AppCompatActivity(),
         }
     }
 
+    private fun hideMainActivityButton() {
+        Timber.e("hideMainActivityButton()")
+
+        if (View.VISIBLE == binding.btnMainActivity.visibility) {
+            binding.btnMainActivity.visibility = View.GONE
+        }
+    }
+
+    private fun enableEditTexts() {
+        Timber.e("enableEditTexts()")
+        if (!binding.inputEmail.isEnabled) {
+            binding.inputEmail.isEnabled = true
+        }
+
+        if (!binding.inputPassword.isEnabled) {
+            binding.inputPassword.isEnabled = true
+        }
+    }
+
     private fun disableEditTexts() {
         Timber.e("disableEditTexts()")
         if (binding.inputEmail.isEnabled) {
@@ -319,6 +341,7 @@ class LoginActivity : AppCompatActivity(),
     }
 
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun callMainActivity() {
         Timber.d("callMainActivity()")
 
@@ -332,7 +355,7 @@ class LoginActivity : AppCompatActivity(),
     private fun callSignUpActivity() {
         Timber.d("callSignUpActivity()")
 
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, SignUpActivity::class.java)
 
         val sePairThumb: Pair<View, String> =
             Pair.create(
