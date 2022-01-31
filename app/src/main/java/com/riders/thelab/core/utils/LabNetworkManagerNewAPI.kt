@@ -41,7 +41,9 @@ class LabNetworkManagerNewAPI constructor(
         caps = connectivityManager.getNetworkCapabilities(currentNetwork)
         linkProperties = connectivityManager.getLinkProperties(currentNetwork)
 
-        connectivityManager.registerDefaultNetworkCallback(this)
+        if (LabCompatibilityManager.isNougat()) {
+            connectivityManager.registerDefaultNetworkCallback(this)
+        }
 
         @Suppress("DEPRECATION")
         connectivityManager.allNetworks.forEach { network ->

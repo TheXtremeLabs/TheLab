@@ -1,11 +1,8 @@
 package com.riders.thelab.utils
 
 import android.content.Context
-import com.riders.thelab.core.utils.LabDeviceManager
 import com.riders.thelab.data.local.model.app.App
-import com.riders.thelab.data.local.model.app.LocalApp
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.*
 import javax.inject.Inject
 
 class Constants @Inject constructor(
@@ -36,10 +33,10 @@ class Constants @Inject constructor(
         private const val PORT = ":8101"
         private const val SEPARATOR = "/"
 
-        val BASE_ENDPOINT_THE_LAB_URL =
-            HTTP + if (LabDeviceManager.getModel().trim().lowercase()
-                    .contains("sdk")
-            ) EMULATOR_IP_ADDRESS else IP_ADDRESS + PORT
+        val BASE_ENDPOINT_THE_LAB_URL: String = "https://the-lab-back.herokuapp.com"
+        /*HTTP + if (LabDeviceManager.getModel().trim().lowercase()
+                .contains("sdk")
+        ) EMULATOR_IP_ADDRESS else IP_ADDRESS + PORT*/
 
 
         //REST client Base URL
