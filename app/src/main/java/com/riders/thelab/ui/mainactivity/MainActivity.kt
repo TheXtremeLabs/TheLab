@@ -684,6 +684,24 @@ class MainActivity : AppCompatActivity(),
         // set LayoutManager to RecyclerView
         binding.includeContentLayout.rvWhatSNew.layoutManager = layoutManager
         binding.includeContentLayout.rvWhatSNew.adapter = mWhatsNewAdapter
+
+        try {
+
+            val viewHolder =
+                binding.includeContentLayout.rvWhatSNew.findViewHolderForAdapterPosition(0)
+
+            if (null == viewHolder) {
+                Timber.e("null == viewHolder | unable to get viewHolder instance for position 0")
+            } else {
+                val progressBar = (viewHolder as RowWhatsNewViewHolder).getProgressBar()
+                Timber.d("null != viewHolder | get progressBar instance ${progressBar.toString()}")
+            }
+
+
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            Timber.e("${exception.message}")
+        }
     }
 
 
