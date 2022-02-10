@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity(),
 
     // Location
     private var labLocationManager: LabLocationManager? = null
-    private lateinit var locationReceiver: LocationBroadcastReceiver
+    private var locationReceiver: LocationBroadcastReceiver? = null
     private lateinit var mGpsUtils: GpsUtils
     private var isGPS: Boolean = false
     private var lastKnowLocation: Location? = null
@@ -155,23 +155,18 @@ class MainActivity : AppCompatActivity(),
         checkLocationPermissions()
     }
 
-    override fun onStart() {
-        super.onStart()
-        mConnectivityManager = this.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager?
-        networkManager = LabNetworkManagerNewAPI(this)
-    }
-
     override fun onPause() {
         Timber.e("onPause()")
         EventBus.getDefault().unregister(this)
 
-        mConnectivityManager!!.unregisterNetworkCallback(networkManager)
-
+        if (null != mConnectivityManager) {
+            mConnectivityManager?.unregisterNetworkCallback(networkManager)
+        }
 
         if (null != locationReceiver) {
             // View Models implementation
             // don't forget to remove receiver data source
-            mViewModel.removeDataSource(locationReceiver.getLocationStatus())
+            mViewModel.removeDataSource(locationReceiver!!.getLocationStatus())
             unregisterReceiver(locationReceiver)
         }
 
@@ -195,25 +190,26 @@ class MainActivity : AppCompatActivity(),
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
 
-        mConnectivityManager!!.registerNetworkCallback(request, networkManager)
+        if (null != mConnectivityManager) {
+            mConnectivityManager?.registerNetworkCallback(request, networkManager)
+        }
 
-        val labLocationManager =
-            LabLocationManager(this@MainActivity, this)
+        if (null != mConnectivityManager) {
+            if (!labLocationManager!!.canGetLocation()) {
+                Timber.e("Cannot get location please enable position")
 
-        if (!labLocationManager.canGetLocation()) {
-            Timber.e("Cannot get location please enable position")
+                binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
+                    R.drawable.ic_location_off
+                )
+                labLocationManager?.showSettingsAlert()
+            } else {
+                labLocationManager?.setLocationListener()
+                labLocationManager?.getLocation()
 
-            binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
-                R.drawable.ic_location_off
-            )
-            labLocationManager.showSettingsAlert()
-        } else {
-            labLocationManager.setLocationListener()
-            labLocationManager.getLocation()
-
-            binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
-                R.drawable.ic_location_on
-            )
+                binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
+                    R.drawable.ic_location_on
+                )
+            }
         }
 
         updateTime()
@@ -339,10 +335,13 @@ class MainActivity : AppCompatActivity(),
                     retrieveApplications()
 
                     // Variables
+                    mConnectivityManager =
+                        this@MainActivity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager?
+                    networkManager = LabNetworkManagerNewAPI(this@MainActivity)
                     locationReceiver = LocationBroadcastReceiver()
                     mGpsUtils = GpsUtils(this@MainActivity)
 
-                    labLocationManager = LabLocationManager(this@MainActivity)
+                    labLocationManager = LabLocationManager(this@MainActivity, this@MainActivity)
 
                     registerLocationReceiver()
                 }
@@ -367,10 +366,12 @@ class MainActivity : AppCompatActivity(),
         val intentFilter = IntentFilter()
         intentFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
 
-        // View Models implementation
-        // add data source
-        mViewModel.addDataSource(locationReceiver.getLocationStatus())
-        registerReceiver(locationReceiver, intentFilter)
+        if (null != locationReceiver) {
+            // View Models implementation
+            // add data source
+            mViewModel.addDataSource(locationReceiver!!.getLocationStatus())
+            registerReceiver(locationReceiver, intentFilter)
+        }
     }
 
     private fun startViewSwitcher() = CoroutineScope(Dispatchers.Main).launch {
