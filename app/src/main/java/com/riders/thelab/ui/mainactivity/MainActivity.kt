@@ -167,10 +167,13 @@ class MainActivity : AppCompatActivity(),
 
         mConnectivityManager!!.unregisterNetworkCallback(networkManager)
 
-        // View Models implementation
-        // don't forget to remove receiver data source
-        mViewModel.removeDataSource(locationReceiver.getLocationStatus())
-        unregisterReceiver(locationReceiver)
+
+        if (null != locationReceiver) {
+            // View Models implementation
+            // don't forget to remove receiver data source
+            mViewModel.removeDataSource(locationReceiver.getLocationStatus())
+            unregisterReceiver(locationReceiver)
+        }
 
         if (isTimeUpdatedStarted) {
             isTimeUpdatedStarted = false
@@ -221,10 +224,9 @@ class MainActivity : AppCompatActivity(),
 
         // View Models implementation
         // add data source
-        mViewModel.addDataSource(locationReceiver.getLocationStatus())
-        registerReceiver(locationReceiver, intentFilter)
+//        mViewModel.addDataSource(locationReceiver.getLocationStatus())
+//        registerReceiver(locationReceiver, intentFilter)
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
@@ -311,7 +313,7 @@ class MainActivity : AppCompatActivity(),
         Timber.d("checkLocationPermissions()")
         // run dexter permission
         Dexter
-            .withContext(this)
+            .withContext(this@MainActivity)
             .withPermissions(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -341,6 +343,8 @@ class MainActivity : AppCompatActivity(),
                     mGpsUtils = GpsUtils(this@MainActivity)
 
                     labLocationManager = LabLocationManager(this@MainActivity)
+
+                    registerLocationReceiver()
                 }
 
                 override fun onPermissionRationaleShouldBeShown(
@@ -355,6 +359,18 @@ class MainActivity : AppCompatActivity(),
             }
             .onSameThread()
             .check()
+    }
+
+    private fun registerLocationReceiver() {
+        Timber.d("registerLocationReceiver()")
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
+
+        // View Models implementation
+        // add data source
+        mViewModel.addDataSource(locationReceiver.getLocationStatus())
+        registerReceiver(locationReceiver, intentFilter)
     }
 
     private fun startViewSwitcher() = CoroutineScope(Dispatchers.Main).launch {

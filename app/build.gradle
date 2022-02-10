@@ -10,12 +10,6 @@ plugins {
     id 'com.google.firebase.firebase-perf'
 }
 
-//apply plugin: 'com.google.gms.google-services'
-// Apply the Crashlytics Gradle plugin
-//apply plugin: 'com.google.firebase.crashlytics'
-// Apply the Performance Monitoring plugin
-//apply plugin: 'com.google.firebase.firebase-perf'
-
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -256,7 +250,7 @@ dependencies {
     kapt rootProject.ext.generalDependencies.glideAnnotation
     implementation rootProject.ext.generalDependencies.blurry
     implementation rootProject.ext.generalDependencies.glideTransformation
-    implementation "com.github.skydoves:landscapist-glide:1.4.5"
+    implementation 'com.github.skydoves:landscapist-glide:1.4.6'
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
     implementation rootProject.ext.generalDependencies.retrofit

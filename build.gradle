@@ -71,7 +71,7 @@ ext {
 //    googleApiClientAndroidVersion = '1.30.5'
 //    googleApiClientOAuthVersion = '1.31.5'
 //    googleApiDriveV3Version = 'v3-rev110-1.23.0'
-    playServicesAuthVersion = '20.0.1'
+    playServicesAuthVersion = '20.1.0'
 
     // Google Location (Maps / Places)
     mapsVersion = '18.0.2'
@@ -305,7 +305,7 @@ buildscript {
         maven { url 'https://maven.google.com' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.0'
+        classpath 'com.android.tools.build:gradle:7.1.1'
 
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
