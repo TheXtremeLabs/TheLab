@@ -157,19 +157,32 @@ class MainActivity : AppCompatActivity(),
 
     override fun onPause() {
         Timber.e("onPause()")
+
+        // Unregister Event Bus
         EventBus.getDefault().unregister(this)
 
-        if (null != mConnectivityManager) {
-            mConnectivityManager?.unregisterNetworkCallback(networkManager)
+        // Unregister Connectivity Manager
+        try {
+            if (null != mConnectivityManager) {
+                mConnectivityManager?.unregisterNetworkCallback(networkManager)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
-        if (null != locationReceiver) {
-            // View Models implementation
-            // don't forget to remove receiver data source
-            mViewModel.removeDataSource(locationReceiver!!.getLocationStatus())
-            unregisterReceiver(locationReceiver)
+        // Unregister Location receiver
+        try {
+            if (null != locationReceiver) {
+                // View Models implementation
+                // don't forget to remove receiver data source
+                mViewModel.removeDataSource(locationReceiver!!.getLocationStatus())
+                unregisterReceiver(locationReceiver)
+            }
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
         }
 
+        // Stop update timer
         if (isTimeUpdatedStarted) {
             isTimeUpdatedStarted = false
         }
@@ -183,34 +196,11 @@ class MainActivity : AppCompatActivity(),
 
         EventBus.getDefault().register(this)
 
-        // register connection status listener
-        val request = NetworkRequest.Builder()
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
+        // Register Network callback events
+        registerConnectivityManager()
 
-        if (null != mConnectivityManager) {
-            mConnectivityManager?.registerNetworkCallback(request, networkManager)
-        }
-
-        if (null != mConnectivityManager) {
-            if (!labLocationManager!!.canGetLocation()) {
-                Timber.e("Cannot get location please enable position")
-
-                binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
-                    R.drawable.ic_location_off
-                )
-                labLocationManager?.showSettingsAlert()
-            } else {
-                labLocationManager?.setLocationListener()
-                labLocationManager?.getLocation()
-
-                binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
-                    R.drawable.ic_location_on
-                )
-            }
-        }
+        // Register Lab Location manager
+        registerLabLocationManager()
 
         updateTime()
         startViewSwitcher()
@@ -335,13 +325,7 @@ class MainActivity : AppCompatActivity(),
                     retrieveApplications()
 
                     // Variables
-                    mConnectivityManager =
-                        this@MainActivity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager?
-                    networkManager = LabNetworkManagerNewAPI(this@MainActivity)
-                    locationReceiver = LocationBroadcastReceiver()
-                    mGpsUtils = GpsUtils(this@MainActivity)
-
-                    labLocationManager = LabLocationManager(this@MainActivity, this@MainActivity)
+                    initActivityVariables()
 
                     registerLocationReceiver()
                 }
@@ -358,6 +342,18 @@ class MainActivity : AppCompatActivity(),
             }
             .onSameThread()
             .check()
+    }
+
+    private fun initActivityVariables() {
+        Timber.d("initActivityVariables()")
+
+        mConnectivityManager =
+            this@MainActivity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager?
+        networkManager = LabNetworkManagerNewAPI(this@MainActivity)
+        locationReceiver = LocationBroadcastReceiver()
+        mGpsUtils = GpsUtils(this@MainActivity)
+
+        labLocationManager = LabLocationManager(this@MainActivity, this@MainActivity)
     }
 
     private fun registerLocationReceiver() {
@@ -404,6 +400,46 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    private fun registerConnectivityManager() {
+        Timber.d("registerConnectivityManager()")
+        // register connection status listener
+        val request = NetworkRequest.Builder()
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+
+        // Register Network callback events
+        if (null == mConnectivityManager) {
+            Timber.e("Connectivity Manager is null | Cannot register network callback events")
+        } else {
+            mConnectivityManager?.registerNetworkCallback(request, networkManager)
+        }
+    }
+
+    private fun registerLabLocationManager() {
+        Timber.d("registerLabLocationManager()")
+        if (null == labLocationManager) {
+            Timber.e("Lab Location Manager is null | Cannot register location callback events")
+        } else {
+            if (!labLocationManager!!.canGetLocation()) {
+                Timber.e("Cannot get location please enable position")
+
+                binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
+                    R.drawable.ic_location_off
+                )
+                labLocationManager?.showSettingsAlert()
+            } else {
+                labLocationManager?.setLocationListener()
+                labLocationManager?.getLocation()
+
+                binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
+                    R.drawable.ic_location_on
+                )
+            }
+        }
+    }
+
     private fun updateTime() = CoroutineScope(Dispatchers.Main).launch {
         Timber.d("updateTime()")
 
@@ -417,92 +453,6 @@ class MainActivity : AppCompatActivity(),
             delay(1000)
         }
     }
-
-    @DelicateCoroutinesApi
-    private fun launchProgressBars() {
-        Timber.d("launchProgressBars()")
-        lifecycleScope.launch {
-
-            /*binding.includeToolbarLayout?.llProgressBarContainer?.children?.let { linearContainer ->
-                linearContainer.forEachIndexed { index, view ->
-                    if (view is LinearLayout) {
-                        val materialTextView: MaterialTextView =
-                            view.getChildAt(0) as MaterialTextView
-                        val progressBar: ProgressBar =
-                            view.getChildAt(1) as ProgressBar
-
-                        progressBar.progress = 0
-
-                        setProgressBarText(index, materialTextView)
-
-                        runCatching {
-
-                            for (i in 0 until 100) {
-                                progressBar.progress = i
-                                delay(100)
-                            }
-
-                            // Check if "current position" equal "number of elements
-                            if (binding.includeToolbarLayout?.viewPager?.currentItem
-                                != binding.includeToolbarLayout?.viewPager?.adapter?.itemCount?.minus(
-                                    1
-                                )
-                            ) {
-                                binding.includeToolbarLayout?.viewPager?.let { viewPager ->
-                                    viewPager.currentItem = viewPager.currentItem + 1
-                                }
-
-                            }
-                            materialTextView.text = ""
-                        }
-                    }
-                }
-                val job = resetProgressBars()
-                job.join()
-
-                binding.includeToolbarLayout?.viewPager?.currentItem = 0
-                launchProgressBars()
-            }*/
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun setProgressBarText(index: Int, materialTextView: MaterialTextView) {
-        when (index) {
-            0 -> materialTextView.text = "Home"
-            /*1 -> materialTextView.text = mRecentApps!![0].appTitle
-            2 -> materialTextView.text = mRecentApps!![1].appTitle
-            3 -> materialTextView.text = mRecentApps!![2].appTitle*/
-        }
-    }
-
-
-    @DelicateCoroutinesApi
-    private fun resetProgressBars() =
-        lifecycleScope.launch {
-            Timber.d("resetProgressBars()")
-
-            /*binding.includeToolbarLayout?.llProgressBarContainer?.children?.let { it ->
-                val size = it.count() - 1
-
-                for (i in size downTo 0) {
-                    Timber.d("View number : $i, contains : ${it.toList()}")
-                    if (it.toList()[i] is LinearLayout) {
-                        val linearLayout = it.toList()[i] as LinearLayout
-                        val progressBar: ProgressBar =
-                            linearLayout.getChildAt(1) as ProgressBar
-
-                        progressBar.progress = 100
-
-                        (100 downTo 0).forEach { percent ->
-                            progressBar.progress = percent
-                            delay(15)
-                        }
-                    }
-                }
-            }*/
-        }
-
 
     /**
      * Set up views (recycler views, spinner, etc...)

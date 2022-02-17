@@ -102,7 +102,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.5"
+//        kotlinCompilerExtensionVersion = "1.0.5"
+        kotlinCompilerExtensionVersion = "1.1.0"
     }
 
     compileOptions {
@@ -250,7 +251,7 @@ dependencies {
     kapt rootProject.ext.generalDependencies.glideAnnotation
     implementation rootProject.ext.generalDependencies.blurry
     implementation rootProject.ext.generalDependencies.glideTransformation
-    implementation 'com.github.skydoves:landscapist-glide:1.4.6'
+    implementation 'com.github.skydoves:landscapist-glide:1.4.8'
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
     implementation rootProject.ext.generalDependencies.retrofit
