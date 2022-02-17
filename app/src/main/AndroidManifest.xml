@@ -568,17 +568,17 @@
              disabling has to be done in your AndroidManifest.xml file,
               removing the node that is merged automatically from the WorkManager library by default.
          -->
-        <!--<provider
+        <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
-            tools:node="merge">-->
-        <!-- If you are using androidx.startup to initialize other components -->
-        <!--<meta-data
-            android:name="androidx.work.impl.WorkManagerInitializer"
+            tools:node="merge">
+         <!--If you are using androidx.startup to initialize other components-->
+        <meta-data
+            android:name="androidx.work.WorkManagerInitializer"
             android:value="androidx.startup"
             tools:node="remove" />
-        </provider>-->
+        </provider>
 
         <!-- In order to use hilt injection in Worker -->
         <!-- If you want to disable android.startup completely. -->

@@ -65,11 +65,19 @@ class WeatherWorker @AssistedInject constructor(
             )
             return Result.failure(outputData!!)
         } else {
-            location = labLocationManager.getLocation()
+            try {
+                location = labLocationManager.getLocation()
+            } catch (e: Exception) {
+                // Unable to fetch user location
+                outputData = createOutputData(
+                    WORK_RESULT,
+                    "$WORK_LOCATION_FAILED | You may check if required permissions are granted"
+                )
+                return Result.failure(outputData!!)
+            }
         }
 
         if (null == location) return Result.failure()
-
 
         return try {
             suspendCancellableCoroutine { _ ->

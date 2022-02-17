@@ -46,7 +46,7 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
 
         mInstance = this
         init()
-        delayedInit()
+        // delayedInit()
     }
 
     private fun init() {

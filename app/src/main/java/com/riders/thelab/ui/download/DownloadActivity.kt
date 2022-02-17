@@ -33,7 +33,7 @@ class DownloadActivity
     private val mViewModel: DownloadViewModel by viewModels()
 
 
-    @DelicateCoroutinesApi
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _viewBinding = ActivityDownloadBinding.inflate(layoutInflater)
