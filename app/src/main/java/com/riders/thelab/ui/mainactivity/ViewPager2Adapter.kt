@@ -2,8 +2,9 @@ package com.riders.thelab.ui.mainactivity
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import kotlinx.coroutines.DelicateCoroutinesApi
 
-class ViewPager2Adapter constructor(
+class ViewPager2Adapter @OptIn(DelicateCoroutinesApi::class) constructor(
     val activity: MainActivity,
     private val fragmentList: List<Fragment>
 ) : FragmentStateAdapter(activity) {

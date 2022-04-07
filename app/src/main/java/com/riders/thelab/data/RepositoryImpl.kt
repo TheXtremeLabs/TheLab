@@ -87,12 +87,7 @@ class RepositoryImpl @Inject constructor(
                 )
             }
 
-            if (null == list) {
-                Timber.e("List is null. Return emptyList")
-                arrayListOf()
-            } else {
-                list
-            }
+            list
         }
 
     }
