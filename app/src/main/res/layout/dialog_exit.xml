@@ -25,8 +25,7 @@
             android:layout_margin="@dimen/medium_margin"
             app:lottie_autoPlay="true"
             app:lottie_fileName="exit.json"
-            app:lottie_loop="true"
-            app:lottie_scale="2" />
+            app:lottie_loop="true" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_content"
