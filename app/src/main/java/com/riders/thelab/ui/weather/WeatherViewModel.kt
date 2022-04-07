@@ -232,47 +232,47 @@ class WeatherViewModel @Inject constructor(
             .getInstance(activity)
             .getWorkInfoByIdLiveData(workerId)
             .observe(
-                activity,
-                { workInfos: WorkInfo ->
-                    when (workInfos.state) {
-                        WorkInfo.State.ENQUEUED -> Timber.d("Worker ENQUEUED")
-                        WorkInfo.State.RUNNING -> {
-                            Timber.d("Worker RUNNING")
-                            workerStatus.value = WorkInfo.State.RUNNING
-                            downloadStatus.value = "Loading..."
-                        }
-                        WorkInfo.State.SUCCEEDED -> {
-
-                            // Save data in database
-                            viewModelScope.launch(Dispatchers.IO) {
-                                repositoryImpl.insertWeatherData(WeatherData(true))
-                            }
-
-                            hideLoader()
-                            downloadDone.value = true
-                            downloadStatus.value = "Loading finished"
-                            workerStatus.value = WorkInfo.State.SUCCEEDED
-                        }
-                        WorkInfo.State.FAILED -> {
-                            Timber.e("Worker FAILED")
-                            downloadDone.value = true
-                            downloadStatus.value = "Worker FAILED"
-                            workerStatus.value = WorkInfo.State.FAILED
-
-                            UIManager.showActionInSnackBar(
-                                activity,
-                                activity.findViewById(android.R.id.content),
-                                "Worker FAILED",
-                                SnackBarType.ALERT,
-                                "", null
-                            )
-                        }
-                        WorkInfo.State.BLOCKED -> Timber.e("Worker BLOCKED")
-                        WorkInfo.State.CANCELLED -> Timber.e("Worker CANCELLED")
-                        else -> {
-                        }
+                activity
+            ) { workInfos: WorkInfo ->
+                when (workInfos.state) {
+                    WorkInfo.State.ENQUEUED -> Timber.d("Worker ENQUEUED")
+                    WorkInfo.State.RUNNING -> {
+                        Timber.d("Worker RUNNING")
+                        workerStatus.value = WorkInfo.State.RUNNING
+                        downloadStatus.value = "Loading..."
                     }
-                })
+                    WorkInfo.State.SUCCEEDED -> {
+
+                        // Save data in database
+                        viewModelScope.launch(Dispatchers.IO) {
+                            repositoryImpl.insertWeatherData(WeatherData(true))
+                        }
+
+                        hideLoader()
+                        downloadDone.value = true
+                        downloadStatus.value = "Loading finished"
+                        workerStatus.value = WorkInfo.State.SUCCEEDED
+                    }
+                    WorkInfo.State.FAILED -> {
+                        Timber.e("Worker FAILED")
+                        downloadDone.value = true
+                        downloadStatus.value = "Worker FAILED"
+                        workerStatus.value = WorkInfo.State.FAILED
+
+                        UIManager.showActionInSnackBar(
+                            activity,
+                            activity.findViewById(android.R.id.content),
+                            "Worker FAILED",
+                            SnackBarType.ALERT,
+                            "", null
+                        )
+                    }
+                    WorkInfo.State.BLOCKED -> Timber.e("Worker BLOCKED")
+                    WorkInfo.State.CANCELLED -> Timber.e("Worker CANCELLED")
+                    else -> {
+                    }
+                }
+            }
     }
 
     fun clearBackgroundResources(activity: WeatherActivity) {
