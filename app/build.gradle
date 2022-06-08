@@ -60,6 +60,11 @@ android {
                     'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES']
+        }
+    }
 
     // Increase build gradle time
     // https://medium.com/@AthorNZ/how-to-speed-up-your-slow-gradle-builds-5d9a9545f91a
@@ -71,15 +76,6 @@ android {
         aaptOptions.cruncherEnabled = false
     }
 
-    packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
-//        exclude 'META-INF/androidx.versionedparcelable_versionedparcelable.version'
-//        exclude 'META-INF/androidx.core_core.version'
-//            exclude 'META-INF/NOTICE'
-//              exclude 'META-INF/LICENSE'
-//              exclude 'META-INF/LICENSE.txt'
-//              exclude 'META-INF/NOTICE.txt'
-    }
 
     buildFeatures {
         // Determines whether to support View Binding.

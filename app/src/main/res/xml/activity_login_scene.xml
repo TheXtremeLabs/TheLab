@@ -76,7 +76,7 @@
 
 
         <Constraint android:id="@+id/progressBar">
-            <PropertySet android:visibility="invisible" />
+            <PropertySet android:visibility="visible" />
         </Constraint>
 
         <Constraint android:id="@+id/btn_enter">

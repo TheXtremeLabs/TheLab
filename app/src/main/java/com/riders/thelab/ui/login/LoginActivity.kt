@@ -274,6 +274,7 @@ class LoginActivity : AppCompatActivity(),
 
     private fun showLoading() {
         if (View.VISIBLE != binding.progressBar.visibility) {
+            binding.progressBar.isIndeterminate = true
             binding.progressBar.visibility = View.VISIBLE
         }
     }
