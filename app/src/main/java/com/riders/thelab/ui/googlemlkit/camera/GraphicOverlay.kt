@@ -22,8 +22,8 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
+import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay.Graphic
 import com.riders.thelab.ui.googlemlkit.utils.Utils
-import java.util.ArrayList
 
 /**
  * A view which renders a series of custom graphics to be overlaid on top of an associated preview

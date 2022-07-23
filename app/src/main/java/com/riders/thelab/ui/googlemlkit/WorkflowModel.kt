@@ -26,7 +26,6 @@ import com.riders.thelab.ui.googlemlkit.objectdetection.DetectedObjectInfo
 import com.riders.thelab.ui.googlemlkit.productsearch.Product
 import com.riders.thelab.ui.googlemlkit.productsearch.SearchedObject
 import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
-import java.util.HashSet
 
 /** View model for handling application workflow based on camera preview.  */
 class WorkflowModel(application: Application) : AndroidViewModel(application) {

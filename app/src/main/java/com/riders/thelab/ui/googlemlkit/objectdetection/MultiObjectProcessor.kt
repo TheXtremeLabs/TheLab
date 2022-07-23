@@ -22,25 +22,23 @@ import android.util.Log
 import android.util.SparseArray
 import androidx.annotation.MainThread
 import androidx.core.util.forEach
-import androidx.core.util.set
 import com.google.android.gms.tasks.Task
-import com.riders.thelab.ui.googlemlkit.camera.CameraReticleAnimator
-import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
-import com.riders.thelab.R
-import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel
-import com.riders.thelab.ui.googlemlkit.camera.FrameProcessorBase
-import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
-import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
 import com.google.mlkit.vision.objects.DetectedObject
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.ObjectDetector
 import com.google.mlkit.vision.objects.ObjectDetectorOptionsBase
+import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
+import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
+import com.riders.thelab.R
+import com.riders.thelab.ui.googlemlkit.camera.CameraReticleAnimator
+import com.riders.thelab.ui.googlemlkit.camera.FrameProcessorBase
+import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
+import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel
+import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 import com.riders.thelab.ui.googlemlkit.utils.InputInfo
 import java.io.IOException
-import java.util.ArrayList
 import kotlin.math.hypot
 
 /** A processor to run object detector in multi-objects mode.  */
@@ -50,7 +48,8 @@ class MultiObjectProcessor(
     private val customModelPath: String? = null
 ) :
     FrameProcessorBase<List<DetectedObject>>() {
-    private val confirmationController: ObjectConfirmationController = ObjectConfirmationController(graphicOverlay)
+    private val confirmationController: ObjectConfirmationController =
+        ObjectConfirmationController(graphicOverlay)
     private val cameraReticleAnimator: CameraReticleAnimator = CameraReticleAnimator(graphicOverlay)
     private val objectSelectionDistanceThreshold: Int = graphicOverlay
         .resources
@@ -62,7 +61,8 @@ class MultiObjectProcessor(
 
     init {
         val options: ObjectDetectorOptionsBase
-        val isClassificationEnabled = PreferenceUtils.isClassificationEnabled(graphicOverlay.context)
+        val isClassificationEnabled =
+            PreferenceUtils.isClassificationEnabled(graphicOverlay.context)
 
         if (customModelPath != null) {
             val localModel = LocalModel.Builder()
@@ -130,7 +130,12 @@ class MultiObjectProcessor(
                 selectedObject = DetectedObjectInfo(result, i, inputInfo)
                 // Starts the object confirmation once an object is regarded as selected.
                 confirmationController.confirming(result.trackingId)
-                graphicOverlay.add(ObjectConfirmationGraphic(graphicOverlay, confirmationController))
+                graphicOverlay.add(
+                    ObjectConfirmationGraphic(
+                        graphicOverlay,
+                        confirmationController
+                    )
+                )
 
                 graphicOverlay.add(
                     ObjectGraphicInMultiMode(
@@ -196,13 +201,19 @@ class MultiObjectProcessor(
         }
     }
 
-    private fun shouldSelectObject(graphicOverlay: GraphicOverlay, visionObject: DetectedObject): Boolean {
+    private fun shouldSelectObject(
+        graphicOverlay: GraphicOverlay,
+        visionObject: DetectedObject
+    ): Boolean {
         // Considers an object as selected when the camera reticle touches the object dot.
         val box = graphicOverlay.translateRect(visionObject.boundingBox)
         val objectCenter = PointF((box.left + box.right) / 2f, (box.top + box.bottom) / 2f)
         val reticleCenter = PointF(graphicOverlay.width / 2f, graphicOverlay.height / 2f)
         val distance =
-            hypot((objectCenter.x - reticleCenter.x).toDouble(), (objectCenter.y - reticleCenter.y).toDouble())
+            hypot(
+                (objectCenter.x - reticleCenter.x).toDouble(),
+                (objectCenter.y - reticleCenter.y).toDouble()
+            )
         return distance < objectSelectionDistanceThreshold
     }
 

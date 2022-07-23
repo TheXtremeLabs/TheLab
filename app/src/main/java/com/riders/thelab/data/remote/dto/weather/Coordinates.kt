@@ -13,4 +13,4 @@ data class Coordinates(
 
     @Json(name = "lat")
     val latitude: Double = 0.0
-): Parcelable
+) : Parcelable

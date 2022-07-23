@@ -20,11 +20,10 @@ class ConnectivityReceiver(
         }
     }
 
-    constructor() : this(null) {
-    }
+    constructor() : this(null)
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        var isConnected: Boolean = false
+        var isConnected = false
         if (null != context) {
             isConnected = LabNetworkManagerNewAPI.getInstance(context).isOnline()
         }

@@ -6,7 +6,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 
 class ViewPager2Adapter @OptIn(DelicateCoroutinesApi::class) constructor(
     val activity: MainActivity,
-    private val fragmentList: List<Fragment>
+    fragmentList: List<Fragment>
 ) : FragmentStateAdapter(activity) {
 
     private val mFragmentList: MutableList<Fragment> = fragmentList as MutableList<Fragment>

@@ -13,7 +13,6 @@ import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.RowMainAppItemBinding
 import timber.log.Timber
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivityAdapter constructor(
     private val mContext: Context,

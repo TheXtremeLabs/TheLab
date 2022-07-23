@@ -17,11 +17,7 @@
 package com.riders.thelab.ui.googlemlkit.productsearch
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -52,7 +48,8 @@ class BottomSheetScrimView(context: Context, attrs: AttributeSet) : View(context
 
         boxPaint = Paint().apply {
             style = Paint.Style.STROKE
-            strokeWidth = resources.getDimensionPixelOffset(R.dimen.object_thumbnail_stroke_width).toFloat()
+            strokeWidth =
+                resources.getDimensionPixelOffset(R.dimen.object_thumbnail_stroke_width).toFloat()
             color = Color.WHITE
         }
 
@@ -79,14 +76,16 @@ class BottomSheetScrimView(context: Context, attrs: AttributeSet) : View(context
             currentSheetHeight = collapsedStateHeight * (1 + slideOffset)
         } else {
             downPercentInCollapsed = 0f
-            currentSheetHeight = collapsedStateHeight + (bottomSheet.height - collapsedStateHeight) * slideOffset
+            currentSheetHeight =
+                collapsedStateHeight + (bottomSheet.height - collapsedStateHeight) * slideOffset
         }
 
         thumbnailRect = RectF().apply {
             val thumbnailWidth =
                 thumbnailBitmap.width.toFloat() / thumbnailBitmap.height.toFloat() * thumbnailHeight.toFloat()
             left = thumbnailMargin.toFloat()
-            top = height.toFloat() - currentSheetHeight - thumbnailMargin.toFloat() - thumbnailHeight.toFloat()
+            top =
+                height.toFloat() - currentSheetHeight - thumbnailMargin.toFloat() - thumbnailHeight.toFloat()
             right = left + thumbnailWidth
             bottom = top + thumbnailHeight
         }
@@ -123,10 +122,14 @@ class BottomSheetScrimView(context: Context, attrs: AttributeSet) : View(context
             val dstRect = RectF(dstX, dstY, dstX + dstWidth, dstY + dstHeight)
 
             val progressToCollapsedState = 1 + slideOffset
-            left = srcThumbnailRect.left + (dstRect.left - srcThumbnailRect.left) * progressToCollapsedState
-            top = srcThumbnailRect.top + (dstRect.top - srcThumbnailRect.top) * progressToCollapsedState
-            right = srcThumbnailRect.right + (dstRect.right - srcThumbnailRect.right) * progressToCollapsedState
-            bottom = srcThumbnailRect.bottom + (dstRect.bottom - srcThumbnailRect.bottom) * progressToCollapsedState
+            left =
+                srcThumbnailRect.left + (dstRect.left - srcThumbnailRect.left) * progressToCollapsedState
+            top =
+                srcThumbnailRect.top + (dstRect.top - srcThumbnailRect.top) * progressToCollapsedState
+            right =
+                srcThumbnailRect.right + (dstRect.right - srcThumbnailRect.right) * progressToCollapsedState
+            bottom =
+                srcThumbnailRect.bottom + (dstRect.bottom - srcThumbnailRect.bottom) * progressToCollapsedState
         }
 
         invalidate()
@@ -140,7 +143,8 @@ class BottomSheetScrimView(context: Context, attrs: AttributeSet) : View(context
         val rect = thumbnailRect ?: return
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), scrimPaint)
         if (downPercentInCollapsed < DOWN_PERCENT_TO_HIDE_THUMBNAIL) {
-            val alpha = ((1 - downPercentInCollapsed / DOWN_PERCENT_TO_HIDE_THUMBNAIL) * 255).toInt()
+            val alpha =
+                ((1 - downPercentInCollapsed / DOWN_PERCENT_TO_HIDE_THUMBNAIL) * 255).toInt()
 
             // Draws the object thumbnail.
             thumbnailPaint.alpha = alpha
@@ -148,7 +152,12 @@ class BottomSheetScrimView(context: Context, attrs: AttributeSet) : View(context
 
             // Draws the bounding box.
             boxPaint.alpha = alpha
-            canvas.drawRoundRect(rect, boxCornerRadius.toFloat(), boxCornerRadius.toFloat(), boxPaint)
+            canvas.drawRoundRect(
+                rect,
+                boxCornerRadius.toFloat(),
+                boxCornerRadius.toFloat(),
+                boxPaint
+            )
         }
     }
 

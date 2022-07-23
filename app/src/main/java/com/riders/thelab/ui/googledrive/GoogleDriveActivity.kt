@@ -329,7 +329,7 @@ class GoogleDriveActivity
     private fun init() {
 
         // Build a new authorized API client service.
-        val HTTP_TRANSPORT: NetHttpTransport = NetHttpTransport()
+        val HTTP_TRANSPORT = NetHttpTransport()
         val service: Drive = Drive.Builder(
             HTTP_TRANSPORT,
             JSON_FACTORY,

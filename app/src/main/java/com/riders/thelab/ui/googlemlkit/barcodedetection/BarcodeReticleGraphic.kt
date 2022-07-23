@@ -21,15 +21,18 @@ import android.graphics.Paint
 import android.graphics.Paint.Style
 import android.graphics.RectF
 import androidx.core.content.ContextCompat
-import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
 import com.riders.thelab.R
 import com.riders.thelab.ui.googlemlkit.camera.CameraReticleAnimator
+import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
 
 /**
  * A camera reticle that locates at the center of canvas to indicate the system is active but has
  * not detected a barcode yet.
  */
-internal class BarcodeReticleGraphic(overlay: GraphicOverlay, private val animator: CameraReticleAnimator) :
+internal class BarcodeReticleGraphic(
+    overlay: GraphicOverlay,
+    private val animator: CameraReticleAnimator
+) :
     BarcodeGraphicBase(overlay) {
 
     private val ripplePaint: Paint
@@ -42,8 +45,10 @@ internal class BarcodeReticleGraphic(overlay: GraphicOverlay, private val animat
         ripplePaint = Paint()
         ripplePaint.style = Style.STROKE
         ripplePaint.color = ContextCompat.getColor(context, R.color.reticle_ripple)
-        rippleSizeOffset = resources.getDimensionPixelOffset(R.dimen.barcode_reticle_ripple_size_offset)
-        rippleStrokeWidth = resources.getDimensionPixelOffset(R.dimen.barcode_reticle_ripple_stroke_width)
+        rippleSizeOffset =
+            resources.getDimensionPixelOffset(R.dimen.barcode_reticle_ripple_size_offset)
+        rippleStrokeWidth =
+            resources.getDimensionPixelOffset(R.dimen.barcode_reticle_ripple_stroke_width)
         rippleAlpha = ripplePaint.alpha
     }
 

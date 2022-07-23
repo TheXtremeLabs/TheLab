@@ -24,7 +24,10 @@ import android.graphics.PointF
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
 
 /** Draws the graphic to indicate the barcode result is in loading.  */
-internal class BarcodeLoadingGraphic(overlay: GraphicOverlay, private val loadingAnimator: ValueAnimator) :
+internal class BarcodeLoadingGraphic(
+    overlay: GraphicOverlay,
+    private val loadingAnimator: ValueAnimator
+) :
     BarcodeGraphicBase(overlay) {
 
     private val boxClockwiseCoordinates: Array<PointF> = arrayOf(
@@ -52,8 +55,10 @@ internal class BarcodeLoadingGraphic(overlay: GraphicOverlay, private val loadin
         while (i < 4) {
             val edgeLen = if (i % 2 == 0) boxRect.width() else boxRect.height()
             if (offsetLen <= edgeLen) {
-                lastPathPoint.x = boxClockwiseCoordinates[i].x + coordinateOffsetBits[i].x * offsetLen
-                lastPathPoint.y = boxClockwiseCoordinates[i].y + coordinateOffsetBits[i].y * offsetLen
+                lastPathPoint.x =
+                    boxClockwiseCoordinates[i].x + coordinateOffsetBits[i].x * offsetLen
+                lastPathPoint.y =
+                    boxClockwiseCoordinates[i].y + coordinateOffsetBits[i].y * offsetLen
                 path.moveTo(lastPathPoint.x, lastPathPoint.y)
                 break
             }

@@ -16,18 +16,12 @@
 
 package com.riders.thelab.ui.googlemlkit.barcodedetection
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.CornerPathEffect
-import android.graphics.Paint
+import android.graphics.*
 import android.graphics.Paint.Style
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.RectF
 import androidx.core.content.ContextCompat
+import com.riders.thelab.R
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay.Graphic
-import com.riders.thelab.R
 import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 
 internal abstract class BarcodeGraphicBase(overlay: GraphicOverlay) : Graphic(overlay) {
@@ -35,7 +29,9 @@ internal abstract class BarcodeGraphicBase(overlay: GraphicOverlay) : Graphic(ov
     private val boxPaint: Paint = Paint().apply {
         color = ContextCompat.getColor(context, R.color.barcode_reticle_stroke)
         style = Style.STROKE
-        strokeWidth = context.resources.getDimensionPixelOffset(R.dimen.barcode_reticle_stroke_width).toFloat()
+        strokeWidth =
+            context.resources.getDimensionPixelOffset(R.dimen.barcode_reticle_stroke_width)
+                .toFloat()
     }
 
     private val scrimPaint: Paint = Paint().apply {

@@ -127,7 +127,7 @@ class TermsOfServiceFragment : Fragment(),
     }
 
     companion object {
-        val TAG = TermsOfServiceFragment::class.java.simpleName
+        val TAG: String = TermsOfServiceFragment::class.java.simpleName
 
         fun newInstance(): TermsOfServiceFragment {
             val args = Bundle()

@@ -20,15 +20,15 @@ import android.animation.ValueAnimator
 import android.util.Log
 import androidx.annotation.MainThread
 import com.google.android.gms.tasks.Task
-import com.riders.thelab.ui.googlemlkit.camera.CameraReticleAnimator
-import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
-import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel
-import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel.WorkflowState
-import com.riders.thelab.ui.googlemlkit.camera.FrameProcessorBase
-import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import com.riders.thelab.ui.googlemlkit.camera.CameraReticleAnimator
+import com.riders.thelab.ui.googlemlkit.camera.FrameProcessorBase
+import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
+import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel
+import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel.WorkflowState
+import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 import com.riders.thelab.ui.googlemlkit.utils.InputInfo
 import java.io.IOException
 
@@ -68,7 +68,10 @@ class BarcodeProcessor(graphicOverlay: GraphicOverlay, private val workflowModel
             workflowModel.setWorkflowState(WorkflowState.DETECTING)
         } else {
             cameraReticleAnimator.cancel()
-            val sizeProgress = PreferenceUtils.getProgressToMeetBarcodeSizeRequirement(graphicOverlay, barcodeInCenter)
+            val sizeProgress = PreferenceUtils.getProgressToMeetBarcodeSizeRequirement(
+                graphicOverlay,
+                barcodeInCenter
+            )
             if (sizeProgress < 1) {
                 // Barcode in the camera view is too small, so prompt user to move camera closer.
                 graphicOverlay.add(BarcodeConfirmingGraphic(graphicOverlay, barcodeInCenter))
@@ -89,7 +92,10 @@ class BarcodeProcessor(graphicOverlay: GraphicOverlay, private val workflowModel
         graphicOverlay.invalidate()
     }
 
-    private fun createLoadingAnimator(graphicOverlay: GraphicOverlay, barcode: Barcode): ValueAnimator {
+    private fun createLoadingAnimator(
+        graphicOverlay: GraphicOverlay,
+        barcode: Barcode
+    ): ValueAnimator {
         val endProgress = 1.1f
         return ValueAnimator.ofFloat(0f, endProgress).apply {
             duration = 2000

@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat
 import com.riders.thelab.R
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.data.local.model.app.AppBuilder
-import com.riders.thelab.data.local.model.app.LocalApp
 import com.riders.thelab.ui.biometric.BiometricActivity
 import com.riders.thelab.ui.bluetooth.BluetoothActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
@@ -39,7 +38,6 @@ import com.riders.thelab.ui.transition.TransitionActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
 import com.riders.thelab.ui.weather.WeatherActivity
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity
-import java.util.*
 
 class AppBuilderUtils {
 

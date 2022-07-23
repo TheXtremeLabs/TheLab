@@ -2,7 +2,6 @@ package com.riders.thelab.data.remote.dto.directions
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 data class Directions(
     @Expose

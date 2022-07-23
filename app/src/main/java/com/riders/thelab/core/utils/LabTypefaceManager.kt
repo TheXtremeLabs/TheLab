@@ -3,7 +3,6 @@ package com.riders.thelab.core.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
-import java.util.*
 
 class LabTypefaceManager private constructor() {
 

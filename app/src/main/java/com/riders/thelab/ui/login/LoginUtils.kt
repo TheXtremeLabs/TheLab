@@ -48,7 +48,7 @@ class LoginUtils private constructor() {
                         sb.append(
                             if (halfByte in 0..9) ('0'.code + halfByte).toChar() else ('0'.code + (halfByte + 10)).toChar()
                         )
-                        halfByte = (b and 0x0F).toInt()
+                        halfByte = (b and 0x0F)
                     } while (twoHalfs++ < 1)
                 }
                 return sb.toString()

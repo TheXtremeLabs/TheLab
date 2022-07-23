@@ -27,7 +27,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +34,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
-import com.google.android.material.textview.MaterialTextView
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -661,7 +659,7 @@ class MainActivity : AppCompatActivity(),
                 Timber.e("null == viewHolder | unable to get viewHolder instance for position 0")
             } else {
                 val progressBar = (viewHolder as RowWhatsNewViewHolder).getProgressBar()
-                Timber.d("null != viewHolder | get progressBar instance ${progressBar.toString()}")
+                Timber.d("null != viewHolder | get progressBar instance $progressBar")
             }
 
 

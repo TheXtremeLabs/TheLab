@@ -78,6 +78,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
                         .getInstance()
                         .parseJsonFileListWithMoshi(it)
                 }
+
                 if (Validator.isNullOrEmpty(dtoCities)) {
                     Timber.e("List<City> dtoCities is empty")
                     return Result.failure()

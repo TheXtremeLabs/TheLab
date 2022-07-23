@@ -34,7 +34,7 @@ data class Kat constructor(
             // Loop on value to create a fetched list of message from database
             for ((_, value) in katModelDto) {
                 val innerMap = value as Map<String, Any>
-                val kat = com.riders.thelab.data.remote.dto.kat.Kat()
+                val kat = Kat()
                 for ((key, value1) in innerMap) {
                     when (key) {
                         "chatId" -> kat.chatId = value1 as String
@@ -67,7 +67,7 @@ data class Kat constructor(
     }
 
 
-    constructor() : this("", "", "", "", "", 0) {}
+    constructor() : this("", "", "", "", "", 0)
 
     constructor(item: Map.Entry<String, Any>) : this() {
         when (item.key) {

@@ -56,7 +56,7 @@ class DownloadViewModel @Inject constructor(
 
                         is Download.Finished -> {
                             // update ui with file
-                            Timber.d("download status : ${download.file.toString()}")
+                            Timber.d("download status : ${download.file}")
                         }
                     }
                 }

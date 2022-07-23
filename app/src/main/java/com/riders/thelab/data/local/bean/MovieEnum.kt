@@ -1,7 +1,6 @@
 package com.riders.thelab.data.local.bean
 
 import com.riders.thelab.data.local.model.Movie
-import java.util.*
 
 enum class MovieEnum(val title: String, val genre: String, val year: String, val url: String) {
 

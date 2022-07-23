@@ -22,9 +22,9 @@ import android.graphics.Paint.Cap
 import android.graphics.Paint.Style
 import android.graphics.RectF
 import androidx.core.content.ContextCompat
+import com.riders.thelab.R
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay.Graphic
-import com.riders.thelab.R
 import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 
 /**
@@ -54,14 +54,18 @@ class ObjectConfirmationGraphic internal constructor(
 
         outerRingStrokePaint = Paint().apply {
             style = Style.STROKE
-            strokeWidth = resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_width).toFloat()
+            strokeWidth =
+                resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_width)
+                    .toFloat()
             strokeCap = Cap.ROUND
             color = ContextCompat.getColor(context, R.color.object_reticle_outer_ring_stroke)
         }
 
         progressRingStrokePaint = Paint().apply {
             style = Style.STROKE
-            strokeWidth = resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_width).toFloat()
+            strokeWidth =
+                resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_width)
+                    .toFloat()
             strokeCap = Cap.ROUND
             color = ContextCompat.getColor(context, R.color.white)
         }
@@ -69,18 +73,23 @@ class ObjectConfirmationGraphic internal constructor(
         innerRingPaint = Paint()
         if (PreferenceUtils.isMultipleObjectsMode(overlay.context)) {
             innerRingPaint.style = Style.FILL
-            innerRingPaint.color = ContextCompat.getColor(context, R.color.object_reticle_inner_ring)
+            innerRingPaint.color =
+                ContextCompat.getColor(context, R.color.object_reticle_inner_ring)
         } else {
             innerRingPaint.style = Style.STROKE
             innerRingPaint.strokeWidth =
-                resources.getDimensionPixelOffset(R.dimen.object_reticle_inner_ring_stroke_width).toFloat()
+                resources.getDimensionPixelOffset(R.dimen.object_reticle_inner_ring_stroke_width)
+                    .toFloat()
             innerRingPaint.strokeCap = Cap.ROUND
             innerRingPaint.color = ContextCompat.getColor(context, R.color.white)
         }
 
-        outerRingFillRadius = resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_fill_radius)
-        outerRingStrokeRadius = resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_radius)
-        innerRingStrokeRadius = resources.getDimensionPixelOffset(R.dimen.object_reticle_inner_ring_stroke_radius)
+        outerRingFillRadius =
+            resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_fill_radius)
+        outerRingStrokeRadius =
+            resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_radius)
+        innerRingStrokeRadius =
+            resources.getDimensionPixelOffset(R.dimen.object_reticle_inner_ring_stroke_radius)
     }
 
     override fun draw(canvas: Canvas) {

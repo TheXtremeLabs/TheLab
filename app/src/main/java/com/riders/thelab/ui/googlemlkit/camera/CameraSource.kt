@@ -31,7 +31,7 @@ import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 import com.riders.thelab.ui.googlemlkit.utils.Utils
 import java.io.IOException
 import java.nio.ByteBuffer
-import java.util.IdentityHashMap
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.ceil
 
@@ -235,7 +235,11 @@ class CameraSource(private val graphicOverlay: GraphicOverlay) {
         previewSize = sizePair.preview.also {
             Log.v(TAG, "Camera preview size: $it")
             parameters.setPreviewSize(it.width, it.height)
-            PreferenceUtils.saveStringPreference(context, R.string.pref_key_rear_camera_preview_size, it.toString())
+            PreferenceUtils.saveStringPreference(
+                context,
+                R.string.pref_key_rear_camera_preview_size,
+                it.toString()
+            )
         }
 
         sizePair.picture?.let { pictureSize ->
@@ -282,14 +286,15 @@ class CameraSource(private val graphicOverlay: GraphicOverlay) {
      */
     private fun createPreviewBuffer(previewSize: Size): ByteArray {
         val bitsPerPixel = ImageFormat.getBitsPerPixel(IMAGE_FORMAT)
-        val sizeInBits = previewSize.height.toLong() * previewSize.width.toLong() * bitsPerPixel.toLong()
+        val sizeInBits =
+            previewSize.height.toLong() * previewSize.width.toLong() * bitsPerPixel.toLong()
         val bufferSize = ceil(sizeInBits / 8.0).toInt() + 1
 
         // Creating the byte array this way and wrapping it, as opposed to using .allocate(),
         // should guarantee that there will be an array to work with.
         val byteArray = ByteArray(bufferSize)
         val byteBuffer = ByteBuffer.wrap(byteArray)
-        check(!(!byteBuffer.hasArray() || !byteBuffer.array()!!.contentEquals(byteArray))) {
+        check(!(!byteBuffer.hasArray() || !byteBuffer.array().contentEquals(byteArray))) {
             // This should never happen. If it does, then we wouldn't be passing the preview content to
             // the underlying detector later.
             "Failed to create valid buffer for camera source."
@@ -399,7 +404,11 @@ class CameraSource(private val graphicOverlay: GraphicOverlay) {
 
                 try {
                     synchronized(processorLock) {
-                        val frameMetadata = FrameMetadata(previewSize!!.width, previewSize!!.height, rotationDegrees)
+                        val frameMetadata = FrameMetadata(
+                            previewSize!!.width,
+                            previewSize!!.height,
+                            rotationDegrees
+                        )
                         data?.let {
                             frameProcessor?.process(it, frameMetadata, graphicOverlay)
                         }
@@ -450,7 +459,10 @@ class CameraSource(private val graphicOverlay: GraphicOverlay) {
          * @param camera the camera to select a preview size from
          * @return the selected preview and picture size pair
          */
-        private fun selectSizePair(camera: Camera, displayAspectRatioInLandscape: Float): CameraSizePair? {
+        private fun selectSizePair(
+            camera: Camera,
+            displayAspectRatioInLandscape: Float
+        ): CameraSizePair? {
             val validPreviewSizes = Utils.generateValidPreviewSizeList(camera)
 
             var selectedPair: CameraSizePair? = null

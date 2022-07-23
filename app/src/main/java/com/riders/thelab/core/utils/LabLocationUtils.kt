@@ -8,6 +8,18 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
+fun main() {
+    val latitude = 150.0
+    val longitude = 210.0
+    val location1: Location = (latitude to longitude).toLocation()
+    val location2: Location = LabLocationUtils.buildTargetLocationObject(latitude, longitude)
+}
+
+fun Pair<Double, Double>.toLocation(): Location = Location("").apply {
+    latitude = first
+    longitude = second
+}
+
 class LabLocationUtils private constructor() {
     companion object {
         fun buildTargetLocationObject(latitude: Double, longitude: Double): Location {
@@ -99,7 +111,7 @@ class LabLocationUtils private constructor() {
             return null
         }
 
-        suspend fun getRXAddress(
+        private suspend fun getRXAddress(
             geoCoder: Geocoder,
             latitude: Double,
             longitude: Double

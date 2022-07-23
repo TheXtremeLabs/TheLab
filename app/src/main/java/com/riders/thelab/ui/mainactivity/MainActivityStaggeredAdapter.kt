@@ -2,7 +2,6 @@ package com.riders.thelab.ui.mainactivity
 
 import android.annotation.SuppressLint
 import android.content.Context
-
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
@@ -12,7 +11,6 @@ import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.RowMainAppStaggeredItemBinding
 import timber.log.Timber
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivityStaggeredAdapter constructor(
     private val mContext: Context,
@@ -75,7 +73,7 @@ class MainActivityStaggeredAdapter constructor(
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
                         if (row.appName?.lowercase(Locale.ROOT)
-                            ?.contains(charString.lowercase(Locale.ROOT)) == true
+                                ?.contains(charString.lowercase(Locale.ROOT)) == true
                             || row.appTitle?.lowercase(Locale.ROOT)
                                 ?.contains(charString.lowercase(Locale.ROOT)) == true
                         ) {

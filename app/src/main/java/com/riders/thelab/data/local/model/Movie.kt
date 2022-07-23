@@ -13,8 +13,8 @@ data class Movie constructor(
     var year: String? = null,
     var urlThumbnail: String? = null
 ) : Parcelable {
-    constructor() : this("", "", "", "") {
-    }
+
+    constructor() : this("", "", "", "")
 
     /*constructor(title: String?, genre: String?, year: String?, urlThumbnail: String?) : this() {
         this.title = title

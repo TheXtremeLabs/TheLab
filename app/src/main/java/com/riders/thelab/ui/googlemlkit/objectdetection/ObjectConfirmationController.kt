@@ -42,7 +42,8 @@ internal class ObjectConfirmationController
         get() = progress.compareTo(1f) == 0
 
     init {
-        val confirmationTimeMs = PreferenceUtils.getConfirmationTimeMs(graphicOverlay.context).toLong()
+        val confirmationTimeMs =
+            PreferenceUtils.getConfirmationTimeMs(graphicOverlay.context).toLong()
         countDownTimer = object : CountDownTimer(confirmationTimeMs, /* countDownInterval= */ 20) {
             override fun onTick(millisUntilFinished: Long) {
                 progress = (confirmationTimeMs - millisUntilFinished).toFloat() / confirmationTimeMs

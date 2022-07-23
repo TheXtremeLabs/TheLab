@@ -36,7 +36,6 @@ import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
 import retrofit2.Call
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
@@ -97,7 +96,7 @@ class RepositoryImpl @Inject constructor(
 
         val installedAppList: List<ApplicationInfo> = ArrayList()
 
-        val appList: MutableList<App> = ArrayList<App>()
+        val appList: MutableList<App> = ArrayList()
 
         val context = TheLabApplication.getInstance().getContext()
 

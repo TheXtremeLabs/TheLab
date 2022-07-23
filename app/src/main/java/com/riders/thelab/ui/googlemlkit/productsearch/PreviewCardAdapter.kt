@@ -16,15 +16,6 @@
 
 package com.riders.thelab.ui.googlemlkit.productsearch
 
-import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.riders.thelab.R
-
 /** Powers the bottom card carousel for displaying the preview of product search result.  */
 class PreviewCardAdapter(
     private val searchedObjectList: List<SearchedObject>,
