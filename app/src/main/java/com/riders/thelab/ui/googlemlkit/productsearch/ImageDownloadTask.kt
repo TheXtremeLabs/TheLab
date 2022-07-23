@@ -45,7 +45,8 @@ internal class ImageDownloadTask(private val imageView: ImageView, private val m
 
         if (bitmap != null && bitmap.width > maxImageWidth) {
             val dstHeight = (maxImageWidth.toFloat() / bitmap.width * bitmap.height).toInt()
-            bitmap = Bitmap.createScaledBitmap(bitmap, maxImageWidth, dstHeight, /* filter= */ false)
+            bitmap =
+                Bitmap.createScaledBitmap(bitmap, maxImageWidth, dstHeight, /* filter= */ false)
         }
         return bitmap
     }

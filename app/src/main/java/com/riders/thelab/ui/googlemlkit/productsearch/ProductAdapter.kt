@@ -16,16 +16,6 @@
 
 package com.riders.thelab.ui.googlemlkit.productsearch
 
-import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Adapter
-import com.riders.thelab.R
-
 /** Presents the list of product items from cloud product search.  */
 class ProductAdapter(private val productList: List<Product>) /*: Adapter<ProductViewHolder>()*/ {
 

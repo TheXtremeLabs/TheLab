@@ -80,7 +80,7 @@ class WeatherWorker @AssistedInject constructor(
         if (null == location) return Result.failure()
 
         return try {
-            suspendCancellableCoroutine { _ ->
+            suspendCancellableCoroutine {
 
                 val job = runBlocking {
                     mRepository.getWeatherOneCallAPI(location)

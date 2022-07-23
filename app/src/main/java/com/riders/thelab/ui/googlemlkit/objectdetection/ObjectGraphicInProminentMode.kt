@@ -16,20 +16,15 @@
 
 package com.riders.thelab.ui.googlemlkit.objectdetection
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.LinearGradient
-import android.graphics.Paint
+import android.graphics.*
 import android.graphics.Paint.Style
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
 import android.graphics.Shader.TileMode
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
+import com.google.mlkit.vision.objects.DetectedObject
+import com.riders.thelab.R
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay.Graphic
-import com.riders.thelab.R
-import com.google.mlkit.vision.objects.DetectedObject
 
 /**
  * Draws the detected visionObject info over the camera preview for prominent visionObject detection mode.
@@ -95,7 +90,8 @@ internal class ObjectGraphicInProminentMode(
 
         boxGradientStartColor = ContextCompat.getColor(context, R.color.bounding_box_gradient_start)
         boxGradientEndColor = ContextCompat.getColor(context, R.color.bounding_box_gradient_end)
-        boxCornerRadius = context.resources.getDimensionPixelOffset(R.dimen.bounding_box_corner_radius)
+        boxCornerRadius =
+            context.resources.getDimensionPixelOffset(R.dimen.bounding_box_corner_radius)
     }
 
     override fun draw(canvas: Canvas) {
@@ -103,7 +99,12 @@ internal class ObjectGraphicInProminentMode(
 
         // Draws the dark background scrim and leaves the visionObject area clear.
         canvas.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), scrimPaint)
-        canvas.drawRoundRect(rect, boxCornerRadius.toFloat(), boxCornerRadius.toFloat(), eraserPaint)
+        canvas.drawRoundRect(
+            rect,
+            boxCornerRadius.toFloat(),
+            boxCornerRadius.toFloat(),
+            eraserPaint
+        )
 
         // Draws the bounding box with a gradient border color at vertical.
         boxPaint.shader = if (confirmationController.isConfirmed) {

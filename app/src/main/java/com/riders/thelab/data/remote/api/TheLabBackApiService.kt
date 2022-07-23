@@ -1,7 +1,6 @@
 package com.riders.thelab.data.remote.api
 
 import com.riders.thelab.data.remote.dto.ApiResponse
-import com.riders.thelab.data.remote.dto.LoginResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import retrofit2.http.Body
 import retrofit2.http.GET

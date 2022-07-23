@@ -26,7 +26,8 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.riders.thelab.R
 
 /** Represents a detected object by drawing a circle dot at the center of object's bounding box.  */
-class StaticObjectDotView @JvmOverloads constructor(context: Context, selected: Boolean = false) : View(context) {
+class StaticObjectDotView @JvmOverloads constructor(context: Context, selected: Boolean = false) :
+    View(context) {
 
     private val paint: Paint = Paint().apply {
         style = Paint.Style.FILL
@@ -38,7 +39,8 @@ class StaticObjectDotView @JvmOverloads constructor(context: Context, selected: 
     private var currentRadiusOffset: Float = 0.toFloat()
 
     init {
-        val selectedDotRadius = context.resources.getDimensionPixelOffset(R.dimen.static_image_dot_radius_selected)
+        val selectedDotRadius =
+            context.resources.getDimensionPixelOffset(R.dimen.static_image_dot_radius_selected)
         radiusOffsetRange = selectedDotRadius - unselectedDotRadius
         currentRadiusOffset = (if (selected) radiusOffsetRange else 0).toFloat()
     }

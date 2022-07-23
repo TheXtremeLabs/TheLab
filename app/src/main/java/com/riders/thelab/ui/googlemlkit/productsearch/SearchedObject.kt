@@ -30,7 +30,8 @@ class SearchedObject(
     val productList: List<Product>
 ) {
 
-    private val objectThumbnailCornerRadius: Int = resources.getDimensionPixelOffset(R.dimen.bounding_box_corner_radius)
+    private val objectThumbnailCornerRadius: Int =
+        resources.getDimensionPixelOffset(R.dimen.bounding_box_corner_radius)
     private var objectThumbnail: Bitmap? = null
 
     val objectIndex: Int

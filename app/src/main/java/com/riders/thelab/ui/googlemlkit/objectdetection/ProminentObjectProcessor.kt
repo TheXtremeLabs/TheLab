@@ -20,13 +20,6 @@ import android.graphics.RectF
 import android.util.Log
 import androidx.annotation.MainThread
 import com.google.android.gms.tasks.Task
-import com.riders.thelab.ui.googlemlkit.camera.CameraReticleAnimator
-import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
-import com.riders.thelab.R
-import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel
-import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel.WorkflowState
-import com.riders.thelab.ui.googlemlkit.camera.FrameProcessorBase
-import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.DetectedObject
@@ -35,27 +28,36 @@ import com.google.mlkit.vision.objects.ObjectDetector
 import com.google.mlkit.vision.objects.ObjectDetectorOptionsBase
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
+import com.riders.thelab.R
+import com.riders.thelab.ui.googlemlkit.camera.CameraReticleAnimator
+import com.riders.thelab.ui.googlemlkit.camera.FrameProcessorBase
+import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
+import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel
+import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel.WorkflowState
+import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 import com.riders.thelab.ui.googlemlkit.utils.InputInfo
 import java.io.IOException
-import java.util.ArrayList
 
 /** A processor to run object detector in prominent object only mode.  */
 class ProminentObjectProcessor(
-  graphicOverlay: GraphicOverlay,
-  private val workflowModel: WorkflowModel,
-  private val customModelPath: String? = null) :
+    graphicOverlay: GraphicOverlay,
+    private val workflowModel: WorkflowModel,
+    private val customModelPath: String? = null
+) :
     FrameProcessorBase<List<DetectedObject>>() {
 
     private val detector: ObjectDetector
-    private val confirmationController: ObjectConfirmationController = ObjectConfirmationController(graphicOverlay)
+    private val confirmationController: ObjectConfirmationController =
+        ObjectConfirmationController(graphicOverlay)
     private val cameraReticleAnimator: CameraReticleAnimator = CameraReticleAnimator(graphicOverlay)
     private val reticleOuterRingRadius: Int = graphicOverlay
-            .resources
-            .getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_radius)
+        .resources
+        .getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_radius)
 
     init {
         val options: ObjectDetectorOptionsBase
-        val isClassificationEnabled = PreferenceUtils.isClassificationEnabled(graphicOverlay.context)
+        val isClassificationEnabled =
+            PreferenceUtils.isClassificationEnabled(graphicOverlay.context)
         if (customModelPath != null) {
             val localModel = LocalModel.Builder()
                 .setAssetFilePath(customModelPath)
@@ -66,7 +68,7 @@ class ProminentObjectProcessor(
                 .build()
         } else {
             val optionsBuilder = ObjectDetectorOptions.Builder()
-                    .setDetectorMode(ObjectDetectorOptions.STREAM_MODE)
+                .setDetectorMode(ObjectDetectorOptions.STREAM_MODE)
             if (isClassificationEnabled) {
                 optionsBuilder.enableClassification()
             }
@@ -108,7 +110,7 @@ class ProminentObjectProcessor(
 
         val objectIndex = 0
         val hasValidObjects = objects.isNotEmpty() &&
-            (customModelPath == null || DetectedObjectInfo.hasValidLabels(objects[objectIndex]))
+                (customModelPath == null || DetectedObjectInfo.hasValidLabels(objects[objectIndex]))
         if (!hasValidObjects) {
             confirmationController.reset()
             workflowModel.setWorkflowState(WorkflowState.DETECTING)
@@ -118,7 +120,8 @@ class ProminentObjectProcessor(
                 // User is confirming the object selection.
                 confirmationController.confirming(visionObject.trackingId)
                 workflowModel.confirmingObject(
-                        DetectedObjectInfo(visionObject, objectIndex, inputInfo), confirmationController.progress
+                    DetectedObjectInfo(visionObject, objectIndex, inputInfo),
+                    confirmationController.progress
                 )
             } else {
                 // Object detected but user doesn't want to pick this one.
@@ -136,22 +139,28 @@ class ProminentObjectProcessor(
                 // User is confirming the object selection.
                 cameraReticleAnimator.cancel()
                 graphicOverlay.add(
-                        ObjectGraphicInProminentMode(
-                                graphicOverlay, objects[0], confirmationController
-                        )
+                    ObjectGraphicInProminentMode(
+                        graphicOverlay, objects[0], confirmationController
+                    )
                 )
                 if (!confirmationController.isConfirmed &&
-                    PreferenceUtils.isAutoSearchEnabled(graphicOverlay.context)) {
+                    PreferenceUtils.isAutoSearchEnabled(graphicOverlay.context)
+                ) {
                     // Shows a loading indicator to visualize the confirming progress if in auto search mode.
-                    graphicOverlay.add(ObjectConfirmationGraphic(graphicOverlay, confirmationController))
+                    graphicOverlay.add(
+                        ObjectConfirmationGraphic(
+                            graphicOverlay,
+                            confirmationController
+                        )
+                    )
                 }
             } else {
                 // Object is detected but the confirmation reticle is moved off the object box, which
                 // indicates user is not trying to pick this object.
                 graphicOverlay.add(
-                        ObjectGraphicInProminentMode(
-                                graphicOverlay, objects[0], confirmationController
-                        )
+                    ObjectGraphicInProminentMode(
+                        graphicOverlay, objects[0], confirmationController
+                    )
                 )
                 graphicOverlay.add(ObjectReticleGraphic(graphicOverlay, cameraReticleAnimator))
                 cameraReticleAnimator.start()
@@ -168,10 +177,10 @@ class ProminentObjectProcessor(
         val reticleCenterX = graphicOverlay.width / 2f
         val reticleCenterY = graphicOverlay.height / 2f
         val reticleRect = RectF(
-                reticleCenterX - reticleOuterRingRadius,
-                reticleCenterY - reticleOuterRingRadius,
-                reticleCenterX + reticleOuterRingRadius,
-                reticleCenterY + reticleOuterRingRadius
+            reticleCenterX - reticleOuterRingRadius,
+            reticleCenterY - reticleOuterRingRadius,
+            reticleCenterX + reticleOuterRingRadius,
+            reticleCenterY + reticleOuterRingRadius
         )
         return reticleRect.intersect(boxRect)
     }

@@ -11,7 +11,6 @@ import com.riders.thelab.data.local.model.WorldPopulation
 import com.riders.thelab.databinding.ActivityFilterListviewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.util.*
 
 @AndroidEntryPoint
 class FilterListViewActivity : AppCompatActivity(), TextWatcher {

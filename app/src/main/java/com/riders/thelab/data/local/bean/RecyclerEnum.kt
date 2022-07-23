@@ -1,7 +1,6 @@
 package com.riders.thelab.data.local.bean
 
 import com.riders.thelab.data.local.model.RecyclerItem
-import java.util.*
 
 enum class RecyclerEnum(val fullName: String) {
     ALEX("Alex Rider"),
@@ -17,7 +16,7 @@ enum class RecyclerEnum(val fullName: String) {
 
     companion object {
         fun getRecyclerItems(): List<RecyclerItem> {
-            val list: MutableList<RecyclerItem> = ArrayList<RecyclerItem>()
+            val list: MutableList<RecyclerItem> = ArrayList()
             for (item in values()) {
                 list.add(RecyclerItem(item))
             }

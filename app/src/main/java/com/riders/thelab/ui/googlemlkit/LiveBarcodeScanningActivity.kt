@@ -34,7 +34,6 @@ import com.riders.thelab.ui.googlemlkit.camera.WorkflowModel.WorkflowState
 import com.riders.thelab.ui.googlemlkit.settings.SettingsActivity
 import timber.log.Timber
 import java.io.IOException
-import java.util.*
 
 /** Demonstrates the barcode scanning workflow using camera preview.  */
 class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
@@ -224,13 +223,13 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
             }
         })
 
-        workflowModel.detectedBarcode.observe(this, Observer { barcode ->
+        workflowModel.detectedBarcode.observe(this) { barcode ->
             if (barcode != null) {
                 val barcodeFieldList = ArrayList<BarcodeField>()
                 barcodeFieldList.add(BarcodeField("Raw Value", barcode.rawValue ?: ""))
                 BarcodeResultFragment.show(supportFragmentManager, barcodeFieldList)
             }
-        })
+        }
     }
 
 

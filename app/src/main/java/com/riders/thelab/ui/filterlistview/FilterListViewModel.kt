@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.riders.thelab.data.local.model.WorldPopulation
-import java.util.*
 
 class FilterListViewModel : ViewModel() {
 

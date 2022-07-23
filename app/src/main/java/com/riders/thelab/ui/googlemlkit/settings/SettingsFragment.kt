@@ -23,7 +23,6 @@ import androidx.preference.PreferenceFragmentCompat
 import com.riders.thelab.R
 import com.riders.thelab.ui.googlemlkit.camera.CameraSource
 import com.riders.thelab.ui.googlemlkit.utils.Utils
-import java.util.*
 
 /** Configures App settings.  */
 class SettingsFragment : PreferenceFragmentCompat() {

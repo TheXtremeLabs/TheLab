@@ -16,20 +16,14 @@
 
 package com.riders.thelab.ui.googlemlkit.objectdetection
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.LinearGradient
-import android.graphics.Paint
+import android.graphics.*
 import android.graphics.Paint.Style
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.RectF
 import android.graphics.Shader.TileMode
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
+import com.riders.thelab.R
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay.Graphic
-import com.riders.thelab.R
 
 /**
  * Draws the detected detectedObject info over the camera preview for multiple objects detection mode.
@@ -86,7 +80,8 @@ internal class ObjectGraphicInMultiMode(
             xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         }
 
-        minBoxLen = resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_radius) * 2
+        minBoxLen =
+            resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_radius) * 2
     }
 
     override fun draw(canvas: Canvas) {
@@ -112,7 +107,12 @@ internal class ObjectGraphicInMultiMode(
         if (confirmationController.isConfirmed) {
             // Draws the dark background scrim and leaves the detectedObject area clear.
             canvas.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), scrimPaint)
-            canvas.drawRoundRect(rect, boxCornerRadius.toFloat(), boxCornerRadius.toFloat(), eraserPaint)
+            canvas.drawRoundRect(
+                rect,
+                boxCornerRadius.toFloat(),
+                boxCornerRadius.toFloat(),
+                eraserPaint
+            )
         }
 
         boxPaint.shader = if (confirmationController.isConfirmed) {

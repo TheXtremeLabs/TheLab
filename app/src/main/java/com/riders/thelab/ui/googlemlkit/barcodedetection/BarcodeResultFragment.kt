@@ -62,7 +62,8 @@ class BarcodeResultFragment : BottomSheetDialogFragment() {
     override fun onDismiss(dialogInterface: DialogInterface) {
         activity?.let {
             // Back to working state after the bottom sheet is dismissed.
-            ViewModelProviders.of(it).get(WorkflowModel::class.java).setWorkflowState(WorkflowState.DETECTING)
+            ViewModelProviders.of(it).get(WorkflowModel::class.java)
+                .setWorkflowState(WorkflowState.DETECTING)
         }
         super.onDismiss(dialogInterface)
     }

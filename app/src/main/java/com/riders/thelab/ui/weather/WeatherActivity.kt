@@ -39,9 +39,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
 import com.riders.thelab.core.bus.LocationFetchedEvent
-import com.riders.thelab.core.utils.LabLocationManager
-import com.riders.thelab.core.utils.LabLocationUtils
-import com.riders.thelab.core.utils.UIManager
+import com.riders.thelab.core.utils.*
 import com.riders.thelab.data.RepositoryImpl
 import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.bean.WindDirection
@@ -59,7 +57,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -220,10 +217,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         )
 
         mWeatherViewModel.fetchWeather(
-            LabLocationUtils.buildTargetLocationObject(
-                event.getLocation().latitude,
-                event.getLocation().longitude
-            )
+            event.getLocation().run { latitude to longitude }.toLocation()
         )
     }
 
@@ -278,41 +272,42 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         Timber.d("initViewModelObservers()")
 
         mWeatherViewModel.getProgressBarVisibility().observe(
-            this,
-            {
-                if (!it) UIManager.hideView(binding.progressBar)
-                else UIManager.showView(binding.progressBar)
-            })
+            this
+        ) {
+            if (!it) UIManager.hideView(binding.progressBar)
+            else UIManager.showView(binding.progressBar)
+        }
 
         mWeatherViewModel.getConnectionStatus().observe(
-            this,
-            {
-                if (!it) layoutInflater.inflate(
-                    R.layout.no_internet_connection,
-                    binding.weatherRootView,
-                    true
-                )
-            })
+            this
+        ) {
+            if (!it) layoutInflater.inflate(
+                R.layout.no_internet_connection,
+                binding.weatherRootView,
+                true
+            )
+        }
 
         mWeatherViewModel.getDownloadStatus().observe(
-            this,
-            { statusMessage ->
-                binding.tvDownloadStatus.text = statusMessage
-            })
+            this
+        ) { statusMessage ->
+            binding.tvDownloadStatus.text = statusMessage
+        }
 
-        mWeatherViewModel.getDownloadDone().observe(this, {
+        mWeatherViewModel.getDownloadDone().observe(this) {
             binding.tvDownloadStatus.visibility = View.GONE
-        })
-        mWeatherViewModel.getIsWeatherData().observe(this, {
+        }
+
+        mWeatherViewModel.getIsWeatherData().observe(this) {
             if (!it) {
                 mWeatherViewModel.startWork(this)
             } else {
                 binding.tvDownloadStatus.visibility = View.GONE
                 binding.weatherDataContainer.visibility = View.VISIBLE
             }
-        })
+        }
 
-        mWeatherViewModel.getWorkerStatus().observe(this, {
+        mWeatherViewModel.getWorkerStatus().observe(this) {
 
             when (it) {
                 WorkInfo.State.SUCCEEDED -> {
@@ -335,11 +330,11 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                     Timber.e("else branch")
                 }
             }
-        })
+        }
 
-        mWeatherViewModel.getOneCalWeather().observe(this, {
+        mWeatherViewModel.getOneCalWeather().observe(this) {
             updateOneCallUI(it)
-        })
+        }
     }
 
 

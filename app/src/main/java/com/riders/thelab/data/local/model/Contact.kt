@@ -23,8 +23,7 @@ data class Contact(
 ) {
 
     @Contract(pure = true)
-    constructor() : this(id = 0L, "", "", "") {
-    }
+    constructor() : this(id = 0L, "", "", "")
 
     @Ignore
     constructor(name: String, email: String, password: String) : this() {

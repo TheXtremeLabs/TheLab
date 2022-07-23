@@ -12,6 +12,7 @@ interface IRepository : IDb, IApi, IPreferences {
      * Get all packages and check if the returned list contains the target package
      */
     fun getAppListFromAssets(): List<App>
+
     /**
      * Get all packages and check if the returned list contains the target package
      */

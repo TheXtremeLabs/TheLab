@@ -6,7 +6,6 @@ import com.riders.thelab.data.remote.dto.weather.CurrentWeather
 import com.riders.thelab.utils.Constants
 import com.riders.thelab.utils.DateTimeUtils
 import timber.log.Timber
-import java.util.*
 
 class WeatherUtils private constructor() {
 

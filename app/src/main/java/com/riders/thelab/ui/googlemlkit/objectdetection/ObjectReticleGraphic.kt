@@ -21,16 +21,19 @@ import android.graphics.Paint
 import android.graphics.Paint.Cap
 import android.graphics.Paint.Style
 import androidx.core.content.ContextCompat
-import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
-import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay.Graphic
 import com.riders.thelab.R
 import com.riders.thelab.ui.googlemlkit.camera.CameraReticleAnimator
+import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
+import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay.Graphic
 
 /**
  * A camera reticle that locates at the center of canvas to indicate the system is active but has
  * not recognized an object yet.
  */
-internal class ObjectReticleGraphic(overlay: GraphicOverlay, private val animator: CameraReticleAnimator) :
+internal class ObjectReticleGraphic(
+    overlay: GraphicOverlay,
+    private val animator: CameraReticleAnimator
+) :
     Graphic(overlay) {
 
     private val outerRingFillPaint: Paint
@@ -54,14 +57,18 @@ internal class ObjectReticleGraphic(overlay: GraphicOverlay, private val animato
 
         outerRingStrokePaint = Paint().apply {
             style = Style.STROKE
-            strokeWidth = resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_width).toFloat()
+            strokeWidth =
+                resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_width)
+                    .toFloat()
             strokeCap = Cap.ROUND
             color = ContextCompat.getColor(context, R.color.object_reticle_outer_ring_stroke)
         }
 
         innerRingStrokePaint = Paint().apply {
             style = Style.STROKE
-            strokeWidth = resources.getDimensionPixelOffset(R.dimen.object_reticle_inner_ring_stroke_width).toFloat()
+            strokeWidth =
+                resources.getDimensionPixelOffset(R.dimen.object_reticle_inner_ring_stroke_width)
+                    .toFloat()
             strokeCap = Cap.ROUND
             color = ContextCompat.getColor(context, R.color.white)
         }
@@ -71,11 +78,16 @@ internal class ObjectReticleGraphic(overlay: GraphicOverlay, private val animato
             color = ContextCompat.getColor(context, R.color.reticle_ripple)
         }
 
-        outerRingFillRadius = resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_fill_radius)
-        outerRingStrokeRadius = resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_radius)
-        innerRingStrokeRadius = resources.getDimensionPixelOffset(R.dimen.object_reticle_inner_ring_stroke_radius)
-        rippleSizeOffset = resources.getDimensionPixelOffset(R.dimen.object_reticle_ripple_size_offset)
-        rippleStrokeWidth = resources.getDimensionPixelOffset(R.dimen.object_reticle_ripple_stroke_width)
+        outerRingFillRadius =
+            resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_fill_radius)
+        outerRingStrokeRadius =
+            resources.getDimensionPixelOffset(R.dimen.object_reticle_outer_ring_stroke_radius)
+        innerRingStrokeRadius =
+            resources.getDimensionPixelOffset(R.dimen.object_reticle_inner_ring_stroke_radius)
+        rippleSizeOffset =
+            resources.getDimensionPixelOffset(R.dimen.object_reticle_ripple_size_offset)
+        rippleStrokeWidth =
+            resources.getDimensionPixelOffset(R.dimen.object_reticle_ripple_stroke_width)
         rippleAlpha = ripplePaint.alpha
     }
 

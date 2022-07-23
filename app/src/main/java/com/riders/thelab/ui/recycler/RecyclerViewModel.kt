@@ -25,7 +25,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -161,7 +160,7 @@ class RecyclerViewModel @Inject constructor(
     }
 
     @SuppressLint("NewApi")
-    private suspend fun buildArtistsThumbnailsList(storageReferences: List<StorageReference>): List<String>? {
+    private suspend fun buildArtistsThumbnailsList(storageReferences: List<StorageReference>): List<String> {
         val thumbnailsLinks: MutableList<String> = ArrayList()
         if (!LabCompatibilityManager.isNougat()) {
             for (element in storageReferences) {

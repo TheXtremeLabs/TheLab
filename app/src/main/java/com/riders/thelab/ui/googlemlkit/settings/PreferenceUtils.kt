@@ -21,11 +21,10 @@ import android.graphics.RectF
 import android.preference.PreferenceManager
 import androidx.annotation.StringRes
 import com.google.android.gms.common.images.Size
-
-import com.riders.thelab.ui.googlemlkit.camera.CameraSizePair
-import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.riders.thelab.R
+import com.riders.thelab.ui.googlemlkit.camera.CameraSizePair
+import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
 
 /** Utility class to retrieve shared preferences.  */
 object PreferenceUtils {
@@ -48,7 +47,11 @@ object PreferenceUtils {
 
     fun getConfirmationTimeMs(context: Context): Int = when {
         isMultipleObjectsMode(context) -> 300
-        isAutoSearchEnabled(context) -> getIntPref(context, R.string.pref_key_confirmation_time_in_auto_search, 1500)
+        isAutoSearchEnabled(context) -> getIntPref(
+            context,
+            R.string.pref_key_confirmation_time_in_auto_search,
+            1500
+        )
         else -> getIntPref(context, R.string.pref_key_confirmation_time_in_manual_search, 500)
     }
 
@@ -60,7 +63,11 @@ object PreferenceUtils {
         return if (getBooleanPref(context, R.string.pref_key_enable_barcode_size_check, false)) {
             val reticleBoxWidth = getBarcodeReticleBox(overlay).width()
             val barcodeWidth = overlay.translateX(barcode.boundingBox?.width()?.toFloat() ?: 0f)
-            val requiredWidth = reticleBoxWidth * getIntPref(context, R.string.pref_key_minimum_barcode_width, 50) / 100
+            val requiredWidth = reticleBoxWidth * getIntPref(
+                context,
+                R.string.pref_key_minimum_barcode_width,
+                50
+            ) / 100
             (barcodeWidth / requiredWidth).coerceAtMost(1f)
         } else {
             1f
@@ -71,8 +78,10 @@ object PreferenceUtils {
         val context = overlay.context
         val overlayWidth = overlay.width.toFloat()
         val overlayHeight = overlay.height.toFloat()
-        val boxWidth = overlayWidth * getIntPref(context, R.string.pref_key_barcode_reticle_width, 80) / 100
-        val boxHeight = overlayHeight * getIntPref(context, R.string.pref_key_barcode_reticle_height, 35) / 100
+        val boxWidth =
+            overlayWidth * getIntPref(context, R.string.pref_key_barcode_reticle_width, 80) / 100
+        val boxHeight =
+            overlayHeight * getIntPref(context, R.string.pref_key_barcode_reticle_height, 35) / 100
         val cx = overlayWidth / 2
         val cy = overlayHeight / 2
         return RectF(cx - boxWidth / 2, cy - boxHeight / 2, cx + boxWidth / 2, cy + boxHeight / 2)
@@ -101,6 +110,11 @@ object PreferenceUtils {
         }
     }
 
-    private fun getBooleanPref(context: Context, @StringRes prefKeyId: Int, defaultValue: Boolean): Boolean =
-        PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getString(prefKeyId), defaultValue)
+    private fun getBooleanPref(
+        context: Context,
+        @StringRes prefKeyId: Int,
+        defaultValue: Boolean
+    ): Boolean =
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .getBoolean(context.getString(prefKeyId), defaultValue)
 }

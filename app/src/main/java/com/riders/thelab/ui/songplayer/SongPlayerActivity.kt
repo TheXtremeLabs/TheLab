@@ -40,7 +40,6 @@ import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint

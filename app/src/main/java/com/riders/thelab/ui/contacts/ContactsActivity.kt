@@ -21,7 +21,6 @@ import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.contacts.RecyclerItemTouchHelper.RecyclerItemTouchHelperListener
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.util.*
 
 @AndroidEntryPoint
 class ContactsActivity

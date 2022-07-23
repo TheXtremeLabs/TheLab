@@ -28,7 +28,8 @@ import com.riders.thelab.ui.googlemlkit.barcodedetection.BarcodeFieldAdapter.Bar
 internal class BarcodeFieldAdapter(private val barcodeFieldList: List<BarcodeField>) :
     RecyclerView.Adapter<BarcodeFieldViewHolder>() {
 
-    internal class BarcodeFieldViewHolder private constructor(view: View) : RecyclerView.ViewHolder(view) {
+    internal class BarcodeFieldViewHolder private constructor(view: View) :
+        RecyclerView.ViewHolder(view) {
 
         private val labelView: TextView = view.findViewById(R.id.barcode_field_label)
         private val valueView: TextView = view.findViewById(R.id.barcode_field_value)
@@ -41,7 +42,8 @@ internal class BarcodeFieldAdapter(private val barcodeFieldList: List<BarcodeFie
         companion object {
 
             fun create(parent: ViewGroup): BarcodeFieldViewHolder {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.barcode_field, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.barcode_field, parent, false)
                 return BarcodeFieldViewHolder(view)
             }
         }

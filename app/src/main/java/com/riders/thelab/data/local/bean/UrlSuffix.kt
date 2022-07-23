@@ -5,7 +5,7 @@ enum class UrlSuffix(val value: String) {
 
     companion object {
         fun getValue(value: UrlSuffix): String {
-            return UrlSuffix.values().first { it.name == value.name }.value
+            return values().first { it.name == value.name }.value
         }
     }
 }

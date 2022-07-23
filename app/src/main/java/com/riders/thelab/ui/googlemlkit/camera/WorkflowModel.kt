@@ -21,12 +21,11 @@ import android.content.Context
 import androidx.annotation.MainThread
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.riders.thelab.ui.googlemlkit.objectdetection.DetectedObjectInfo
 import com.riders.thelab.ui.googlemlkit.productsearch.Product
 import com.riders.thelab.ui.googlemlkit.productsearch.SearchedObject
 import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
-import com.google.mlkit.vision.barcode.common.Barcode
-import java.util.HashSet
 
 /** View model for handling application workflow based on camera preview.  */
 class WorkflowModel(application: Application) : AndroidViewModel(application) {

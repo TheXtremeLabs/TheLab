@@ -78,10 +78,20 @@ abstract class FrameProcessorBase<T> : FrameProcessor {
         detectInImage(image)
             .addOnSuccessListener(executor) { results: T ->
                 Log.d(TAG, "Latency is: ${SystemClock.elapsedRealtime() - startMs}")
-                this@FrameProcessorBase.onSuccess(CameraInputInfo(frame, frameMetaData), results, graphicOverlay)
+                this@FrameProcessorBase.onSuccess(
+                    CameraInputInfo(frame, frameMetaData),
+                    results,
+                    graphicOverlay
+                )
                 processLatestFrame(graphicOverlay)
             }
-            .addOnFailureListener(executor) { OnFailureListener { this@FrameProcessorBase.onFailure(it) } }
+            .addOnFailureListener(executor) {
+                OnFailureListener {
+                    this@FrameProcessorBase.onFailure(
+                        it
+                    )
+                }
+            }
     }
 
     override fun stop() {

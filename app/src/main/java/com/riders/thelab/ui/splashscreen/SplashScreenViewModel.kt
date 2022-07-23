@@ -18,7 +18,7 @@ class SplashScreenViewModel : ViewModel() {
     }
 
     fun getOnVideoEnd(): LiveData<Boolean> {
-        return onVideoEnd;
+        return onVideoEnd
     }
 
     fun retrieveAppVersion(activity: SplashScreenActivity) {

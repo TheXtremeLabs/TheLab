@@ -17,4 +17,8 @@
 package com.riders.thelab.ui.googlemlkit.productsearch
 
 /** Information about a product.  */
-data class Product internal constructor(val imageUrl: String, val title: String, val subtitle: String)
+data class Product internal constructor(
+    val imageUrl: String,
+    val title: String,
+    val subtitle: String
+)
