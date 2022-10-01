@@ -440,6 +440,7 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
+
         <!-- Widget -->
         <activity
             android:name=".core.widget.TheLabAppWidgetConfigurationActivity"
@@ -468,6 +469,19 @@
             android:name=".ui.settings.SettingsActivity"
             android:label="@string/activity_settings_title"
             android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".ui.about.AboutActivity"
+            android:label="@string/activity_about_title"
+            android:parentActivityName=".ui.settings.SettingsActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".ui.webview.WebViewActivity"
+            android:label="@string/activity_web_view_title"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <!-- ////////////// ACTIVITIES ////////////// -->
@@ -572,11 +586,11 @@
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
-         <!--If you are using androidx.startup to initialize other components-->
-        <meta-data
-            android:name="androidx.work.WorkManagerInitializer"
-            android:value="androidx.startup"
-            tools:node="remove" />
+            <!--If you are using androidx.startup to initialize other components-->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
         </provider>
 
         <!-- In order to use hilt injection in Worker -->

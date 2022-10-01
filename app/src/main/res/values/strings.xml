@@ -495,8 +495,13 @@
 
     <!-- Strings for user settings. -->
     <string name="pref_user">User</string>
-    <string name="pref_key_wipe_data" translatable="false">Delete suer data</string>
+    <string name="pref_key_wipe_data" translatable="false">Delete user data</string>
     <string name="pref_title_wipe_data">Delete user data</string>
+
+    <!-- Strings for about settings. -->
+    <string name="pref_about">About</string>
+    <string name="pref_key_about" translatable="false">About The Lab</string>
+    <string name="pref_title_about">About The Lab</string>
 
     <!-- Strings for camera settings. -->
     <string name="pref_category_camera">Camera</string>
@@ -539,4 +544,6 @@
     <string name="pref_key_delay_loading_barcode_result" translatable="false">barcode_dlbr</string>
     <string name="pref_title_delay_loading_barcode_result">Delay loading barcode result</string>
     <string name="pref_summary_delay_loading_barcode_result">Will show the loading spinner for 2s</string>
+    <string name="activity_about_title">About</string>
+    <string name="activity_web_view_title">WebView</string>
 </resources>

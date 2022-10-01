@@ -20,4 +20,12 @@
             android:title="@string/pref_title_wipe_data" />
     </androidx.preference.PreferenceCategory>
 
+    <androidx.preference.PreferenceCategory android:title="@string/pref_about">
+
+        <androidx.preference.Preference
+            android:key="@string/pref_key_about"
+            android:persistent="true"
+            android:title="@string/pref_title_about" />
+    </androidx.preference.PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>
