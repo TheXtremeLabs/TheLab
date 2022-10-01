@@ -19,7 +19,7 @@ object LabAddressesUtils {
             Timber.e("addresses : %s", addresses)
 
             //get the address
-            return addresses[0]
+            return addresses?.get(0)
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: NullPointerException) {
@@ -36,7 +36,7 @@ object LabAddressesUtils {
     ): List<Address>? {
         var addressList: List<Address> = ArrayList()
         try {
-            addressList = geoCoder.getFromLocation(latitude, longitude, 1)
+            addressList = geoCoder.getFromLocation(latitude, longitude, 1)!!
         } catch (exception: Exception) {
             Timber.e(exception)
         }

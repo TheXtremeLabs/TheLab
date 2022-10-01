@@ -83,19 +83,19 @@ class LottieActivity : AppCompatActivity() {
 
         binding.lottieAnimationView.setAnimationFromUrl(lottieUrls[3])
         binding.lottieAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator?) {
+            override fun onAnimationStart(animation: Animator) {
                 Timber.d("onAnimationStart()")
             }
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 Timber.e("onAnimationEnd()")
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
                 Timber.e("onAnimationCancel()")
             }
 
-            override fun onAnimationRepeat(animation: Animator?) {
+            override fun onAnimationRepeat(animation: Animator) {
                 Timber.d("onAnimationRepeat()")
                 binding.lottieAnimationView.setAnimationFromUrl(
                     lottieUrls[Random.nextInt(

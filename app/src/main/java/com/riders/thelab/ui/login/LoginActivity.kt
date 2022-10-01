@@ -172,6 +172,11 @@ class LoginActivity : AppCompatActivity(),
             }
         }
 
+        mViewModel.getLoginError().observe(this) {
+            hideLoading()
+            onLoginFailed()
+        }
+
         mNetworkManager?.getConnectionState()?.observe(
             this
         ) {

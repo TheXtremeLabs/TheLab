@@ -106,6 +106,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'com.riders.thelab'
 }
 
 dependencies {
@@ -247,7 +248,7 @@ dependencies {
     kapt rootProject.ext.generalDependencies.glideAnnotation
     implementation rootProject.ext.generalDependencies.blurry
     implementation rootProject.ext.generalDependencies.glideTransformation
-    implementation 'com.github.skydoves:landscapist-glide:1.5.2'
+    implementation 'com.github.skydoves:landscapist-glide:2.0.0'
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
     implementation rootProject.ext.generalDependencies.retrofit
