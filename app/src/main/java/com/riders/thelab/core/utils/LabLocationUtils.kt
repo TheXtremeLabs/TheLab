@@ -44,13 +44,13 @@ class LabLocationUtils private constructor() {
             try {
                 val addresses = geocoder.getFromLocation(latitude, longitude, 1)
                 Timber.e("addresses : %s", addresses)
-                val address = addresses[0]
-                val street = address.featureName + ", " + address.thoroughfare
-                val locality = address.locality
-                val postalCode = address.postalCode
-                val departmentName = address.subAdminArea
-                val regionName = address.adminArea
-                val countryName = address.countryName
+                val address = addresses?.get(0)
+                val street = address?.featureName + ", " + address?.thoroughfare
+                val locality = address?.locality
+                val postalCode = address?.postalCode
+                val departmentName = address?.subAdminArea
+                val regionName = address?.adminArea
+                val countryName = address?.countryName
                 addressStringBuilder
                     .append(street).append(" - ")
                     .append(locality).append(" - ")
@@ -117,7 +117,7 @@ class LabLocationUtils private constructor() {
             longitude: Double
         ): List<Address>? {
             val addressList = geoCoder.getFromLocation(latitude, longitude, 1)
-            if (addressList.isNotEmpty()) {
+            if (addressList?.isNotEmpty() == true) {
                 return addressList
             } else {
                 return null

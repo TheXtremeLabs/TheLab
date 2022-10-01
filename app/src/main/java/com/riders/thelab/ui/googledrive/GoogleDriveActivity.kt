@@ -177,8 +177,10 @@ class GoogleDriveActivity
             // which we can use in startActivityForResult to trigger the login flow
             val signInIntent = mGoogleSignInClient?.signInIntent
 
-            @Suppress("DEPRECATION")
-            startActivityForResult(signInIntent, CONST_SIGN_IN)
+            if (null != signInIntent) {
+                @Suppress("DEPRECATION")
+                startActivityForResult(signInIntent, CONST_SIGN_IN)
+            }
         }
     }
 

@@ -17,6 +17,7 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val login: MutableLiveData<ApiResponse> = MutableLiveData()
+    private val loginError: MutableLiveData<ApiResponse> = MutableLiveData()
     private val dataStoreEmail = repository.getEmailPref().asLiveData()
     private val dataStorePassword = repository.getPasswordPref().asLiveData()
     private val dataStoreRememberCredentials = repository.isRememberCredentialsPref().asLiveData()
@@ -54,6 +55,7 @@ class LoginViewModel @Inject constructor(
     //
     ///////////////
     fun getLogin(): LiveData<ApiResponse> = login
+    fun getLoginError(): LiveData<ApiResponse> = loginError
     fun getDataStoreEmail() = dataStoreEmail
     fun getDataStorePassword() = dataStorePassword
     fun getDataStoreRememberCredentials() = dataStoreRememberCredentials
@@ -82,11 +84,19 @@ class LoginViewModel @Inject constructor(
 
                     withContext(mainContext) {
                         login.value = response
+
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 Timber.e(e.message)
+
+                val cs: CharSequence = "404".subSequence(0, 3)
+                if (e.message?.contains(cs, true) == true) {
+                    withContext(mainContext) {
+                        loginError.value = ApiResponse("", 404, null)
+                    }
+                }
             }
         }
     }
