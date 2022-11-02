@@ -116,14 +116,6 @@ class LoginActivity : AppCompatActivity(),
         }
     }
 
-    override fun onBackPressed() {
-        // super.onBackPressed()
-        ExitDialog(this).apply {
-            window?.setBackgroundDrawableResource(android.R.color.transparent)
-        }
-            .show()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _viewBinding = null
