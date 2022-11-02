@@ -55,6 +55,7 @@ import com.riders.thelab.data.local.model.app.PackageApp
 import com.riders.thelab.databinding.ActivityMainBinding
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.bottomsheet.BottomSheetFragment
+import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import com.riders.thelab.ui.weather.WeatherUtils
 import com.riders.thelab.utils.Constants.Companion.GPS_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
@@ -245,9 +246,13 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        exitProcess(0)
+        // super.onBackPressed()
+        ExitDialog(this).apply {
+            window?.setBackgroundDrawableResource(android.R.color.transparent)
+        }
+            .show()
     }
+
 
     override fun onDestroy() {
         Timber.d("onDestroy()")

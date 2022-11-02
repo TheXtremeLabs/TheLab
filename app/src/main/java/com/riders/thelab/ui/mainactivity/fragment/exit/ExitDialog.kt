@@ -9,6 +9,7 @@ import android.view.View
 import com.riders.thelab.R
 import com.riders.thelab.databinding.DialogExitBinding
 import timber.log.Timber
+import kotlin.system.exitProcess
 
 
 class ExitDialog(private val mContext: Context) : Dialog(mContext), View.OnClickListener {
@@ -35,7 +36,7 @@ class ExitDialog(private val mContext: Context) : Dialog(mContext), View.OnClick
 
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.btn_quit -> (mContext as Activity).finish()
+            R.id.btn_quit -> exitProcess(0)
             R.id.btn_cancel -> dismiss()
             else -> {
                 Timber.e("else branch")
