@@ -33,10 +33,12 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/big_margin"
             android:layout_marginVertical="@dimen/medium_margin"
-            android:text="Do you want to leave the application ?"
+            android:text="Do you want to leave TheLab ?"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/white"
             tools:ignore="HardcodedText"
-            tools:text="Do you want to leave the application ?" />
+            tools:text="Do you want to leave TheLab ?" />
 
         <View
             android:layout_width="match_parent"
