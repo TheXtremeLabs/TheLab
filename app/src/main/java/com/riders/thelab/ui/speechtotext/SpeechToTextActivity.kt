@@ -149,12 +149,12 @@ class SpeechToTextActivity : AppCompatActivity(), RecognitionListener {
 
 
     fun showEq() {
-        viewBinding.eqImageView.setVisibility(View.VISIBLE)
+        viewBinding.eqImageView.visibility = View.VISIBLE
     }
 
 
     fun hideEq() {
-        viewBinding.eqImageView.setVisibility(View.INVISIBLE)
+        viewBinding.eqImageView.visibility = View.INVISIBLE
     }
 
     override fun onReadyForSpeech(params: Bundle?) {
@@ -167,7 +167,7 @@ class SpeechToTextActivity : AppCompatActivity(), RecognitionListener {
 
     override fun onRmsChanged(rmsdB: Float) {
         //Check if eqView is visible
-        if (viewBinding.eqImageView.getVisibility() == View.VISIBLE) {
+        if (viewBinding.eqImageView.visibility == View.VISIBLE) {
 
             // Variables
             val min = -50

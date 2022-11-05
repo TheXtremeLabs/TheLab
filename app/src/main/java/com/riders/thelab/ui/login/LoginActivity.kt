@@ -30,7 +30,6 @@ import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.databinding.ActivityLoginBinding
 import com.riders.thelab.navigator.Navigator
-import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import com.riders.thelab.ui.signup.SignUpActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*

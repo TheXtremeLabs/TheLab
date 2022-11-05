@@ -6,28 +6,26 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.attribute.BasicFileAttributes
 
-class LogManager {
-    companion object {
-        @SuppressLint("NewApi")
-        fun logSongObject(directoryPath: String, fileName: String) {
-            val file: Path = FileSystems.getDefault()
-                .getPath(directoryPath, fileName)
+object LogManager {
 
-            val attr: BasicFileAttributes = Files.readAttributes(
-                file,
-                BasicFileAttributes::class.java
-            )
+    @SuppressLint("NewApi")
+    fun logSongObject(directoryPath: String, fileName: String) {
+        val file: Path = FileSystems.getDefault()
+            .getPath(directoryPath, fileName)
 
-            println("creationTime: " + attr.creationTime())
-            println("lastAccessTime: " + attr.lastAccessTime())
-            println("lastModifiedTime: " + attr.lastModifiedTime())
+        val attr: BasicFileAttributes = Files.readAttributes(
+            file,
+            BasicFileAttributes::class.java
+        )
 
-            println("isDirectory: " + attr.isDirectory)
-            println("isOther: " + attr.isOther)
-            println("isRegularFile: " + attr.isRegularFile)
-            println("isSymbolicLink: " + attr.isSymbolicLink)
-            println("size: " + attr.size())
-        }
+        println("creationTime: " + attr.creationTime())
+        println("lastAccessTime: " + attr.lastAccessTime())
+        println("lastModifiedTime: " + attr.lastModifiedTime())
+
+        println("isDirectory: " + attr.isDirectory)
+        println("isOther: " + attr.isOther)
+        println("isRegularFile: " + attr.isRegularFile)
+        println("isSymbolicLink: " + attr.isSymbolicLink)
+        println("size: " + attr.size())
     }
-
 }

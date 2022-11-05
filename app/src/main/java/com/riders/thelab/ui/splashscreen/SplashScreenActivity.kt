@@ -174,7 +174,7 @@ class SplashScreenActivity : AppCompatActivity(),
         // listener set on the view.
         view.animate()
             .alpha(1f)
-            .setDuration(LabAnimationsManager.getInstance().mediumAnimationDuration.toLong())
+            .setDuration(LabAnimationsManager.mediumAnimationDuration.toLong())
             .setListener(null)
 
         // Animate the loading view to 0% opacity. After the animation ends,
@@ -182,7 +182,7 @@ class SplashScreenActivity : AppCompatActivity(),
         // participate in layout passes, etc.)
         binding.splashVideo.animate()
             .alpha(0f)
-            .setDuration(LabAnimationsManager.getInstance().shortAnimationDuration.toLong())
+            .setDuration(LabAnimationsManager.shortAnimationDuration.toLong())
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     Timber.e("onAnimationEnd()")
@@ -200,7 +200,7 @@ class SplashScreenActivity : AppCompatActivity(),
                 .ofFloat(binding.tvAppVersion, "alpha", 0f, 1f)
                 .apply {
                     duration =
-                        LabAnimationsManager.getInstance().longAnimationDuration.toLong()
+                        LabAnimationsManager.longAnimationDuration.toLong()
 
                     addListener(onEnd = {
                         Timber.e("onAnimationEnd()")
@@ -208,7 +208,7 @@ class SplashScreenActivity : AppCompatActivity(),
                         startProgressAnimation()
                     })
                     startDelay =
-                        LabAnimationsManager.getInstance().longAnimationDuration.toLong()
+                        LabAnimationsManager.longAnimationDuration.toLong()
                 }
 
         versionTextAnimator.start()
@@ -221,7 +221,7 @@ class SplashScreenActivity : AppCompatActivity(),
                 .ofFloat(binding.progressBar, "alpha", 0f, 1f)
                 .apply {
                     duration =
-                        LabAnimationsManager.getInstance().mediumAnimationDuration.toLong()
+                        LabAnimationsManager.mediumAnimationDuration.toLong()
                     addListener(onEnd = {
                         binding.progressBar.alpha = 1f
 
@@ -237,7 +237,7 @@ class SplashScreenActivity : AppCompatActivity(),
         // Use coroutines to clear animations then launch Main Activity
         lifecycleScope.launch(coroutineContext) {
             Timber.d("Use coroutines to clear animations")
-            LabAnimationsManager.getInstance().clearAnimations(
+            LabAnimationsManager.clearAnimations(
                 versionTextAnimator, fadeProgressAnimator
             )
 

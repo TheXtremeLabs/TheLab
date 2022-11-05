@@ -7,7 +7,6 @@ import android.content.Intent
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import androidx.annotation.NonNull
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -32,8 +31,8 @@ import kotlin.math.roundToInt
 
 @HiltWorker
 class WeatherWorker @AssistedInject constructor(
-    @Assisted @NonNull val context: Context,
-    @Assisted @NonNull val workerParams: WorkerParameters
+    @Assisted val context: Context,
+    @Assisted val workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
     companion object {

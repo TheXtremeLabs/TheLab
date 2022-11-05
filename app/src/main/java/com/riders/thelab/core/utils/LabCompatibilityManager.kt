@@ -14,196 +14,195 @@ import java.lang.reflect.Field
  *
  * This class can't be instantiated.
  */
-class LabCompatibilityManager private constructor() {
+object LabCompatibilityManager {
 
-    companion object {
-        /**
-         * Get the current Android API level.
-         */
-        fun getSdkVersion(): Int {
-            return Build.VERSION.SDK_INT
-        }
+    /**
+     * Get the current Android API level.
+     */
+    fun getSdkVersion(): Int {
+        return Build.VERSION.SDK_INT
+    }
 
-        /**
-         * Determine if the device is running API level 8 or higher.
-         */
-        fun isFroyo(): Boolean {
-            return getSdkVersion() >= VERSION_CODES.FROYO
-        }
+    /**
+     * Determine if the device is running API level 8 or higher.
+     */
+    fun isFroyo(): Boolean {
+        return getSdkVersion() >= VERSION_CODES.FROYO
+    }
 
-        /**
-         * Determine if the device is running API level 11 or higher.
-         */
-        fun isHoneycomb(): Boolean {
-            return getSdkVersion() >= VERSION_CODES.HONEYCOMB
-        }
+    /**
+     * Determine if the device is running API level 11 or higher.
+     */
+    fun isHoneycomb(): Boolean {
+        return getSdkVersion() >= VERSION_CODES.HONEYCOMB
+    }
 
-        /**
-         * Determine if the device is running API level 19 or higher.
-         */
-        fun isKitkat(): Boolean {
-            return getSdkVersion() >= VERSION_CODES.KITKAT
-        }
+    /**
+     * Determine if the device is running API level 19 or higher.
+     */
+    fun isKitkat(): Boolean {
+        return getSdkVersion() >= VERSION_CODES.KITKAT
+    }
 
-        /**
-         * Determine if the device is running API level 21 or higher.
-         */
-        fun isLollipop(): Boolean {
-            return getSdkVersion() >= VERSION_CODES.LOLLIPOP
-        }
+    /**
+     * Determine if the device is running API level 21 or higher.
+     */
+    fun isLollipop(): Boolean {
+        return getSdkVersion() >= VERSION_CODES.LOLLIPOP
+    }
 
-        /**
-         * Determine if the device is running API level is higher than 21.
-         */
-        fun isLollipopPlus(): Boolean {
-            return getSdkVersion() > VERSION_CODES.LOLLIPOP
-        }
+    /**
+     * Determine if the device is running API level is higher than 21.
+     */
+    fun isLollipopPlus(): Boolean {
+        return getSdkVersion() > VERSION_CODES.LOLLIPOP
+    }
 
-        /**
-         * Determine if the device is running API level 23 or higher.
-         */
-        fun isMarshmallow(): Boolean {
-            return getSdkVersion() >= VERSION_CODES.M
-        }
+    /**
+     * Determine if the device is running API level 23 or higher.
+     */
+    fun isMarshmallow(): Boolean {
+        return getSdkVersion() >= VERSION_CODES.M
+    }
 
-        /**
-         * Determine if the device is running API level 24 or higher.
-         */
-        fun isNougat(): Boolean {
-            return getSdkVersion() >= VERSION_CODES.N
-        }
+    /**
+     * Determine if the device is running API level 24 or higher.
+     */
+    fun isNougat(): Boolean {
+        return getSdkVersion() >= VERSION_CODES.N
+    }
 
-        /**
-         * Determine if the device is running API level 26 or higher.
-         */
-        fun isOreo(): Boolean {
-            return getSdkVersion() >= VERSION_CODES.O
-        }
+    /**
+     * Determine if the device is running API level 26 or higher.
+     */
+    fun isOreo(): Boolean {
+        return getSdkVersion() >= VERSION_CODES.O
+    }
 
-        /**
-         * Determine if the device is running API level 28 or higher.
-         */
-        fun isPie(): Boolean {
-            return getSdkVersion() >= VERSION_CODES.P
-        }
-
-
-        /**
-         * Determine if the device is running API level 29 or higher.
-         * Quince Tart
-         */
-        fun isAndroid10(): Boolean {
-            return getSdkVersion() >= VERSION_CODES.Q
-        }
+    /**
+     * Determine if the device is running API level 28 or higher.
+     */
+    fun isPie(): Boolean {
+        return getSdkVersion() >= VERSION_CODES.P
+    }
 
 
-        /**
-         * Determine if the device is running API level 30 or higher.
-         * Red Velvet Cake
-         */
-        fun isR(): Boolean {
-            return getSdkVersion() == VERSION_CODES.R
-        }
+    /**
+     * Determine if the device is running API level 29 or higher.
+     * Quince Tart
+     */
+    fun isAndroid10(): Boolean {
+        return getSdkVersion() >= VERSION_CODES.Q
+    }
 
 
-        /**
-         * Determine if the device is running API level 31 or higher.
-         * Snow Cone
-         */
-        fun isS(): Boolean {
-            return getSdkVersion() == VERSION_CODES.S
-        }
+    /**
+     * Determine if the device is running API level 30 or higher.
+     * Red Velvet Cake
+     */
+    fun isR(): Boolean {
+        return getSdkVersion() == VERSION_CODES.R
+    }
 
 
-        /**
-         * Determine if the device is a tablet (i.e. it has a large screen).
-         *
-         * @param context The calling context.
-         */
-        fun isTablet(context: Context): Boolean {
-            return (context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
-                    >= Configuration.SCREENLAYOUT_SIZE_LARGE)
-        }
-
-        /**
-         * Determine if the device is a HoneyComb tablet.
-         *
-         * @param context The calling context.
-         */
-        fun isHoneycombTablet(context: Context): Boolean {
-            return isHoneycomb() && isTablet(context)
-        }
+    /**
+     * Determine if the device is running API level 31 or higher.
+     * Snow Cone
+     */
+    fun isS(): Boolean {
+        return getSdkVersion() == VERSION_CODES.S
+    }
 
 
-        @SuppressLint("NewApi")
-        fun getOSName(): String {
-            var fields: Array<Field>? = VERSION_CODES::class.java.fields
-            var OSName = "UNKNOWN"
-            if (fields != null) {
-                for (field in fields) {
-                    try {
-                        if (field.getInt(VERSION_CODES::class.java) == Build.VERSION.SDK_INT - 1) {
-                            OSName = field.name
-                            Timber.e("code name %s", OSName)
-                            if (isOreo()) {
-                                OSName = getOsVersionName(OSName)
-                            }
-                        }
-                    } catch (e: IllegalAccessException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
+    /**
+     * Determine if the device is a tablet (i.e. it has a large screen).
+     *
+     * @param context The calling context.
+     */
+    fun isTablet(context: Context): Boolean {
+        return (context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE)
+    }
 
-            // TEST
-            fields = VERSION_CODES::class.java.fields
-            val builder = StringBuilder()
-            builder.append("android : ").append(Build.VERSION.RELEASE)
+    /**
+     * Determine if the device is a HoneyComb tablet.
+     *
+     * @param context The calling context.
+     */
+    fun isHoneycombTablet(context: Context): Boolean {
+        return isHoneycomb() && isTablet(context)
+    }
 
+
+    @SuppressLint("NewApi")
+    fun getOSName(): String {
+        var fields: Array<Field>? = VERSION_CODES::class.java.fields
+        var OSName = "UNKNOWN"
+        if (fields != null) {
             for (field in fields) {
-                val fieldName = field.name
-                var fieldValue = -1
                 try {
-                    fieldValue = field.getInt(Any())
-                } catch (e: IllegalArgumentException) {
-                    e.printStackTrace()
+                    if (field.getInt(VERSION_CODES::class.java) == Build.VERSION.SDK_INT - 1) {
+                        OSName = field.name
+                        Timber.e("code name %s", OSName)
+                        if (isOreo()) {
+                            OSName = getOsVersionName(OSName)
+                        }
+                    }
                 } catch (e: IllegalAccessException) {
                     e.printStackTrace()
-                } catch (e: NullPointerException) {
-                    e.printStackTrace()
-                }
-                if (fieldValue == Build.VERSION.SDK_INT) {
-                    builder.append(" : ")
-                        .append(fieldName).append(" : ")
-                        .append("sdk=").append(fieldValue)
                 }
             }
-
-            Timber.e("OS: %s", builder.toString())
-            // TEST
-            return OSName
         }
 
+        // TEST
+        fields = VERSION_CODES::class.java.fields
+        val builder = StringBuilder()
+        builder.append("android : ").append(Build.VERSION.RELEASE)
 
-        /**
-         * Gets the version name from version code. Note! Needs to be updated
-         * when new versions arrive, or will return a single letter. Like Android 8.0 - Oreo
-         * yields "O" as a version name.
-         *
-         * @return version name of device's OS
-         */
-        @RequiresApi(api = VERSION_CODES.O)
-        fun getOsVersionName(name: String): String {
-            if (name == "Q") return "Android 10"
-            if (name == "P") return "Pie"
-            if (name == "O") return "Oreo"
-            if (name == "N") return "Nougat"
-            if (name == "M") return "Marshmallow"
-            if (name.startsWith("O_")) return "Oreo++"
-            return if (name.startsWith("N_")) "Nougat++" else "UNKNOWN"
+        for (field in fields) {
+            val fieldName = field.name
+            var fieldValue = -1
+            try {
+                fieldValue = field.getInt(Any())
+            } catch (e: IllegalArgumentException) {
+                e.printStackTrace()
+            } catch (e: IllegalAccessException) {
+                e.printStackTrace()
+            } catch (e: NullPointerException) {
+                e.printStackTrace()
+            }
+            if (fieldValue == Build.VERSION.SDK_INT) {
+                builder.append(" : ")
+                    .append(fieldName).append(" : ")
+                    .append("sdk=").append(fieldValue)
+            }
         }
+
+        Timber.e("OS: %s", builder.toString())
+        // TEST
+        return OSName
+    }
+
+
+    /**
+     * Gets the version name from version code. Note! Needs to be updated
+     * when new versions arrive, or will return a single letter. Like Android 8.0 - Oreo
+     * yields "O" as a version name.
+     *
+     * @return version name of device's OS
+     */
+    @RequiresApi(api = VERSION_CODES.O)
+    fun getOsVersionName(name: String): String {
+        if (name == "Q") return "Android 10"
+        if (name == "P") return "Pie"
+        if (name == "O") return "Oreo"
+        if (name == "N") return "Nougat"
+        if (name == "M") return "Marshmallow"
+        if (name.startsWith("O_")) return "Oreo++"
+        return if (name.startsWith("N_")) "Nougat++" else "UNKNOWN"
     }
 }
+
 
 /**
  * Android version table
