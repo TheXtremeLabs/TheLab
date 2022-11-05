@@ -38,7 +38,7 @@
     <string name="network_check_connection">Please check your cellular network or Wi-Fi network</string>
 
     <!-- Notification -->
-    <string name="main_channel_name">KTesting Notification Main Channel</string>
+    <string name="main_channel_name">TheLab Notification Main Channel</string>
     <string name="main_channel_description">App Main notification channel</string>
 
     <string name="notification_title">The Lab is live</string>

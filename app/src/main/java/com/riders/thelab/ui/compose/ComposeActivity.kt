@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -93,20 +93,19 @@ fun MessageCard(msg: Message) {
         var isExpanded by remember { mutableStateOf(false) }
         // surfaceColor will be updated gradually from one color to the other
         val surfaceColor: Color by animateColorAsState(
-            if (isExpanded) MaterialTheme.colors.primary else colorResource(id = R.color.default_dark),
+            if (isExpanded) MaterialTheme.colorScheme.primary else colorResource(id = R.color.default_dark),
         )
 
         // We toggle the isExpanded variable when we click on this Column
         Column(modifier = Modifier.clickable { isExpanded = !isExpanded }) {
             Text(
                 text = msg.sender,
-                color = MaterialTheme.colors.secondaryVariant,
-                style = MaterialTheme.typography.subtitle2
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodySmall
             )
 
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                elevation = 1.dp,
                 // surfaceColor color will be changing gradually from primary to surface
                 color = surfaceColor,
                 // animateContentSize will change the Surface size gradually
@@ -119,7 +118,7 @@ fun MessageCard(msg: Message) {
                     // If the message is expanded, we display all its content
                     // otherwise we only display the first line
                     maxLines = if (isExpanded) Int.MAX_VALUE else 1,
-                    style = MaterialTheme.typography.body2,
+                    style = MaterialTheme.typography.displaySmall,
                     text = msg.message,
                     color = Color.White
                 )
@@ -138,7 +137,6 @@ fun MessageCard(msg: Message) {
 )
 @Composable
 fun PreviewMessageCard() {
-
     Column(modifier = Modifier.padding(all = 8.dp)) {
         Column {
             Text(

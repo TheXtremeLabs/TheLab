@@ -68,7 +68,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
-import kotlin.system.exitProcess
 
 @DelicateCoroutinesApi
 @AndroidEntryPoint

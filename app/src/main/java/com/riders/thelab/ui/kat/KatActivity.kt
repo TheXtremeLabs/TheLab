@@ -156,7 +156,7 @@ class KatActivity : AppCompatActivity(), TextWatcher {
     private fun smoothScrollToLastItem() {
         runOnUiThread {
             viewBinding.rvMessages.smoothScrollToPosition(
-                Objects.requireNonNull(viewBinding.rvMessages.getAdapter()).getItemCount() - 1
+                Objects.requireNonNull(viewBinding.rvMessages.adapter).itemCount - 1
             )
         }
     }

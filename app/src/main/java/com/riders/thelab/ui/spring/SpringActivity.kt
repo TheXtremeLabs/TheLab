@@ -43,11 +43,11 @@ class SpringActivity : AppCompatActivity(), View.OnClickListener {
 
     private val globalLayoutListener = OnGlobalLayoutListener {
         xAnimation = createSpringAnimation(
-            binding.imageView, DynamicAnimation.X, binding.imageView.getX(),
+            binding.imageView, DynamicAnimation.X, binding.imageView.x,
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
         yAnimation = createSpringAnimation(
-            binding.imageView, DynamicAnimation.Y, binding.imageView.getY(),
+            binding.imageView, DynamicAnimation.Y, binding.imageView.y,
             SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
         )
     }
@@ -125,7 +125,6 @@ class SpringActivity : AppCompatActivity(), View.OnClickListener {
             setListeners()
             return
         }
-
 
         super.onBackPressed()
     }

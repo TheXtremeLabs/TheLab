@@ -51,7 +51,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
         }
         taskDataString = taskData!!.getString(MESSAGE_STATUS)
 
-        val urlRequest = taskData!!.getString(URL_REQUEST) ?: return Result.failure()
+        // val urlRequest = taskData!!.getString(URL_REQUEST) ?: return Result.failure()
 
         try {
 

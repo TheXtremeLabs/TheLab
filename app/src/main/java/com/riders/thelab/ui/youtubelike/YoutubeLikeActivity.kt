@@ -47,7 +47,7 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
         return true
     }
 
-    fun setupToolbar() {
+    private fun setupToolbar() {
         supportActionBar?.setBackgroundDrawable(
             ColorDrawable(
                 ContextCompat.getColor(

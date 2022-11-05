@@ -39,10 +39,6 @@ class WebViewActivity : AppCompatActivity() {
         bindWebView()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {

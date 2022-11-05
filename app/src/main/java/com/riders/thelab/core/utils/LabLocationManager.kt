@@ -18,7 +18,6 @@ import com.riders.thelab.core.bus.LocationFetchedEvent
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
-
 class LabLocationManager constructor(
     private var mContext: Context
 ) : Service(), LocationListener {

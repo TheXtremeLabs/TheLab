@@ -11,10 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
-import com.riders.thelab.core.utils.LabAddressesUtils
-import com.riders.thelab.core.utils.LabLocationUtils
-import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
-import com.riders.thelab.core.utils.UIManager
+import com.riders.thelab.core.utils.*
 import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.model.weather.WeatherData
@@ -100,7 +97,8 @@ class WeatherViewModel @Inject constructor(
         return LabAddressesUtils
             .getDeviceAddress(
                 Geocoder(activity, Locale.getDefault()),
-                LabLocationUtils.buildTargetLocationObject(latitude, longitude)
+                (latitude to longitude).toLocation()
+                // LabLocationUtils.buildTargetLocationObject(latitude, longitude)
             )
     }
 

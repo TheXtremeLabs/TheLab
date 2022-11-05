@@ -98,8 +98,7 @@ android {
     }
 
     composeOptions {
-//        kotlinCompilerExtensionVersion = "1.0.5"
-        kotlinCompilerExtensionVersion = "1.1.0"
+        kotlinCompilerExtensionVersion = "1.3.2"
     }
 
     compileOptions {
@@ -146,15 +145,18 @@ dependencies {
     implementation rootProject.ext.generalDependencies.viewPager2
 
     // Compose
-    implementation rootProject.ext.generalDependencies.composeActivity
+    implementation(platform(rootProject.ext.generalDependencies.composeBom))
+    implementation rootProject.ext.generalDependencies.composeMaterial3
+    implementation 'androidx.activity:activity-compose:1.6.1'
     implementation rootProject.ext.generalDependencies.composeAnimation
     implementation rootProject.ext.generalDependencies.composeCompiler
     implementation rootProject.ext.generalDependencies.composeFoundation
-    implementation rootProject.ext.generalDependencies.composeMaterial
+    // implementation rootProject.ext.generalDependencies.composeMaterial
     implementation rootProject.ext.generalDependencies.composeMaterialIconsCore
     implementation rootProject.ext.generalDependencies.composeMaterialIconsExtended
     implementation rootProject.ext.generalDependencies.composeRuntime
     implementation rootProject.ext.generalDependencies.composeRuntimeLiveData
+    implementation rootProject.ext.generalDependencies.composeLifecycleViewModel
     implementation rootProject.ext.generalDependencies.composeUI
     implementation rootProject.ext.generalDependencies.composeUITooling
 
@@ -248,7 +250,7 @@ dependencies {
     kapt rootProject.ext.generalDependencies.glideAnnotation
     implementation rootProject.ext.generalDependencies.blurry
     implementation rootProject.ext.generalDependencies.glideTransformation
-    implementation 'com.github.skydoves:landscapist-glide:2.0.0'
+    implementation 'com.github.skydoves:landscapist-glide:2.0.3'
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
     implementation rootProject.ext.generalDependencies.retrofit

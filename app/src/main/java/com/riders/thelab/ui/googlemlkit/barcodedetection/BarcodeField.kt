@@ -17,7 +17,7 @@
 package com.riders.thelab.ui.googlemlkit.barcodedetection
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /** Information about a barcode field.  */
 @Parcelize
