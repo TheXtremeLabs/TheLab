@@ -43,7 +43,15 @@ fun Color() {
     val colors = LabColorsManager.getDefaultColors()
 
     // Get a random color
-    val firstRandomColor = colors.random()
+    fun getRandomColor(excludeColor: Int? = null): Int = colors.filterNot { it == excludeColor }
+        .random()
+
+    // use of lambda
+    val randomColor: (Int?) -> Int = { excludeColor ->
+        colors.filterNot { it == excludeColor }.random()
+    }
+
+    val firstRandomColor = getRandomColor()
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -93,7 +101,7 @@ fun Color() {
 
             AnimatedVisibility(visible = expanded) {
                 Button(
-                    onClick = { colorState.value = colors.random() },
+                    onClick = { colorState.value = getRandomColor(colorState.value) },
                     modifier = Modifier
                         .padding(8.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = colorState.value)),

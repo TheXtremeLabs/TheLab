@@ -35,6 +35,7 @@ ext {
     dynamicanimationVersion = '1.0.0'
     composeBomVersion = '2022.12.00'
     composeVersion = '1.3.2'
+    composeCompilerVersion = '1.3.2'
     composeMaterialVersion = '1.1.0-alpha03'
     composeAnimationVersion = '1.3.2'
     cameraVersion = '1.2.0'
@@ -151,7 +152,7 @@ ext {
             composeMaterial3            : "androidx.compose.material3:material3",
             composeActivity             : "androidx.activity:activity-compose:1.5.1",
             composeAnimation            : "androidx.compose.animation:animation:$composeAnimationVersion",
-            composeCompiler             : "androidx.compose.compiler:compiler:$composeVersion",
+            composeCompiler             : "androidx.compose.compiler:compiler:$composeCompilerVersion",
             composeFoundation           : "androidx.compose.foundation:foundation",
             composeMaterial             : "androidx.compose.material:material:$composeMaterialVersion",
             composeMaterialIconsCore    : "androidx.compose.material:material-icons-core",
