@@ -126,17 +126,17 @@ class SplashScreenActivity : AppCompatActivity(),
     private fun initViewModelsObservers() {
         mViewModel
             .getAppVersion()
-            .observe(this, { appVersion ->
+            .observe(this) { appVersion ->
                 Timber.d("Version : %s", appVersion)
 
                 binding.tvAppVersion.text =
                     this.getString(R.string.version_placeholder) + appVersion
-            })
+            }
 
-        mViewModel.getOnVideoEnd().observe(this, { finished ->
+        mViewModel.getOnVideoEnd().observe(this) { finished ->
             Timber.d("getOnVideoEnd : %s", finished)
             crossFadeViews(binding.clSplashContent)
-        })
+        }
     }
 
 
