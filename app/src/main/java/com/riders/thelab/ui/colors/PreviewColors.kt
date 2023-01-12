@@ -51,7 +51,7 @@ fun Color() {
         colors.filterNot { it == excludeColor }.random()
     }
 
-    val firstRandomColor = getRandomColor()
+     val firstRandomColor = getRandomColor()
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -62,7 +62,8 @@ fun Color() {
 
     /*if (isPressed) colors[Random().nextInt(colors.size)] else MaterialTheme.colorScheme.primary*/
 
-    Scaffold(topBar = {
+    Scaffold(
+        topBar = {
         TopAppBar(
             title = {
                 Text(
@@ -85,9 +86,9 @@ fun Color() {
         // Screen content
         Column(
             modifier = Modifier
+                .background(color = colorResource(id = R.color.default_dark))
                 .fillMaxSize()
-                .padding(contentPadding)
-                .background(color = colorResource(id = R.color.default_dark)),
+                .padding(contentPadding),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

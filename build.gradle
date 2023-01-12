@@ -2,7 +2,7 @@
 ext {
 
     minSdkVersion = 23
-    targetSdkVersion = 32
+    targetSdkVersion = 33
     compileSdkVersion = 33
     buildToolsVersion = "30.0.3"
 
@@ -13,7 +13,7 @@ ext {
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
     // Kotlin
-    kotlinVersion = '1.7.20'
+    kotlinVersion = '1.8.0'
     coroutinesVersion = '1.6.4'
     activityKtxVersion = '1.6.1'
     fragmentKtxVersion = '1.5.5'
@@ -64,11 +64,11 @@ ext {
     googlePlayServicesBaseVersion = '18.1.0'
     googlePlayServicesVersion = '16.0.0'
 
-    googleApiClientVersion = '2.1.1'
-    googleApiClientAndroidVersion = '2.1.1'
+    googleApiClientVersion = '2.1.2'
+    googleApiClientAndroidVersion = '2.1.2'
     googleApiClientOAuthVersion = '1.34.1'
-    googleApiDriveV3Version = 'v3-rev20221023-2.0.0'
-    googleApiClientJackson2Version = '2.1.1'
+    googleApiDriveV3Version = 'v3-rev20221219-2.0.0'
+    googleApiClientJackson2Version = '2.1.2'
     googleHttpClientVersion = '1.42.3'
 //    googleApiClientJackson2Version = '1.32.1'
 //    googleApiClientVersion = '1.30.5'
@@ -89,7 +89,7 @@ ext {
 
     firebaseBomVersion = '31.1.1'
     firebaseKtxVersion = '23.0.3'
-    adsVersion = '21.3.0'
+    adsVersion = '21.4.0'
 
     retrofit2Version = '2.9.0'
     okhttpBomVersion = '5.0.0-alpha.2'
@@ -121,7 +121,7 @@ ext {
 
     generalDependencies = [
             // Kotlin
-            kotlinStdLib                : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
+            kotlinStdLib                : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion",
             kotlinCoroutines            : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
             kotlinCoroutinesAndroid     : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion",
             kotlinParcelize             : "org.jetbrains.kotlin:kotlin-parcelize-runtime:$kotlinVersion",
