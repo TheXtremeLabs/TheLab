@@ -3,15 +3,14 @@ package com.riders.thelab.ui.colors
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.MaterialTheme
-import com.riders.thelab.ui.theme.ComposeTheme
+import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 
 class ColorActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ComposeTheme {
+            TheLabTheme {
                 Color()
             }
         }

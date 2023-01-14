@@ -16,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabColorsManager
 import kotlinx.coroutines.delay
@@ -51,7 +53,7 @@ fun Color() {
         colors.filterNot { it == excludeColor }.random()
     }
 
-     val firstRandomColor = getRandomColor()
+    val firstRandomColor = getRandomColor()
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -64,25 +66,25 @@ fun Color() {
 
     Scaffold(
         topBar = {
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(id = R.string.activity_title_colors),
-                    color = colorResource(id = colorState.value)
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = { (colorActivity as ColorActivity).onBackPressed() }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = colorResource(id = colorState.value)
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.activity_title_colors),
+                        color = colorResource(id = colorState.value)
                     )
-                }
-            },
-            colors = TopAppBarDefaults.mediumTopAppBarColors(androidx.compose.ui.graphics.Color.Black)
-        )
-    }) { contentPadding ->
+                },
+                navigationIcon = {
+                    IconButton(onClick = { (colorActivity as ColorActivity).onBackPressed() }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = colorResource(id = colorState.value)
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(androidx.compose.ui.graphics.Color.Black)
+            )
+        }) { contentPadding ->
         // Screen content
         Column(
             modifier = Modifier
@@ -96,8 +98,11 @@ fun Color() {
             Text(
                 text = stringResource(id = R.string.colors_text_placeholder),
                 modifier = Modifier.fillMaxWidth(),
-                color = colorResource(id = colorState.value),
-                textAlign = TextAlign.Center
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
+                    color = colorResource(id = colorState.value),
+                )
             )
 
             AnimatedVisibility(visible = expanded) {

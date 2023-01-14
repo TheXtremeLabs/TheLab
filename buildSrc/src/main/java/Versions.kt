@@ -15,7 +15,7 @@ object GradlePluginVersions {
 object DependenciesVersions {
 
     // Kotlin
-    const val kotlin = "1.8.0"
+    const val kotlin = "1.7.20"
     const val coroutines = "1.6.4"
     const val kotlinPlayServices = "1.6.4"
 
