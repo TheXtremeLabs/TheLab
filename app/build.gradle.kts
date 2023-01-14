@@ -191,6 +191,8 @@ dependencies {
     // Room
     implementation(Dependencies.roomKtx)
     implementation(Dependencies.roomRuntime)
+    implementation("androidx.core:core-ktx:+")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0")
     kapt(Dependencies.roomCompiler)
 
     // Worker & concurrent
