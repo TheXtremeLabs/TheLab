@@ -71,7 +71,8 @@ android {
 
     packagingOptions {
         resources {
-            excludes += "META-INF/DEPENDENCIES" ; "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 
@@ -158,8 +159,8 @@ dependencies {
     implementation(Dependencies.composeFoundation)
     implementation(Dependencies.composeUi)
     implementation(Dependencies.composeAnimation)
+    debugImplementation(Dependencies.composeUiTooling)
     implementation(Dependencies.composeUiToolingPreview)
-    implementation(Dependencies.composeUiTooling)
     implementation(Dependencies.composeMaterialIcons)
     implementation(Dependencies.composeMaterialIconsExtended)
     implementation(Dependencies.composeMaterialWindowSizeClass)
@@ -191,8 +192,6 @@ dependencies {
     // Room
     implementation(Dependencies.roomKtx)
     implementation(Dependencies.roomRuntime)
-    implementation("androidx.core:core-ktx:+")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0")
     kapt(Dependencies.roomCompiler)
 
     // Worker & concurrent
@@ -313,6 +312,10 @@ dependencies {
     androidTestImplementation(TestsDependencies.espressoCore)
     androidTestImplementation(TestsDependencies.mockitoCore)
     androidTestImplementation(TestsDependencies.mockitoAndroid)
+
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.2")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.3.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.2")
 
     androidTestImplementation(TestsDependencies.workerTest)
 

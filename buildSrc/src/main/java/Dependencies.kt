@@ -79,8 +79,8 @@ object Dependencies {
     val composeAnimation by lazy { "androidx.compose.animation:animation:${DependenciesVersions.composeAnimation}" }
 
     // Android Studio Preview support
-    val composeUiToolingPreview by lazy { "androidx.compose.ui:ui-tooling-preview" }
-    val composeUiTooling by lazy { "androidx.compose.ui:ui-tooling" }
+    val composeUiToolingPreview by lazy { "androidx.compose.ui:ui-tooling-preview:${DependenciesVersions.compose}" }
+    val composeUiTooling by lazy { "androidx.compose.ui:ui-tooling:${DependenciesVersions.compose}" }
 
     // Optional - Included automatically by material, only add when you need
     // the icons but not the material library (e.g. when using Material3 or a
