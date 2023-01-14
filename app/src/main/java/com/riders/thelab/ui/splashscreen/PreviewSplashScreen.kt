@@ -33,7 +33,6 @@ import androidx.media3.ui.PlayerView
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.previewprovider.SplashScreenViewModelPreviewProvider
-import com.riders.thelab.core.compose.previewprovider.VideoPathPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.Shapes
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
@@ -105,36 +104,6 @@ fun LoadingContent(@PreviewParameter(SplashScreenViewModelPreviewProvider::class
 
     TheLabTheme {
         Box(modifier = Modifier.fillMaxSize()) {
-            /*Layout(
-                modifier = Modifier.align(Alignment.Center),
-                content = {
-                    Card(
-                        modifier = Modifier.size(72.dp),
-                        shape = Shapes.large,
-                        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.ic_lab_twelve_background))
-                    ) {
-                        Image(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp),
-                            painter = painterResource(id = R.drawable.ic_the_lab_12_logo_white),
-                            contentDescription = "Lab Icon"
-                        )
-                    }
-
-                    Text(text = viewModel.appVersion.value.toString())
-                },
-                measurePolicy = { measurables, constraints ->
-                    val icon = measurables[0].measure(constraints)
-                    val appVersion = measurables[1].measure(constraints)
-                    layout(
-                        width = appVersion.width + icon.width,
-                        height = maxOf(appVersion.height, icon.height * 2, constraints.minHeight)
-                    ) {
-                        icon.placeRelative(0, 0)
-                        appVersion.placeRelative(0, icon.height)
-                    }
-                })*/
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -159,7 +128,7 @@ fun LoadingContent(@PreviewParameter(SplashScreenViewModelPreviewProvider::class
 
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text = version,
+                    text = if (LocalInspectionMode.current) "12.0.0" else version,
                     style = TextStyle(color = Color.White)
                 )
             }
@@ -169,7 +138,7 @@ fun LoadingContent(@PreviewParameter(SplashScreenViewModelPreviewProvider::class
                     .fillMaxWidth(0.5f)
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 72.dp),
-                visible = progressBarVisibility.value
+                visible = if (LocalInspectionMode.current) false else progressBarVisibility.value
             ) {
                 LinearProgressIndicator(
                     modifier = Modifier

@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -18,6 +19,10 @@ class LoginViewModel @Inject constructor(
 
     private val login: MutableLiveData<ApiResponse> = MutableLiveData()
     private val loginError: MutableLiveData<ApiResponse> = MutableLiveData()
+
+    private var _loginUiState = MutableStateFlow(ApiResponse())
+    val loginUiState = _loginUiState
+
     private val dataStoreEmail = repository.getEmailPref().asLiveData()
     private val dataStorePassword = repository.getPasswordPref().asLiveData()
     private val dataStoreRememberCredentials = repository.isRememberCredentialsPref().asLiveData()
@@ -79,13 +84,21 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch(ioContext) {
             try {
                 supervisorScope {
-                    val response = repository.login(user)
+
+                    flow<ApiResponse> {
+                        val response = repository.login(user)
+                        Timber.d("$response")
+
+                        _loginUiState.emit(response)
+                    }
+
+                    /*val response = repository.login(user)
                     Timber.d("$response")
 
                     withContext(mainContext) {
                         login.value = response
 
-                    }
+                    }*/
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -93,8 +106,15 @@ class LoginViewModel @Inject constructor(
 
                 val cs: CharSequence = "404".subSequence(0, 3)
                 if (e.message?.contains(cs, true) == true) {
-                    withContext(mainContext) {
-                        loginError.value = ApiResponse("", 404, null)
+                    /* withContext(mainContext) {
+                         loginError.value = ApiResponse("", 404, null)
+                     }*/
+
+                    flow<ApiResponse> {
+                        val response = repository.login(user)
+                        Timber.d("$response")
+
+                        _loginUiState.emit(ApiResponse("", 404, null))
                     }
                 }
             }

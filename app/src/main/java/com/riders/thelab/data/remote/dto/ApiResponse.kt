@@ -7,4 +7,6 @@ data class ApiResponse(
     val message: String,
     val code: Int,
     val token: String? = null
-)
+) {
+    constructor() : this("", -1)
+}
