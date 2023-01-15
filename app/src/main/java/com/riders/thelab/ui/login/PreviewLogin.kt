@@ -11,6 +11,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.Lock
@@ -26,6 +27,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -67,7 +70,12 @@ fun LoginForm(viewModel: LoginViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     value = viewModel.login.value,
                     onValueChange = { viewModel.updateLogin(it) },
-                    maxLines = 1
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.None,
+                        autoCorrect = false,
+                        keyboardType = KeyboardType.Email
+                    )
                 )
             }
 
@@ -89,7 +97,12 @@ fun LoginForm(viewModel: LoginViewModel) {
                     value = viewModel.password.value,
                     onValueChange = { viewModel.updatePassword(it) },
                     maxLines = 1,
-                    visualTransformation = PasswordVisualTransformation()
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.None,
+                        autoCorrect = false,
+                        keyboardType = KeyboardType.Ascii
+                    )
                 )
             }
 
@@ -156,9 +169,7 @@ fun LoginContent(viewModel: LoginViewModel) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Card(
-                    modifier = Modifier
-                        .size(96.dp)
-                        .padding(bottom = 48.dp),
+                    modifier = Modifier.size(96.dp),
                     shape = Shapes.large,
                     colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.ic_lab_twelve_background))
                 ) {
@@ -176,7 +187,8 @@ fun LoginContent(viewModel: LoginViewModel) {
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .padding(bottom = 72.dp),
-                    visible = if (LocalInspectionMode.current) true else versionVisibility.value
+                    visible = if (LocalInspectionMode.current) true else versionVisibility.value,
+                    exit = fadeOut()
                 ) {
                     Text(
                         modifier = Modifier.padding(8.dp),
@@ -190,6 +202,7 @@ fun LoginContent(viewModel: LoginViewModel) {
                     modifier = Modifier.fillMaxWidth(0.85f),
                     visible = if (LocalInspectionMode.current) false else formVisibility.value
                 ) {
+                    Spacer(modifier = Modifier.size(32.dp))
                     LoginForm(viewModel = viewModel)
                 }
             }
@@ -291,7 +304,7 @@ fun LoginForm() {
                     modifier = Modifier.fillMaxWidth(),
                     value = login.value,
                     onValueChange = { login.value = it },
-                    maxLines = 1
+                    maxLines = 1,
                 )
             }
 

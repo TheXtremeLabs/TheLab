@@ -171,6 +171,13 @@ internal object ApiModule {
                 response
             })
             .addInterceptor(provideOkHttpLogger())
+            .connectionSpecs(
+                listOf(
+                    ConnectionSpec.CLEARTEXT,
+                    ConnectionSpec.COMPATIBLE_TLS,
+                    ConnectionSpec.MODERN_TLS,
+                )
+            )
             .build()
     }
 
