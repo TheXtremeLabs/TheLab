@@ -7,6 +7,7 @@ import com.riders.thelab.ui.contacts.addcontact.AddContactActivity
 import com.riders.thelab.ui.login.LoginActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
 import com.riders.thelab.ui.settings.SettingsActivity
+import com.riders.thelab.ui.signup.SignUpActivity
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
 import com.riders.thelab.ui.weather.WeatherActivity
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -30,6 +31,9 @@ class Navigator constructor(
         activity.startActivity(intent, optionsCompat)
     }
 
+    fun callSignUpActivity() {
+        activity.startActivity(Intent(activity, SignUpActivity::class.java))
+    }
     fun callSignUpActivity(intent: Intent, optionsCompat: Bundle) {
         Timber.d("Apply login activity transition")
         activity.startActivity(intent, optionsCompat)

@@ -222,6 +222,7 @@ dependencies {
     kapt(Dependencies.hiltAndroidXCompiler)
     implementation(Dependencies.hiltWork)
     kapt(Dependencies.hiltKaptAndroidXCompiler)
+    implementation(Dependencies.hiltComposeNavigation)
 
     // Google Location (Maps / Places)
     implementation(Dependencies.maps)
@@ -301,7 +302,7 @@ dependencies {
     implementation(Dependencies.timber)
 
     // kotols Types
-    implementation(Dependencies.timber)
+    implementation(Dependencies.kotoolsTypes)
 
 
     /////////////////////////////

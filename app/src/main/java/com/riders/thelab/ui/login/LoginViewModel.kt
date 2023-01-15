@@ -1,14 +1,17 @@
 package com.riders.thelab.ui.login
 
+
+import android.util.Patterns
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.riders.thelab.data.IRepository
+import com.riders.thelab.data.local.model.compose.LoginUiState
 import com.riders.thelab.data.remote.dto.ApiResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -17,15 +20,31 @@ class LoginViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
 
-    private val login: MutableLiveData<ApiResponse> = MutableLiveData()
+    private val loginldata: MutableLiveData<ApiResponse> = MutableLiveData()
     private val loginError: MutableLiveData<ApiResponse> = MutableLiveData()
 
-    private var _loginUiState = MutableStateFlow(ApiResponse())
-    val loginUiState = _loginUiState
-
+    //////////////////////////////////////////
+    // DataStore
+    //////////////////////////////////////////
     private val dataStoreEmail = repository.getEmailPref().asLiveData()
     private val dataStorePassword = repository.getPasswordPref().asLiveData()
     private val dataStoreRememberCredentials = repository.isRememberCredentialsPref().asLiveData()
+
+    //////////////////////////////////////////
+    // Compose states
+    //////////////////////////////////////////
+    var login = mutableStateOf("")
+    var password = mutableStateOf("")
+    fun updateLogin(value: String) {
+        login.value = value
+    }
+
+    fun updatePassword(value: String) {
+        password.value = value
+    }
+
+    private var _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.None)
+    val loginUiState = _loginUiState
 
     // Backing property to avoid state updates from other classes
     private val _networkState: MutableStateFlow<NetworkState> =
@@ -59,7 +78,7 @@ class LoginViewModel @Inject constructor(
     // Observers
     //
     ///////////////
-    fun getLogin(): LiveData<ApiResponse> = login
+    fun getLogin(): LiveData<ApiResponse> = loginldata
     fun getLoginError(): LiveData<ApiResponse> = loginError
     fun getDataStoreEmail() = dataStoreEmail
     fun getDataStorePassword() = dataStorePassword
@@ -71,6 +90,30 @@ class LoginViewModel @Inject constructor(
     // Functions
     //
     ///////////////
+    fun login() {
+        Timber.d("login()")
+        if (!isValidLogin()) {
+            Timber.e("!isValidLogin()")
+            return
+        }
+        if (!isValidPassword()) {
+            Timber.e("!isValidPassword()")
+            return
+        }
+
+        _loginUiState.value = LoginUiState.Loading
+
+        viewModelScope.launch {
+            delay(2500L)
+            makeCallLogin(login.value, password.value)
+        }
+    }
+
+    fun isValidLogin() =
+        login.value.trim().isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(login.value).matches()
+
+    fun isValidPassword() = password.value.trim().isNotEmpty() && password.value.length >= 4
+
     fun makeCallLogin(email: String, password: String) {
         Timber.d("makeCallLogin() - with $email and $password")
 
@@ -84,38 +127,20 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch(ioContext) {
             try {
                 supervisorScope {
-
-                    flow<ApiResponse> {
-                        val response = repository.login(user)
-                        Timber.d("$response")
-
-                        _loginUiState.emit(response)
-                    }
-
-                    /*val response = repository.login(user)
+                    val response = repository.login(user)
                     Timber.d("$response")
 
-                    withContext(mainContext) {
-                        login.value = response
-
-                    }*/
+                    _loginUiState.value = LoginUiState.Success(response)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 Timber.e(e.message)
 
-                val cs: CharSequence = "404".subSequence(0, 3)
-                if (e.message?.contains(cs, true) == true) {
-                    /* withContext(mainContext) {
-                         loginError.value = ApiResponse("", 404, null)
-                     }*/
-
-                    flow<ApiResponse> {
-                        val response = repository.login(user)
-                        Timber.d("$response")
-
-                        _loginUiState.emit(ApiResponse("", 404, null))
-                    }
+                val cs404: CharSequence = "404".subSequence(0, 3)
+                val cs503: CharSequence = "503".subSequence(0, 3)
+                if (e.message?.contains(cs404, true) == true
+                    || e.message?.contains(cs503, true) == true) {
+                    _loginUiState.value = LoginUiState.Error(ApiResponse("", 404, null))
                 }
             }
         }

@@ -1,37 +1,27 @@
 package com.riders.thelab.ui.splashscreen
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.media.MediaPlayer
-import android.media.MediaPlayer.OnCompletionListener
-import android.media.MediaPlayer.OnPreparedListener
-import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.view.View
 import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.animation.addListener
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.LabAnimationsManager
+import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.utils.LabCompatibilityManager
-import com.riders.thelab.databinding.ActivitySplashscreenBinding
 import com.riders.thelab.navigator.Navigator
-import com.riders.thelab.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
@@ -69,7 +59,7 @@ class SplashScreenActivity : AppCompatActivity(), CoroutineScope {
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
 
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 try {
                     videoPath =
                         ANDROID_RES_PATH +
@@ -83,7 +73,15 @@ class SplashScreenActivity : AppCompatActivity(), CoroutineScope {
                 }
 
                 setContent {
-                    SplashScreenContent(mViewModel, videoPath)
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            SplashScreenContent(mViewModel, videoPath)
+                        }
+                    }
                 }
             }
         }
