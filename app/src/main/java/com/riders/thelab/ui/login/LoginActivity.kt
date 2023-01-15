@@ -59,6 +59,9 @@ class LoginActivity : AppCompatActivity(),
 
     var isPasswordVisible: Boolean = false
 
+
+    //TODO : Due to Heroku back-end free services ending,
+    // Use of the database to store and log users
     private val mViewModel: LoginViewModel by viewModels()
 
     private var mNetworkManager: LabNetworkManagerNewAPI? = null
@@ -72,8 +75,6 @@ class LoginActivity : AppCompatActivity(),
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _viewBinding = ActivityLoginBinding.inflate(layoutInflater)
-        // setContentView(binding.root)
 
         if (BuildConfig.DEBUG) {
             mNetworkManager = LabNetworkManagerNewAPI.getInstance(this@LoginActivity)
@@ -81,15 +82,9 @@ class LoginActivity : AppCompatActivity(),
             Timber.d("Is app online : $isOnline")
         }
 
-        setListeners()
         initViewModelObservers()
 
         navigator = Navigator(this)
-
-        lifecycleScope.launch(coroutineContext) {
-            delay(TimeUnit.MILLISECONDS.toMillis(750))
-            binding.motionLayout.transitionToEnd()
-        }
 
         // Start a coroutine in the lifecycle scope
         lifecycleScope.launch {
@@ -163,31 +158,10 @@ class LoginActivity : AppCompatActivity(),
 
     private fun initViewModelObservers() {
         Timber.d("initViewModelObservers()")
-        mViewModel.getDataStoreEmail().observe(this) { binding.inputEmail.setText(it) }
+        /*mViewModel.getDataStoreEmail().observe(this) { binding.inputEmail.setText(it) }
         mViewModel.getDataStorePassword().observe(this) { binding.inputPassword.setText(it) }
         mViewModel.getDataStoreRememberCredentials()
-            .observe(this) { binding.cbRememberMe.isChecked = it }
-
-        mViewModel.getLogin().observe(this) {
-            when (it.message) {
-                "Login okay" -> {
-                    hideLoading()
-                    onLoginSuccessful()
-                }
-                "Not Found" -> {
-                    hideLoading()
-                    onLoginFailed()
-                }
-                else -> {
-                    Timber.e("else, ${it.message}")
-                }
-            }
-        }
-
-        mViewModel.getLoginError().observe(this) {
-            hideLoading()
-            onLoginFailed()
-        }
+            .observe(this) { binding.cbRememberMe.isChecked = it }*/
 
         mNetworkManager?.getConnectionState()?.observe(
             this
@@ -197,19 +171,6 @@ class LoginActivity : AppCompatActivity(),
                 it
             )
         }
-    }
-
-    @SuppressLint("SetTextI18n")
-    fun preloadData() {
-        Timber.d("preloadData()")
-        binding.inputEmail.setText("janedoe@test.fr")
-        binding.inputPassword.setText("test")
-    }
-
-    private fun onLoginSuccessful() {
-        Timber.d("onLoginSuccessful()")
-        hideLoading()
-        callMainActivity()
     }
 
     private fun onLoginFailed() {
