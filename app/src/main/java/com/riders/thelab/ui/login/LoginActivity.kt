@@ -16,8 +16,13 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.CompoundButton
 import android.widget.TextView
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
@@ -26,6 +31,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.BuildConfig
 import com.riders.thelab.R
+import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.databinding.ActivityLoginBinding
@@ -67,7 +73,7 @@ class LoginActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _viewBinding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        // setContentView(binding.root)
 
         if (BuildConfig.DEBUG) {
             mNetworkManager = LabNetworkManagerNewAPI.getInstance(this@LoginActivity)
@@ -87,6 +93,20 @@ class LoginActivity : AppCompatActivity(),
 
         // Start a coroutine in the lifecycle scope
         lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                setContent {
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            LoginContent(viewModel = mViewModel)
+                        }
+                    }
+                }
+            }
+
             // repeatOnLifecycle launches the block in a new coroutine every time the
             // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -111,6 +131,7 @@ class LoginActivity : AppCompatActivity(),
                         }
                     }
                 }
+
             }
         }
     }
@@ -339,7 +360,7 @@ class LoginActivity : AppCompatActivity(),
 
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun callMainActivity() {
+    fun callMainActivity() {
         Timber.d("callMainActivity()")
 
         lifecycleScope.launch(coroutineContext) {
@@ -349,9 +370,9 @@ class LoginActivity : AppCompatActivity(),
         }
     }
 
-    private fun callSignUpActivity() {
+     fun callSignUpActivity() {
         Timber.d("callSignUpActivity()")
-
+/*
         val intent = Intent(this, SignUpActivity::class.java)
 
         val sePairThumb: Pair<View, String> =
@@ -364,7 +385,8 @@ class LoginActivity : AppCompatActivity(),
 
         // Call navigator to switch activity with or without transition according
         // to the device's version running the application
-        options.toBundle()?.let { navigator.callSignUpActivity(intent, it) }
+        options.toBundle()?.let { navigator.callSignUpActivity(intent, it) }*/
+         navigator.callSignUpActivity()
     }
 
     override fun onClick(view: View?) {

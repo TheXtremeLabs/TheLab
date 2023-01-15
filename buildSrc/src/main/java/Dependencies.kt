@@ -149,6 +149,7 @@ object Dependencies {
     val hiltAndroidXCompiler by lazy { "androidx.hilt:hilt-compiler:${DependenciesVersions.hiltAndroidX}" }
     val hiltWork by lazy { "androidx.hilt:hilt-work:${DependenciesVersions.hiltAndroidX}" }
     val hiltKaptAndroidXCompiler by lazy { "androidx.hilt:hilt-compiler:${DependenciesVersions.hiltAndroidX}" }
+    val hiltComposeNavigation by lazy { "androidx.hilt:hilt-navigation-compose:1.0.0-alpha02" }
 
     // Google Maps
     val maps by lazy { "com.google.android.gms:play-services-maps:${DependenciesVersions.maps}" }
