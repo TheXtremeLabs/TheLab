@@ -27,13 +27,15 @@ import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlin.random.Random
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
@@ -49,8 +51,15 @@ class MainActivityViewModel @Inject constructor(
 
     private val weather: MutableLiveData<ProcessedWeather> = MutableLiveData()
 
-    private val applications: MutableLiveData<List<App>> = MutableLiveData()
-    private val whatsNewApps: MutableLiveData<List<App>> = MutableLiveData()
+    //////////////////////////////////////////
+    // Coroutines
+    //////////////////////////////////////////
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { coroutineContext, throwable ->
+            throwable.printStackTrace()
+            Timber.e(throwable.message)
+        }
+
 
     //////////////////////////////////////////
     // Compose states
@@ -89,15 +98,12 @@ class MainActivityViewModel @Inject constructor(
         return repository.getLocationStatusData()
     }
 
-    fun getProgressVisibility(): LiveData<Boolean> = progressVisibility
     fun getImagesFetchedDone(): LiveData<Boolean> = imagesFetchedDone
     fun getImagesFetchedFailed(): LiveData<Boolean> = imagesFetchedFailed
     fun getImageUrl(): LiveData<String> = imageUrl
 
     fun getWeather(): LiveData<ProcessedWeather> = weather
 
-    fun getApplications(): LiveData<List<App>> = applications
-    fun getWhatsNewApp(): LiveData<List<App>> = whatsNewApps
 
     fun addDataSource(locationStatus: LiveData<Boolean>) {
         Timber.d("addLocationStatusDataSource()")
@@ -126,16 +132,16 @@ class MainActivityViewModel @Inject constructor(
     /**
      * Fetch Firebase Storage files and load background image from REST database
      */
-    fun getWallpaperImages(context: FragmentActivity) {
+    fun getWallpaperImages(context: Activity) {
         Timber.d("getFirebaseFiles()")
         progressVisibility.value = true
 
-        viewModelScope.launch(ioContext) {
+        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
             try {
                 val storageReference: StorageReference? = repository.getStorageReference(context)
 
                 storageReference?.let {
-                    withContext(mainContext) {
+                    withContext(Main) {
                         // Create a child reference
                         // imagesRef now points to "images"
                         val imagesRef: StorageReference = it.child("images/dark_theme")
@@ -181,7 +187,7 @@ class MainActivityViewModel @Inject constructor(
     // So, in order to use that, we need to make our function suspend too.
     fun fetchWeather(context: Context, latitude: Double, longitude: Double) {
         Timber.d("suspend fetchWeather()")
-        viewModelScope.launch(ioContext) {
+        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
             try {
                 supervisorScope {
 
@@ -210,7 +216,7 @@ class MainActivityViewModel @Inject constructor(
                             ProcessedWeather(cityName, cityCountry, fetchWeather)
 
                         // back on UI thread
-                        withContext(mainContext) {
+                        withContext(Main) {
                             weather.value = mProcessedWeather
                         }
                     }
@@ -240,8 +246,6 @@ class MainActivityViewModel @Inject constructor(
         if (appList.isEmpty()) {
             Timber.e("app list is empty")
         } else {
-            applications.value = appList
-
             _appList.value = appList
         }
     }
@@ -256,8 +260,6 @@ class MainActivityViewModel @Inject constructor(
             .getActivityList()
             .sortedByDescending { (it as LocalApp).appDate }
             .take(3)
-
-        this.whatsNewApps.value = mWhatsNewApps
 
         _whatsNewAppList.value = mWhatsNewApps
     }
@@ -299,10 +301,5 @@ class MainActivityViewModel @Inject constructor(
 
     private fun launchActivity(navigator: Navigator, activity: Class<out Activity>) {
         navigator.callIntentActivity(activity)
-    }
-
-    companion object {
-        val ioContext = Dispatchers.IO + Job()
-        val mainContext = Dispatchers.Main + Job()
     }
 }
