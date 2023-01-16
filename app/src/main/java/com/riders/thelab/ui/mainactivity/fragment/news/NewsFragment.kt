@@ -11,7 +11,6 @@ import com.riders.thelab.R
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.databinding.FragmentNewsBinding
 import com.riders.thelab.ui.base.BaseFragment
-import com.riders.thelab.ui.mainactivity.MainActivityAppClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -42,26 +41,6 @@ class NewsFragment : BaseFragment(), View.OnClickListener {
 
     private var item: App? = null
 
-    /**
-     * passing data between fragments
-     */
-    private var listener: MainActivityAppClickListener? = null
-
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        listener =
-            if (context is MainActivityAppClickListener) {
-                context
-            } else {
-                throw ClassCastException(
-                    context.toString()
-                            + " must implement MainActivityAppClickListener"
-                )
-            }
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -74,9 +53,7 @@ class NewsFragment : BaseFragment(), View.OnClickListener {
             if (null != extras.getParcelable(EXTRA_APP)) {
                 item = extras.getParcelable(EXTRA_APP)
             }
-            /*(extras.getParcelable(EXTRA_APP) as App?)?.let {
-                item = it
-            }*/
+
         }
     }
 
@@ -116,12 +93,6 @@ class NewsFragment : BaseFragment(), View.OnClickListener {
     }
 
     override fun onClick(view: View?) {
-        if (view != null) {
-            when (view.id) {
-                R.id.root_container -> item?.let { listener!!.onAppItemClickListener(view, it) }
-            }
-
-        }
     }
 
     override fun onConnected(isConnected: Boolean) {

@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.splashscreen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -45,6 +44,7 @@ import timber.log.Timber
 fun VideoView(viewModel: SplashScreenViewModel, videoUri: String) {
 
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     val exoPlayer = ExoPlayer.Builder(LocalContext.current)
         .build()
@@ -70,19 +70,23 @@ fun VideoView(viewModel: SplashScreenViewModel, videoUri: String) {
                         super.onPlaybackStateChanged(playbackState)
                         when (playbackState) {
                             Player.STATE_READY -> {
-                                Timber.d( "State.READY")
+                                Timber.d("State.READY")
                             }
                             Player.STATE_IDLE -> {
-                                Timber.i( "State.STATE_IDLE")
+                                Timber.i("State.STATE_IDLE")
                             }
                             Player.STATE_BUFFERING -> {
                                 Timber.d("State.STATE_BUFFERING")
                             }
                             Player.STATE_ENDED -> {
-                                Timber.e( "State.STATE_ENDED")
-                                viewModel.updateVideoViewVisibility(false)
-                                viewModel.updateSplashLoadingContentVisibility(true)
-                                viewModel.updateStartCountDown(true)
+                                Timber.e("State.STATE_ENDED")
+
+                                scope.launch {
+                                    viewModel.updateVideoViewVisibility(false)
+                                    viewModel.updateSplashLoadingContentVisibility(true)
+                                    delay(250L)
+                                    viewModel.updateStartCountDown(true)
+                                }
                             }
                         }
                     }

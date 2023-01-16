@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 
 class ColorActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

@@ -114,13 +114,13 @@ class LoginActivity : AppCompatActivity(),
                             networkState = state.available
                             //enableEditTexts()
                             //enableButton()
-                           // hideMainActivityButton()
+                            // hideMainActivityButton()
                         }
 
                         is NetworkState.Disconnected -> {
                             networkState = state.disconnected
                             //disableEditTexts()
-                           // disableButton()
+                            // disableButton()
                             //showGoToMainActivityButton()
                         }
                     }

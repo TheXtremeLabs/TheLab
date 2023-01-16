@@ -54,7 +54,8 @@ class MainActivityViewModel @Inject constructor(
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    var searchedAppRequest = mutableStateOf("Search an App...")
+    var searchedAppRequest = mutableStateOf("")
+    var keyboardVisible = mutableStateOf(false)
 
     // Backing property to avoid state updates from other classes
     private val _whatsNewAppList: MutableStateFlow<List<App>> =
@@ -69,6 +70,10 @@ class MainActivityViewModel @Inject constructor(
 
     // The UI collects from this StateFlow to get its state updates
     val appList: StateFlow<List<App>> = _appList
+
+    fun updateKeyboardVisible(isVisible: Boolean) {
+        keyboardVisible.value = isVisible
+    }
 
     //////////////////////////////////
     //

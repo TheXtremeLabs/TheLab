@@ -301,7 +301,7 @@ dependencies {
     // Timber : Logging library
     implementation(Dependencies.timber)
 
-    // kotols Types
+    // Kotools Types
     implementation(Dependencies.kotoolsTypes)
 
 

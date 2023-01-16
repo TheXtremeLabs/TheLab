@@ -367,7 +367,7 @@ class GoogleDriveActivity
         // Load client secrets.
         val mInputStream: InputStream =
             this@GoogleDriveActivity.javaClass.getResourceAsStream(CREDENTIALS_FILE_PATH)
-                ?: throw  FileNotFoundException("Resource not found: $CREDENTIALS_FILE_PATH")
+                ?: throw FileNotFoundException("Resource not found: $CREDENTIALS_FILE_PATH")
         val clientSecrets: GoogleClientSecrets =
             GoogleClientSecrets.load(JSON_FACTORY, InputStreamReader(mInputStream))
 
