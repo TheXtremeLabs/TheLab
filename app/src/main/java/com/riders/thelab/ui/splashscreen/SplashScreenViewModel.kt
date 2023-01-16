@@ -3,8 +3,6 @@ package com.riders.thelab.ui.splashscreen
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import timber.log.Timber
 
@@ -15,14 +13,16 @@ class SplashScreenViewModel : ViewModel() {
     //////////////////////////////////////////
     var version = mutableStateOf("")
     val videoViewVisibility = mutableStateOf(true)
-    val splashLoadingContentVisibility  = mutableStateOf(false)
-    val startCountDown  = mutableStateOf(false)
+    val splashLoadingContentVisibility = mutableStateOf(false)
+    val startCountDown = mutableStateOf(false)
     fun updateVideoViewVisibility(isVisible: Boolean) {
         videoViewVisibility.value = isVisible
     }
+
     fun updateSplashLoadingContentVisibility(isVisible: Boolean) {
         splashLoadingContentVisibility.value = isVisible
     }
+
     fun updateStartCountDown(started: Boolean) {
         startCountDown.value = started
     }

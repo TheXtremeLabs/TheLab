@@ -34,6 +34,7 @@ class Navigator constructor(
     fun callSignUpActivity() {
         activity.startActivity(Intent(activity, SignUpActivity::class.java))
     }
+
     fun callSignUpActivity(intent: Intent, optionsCompat: Bundle) {
         Timber.d("Apply login activity transition")
         activity.startActivity(intent, optionsCompat)

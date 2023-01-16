@@ -63,7 +63,6 @@ import com.riders.thelab.data.local.model.app.LocalApp
 import com.riders.thelab.data.local.model.app.PackageApp
 import com.riders.thelab.databinding.ActivityMainBinding
 import com.riders.thelab.navigator.Navigator
-import com.riders.thelab.ui.mainactivity.fragment.bottomsheet.BottomSheetFragment
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import com.riders.thelab.ui.weather.WeatherUtils
 import com.riders.thelab.utils.Constants.Companion.GPS_REQUEST
@@ -82,10 +81,8 @@ import kotlin.coroutines.CoroutineContext
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(),
     CoroutineScope,
-    View.OnClickListener, SearchView.OnQueryTextListener,
-    Toolbar.OnMenuItemClickListener, OnOffsetChangedListener,
-    ConnectivityListener, LocationListener, OnGpsListener,
-    MainActivityAppClickListener {
+    View.OnClickListener,
+    ConnectivityListener, LocationListener, OnGpsListener{
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
@@ -106,9 +103,6 @@ class MainActivity : AppCompatActivity(),
     private var isShow = false
     private var scrollRange = -1
 
-    // Menu
-    private var menu: Menu? = null
-
     // Location
     private var labLocationManager: LabLocationManager? = null
     private var locationReceiver: LocationBroadcastReceiver? = null
@@ -123,11 +117,6 @@ class MainActivity : AppCompatActivity(),
     // Time
     private var isTimeUpdatedStarted: Boolean = false
     private var isConnected: Boolean = true
-
-    // Content
-    private var mAppsAdapter: RecyclerView.Adapter<*>? = null
-    private var mWhatsNewAdapter: WhatsNewAdapter? = null
-    private var isStaggeredLayout: Boolean = false
 
     private var mThread: Thread? = null
 
@@ -247,14 +236,6 @@ class MainActivity : AppCompatActivity(),
         if (resultCode == Activity.RESULT_OK && requestCode == GPS_REQUEST) {
             isGPS = true // flag maintain before get location
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        Timber.d("onCreateOptionsMenu()")
-        this.menuInflater.inflate(R.menu.menu_main, menu)
-        this.menu = menu
-        mViewModel.checkConnection(this)
-        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -485,15 +466,6 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    /**
-     * Set up views (recycler views, spinner, etc...)
-     */
-    private fun initViews() {
-        // initCollapsingToolbar()
-        initToolbar()
-        setListeners()
-    }
-
     @DelicateCoroutinesApi
     private fun initViewModelsObservers() {
 
@@ -558,13 +530,6 @@ class MainActivity : AppCompatActivity(),
             ) { locationStatus ->
                 Timber.d("getLocationData().observe : $locationStatus")
 
-                UIManager.updateToolbarIcon(
-                    this@MainActivity,
-                    menu!!,
-                    R.id.action_location_settings,
-                    if (!locationStatus) R.drawable.ic_location_off else R.drawable.ic_location_on
-                )
-
             }
 
         mViewModel.getWeather().observe(
@@ -588,26 +553,6 @@ class MainActivity : AppCompatActivity(),
             // bind data
             binding.includeContentLayout.tvWeather.text = sb.toString()
         }
-
-        mViewModel.getWhatsNewApp().observe(this) { whatsNewApps ->
-            Timber.d("getWhatsNewApp.observe()")
-
-            if (whatsNewApps.isEmpty()) {
-                Timber.d("WhatsNewApps list is empty")
-            } else {
-                setupWhatsNewsRecyclerView(whatsNewApps)
-            }
-        }
-
-        mViewModel.getApplications().observe(this) { appList ->
-            Timber.d("onSuccessPackageList.observe()")
-
-            if (appList.isEmpty()) {
-                Timber.d("App list is empty")
-            } else {
-                setupAppsRecyclerView(appList)
-            }
-        }
     }
 
     private fun retrieveApplications() {
@@ -615,42 +560,11 @@ class MainActivity : AppCompatActivity(),
         mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
     }
 
-
-    /**
-     * Initializing collapsing toolbar
-     * Will show and hide the toolbar txtPostTitle on scroll
-     */
-    /*private fun initCollapsingToolbar() {
-        binding.includeToolbarLayout?.collapsingToolbar?.title = " "
-        binding.includeToolbarLayout?.appbar?.setExpanded(true)
-
-        // hiding & showing the txtPostTitle when toolbar expanded & collapsed
-        binding.includeToolbarLayout?.appbar?.addOnOffsetChangedListener(this)
-    }*/
-
-
-    /**
-     * Setup Toolbar menu icon differently than the basic way because of the collapsing toolbar
-     * <p>
-     * We want the button to show up only when the toolbar is collapsed
-     * <p>
-     * https://stackoverflow.com/questions/10692755/how-do-i-hide-a-menu-item-in-the-actionbar#:~:text=The%20best%20way%20to%20hide,menu%20inside%20the%20same%20group.&text=Then%2C%20on%20your%20activity%20(preferable,visibility%20to%20false%20or%20true.
-     */
-    private fun initToolbar() {
-        binding.includeToolbarLayout.toolbar.inflateMenu(R.menu.menu_main)
-        menu = binding.includeToolbarLayout.toolbar.menu
-
-        menu?.let { menu -> UIManager.hideMenuButtons(menu) }
-
-        binding.includeToolbarLayout.toolbar.setOnMenuItemClickListener(this)
-    }
-
     private fun setListeners() {
         Timber.d("setListeners()")
         binding.includeToolbarLayout.ivInternetStatus.setOnClickListener(this)
         binding.includeToolbarLayout.ivLocationStatus.setOnClickListener(this)
         binding.includeToolbarLayout.ivSettings.setOnClickListener(this)
-        binding.includeToolbarLayout.searchView.setOnQueryTextListener(this)
 
         binding.includeContentLayout.btnMoreInfo.setOnClickListener(this)
         binding.includeContentLayout.ivLinearLayout.setOnClickListener(this)
@@ -667,139 +581,7 @@ class MainActivity : AppCompatActivity(),
             helper.attachToRecyclerView(binding.includeContentLayout.rvWhatSNew)
             binding.includeContentLayout.rvWhatSNew.itemAnimator = DefaultItemAnimator()
         }
-
-        mWhatsNewAdapter = WhatsNewAdapter(this, list, this)
-        // Classic Linear layout manager
-        val layoutManager = LinearLayoutManager(
-            this, LinearLayoutManager.HORIZONTAL, false
-        )
-
-        with(binding.includeContentLayout.rvWhatSNew.layoutParams) {
-            this!!.width = ViewGroup.LayoutParams.MATCH_PARENT
-            this.height = ViewGroup.LayoutParams.MATCH_PARENT
-        }
-
-        // set LayoutManager to RecyclerView
-        binding.includeContentLayout.rvWhatSNew.layoutManager = layoutManager
-        binding.includeContentLayout.rvWhatSNew.adapter = mWhatsNewAdapter
-
-        try {
-
-            val viewHolder =
-                binding.includeContentLayout.rvWhatSNew.findViewHolderForAdapterPosition(0)
-
-            if (null == viewHolder) {
-                Timber.e("null == viewHolder | unable to get viewHolder instance for position 0")
-            } else {
-                val progressBar = (viewHolder as RowWhatsNewViewHolder).getProgressBar()
-                Timber.d("null != viewHolder | get progressBar instance $progressBar")
-            }
-
-
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-            Timber.e("${exception.message}")
-        }
     }
-
-
-    private fun setupAppsRecyclerView(appList: List<App>) {
-        Timber.d("setupAppsRecyclerView()")
-
-        binding.includeContentLayout.appRecyclerView.setHasFixedSize(true)
-        if (LabCompatibilityManager.isTablet(this)) {
-            val helper = ItemSnapHelper()
-            helper.attachToRecyclerView(binding.includeContentLayout.appRecyclerView)
-            binding.includeContentLayout.appRecyclerView.itemAnimator = DefaultItemAnimator()
-        }
-
-        val layoutManager: RecyclerView.LayoutManager?
-
-        if (!LabCompatibilityManager.isTablet(this)) {
-            if (!isStaggeredLayout) {
-                mAppsAdapter = MainActivityAdapter(this, appList, this)
-                // Classic Linear layout manager
-                layoutManager = LinearLayoutManager(
-                    this,
-                    if (!LabCompatibilityManager.isTablet(this)) LinearLayoutManager.VERTICAL
-                    else LinearLayoutManager.HORIZONTAL, false
-                )
-
-                with(binding.includeContentLayout.appRecyclerView.layoutParams) {
-                    this!!.width = ViewGroup.LayoutParams.MATCH_PARENT
-                    this.height = ViewGroup.LayoutParams.MATCH_PARENT
-                }
-            } else {
-                mAppsAdapter = MainActivityStaggeredAdapter(this, appList, this)
-                // set a StaggeredGridLayoutManager with 3 number of columns and vertical orientation
-                layoutManager =
-                    StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
-
-                with(binding.includeContentLayout.appRecyclerView.layoutParams) {
-                    this!!.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                    this.height = ViewGroup.LayoutParams.MATCH_PARENT
-                }
-            }
-            // set LayoutManager to RecyclerView
-            binding.includeContentLayout.appRecyclerView.layoutManager = layoutManager
-            mAppsAdapter?.notifyItemRangeChanged(0, mAppsAdapter?.itemCount ?: 0)
-        }
-
-        binding.includeContentLayout.appRecyclerView.adapter = mAppsAdapter
-    }
-
-
-    private fun showBottomSheetDialogFragment() {
-        val bottomSheetFragment = BottomSheetFragment()
-        bottomSheetFragment.show(this.supportFragmentManager, bottomSheetFragment.tag)
-    }
-
-
-    private fun showItemDetail(app: App) {
-        /*binding.app = app
-
-        if (View.INVISIBLE == binding.clDetailItem?.visibility)
-            binding.clDetailItem?.visibility = View.VISIBLE
-        binding.clDetailItem?.let { UIManager.showView(it) }
-
-        binding.ivItemDetail?.let {
-            UIManager.loadImage(
-                this,
-                app.appDrawableIcon,
-                it,
-                LabGlideListener(
-                    onLoadingSuccess = { resource ->
-                        if (binding.itemDetailBtn?.visibility == View.GONE) {
-                            binding.itemDetailBtn?.visibility = View.VISIBLE
-                        }
-
-                        if (app.appTitle == "Palette") {
-                            val myBitmap: Bitmap = UIManager.drawableToBitmap(resource!!)
-                            val newBitmap =
-                                UIManager.addGradientToImageView(this@MainActivity, myBitmap)
-
-                            binding.ivItemDetail?.setImageDrawable(
-                                BitmapDrawable(this@MainActivity.resources, newBitmap)
-                            )
-                            return@LabGlideListener true
-                        }
-                        if (app.appTitle == "WIP") {
-                            binding.ivItemDetail?.setImageDrawable(
-                                ContextCompat.getDrawable(
-                                    this@MainActivity,
-                                    R.drawable.logo_testing
-                                )
-                            )
-                            binding.itemDetailBtn?.visibility = View.GONE
-                            return@LabGlideListener true
-                        }
-
-                        false
-                    })
-            )
-        }*/
-    }
-
     private fun toggleLocation() {
         Timber.e("toggleLocation()")
         if (!isGPS) mGpsUtils.turnGPSOn(this)
@@ -824,12 +606,6 @@ class MainActivity : AppCompatActivity(),
                         @Suppress("DEPRECATION")
                         isWifiEnabled = true
 
-                        UIManager.updateToolbarIcon(
-                            this@MainActivity,
-                            menu!!,
-                            R.id.action_connection_settings,
-                            R.drawable.ic_wifi
-                        )
                     } else {
                         Timber.d("(this.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager) $isWifiEnabled")
                         Timber.d("This should disable wifi")
@@ -837,12 +613,6 @@ class MainActivity : AppCompatActivity(),
                         @Suppress("DEPRECATION")
                         isWifiEnabled = false
 
-                        UIManager.updateToolbarIcon(
-                            this@MainActivity,
-                            menu!!,
-                            R.id.action_connection_settings,
-                            R.drawable.ic_wifi_off
-                        )
                     }
                     @Suppress("DEPRECATION")
                     this.isWifiEnabled = !isWifiEnabled
@@ -852,7 +622,6 @@ class MainActivity : AppCompatActivity(),
 
     private fun toggleRecyclerViewLinearLayout() {
         Timber.d("toggleRecyclerViewLinearLayout()")
-        this.isStaggeredLayout = false
 
         // clear staggered icon
         UIManager.setBackgroundColor(
@@ -872,7 +641,6 @@ class MainActivity : AppCompatActivity(),
 
     private fun toggleRecyclerViewStaggeredLayout() {
         Timber.d("toggleRecyclerViewStaggeredLayout()")
-        this.isStaggeredLayout = true
 
         // clear staggered icon
         UIManager.setBackgroundColor(
@@ -890,12 +658,26 @@ class MainActivity : AppCompatActivity(),
         // applyRecycler()
     }
 
-    private fun updateFragmentConnectionStatus(isConnected: Boolean) {
-        /*if (binding.includeToolbarLayout?.viewPager?.currentItem == 0) {
-            val homeFragment: HomeFragment =
-                mViewPagerAdapter?.getFragment(0) as HomeFragment
-            homeFragment.onConnected(isConnected)
-        }*/
+    fun launchApp(item: App) {
+        Timber.d("launchApp : $item")
+        when {
+            item is LocalApp && item.title?.lowercase()?.contains("drive") == true -> {
+                UIManager.showActionInToast(
+                    this@MainActivity,
+                    "Please check this functionality later. Problem using Drive REST API v3"
+                )
+                return
+            }
+            item is LocalApp && -1L != item.id -> {
+                mViewModel.launchActivityOrPackage(navigator, item)
+            }
+            item is PackageApp -> {
+                mViewModel.launchActivityOrPackage(navigator, item)
+            }
+            else -> {
+                Timber.e("Item id == -1 , not app activity. Should launch package intent.")
+            }
+        }
     }
 
 
@@ -904,7 +686,7 @@ class MainActivity : AppCompatActivity(),
     // IMPLEMENTS
     //
     /////////////////////////////////////
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
+    /*override fun onMenuItemClick(item: MenuItem?): Boolean {
         Timber.d("onMenuItemClick()")
         when (item?.itemId) {
             R.id.action_connection_settings -> networkManager.changeWifiState(
@@ -913,29 +695,12 @@ class MainActivity : AppCompatActivity(),
             )
             R.id.action_location_settings -> if (!isGPS) mGpsUtils.turnGPSOn(this)
             R.id.action_settings -> UIManager.showActionInToast(this, "Settings clicked")
-            R.id.action_info_settings -> showBottomSheetDialogFragment()
             R.id.action_force_crash -> throw RuntimeException("This is a crash")
             else -> {
             }
         }
         return true
-    }
-
-    override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-        /*if (scrollRange == -1) {
-            scrollRange = appBarLayout!!.totalScrollRange
-        }
-        if (scrollRange + verticalOffset == 0) {
-            // Toolbar is collapsed
-            binding.includeToolbarLayout?.collapsingToolbar?.title =
-                this@MainActivity.resources.getString(R.string.app_name)
-            isShow = true
-        } else if (isShow) {
-            // Toolbar is expanded
-            binding.includeToolbarLayout?.collapsingToolbar?.title = " "
-            isShow = false
-        }*/
-    }
+    }*/
 
     /////////// OnClick Listener ///////////
     override fun onClick(view: View?) {
@@ -954,93 +719,16 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    /////////// Search View Listener ///////////
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        if (!query.isNullOrEmpty()) {
-            Timber.d(query.toString())
-            UIManager.hideKeyboard(this@MainActivity, binding.root)
-        }
-        return true
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        Timber.d(newText.toString())
-        (if (!isStaggeredLayout) mAppsAdapter as MainActivityAdapter else mAppsAdapter as MainActivityStaggeredAdapter).filter
-            ?.filter(
-                newText.toString()
-            )
-        return true
-    }
-
-    override fun onWhatsNewItemClickListener(cardView: View, item: App) {
-        Timber.d("element : $item")
-        mViewModel.launchActivityOrPackage(navigator, item)
-    }
-
-    override fun onAppItemClickListener(cardView: View, item: App) {
-        Timber.d("element : $item")
-
-        //TODO : Please check this functionality later. Problem using Drive REST API v3
-        when {
-            item is LocalApp && item.title?.lowercase()?.contains("drive") == true -> {
-                UIManager.showActionInToast(
-                    this@MainActivity,
-                    "Please check this functionality later. Problem using Drive REST API v3"
-                )
-
-                return
-            }
-            item is LocalApp && -1L != item.id -> {
-                mViewModel.launchActivityOrPackage(navigator, item)
-            }
-            item is PackageApp -> {
-                mViewModel.launchActivityOrPackage(navigator, item)
-            }
-            else -> {
-                Timber.e("Item id == -1 , not app activity. Should launch package intent.")
-                showItemDetail(item)
-                /*binding.itemDetailBtn?.setOnClickListener {
-                    mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
-                }*/
-            }
-        }
-    }
-
-
-    override fun onAppItemCLickListener(view: View, item: App, position: Int) {
-        Timber.d("Clicked item : $item, at position : $position")
-
-        //TODO : Please check this functionality later. Problem using Drive REST API v3
-        if (item is LocalApp && item.title?.lowercase()?.contains("drive") == true) {
-            UIManager.showActionInToast(
-                this@MainActivity,
-                "Please check this functionality later. Problem using Drive REST API v3"
-            )
-            return
-        } else if (!LabCompatibilityManager.isTablet(this@MainActivity)) {
-            if (item is LocalApp && -1L != item.id) {
-                navigator.callIntentActivity(item.activity)
-            } else if (item is PackageApp) {
-                mViewModel.launchActivityOrPackage(navigator, item)
-            }
-        } else {
-            showItemDetail(item)
-            /*binding.itemDetailBtn?.setOnClickListener {
-                mViewModel.launchActivityOrPackage(Navigator(this@MainActivity), item)
-            }*/
-        }
-    }
-
     override fun onConnected() {
         UIManager.showConnectionStatusInSnackBar(this@MainActivity, true)
         updateToolbarConnectionIcon(true)
-        updateFragmentConnectionStatus(true)
+
     }
 
     override fun onLostConnection() {
         UIManager.showConnectionStatusInSnackBar(this@MainActivity, false)
         updateToolbarConnectionIcon(false)
-        updateFragmentConnectionStatus(false)
+
     }
 
     private fun updateToolbarConnectionIcon(isConnected: Boolean) {
@@ -1049,12 +737,7 @@ class MainActivity : AppCompatActivity(),
 
             runOnUiThread {
                 try {
-                    UIManager.updateToolbarIcon(
-                        this@MainActivity,
-                        menu!!,
-                        R.id.action_connection_settings,
-                        if (isConnected) R.drawable.ic_wifi else R.drawable.ic_wifi_off
-                    )
+
                 } catch (exception: Exception) {
                     exception.printStackTrace()
                 }
@@ -1065,19 +748,9 @@ class MainActivity : AppCompatActivity(),
         Timber.d("gpsStatus()")
         Timber.d("turn on/off GPS - isGPSEnable : $isGPSEnable")
         isGPS = isGPSEnable
-
-        if (isGPS) {
-            UIManager.updateToolbarIcon(
-                this@MainActivity,
-                menu!!,
-                R.id.action_location_settings,
-                R.drawable.ic_location_on
-            )
-        }
     }
 
     override fun onLocationChanged(location: Location) {
         Timber.d("$location")
     }
-
 }

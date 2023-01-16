@@ -188,8 +188,7 @@
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/medium_margin"
             android:scrollbars="horizontal"
-            tools:itemCount="2"
-            tools:listitem="@layout/row_what_s_new_item" />
+            tools:itemCount="2"/>
         <!-- What's new list item -->
 
 
@@ -261,7 +260,6 @@
             android:scrollbarStyle="insideOverlay"
             android:scrollbars="vertical"
             android:transitionGroup="true"
-            tools:itemCount="4"
-            tools:listitem="@layout/row_main_app_item" />
+            tools:itemCount="4" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

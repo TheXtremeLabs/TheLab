@@ -11,10 +11,13 @@ import com.riders.thelab.data.local.model.compose.LoginUiState
 import com.riders.thelab.data.remote.dto.ApiResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -75,20 +78,20 @@ class LoginViewModel @Inject constructor(
     init {
         viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
             //try {
-              //  supervisorScope {
-                    Timber.d("getApi()")
-                    val response = repository.getApi()
-                    Timber.d("$response")
+            //  supervisorScope {
+            Timber.d("getApi()")
+            val response = repository.getApi()
+            Timber.d("$response")
 
-                    _networkState.value = NetworkState.Available(true)
-                }
-            /*} catch (e: Exception) {
-                e.printStackTrace()
-                Timber.e(e.message)
+            _networkState.value = NetworkState.Available(true)
+        }
+        /*} catch (e: Exception) {
+            e.printStackTrace()
+            Timber.e(e.message)
 
-                _networkState.value = NetworkState.Disconnected(true)
-            }
-        }*/
+            _networkState.value = NetworkState.Disconnected(true)
+        }
+    }*/
     }
 
 
@@ -144,28 +147,28 @@ class LoginViewModel @Inject constructor(
 
             /*try {
                 supervisorScope {*/
-                    /*val response = repository.login(user)
-                    Timber.d("$response")
+            /*val response = repository.login(user)
+            Timber.d("$response")
 
-                    _loginUiState.value = LoginUiState.Success(response)*/
+            _loginUiState.value = LoginUiState.Success(response)*/
 
-                    //TODO : Due to Heroku back-end free services ending,
-                    // Use of the database to store and log users
+            //TODO : Due to Heroku back-end free services ending,
+            // Use of the database to store and log users
 
-                    // Force response
-                    _loginUiState.value = LoginUiState.Error(ApiResponse("", 404, null))
-               // }
+            // Force response
+            _loginUiState.value = LoginUiState.Error(ApiResponse("", 404, null))
+            // }
             /*} catch (e: Exception) {
                 e.printStackTrace()
                 Timber.e(e.message)*/
 
-                /*val cs404: CharSequence = "404".subSequence(0, 3)
-                val cs503: CharSequence = "503".subSequence(0, 3)
-                if (e.message?.contains(cs404, true) == true
-                    || e.message?.contains(cs503, true) == true
-                ) {
-                    _loginUiState.value = LoginUiState.Error(ApiResponse("", 404, null))
-                }*/
+            /*val cs404: CharSequence = "404".subSequence(0, 3)
+            val cs503: CharSequence = "503".subSequence(0, 3)
+            if (e.message?.contains(cs404, true) == true
+                || e.message?.contains(cs503, true) == true
+            ) {
+                _loginUiState.value = LoginUiState.Error(ApiResponse("", 404, null))
+            }*/
             //}
         }
     }

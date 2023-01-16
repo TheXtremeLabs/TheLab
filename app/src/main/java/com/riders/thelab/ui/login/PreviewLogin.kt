@@ -13,9 +13,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowRight
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,6 +28,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.R
@@ -47,6 +46,8 @@ fun LoginForm(viewModel: LoginViewModel) {
 
     val loginUiState by viewModel.loginUiState.collectAsState()
 
+    var passwordVisibility: Boolean by remember { mutableStateOf(false) }
+
     TheLabTheme {
         Column(
             modifier = Modifier
@@ -55,56 +56,62 @@ fun LoginForm(viewModel: LoginViewModel) {
             horizontalAlignment = Alignment.End
         ) {
             // Login
-            Row(
+            TextField(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .padding(12.dp),
-                    imageVector = Icons.Filled.Person, contentDescription = "login icon"
-                )
-
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = viewModel.login.value,
-                    onValueChange = { viewModel.updateLogin(it) },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        autoCorrect = false,
-                        keyboardType = KeyboardType.Email
+                value = viewModel.login.value,
+                onValueChange = { viewModel.updateLogin(it) },
+                leadingIcon = {
+                    Icon(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .padding(12.dp),
+                        imageVector = Icons.Filled.Person, contentDescription = "login icon"
                     )
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Email
                 )
-            }
+            )
 
-            Spacer(modifier = Modifier.size(8.dp))
+            Spacer(modifier = Modifier.size(12.dp))
 
             // Password
-            Row(
+            TextField(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .padding(12.dp),
-                    imageVector = Icons.Filled.Lock, contentDescription = "login icon"
-                )
-
-                TextField(
-                    value = viewModel.password.value,
-                    onValueChange = { viewModel.updatePassword(it) },
-                    maxLines = 1,
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        autoCorrect = false,
-                        keyboardType = KeyboardType.Ascii
+                value = viewModel.password.value,
+                onValueChange = { viewModel.updatePassword(it) },
+                leadingIcon = {
+                    Icon(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .padding(12.dp),
+                        imageVector = Icons.Filled.Lock, contentDescription = "login icon"
                     )
-                )
-            }
+                },
+                maxLines = 1,
+                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Password
+                ),
+                trailingIcon = {
+                    val image = if (passwordVisibility)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    // Please provide localized description for accessibility services
+                    val description = if (passwordVisibility) "Hide password" else "Show password"
+
+                    IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                        Icon(imageVector = image, description)
+                    }
+                }
+            )
+
 
             Spacer(modifier = Modifier.size(16.dp))
 
@@ -125,7 +132,7 @@ fun LoginForm(viewModel: LoginViewModel) {
                     ) {
                         Icon(
                             modifier = Modifier.fillMaxSize(),
-                            imageVector = Icons.Filled.ArrowRight,
+                            imageVector = Icons.Filled.KeyboardArrowRight,
                             contentDescription = "login_icon"
                         )
                     }
@@ -168,25 +175,33 @@ fun LoginContent(viewModel: LoginViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Card(
-                    modifier = Modifier.size(96.dp),
-                    shape = Shapes.large,
-                    colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.ic_lab_twelve_background))
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Image(
+                    Card(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp),
-                        painter = painterResource(id = R.drawable.ic_the_lab_12_logo_white),
-                        contentDescription = "Lab Icon"
-                    )
+                            .size(96.dp),
+                        shape = Shapes.large,
+                        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.ic_lab_twelve_background))
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp),
+                            painter = painterResource(id = R.drawable.ic_the_lab_12_logo_white),
+                            contentDescription = "Lab Icon"
+                        )
+                    }
                 }
+
 
                 // Version
                 AnimatedVisibility(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .padding(bottom = 72.dp),
+                    modifier = Modifier.fillMaxWidth(0.5f),
                     visible = if (LocalInspectionMode.current) true else versionVisibility.value,
                     exit = fadeOut()
                 ) {
@@ -247,8 +262,8 @@ fun LoginContent(viewModel: LoginViewModel) {
 
     LaunchedEffect(Unit) {
         scope.launch {
-            delay(200L)
             versionVisibility.value = false
+            delay(200L)
             formVisibility.value = true
             registerVisibility.value = true
         }
@@ -279,6 +294,7 @@ fun LoginForm() {
 
     val login = remember { mutableStateOf("test@test.fr") }
     val password = remember { mutableStateOf("12345") }
+    var passwordVisibility: Boolean by remember { mutableStateOf(false) }
 
     TheLabTheme {
         Column(
@@ -288,49 +304,59 @@ fun LoginForm() {
             horizontalAlignment = Alignment.End
         ) {
             // Login
-            Row(
+            TextField(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .padding(12.dp),
-                    imageVector = Icons.Filled.Person,
-                    contentDescription = "login icon"
-                )
+                value = login.value,
+                onValueChange = { login.value = it },
+                leadingIcon = {
+                    Icon(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .padding(12.dp),
+                        imageVector = Icons.Filled.Person, contentDescription = "login icon"
+                    )
+                },
+                maxLines = 1,
+            )
 
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = login.value,
-                    onValueChange = { login.value = it },
-                    maxLines = 1,
-                )
-            }
 
             Spacer(modifier = Modifier.size(8.dp))
 
             // Password
-            Row(
+            TextField(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .padding(12.dp),
-                    imageVector = Icons.Filled.Lock,
-                    contentDescription = "login icon"
-                )
+                value = password.value,
+                onValueChange = { password.value = it },
+                leadingIcon = {
+                    Icon(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .padding(12.dp),
+                        imageVector = Icons.Filled.Lock, contentDescription = "login icon"
+                    )
+                },
+                maxLines = 1,
+                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Password
+                ),
+                trailingIcon = {
+                    val image = if (passwordVisibility)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
 
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = password.value,
-                    onValueChange = { password.value = it },
-                    maxLines = 1,
-                    visualTransformation = PasswordVisualTransformation()
-                )
-            }
+                    // Please provide localized description for accessibility services
+                    val description =
+                        if (passwordVisibility) "Hide password" else "Show password"
+
+                    IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                        Icon(imageVector = image, description)
+                    }
+                }
+            )
+
 
             Spacer(modifier = Modifier.size(16.dp))
 
@@ -346,7 +372,7 @@ fun LoginForm() {
                 ) {
                     AnimatedVisibility(
                         modifier = Modifier.fillMaxSize(),
-                        visible = !(loginUiState.value is LoginUiState.Loading),
+                        visible = if (LocalInspectionMode.current) false else !(loginUiState.value is LoginUiState.Loading),
                         exit = fadeOut(animationSpec = tween(300, easing = FastOutSlowInEasing))
                     ) {
                         Icon(
@@ -357,7 +383,7 @@ fun LoginForm() {
                     }
                     AnimatedVisibility(
                         modifier = Modifier.fillMaxSize(),
-                        visible = (loginUiState.value is LoginUiState.Loading),
+                        visible = if (LocalInspectionMode.current) true else (loginUiState.value is LoginUiState.Loading),
                         enter = fadeIn(animationSpec = tween(300, easing = FastOutSlowInEasing))
                     ) {
                         CircularProgressIndicator(modifier = Modifier.fillMaxSize())

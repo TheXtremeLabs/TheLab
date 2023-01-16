@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -23,9 +24,11 @@ import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.previewprovider.AppPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.compose.utils.findActivity
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.app.App
 
+@OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
 fun WhatsNew(@PreviewParameter(AppPreviewProvider::class) item: App) {
@@ -48,7 +51,8 @@ fun WhatsNew(@PreviewParameter(AppPreviewProvider::class) item: App) {
         Card(
             modifier = Modifier
                 .width(width = dimensionResource(id = R.dimen.max_card_image_width))
-                .height(height = dimensionResource(id = R.dimen.max_card_image_height))
+                .height(height = dimensionResource(id = R.dimen.max_card_image_height)),
+            onClick = { (context.findActivity() as MainActivity).launchApp(item) },
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(

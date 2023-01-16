@@ -23,7 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.ComposeUtils
+import com.riders.thelab.core.compose.utils.ComposeUtils
 import com.riders.thelab.data.local.model.Message
 import com.riders.thelab.databinding.ActivityComposeBinding
 
