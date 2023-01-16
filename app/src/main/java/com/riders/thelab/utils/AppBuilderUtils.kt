@@ -204,7 +204,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Get different color from an image...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_palette))
                     .withActivityClass(PaletteActivity::class.java)
-                    .withActivityDate("01/16/2023")
+                    .withActivityDate("2023/01/16")
                     .build()
             list.add(palette)
 
