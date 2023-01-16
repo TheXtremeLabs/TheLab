@@ -38,6 +38,7 @@ import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
@@ -69,16 +70,16 @@ fun VideoView(viewModel: SplashScreenViewModel, videoUri: String) {
                         super.onPlaybackStateChanged(playbackState)
                         when (playbackState) {
                             Player.STATE_READY -> {
-                                Log.d("MainActivity", "State.READY")
+                                Timber.d( "State.READY")
                             }
                             Player.STATE_IDLE -> {
-                                Log.i("MainActivity", "State.STATE_IDLE")
+                                Timber.i( "State.STATE_IDLE")
                             }
                             Player.STATE_BUFFERING -> {
-                                Log.d("MainActivity", "State.STATE_BUFFERING")
+                                Timber.d("State.STATE_BUFFERING")
                             }
                             Player.STATE_ENDED -> {
-                                Log.e("MainActivity", "State.STATE_ENDED")
+                                Timber.e( "State.STATE_ENDED")
                                 viewModel.updateVideoViewVisibility(false)
                                 viewModel.updateSplashLoadingContentVisibility(true)
                                 viewModel.updateStartCountDown(true)
@@ -171,7 +172,11 @@ fun SplashScreenContent(
     val startCountDown by viewModel.startCountDown
 
     TheLabTheme {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             AnimatedVisibility(
                 visible = if (LocalInspectionMode.current) false else videoViewVisibilityState,
                 exit = fadeOut(

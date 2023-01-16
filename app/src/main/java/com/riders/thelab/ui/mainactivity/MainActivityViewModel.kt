@@ -6,6 +6,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
+import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,6 +27,8 @@ import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 import java.net.UnknownHostException
 import java.util.*
@@ -48,6 +51,24 @@ class MainActivityViewModel @Inject constructor(
     private val applications: MutableLiveData<List<App>> = MutableLiveData()
     private val whatsNewApps: MutableLiveData<List<App>> = MutableLiveData()
 
+    //////////////////////////////////////////
+    // Compose states
+    //////////////////////////////////////////
+    var searchedAppRequest = mutableStateOf("Search an App...")
+
+    // Backing property to avoid state updates from other classes
+    private val _whatsNewAppList: MutableStateFlow<List<App>> =
+        MutableStateFlow(emptyList())
+
+    // The UI collects from this StateFlow to get its state updates
+    val whatsNewAppList: StateFlow<List<App>> = _whatsNewAppList
+
+    // Backing property to avoid state updates from other classes
+    private val _appList: MutableStateFlow<List<App>> =
+        MutableStateFlow(emptyList())
+
+    // The UI collects from this StateFlow to get its state updates
+    val appList: StateFlow<List<App>> = _appList
 
     //////////////////////////////////
     //
@@ -88,6 +109,10 @@ class MainActivityViewModel @Inject constructor(
     // CLASS METHODS
     //
     //////////////////////////////////
+    fun searchApp(requestedAppName: String) {
+        searchedAppRequest.value = requestedAppName
+    }
+
     fun checkConnection(context: Context) {
         connectionStatus.value = LabNetworkManagerNewAPI.getInstance(context).isOnline()
     }
@@ -210,6 +235,8 @@ class MainActivityViewModel @Inject constructor(
             Timber.e("app list is empty")
         } else {
             applications.value = appList
+
+            _appList.value = appList
         }
     }
 
@@ -225,6 +252,8 @@ class MainActivityViewModel @Inject constructor(
             .take(3)
 
         this.whatsNewApps.value = mWhatsNewApps
+
+        _whatsNewAppList.value = mWhatsNewApps
     }
 
     fun launchActivityOrPackage(navigator: Navigator, item: App) {

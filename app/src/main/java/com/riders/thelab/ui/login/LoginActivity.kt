@@ -1,7 +1,6 @@
 package com.riders.thelab.ui.login
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
@@ -23,9 +22,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
-import androidx.core.util.Pair
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -36,7 +33,6 @@ import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.databinding.ActivityLoginBinding
 import com.riders.thelab.navigator.Navigator
-import com.riders.thelab.ui.signup.SignUpActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -101,7 +97,10 @@ class LoginActivity : AppCompatActivity(),
                     }
                 }
             }
+        }
 
+        // Start a coroutine in the lifecycle scope
+        lifecycleScope.launch {
             // repeatOnLifecycle launches the block in a new coroutine every time the
             // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -113,20 +112,19 @@ class LoginActivity : AppCompatActivity(),
                     when (state) {
                         is NetworkState.Available -> {
                             networkState = state.available
-                            enableEditTexts()
-                            enableButton()
-                            hideMainActivityButton()
+                            //enableEditTexts()
+                            //enableButton()
+                           // hideMainActivityButton()
                         }
 
                         is NetworkState.Disconnected -> {
                             networkState = state.disconnected
-                            disableEditTexts()
-                            disableButton()
-                            showGoToMainActivityButton()
+                            //disableEditTexts()
+                           // disableButton()
+                            //showGoToMainActivityButton()
                         }
                     }
                 }
-
             }
         }
     }
@@ -331,7 +329,7 @@ class LoginActivity : AppCompatActivity(),
         }
     }
 
-     fun callSignUpActivity() {
+    fun callSignUpActivity() {
         Timber.d("callSignUpActivity()")
 /*
         val intent = Intent(this, SignUpActivity::class.java)
@@ -347,7 +345,7 @@ class LoginActivity : AppCompatActivity(),
         // Call navigator to switch activity with or without transition according
         // to the device's version running the application
         options.toBundle()?.let { navigator.callSignUpActivity(intent, it) }*/
-         navigator.callSignUpActivity()
+        navigator.callSignUpActivity()
     }
 
     override fun onClick(view: View?) {

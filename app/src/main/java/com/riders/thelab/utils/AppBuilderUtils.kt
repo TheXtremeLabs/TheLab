@@ -552,7 +552,7 @@ class AppBuilderUtils {
             return list
         }
 
-        private fun getDrawableFromIntResource(context: Context, redId: Int): Drawable {
+         fun getDrawableFromIntResource(context: Context, redId: Int): Drawable {
             return ContextCompat.getDrawable(context, redId)!!
         }
     }
