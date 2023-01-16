@@ -27,8 +27,9 @@ import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.compose.utils.findActivity
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.app.App
+import kotlinx.coroutines.DelicateCoroutinesApi
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @DevicePreviews
 @Composable
 fun WhatsNew(@PreviewParameter(AppPreviewProvider::class) item: App) {
