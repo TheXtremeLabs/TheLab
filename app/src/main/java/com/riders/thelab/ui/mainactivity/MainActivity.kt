@@ -22,11 +22,19 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -44,6 +52,7 @@ import com.riders.thelab.R
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.bus.LocationFetchedEvent
+import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.interfaces.ConnectivityListener
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
@@ -145,12 +154,32 @@ class MainActivity : AppCompatActivity(),
         window.navigationBarColor = ContextCompat.getColor(this, R.color.default_dark)
 
         _viewBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        // setContentView(binding.root)
 
         // Views
-        initViews()
+        // initViews()
 
-        checkLocationPermissions()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                setContent {
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            MainContent(viewModel = mViewModel)
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                checkLocationPermissions()
+            }
+        }
     }
 
     override fun onPause() {

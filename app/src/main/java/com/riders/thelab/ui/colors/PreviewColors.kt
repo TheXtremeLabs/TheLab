@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -76,7 +77,7 @@ fun Color() {
                 navigationIcon = {
                     IconButton(onClick = { (colorActivity as ColorActivity).onBackPressed() }) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.Filled.KeyboardArrowLeft,
                             contentDescription = "Back",
                             tint = colorResource(id = colorState.value)
                         )

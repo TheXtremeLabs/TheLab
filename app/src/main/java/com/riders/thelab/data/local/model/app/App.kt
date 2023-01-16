@@ -21,6 +21,12 @@ open class App(
     var appActivity: Class<out Activity?>?,
     var appDate: String?
 ) : Parcelable {
+    constructor() : this(
+        "", null,
+        "", "",
+        -1L, "", "", null, ""
+    )
+
     fun getBitmap(vectorDrawable: VectorDrawable): Bitmap? {
         val bitmap = Bitmap.createBitmap(
             vectorDrawable.intrinsicWidth,
