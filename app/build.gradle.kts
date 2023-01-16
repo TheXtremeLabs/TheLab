@@ -170,6 +170,8 @@ dependencies {
     implementation(Dependencies.composeLiveData)
     implementation(Dependencies.composeNavigation)
 
+    implementation(Dependencies.coil)
+
     // Navigation
     implementation(Dependencies.navigationKTX)
     implementation(Dependencies.navigationFragmentKTX)

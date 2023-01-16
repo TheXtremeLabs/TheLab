@@ -94,6 +94,9 @@ object Dependencies {
     val composeLiveData by lazy { "androidx.compose.runtime:runtime-livedata" }
     val composeNavigation by lazy { "androidx.navigation:navigation-compose:2.5.3" }
 
+    // Coil Compose
+    val coil by lazy { "io.coil-kt:coil-compose:${DependenciesVersions.coil}" }
+
     // Navigation
     val navigationKTX by lazy { "androidx.navigation:navigation-ui-ktx:${DependenciesVersions.navigationUI}" }
     val navigationFragmentKTX by lazy { "androidx.navigation:navigation-fragment-ktx:${DependenciesVersions.navigationFragment}" }
