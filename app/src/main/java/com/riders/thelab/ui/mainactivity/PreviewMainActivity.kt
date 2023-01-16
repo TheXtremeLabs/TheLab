@@ -125,7 +125,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
                                     )
                                     .show()
 
-                                if (viewModel.keyboardVisible.value){
+                                if (viewModel.keyboardVisible.value) {
                                     // 1. Update value
                                     viewModel.updateKeyboardVisible(false)
                                     // 2. Clear focus
@@ -164,18 +164,20 @@ fun MainContent(viewModel: MainActivityViewModel) {
                         )
                     }
 
-                    Spacer(modifier = Modifier.size(24.dp))
-
                     AnimatedVisibility(visible = !viewModel.keyboardVisible.value) {
-                        Text(
-                            "What's new",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Thin
-                        )
+                        Column {
+                            Spacer(modifier = Modifier.size(24.dp))
 
-                        Spacer(modifier = Modifier.size(16.dp))
+                            Text(
+                                "What's new",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Thin
+                            )
 
-                        WhatsNewList(viewModel = viewModel)
+                            Spacer(modifier = Modifier.size(16.dp))
+
+                            WhatsNewList(viewModel = viewModel)
+                        }
                     }
 
                     Spacer(modifier = Modifier.size(32.dp))

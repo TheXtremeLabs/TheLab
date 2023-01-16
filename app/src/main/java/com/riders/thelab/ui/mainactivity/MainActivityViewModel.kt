@@ -5,16 +5,11 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.tasks.Task
-import com.google.firebase.storage.ListResult
-import com.google.firebase.storage.StorageReference
 import com.riders.thelab.core.utils.LabAddressesUtils
 import com.riders.thelab.core.utils.LabLocationUtils
 import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
@@ -35,7 +30,6 @@ import timber.log.Timber
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
@@ -43,11 +37,6 @@ class MainActivityViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
-
-    private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
-    private val imagesFetchedDone: MutableLiveData<Boolean> = MutableLiveData()
-    private val imagesFetchedFailed: MutableLiveData<Boolean> = MutableLiveData()
-    private val imageUrl: MutableLiveData<String> = MutableLiveData()
 
     private val weather: MutableLiveData<ProcessedWeather> = MutableLiveData()
 
@@ -98,10 +87,6 @@ class MainActivityViewModel @Inject constructor(
         return repository.getLocationStatusData()
     }
 
-    fun getImagesFetchedDone(): LiveData<Boolean> = imagesFetchedDone
-    fun getImagesFetchedFailed(): LiveData<Boolean> = imagesFetchedFailed
-    fun getImageUrl(): LiveData<String> = imageUrl
-
     fun getWeather(): LiveData<ProcessedWeather> = weather
 
 
@@ -127,58 +112,6 @@ class MainActivityViewModel @Inject constructor(
 
     fun checkConnection(context: Context) {
         connectionStatus.value = LabNetworkManagerNewAPI.getInstance(context).isOnline()
-    }
-
-    /**
-     * Fetch Firebase Storage files and load background image from REST database
-     */
-    fun getWallpaperImages(context: Activity) {
-        Timber.d("getFirebaseFiles()")
-        progressVisibility.value = true
-
-        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
-            try {
-                val storageReference: StorageReference? = repository.getStorageReference(context)
-
-                storageReference?.let {
-                    withContext(Main) {
-                        // Create a child reference
-                        // imagesRef now points to "images"
-                        val imagesRef: StorageReference = it.child("images/dark_theme")
-                        imagesRef.list(5)
-                            .addOnSuccessListener { listResult: ListResult ->
-                                Timber.d("onSuccess()")
-                                val max = listResult.items.size
-
-                                // Get random int
-                                val iRandom = Random.nextInt(max)
-
-                                // Get item url using random int
-                                val item = listResult.items[iRandom]
-
-                                // Make rest call
-                                item
-                                    .downloadUrl
-                                    .addOnSuccessListener { uri: Uri ->
-                                        imageUrl.value = uri.toString()
-                                    }
-                            }
-                            .addOnFailureListener { t: Exception? ->
-                                Timber.e(t)
-                                imagesFetchedFailed.value = true
-                                progressVisibility.value = false
-                            }
-                            .addOnCompleteListener { task1: Task<ListResult> ->
-                                Timber.d("onComplete() - ${task1.result.items.size}")
-                                imagesFetchedDone.value = true
-                                progressVisibility.value = false
-                            }
-                    }
-                }
-            } catch (throwable: Exception) {
-                Timber.e(throwable)
-            }
-        }
     }
 
 
