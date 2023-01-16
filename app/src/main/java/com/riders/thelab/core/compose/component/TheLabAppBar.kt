@@ -14,16 +14,61 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ComponentActivity
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
+import com.riders.thelab.core.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
 fun TheLabTopAppBar(
+    @PreviewParameter(TextContentPreviewProvider::class) title: String,
+    navigationIcon: @Composable() (() -> Unit)? = null
+) {
+    val context = LocalContext.current
+
+    TheLabTheme {
+        TopAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color.Black, MaterialTheme.colorScheme.background)
+                    )
+                ),
+            title = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(start = 16.dp, bottom = 16.dp),
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    Text(text = title, color = Color.White)
+                }
+            },
+            navigationIcon = {
+                IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@DevicePreviews
+@Composable
+fun TheLabTopAppBarLarge(
     /*title: @Composable() () -> Unit,
     navigationIcon: @Composable() (() -> Unit)? = null*/
 ) {

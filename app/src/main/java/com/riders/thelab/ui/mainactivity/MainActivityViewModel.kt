@@ -27,6 +27,7 @@ import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import kotlin.random.Random
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
@@ -144,7 +145,7 @@ class MainActivityViewModel @Inject constructor(
                                 val max = listResult.items.size
 
                                 // Get random int
-                                val iRandom = Random().nextInt(max)
+                                val iRandom = Random.nextInt(max)
 
                                 // Get item url using random int
                                 val item = listResult.items[iRandom]
