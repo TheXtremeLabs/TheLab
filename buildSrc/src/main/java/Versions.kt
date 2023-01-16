@@ -46,6 +46,8 @@ object DependenciesVersions {
     const val composeMaterial = "1.1.0-alpha03"
     const val composeAnimation = "1.3.2"
 
+    const val coil = "2.2.2"
+
     // Media Exo Player
     const val media = "1.6.0"
     const val mediaRouter = "1.3.1"
