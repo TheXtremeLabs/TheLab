@@ -22,6 +22,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -79,14 +80,13 @@ import kotlin.coroutines.CoroutineContext
 
 @DelicateCoroutinesApi
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(),
+class MainActivity : ComponentActivity(),
     CoroutineScope,
     View.OnClickListener,
     ConnectivityListener, LocationListener, OnGpsListener{
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
-
 
     private var _viewBinding: ActivityMainBinding? = null
 
@@ -97,11 +97,6 @@ class MainActivity : AppCompatActivity(),
     private val mViewModel: MainActivityViewModel by viewModels()
 
     private lateinit var navigator: Navigator
-
-    // Toolbar
-    // Collapsing Toolbar
-    private var isShow = false
-    private var scrollRange = -1
 
     // Location
     private var labLocationManager: LabLocationManager? = null
@@ -118,7 +113,6 @@ class MainActivity : AppCompatActivity(),
     private var isTimeUpdatedStarted: Boolean = false
     private var isConnected: Boolean = true
 
-    private var mThread: Thread? = null
 
     /////////////////////////////////////
     //
@@ -144,9 +138,6 @@ class MainActivity : AppCompatActivity(),
 
         _viewBinding = ActivityMainBinding.inflate(layoutInflater)
         // setContentView(binding.root)
-
-        // Views
-        // initViews()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -238,22 +229,6 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_connection_settings -> {
-                Timber.e("Internet wifi icon status clicked")
-                toggleWifi()
-                return true
-            }
-            R.id.action_location_settings -> {
-                Timber.e("Location icon status clicked")
-                toggleLocation()
-                return true
-            }
-        }
-        return false
-    }
-
     override fun onBackPressed() {
         // super.onBackPressed()
         ExitDialog(this).apply {
@@ -331,9 +306,6 @@ class MainActivity : AppCompatActivity(),
 
                     navigator = Navigator(this@MainActivity)
 
-                    // ViewModel
-                    initViewModelsObservers()
-                    mViewModel.getWallpaperImages(this@MainActivity)
                     retrieveApplications()
 
                     // Variables
@@ -478,42 +450,6 @@ class MainActivity : AppCompatActivity(),
                 updateToolbarConnectionIcon(connectionStatus)
             }
 
-        mViewModel.getProgressVisibility().observe(
-            this
-        ) {
-            /*if (!it) UIManager.hideView(viewBinding.progressBar)
-            else UIManager.showView(viewBinding.progressBar)*/
-        }
-
-        mViewModel
-            .getImagesFetchedDone()
-            .observe(
-                this
-            ) {
-                Timber.d("getImagesFetchedDone() ")
-            }
-
-        mViewModel
-            .getImagesFetchedFailed()
-            .observe(
-                this
-            ) {
-                Timber.e("getImagesFetchedFailed() ")
-            }
-
-        mViewModel
-            .getImageUrl()
-            .observe(
-                this
-            ) { url ->
-
-                // Display image
-                Glide.with(this)
-                    .load(url)
-                    .into(binding.includeContentLayout.ivHomeBackground)
-
-            }
-
         mViewModel
             .getConnectionStatus()
             .observe(
@@ -560,28 +496,6 @@ class MainActivity : AppCompatActivity(),
         mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
     }
 
-    private fun setListeners() {
-        Timber.d("setListeners()")
-        binding.includeToolbarLayout.ivInternetStatus.setOnClickListener(this)
-        binding.includeToolbarLayout.ivLocationStatus.setOnClickListener(this)
-        binding.includeToolbarLayout.ivSettings.setOnClickListener(this)
-
-        binding.includeContentLayout.btnMoreInfo.setOnClickListener(this)
-        binding.includeContentLayout.ivLinearLayout.setOnClickListener(this)
-        binding.includeContentLayout.ivStaggeredLayout.setOnClickListener(this)
-    }
-
-    @SuppressLint("NewApi")
-    private fun setupWhatsNewsRecyclerView(list: List<App>) {
-        Timber.d("setupWhatsNewsRecyclerView()")
-
-        binding.includeContentLayout.rvWhatSNew.setHasFixedSize(true)
-        if (LabCompatibilityManager.isTablet(this)) {
-            val helper = ItemSnapHelper()
-            helper.attachToRecyclerView(binding.includeContentLayout.rvWhatSNew)
-            binding.includeContentLayout.rvWhatSNew.itemAnimator = DefaultItemAnimator()
-        }
-    }
     private fun toggleLocation() {
         Timber.e("toggleLocation()")
         if (!isGPS) mGpsUtils.turnGPSOn(this)

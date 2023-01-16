@@ -13,8 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.previewprovider.AppPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
@@ -62,7 +64,14 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(8.dp),
-                        bitmap = bitmap.asImageBitmap(),
+                        bitmap = when (title) {
+                            stringResource(id = R.string.activity_title_palette) -> {
+                                UIManager.addGradientToImageView(context, bitmap).asImageBitmap()
+                            }
+                            else -> {
+                                bitmap.asImageBitmap()
+                            }
+                        },
                         contentDescription = "app_icon",
                         contentScale = ContentScale.Fit
                     )
@@ -71,7 +80,8 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 8.dp), verticalArrangement = Arrangement.Center
+                        .padding(horizontal = 8.dp),
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Text(modifier = Modifier.fillMaxWidth(), text = title)
 

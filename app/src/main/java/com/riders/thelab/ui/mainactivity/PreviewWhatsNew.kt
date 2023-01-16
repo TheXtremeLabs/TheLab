@@ -69,7 +69,7 @@ fun WhatsNew(@PreviewParameter(AppPreviewProvider::class) item: App) {
                             .padding(32.dp),
                         bitmap = bitmap.asImageBitmap(),
                         contentDescription = "app_icon",
-                        contentScale = ContentScale.Fit
+                        contentScale = ContentScale.FillHeight
                     )
                 }
                 Column(
