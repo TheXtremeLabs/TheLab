@@ -88,7 +88,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(RecyclerViewActivity::class.java)
-                    .withActivityDate("01/20/2015")
+                    .withActivityDate("2023/01/19")
                     .build()
             list.add(recycler)
 

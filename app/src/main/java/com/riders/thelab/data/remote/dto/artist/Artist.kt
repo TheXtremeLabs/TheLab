@@ -1,11 +1,10 @@
 package com.riders.thelab.data.remote.dto.artist
 
-import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
-@Parcelize
+@Serializable
 @JsonClass(generateAdapter = true)
 data class Artist constructor(
     @Json(name = "artistName")
@@ -37,4 +36,6 @@ data class Artist constructor(
 
     @Json(name = "description")
     var description: String
-) : Parcelable
+) {
+    var id: Int = 0
+}

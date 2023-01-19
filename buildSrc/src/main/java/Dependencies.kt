@@ -38,6 +38,7 @@ object KotlinDependencies {
     val coroutinesCore by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-core:${DependenciesVersions.coroutines}" }
     val coroutinesAndroid by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-android:${DependenciesVersions.coroutines}" }
     val kotlinParcelize by lazy { "org.jetbrains.kotlin:kotlin-parcelize-runtime:${DependenciesVersions.kotlin}" }
+    val kotlinSerialization by lazy { "org.jetbrains.kotlinx:kotlinx-serialization-json:${DependenciesVersions.kotlinSerialization}" }
     val kotlinPlaySevices by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${DependenciesVersions.kotlinPlayServices}" }
 }
 

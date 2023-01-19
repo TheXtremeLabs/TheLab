@@ -3,11 +3,13 @@ package com.riders.thelab.core.compose.component
 import android.annotation.SuppressLint
 import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import org.intellij.lang.annotations.Language
@@ -39,15 +41,15 @@ fun MetaContainer(
     cutoff: Float = .5f,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val metaShader = remember { RuntimeShader(ShaderSource) }
+    //val metaShader = remember { RuntimeShader(ShaderSource) }
     Box(
-        modifier
-            .graphicsLayer {
+        modifier.background(Color.Transparent)
+            /*.graphicsLayer {
                 metaShader.setFloatUniform("cutoff", cutoff)
                 renderEffect = RenderEffect
                     .createRuntimeShaderEffect(metaShader, "composable")
                     .asComposeRenderEffect()
-            },
+            }*/,
         content = content,
     )
 }

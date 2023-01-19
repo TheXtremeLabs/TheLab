@@ -11,6 +11,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("kotlin-parcelize")
+    id("kotlinx-serialization")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
@@ -133,6 +134,7 @@ dependencies {
     implementation(KotlinDependencies.coroutinesCore)
     implementation(KotlinDependencies.coroutinesAndroid)
     implementation(KotlinDependencies.kotlinParcelize)
+    implementation(KotlinDependencies.kotlinSerialization)
     implementation(KotlinDependencies.kotlinPlaySevices)
 
     // AndroidX

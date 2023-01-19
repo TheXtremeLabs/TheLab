@@ -5,6 +5,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.riders.thelab.BuildConfig
 import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.model.compose.LoginUiState
 import com.riders.thelab.data.remote.dto.ApiResponse
@@ -32,9 +33,9 @@ class LoginViewModel @Inject constructor(
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    var login by mutableStateOf("")
+    var login by mutableStateOf(if (BuildConfig.DEBUG) "test@test.fr" else "")
         private set
-    var password by mutableStateOf("")
+    var password by mutableStateOf(if (BuildConfig.DEBUG) "test12356" else "")
         private set
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -52,7 +53,7 @@ class LoginViewModel @Inject constructor(
 
     val loginHasLocalError by derivedStateOf {
         // synchronous call
-        !login.isLetterOrDigits()
+        !Patterns.EMAIL_ADDRESS.matcher(login).matches()
     }
 
     private var _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.None)
