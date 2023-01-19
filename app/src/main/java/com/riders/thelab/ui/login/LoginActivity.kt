@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.window.layout.WindowMetricsCalculator
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -31,6 +32,7 @@ import com.riders.thelab.R
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.core.utils.UIManager
+import com.riders.thelab.data.local.model.compose.WindowSizeClass
 import com.riders.thelab.databinding.ActivityLoginBinding
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,6 +69,7 @@ class LoginActivity : AppCompatActivity(),
 
     var networkState: Boolean = false
 
+    private var windowSize: WindowSizeClass? = null
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +88,8 @@ class LoginActivity : AppCompatActivity(),
         // Start a coroutine in the lifecycle scope
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
+                computeWindowSizeClasses()
+
                 setContent {
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
@@ -132,6 +137,46 @@ class LoginActivity : AppCompatActivity(),
     override fun onDestroy() {
         super.onDestroy()
         _viewBinding = null
+    }
+
+    /////////////////////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    /////////////////////////////////////////////////////
+    private fun computeWindowSizeClasses() {
+        Timber.d("computeWindowSizeClasses()")
+
+        val metrics = WindowMetricsCalculator
+            .getOrCreate()
+            .computeCurrentWindowMetrics(this)
+
+        val widthDp = metrics.bounds.width() /
+                resources.displayMetrics.density
+        val widthWindowSizeClass = when {
+            widthDp < 600f -> WindowSizeClass.COMPACT
+            widthDp < 840f -> WindowSizeClass.MEDIUM
+            else -> WindowSizeClass.EXPANDED
+        }
+
+        Timber.i("widthWindowSizeClass: $widthWindowSizeClass")
+
+        val heightDp = metrics.bounds.height() /
+                resources.displayMetrics.density
+        val heightWindowSizeClass = when {
+            heightDp < 480f -> WindowSizeClass.COMPACT
+            heightDp < 900f -> WindowSizeClass.MEDIUM
+            else -> WindowSizeClass.EXPANDED
+        }
+        Timber.i("heightWindowSizeClass: $heightWindowSizeClass")
+
+        // Use widthWindowSizeClass and heightWindowSizeClass.
+        windowSize = widthWindowSizeClass
+    }
+
+    fun getDeviceWindowsSizeClass(): WindowSizeClass {
+        Timber.d("getDeviceWindowsSizeClass()")
+        return windowSize!!
     }
 
     private fun setListeners() {

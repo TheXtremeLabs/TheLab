@@ -16,15 +16,19 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.data.local.model.compose.IslandState
+import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@DevicePreviews
 @Composable
-fun DynamicIsland(@PreviewParameter(IslandStatePreviewProvider::class) islandState: IslandState) {
+fun DynamicIsland(
+    viewModel: MainActivityViewModel,
+    @PreviewParameter(IslandStatePreviewProvider::class) islandState: IslandState
+) {
     val config = LocalConfiguration.current
 
     val startPadding by animateDpAsState(
@@ -77,7 +81,7 @@ fun DynamicIsland(@PreviewParameter(IslandStatePreviewProvider::class) islandSta
                     )
                 }
             ) {
-                IslandContent(state = islandState)
+                IslandContent(viewModel = viewModel, state = islandState)
             }
 
             AnimatedVisibility(
@@ -119,3 +123,10 @@ private val bubbleExitTransition = scaleOut(targetScale = .7f) + slideOutHorizon
         stiffness = Spring.StiffnessLow
     )
 ) { (-it * 1.2f).roundToInt() }
+
+@DevicePreviews
+@Composable
+fun PreviewDynamicIsland() {
+    val viewModel: MainActivityViewModel = hiltViewModel()
+    DynamicIsland(viewModel, IslandStatePreviewProvider().values.first())
+}

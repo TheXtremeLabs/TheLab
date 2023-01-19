@@ -6,7 +6,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.riders.thelab.R
-import com.riders.thelab.ui.about.AboutActivity
 import timber.log.Timber
 
 /** Configures App settings.  */
@@ -30,14 +29,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         wipeDataSettings?.setOnPreferenceClickListener {
             Timber.e("$it clicked")
             Timber.e("Should ask user for delete all preferences")
-            true
-        }
-
-        val aboutSettings: Preference? =
-            findPreference(getString(R.string.pref_key_about))
-        aboutSettings?.setOnPreferenceClickListener {
-            Timber.e("$it clicked")
-            startActivity(Intent(requireActivity(), AboutActivity::class.java))
             true
         }
 

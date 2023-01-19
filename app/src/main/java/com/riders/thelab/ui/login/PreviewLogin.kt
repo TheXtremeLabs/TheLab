@@ -4,15 +4,10 @@ package com.riders.thelab.ui.login
 
 import android.text.Html
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,133 +20,16 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.ui.theme.Shapes
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_onPrimary
 import com.riders.thelab.data.local.model.compose.LoginUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LoginForm(viewModel: LoginViewModel) {
-
-    val loginUiState by viewModel.loginUiState.collectAsState()
-
-    var passwordVisibility: Boolean by remember { mutableStateOf(false) }
-
-    TheLabTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.End
-        ) {
-            // Login
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = viewModel.login.value,
-                onValueChange = { viewModel.updateLogin(it) },
-                leadingIcon = {
-                    Icon(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(12.dp),
-                        imageVector = Icons.Filled.Person, contentDescription = "login icon"
-                    )
-                },
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Email
-                )
-            )
-
-            Spacer(modifier = Modifier.size(12.dp))
-
-            // Password
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = viewModel.password.value,
-                onValueChange = { viewModel.updatePassword(it) },
-                leadingIcon = {
-                    Icon(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(12.dp),
-                        imageVector = Icons.Filled.Lock, contentDescription = "login icon"
-                    )
-                },
-                maxLines = 1,
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Password
-                ),
-                trailingIcon = {
-                    val image = if (passwordVisibility)
-                        Icons.Filled.Visibility
-                    else Icons.Filled.VisibilityOff
-
-                    // Please provide localized description for accessibility services
-                    val description = if (passwordVisibility) "Hide password" else "Show password"
-
-                    IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                        Icon(imageVector = image, description)
-                    }
-                }
-            )
-
-
-            Spacer(modifier = Modifier.size(16.dp))
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth(0.25f)
-                    .height(36.dp),
-                onClick = { viewModel.login() }) {
-
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    AnimatedVisibility(
-                        modifier = Modifier.fillMaxSize(),
-                        visible = loginUiState !is LoginUiState.Loading,
-                        exit = fadeOut(animationSpec = tween(300, easing = FastOutSlowInEasing))
-                    ) {
-                        Icon(
-                            modifier = Modifier.fillMaxSize(),
-                            imageVector = Icons.Filled.KeyboardArrowRight,
-                            contentDescription = "login_icon"
-                        )
-                    }
-
-                    AnimatedVisibility(
-                        modifier = Modifier.fillMaxSize(),
-                        visible = (loginUiState is LoginUiState.Loading),
-                        enter = fadeIn(animationSpec = tween(300, easing = FastOutSlowInEasing))
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(38.dp),
-                            color = md_theme_dark_onPrimary
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun LoginContent(viewModel: LoginViewModel) {
@@ -218,7 +96,7 @@ fun LoginContent(viewModel: LoginViewModel) {
                     visible = if (LocalInspectionMode.current) false else formVisibility.value
                 ) {
                     Spacer(modifier = Modifier.size(32.dp))
-                    LoginForm(viewModel = viewModel)
+                    Form(viewModel = viewModel)
                 }
             }
 
@@ -285,206 +163,11 @@ fun LoginContent(viewModel: LoginViewModel) {
 // PREVIEWS
 //
 ///////////////////////////////////////////////////
-@OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
-fun LoginForm() {
-
-    val loginUiState = remember { mutableStateOf(value = LoginUiState.Loading) }
-
-    val login = remember { mutableStateOf("test@test.fr") }
-    val password = remember { mutableStateOf("12345") }
-    var passwordVisibility: Boolean by remember { mutableStateOf(false) }
-
+fun PreviewLoginContent() {
+    val viewModel: LoginViewModel = hiltViewModel()
     TheLabTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.End
-        ) {
-            // Login
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = login.value,
-                onValueChange = { login.value = it },
-                leadingIcon = {
-                    Icon(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(12.dp),
-                        imageVector = Icons.Filled.Person, contentDescription = "login icon"
-                    )
-                },
-                maxLines = 1,
-            )
-
-
-            Spacer(modifier = Modifier.size(8.dp))
-
-            // Password
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = password.value,
-                onValueChange = { password.value = it },
-                leadingIcon = {
-                    Icon(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(12.dp),
-                        imageVector = Icons.Filled.Lock, contentDescription = "login icon"
-                    )
-                },
-                maxLines = 1,
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Password
-                ),
-                trailingIcon = {
-                    val image = if (passwordVisibility)
-                        Icons.Filled.Visibility
-                    else Icons.Filled.VisibilityOff
-
-                    // Please provide localized description for accessibility services
-                    val description =
-                        if (passwordVisibility) "Hide password" else "Show password"
-
-                    IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                        Icon(imageVector = image, description)
-                    }
-                }
-            )
-
-
-            Spacer(modifier = Modifier.size(16.dp))
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth(0.25f)
-                    .height(36.dp),
-                onClick = { /*TODO*/ }) {
-
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    AnimatedVisibility(
-                        modifier = Modifier.fillMaxSize(),
-                        visible = if (LocalInspectionMode.current) false else !(loginUiState.value is LoginUiState.Loading),
-                        exit = fadeOut(animationSpec = tween(300, easing = FastOutSlowInEasing))
-                    ) {
-                        Icon(
-                            modifier = Modifier.fillMaxSize(),
-                            imageVector = Icons.Filled.ArrowRight,
-                            contentDescription = "login_icon"
-                        )
-                    }
-                    AnimatedVisibility(
-                        modifier = Modifier.fillMaxSize(),
-                        visible = if (LocalInspectionMode.current) true else (loginUiState.value is LoginUiState.Loading),
-                        enter = fadeIn(animationSpec = tween(300, easing = FastOutSlowInEasing))
-                    ) {
-                        CircularProgressIndicator(modifier = Modifier.fillMaxSize())
-                    }
-                }
-            }
-        }
-    }
-}
-
-@DevicePreviews
-@Composable
-fun LoginContent() {
-
-    val versionVisibility = remember { mutableStateOf(true) }
-    val formVisibility = remember { mutableStateOf(false) }
-    val registerVisibility = remember { mutableStateOf(false) }
-
-    TheLabTheme {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Card(
-                    modifier = Modifier
-                        .size(96.dp)
-                        .padding(bottom = 48.dp),
-                    shape = Shapes.large,
-                    colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.ic_lab_twelve_background))
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp),
-                        painter = painterResource(id = R.drawable.ic_the_lab_12_logo_white),
-                        contentDescription = "Lab Icon"
-                    )
-                }
-
-                // Version
-                AnimatedVisibility(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 72.dp),
-                    visible = if (LocalInspectionMode.current) false else versionVisibility.value
-                ) {
-                    Text(
-                        modifier = Modifier.padding(8.dp),
-                        text = if (LocalInspectionMode.current) "12.0.0" else "12.0.0",
-                        style = TextStyle(color = Color.White)
-                    )
-                }
-
-                // Form
-                AnimatedVisibility(
-                    modifier = Modifier.fillMaxWidth(0.85f),
-                    visible = if (LocalInspectionMode.current) true else formVisibility.value
-                ) {
-                    LoginForm()
-                }
-            }
-
-
-            // Register button
-            AnimatedVisibility(
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 72.dp),
-                visible = if (LocalInspectionMode.current) true else registerVisibility.value
-            ) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        // Should register user
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text =
-                            Html
-                                .fromHtml(
-                                    stringResource(id = R.string.no_account_register),
-                                    Html.FROM_HTML_MODE_LEGACY
-                                )
-                                .toString(),
-                            color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-        }
+        LoginContent(viewModel = viewModel)
     }
 }
