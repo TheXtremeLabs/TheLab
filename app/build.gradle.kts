@@ -148,6 +148,7 @@ dependencies {
     implementation(Dependencies.recyclerView)
     implementation(Dependencies.springForce)
     implementation(Dependencies.viewPager2)
+    implementation(Dependencies.window)
 
     // Compose
     implementation(platform(Dependencies.composeBom))
@@ -166,6 +167,7 @@ dependencies {
     implementation(Dependencies.composeMaterialWindowSizeClass)
     implementation(Dependencies.composeFonts)
     implementation(Dependencies.composeActivity)
+    implementation(Dependencies.composeLifecycleRuntime)
     implementation(Dependencies.composeLifecycleViewModel)
     implementation(Dependencies.composeLiveData)
     implementation(Dependencies.composeNavigation)
@@ -291,7 +293,7 @@ dependencies {
     kapt(Dependencies.glideAnnotation)
     implementation(Dependencies.blurry)
     implementation(Dependencies.glideTransformation)
-    implementation("com.github.skydoves:landscapist-glide:2.1.0")
+    implementation("com.github.skydoves:landscapist-glide:2.1.1")
 
     // Lottie
     implementation(Dependencies.lottie)
@@ -316,9 +318,9 @@ dependencies {
     androidTestImplementation(TestsDependencies.mockitoCore)
     androidTestImplementation(TestsDependencies.mockitoAndroid)
 
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.2")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.3.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.3.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.3")
 
     androidTestImplementation(TestsDependencies.workerTest)
 

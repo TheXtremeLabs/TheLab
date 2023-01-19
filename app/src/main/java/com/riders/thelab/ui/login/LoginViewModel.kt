@@ -1,8 +1,7 @@
 package com.riders.thelab.ui.login
 
-
 import android.util.Patterns
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -11,13 +10,9 @@ import com.riders.thelab.data.local.model.compose.LoginUiState
 import com.riders.thelab.data.remote.dto.ApiResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -25,6 +20,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
+    val list = listOf<String>("test", "mike", "chronopost", "john")
 
     //////////////////////////////////////////
     // DataStore
@@ -36,14 +32,27 @@ class LoginViewModel @Inject constructor(
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    var login = mutableStateOf("")
-    var password = mutableStateOf("")
-    fun updateLogin(value: String) {
-        login.value = value
-    }
+    var login by mutableStateOf("")
+        private set
+    var password by mutableStateOf("")
+        private set
 
-    fun updatePassword(value: String) {
-        password.value = value
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val loginHasError: StateFlow<Boolean> =
+        snapshotFlow { login }
+            .mapLatest {
+                // isUsernameAvailable(it)
+                list.contains(login)
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = false
+            )
+
+    val loginHasLocalError by derivedStateOf {
+        // synchronous call
+        !login.isLetterOrDigits()
     }
 
     private var _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.None)
@@ -55,6 +64,20 @@ class LoginViewModel @Inject constructor(
 
     // The UI collects from this StateFlow to get its state updates
     val networkState: StateFlow<NetworkState> = _networkState
+
+
+    ////////////////////////////////////////
+    // Composable methods
+    ////////////////////////////////////////
+    fun updateLogin(value: String) {
+        login = value
+    }
+
+    fun updatePassword(value: String) {
+        password = value
+    }
+
+    fun isUsernameAvailable(login: String): Boolean = list.contains(login)
 
     //////////////////////////////////////////
     // Coroutines
@@ -112,6 +135,16 @@ class LoginViewModel @Inject constructor(
     ///////////////
     fun login() {
         Timber.d("login()")
+
+        if (loginHasError.value) {
+            Timber.e("loginHasError.value")
+            return
+        }
+        if (loginHasLocalError) {
+            Timber.e("loginHasLocalError")
+            return
+        }
+
         if (!isValidLogin()) {
             Timber.e("!isValidLogin()")
             return
@@ -123,14 +156,14 @@ class LoginViewModel @Inject constructor(
 
         _loginUiState.value = LoginUiState.Loading
 
-        makeCallLogin(login.value, password.value)
+        makeCallLogin(login, password)
     }
 
 
     fun isValidLogin() =
-        login.value.trim().isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(login.value).matches()
+        login.trim().isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(login).matches()
 
-    fun isValidPassword() = password.value.trim().isNotEmpty() && password.value.length >= 4
+    fun isValidPassword() = password.trim().isNotEmpty() && password.length >= 4
 
     fun makeCallLogin(email: String, password: String) {
         Timber.d("makeCallLogin() - with $email and $password")
@@ -185,3 +218,5 @@ class LoginViewModel @Inject constructor(
         }
     }
 }
+
+fun String.isLetterOrDigits(): Boolean = this.matches("^[a-zA-Z0-9]*$".toRegex())

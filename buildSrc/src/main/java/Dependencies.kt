@@ -60,6 +60,8 @@ object Dependencies {
     val recyclerView by lazy { "androidx.recyclerview:recyclerview:${DependenciesVersions.recyclerView}" }
     val springForce by lazy { "androidx.dynamicanimation:dynamicanimation:${DependenciesVersions.dynamicAnimation}" }
     val viewPager2 by lazy { "androidx.viewpager2:viewpager2:${DependenciesVersions.viewPager2}" }
+    val window by lazy { "androidx.window:window:${DependenciesVersions.window}" }
+    val windowExtensions by lazy { "androidx.window:window-extensions:${DependenciesVersions.windowExtensions}" }
 
     // Compose
     val composeBom by lazy { "androidx.compose:compose-bom:${DependenciesVersions.composeBom}" }
@@ -79,17 +81,18 @@ object Dependencies {
     val composeAnimation by lazy { "androidx.compose.animation:animation:${DependenciesVersions.composeAnimation}" }
 
     // Android Studio Preview support
-    val composeUiToolingPreview by lazy { "androidx.compose.ui:ui-tooling-preview:${DependenciesVersions.compose}" }
-    val composeUiTooling by lazy { "androidx.compose.ui:ui-tooling:${DependenciesVersions.compose}" }
+    val composeUiToolingPreview by lazy { "androidx.compose.ui:ui-tooling-preview" }
+    val composeUiTooling by lazy { "androidx.compose.ui:ui-tooling" }
 
     // Optional - Included automatically by material, only add when you need
     // the icons but not the material library (e.g. when using Material3 or a
     // custom design system based on Foundation)
     val composeMaterialIcons by lazy { "androidx.compose.material:material-icons-core" }
     val composeMaterialIconsExtended by lazy { "androidx.compose.material:material-icons-extended" }
-    val composeMaterialWindowSizeClass by lazy { "androidx.compose.material3:material3-window-size-class" }
+    val composeMaterialWindowSizeClass by lazy { "androidx.compose.material3:material3-window-size-class:1.1.0-alpha04" }
     val composeFonts by lazy { "androidx.compose.ui:ui-text-google-fonts:${DependenciesVersions.compose}" }
     val composeActivity by lazy { "androidx.activity:activity-compose:${DependenciesVersions.activity}" }
+    val composeLifecycleRuntime by lazy { "androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha04" }
     val composeLifecycleViewModel by lazy { "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0-alpha03" }
     val composeLiveData by lazy { "androidx.compose.runtime:runtime-livedata" }
     val composeNavigation by lazy { "androidx.navigation:navigation-compose:2.5.3" }

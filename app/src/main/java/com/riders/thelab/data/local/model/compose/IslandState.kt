@@ -21,6 +21,18 @@ sealed class IslandState(
 
     class DefaultState : IslandState()
 
+    class WelcomeState : IslandState(
+        contentSize = DpSize(
+            300.dp, 50.dp
+        ),
+    )
+
+    class SearchState : IslandState(
+        contentSize = DpSize(
+            350.dp, 70.dp
+        ),
+    )
+
     class FaceUnlockState : IslandState(
         contentSize = DpSize(
             150.dp, 150.dp

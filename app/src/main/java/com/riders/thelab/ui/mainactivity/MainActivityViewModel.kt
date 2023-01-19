@@ -44,7 +44,7 @@ class MainActivityViewModel @Inject constructor(
     // Coroutines
     //////////////////////////////////////////
     private val coroutineExceptionHandler =
-        CoroutineExceptionHandler { coroutineContext, throwable ->
+        CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
             Timber.e(throwable.message)
         }

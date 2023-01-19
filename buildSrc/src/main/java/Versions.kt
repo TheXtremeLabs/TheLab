@@ -32,6 +32,8 @@ object DependenciesVersions {
     const val recyclerView = "1.2.1"
     const val recyclerViewSelection = "1.1.0"
     const val viewPager2 = "1.0.0"
+    const val window = "1.0.0"
+    const val windowExtensions = "1.0.0-alpha01"
     const val dynamicAnimation = "1.0.0"
     const val autoFill = "1.1.0"
 

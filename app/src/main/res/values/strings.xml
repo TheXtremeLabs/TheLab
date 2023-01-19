@@ -145,6 +145,7 @@
 
     <!-- Main Activity Screen -->
     <string name="last_features_title_placeholder">Discover the last 3 features</string>
+    <string name="search_app_item_placeholder">Search an App...</string>
 
 
     <!-- Settings -->
