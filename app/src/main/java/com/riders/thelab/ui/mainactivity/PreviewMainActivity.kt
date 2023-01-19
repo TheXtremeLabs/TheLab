@@ -9,9 +9,7 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -34,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.component.DynamicIsland
@@ -60,20 +59,21 @@ fun MainContent(viewModel: MainActivityViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val isKeyboardOpen by keyboardAsState()
 
-    val lazyState = rememberLazyListState()
+    // Declaring Coroutine scope
+    val scope = rememberCoroutineScope()
+    val lazyState = rememberLazyGridState()
 
     // Declaring a Boolean value to
     // store bottom sheet collapsed state
     val scaffoldState =
         rememberBottomSheetScaffoldState(bottomSheetState = BottomSheetState(initialValue = BottomSheetValue.Collapsed))
 
-    // Declaring Coroutine scope
-    val scope = rememberCoroutineScope()
-
     val density = LocalDensity.current
     val isVisible = remember { mutableStateOf(false) }
 
     val dynamicIslandState = remember { mutableStateOf<IslandState>(IslandState.WelcomeState()) }
+
+    val appList by viewModel.appList.collectAsStateWithLifecycle()
 
     TheLabTheme {
         BottomSheetScaffold(
@@ -109,12 +109,11 @@ fun MainContent(viewModel: MainActivityViewModel) {
             sheetElevation = 8.dp,
             // Defaults to true
             sheetGesturesEnabled = false
-        ) { contentPadding ->
-
+        ) {
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
-                LazyColumn(
+                LazyVerticalGrid(
                     state = lazyState,
                     modifier = Modifier
                         .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background)
@@ -142,34 +141,42 @@ fun MainContent(viewModel: MainActivityViewModel) {
                                     }
                                 }
                             )
-                        }
+                        },
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    columns = GridCells.Fixed(2)
                 ) {
-                    item {
+                    item(span = {
+                        // Replace "maxCurrentLineSpan" with the number of spans this item should take.
+                        // Use "maxCurrentLineSpan" if you want to take full width.
+                        GridItemSpan(maxCurrentLineSpan)
+                    }) {
 
-                        Header(viewModel)
+                        Column {
 
-                        Spacer(modifier = Modifier.size(32.dp))
+                            Header(viewModel)
 
-                        Text(
-                            text = stringResource(id = R.string.app_list_placeholder),
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.W600
-                        )
+                            Spacer(modifier = Modifier.size(32.dp))
 
-                        Spacer(modifier = Modifier.size(8.dp))
+                            Text(
+                                text = stringResource(id = R.string.app_list_placeholder),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.W600
+                            )
 
-                        Text(
-                            text = stringResource(id = R.string.app_list_detail_placeholder),
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Thin
-                        )
+                            Spacer(modifier = Modifier.size(8.dp))
 
-                        Spacer(modifier = Modifier.size(16.dp))
+                            Text(
+                                text = stringResource(id = R.string.app_list_detail_placeholder),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Thin
+                            )
 
-                        // AppList(viewModel = viewModel)
+                            Spacer(modifier = Modifier.size(16.dp))
+                        }
                     }
 
-                    items(items = viewModel.appList.value.filter {
+                    items(items = appList.filter {
                         (it.appName != null && it.appName?.contains(
                             viewModel.searchedAppRequest.value, ignoreCase = true
                         )!!)
@@ -225,11 +232,6 @@ fun MainContent(viewModel: MainActivityViewModel) {
         delay(3550L)
         dynamicIslandState.value = IslandState.SearchState()
     }
-
-    /*LaunchedEffect(Unit) {
-        delay(15050L)
-        isVisible.value = false
-    }*/
 }
 
 

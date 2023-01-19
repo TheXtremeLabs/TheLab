@@ -3,17 +3,12 @@ package com.riders.thelab.ui.palette
 import android.app.Activity
 import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
 import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.local.model.compose.LoginUiState
-import com.riders.thelab.data.remote.dto.ApiResponse
-import com.riders.thelab.ui.login.NetworkState
-import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers.IO

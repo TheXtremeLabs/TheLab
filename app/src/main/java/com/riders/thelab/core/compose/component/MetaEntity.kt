@@ -20,7 +20,7 @@ fun MetaEntity(
         contentAlignment = Alignment.Center
     ) {
         Box(
-            modifier = Modifier.customBlur(blur),
+            //modifier = Modifier.customBlur(blur),
             content = metaContent,
         )
         content()

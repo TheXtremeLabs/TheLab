@@ -68,10 +68,7 @@ fun TheLabTopAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
-fun TheLabTopAppBarLarge(
-    /*title: @Composable() () -> Unit,
-    navigationIcon: @Composable() (() -> Unit)? = null*/
-) {
+fun TheLabTopAppBarLarge() {
 
     val context = LocalContext.current
 

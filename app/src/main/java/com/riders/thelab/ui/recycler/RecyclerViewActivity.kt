@@ -1,13 +1,23 @@
 package com.riders.thelab.ui.recycler
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.imageview.ShapeableImageView
+import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.remote.dto.artist.Artist
@@ -17,10 +27,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import timber.log.Timber
 
 @AndroidEntryPoint
-class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
+class RecyclerViewActivity : ComponentActivity(), RecyclerClickListener {
 
     private var _viewBinding: ActivityRecyclerViewBinding? = null
     private val binding get() = _viewBinding!!
@@ -40,6 +52,22 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
         initViewModelObservers()
 
         mRecyclerViewModel.getFirebaseJSONURL(this)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                setContent {
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            RecyclerViewContent(viewModel = mRecyclerViewModel)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -57,23 +85,23 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
     }
 
 
-    fun initViewModelObservers() {
-        mRecyclerViewModel.getJSONURLFetched().observe(this, {
+    private fun initViewModelObservers() {
+        mRecyclerViewModel.getJSONURLFetched().observe(this) {
             bucketUrl = it
             mRecyclerViewModel.getFirebaseFiles(this)
-        })
-        mRecyclerViewModel.getJSONURLError().observe(this, {
+        }
+        mRecyclerViewModel.getJSONURLError().observe(this) {
 
-        })
-        mRecyclerViewModel.getArtistsThumbnailsSuccessful().observe(this, {
+        }
+        mRecyclerViewModel.getArtistsThumbnailsSuccessful().observe(this) {
 
             this.artistThumbnails = it
             bucketUrl?.let { url -> mRecyclerViewModel.fetchArtists(url) }
-        })
-        mRecyclerViewModel.getArtistsThumbnailsError().observe(this, {
+        }
+        mRecyclerViewModel.getArtistsThumbnailsError().observe(this) {
 
-        })
-        mRecyclerViewModel.getArtists().observe(this, {
+        }
+        mRecyclerViewModel.getArtists().observe(this) {
 
             CoroutineScope(Dispatchers.Main).launch {
                 delay(3000)
@@ -104,11 +132,11 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
                 binding.recyclerView.itemAnimator = DefaultItemAnimator()
                 binding.recyclerView.adapter = adapter
             }
-        })
+        }
 
-        mRecyclerViewModel.getArtistsError().observe(this, {
+        mRecyclerViewModel.getArtistsError().observe(this) {
 
-        })
+        }
     }
 
     override fun onRecyclerClick(artist: Artist) {
@@ -118,6 +146,18 @@ class RecyclerViewActivity : AppCompatActivity(), RecyclerClickListener {
 
     override fun onDetailClick(artist: Artist, sharedImageView: ShapeableImageView, position: Int) {
         mRecyclerViewModel.onDetailClick(this, artist, sharedImageView)
+    }
+
+    fun onDetailClick(artist: Artist) {
+        Intent(this, RecyclerViewDetailActivity::class.java)
+            .apply {
+                this.putExtra(
+                    RecyclerViewDetailActivity.EXTRA_RECYCLER_ITEM,
+                    Json.encodeToString(artist)
+                )
+            }.run {
+                startActivity(this)
+            }
     }
 
     override fun onDeleteClick(artist: Artist, position: Int) {

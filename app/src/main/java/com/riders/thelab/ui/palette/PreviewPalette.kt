@@ -171,50 +171,6 @@ fun PaletteContent(viewModel: PaletteViewModel) {
                                 }
                             }
                         }
-
-                        /*AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(imageUrl)
-                                    .crossfade(true)
-                                    .allowHardware(false)
-                                    .build(),
-                                placeholder = painterResource(R.drawable.logo_colors),
-                                contentDescription = "palette image wth coil",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.clip(RoundedCornerShape(32.dp)),
-                                onLoading = { Timber.d("onLoading") },
-                                onSuccess = {
-                                    Timber.d("onSuccess")
-                                    bitmap = UIManager.drawableToBitmap(it.result.drawable)
-
-                                    bitmap?.let {
-
-                                        palette = Palette.from(it).generate()
-
-                                        ////////////////
-
-                                        val vibrant = palette?.vibrantSwatch?.rgb
-                                        val vibrantDark = palette?.darkVibrantSwatch?.rgb
-                                        val vibrantLight = palette?.lightVibrantSwatch?.rgb
-                                        val muted = palette?.mutedSwatch?.rgb
-                                        val mutedDark = palette?.darkMutedSwatch?.rgb
-                                        val lightMuted = palette?.lightMutedSwatch?.rgb
-
-                                        paletteColorList.addAll(
-                                            listOf<Int>(
-                                                vibrant!!,
-                                                vibrantDark!!,
-                                                vibrantLight!!,
-                                                muted!!,
-                                                mutedDark!!,
-                                                lightMuted!!
-                                            )
-                                        )
-                                    }
-
-                                },
-                                onError = { Timber.e("onError") }
-                            )*/
                     }
                 }
 

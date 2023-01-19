@@ -3,7 +3,7 @@ buildscript {
     dependencies {
         // Kotlin plugin
         classpath(BuildPlugins.kotlin)
-        classpath(BuildPlugins.kotlinSerialization)
+        //classpath(BuildPlugins.kotlinSerialization)
 
         // Gradle plugin
         classpath(BuildPlugins.gradle)

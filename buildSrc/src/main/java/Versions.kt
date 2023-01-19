@@ -16,6 +16,7 @@ object DependenciesVersions {
 
     // Kotlin
     const val kotlin = "1.7.20"
+    const val kotlinSerialization = "1.4.1"
     const val coroutines = "1.6.4"
     const val kotlinPlayServices = "1.6.4"
 
