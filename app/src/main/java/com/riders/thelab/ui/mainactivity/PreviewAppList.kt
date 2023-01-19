@@ -40,9 +40,22 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
     val description = item.appDescription ?: item.appVersion!!
 
     /* Convert our Image Resource into a Bitmap */
-    val bitmap = remember {
-        UIManager.drawableToBitmap(item.appDrawableIcon!!)
-    }
+//    val bitmap = remember { UIManager.drawableToBitmap(item.appDrawableIcon!!) }
+    val bitmap =
+        when (title) {
+            stringResource(id = R.string.activity_title_palette) -> {
+                remember {
+                    UIManager.addGradientToImageView(
+                        context,
+                        UIManager.drawableToBitmap(item.appDrawableIcon!!)
+                    )
+                }
+            }
+            else -> {
+                remember { UIManager.drawableToBitmap(item.appDrawableIcon!!) }
+            }
+        }
+
 
     /* Create the Palette, pass the bitmap to it */
     val palette = remember {
@@ -114,7 +127,7 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                     Text(modifier = Modifier.fillMaxWidth(), text = title)
 
                     Text(
-                        modifier = Modifier.fillMaxWidth(), text = description, maxLines = 1
+                        modifier = Modifier.fillMaxWidth(), text = description, maxLines = 2
                     )
                 }
             }

@@ -183,7 +183,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
                                 || (it.appTitle != null && it.appTitle?.contains(
                             viewModel.searchedAppRequest.value, ignoreCase = true
                         )!!)
-                    }, key = { it.id }) { appItem ->
+                    }/*, key = { it.id }*/) { appItem ->
                         App(item = appItem)
                     }
                 }
