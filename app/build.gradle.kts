@@ -7,7 +7,7 @@ plugins {
      * Applying external plugins with same version to subprojects.
      */
 
-    id("com.android.application")
+    /*id("com.android.application")
     kotlin("android")
     kotlin("kapt")
     id("kotlin-parcelize")
@@ -16,12 +16,23 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    id("com.google.firebase.firebase-perf")*/
+
+    id("thelab.android.application")
+    id("thelab.android.application.compose")
+    id("thelab.android.application.jacoco")
+    id("thelab.android.hilt")
+    id("jacoco")
+    id("androidx.navigation.safeargs.kotlin")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
     id("com.google.firebase.firebase-perf")
+    //id("thelab.firebase")
 }
 
 android {
 
-    compileSdk = ConfigData.compileSdkVersion
+//    compileSdk = ConfigData.compileSdkVersion
 
     useLibrary("org.apache.http.legacy")
 
@@ -29,8 +40,8 @@ android {
 
     defaultConfig {
         applicationId = "com.riders.thelab"
-        minSdk = ConfigData.minSdkVersion
-        targetSdk = ConfigData.targetSdkVersion
+        /*minSdk = ConfigData.minSdkVersion
+        targetSdk = ConfigData.targetSdkVersion*/
         versionCode = ConfigData.versionCode
         versionName = ConfigData.versionName
 
@@ -77,40 +88,11 @@ android {
         }
     }
 
-    // Increase build gradle time
-    // https://medium.com/@AthorNZ/how-to-speed-up-your-slow-gradle-builds-5d9a9545f91a
-
-    // Disable multi-APK (in development)
-    /*if (project.hasProperty('devBuild')) {
-        splits.abi.enable = false
-        splits.density.enable = false
-        aaptOptions.cruncherEnabled = false
-    }*/
-
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2"
-    }
 
     buildFeatures {
-        // Determines whether to support View Binding.
-        // Note that the viewBinding.enabled property is now deprecated.
-        viewBinding = true
         // Determines whether to support Data Binding.
         // Note that the dataBinding.enabled property is now deprecated.
         dataBinding = true
-
-        // Enables Jetpack Compose for this module
-        compose = true
     }
 
     lint {
