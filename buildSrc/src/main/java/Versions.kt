@@ -109,9 +109,6 @@ object DependenciesVersions {
     const val retrofit = "2.9.0"
     const val okHttp = "5.0.0-alpha.2"
 
-    // Gson
-    const val gson = "2.10"
-
     // Moshi
     const val moshi = "1.14.0"
 
