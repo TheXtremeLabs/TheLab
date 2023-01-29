@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     device = "spec:shape=Normal,width=360,height=640,unit=dp,dpi=480"
 )
-@Preview(
+/*@Preview(
     name = "landscape light",
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO,
@@ -54,5 +54,5 @@ import androidx.compose.ui.tooling.preview.Preview
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     device = "spec:shape=Normal,width=1280,height=800,unit=dp,dpi=480"
-)
+)*/
 annotation class DevicePreviews

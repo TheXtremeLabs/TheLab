@@ -7,32 +7,24 @@ plugins {
      * Applying external plugins with same version to subprojects.
      */
 
-    /*id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
-    id("kotlin-parcelize")
-    id("kotlinx-serialization")
-    id("dagger.hilt.android.plugin")
-    id("androidx.navigation.safeargs.kotlin")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
-    id("com.google.firebase.firebase-perf")*/
-
+    /**
+     * Defined in build-logic/convention/build.gradle.kts class
+     */
     id("thelab.android.application")
     id("thelab.android.application.compose")
     id("thelab.android.application.jacoco")
     id("thelab.android.hilt")
     id("jacoco")
     id("androidx.navigation.safeargs.kotlin")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
-    id("com.google.firebase.firebase-perf")
-    //id("thelab.firebase")
+    id("thelab.firebase")
 }
 
 android {
 
-//    compileSdk = ConfigData.compileSdkVersion
+    /**
+     * Defined in AndroidApplicationConventionPlugin class
+     */
+    // compileSdk = ConfigData.compileSdkVersion
 
     useLibrary("org.apache.http.legacy")
 
@@ -40,10 +32,14 @@ android {
 
     defaultConfig {
         applicationId = "com.riders.thelab"
+
+        /**
+         * Defined in AndroidApplicationConventionPlugin class
+         */
         /*minSdk = ConfigData.minSdkVersion
-        targetSdk = ConfigData.targetSdkVersion*/
+        targetSdk = ConfigData.targetSdkVersion
         versionCode = ConfigData.versionCode
-        versionName = ConfigData.versionName
+        versionName = ConfigData.versionName*/
 
         // Enabling multidex support.
         multiDexEnabled = true
@@ -60,6 +56,8 @@ android {
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
             isMinifyEnabled = false
+
+            //applicationIdSuffix = LabBuildType.DEBUG.applicationIdSuffix
         }
         getByName("release") {
             isDebuggable = false
@@ -78,6 +76,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            //applicationIdSuffix = LabBuildType.RELEASE.applicationIdSuffix
         }
     }
 

@@ -18,11 +18,13 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 apply("kotlinx-serialization")
             }
 
-
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = ConfigData.targetSdkVersion
-                configureFlavors(this)
+
+                defaultConfig.versionCode = ConfigData.versionCode
+                defaultConfig.versionName = ConfigData.versionName
+                // configureFlavors(this)
             }
             extensions.configure<ApplicationAndroidComponentsExtension> {
                 configurePrintApksTask(this)

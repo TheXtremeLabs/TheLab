@@ -52,14 +52,16 @@ class SplashScreenActivity : AppCompatActivity(), CoroutineScope {
 
         super.onCreate(savedInstanceState)
 
-        mViewModel.retrieveAppVersion(this)
-
-        var videoPath: String = ""
 
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
 
             repeatOnLifecycle(Lifecycle.State.CREATED) {
+
+                mViewModel.retrieveAppVersion(this@SplashScreenActivity)
+
+                var videoPath: String = ""
+
                 try {
                     videoPath =
                         ANDROID_RES_PATH +
