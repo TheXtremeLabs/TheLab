@@ -279,17 +279,18 @@ dependencies {
     implementation("com.github.skydoves:landscapist-glide:2.1.1")
 
     // Lottie
-    implementation(Dependencies.lottie)
+    implementation(libs.lottie)
+    implementation(libs.lottie.compose)
 
     //ThreeTen : Alternative to Android Calendar API
-    implementation(Dependencies.threeten)
+    implementation(libs.threeten)
 
 
     // Timber : Logging library
-    implementation(Dependencies.timber)
+    implementation(libs.timber)
 
     // Kotools Types
-    implementation(Dependencies.kotoolsTypes)
+    implementation(libs.kotools.types)
 
 
     /////////////////////////////

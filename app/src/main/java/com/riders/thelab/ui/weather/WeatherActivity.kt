@@ -12,10 +12,18 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
@@ -39,10 +47,12 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
 import com.riders.thelab.core.bus.LocationFetchedEvent
+import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.utils.*
 import com.riders.thelab.data.RepositoryImpl
 import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.bean.WindDirection
+import com.riders.thelab.data.local.model.compose.WeatherUIState
 import com.riders.thelab.data.local.model.weather.CityModel
 import com.riders.thelab.data.remote.dto.weather.CurrentWeather
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
@@ -50,7 +60,8 @@ import com.riders.thelab.databinding.ActivityWeatherBinding
 import com.riders.thelab.utils.DateTimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
@@ -61,7 +72,7 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
-class WeatherActivity : AppCompatActivity(), WeatherClickListener {
+class WeatherActivity : ComponentActivity(), WeatherClickListener {
 
     private var _viewBinding: ActivityWeatherBinding? = null
     private val binding get() = _viewBinding!!
@@ -83,14 +94,33 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         Timber.d("onCreate()")
         super.onCreate(savedInstanceState)
         _viewBinding = ActivityWeatherBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        /*setContentView(binding.root)*/
 
         context = this
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         checkLocationPermissions()
         listener = this
+
+        // Start a coroutine in the lifecycle scope
+        lifecycleScope.launch {
+            // repeatOnLifecycle launches the block in a new coroutine every time the
+            // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                setContent {
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            WeatherContent(mWeatherViewModel)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -136,12 +166,12 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             private fun getCitiesFromDb(queryText: String) {
                 val searchText = "%$queryText%"
 
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(IO).launch {
 
                     try {
                         val cursor = repositoryImpl.getCitiesCursor(searchText)
 
-                        withContext(Dispatchers.Main) {
+                        withContext(Main) {
                             handleResults(cursor)
                         }
                     } catch (exception: Exception) {
@@ -215,6 +245,8 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                     "${event.getLocation().latitude}," +
                     " ${event.getLocation().longitude}"
         )
+
+        mWeatherViewModel.updateUIState(WeatherUIState.SuccessWeatherData(true))
 
         mWeatherViewModel.fetchWeather(
             event.getLocation().run { latitude to longitude }.toLocation()
@@ -398,7 +430,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                 .weather[0]
                 .description*/
 
-        supportActionBar?.title = "$cityName $country"
+        //supportActionBar?.title = "$cityName $country"
 
         // Temperatures
         val temperature =
