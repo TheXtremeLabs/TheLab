@@ -43,6 +43,7 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
 //    val bitmap = remember { UIManager.drawableToBitmap(item.appDrawableIcon!!) }
     val bitmap =
         when (title) {
+            
             stringResource(id = R.string.activity_title_palette) -> {
                 remember {
                     UIManager.addGradientToImageView(

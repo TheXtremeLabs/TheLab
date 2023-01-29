@@ -20,5 +20,4 @@ class FirebaseConventionPlugin : Plugin<Project> {
             }
         }
     }
-
 }
