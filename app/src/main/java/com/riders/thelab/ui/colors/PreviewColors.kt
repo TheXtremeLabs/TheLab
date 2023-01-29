@@ -22,18 +22,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.R
+import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.utils.LabColorsManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    name = "Dark Mode",
-    showSystemUi = false
-)
+@DevicePreviews
 @Composable
 fun Color() {
 

@@ -7,7 +7,7 @@ object ConfigData {
     // version information
     private const val versionMajor = 12
     private const val versionMinor = 0
-    private const val versionPatch = 0
+    private const val versionPatch = 2
 
     const val versionCode = 1
     const val versionName = "$versionMajor.$versionMinor.$versionPatch"
