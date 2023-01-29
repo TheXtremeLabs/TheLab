@@ -40,7 +40,6 @@ import com.riders.thelab.ui.weather.WeatherActivity
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity
 
 class AppBuilderUtils {
-
     companion object {
         fun buildActivities(context: Context): List<App> {
 
@@ -481,7 +480,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(ComposeActivity::class.java)
-                    .withActivityDate("2021/10/13")
+                    .withActivityDate("2023/01/29")
                     .build()
             list.add(jetpackCompose)
 

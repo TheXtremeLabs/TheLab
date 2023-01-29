@@ -61,11 +61,11 @@ class DownloadActivity
 
     @SuppressLint("SetTextI18n")
     private fun initViewsModelsObservers() {
-        mViewModel.getPercentData().observe(this, {
+        mViewModel.getPercentData().observe(this) {
             binding.progressBar.progress = it
-        })
+        }
 
-        mViewModel.getDownloadStatus().observe(this, {
+        mViewModel.getDownloadStatus().observe(this) {
             when (it) {
                 is Download.Started -> {
                     Timber.d("${it.started}")
@@ -91,7 +91,7 @@ class DownloadActivity
                 is Download.Progress -> { // Ignored
                 }
             }
-        })
+        }
     }
 
 
