@@ -6,6 +6,9 @@ import android.database.Cursor
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -40,10 +43,24 @@ class WeatherViewModel @Inject constructor(
         _weatherUiState.value = state
     }
 
+    var searchText by mutableStateOf("")
+        private set
+
+    var suggestions by mutableStateOf(mutableListOf<Cursor>())
+        private set
+
+    fun updateSearchText(searchQuery: String) {
+        searchText = searchQuery
+
+        if (2 <= searchText.length) {
+            getCitiesFromDb(searchText)
+        }
+    }
 
     //////////////////////////////////////////
     // Coroutines
     //////////////////////////////////////////
+    private var searchDbJob: Job? = null
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
@@ -63,39 +80,13 @@ class WeatherViewModel @Inject constructor(
     private val weatherCursor: MutableLiveData<Cursor> = MutableLiveData()
     private val oneCallWeather: MutableLiveData<OneCallWeatherResponse> = MutableLiveData()
 
-
-    ///////////////////////////
-    //
-    // Observers
-    //
-    ///////////////////////////
-    fun getProgressBarVisibility(): LiveData<Boolean> {
-        return progressVisibility
-    }
-
-    fun getConnectionStatus(): LiveData<Boolean> {
-        return connectionStatus
-    }
-
-    fun getDownloadStatus(): LiveData<String> {
-        return downloadStatus
-    }
-
-    fun getDownloadDone(): LiveData<Boolean> {
-        return downloadDone
-    }
-
-    fun getIsWeatherData(): LiveData<Boolean> {
-        return isWeatherData
-    }
-
-    fun getWorkerStatus(): LiveData<WorkInfo.State> {
-        return workerStatus
-    }
-
-    fun getOneCalWeather(): LiveData<OneCallWeatherResponse> {
-        return oneCallWeather
-    }
+    fun getProgressBarVisibility(): LiveData<Boolean> = progressVisibility
+    fun getConnectionStatus(): LiveData<Boolean> = connectionStatus
+    fun getDownloadStatus(): LiveData<String> = downloadStatus
+    fun getDownloadDone(): LiveData<Boolean> = downloadDone
+    fun getIsWeatherData(): LiveData<Boolean> = isWeatherData
+    fun getWorkerStatus(): LiveData<WorkInfo.State> = workerStatus
+    fun getOneCalWeather(): LiveData<OneCallWeatherResponse> = oneCallWeather
 
 
     ///////////////////////////
@@ -103,6 +94,64 @@ class WeatherViewModel @Inject constructor(
     // Class methods
     //
     ///////////////////////////
+    fun getCitiesFromDb(query: String) {
+        Timber.d("getCitiesFromDb() | query: $query")
+
+        if (null != searchDbJob && searchDbJob?.isActive == true) {
+            searchDbJob?.cancel()
+        }
+
+        searchDbJob = viewModelScope.launch(IO /*+ SupervisorJob() + coroutineExceptionHandler*/) {
+
+            try {
+                val cursor = repositoryImpl.getCitiesCursor(searchText)
+
+                withContext(Main) {
+                handleResults(cursor)
+                }
+            } catch (exception: Exception) {
+                handleError(exception)
+            }
+        }
+        // viewModelScope.launch { searchDbJob?.join() }
+    }
+
+    private fun handleResults(cursor: Cursor) {
+        Timber.d("handleResults() | available cursor's column: ${cursor.columnNames}")
+
+        if (suggestions.isNotEmpty()) suggestions = mutableListOf()
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast) { // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
+
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+                val country = cursor.getString(cursor.getColumnIndexOrThrow("country"))
+
+                Timber.d("handleResults() | name: $name, country: $country")
+
+                suggestions.add(cursor)
+
+                cursor.moveToNext()
+            }
+        }
+        /* mSearchView.suggestionsAdapter =
+             WeatherSearchViewAdapter(
+                 context,
+                 cursor,
+                 mSearchView,
+                 listener
+             )*/
+    }
+
+    private fun handleError(t: Throwable) {
+        Timber.e("handleError() | ${t.message}")
+        Timber.e("Problem in Fetching City")
+        /*Toast.makeText(
+            context, "Problem in Fetching City",
+            Toast.LENGTH_LONG
+        ).show()*/
+    }
+
     private fun showLoader() {
         progressVisibility.value = true
     }
@@ -122,12 +171,11 @@ class WeatherViewModel @Inject constructor(
         longitude: Double
     ): Address? {
         Timber.d("getCityNameWithCoordinates()")
-        return LabAddressesUtils
-            .getDeviceAddress(
-                Geocoder(activity, Locale.getDefault()),
-                (latitude to longitude).toLocation()
-                // LabLocationUtils.buildTargetLocationObject(latitude, longitude)
-            )
+        return LabAddressesUtils.getDeviceAddress(
+            Geocoder(activity, Locale.getDefault()),
+            (latitude to longitude).toLocation()
+            // LabLocationUtils.buildTargetLocationObject(latitude, longitude)
+        )
     }
 
     fun fetchCities(context: Context) {
@@ -157,7 +205,6 @@ class WeatherViewModel @Inject constructor(
                         // Use worker to make long job operation in background
                         Timber.e("Use worker to make long job operation in background...")
                         withContext(Main) { isWeatherData.value = false }
-
                     } else {
                         // In this case data already exists in database
                         // Load data then let the the user perform his request
@@ -267,6 +314,7 @@ class WeatherViewModel @Inject constructor(
                         Timber.d("Worker RUNNING")
                         workerStatus.value = WorkInfo.State.RUNNING
                         downloadStatus.value = "Loading..."
+                        updateUIState(WeatherUIState.Loading)
                     }
                     WorkInfo.State.SUCCEEDED -> {
 
@@ -279,6 +327,8 @@ class WeatherViewModel @Inject constructor(
                         downloadDone.value = true
                         downloadStatus.value = "Loading finished"
                         workerStatus.value = WorkInfo.State.SUCCEEDED
+
+                        updateUIState(WeatherUIState.Success(OneCallWeatherResponse()))
                     }
                     WorkInfo.State.FAILED -> {
                         Timber.e("Worker FAILED")
@@ -293,11 +343,13 @@ class WeatherViewModel @Inject constructor(
                             SnackBarType.ALERT,
                             "", null
                         )
+                        updateUIState(WeatherUIState.Error())
                     }
                     WorkInfo.State.BLOCKED -> Timber.e("Worker BLOCKED")
                     WorkInfo.State.CANCELLED -> Timber.e("Worker CANCELLED")
                     else -> {
                         Timber.e("Else branch")
+                        updateUIState(WeatherUIState.Error())
                     }
                 }
             }

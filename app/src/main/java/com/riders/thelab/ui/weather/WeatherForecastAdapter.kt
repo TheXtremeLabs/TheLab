@@ -9,7 +9,7 @@ import com.riders.thelab.data.remote.dto.weather.DailyWeather
 
 class WeatherForecastAdapter constructor(
     val context: Context,
-    val dailyWeatherList: List<DailyWeather>
+    private val dailyWeatherList: List<DailyWeather>
 ) :
     RecyclerView.Adapter<WeatherForecastViewHolder>() {
 

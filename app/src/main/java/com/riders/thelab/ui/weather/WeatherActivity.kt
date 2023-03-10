@@ -434,11 +434,11 @@ class WeatherActivity : ComponentActivity(), WeatherClickListener {
 
         // Temperatures
         val temperature =
-            "${oneCallWeatherResponse.currentWeather.temperature.roundToInt()} ${getString(R.string.degree_placeholder)}"
+            "${oneCallWeatherResponse.currentWeather?.temperature?.roundToInt()} ${getString(R.string.degree_placeholder)}"
         binding.tvWeatherCityTemperature.text = temperature
 
         val realFeels =
-            "${oneCallWeatherResponse.currentWeather.feelsLike.roundToInt()} ${
+            "${oneCallWeatherResponse.currentWeather?.feelsLike?.roundToInt()} ${
                 resources.getString(
                     R.string.degree_placeholder
                 )
@@ -452,11 +452,11 @@ class WeatherActivity : ComponentActivity(), WeatherClickListener {
             )*/
         binding.tvSunset.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(
-                oneCallWeatherResponse.timezone,
-                oneCallWeatherResponse.currentWeather.sunset
+                oneCallWeatherResponse.timezone!!,
+                oneCallWeatherResponse.currentWeather!!.sunset
             )
 
-        val hourlyWeather: List<CurrentWeather> = oneCallWeatherResponse.hourlyWeather
+        val hourlyWeather: List<CurrentWeather> = oneCallWeatherResponse.hourlyWeather!!
 
         // Build chart with hourly weather data
         buildChart(hourlyWeather)
@@ -481,7 +481,7 @@ class WeatherActivity : ComponentActivity(), WeatherClickListener {
             oneCallWeatherResponse.currentWeather.windDegree
         )
 
-        Glide.with(this)
+        Glide.with(applicationContext)
             .load(ContextCompat.getDrawable(this, windDirection.icon))
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
@@ -515,7 +515,7 @@ class WeatherActivity : ComponentActivity(), WeatherClickListener {
             this,
             oneCallWeatherResponse
                 .dailyWeather
-                .subList(1, oneCallWeatherResponse.dailyWeather.size - 2)
+                ?.subList(1, oneCallWeatherResponse.dailyWeather.size - 2)!!
         )
 
         val linearLayoutManager =

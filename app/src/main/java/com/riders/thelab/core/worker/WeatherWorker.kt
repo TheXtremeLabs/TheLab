@@ -154,19 +154,21 @@ class WeatherWorker @AssistedInject constructor(
         country: String
     ): Bundle {
         Timber.d("buildWeatherBundle()")
-        val description = response.currentWeather.weather[0].description
+        val description = response.currentWeather?.weather?.get(0)?.description
         val temperature =
-            "${response.currentWeather.temperature.roundToInt()} ${context.getString(R.string.degree_placeholder)}"
+            "${response.currentWeather?.temperature?.roundToInt()} ${context.getString(R.string.degree_placeholder)}"
         val realFeels =
-            "${response.currentWeather.feelsLike.roundToInt()} ${
+            "${response.currentWeather?.feelsLike?.roundToInt()} ${
                 context.getString(
                     R.string.degree_placeholder
                 )
             }"
         val icon =
-            WeatherUtils.getWeatherIconFromApi(
-                response.currentWeather.weather[0].icon
-            )
+            response.currentWeather?.weather?.get(0)?.let {
+                WeatherUtils.getWeatherIconFromApi(
+                    it.icon
+                )
+            }
 
         return Bundle().apply {
             putString(TheLabAppWidgetProvider.EXTRA_WEATHER_CITY, city)

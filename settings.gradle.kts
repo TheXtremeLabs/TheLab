@@ -20,7 +20,6 @@ pluginManagement {
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
-
     }
 }
 
@@ -45,7 +44,6 @@ dependencyResolutionManagement {
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
-
     }
 }
 

@@ -19,17 +19,17 @@ data class OneCallWeatherResponse constructor(
     val longitude: Double = 0.0,
 
     @Json(name = "timezone")
-    val timezone: String,
+    val timezone: String? = null,
 
     @Json(name = "timezone_offset")
     val timezoneOffset: Int = 0,
 
     @Json(name = "current")
-    val currentWeather: CurrentWeather,
+    val currentWeather: CurrentWeather? = null,
 
     @Json(name = "hourly")
-    val hourlyWeather: List<CurrentWeather>,
+    val hourlyWeather: List<CurrentWeather>? = null,
 
     @Json(name = "daily")
-    val dailyWeather: List<DailyWeather>,
+    val dailyWeather: List<DailyWeather>? = null,
 )

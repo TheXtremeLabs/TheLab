@@ -110,8 +110,8 @@ dependencies {
     // General Dependencies
     /////////////////////////////
     //Kotlin
-    implementation(KotlinDependencies.kotlinStdLib)
-    implementation(KotlinDependencies.kotlinStdJdk)
+    //implementation(KotlinDependencies.kotlinStdLib)
+    //implementation(KotlinDependencies.kotlinStdJdk)
     implementation(KotlinDependencies.coroutinesCore)
     implementation(KotlinDependencies.coroutinesAndroid)
     implementation(KotlinDependencies.kotlinParcelize)
