@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.riders.thelab.core.compose.utils.customBlur
+import com.riders.thelab.core.utils.LabCompatibilityManager
 
 @Composable
 fun MetaEntity(
@@ -20,8 +21,10 @@ fun MetaEntity(
         contentAlignment = Alignment.Center
     ) {
         Box(
-            //modifier = Modifier.customBlur(blur),
-            content = metaContent,
+            modifier = if (!LabCompatibilityManager.isTiramisu()) Modifier else Modifier.customBlur(
+                blur
+            ),
+            content = metaContent
         )
         content()
     }

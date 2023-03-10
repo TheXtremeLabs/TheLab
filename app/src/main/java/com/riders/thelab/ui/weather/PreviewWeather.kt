@@ -2,14 +2,15 @@ package com.riders.thelab.ui.weather
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.*
@@ -33,9 +34,13 @@ fun WeatherLoading(modifier: Modifier = Modifier) {
     }
 }
 
-@DevicePreviews
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WeatherSuccess() {
+fun WeatherSuccess(viewModel: WeatherViewModel) {
+    var expanded by remember { mutableStateOf(false) }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+    var selectedText by remember { mutableStateOf("") }
+
     val cityName = remember { mutableStateOf("Torcy") }
     val country = remember { mutableStateOf("France") }
     val temperature = remember { mutableStateOf("2°") }
@@ -45,6 +50,34 @@ fun WeatherSuccess() {
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+
+            TextField(
+                value = viewModel.searchText,
+                onValueChange = { viewModel.updateSearchText(it) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        //This value is used to assign to the DropDown the same width
+                        textFieldSize = coordinates.size.toSize()
+                    },
+                label = { Text("Search a Country, City,...") },
+            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+            ) {
+                viewModel.suggestions.forEach { label ->
+                    DropdownMenuItem(
+                        modifier = Modifier,
+                        onClick = {
+                            selectedText = label.getString(label.getColumnIndexOrThrow("name"))
+                        },
+                        text = { Text(text = label.getString(label.getColumnIndexOrThrow("name"))) },
+                    )
+                }
+            }
             Text(cityName.value)
             Text(country.value)
             Text(temperature.value)
@@ -113,7 +146,7 @@ fun WeatherContent(viewModel: WeatherViewModel) {
                     }
                     is SuccessWeatherData,
                     is Success -> {
-                        WeatherSuccess()
+                        WeatherSuccess(viewModel)
                     }
                     is Error -> {
                         WeatherError(
@@ -128,11 +161,26 @@ fun WeatherContent(viewModel: WeatherViewModel) {
     }
 }
 
+
+///////////////////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////////////////
 @DevicePreviews
 @Composable
 fun PreviewWeatherContent() {
     val viewModel: WeatherViewModel = hiltViewModel()
     TheLabTheme {
         WeatherContent(viewModel = viewModel)
+    }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewWeatherSuccess() {
+    val viewModel: WeatherViewModel = hiltViewModel()
+    TheLabTheme {
+        WeatherSuccess(viewModel = viewModel)
     }
 }

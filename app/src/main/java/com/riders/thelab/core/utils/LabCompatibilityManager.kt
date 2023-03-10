@@ -115,6 +115,15 @@ object LabCompatibilityManager {
 
 
     /**
+     * Determine if the device is running API level 33 or higher.
+     * Tiramisu
+     */
+    fun isTiramisu(): Boolean {
+        return getSdkVersion() == VERSION_CODES.TIRAMISU
+    }
+
+
+    /**
      * Determine if the device is a tablet (i.e. it has a large screen).
      *
      * @param context The calling context.

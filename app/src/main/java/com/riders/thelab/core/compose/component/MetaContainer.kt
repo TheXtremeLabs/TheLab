@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
+import com.riders.thelab.core.utils.LabCompatibilityManager
 import org.intellij.lang.annotations.Language
 
 @Language("AGSL")
@@ -41,15 +42,23 @@ fun MetaContainer(
     cutoff: Float = .5f,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    //val metaShader = remember { RuntimeShader(ShaderSource) }
-    Box(
-        modifier.background(Color.Transparent)
-            /*.graphicsLayer {
-                metaShader.setFloatUniform("cutoff", cutoff)
-                renderEffect = RenderEffect
-                    .createRuntimeShaderEffect(metaShader, "composable")
-                    .asComposeRenderEffect()
-            }*/,
-        content = content,
-    )
+    if (!LabCompatibilityManager.isTiramisu()) {
+        Box(
+            modifier.background(Color.Transparent),
+            content = content,
+        )
+    } else {
+        val metaShader = remember { RuntimeShader(ShaderSource) }
+        Box(
+            modifier
+                .background(Color.Transparent)
+                .graphicsLayer {
+                    metaShader.setFloatUniform("cutoff", cutoff)
+                    renderEffect = RenderEffect
+                        .createRuntimeShaderEffect(metaShader, "composable")
+                        .asComposeRenderEffect()
+                },
+            content = content,
+        )
+    }
 }

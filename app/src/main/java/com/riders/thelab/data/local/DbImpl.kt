@@ -70,7 +70,7 @@ class DbImpl @Inject constructor(
     }
 
     override fun getCitiesCursor(query: String): Cursor {
-        return mWeatherDao.getCitiesCursor(query)
+        return mWeatherDao.getCitiesCursor("%$query%")
     }
 
     override fun deleteAll() {

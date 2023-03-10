@@ -59,7 +59,7 @@ data class CurrentWeather(
     val windGust: Double = 0.0,
 
     @Json(name = "weather")
-    val weather: List<Weather>,
+    val weather: List<Weather>? = null,
 
     @Json(name = "rain")
     val rain: Rain? = null,
@@ -70,4 +70,28 @@ data class CurrentWeather(
     // Probability of precipitation
     @Json(name = "pop")
     val pop: Double = 0.0
-)
+) {
+    constructor() : this(
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0,
+        0.0,
+        0.0,
+        0,
+        0,
+        0.0,
+        0,
+        0.0,
+        null,
+        null,
+        null,
+        0.0
+    )
+}
