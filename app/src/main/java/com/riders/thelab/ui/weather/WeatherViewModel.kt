@@ -44,16 +44,21 @@ class WeatherViewModel @Inject constructor(
     }
 
     var searchText by mutableStateOf("")
+
+    var expanded by mutableStateOf(false)
+
+    var suggestions by mutableStateOf(emptyList<String>())
         private set
 
-    var suggestions by mutableStateOf(mutableListOf<Cursor>())
-        private set
 
     fun updateSearchText(searchQuery: String) {
         searchText = searchQuery
 
         if (2 <= searchText.length) {
+            expanded = true
             getCitiesFromDb(searchText)
+        } else {
+            expanded = false
         }
     }
 
@@ -107,7 +112,7 @@ class WeatherViewModel @Inject constructor(
                 val cursor = repositoryImpl.getCitiesCursor(searchText)
 
                 withContext(Main) {
-                handleResults(cursor)
+                    handleResults(cursor)
                 }
             } catch (exception: Exception) {
                 handleError(exception)
@@ -117,9 +122,11 @@ class WeatherViewModel @Inject constructor(
     }
 
     private fun handleResults(cursor: Cursor) {
-        Timber.d("handleResults() | available cursor's column: ${cursor.columnNames}")
+        Timber.d("handleResults() | available cursor's column: ${cursor.columnNames.toString()}")
 
         if (suggestions.isNotEmpty()) suggestions = mutableListOf()
+
+        val tempList = mutableListOf<String>()
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast) { // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
@@ -129,10 +136,12 @@ class WeatherViewModel @Inject constructor(
 
                 Timber.d("handleResults() | name: $name, country: $country")
 
-                suggestions.add(cursor)
+                tempList.add("$name, $country")
 
                 cursor.moveToNext()
             }
+
+            suggestions = tempList.take(10).toList()
         }
         /* mSearchView.suggestionsAdapter =
              WeatherSearchViewAdapter(
