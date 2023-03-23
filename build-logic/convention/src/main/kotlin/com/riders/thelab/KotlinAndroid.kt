@@ -1,6 +1,6 @@
 package com.riders.thelab
 
-import ConfigData
+import AndroidConfiguration
 import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
@@ -18,10 +18,10 @@ internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension<*, *, *, *>,
 ) {
     commonExtension.apply {
-        compileSdk = ConfigData.compileSdkVersion
+        compileSdk = AndroidConfiguration.Sdk.compilation
 
         defaultConfig {
-            minSdk = ConfigData.minSdkVersion
+            minSdk = AndroidConfiguration.Sdk.min
         }
 
         buildFeatures {
