@@ -19,6 +19,8 @@ data class ProcessedWeather(
         /*this.temperature = oneCallWeatherResponse.currentWeather?.temperature?.toInt()!!
         this.weatherIconUrl = oneCallWeatherResponse.currentWeather.weather?.get(0)?.icon!!*/
         oneCallWeatherResponse.currentWeather?.temperature?.toInt()?.let { this.temperature = it }
-        oneCallWeatherResponse.currentWeather?.weather?.get(0)?.icon?.let { this.weatherIconUrl = it }
+        oneCallWeatherResponse.currentWeather?.weather?.get(0)?.icon?.let {
+            this.weatherIconUrl = it
+        }
     }
 }

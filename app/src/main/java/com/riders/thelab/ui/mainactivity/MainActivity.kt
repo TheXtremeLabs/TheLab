@@ -17,17 +17,11 @@ import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.provider.Settings
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -36,13 +30,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.bumptech.glide.Glide
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -58,7 +45,6 @@ import com.riders.thelab.core.interfaces.ConnectivityListener
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
 import com.riders.thelab.core.utils.*
-import com.riders.thelab.core.views.ItemSnapHelper
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.data.local.model.app.LocalApp
 import com.riders.thelab.data.local.model.app.PackageApp
@@ -69,21 +55,17 @@ import com.riders.thelab.ui.weather.WeatherUtils
 import com.riders.thelab.utils.Constants.Companion.GPS_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
-@DelicateCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(),
     CoroutineScope,
     View.OnClickListener,
-    ConnectivityListener, LocationListener, OnGpsListener{
+    ConnectivityListener, LocationListener, OnGpsListener {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
@@ -166,7 +148,7 @@ class MainActivity : ComponentActivity(),
         Timber.e("onPause()")
 
         // Unregister Event Bus
-        EventBus.getDefault().unregister(this)
+//        EventBus.getDefault().unregister(this)
 
         // Unregister Connectivity Manager
         try {
@@ -200,8 +182,6 @@ class MainActivity : ComponentActivity(),
     override fun onResume() {
         super.onResume()
         Timber.i("onResume()")
-
-        EventBus.getDefault().register(this)
 
         // Register Network callback events
         registerConnectivityManager()
@@ -258,7 +238,7 @@ class MainActivity : ComponentActivity(),
     //
     /////////////////////////////////////
     @DelicateCoroutinesApi
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    //@Subscribe(threadMode = ThreadMode.MAIN)
     fun onLocationFetchedEventResult(event: LocationFetchedEvent) {
         Timber.e("onLocationFetchedEvent()")
         val location: Location = event.location
@@ -281,7 +261,6 @@ class MainActivity : ComponentActivity(),
     // CLASS METHODS
     //
     /////////////////////////////////////
-    @DelicateCoroutinesApi
     private fun checkLocationPermissions() {
         Timber.d("checkLocationPermissions()")
         // run dexter permission

@@ -45,6 +45,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
 
                 add("implementation", libs.findLibrary("kotlinx.coroutines.android").get())
 
+                // Timber : Logging library
                 add("implementation", libs.findLibrary("timber").get())
             }
         }

@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.mainactivity.fragment.news
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
