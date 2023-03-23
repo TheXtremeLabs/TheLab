@@ -7,7 +7,6 @@ import android.os.IBinder
 import timber.log.Timber
 
 class ScheduleAlarmService : Service() {
-
     companion object {
         const val STATUS_RUNNING = 0
         const val STATUS_FINISHED = 1
