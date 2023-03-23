@@ -174,7 +174,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Own alarm to remind user...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_schedule))
                     .withActivityClass(ScheduleActivity::class.java)
-                    .withActivityDate("01/20/2015")
+                    .withActivityDate("2023/03/23")
                     .build()
             list.add(scheduleJob)
 

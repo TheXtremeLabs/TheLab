@@ -49,9 +49,11 @@ class LoginActivity : ComponentActivity() {
             Timber.d("Is app online : $isOnline")
         }
 
-        initViewModelObservers()
-
         navigator = Navigator(this)
+
+        mViewModel.retrieveAppVersion(this@LoginActivity)
+
+        initViewModelObservers()
 
         // Start a coroutine in the lifecycle scope
         lifecycleScope.launch {

@@ -10,6 +10,7 @@ import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.model.compose.LoginUiState
 import com.riders.thelab.data.remote.dto.ApiResponse
 import com.riders.thelab.data.remote.dto.UserDto
+import com.riders.thelab.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -20,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val repository: IRepository
-) : ViewModel() {
+) : BaseViewModel() {
     val list = listOf<String>("test", "mike", "chronopost", "john")
 
     //////////////////////////////////////////
