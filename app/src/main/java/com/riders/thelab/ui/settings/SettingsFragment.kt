@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.settings
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat

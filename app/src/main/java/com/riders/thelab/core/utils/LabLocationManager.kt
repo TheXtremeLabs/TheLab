@@ -14,8 +14,6 @@ import android.provider.Settings
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import com.riders.thelab.core.bus.LocationFetchedEvent
-import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
 class LabLocationManager constructor(
@@ -101,8 +99,6 @@ class LabLocationManager constructor(
                 if (isNetworkEnabled) {
                     getLocationViaNetwork()
                 }
-                EventBus.getDefault().post(location?.let { LocationFetchedEvent(it) })
-
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -112,8 +108,6 @@ class LabLocationManager constructor(
                 if (isGPSEnabled) {
                     getLocationViaGPS()
                 }
-                EventBus.getDefault().post(location?.let { LocationFetchedEvent(it) })
-
             } catch (e: Exception) {
                 e.printStackTrace()
             }
