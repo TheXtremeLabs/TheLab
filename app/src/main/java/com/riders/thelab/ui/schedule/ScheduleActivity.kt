@@ -73,9 +73,9 @@ class ScheduleActivity : AppCompatActivity() {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         if (ScheduleAlarmReceiver.REQUEST_CODE == resultCode) {
-            Timber.e("result code caught !!!!");
+            Timber.e("result code caught !!!!")
 
-            hideCountDownView();
+            hideCountDownView()
         }
     }
 

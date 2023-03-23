@@ -20,6 +20,7 @@ import com.riders.thelab.ui.filterlistview.FilterListViewActivity
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity
 import com.riders.thelab.ui.floatingview.FloatingViewActivity
 import com.riders.thelab.ui.googledrive.GoogleDriveActivity
+import com.riders.thelab.ui.googlemlkit.LiveBarcodeScanningActivity
 import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
 import com.riders.thelab.ui.kat.KatActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
@@ -37,10 +38,8 @@ import com.riders.thelab.ui.transition.TransitionActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
 import com.riders.thelab.ui.weather.WeatherActivity
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity
-import java.util.*
 
 class AppBuilderUtils {
-
     companion object {
         fun buildActivities(context: Context): List<App> {
 
@@ -54,6 +53,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Change color programmatically...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.logo_colors))
                     .withActivityClass(ColorActivity::class.java)
+                    .withActivityDate("2015/01/20")
                     .build()
             list.add(colors)
 
@@ -70,6 +70,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(BiometricActivity::class.java)
+                    .withActivityDate("2020/12/24")
                     .build()
             list.add(biometric)
 
@@ -86,6 +87,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(RecyclerViewActivity::class.java)
+                    .withActivityDate("2023/01/19")
                     .build()
             list.add(recycler)
 
@@ -97,6 +99,7 @@ class AppBuilderUtils {
                     .withActivityDescription("ViewPager Fragments Tabs...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_tab))
                     .withActivityClass(WorkingTabsActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(tabs)
 
@@ -113,6 +116,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(TransitionActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(transitions)
 
@@ -129,6 +133,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(FloatingLabelsActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(floatingsLabels)
 
@@ -140,6 +145,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Fetch contacts from database, add one and more...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_contacts))
                     .withActivityClass(ContactsActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(contactList)
 
@@ -156,6 +162,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(LocationOnMapsActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(locationOnMaps)
 
@@ -167,6 +174,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Own alarm to remind user...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_schedule))
                     .withActivityClass(ScheduleActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(scheduleJob)
 
@@ -183,6 +191,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(DeviceInformationActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(deviceInformation)
 
@@ -194,6 +203,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Get different color from an image...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_palette))
                     .withActivityClass(PaletteActivity::class.java)
+                    .withActivityDate("2023/01/16")
                     .build()
             list.add(palette)
 
@@ -210,6 +220,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(FilterListViewActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(filterListView)
 
@@ -226,6 +237,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(MultipaneActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(multiPane)
 
@@ -237,6 +249,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Own speech to text implementation...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_mic))
                     .withActivityClass(SpeechToTextActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(speechToText)
 
@@ -253,6 +266,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(BuiltInWebViewActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(builtInWebView)
 
@@ -269,6 +283,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(YoutubeLikeActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(youtubeLike)
 
@@ -286,6 +301,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(WeatherActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(weather)
 
@@ -302,6 +318,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(FloatingViewActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(floatingWidgets)
 
@@ -318,6 +335,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(CustomToastActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(customToast)
 
@@ -334,6 +352,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(VectorDrawablesActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(vectorDrawables)
 
@@ -350,6 +369,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(SpringActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(spring)
 
@@ -361,6 +381,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Realtime chat using firebase realtime database features")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_k_at))
                     .withActivityClass(KatActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(kat)
 
@@ -373,6 +394,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Play music that is stored on your phone (Live Streaming wip)...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_music))
                     .withActivityClass(SongPlayerActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(songPlayer)
 
@@ -384,6 +406,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Exploring Google Sign In Api...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.googleg_color))
                     .withActivityClass(GoogleSignInActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(googleSignIn)
 
@@ -394,6 +417,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Exploring Google Drive Api...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.googleg_color))
                     .withActivityClass(GoogleDriveActivity::class.java)
+                    .withActivityDate("01/20/2015")
                     .build()
             list.add(googleDrive)
 
@@ -405,6 +429,7 @@ class AppBuilderUtils {
                     .withActivityDescription("Download file using Kotlin Flow...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_download))
                     .withActivityClass(DownloadActivity::class.java)
+                    .withActivityDate("2021/09/21")
                     .build()
             list.add(download)
 
@@ -421,6 +446,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(LottieActivity::class.java)
+                    .withActivityDate("2021/09/21")
                     .build()
             list.add(lottie)
 
@@ -437,6 +463,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(BluetoothActivity::class.java)
+                    .withActivityDate("2021/09/29")
                     .build()
             list.add(bluetooth)
 
@@ -453,6 +480,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(ComposeActivity::class.java)
+                    .withActivityDate("2023/01/29")
                     .build()
             list.add(jetpackCompose)
 
@@ -470,6 +498,7 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(CameraActivity::class.java)
+                    .withActivityDate("2021/10/13")
                     .build()
             list.add(camera)
 
@@ -486,24 +515,43 @@ class AppBuilderUtils {
                         )
                     )
                     .withActivityClass(ScreenShotActivity::class.java)
+                    .withActivityDate("2021/10/13")
                     .build()
             list.add(screenShot)
+
+            // Google ML Kit - Live Barcode
+            val liveBarcode =
+                AppBuilder
+                    .withId(31L)
+                    .withActivityTitle("Google Ml Kit Live Barcode")
+                    .withActivityDescription("ML Kit brings Google’s machine learning expertise to mobile developers in a powerful and easy-to-use package...")
+                    .withActivityIcon(
+                        getDrawableFromIntResource(
+                            context,
+                            R.drawable.logo_mlkit
+                        )
+                    )
+                    .withActivityClass(LiveBarcodeScanningActivity::class.java)
+                    .withActivityDate("2022/01/28")
+                    .build()
+            list.add(liveBarcode)
 
             // Wip
             val wip =
                 AppBuilder
-                    .withId(25L)
+                    .withId(32L)
                     .withActivityTitle("WIP")
                     .withActivityDescription("Coming soon...")
                     .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_warning))
                     .withActivityClass(null)
+                    .withActivityDate("1970/01/01")
                     .build()
             list.add(wip)
 
             return list
         }
 
-        private fun getDrawableFromIntResource(context: Context, redId: Int): Drawable {
+        fun getDrawableFromIntResource(context: Context, redId: Int): Drawable {
             return ContextCompat.getDrawable(context, redId)!!
         }
     }

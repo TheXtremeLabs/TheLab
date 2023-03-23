@@ -4,6 +4,7 @@ package com.riders.thelab.ui.youtubelike
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.WindowManager
@@ -54,13 +55,23 @@ class YoutubeLikeDetailActivity : AppCompatActivity() {
     }
 
     private fun getBundle() {
-        val extras = intent.extras
-        if (extras == null) {
+        try {
+            Timber.e("get the data one by one")
+            item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent?.getParcelableExtra(VIDEO_OBJECT_ARG, Video::class.java)!!
+            } else {
+                intent.extras?.getParcelable(VIDEO_OBJECT_ARG)!!
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
+        /*if (extras == null) {
             Timber.e("bundle is null - check the data you are trying to pass through please !")
         } else {
             Timber.e("get the data one by one")
             item = extras.getParcelable(VIDEO_OBJECT_ARG)!!
-        }
+        }*/
     }
 
     private fun loadContent() {

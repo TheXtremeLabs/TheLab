@@ -16,10 +16,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.ui.mainactivity.MainActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -156,6 +153,7 @@ class TheLabAppWidgetProvider : AppWidgetProvider() {
         Timber.e("onDisabled()")
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun onUpdate(
         context: Context?,

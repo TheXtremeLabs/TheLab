@@ -5,6 +5,7 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,14 +13,19 @@ import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.utils.LabAddressesUtils
 import com.riders.thelab.core.utils.LabLocationUtils
 import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
-import com.riders.thelab.data.RepositoryImpl
+import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.model.app.App
+import com.riders.thelab.data.local.model.app.LocalApp
+import com.riders.thelab.data.local.model.app.PackageApp
 import com.riders.thelab.data.local.model.weather.ProcessedWeather
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 import java.net.UnknownHostException
 import java.util.*
@@ -27,19 +33,53 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val repository: RepositoryImpl
+    private val repository: IRepository
 ) : ViewModel() {
 
-    private val weather: MutableLiveData<ProcessedWeather> = MutableLiveData()
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
 
-    private val applications: MutableLiveData<List<App>> = MutableLiveData()
+    private val weather: MutableLiveData<ProcessedWeather> = MutableLiveData()
+
+    //////////////////////////////////////////
+    // Coroutines
+    //////////////////////////////////////////
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            throwable.printStackTrace()
+            Timber.e(throwable.message)
+        }
 
 
-    fun getConnectionStatus(): LiveData<Boolean> {
-        return connectionStatus
+    //////////////////////////////////////////
+    // Compose states
+    //////////////////////////////////////////
+    var searchedAppRequest = mutableStateOf("")
+    var keyboardVisible = mutableStateOf(false)
+
+    // Backing property to avoid state updates from other classes
+    private val _whatsNewAppList: MutableStateFlow<List<App>> =
+        MutableStateFlow(emptyList())
+
+    // The UI collects from this StateFlow to get its state updates
+    val whatsNewAppList: StateFlow<List<App>> = _whatsNewAppList
+
+    // Backing property to avoid state updates from other classes
+    private val _appList: MutableStateFlow<List<App>> =
+        MutableStateFlow(emptyList())
+
+    // The UI collects from this StateFlow to get its state updates
+    val appList: StateFlow<List<App>> = _appList
+
+    fun updateKeyboardVisible(isVisible: Boolean) {
+        keyboardVisible.value = isVisible
     }
 
+    //////////////////////////////////
+    //
+    // OBSERVERS
+    //
+    //////////////////////////////////
+    fun getConnectionStatus(): LiveData<Boolean> = connectionStatus
     fun getLocationData(): LiveData<Boolean> {
         Timber.d("getLocationData()")
 
@@ -47,18 +87,7 @@ class MainActivityViewModel @Inject constructor(
         return repository.getLocationStatusData()
     }
 
-    fun getWeather(): LiveData<ProcessedWeather> {
-        return weather
-    }
-
-    fun getApplications(): LiveData<List<App>> {
-        return applications
-    }
-
-
-    fun checkConnection() {
-        connectionStatus.value = LabNetworkManagerNewAPI.isConnected
-    }
+    fun getWeather(): LiveData<ProcessedWeather> = weather
 
 
     fun addDataSource(locationStatus: LiveData<Boolean>) {
@@ -71,12 +100,27 @@ class MainActivityViewModel @Inject constructor(
         repository.removeLocationStatusDataSource(locationStatus)
     }
 
+
+    //////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    //////////////////////////////////
+    fun searchApp(requestedAppName: String) {
+        searchedAppRequest.value = requestedAppName
+    }
+
+    fun checkConnection(context: Context) {
+        connectionStatus.value = LabNetworkManagerNewAPI.getInstance(context).isOnline()
+    }
+
+
     // Suspend functions are only allowed to be called from a coroutine or another suspend function.
     // You can see that the async function which includes the keyword suspend.
     // So, in order to use that, we need to make our function suspend too.
     fun fetchWeather(context: Context, latitude: Double, longitude: Double) {
         Timber.d("suspend fetchWeather()")
-        viewModelScope.launch {
+        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
             try {
                 supervisorScope {
 
@@ -86,22 +130,29 @@ class MainActivityViewModel @Inject constructor(
                             this.longitude = longitude
                         }) // fetch on IO thread
 
-                    val address: Address? =
-                        LabAddressesUtils.getDeviceAddress(
-                            Geocoder(context, Locale.getDefault()),
-                            LabLocationUtils.buildTargetLocationObject(
-                                fetchWeather.latitude,
-                                fetchWeather.longitude
+                    if (null == fetchWeather) {
+                        Timber.e("Fetch weather error")
+                    } else {
+                        val address: Address? =
+                            LabAddressesUtils.getDeviceAddress(
+                                Geocoder(context, Locale.getDefault()),
+                                LabLocationUtils.buildTargetLocationObject(
+                                    fetchWeather.latitude,
+                                    fetchWeather.longitude
+                                )
                             )
-                        )
-                    val cityName: String =
-                        address?.locality.orEmpty()
-                    val cityCountry: String = address?.countryName.orEmpty()
+                        val cityName: String =
+                            address?.locality.orEmpty()
+                        val cityCountry: String = address?.countryName.orEmpty()
 
-                    val mProcessedWeather = ProcessedWeather(cityName, cityCountry, fetchWeather)
+                        val mProcessedWeather =
+                            ProcessedWeather(cityName, cityCountry, fetchWeather)
 
-                    // back on UI thread
-                    weather.value = mProcessedWeather
+                        // back on UI thread
+                        withContext(Main) {
+                            weather.value = mProcessedWeather
+                        }
+                    }
                 }
             } catch (exception: Exception) {
                 if (exception is UnknownHostException) {
@@ -115,56 +166,67 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun retrieveApplications(context: Context) {
+        Timber.d("retrieveApplications()")
+        val constants = Constants(context)
         val appList: MutableList<App> = ArrayList()
 
         // Get constants activities
-        appList.addAll(Constants(context).getActivityList())
+        appList.addAll(constants.getActivityList())
         appList.addAll(repository.getPackageList())
+
+        //  val tempList = repository.getAppListFromAssets()
 
         if (appList.isEmpty()) {
             Timber.e("app list is empty")
         } else {
-            applications.value = appList
+            _appList.value = appList
         }
     }
 
-
-    fun fetchRecentApps(context: Context, recentAppsNames: Array<String>): List<App> {
-        val recentAppList: MutableList<App> = ArrayList()
+    fun retrieveRecentApps(context: Context) {
+        Timber.d("fetchRecentApps()")
 
         val constants = Constants(context)
 
         // Setup last 3 features added
-        for (element in constants.getActivityList()) {
-            for (item in recentAppsNames) {
-                if (element.appTitle.contains(item))
-                    (recentAppList as ArrayList<App>).add(element)
-            }
-        }
+        val mWhatsNewApps = constants
+            .getActivityList()
+            .sortedByDescending { (it as LocalApp).appDate }
+            .take(3)
 
-        return recentAppList
+        _whatsNewAppList.value = mWhatsNewApps
     }
 
     fun launchActivityOrPackage(navigator: Navigator, item: App) {
-        if (item.appPackageName.isNotBlank()) {
-            Timber.d("launchIntentForPackage(%s)", item.appPackageName)
+        Timber.d("launchActivityOrPackage()")
 
-            // Just use these following two lines,
-            // so you can launch any installed application whose package name is known:
-            launchIntentForPackage(navigator, item.appPackageName)
-        } else {
+        when (item) {
+            is PackageApp -> {
+                if (!item.appPackageName.isNullOrBlank()) {
+                    Timber.d("launchIntentForPackage(%s)", item.appPackageName)
 
-            // Prevent app from crashing if you click on WIP item
-            if (null != item.appActivity) {
-                Timber.d("launchActivity(%s)", item.appActivity!!.simpleName)
-                launchActivity(navigator, item.appActivity!!)
-            } else {
-                // Just Log wip item
-                Timber.e("Cannot launch this activity : %s", item.toString())
+                    // Just use these following two lines,
+                    // so you can launch any installed application whose package name is known:
+                    launchIntentForPackage(navigator, item.appPackageName!!)
+                } else {
+                    Timber.e("Cannot launch activity with this package name : ${item.appPackageName}")
+                }
+            }
+
+            is LocalApp -> {
+                if (null != item.appActivity) {
+                    Timber.d("launchActivity(%s)", item.appActivity!!.simpleName)
+                    launchActivity(navigator, item.appActivity!!)
+                } else {
+                    // Just Log wip item
+                    Timber.e("Cannot launch this activity : %s", item.toString())
+                }
+            }
+            else -> {
+                Timber.e("else branch")
             }
         }
     }
-
 
     private fun launchIntentForPackage(navigator: Navigator, packageName: String) {
         navigator.callIntentForPackageActivity(packageName)

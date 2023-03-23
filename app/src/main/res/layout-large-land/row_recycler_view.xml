@@ -76,13 +76,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/big_margin"
-                    android:text="@{artist.artistName}"
+
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/bottom_guideline"
                     tools:text="@string/app_name" />
-
+                <!--android:text="@{artist.artistName}"-->
                 <RelativeLayout
                     android:id="@+id/row_details_linear_layout"
                     android:layout_width="0dp"

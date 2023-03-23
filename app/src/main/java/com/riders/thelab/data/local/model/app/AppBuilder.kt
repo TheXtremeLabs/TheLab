@@ -19,6 +19,7 @@ object AppBuilder {
     private var description: String? = null
     private var icon: Drawable? = null
     private var activity: Class<out Activity?>? = null
+    private var date: String? = null
 
 
     // From Packages
@@ -70,6 +71,11 @@ object AppBuilder {
         return this
     }
 
+    fun withActivityDate(activityDate: String): AppBuilder {
+        this.date = activityDate
+        return this
+    }
+
 
     @Throws(LabApplicationInitializedException::class)
     fun build(): App {
@@ -78,7 +84,7 @@ object AppBuilder {
             drawableIcon?.let { appDrawableIcon ->
                 version?.let { appVersion ->
                     packageName?.let { appPackageName ->
-                        return App(appName, appDrawableIcon, appVersion, appPackageName)
+                        return PackageApp(appName, appDrawableIcon, appVersion, appPackageName)
                     }
                 }
             }
@@ -88,13 +94,16 @@ object AppBuilder {
                 icon?.let { activityIcon ->
                     description?.let { activityDescription ->
                         activity?.let { targetActivity ->
-                            return App(
-                                id,
-                                activityTitle,
-                                activityDescription,
-                                activityIcon,
-                                targetActivity
-                            )
+                            date?.let { activityDate ->
+                                return LocalApp(
+                                    id,
+                                    activityTitle,
+                                    activityDescription,
+                                    activityIcon,
+                                    targetActivity,
+                                    activityDate
+                                )
+                            }
                         }
                     }
                 }
@@ -102,7 +111,7 @@ object AppBuilder {
         }
 
         if (title == "WIP" && activity == null)
-            return App(id, title!!, description!!, icon!!, null)
+            return LocalApp(id, title!!, description!!, icon!!, null, date!!)
 
         throw LabApplicationInitializedException()
     }

@@ -15,6 +15,8 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 internal object AppModule {
 
+    //TODO : Due to Heroku back-end free services ending,
+    // Use of the database to store and log users
     @Provides
     fun provideAppDatabase(@ApplicationContext appContext: Context): LabDatabase {
         return Room

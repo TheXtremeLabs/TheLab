@@ -3,7 +3,6 @@ package com.riders.thelab.utils
 import android.content.Context
 import com.riders.thelab.data.local.model.app.App
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.*
 import javax.inject.Inject
 
 class Constants @Inject constructor(
@@ -11,7 +10,34 @@ class Constants @Inject constructor(
 ) {
 
     companion object {
+        const val DATASTORE_THE_LAB_FILE_NAME = "THE_LAB_DATASTORE"
+
+
         const val EMULATOR_DEVICE_TAG = "sdk"
+
+
+        /////////////////////////////////////////////
+        //
+        // TheLab API
+        //
+        /////////////////////////////////////////////
+        private const val HTTP = "http://"
+
+        //    private const val IP_ADDRESS = "192.168.0.136"
+//        private const val IP_ADDRESS = "192.168.0.48"
+        private const val IP_ADDRESS = "192.168.1.99"
+
+        //    private const val EMULATOR_IP_ADDRESS = "192.168.0.163"
+        private const val EMULATOR_IP_ADDRESS = "192.168.0.48"
+
+        private const val PORT = ":8101"
+        private const val SEPARATOR = "/"
+
+        val BASE_ENDPOINT_THE_LAB_URL: String = "https://the-lab-back.herokuapp.com"
+        /*HTTP + if (LabDeviceManager.getModel().trim().lowercase()
+                .contains("sdk")
+        ) EMULATOR_IP_ADDRESS else IP_ADDRESS + PORT*/
+
 
         //REST client Base URL
         const val BASE_ENDPOINT_YOUTUBE = "https://raw.githubusercontent.com"
@@ -49,6 +75,9 @@ class Constants @Inject constructor(
         const val NOTIFICATION_CHANNEL_ID: String = "45532"
         const val NOTIFICATION_MUSIC_ID: Int = 3432
         const val NOTIFICATION_MUSIC_CHANNEL_ID: String = "3432"
+
+        // WebView
+        const val WEB_URL: String = "WEB_URL"
     }
 
     /**

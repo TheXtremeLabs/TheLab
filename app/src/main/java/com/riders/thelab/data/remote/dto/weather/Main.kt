@@ -22,5 +22,4 @@ data class Main(
 
     @Json(name = "humidity")
     val humidity: Int = 0
-) {
-}
+)

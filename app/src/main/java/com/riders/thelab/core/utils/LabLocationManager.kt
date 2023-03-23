@@ -5,7 +5,9 @@ import android.app.Service
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.location.*
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
@@ -15,8 +17,6 @@ import androidx.core.content.ContextCompat
 import com.riders.thelab.core.bus.LocationFetchedEvent
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
-import java.util.*
-
 
 class LabLocationManager constructor(
     private var mContext: Context
@@ -28,7 +28,6 @@ class LabLocationManager constructor(
 
         // The minimum time between updates in milliseconds
         private const val MIN_TIME_BW_UPDATES = (1000 * 60 * 1).toLong() // 1 minute
-
     }
 
     // Declaring a Location Manager

@@ -11,21 +11,7 @@ import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.TheLabApplication
 import timber.log.Timber
 
-class LabAnimationsManager private constructor() {
-
-    companion object {
-        private var mInstance: LabAnimationsManager? = null
-
-        /**
-         * Returns the class' instance
-         *
-         * @return
-         */
-        fun getInstance(): LabAnimationsManager {
-            if (null == mInstance) mInstance = LabAnimationsManager()
-            return mInstance as LabAnimationsManager
-        }
-    }
+object LabAnimationsManager {
 
     var shortAnimationDuration = 0
     var mediumAnimationDuration = 0

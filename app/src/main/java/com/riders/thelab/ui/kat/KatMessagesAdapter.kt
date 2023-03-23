@@ -8,10 +8,9 @@ import com.riders.thelab.data.remote.dto.kat.Kat
 import com.riders.thelab.databinding.RowKatMessageOtherBinding
 import com.riders.thelab.databinding.RowKatMessageSelfBinding
 import timber.log.Timber
-import java.util.*
 
 class KatMessagesAdapter(
-    private val context: Context, private val katModelList: List<Kat>
+    private val context: Context, katModelList: List<Kat>
 ) : RecyclerView.Adapter<KatViewHolder>() {
 
     companion object {

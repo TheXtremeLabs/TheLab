@@ -4,8 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.riders.thelab.ui.contacts.addcontact.AddContactActivity
+import com.riders.thelab.ui.login.LoginActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
+import com.riders.thelab.ui.settings.SettingsActivity
+import com.riders.thelab.ui.signup.SignUpActivity
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
+import com.riders.thelab.ui.weather.WeatherActivity
+import kotlinx.coroutines.DelicateCoroutinesApi
 import timber.log.Timber
 
 class Navigator constructor(
@@ -17,8 +22,31 @@ class Navigator constructor(
         activity.startActivity(Intent(activity, SplashScreenActivity::class.java))
     }
 
+    fun callLoginActivity() {
+        activity.startActivity(Intent(activity, LoginActivity::class.java))
+    }
+
+    fun callLoginActivity(intent: Intent, optionsCompat: Bundle) {
+        Timber.d("Apply login activity transition")
+        activity.startActivity(intent, optionsCompat)
+    }
+
+    fun callSignUpActivity() {
+        activity.startActivity(Intent(activity, SignUpActivity::class.java))
+    }
+
+    fun callSignUpActivity(intent: Intent, optionsCompat: Bundle) {
+        Timber.d("Apply login activity transition")
+        activity.startActivity(intent, optionsCompat)
+    }
+
+    @DelicateCoroutinesApi
     fun callMainActivity() {
         activity.startActivity(Intent(activity, MainActivity::class.java))
+    }
+
+    fun callSettingsActivity() {
+        activity.startActivity(Intent(activity, SettingsActivity::class.java))
     }
 
     /* Detail Activities */
@@ -39,9 +67,18 @@ class Navigator constructor(
         activity.startActivity(intent, optionsCompat)
     }
 
+    fun callWeatherActivity() {
+        activity.startActivity(Intent(activity, WeatherActivity::class.java))
+    }
+
     /* Activities */
-    fun callIntentActivity(targetClass: Class<out Activity>) {
-        activity.startActivity(Intent(activity, targetClass))
+    fun callIntentActivity(targetClass: Class<out Activity?>?) {
+        if (null == targetClass) {
+            Timber.e("target class is null")
+            return
+        } else {
+            activity.startActivity(Intent(activity, targetClass))
+        }
     }
 
     /* Packages */

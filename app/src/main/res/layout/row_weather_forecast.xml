@@ -40,7 +40,7 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/row_iv_forecast_weather"
-            imageUrl='@{!TextUtils.isEmpty(dailyWeather.weather[0].icon) ? weatherUtils.Companion.getWeatherIconFromApi(dailyWeather.weather[0].icon): ""}'
+            imageUrl='@{!TextUtils.isEmpty(dailyWeather.weather[0].icon) ? weatherUtils.getWeatherIconFromApi(dailyWeather.weather[0].icon): ""}'
             android:layout_width="@dimen/extra_big_margin"
             android:layout_height="@dimen/extra_big_margin"
             android:adjustViewBounds="true"

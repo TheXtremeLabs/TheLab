@@ -131,7 +131,7 @@ class WeatherFragment : BaseFragment(), LocationListener {
         // Load weather icon
         UIManager.loadImage(
             requireActivity(),
-            WeatherUtils.getWeatherIconFromApi(cityWeather.weatherIconURL)!!,
+            WeatherUtils.getWeatherIconFromApi(cityWeather.weatherIconURL),
             binding.ivWeatherIcon
         )
 

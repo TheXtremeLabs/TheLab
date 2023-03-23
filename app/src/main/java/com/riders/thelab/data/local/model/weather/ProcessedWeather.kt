@@ -9,7 +9,6 @@ data class ProcessedWeather(
     var temperature: Int,
     var weatherIconUrl: String
 ) {
-
     constructor(
         city: String,
         country: String,
@@ -17,7 +16,9 @@ data class ProcessedWeather(
     ) : this("", "", 0, "") {
         this.city = city
         this.country = country
-        this.temperature = oneCallWeatherResponse.currentWeather.temperature.toInt()
-        this.weatherIconUrl = oneCallWeatherResponse.currentWeather.weather[0].icon
+        /*this.temperature = oneCallWeatherResponse.currentWeather?.temperature?.toInt()!!
+        this.weatherIconUrl = oneCallWeatherResponse.currentWeather.weather?.get(0)?.icon!!*/
+        oneCallWeatherResponse.currentWeather?.temperature?.toInt()?.let { this.temperature = it }
+        oneCallWeatherResponse.currentWeather?.weather?.get(0)?.icon?.let { this.weatherIconUrl = it }
     }
 }

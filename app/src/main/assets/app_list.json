@@ -1,0 +1,258 @@
+[
+  {
+    "id": 0,
+    "title": "Colors",
+    "description": "Change color programmatically...",
+    "icon": "logo_colors",
+    "className": "ColorActivity",
+    "date": "01/20/2015"
+  },
+  {
+    "id": 1,
+    "title": "Biometric",
+    "description": "Check biometric hardware and test it...",
+    "icon": "ic_fingerprint",
+    "className": "BiometricActivity",
+    "date": "12/24/2020"
+  },
+  {
+    "id": 2,
+    "title": "Recycler",
+    "description": "Recycler Basics and best practices...",
+    "icon": "ic_filter_list",
+    "className": "RecyclerViewActivity",
+    "date": "12/24/2020"
+  },
+  {
+    "id": 3,
+    "title": "Tabs",
+    "description": "ViewPager Fragments Tabs...",
+    "icon": "ic_tab",
+    "className": "WorkingTabsActivity",
+    "date": "03/07/2017"
+  },
+  {
+    "id": 4,
+    "title": "Transitions",
+    "description": "Start a new activity with awesome animations...",
+    "icon": "ic_flip_to_back",
+    "className": "TransitionActivity",
+    "date": "05/22/2017"
+  },
+  {
+    "id": 5,
+    "title": "Floating Labels",
+    "description": "Floating Labels Form...",
+    "icon": "ic_outline_label",
+    "className": "FloatingLabelsActivity",
+    "date": "03/07/2017"
+  },
+  {
+    "id": 6,
+    "title": "Contact List",
+    "description": "Fetch contacts from database, add one and more...",
+    "icon": "ic_contacts",
+    "className": "ContactsActivity",
+    "date": "01/31/2018"
+  },
+  {
+    "id": 7,
+    "title": "Location On Maps",
+    "description": "Display User location on map...",
+    "icon": "ic_location_on",
+    "className": "LocationOnMapsActivity",
+    "date": "12/10/2015"
+  },
+  {
+    "id": 8,
+    "title": "Schedule Job",
+    "description": "Own alarm to remind user...",
+    "icon": "ic_schedule",
+    "className": "ScheduleActivity",
+    "date": "01/05/2016"
+  },
+  {
+    "id": 9,
+    "title": "Device Information",
+    "description": "Display device info...",
+    "icon": "ic_device_information",
+    "className": "DeviceInformationActivity",
+    "date": "01/05/2016"
+  },
+  {
+    "id": 10,
+    "title": "Palette",
+    "description": "Get different color from an image...",
+    "icon": "ic_palette",
+    "className": "PaletteActivity",
+    "date": "01/12/2016"
+  },
+  {
+    "id": 11,
+    "title": "Filter ListView",
+    "description": "ListView with filter...",
+    "icon": "ic_filter_list",
+    "className": "FilterListViewActivity",
+    "date": "01/12/2016"
+  },
+  {
+    "id": 12,
+    "title": "Multi Pane",
+    "description": "Display content on split screen...",
+    "icon": "ic_aspect_ratio",
+    "className": "MultipaneActivity",
+    "date": "01/27/2016"
+  },
+  {
+    "id": 13,
+    "title": "My Speech To Text",
+    "description": "Own speech to text implementation...",
+    "icon": "ic_mic",
+    "className": "SpeechToTextActivity",
+    "date": "01/20/2021"
+  },
+  {
+    "id": 14,
+    "title": "Built-in Web View",
+    "description": "Display web view in activity directly...",
+    "icon": "ic_alternate_email",
+    "className": "BuiltInWebViewActivity",
+    "date": "01/20/2021"
+  },
+  {
+    "id": 15,
+    "title": "Youtube",
+    "description": "Youtube look like...",
+    "icon": "youtube_icon_like",
+    "className": "YoutubeLikeActivity",
+    "date": "04/14/2016"
+  },
+  {
+    "id": 16,
+    "title": "Weather",
+    "description": "Current weather forecast in your city...",
+    "icon": "openweathermap",
+    "className": "WeatherActivity",
+    "date": "05/16/2021"
+  },
+  {
+    "id": 17,
+    "title": "Floating Widget",
+    "description": "Create a floating widget that you can move around on the screen...",
+    "icon": "ic_flip_to_back",
+    "className": "FloatingViewActivity",
+    "date": "12/24/2020"
+  },
+  {
+    "id": 18,
+    "title": "Custom Toast",
+    "description": "Custom Toast Layout...",
+    "icon": "ic_announcement",
+    "className": "CustomToastActivity",
+    "date": "02/05/2021"
+  },
+  {
+    "id": 19,
+    "title": "Vector Drawables",
+    "description": "Animated, scale, transform vector drawables...",
+    "icon": "ic_aspect_ratio",
+    "className": "VectorDrawablesActivity",
+    "date": "02/05/2021"
+  },
+  {
+    "id": 20,
+    "title": "Spring",
+    "description": "Physics-based motion is driven by force. Spring force is one such force that guides interactivity and motion....",
+    "icon": "ic_filter_center_focus",
+    "className": "SpringActivity",
+    "date": "05/06/2021"
+  },
+  {
+    "id": 21,
+    "title": "Chat",
+    "description": "Realtime chat using firebase realtime database features...",
+    "icon": "ic_k_at",
+    "className": "KatActivity",
+    "date": "05/18/2021"
+  },
+  {
+    "id": 22,
+    "title": "Music Player",
+    "description": "Play music that is stored on your phone (Live Streaming wip)...",
+    "icon": "ic_music",
+    "className": "SongPlayerActivity",
+    "date": "07/29/2021"
+  },
+  {
+    "id": 23,
+    "title": "Google Sign In",
+    "description": "Exploring Google Sign In Api...",
+    "icon": "googleg_color",
+    "className": "GoogleSignInActivity",
+    "date": "07/30/2021"
+  },
+  {
+    "id": 24,
+    "title": "Google Drive API",
+    "description": "Exploring Google Drive Api...",
+    "icon": "googleg_color",
+    "className": "GoogleDriveActivity",
+    "date": "09/04/2021"
+  },
+  {
+    "id": 25,
+    "title": "Download",
+    "description": "Download file using Kotlin Flow...",
+    "icon": "ic_download",
+    "className": "DownloadActivity",
+    "date": "09/21/2021"
+  },
+  {
+    "id": 26,
+    "title": "Lottie",
+    "description": "Lottie is a mobile library for Android and iOS that parses Adobe After Effects animations and renders them natively on mobile!...",
+    "icon": "ic_lottie_icon",
+    "className": "LottieActivity",
+    "date": "09/21/2021"
+  },
+  {
+    "id": 27,
+    "title": "Bluetooth",
+    "description": "Bluetooth feature, retrieve bounded devices and scan available bluetooth connections...",
+    "icon": "ic_bluetooth",
+    "className": "BluetoothActivity",
+    "date": "09/29/2021"
+  },
+  {
+    "id": 28,
+    "title": "Compose",
+    "description": "Change color programmatically...",
+    "icon": "jetpack_compose",
+    "className": "ComposeActivity",
+    "date": "10/13/2021"
+  },
+  {
+    "id": 29,
+    "title": "Camera",
+    "description": "CameraX is a Jetpack support library, built to help you make camera app development easier....",
+    "icon": "ic_camera",
+    "className": "CameraActivity",
+    "date": "10/13/2021"
+  },
+  {
+    "id": 30,
+    "title": "Screen Shot",
+    "description": "Screen Shot the device display programmatically...",
+    "icon": "ic_fullscreen",
+    "className": "ScreenShotActivity",
+    "date": "10/13/2021"
+  },
+  {
+    "id": 31,
+    "title": "WIP",
+    "description": "Coming soon...",
+    "icon": "ic_warning",
+    "className": "null",
+    "date": "10/13/2021"
+  }
+]

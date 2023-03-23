@@ -11,6 +11,8 @@ import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.remote.dto.artist.Artist
 import com.riders.thelab.databinding.ActivityRecyclerViewDetailBinding
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import timber.log.Timber
 
 class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener {
@@ -51,7 +53,7 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
      */
     private fun getBundle() {
         val extras = intent.extras
-        item = extras!!.getParcelable(EXTRA_RECYCLER_ITEM)!!
+        item = Json.decodeFromString(extras!!.getSerializable(EXTRA_RECYCLER_ITEM)!! as String)
         Timber.d("item : %s", item.toString())
     }
 
@@ -60,7 +62,7 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
         setSupportActionBar(binding.toolbarRecyclerViewDetail)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        binding.collapsingToolbarRecyclerViewDetail.title = item.artistName
+        //binding.collapsingToolbarRecyclerViewDetail.title = item.artistName
         binding.collapsingToolbarRecyclerViewDetail
             .setExpandedTitleColor(ContextCompat.getColor(this, R.color.transparent))
         binding.appBarLayout.setExpanded(true)
@@ -118,7 +120,7 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
             scrollRange = appBarLayout!!.totalScrollRange
         }
         if (scrollRange + verticalOffset == 0) {
-            binding.collapsingToolbarRecyclerViewDetail.title = item.artistName
+            //binding.collapsingToolbarRecyclerViewDetail.title = item.artistName
             isShow = true
         } else if (isShow) {
             binding.collapsingToolbarRecyclerViewDetail.title = " "

@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.riders.thelab.core.bus.AlarmEvent
-import com.riders.thelab.core.utils.UIManager.Companion.showActionInToast
+import com.riders.thelab.core.utils.UIManager.showActionInToast
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
