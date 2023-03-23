@@ -139,34 +139,41 @@ fun PaletteContent(viewModel: PaletteViewModel) {
                                     contentDescription = "palette image wth coil",
                                     contentScale = ContentScale.Crop,
                                 )
+                                when (state) {
+                                    is AsyncImagePainter.State.Loading -> {
+                                        Timber.i("state is AsyncImagePainter.State.Loading")
+                                        CircularProgressIndicator(
+                                            color = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier
+                                                .scale(0.5f)
+                                                .align(CenterHorizontally)
+                                        )
+                                    }
+                                    is AsyncImagePainter.State.Success -> {
+                                        Timber.d("state is AsyncImagePainter.State.Success")
+                                        LaunchedEffect(key1 = painter) {
+                                            scope.launch {
+                                                val image =
+                                                    painter.imageLoader.execute(painter.request).drawable!!
 
-                                if (state is AsyncImagePainter.State.Loading) {
-                                    Timber.i("state is AsyncImagePainter.State.Loading")
-                                    CircularProgressIndicator(
-                                        color = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier
-                                            .scale(0.5f)
-                                            .align(CenterHorizontally)
-                                    )
-                                } else if (state is AsyncImagePainter.State.Success) {
-                                    Timber.d("state is AsyncImagePainter.State.Success")
-                                    LaunchedEffect(key1 = painter) {
-                                        scope.launch {
-                                            val image =
-                                                painter.imageLoader.execute(painter.request).drawable!!
+                                                val palette = Palette.from(
+                                                    image.toBitmap(
+                                                        image.intrinsicWidth,
+                                                        image.intrinsicHeight
+                                                    )
+                                                ).generate()
 
-                                            val palette = Palette.from(
-                                                image.toBitmap(
-                                                    image.intrinsicWidth,
-                                                    image.intrinsicHeight
-                                                )
-                                            ).generate()
+                                                ////////////////
 
-                                            ////////////////
-
-                                            paletteColorList.value = generatePalette(palette!!)
+                                                paletteColorList.value = generatePalette(palette!!)
+                                            }
                                         }
-
+                                    }
+                                    is AsyncImagePainter.State.Error -> {
+                                        Timber.e("state is AsyncImagePainter.State.Error | ${state.result}")
+                                    }
+                                    else -> {
+                                        Timber.e("else branch")
                                     }
                                 }
                             }
