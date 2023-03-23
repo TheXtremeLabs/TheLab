@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -55,7 +56,7 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
                     .fillMaxWidth()
                     .align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically)
             ) {
                 Column(
                     modifier = Modifier
@@ -80,18 +81,18 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
                     }
                 }
 
-
                 // Version
                 AnimatedVisibility(
-                    modifier = Modifier.fillMaxWidth(0.5f),
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .align(CenterHorizontally),
                     visible = if (LocalInspectionMode.current) true else versionVisibility.value,
                     exit = fadeOut()
                 ) {
                     Text(
                         modifier = Modifier.padding(8.dp),
-                        // TODO : Use common shared viewModel
-                        text = if (LocalInspectionMode.current) "12.0.0" else "12.0.0",
-                        style = TextStyle(color = Color.White)
+                        text = if (LocalInspectionMode.current) "12.0.0" else viewModel.version,
+                        style = TextStyle(color = Color.White, textAlign = TextAlign.Center)
                     )
                 }
 
@@ -145,6 +146,7 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
 
     LaunchedEffect(Unit) {
         scope.launch {
+            delay(200L)
             versionVisibility.value = false
             delay(200L)
             formVisibility.value = true
