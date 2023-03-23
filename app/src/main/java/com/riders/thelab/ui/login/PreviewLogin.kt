@@ -27,12 +27,16 @@ import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.ui.theme.Shapes
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.compose.utils.findActivity
 import com.riders.thelab.data.local.model.compose.LoginUiState
+import com.riders.thelab.navigator.Navigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 @Composable
-fun LoginContent(viewModel: LoginViewModel) {
+fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: Navigator) {
 
     val context = LocalContext.current
 
@@ -85,6 +89,7 @@ fun LoginContent(viewModel: LoginViewModel) {
                 ) {
                     Text(
                         modifier = Modifier.padding(8.dp),
+                        // TODO : Use common shared viewModel
                         text = if (LocalInspectionMode.current) "12.0.0" else "12.0.0",
                         style = TextStyle(color = Color.White)
                     )
@@ -112,7 +117,7 @@ fun LoginContent(viewModel: LoginViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         // Should register user
-                        (context as LoginActivity).callSignUpActivity()
+                        navigator.callSignUpActivity()
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                 ) {
@@ -149,12 +154,16 @@ fun LoginContent(viewModel: LoginViewModel) {
 
     if (loginUiState is LoginUiState.Error) {
         LaunchedEffect(Unit) {
-            scope.launch {
-                (context as LoginActivity).callMainActivity()
-            }
+            delay(TimeUnit.SECONDS.toMillis(3))
+            callMainActivity(activity, navigator)
         }
     }
+}
 
+fun callMainActivity(activity: LoginActivity, navigator: Navigator) {
+    Timber.d("callMainActivity()")
+    navigator.callMainActivity()
+    activity.finish()
 }
 
 
@@ -166,8 +175,16 @@ fun LoginContent(viewModel: LoginViewModel) {
 @DevicePreviews
 @Composable
 fun PreviewLoginContent() {
+    val context = LocalContext.current
+    val activity = context.findActivity() as LoginActivity
     val viewModel: LoginViewModel = hiltViewModel()
+    val navigator = Navigator(activity)
+
     TheLabTheme {
-        LoginContent(viewModel = viewModel)
+        LoginContent(
+            activity = activity,
+            viewModel = viewModel,
+            navigator = navigator
+        )
     }
 }

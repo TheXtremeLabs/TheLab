@@ -134,6 +134,11 @@ class LoginViewModel @Inject constructor(
     // Functions
     //
     ///////////////
+
+    /**
+     * logging in user. Will make http post request with name, email
+     * as parameters
+     */
     fun login() {
         Timber.d("login()")
 
