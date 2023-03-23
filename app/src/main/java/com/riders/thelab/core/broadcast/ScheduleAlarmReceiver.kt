@@ -8,7 +8,6 @@ import com.riders.thelab.core.utils.UIManager.showActionInToast
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
 class ScheduleAlarmReceiver : BroadcastReceiver() {
@@ -21,8 +20,6 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
         Timber.d("MyBroadcastReceiver - onReceive()")
 
         // Post event with cll info object set
-        // EventBus.getDefault().post(AlarmEvent())
-
         GlobalScope.launch(Main) {
             AlarmEvent().triggerEvent()
         }
