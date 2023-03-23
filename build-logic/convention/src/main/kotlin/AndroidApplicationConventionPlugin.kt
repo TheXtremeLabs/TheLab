@@ -1,6 +1,5 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.riders.thelab.configureFlavors
 import com.riders.thelab.configureKotlinAndroid
 import com.riders.thelab.configurePrintApksTask
 import org.gradle.api.Plugin
@@ -20,10 +19,10 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk = ConfigData.targetSdkVersion
+                defaultConfig.targetSdk = AndroidConfiguration.Sdk.target
 
-                defaultConfig.versionCode = ConfigData.versionCode
-                defaultConfig.versionName = ConfigData.versionName
+                defaultConfig.versionCode = AndroidConfiguration.Application.code
+                defaultConfig.versionName = AndroidConfiguration.Application.version.toString()
                 // configureFlavors(this)
             }
             extensions.configure<ApplicationAndroidComponentsExtension> {
