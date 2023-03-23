@@ -1,13 +1,21 @@
 package com.riders.thelab.ui.weather
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -37,18 +45,28 @@ fun WeatherLoading(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherSuccess(viewModel: WeatherViewModel) {
-    var expanded by remember { mutableStateOf(false) }
+
+    val focusManager: FocusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
-    var selectedText by remember { mutableStateOf("") }
 
     val cityName = remember { mutableStateOf("Torcy") }
     val country = remember { mutableStateOf("France") }
     val temperature = remember { mutableStateOf("2°") }
 
+    val icon = if (viewModel.expanded)
+        Icons.Filled.ArrowDropUp //it requires androidx.compose.material:material-icons-extended
+    else
+        Icons.Filled.ArrowDropDown
+
     TheLabTheme {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+
+        ExposedDropdownMenuBox(
+            modifier = Modifier.fillMaxWidth(),
+            expanded = viewModel.expanded,
+            onExpandedChange = {
+                viewModel.expanded = !viewModel.expanded
+            }
         ) {
 
             TextField(
@@ -59,28 +77,44 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
                     .onGloballyPositioned { coordinates ->
                         //This value is used to assign to the DropDown the same width
                         textFieldSize = coordinates.size.toSize()
-                    },
+                    }
+                    .focusRequester(focusRequester)
+                    .menuAnchor(),
                 label = { Text("Search a Country, City,...") },
+                trailingIcon = {
+                    Icon(imageVector = icon,
+                        contentDescription = "contentDescription",
+                        Modifier.clickable { viewModel.expanded = !viewModel.expanded }
+                    )
+                },
+                //readOnly = true,
             )
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
+
+            ExposedDropdownMenu(
+                expanded = viewModel.expanded,
+                onDismissRequest = { viewModel.expanded = false },
                 modifier = Modifier
                     .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
             ) {
-                viewModel.suggestions.forEach { label ->
+                viewModel.suggestions.take(10).forEachIndexed { index, label ->
                     DropdownMenuItem(
-                        modifier = Modifier,
+                        modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            selectedText = label.getString(label.getColumnIndexOrThrow("name"))
+                            viewModel.updateSearchText(label)
+                            viewModel.expanded = false
+                            focusManager.clearFocus(true)
                         },
-                        text = { Text(text = label.getString(label.getColumnIndexOrThrow("name"))) },
+                        text = {
+//                            Text(text = label.getString(label.getColumnIndexOrThrow("name") - 1))
+                            Text(modifier = Modifier.fillMaxWidth(), text = label)
+                        },
                     )
                 }
             }
-            Text(cityName.value)
+
+            /*Text(cityName.value)
             Text(country.value)
-            Text(temperature.value)
+            Text(temperature.value)*/
         }
 
     }
@@ -130,7 +164,6 @@ fun WeatherContent(viewModel: WeatherViewModel) {
     val weatherUIState by viewModel.weatherUiState.collectAsStateWithLifecycle()
 
     TheLabTheme {
-
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = { TheLabTopAppBar(title = stringResource(id = R.string.activity_title_weather)) }

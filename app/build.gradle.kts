@@ -112,6 +112,8 @@ dependencies {
     //Kotlin
     //implementation(KotlinDependencies.kotlinStdLib)
     //implementation(KotlinDependencies.kotlinStdJdk)
+    implementation(libs.kotlin.reflect)
+
     implementation(KotlinDependencies.coroutinesCore)
     implementation(KotlinDependencies.coroutinesAndroid)
     implementation(KotlinDependencies.kotlinParcelize)

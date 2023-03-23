@@ -8,11 +8,15 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver
 import com.riders.thelab.core.bus.AlarmEvent
+import com.riders.thelab.core.bus.KotlinBus
+import com.riders.thelab.core.bus.Listen
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.core.views.toast.ToastTypeEnum
 import com.riders.thelab.databinding.ActivityScheduleBinding
+import com.riders.thelab.ui.base.BaseActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +25,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 
-class ScheduleActivity : AppCompatActivity() {
+class ScheduleActivity : BaseActivity() {
 
     private var _viewBinding: ActivityScheduleBinding? = null
 
@@ -35,26 +39,26 @@ class ScheduleActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         mViewModel.getCountDown().observe(
-            this,
-            { countDown ->
+            this
+        ) { countDown ->
 
-                showCountDownView()
+            showCountDownView()
 
-                val millsFuture = (countDown * 1000).toLong()
+            val millsFuture = (countDown * 1000).toLong()
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    object : CountDownTimer(millsFuture, 1000) {
-                        override fun onTick(millisUntilFinished: Long) {
-                            updateContDownUI(millisUntilFinished / 1000)
-                        }
+            CoroutineScope(Dispatchers.Main).launch {
+                object : CountDownTimer(millsFuture, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        updateContDownUI(millisUntilFinished / 1000)
+                    }
 
-                        override fun onFinish() {
-                            Timber.d("Count down finished")
-                        }
-                    }.start()
-                }
+                    override fun onFinish() {
+                        Timber.e("Count down finished")
+                    }
+                }.start()
+            }
 
-            })
+        }
 
         binding.button.setOnClickListener {
             binding.time.text.toString().isNotBlank().let {
@@ -67,6 +71,8 @@ class ScheduleActivity : AppCompatActivity() {
                 )
             }
         }
+
+        // onEventTriggered()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -118,7 +124,6 @@ class ScheduleActivity : AppCompatActivity() {
         _viewBinding = null
     }
 
-
     private fun showCountDownView() {
         binding.llDelayTimeContainer.visibility = View.VISIBLE
     }
@@ -142,5 +147,17 @@ class ScheduleActivity : AppCompatActivity() {
         Timber.e("onAlarmEventCaught()")
         Timber.d("Count down finished event")
         hideCountDownView()
+    }
+
+    @Listen
+    fun onEventTriggered() {
+        Timber.d("onEventTriggered()")
+        lifecycleScope.launch {
+            KotlinBus.getInstance().subscribe<String> {
+                Timber.d("Received | Count down finished event with, $it")
+                hideCountDownView()
+                UIManager.hideKeyboard(this@ScheduleActivity , binding.root)
+            }
+        }
     }
 }

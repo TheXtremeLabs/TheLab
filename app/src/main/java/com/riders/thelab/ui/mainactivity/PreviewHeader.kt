@@ -3,16 +3,26 @@ package com.riders.thelab.ui.mainactivity
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.compose.annotation.DevicePreviews
+import com.riders.thelab.data.local.model.compose.IslandState
+import kotlinx.coroutines.delay
 
 @Composable
 fun Header(viewModel: MainActivityViewModel) {
@@ -26,7 +36,7 @@ fun Header(viewModel: MainActivityViewModel) {
                 .fillMaxWidth()
                 .padding(top = 56.dp),
             visible = !viewModel.keyboardVisible.value,
-            enter = expandVertically() +  fadeIn(
+            enter = expandVertically() + fadeIn(
                 // Fade in with the initial alpha of 0.3f.
                 initialAlpha = 0.3f
             ),
@@ -41,11 +51,26 @@ fun Header(viewModel: MainActivityViewModel) {
             Column {
                 Spacer(modifier = Modifier.size(24.dp))
 
-                Text(
-                    "What's new",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Thin
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        "What's new",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Thin
+                    )
+
+                    Image(
+                        modifier = Modifier.clickable {
+                            viewModel.updateKeyboardVisible(true)
+                            viewModel.displayDynamicIsland(true)
+                        },
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(if (!isSystemInDarkTheme()) Color.Black else Color.White)
+                    )
+                }
 
                 Spacer(modifier = Modifier.size(16.dp))
 

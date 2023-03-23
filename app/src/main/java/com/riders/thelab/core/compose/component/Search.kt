@@ -31,7 +31,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
+import com.riders.thelab.data.local.model.compose.IslandState
 import com.riders.thelab.ui.mainactivity.MainActivityViewModel
+import timber.log.Timber
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -98,6 +100,10 @@ fun Search(viewModel: MainActivityViewModel) {
                 ImeAction.Done
             )
         )
+    }
+
+    if (viewModel.dynamicIslandState.value is IslandState.SearchState) {
+        Timber.d("Should request focus for textField")
     }
 }
 
