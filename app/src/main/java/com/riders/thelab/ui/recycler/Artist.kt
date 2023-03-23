@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -33,7 +32,7 @@ import com.riders.thelab.data.remote.dto.artist.Artist
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @DevicePreviews
 @Composable
 fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
@@ -44,7 +43,7 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-     var selectedIndex by remember { mutableStateOf(-1) }
+    var selectedIndex by remember { mutableStateOf(-1) }
 
     ////////////////////////////////
     // Coil
@@ -69,19 +68,20 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
     // Composable
     ////////////////////////////////
     TheLabTheme {
-        Card(modifier = Modifier
-            .height(dimensionResource(id = R.dimen.max_card_image_height))
-            .fillMaxWidth()
-            .selectable(
-                selected = artist.id == selectedIndex,
-                onClick = {
-                    if (selectedIndex != artist.id)
-                        selectedIndex = artist.id else selectedIndex = -1
+        Card(
+            modifier = Modifier
+                .height(dimensionResource(id = R.dimen.max_card_image_height))
+                .fillMaxWidth()
+                .selectable(
+                    selected = artist.id == selectedIndex,
+                    onClick = {
+                        if (selectedIndex != artist.id)
+                            selectedIndex = artist.id else selectedIndex = -1
 
-                     (context.findActivity() as RecyclerViewActivity).onDetailClick(artist)
-                }),
+                        (context.findActivity() as RecyclerViewActivity).onDetailClick(artist)
+                    }),
 
-           // colors = CardDefaults.cardColors(containerColor = if (artist.id == selectedIndex) Color.Red else Color.DarkGray)
+            // colors = CardDefaults.cardColors(containerColor = if (artist.id == selectedIndex) Color.Red else Color.DarkGray)
         ) {
             Column(
                 modifier = Modifier
@@ -97,24 +97,34 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
                     contentScale = ContentScale.Crop,
                 )
 
-                if (state is AsyncImagePainter.State.Loading) {
-                    Timber.i("state is AsyncImagePainter.State.Loading")
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .scale(0.5f)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                } else if (state is AsyncImagePainter.State.Success) {
-                    Timber.d("state is AsyncImagePainter.State.Success")
-                    LaunchedEffect(key1 = painter) {
-                        scope.launch {
-                            val image =
-                                painter.imageLoader.execute(painter.request).drawable!!
+                when (state) {
+                    is AsyncImagePainter.State.Loading -> {
+                        Timber.i("state is AsyncImagePainter.State.Loading")
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .scale(0.5f)
+                                .align(Alignment.CenterHorizontally)
+                        )
+                    }
+                    is AsyncImagePainter.State.Success -> {
+                        Timber.d("state is AsyncImagePainter.State.Success")
+                        LaunchedEffect(key1 = painter) {
+                            scope.launch {
+                                val image =
+                                    painter.imageLoader.execute(painter.request).drawable!!
 
+                            }
                         }
                     }
+                    is AsyncImagePainter.State.Error -> {
+                        Timber.e("state is AsyncImagePainter.State.Error | ${state.result}")
+                    }
+                    else -> {
+                        Timber.e("else branch")
+                    }
                 }
+
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
