@@ -51,19 +51,19 @@ class RecyclerViewAdapter(
 
         if (!LabCompatibilityManager.isNougat()) {
             for (element in artistThumbnails) {
-                if (artist.urlThumb.let { element.contains(it) }) {
+                /*if (artist.urlThumb.let { element.contains(it) }) {
                     artist.urlThumb = element
-                }
+                }*/
             }
         } else {
-            artist.urlThumb =
+            /*artist.urlThumb =
                 artistThumbnails
                     .stream()
                     .filter { element: String ->
                         element.contains(artist.urlThumb)
                     }
                     ?.findFirst()
-                    ?.orElse("").toString()
+                    ?.orElse("").toString()*/
 
         }
         holder.bind(artist)

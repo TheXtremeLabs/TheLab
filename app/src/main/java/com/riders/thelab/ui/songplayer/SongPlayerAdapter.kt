@@ -42,7 +42,7 @@ class SongPlayerAdapter(
     override fun onBindViewHolder(holder: SongPlayerViewHolder, position: Int) {
 
         if (!isClickable)
-            return;
+            return
 
         // do your click stuff
         if (position in fileList.indices) {

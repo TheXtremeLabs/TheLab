@@ -96,7 +96,7 @@
                         android:minWidth="64dp"
                         android:minHeight="64dp"
                         android:scaleType="fitCenter"
-                        bind:imageUrl='@{!TextUtils.isEmpty(weather.currentWeather.weather[0].icon) ? weatherUtils.Companion.getWeatherIconFromApi(weather.currentWeather.weather[0].icon) : ""}'
+                        bind:imageUrl='@{!TextUtils.isEmpty(weather.currentWeather.weather[0].icon) ? weatherUtils.getWeatherIconFromApi(weather.currentWeather.weather[0].icon) : ""}'
                         tools:backgroundTint="@color/white"
                         tools:layout_height="72dp"
                         tools:layout_width="72dp"

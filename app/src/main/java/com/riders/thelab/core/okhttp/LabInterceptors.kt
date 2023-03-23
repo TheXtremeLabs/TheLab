@@ -10,7 +10,7 @@ import java.io.IOException
 
 class LabInterceptors {
 
-    class LoggingRequestInterceptors : Interceptor {
+    inner class LoggingRequestInterceptors : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response {
 
@@ -26,7 +26,7 @@ class LabInterceptors {
         }
     }
 
-    class LoggingResponseInterceptors : Interceptor {
+    inner class LoggingResponseInterceptors : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response {
             val request: Request = chain.request()

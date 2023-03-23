@@ -2,25 +2,34 @@ package com.riders.thelab.ui.splashscreen
 
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import timber.log.Timber
 
 class SplashScreenViewModel : ViewModel() {
 
-    private val appVersion: MutableLiveData<String> = MutableLiveData()
-    private val onVideoEnd: MutableLiveData<Boolean> = MutableLiveData()
-
-
-    fun getAppVersion(): LiveData<String> {
-        return appVersion
+    //////////////////////////////////////////
+    // Compose states
+    //////////////////////////////////////////
+    var version = mutableStateOf("")
+    val videoViewVisibility = mutableStateOf(true)
+    val splashLoadingContentVisibility = mutableStateOf(false)
+    val startCountDown = mutableStateOf(false)
+    fun updateVideoViewVisibility(isVisible: Boolean) {
+        videoViewVisibility.value = isVisible
     }
 
-    fun getOnVideoEnd(): LiveData<Boolean> {
-        return onVideoEnd;
+    fun updateSplashLoadingContentVisibility(isVisible: Boolean) {
+        splashLoadingContentVisibility.value = isVisible
     }
 
+    fun updateStartCountDown(started: Boolean) {
+        startCountDown.value = started
+    }
+
+    //////////////////////////////////////////
+    // Class Methods
+    //////////////////////////////////////////
     fun retrieveAppVersion(activity: SplashScreenActivity) {
         try {
             val pInfo: PackageInfo =
@@ -29,14 +38,10 @@ class SplashScreenViewModel : ViewModel() {
                     .getPackageInfo(activity.packageName, 0)
             val version = pInfo.versionName
 
-            appVersion.value = version
+            this.version.value = version
 
         } catch (error: PackageManager.NameNotFoundException) {
             Timber.e(error)
         }
-    }
-
-    fun onVideoEnd() {
-        onVideoEnd.value = true
     }
 }

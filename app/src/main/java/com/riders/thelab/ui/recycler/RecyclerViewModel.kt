@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.runtime.*
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
@@ -18,20 +19,23 @@ import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.bean.SnackBarType
+import com.riders.thelab.data.local.model.compose.ArtistsUiState
 import com.riders.thelab.data.remote.dto.artist.Artist
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class RecyclerViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
+
+    val artistThumbnails = mutableListOf<String>()
 
     private val JSONURLFetched: MutableLiveData<String> = MutableLiveData()
     private val JSONURLError: MutableLiveData<Boolean> = MutableLiveData()
@@ -40,6 +44,20 @@ class RecyclerViewModel @Inject constructor(
     private val artists: MutableLiveData<List<Artist>> = MutableLiveData()
     private val artistsError: MutableLiveData<Boolean> = MutableLiveData()
 
+    //////////////////////////////////////////
+    // Compose states
+    //////////////////////////////////////////
+    private var _artistUiState = MutableStateFlow<ArtistsUiState>(ArtistsUiState.Loading)
+    val artistUiState = _artistUiState
+
+    //////////////////////////////////////////
+    // Coroutines
+    //////////////////////////////////////////
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            throwable.printStackTrace()
+            Timber.e(throwable.message)
+        }
 
     fun getJSONURLFetched(): LiveData<String> {
         return JSONURLFetched
@@ -66,10 +84,10 @@ class RecyclerViewModel @Inject constructor(
     }
 
     fun getFirebaseJSONURL(activity: Activity) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
             try {
 
-                var storageReference: StorageReference? = repository.getStorageReference(activity)
+                val storageReference: StorageReference? = repository.getStorageReference(activity)
 
                 // Create a child reference
                 // imagesRef now points to "images"
@@ -108,10 +126,10 @@ class RecyclerViewModel @Inject constructor(
      */
     fun getFirebaseFiles(activity: Activity) {
         Timber.d("getFirebaseFiles()")
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
 
             try {
-                var storageReference: StorageReference? = repository.getStorageReference(activity)
+                val storageReference: StorageReference? = repository.getStorageReference(activity)
 
                 Timber.d("signInAnonymously:success")
 
@@ -145,6 +163,7 @@ class RecyclerViewModel @Inject constructor(
                                         Timber.d("Links : %s", job.toString())
                                         if (taskResult.result.items.size == job.size) {
                                             withContext(Dispatchers.Main) {
+                                                artistThumbnails.addAll(job)
                                                 job.also { artistsThumbnails.value = it }
                                             }
                                         }
@@ -161,7 +180,7 @@ class RecyclerViewModel @Inject constructor(
     }
 
     @SuppressLint("NewApi")
-    private suspend fun buildArtistsThumbnailsList(storageReferences: List<StorageReference>): List<String>? {
+    private suspend fun buildArtistsThumbnailsList(storageReferences: List<StorageReference>): List<String> {
         val thumbnailsLinks: MutableList<String> = ArrayList()
         if (!LabCompatibilityManager.isNougat()) {
             for (element in storageReferences) {
@@ -211,14 +230,17 @@ class RecyclerViewModel @Inject constructor(
             try {
                 val job = repository.getArtists(urlPath)
 
-                withContext(Dispatchers.Main) {
+                _artistUiState.value = ArtistsUiState.Success(job)
+
+                /*withContext(Dispatchers.Main) {
                     artists.value = job
-                }
+                }*/
             } catch (throwable: Exception) {
                 Timber.e(throwable)
-                withContext(Dispatchers.Main) {
+                _artistUiState.value = ArtistsUiState.Error(throwable)
+                /*withContext(Dispatchers.Main) {
                     artistsError.value = true
-                }
+                }*/
             }
         }
     }
@@ -233,7 +255,7 @@ class RecyclerViewModel @Inject constructor(
 
         val intent = Intent(activity, RecyclerViewDetailActivity::class.java)
 
-        intent.putExtra(RecyclerViewDetailActivity.EXTRA_RECYCLER_ITEM, item)
+        intent.putExtra(RecyclerViewDetailActivity.EXTRA_RECYCLER_ITEM, Json.encodeToString(item))
 
         Timber.d("Apply activity transition")
         intent.putExtra(
@@ -260,7 +282,7 @@ class RecyclerViewModel @Inject constructor(
         Timber.d("onDeleteClick() item %s at position : %s", item.artistName, position)
 
         // get the removed item name to display it in snack bar
-        val name: String = item.artistName
+        val name: String = "${item.artistName}"
 
         // backup of removed item for undo purpose
 

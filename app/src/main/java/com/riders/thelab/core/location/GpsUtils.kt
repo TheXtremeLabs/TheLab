@@ -71,7 +71,7 @@ class GpsUtils(private val context: Context) {
                                 rae.startResolutionForResult(context, GPS_REQUEST)
 
                             } catch (sie: IntentSender.SendIntentException) {
-                                Timber.i("PendingIntent unable to execute request.");
+                                Timber.i("PendingIntent unable to execute request.")
                             }
                         }
 
@@ -79,10 +79,10 @@ class GpsUtils(private val context: Context) {
 
                             val errorMessage =
                                 "Location settings are inadequate, and cannot be " +
-                                        "fixed here. Fix in Settings.";
-                            Timber.e(errorMessage);
+                                        "fixed here. Fix in Settings."
+                            Timber.e(errorMessage)
                             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG)
-                                .show();
+                                .show()
                         }
                     }
                 }

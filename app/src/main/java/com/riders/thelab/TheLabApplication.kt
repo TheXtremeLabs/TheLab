@@ -2,6 +2,7 @@ package com.riders.thelab
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.multidex.MultiDexApplication
@@ -10,6 +11,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.core.worker.WeatherWorker
 import com.riders.thelab.ui.weather.WeatherDownloadWorker
 import dagger.hilt.android.HiltAndroidApp
@@ -18,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -43,7 +46,7 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
 
         mInstance = this
         init()
-        delayedInit()
+        // delayedInit()
     }
 
     private fun init() {
@@ -92,7 +95,10 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
 
         // Setup periodic worker to update widget
         val periodicWeatherWorkRequest: PeriodicWorkRequest =
-            PeriodicWorkRequestBuilder<WeatherWorker>(Duration.ofMinutes(15L)).build()
+            if (LabCompatibilityManager.isNougat()) PeriodicWorkRequestBuilder<WeatherWorker>(
+                Duration.ofMinutes(15L)
+            ).build()
+            else PeriodicWorkRequestBuilder<WeatherWorker>(15, TimeUnit.MINUTES).build()
 
         WorkManager
             .getInstance(applicationContext)
@@ -152,6 +158,31 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
             }
 
             return mInstance as TheLabApplication
+        }
+
+        @JvmStatic
+        fun getActivityPackageName(activityName: String): String? {
+            val pManager: PackageManager = getInstance().packageManager
+            val packageName: String = getInstance().applicationContext.packageName
+
+            var returnedActivityPackageToString = ""
+
+            return try {
+                val list =
+                    pManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES).activities
+                for (activityInfo in list) {
+                    val activityNameFound = activityInfo.name
+                    Timber.d("ActivityInfo = " + activityInfo.name)
+                    if (activityNameFound.lowercase().contains(activityName.lowercase())) {
+                        returnedActivityPackageToString = activityInfo.name
+                        break
+                    }
+                }
+                returnedActivityPackageToString
+            } catch (e: PackageManager.NameNotFoundException) {
+                e.printStackTrace()
+                null
+            }
         }
     }
 }

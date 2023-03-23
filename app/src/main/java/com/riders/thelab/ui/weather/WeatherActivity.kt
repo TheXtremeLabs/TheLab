@@ -12,10 +12,18 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
@@ -39,12 +47,12 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
 import com.riders.thelab.core.bus.LocationFetchedEvent
-import com.riders.thelab.core.utils.LabLocationManager
-import com.riders.thelab.core.utils.LabLocationUtils
-import com.riders.thelab.core.utils.UIManager
+import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.utils.*
 import com.riders.thelab.data.RepositoryImpl
 import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.data.local.bean.WindDirection
+import com.riders.thelab.data.local.model.compose.WeatherUIState
 import com.riders.thelab.data.local.model.weather.CityModel
 import com.riders.thelab.data.remote.dto.weather.CurrentWeather
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
@@ -52,19 +60,19 @@ import com.riders.thelab.databinding.ActivityWeatherBinding
 import com.riders.thelab.utils.DateTimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
-class WeatherActivity : AppCompatActivity(), WeatherClickListener {
+class WeatherActivity : ComponentActivity(), WeatherClickListener {
 
     private var _viewBinding: ActivityWeatherBinding? = null
     private val binding get() = _viewBinding!!
@@ -86,14 +94,33 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         Timber.d("onCreate()")
         super.onCreate(savedInstanceState)
         _viewBinding = ActivityWeatherBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        /*setContentView(binding.root)*/
 
         context = this
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         checkLocationPermissions()
         listener = this
+
+        // Start a coroutine in the lifecycle scope
+        lifecycleScope.launch {
+            // repeatOnLifecycle launches the block in a new coroutine every time the
+            // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                setContent {
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            WeatherContent(mWeatherViewModel)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -106,7 +133,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         super.onResume()
         Timber.d("onResume()")
         EventBus.getDefault().register(this)
-        mWeatherViewModel.fetchCities()
+        mWeatherViewModel.fetchCities(this)
     }
 
 
@@ -139,12 +166,12 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             private fun getCitiesFromDb(queryText: String) {
                 val searchText = "%$queryText%"
 
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(IO).launch {
 
                     try {
                         val cursor = repositoryImpl.getCitiesCursor(searchText)
 
-                        withContext(Dispatchers.Main) {
+                        withContext(Main) {
                             handleResults(cursor)
                         }
                     } catch (exception: Exception) {
@@ -219,11 +246,10 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                     " ${event.getLocation().longitude}"
         )
 
+        mWeatherViewModel.updateUIState(WeatherUIState.SuccessWeatherData(true))
+
         mWeatherViewModel.fetchWeather(
-            LabLocationUtils.buildTargetLocationObject(
-                event.getLocation().latitude,
-                event.getLocation().longitude
-            )
+            event.getLocation().run { latitude to longitude }.toLocation()
         )
     }
 
@@ -278,45 +304,47 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
         Timber.d("initViewModelObservers()")
 
         mWeatherViewModel.getProgressBarVisibility().observe(
-            this,
-            {
-                if (!it) UIManager.hideView(binding.progressBar)
-                else UIManager.showView(binding.progressBar)
-            })
+            this
+        ) {
+            if (!it) UIManager.hideView(binding.progressBar)
+            else UIManager.showView(binding.progressBar)
+        }
 
         mWeatherViewModel.getConnectionStatus().observe(
-            this,
-            {
-                if (!it) layoutInflater.inflate(
-                    R.layout.no_internet_connection,
-                    binding.weatherRootView,
-                    true
-                )
-            })
+            this
+        ) {
+            if (!it) layoutInflater.inflate(
+                R.layout.no_internet_connection,
+                binding.weatherRootView,
+                true
+            )
+        }
 
         mWeatherViewModel.getDownloadStatus().observe(
-            this,
-            { statusMessage ->
-                binding.tvDownloadStatus.text = statusMessage
-            })
+            this
+        ) { statusMessage ->
+            binding.tvDownloadStatus.text = statusMessage
+        }
 
-        mWeatherViewModel.getDownloadDone().observe(this, {
+        mWeatherViewModel.getDownloadDone().observe(this) {
             binding.tvDownloadStatus.visibility = View.GONE
-        })
-        mWeatherViewModel.getIsWeatherData().observe(this, {
+        }
+
+        mWeatherViewModel.getIsWeatherData().observe(this) {
             if (!it) {
                 mWeatherViewModel.startWork(this)
             } else {
                 binding.tvDownloadStatus.visibility = View.GONE
                 binding.weatherDataContainer.visibility = View.VISIBLE
             }
-        })
+        }
 
-        mWeatherViewModel.getWorkerStatus().observe(this, {
+        mWeatherViewModel.getWorkerStatus().observe(this) {
 
             when (it) {
                 WorkInfo.State.SUCCEEDED -> {
                     binding.progressBar.visibility = View.GONE
+                    binding.weatherDataContainer.visibility = View.VISIBLE
                 }
 
                 WorkInfo.State.FAILED -> {
@@ -334,11 +362,11 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                     Timber.e("else branch")
                 }
             }
-        })
+        }
 
-        mWeatherViewModel.getOneCalWeather().observe(this, {
+        mWeatherViewModel.getOneCalWeather().observe(this) {
             updateOneCallUI(it)
-        })
+        }
     }
 
 
@@ -402,15 +430,15 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
                 .weather[0]
                 .description*/
 
-        supportActionBar?.title = "$cityName $country"
+        //supportActionBar?.title = "$cityName $country"
 
         // Temperatures
         val temperature =
-            "${oneCallWeatherResponse.currentWeather.temperature.roundToInt()} ${getString(R.string.degree_placeholder)}"
+            "${oneCallWeatherResponse.currentWeather?.temperature?.roundToInt()} ${getString(R.string.degree_placeholder)}"
         binding.tvWeatherCityTemperature.text = temperature
 
         val realFeels =
-            "${oneCallWeatherResponse.currentWeather.feelsLike.roundToInt()} ${
+            "${oneCallWeatherResponse.currentWeather?.feelsLike?.roundToInt()} ${
                 resources.getString(
                     R.string.degree_placeholder
                 )
@@ -424,11 +452,11 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             )*/
         binding.tvSunset.text =
             DateTimeUtils.formatMillisToTimeHoursMinutes(
-                oneCallWeatherResponse.timezone,
-                oneCallWeatherResponse.currentWeather.sunset
+                oneCallWeatherResponse.timezone!!,
+                oneCallWeatherResponse.currentWeather!!.sunset
             )
 
-        val hourlyWeather: List<CurrentWeather> = oneCallWeatherResponse.hourlyWeather
+        val hourlyWeather: List<CurrentWeather> = oneCallWeatherResponse.hourlyWeather!!
 
         // Build chart with hourly weather data
         buildChart(hourlyWeather)
@@ -453,7 +481,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             oneCallWeatherResponse.currentWeather.windDegree
         )
 
-        Glide.with(this)
+        Glide.with(applicationContext)
             .load(ContextCompat.getDrawable(this, windDirection.icon))
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
@@ -487,7 +515,7 @@ class WeatherActivity : AppCompatActivity(), WeatherClickListener {
             this,
             oneCallWeatherResponse
                 .dailyWeather
-                .subList(1, oneCallWeatherResponse.dailyWeather.size - 2)
+                ?.subList(1, oneCallWeatherResponse.dailyWeather.size - 2)!!
         )
 
         val linearLayoutManager =

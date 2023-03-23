@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.riders.thelab.R
 import com.riders.thelab.data.local.model.Contact
 import timber.log.Timber
-import java.util.*
 
 class ContactsAdapter(
     val context: Context,

@@ -1,22 +1,16 @@
 package com.riders.thelab.core.utils
 
-import android.content.Context
-import androidx.core.content.ContextCompat
 import com.riders.thelab.R
 
-class LabColorsManager private constructor() {
-    companion object {
-        fun getDefaultColors(context: Context): IntArray {
-            return intArrayOf(
-                ContextCompat.getColor(context, R.color.white),
-                ContextCompat.getColor(context, R.color.red),
-                ContextCompat.getColor(context, R.color.blue),
-                ContextCompat.getColor(context, R.color.green),
-                ContextCompat.getColor(context, R.color.orange),
-                ContextCompat.getColor(context, R.color.purple),
-                ContextCompat.getColor(context, R.color.yellow),
-                ContextCompat.getColor(context, R.color.teal_700)
-            )
-        }
-    }
+object LabColorsManager {
+    fun getDefaultColors(): IntArray = intArrayOf(
+        R.color.white,
+        R.color.red,
+        R.color.blue,
+        R.color.green,
+        R.color.orange,
+        R.color.purple,
+        R.color.yellow,
+        R.color.teal_700
+    )
 }

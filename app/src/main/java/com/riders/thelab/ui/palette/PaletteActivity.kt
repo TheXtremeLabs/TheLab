@@ -1,138 +1,64 @@
 package com.riders.thelab.ui.palette
 
-
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.palette.graphics.Palette
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.databinding.ActivityPaletteBinding
-import com.riders.thelab.utils.Constants
+import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class PaletteActivity : AppCompatActivity() {
+class PaletteActivity : ComponentActivity() {
 
-    lateinit var viewBinding: ActivityPaletteBinding
+    private val viewModel: PaletteViewModel by viewModels()
+
+    private val onBackPressedCallback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                showAppClosingDialog()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityPaletteBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
 
-        Glide.with(this)
-            .load(Constants.PALETTE_URL)
-            .listener(object : RequestListener<Drawable?> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    Timber.e("onLoadingImageFailed()")
-                    Timber.e(e)
-                    return false
-                }
+        // onBackPressedDispatcher.addCallback(this@PaletteActivity, onBackPressedCallback)
+        viewModel.getWallpaperImages(this@PaletteActivity)
 
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    Timber.i("Image is correctly downloaded")
-                    try {
-                        resource?.let {
-                            val mBitmap: Bitmap = UIManager.drawableToBitmap(it)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
 
-                            //demande à la palette de générer ses coleurs, de façon asynchrone
-                            //afin de ne pas bloquer l'interface graphique
-                            //lorsque la palette est générée, je l'utilise sur mes textViews
-                            Palette.Builder(mBitmap)
-                                .generate { palette: Palette? ->
-                                    if (palette != null) {
-                                        appliquerPalette(palette)
-                                    }
-                                }
-
+                setContent {
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            PaletteContent(viewModel)
                         }
-                    } catch (ex: Exception) {
-                        ex.printStackTrace()
                     }
-                    return false
                 }
-            })
-            .into(viewBinding.paletteImage)
+            }
+        }
     }
 
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-            }
-        }
-        return true
-    }
-
-
-    fun appliquerPalette(palette: Palette) {
-        run {
-
-            //je récupère le swatch Vibrant
-            val vibrant = palette.vibrantSwatch
-            if (vibrant != null) { //il se peut que la palette ne génère pas tous les swatch
-
-                //j'utilise getRgb() en tant que couleurs de fond te ma textView
-                viewBinding.textVibrant.setBackgroundColor(vibrant.rgb)
-
-                //getBodyTextColor() est prévu pour être affiché dessus une vue en background getRgb()
-                viewBinding.textVibrant.setTextColor(vibrant.bodyTextColor)
-            }
-        }
-        run {
-            val vibrantDark = palette.darkVibrantSwatch
-            if (vibrantDark != null) {
-                viewBinding.textVibrantDark.setBackgroundColor(vibrantDark.rgb)
-                viewBinding.textVibrantDark.setTextColor(vibrantDark.bodyTextColor)
-            }
-        }
-        run {
-            val vibrantLight = palette.lightVibrantSwatch
-            if (vibrantLight != null) {
-                viewBinding.textVibrantLight.setBackgroundColor(vibrantLight.rgb)
-                viewBinding.textVibrantLight.setTextColor(vibrantLight.bodyTextColor)
-            }
-        }
-        run {
-            val muted = palette.mutedSwatch
-            if (muted != null) {
-                viewBinding.textMuted.setBackgroundColor(muted.rgb)
-                viewBinding.textMuted.setTextColor(muted.bodyTextColor)
-            }
-        }
-        run {
-            val mutedDark = palette.darkMutedSwatch
-            if (mutedDark != null) {
-                viewBinding.textMutedDark.setBackgroundColor(mutedDark.rgb)
-                viewBinding.textMutedDark.setTextColor(mutedDark.bodyTextColor)
-            }
-        }
-        run {
-            val lightMuted = palette.lightMutedSwatch
-            if (lightMuted != null) {
-                viewBinding.textMutedLight.setBackgroundColor(lightMuted.rgb)
-                viewBinding.textMutedLight.setTextColor(lightMuted.bodyTextColor)
-            }
-        }
+    private fun showAppClosingDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Warning")
+            .setMessage("Do you really want to close the app?")
+            .setPositiveButton("Yes") { _, _ -> finish() }
+            .setNegativeButton("No", null)
+            .show()
     }
 }

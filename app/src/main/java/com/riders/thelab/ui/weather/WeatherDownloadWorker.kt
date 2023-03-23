@@ -51,7 +51,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
         }
         taskDataString = taskData!!.getString(MESSAGE_STATUS)
 
-        val urlRequest = taskData!!.getString(URL_REQUEST) ?: return Result.failure()
+        // val urlRequest = taskData!!.getString(URL_REQUEST) ?: return Result.failure()
 
         try {
 
@@ -78,6 +78,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
                         .getInstance()
                         .parseJsonFileListWithMoshi(it)
                 }
+
                 if (Validator.isNullOrEmpty(dtoCities)) {
                     Timber.e("List<City> dtoCities is empty")
                     return Result.failure()

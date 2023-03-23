@@ -28,10 +28,10 @@ class TheLabBootService : Service() {
 
 
     override fun onBind(intent: Intent?): IBinder {
-        Timber.i("KTestingBootService - onBind()")
+        Timber.i("TheLabBootService - onBind()")
         UIManager.showActionInToast(
             this@TheLabBootService,
-            "KTestingBootService - onBind()"
+            "TheLabBootService - onBind()"
         )
         return mBinder
     }

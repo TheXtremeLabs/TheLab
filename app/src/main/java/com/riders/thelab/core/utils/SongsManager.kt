@@ -1,9 +1,8 @@
-package com.riders.thelab.core.utils;
+package com.riders.thelab.core.utils
 
 import android.os.Environment
 import java.io.File
 import java.io.FilenameFilter
-import java.util.*
 
 /**
  * Created by Michaël on 26/02/2018.
@@ -15,7 +14,7 @@ class SongsManager {
     private val MEDIA_PATH: String = Environment.getExternalStorageDirectory().toString()
 
     //final String MEDIA_PATH = System.getenv("SECONDARY_STORAGE");
-    private val songsList: ArrayList<HashMap<String, String>> = ArrayList<HashMap<String, String>>()
+    private val songsList: ArrayList<HashMap<String, String>> = ArrayList()
 
     /**
      * Function to read all mp3 files from sdcard
@@ -34,13 +33,13 @@ class SongsManager {
 
             if (home.listFiles(FileExtensionFilter())!!.isNotEmpty()) {
                 for (file: File in home.listFiles(FileExtensionFilter())!!) {
-                    val song: HashMap<String, String> = HashMap<String, String>();
+                    val song: HashMap<String, String> = HashMap()
 
-                    song["songTitle"] = file.name.substring(0, (file.name.length - 4));
-                    song["songPath"] = file.path;
+                    song["songTitle"] = file.name.substring(0, (file.name.length - 4))
+                    song["songPath"] = file.path
 
                     // Adding each song to SongList
-                    songsList.add(song);
+                    songsList.add(song)
                 }
             }
         } catch (exception: Exception) {
@@ -48,7 +47,7 @@ class SongsManager {
         }
 
         // return songs list array
-        return songsList;
+        return songsList
     }
 
     fun getPlayList(directoryPath: String): ArrayList<HashMap<String, String>> {
@@ -64,13 +63,13 @@ class SongsManager {
 
             if (home.listFiles(FileExtensionFilter())!!.isNotEmpty()) {
                 for (file: File in home.listFiles(FileExtensionFilter())!!) {
-                    val song: HashMap<String, String> = HashMap<String, String>();
+                    val song: HashMap<String, String> = HashMap()
 
-                    song["songTitle"] = file.name.substring(0, (file.name.length - 4));
-                    song["songPath"] = file.path;
+                    song["songTitle"] = file.name.substring(0, (file.name.length - 4))
+                    song["songPath"] = file.path
 
                     // Adding each song to SongList
-                    songsList.add(song);
+                    songsList.add(song)
                 }
             }
         } catch (exception: Exception) {
@@ -78,7 +77,7 @@ class SongsManager {
         }
 
         // return songs list array
-        return songsList;
+        return songsList
     }
 
     /**

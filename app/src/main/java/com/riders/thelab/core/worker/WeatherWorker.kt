@@ -7,7 +7,6 @@ import android.content.Intent
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import androidx.annotation.NonNull
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -32,8 +31,8 @@ import kotlin.math.roundToInt
 
 @HiltWorker
 class WeatherWorker @AssistedInject constructor(
-    @Assisted @NonNull val context: Context,
-    @Assisted @NonNull val workerParams: WorkerParameters
+    @Assisted val context: Context,
+    @Assisted val workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
     companion object {
@@ -65,14 +64,22 @@ class WeatherWorker @AssistedInject constructor(
             )
             return Result.failure(outputData!!)
         } else {
-            location = labLocationManager.getLocation()
+            try {
+                location = labLocationManager.getLocation()
+            } catch (e: Exception) {
+                // Unable to fetch user location
+                outputData = createOutputData(
+                    WORK_RESULT,
+                    "$WORK_LOCATION_FAILED | You may check if required permissions are granted"
+                )
+                return Result.failure(outputData!!)
+            }
         }
 
         if (null == location) return Result.failure()
 
-
         return try {
-            suspendCancellableCoroutine { _ ->
+            suspendCancellableCoroutine {
 
                 val job = runBlocking {
                     mRepository.getWeatherOneCallAPI(location)
@@ -147,19 +154,21 @@ class WeatherWorker @AssistedInject constructor(
         country: String
     ): Bundle {
         Timber.d("buildWeatherBundle()")
-        val description = response.currentWeather.weather[0].description
+        val description = response.currentWeather?.weather?.get(0)?.description
         val temperature =
-            "${response.currentWeather.temperature.roundToInt()} ${context.getString(R.string.degree_placeholder)}"
+            "${response.currentWeather?.temperature?.roundToInt()} ${context.getString(R.string.degree_placeholder)}"
         val realFeels =
-            "${response.currentWeather.feelsLike.roundToInt()} ${
+            "${response.currentWeather?.feelsLike?.roundToInt()} ${
                 context.getString(
                     R.string.degree_placeholder
                 )
             }"
         val icon =
-            WeatherUtils.getWeatherIconFromApi(
-                response.currentWeather.weather[0].icon
-            )
+            response.currentWeather?.weather?.get(0)?.let {
+                WeatherUtils.getWeatherIconFromApi(
+                    it.icon
+                )
+            }
 
         return Bundle().apply {
             putString(TheLabAppWidgetProvider.EXTRA_WEATHER_CITY, city)

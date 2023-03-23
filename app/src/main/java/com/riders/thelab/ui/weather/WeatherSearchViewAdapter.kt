@@ -58,7 +58,7 @@ class WeatherSearchViewAdapter(
                     mSearchView.isIconified = true
                 }
             } else {
-                (context as WeatherActivity).supportActionBar?.collapseActionView()
+                //(context as WeatherActivity).supportActionBar?.collapseActionView()
             }
             mListener.onWeatherItemClicked(CityModel(cursor))
         }

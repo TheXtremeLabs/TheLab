@@ -84,12 +84,12 @@
                         android:layout_marginLeft="@dimen/spacing_large"
                         android:layout_marginTop="@dimen/spacing_large"
                         android:layout_marginRight="@dimen/spacing_large"
-                        android:text="@{artist.artistName}"
+
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                         android:textColor="@color/white"
                         android:textStyle="bold"
                         tools:text="John Doe" />
-
+                    <!--android:text="@{artist.artistName.toString()}"-->
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_full_name_detail"
                         android:layout_width="match_parent"
@@ -97,11 +97,11 @@
                         android:layout_marginLeft="@dimen/spacing_large"
                         android:layout_marginTop="@dimen/spacing_large"
                         android:layout_marginRight="@dimen/spacing_large"
-                        android:text='@{!TextUtils.isEmpty(artist.secondName) ? artist.artistName + `,` + artist.secondName : artist.artistName}'
+
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="@color/white"
                         tools:text="The Shooter" />
-
+                    <!--android:text='@{!TextUtils.isEmpty(artist.secondName) ? artist.artistName.toString() + `,` + artist.secondName : artist.artistName.toString()}'-->
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_activities_detail"
                         android:layout_width="match_parent"

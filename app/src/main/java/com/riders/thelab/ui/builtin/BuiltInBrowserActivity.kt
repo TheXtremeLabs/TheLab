@@ -112,17 +112,17 @@ class BuiltInBrowserActivity : AppCompatActivity() {
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         if (!viewBinding.contentBuiltInBrowser.browserWebView.canGoBack()) {
             menu.getItem(0).isEnabled = false
-            menu.getItem(0).icon.alpha = 130
+            menu.getItem(0).icon?.alpha = 130
         } else {
             menu.getItem(0).isEnabled = true
-            menu.getItem(0).icon.alpha = 255
+            menu.getItem(0).icon?.alpha = 255
         }
         if (!viewBinding.contentBuiltInBrowser.browserWebView.canGoForward()) {
             menu.getItem(1).isEnabled = false
-            menu.getItem(1).icon.alpha = 130
+            menu.getItem(1).icon?.alpha = 130
         } else {
             menu.getItem(1).isEnabled = true
-            menu.getItem(1).icon.alpha = 255
+            menu.getItem(1).icon?.alpha = 255
         }
         return true
     }

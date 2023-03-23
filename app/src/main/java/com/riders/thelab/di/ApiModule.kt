@@ -171,6 +171,13 @@ internal object ApiModule {
                 response
             })
             .addInterceptor(provideOkHttpLogger())
+            .connectionSpecs(
+                listOf(
+                    ConnectionSpec.CLEARTEXT,
+                    ConnectionSpec.COMPATIBLE_TLS,
+                    ConnectionSpec.MODERN_TLS,
+                )
+            )
             .build()
     }
 
@@ -251,6 +258,14 @@ internal object ApiModule {
     fun proWeatherBulkApiService(): WeatherBulkApiService {
         return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
             .create(WeatherBulkApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @NotNull
+    fun provideUserAPIService(): TheLabBackApiService {
+        return provideRetrofit(Constants.BASE_ENDPOINT_THE_LAB_URL)
+            .create(TheLabBackApiService::class.java)
     }
 
 }

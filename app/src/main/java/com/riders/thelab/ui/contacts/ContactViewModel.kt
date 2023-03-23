@@ -10,7 +10,9 @@ import com.riders.thelab.data.local.model.Contact
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -27,55 +29,58 @@ class ContactViewModel @Inject constructor(
     private val contactsFailed: MutableLiveData<Boolean> = MutableLiveData()
 
 
-    fun getProgressBarVisibility(): LiveData<Boolean> {
-        return progressVisibility
-    }
-
-    fun hideContactsLayout(): LiveData<Boolean> {
-        return hideContactsLayout
-    }
-
-    fun showContactsLayout(): LiveData<Boolean> {
-        return showContactsLayout
-    }
-
-    fun getNoContactFound(): LiveData<List<Contact>> {
-        return noContactFound
-    }
-
-    fun getContacts(): LiveData<List<Contact>> {
-        return contacts
-    }
-
-    fun getContactsFailed(): LiveData<Boolean> {
-        return contactsFailed
-    }
+    ///////////////
+    //
+    // Observers
+    //
+    ///////////////
+    fun getProgressBarVisibility(): LiveData<Boolean> = progressVisibility
+    fun hideContactsLayout(): LiveData<Boolean> = hideContactsLayout
+    fun showContactsLayout(): LiveData<Boolean> = showContactsLayout
+    fun getNoContactFound(): LiveData<List<Contact>> = noContactFound
+    fun getContacts(): LiveData<List<Contact>> = contacts
+    fun getContactsFailed(): LiveData<Boolean> = contactsFailed
 
 
+    ///////////////
+    //
+    // Functions
+    //
+    ///////////////
     fun fetchContacts() {
         Timber.d("getContactList()")
         progressVisibility.value = true
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioContext) {
             try {
                 val dbContacts = repositoryImpl.getAllContacts()
                 if (dbContacts.isEmpty()) {
                     Timber.e("Contact list is empty")
-                    progressVisibility.value = false
-                    hideContactsLayout.value = true
-                    noContactFound.value = dbContacts
+
+                    withContext(mainContext) {
+                        progressVisibility.value = false
+                        hideContactsLayout.value = true
+                        noContactFound.value = dbContacts
+                    }
+
                 } else {
                     Timber.d("contacts  : %s", contacts)
-                    progressVisibility.value = false
-                    showContactsLayout.value = true
-                    showContactsLayout.value = true
-                    contacts.value = dbContacts
+
+                    withContext(mainContext) {
+                        progressVisibility.value = false
+                        showContactsLayout.value = true
+                        showContactsLayout.value = true
+                        contacts.value = dbContacts
+                    }
                 }
             } catch (throwable: Exception) {
                 Timber.e(throwable)
-                progressVisibility.value = false
-                hideContactsLayout.value = true
-                contactsFailed.value = true
+
+                withContext(mainContext) {
+                    progressVisibility.value = false
+                    hideContactsLayout.value = true
+                    contactsFailed.value = true
+                }
             }
         }
     }
@@ -92,5 +97,11 @@ class ContactViewModel @Inject constructor(
         intent.putExtra(ContactDetailActivity.CONTACT_EMAIL, contact.email)
         intent.putExtra(ContactDetailActivity.CONTACT_IMAGE, "")
         navigator.callContactDetailActivity(intent)
+    }
+
+
+    companion object {
+        val ioContext = Dispatchers.IO + Job()
+        val mainContext = Dispatchers.Main + Job()
     }
 }

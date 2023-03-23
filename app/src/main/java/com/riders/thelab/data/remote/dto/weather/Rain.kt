@@ -2,7 +2,6 @@ package com.riders.thelab.data.remote.dto.weather
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.parcelize.Parcelize
 
 @JsonClass(generateAdapter = true)
 data class Rain(

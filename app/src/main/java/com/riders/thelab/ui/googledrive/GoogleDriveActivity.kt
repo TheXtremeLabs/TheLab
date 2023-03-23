@@ -177,8 +177,10 @@ class GoogleDriveActivity
             // which we can use in startActivityForResult to trigger the login flow
             val signInIntent = mGoogleSignInClient?.signInIntent
 
-            @Suppress("DEPRECATION")
-            startActivityForResult(signInIntent, CONST_SIGN_IN)
+            if (null != signInIntent) {
+                @Suppress("DEPRECATION")
+                startActivityForResult(signInIntent, CONST_SIGN_IN)
+            }
         }
     }
 
@@ -329,7 +331,7 @@ class GoogleDriveActivity
     private fun init() {
 
         // Build a new authorized API client service.
-        val HTTP_TRANSPORT: NetHttpTransport = NetHttpTransport()
+        val HTTP_TRANSPORT = NetHttpTransport()
         val service: Drive = Drive.Builder(
             HTTP_TRANSPORT,
             JSON_FACTORY,
@@ -365,7 +367,7 @@ class GoogleDriveActivity
         // Load client secrets.
         val mInputStream: InputStream =
             this@GoogleDriveActivity.javaClass.getResourceAsStream(CREDENTIALS_FILE_PATH)
-                ?: throw  FileNotFoundException("Resource not found: $CREDENTIALS_FILE_PATH")
+                ?: throw FileNotFoundException("Resource not found: $CREDENTIALS_FILE_PATH")
         val clientSecrets: GoogleClientSecrets =
             GoogleClientSecrets.load(JSON_FACTORY, InputStreamReader(mInputStream))
 
