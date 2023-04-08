@@ -110,15 +110,13 @@ dependencies {
     // General Dependencies
     /////////////////////////////
     //Kotlin
-    //implementation(KotlinDependencies.kotlinStdLib)
-    //implementation(KotlinDependencies.kotlinStdJdk)
     implementation(libs.kotlin.reflect)
-
-    implementation(KotlinDependencies.coroutinesCore)
-    implementation(KotlinDependencies.coroutinesAndroid)
-    implementation(KotlinDependencies.kotlinParcelize)
-    implementation(KotlinDependencies.kotlinSerialization)
-    implementation(KotlinDependencies.kotlinPlaySevices)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlinx.parcelize)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.play.services)
 
     // AndroidX
     implementation(Dependencies.multiDex)
@@ -136,8 +134,8 @@ dependencies {
     implementation(Dependencies.window)
 
     // Compose
-    implementation(platform(Dependencies.composeBom))
-    implementation(Dependencies.composeCompiler)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.compiler)
     implementation(Dependencies.composeRuntime)
     implementation(Dependencies.composeRuntimeLiveData)
     implementation(Dependencies.composeMaterial)

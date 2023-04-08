@@ -213,6 +213,7 @@ object LabCompatibilityManager {
 }
 
 
+
 /**
  * Android version table
  * <p>
@@ -246,5 +247,9 @@ object LabCompatibilityManager {
  * 27                  O_MR1                     Android 8 Oreo MR1
  * 28                  P                         Android 9 Pie
  * 29                  Q                         Android 10
+ * 30                  R                         Android 11
+ * 31                  S                         Android 12 Snow cone
+ * 32                  T                         Android 13 Tiramisu
+ * 33                  U                         Android 14 Upside Down Cake
  * 10000                CUR_DEVELOPMENT           Current Development Version
  */

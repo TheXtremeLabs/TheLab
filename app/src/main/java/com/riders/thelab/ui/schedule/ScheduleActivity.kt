@@ -94,7 +94,7 @@ class ScheduleActivity : BaseActivity() {
     fun onEventTriggered() {
         Timber.d("onEventTriggered()")
         lifecycleScope.launch {
-            KotlinBus.getInstance().subscribe<String> {
+            KotlinBus.subscribe<String> {
                 Timber.d("Received | Count down finished event with, $it")
                 //UIManager.hideKeyboard(this@ScheduleActivity, binding.root)
                 mViewModel.updateCountDownDone(true)
