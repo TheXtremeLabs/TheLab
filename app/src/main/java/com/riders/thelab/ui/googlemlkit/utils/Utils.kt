@@ -209,6 +209,7 @@ object Utils {
             ExifInterface.ORIENTATION_UNDEFINED, ExifInterface.ORIENTATION_NORMAL ->
                 // Set the matrix to be null to skip the image transform.
                 null
+
             ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> Matrix().apply { postScale(-1.0f, 1.0f) }
 
             ExifInterface.ORIENTATION_ROTATE_90 -> Matrix().apply { postRotate(90f) }
@@ -220,6 +221,7 @@ object Utils {
                 postRotate(-90.0f)
                 postScale(-1.0f, 1.0f)
             }
+
             else ->
                 // Set the matrix to be null to skip the image transform.
                 null

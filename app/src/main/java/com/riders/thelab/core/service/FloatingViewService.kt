@@ -5,8 +5,12 @@ import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.View.OnTouchListener
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
 import com.riders.thelab.R
@@ -156,6 +160,7 @@ class FloatingViewService : Service() {
                             initialTouchY = event.rawY
                             return true
                         }
+
                         MotionEvent.ACTION_MOVE -> {
                             //Calculate the X and Y coordinates of the view.
                             params.x = initialX + (event.rawX - initialTouchX).toInt()
@@ -165,6 +170,7 @@ class FloatingViewService : Service() {
                             mWindowManager!!.updateViewLayout(mFloatingView, params)
                             return true
                         }
+
                         MotionEvent.ACTION_UP -> {
                             val Xdiff = (event.rawX - initialTouchX).toInt()
                             val Ydiff = (event.rawY - initialTouchY).toInt()

@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.riders.thelab.core.storage.LabFileManager
 import com.riders.thelab.data.local.model.music.SongModel
-import com.riders.thelab.utils.Constants.Companion.SZ_SEPARATOR
+import com.riders.thelab.utils.Constants.SZ_SEPARATOR
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
 import java.io.File
@@ -17,7 +17,6 @@ class SongPlayerViewModel @Inject constructor() : ViewModel() {
     companion object {
         const val MUSIC_PLACEHOLDER = "Music"
         const val PROD_PLACEHOLDER = "Prod"
-
     }
 
     private val fileList: MutableLiveData<List<SongModel>> = MutableLiveData()
@@ -97,9 +96,11 @@ class SongPlayerViewModel @Inject constructor() : ViewModel() {
             fileName.endsWith(".mp3", true) -> {
                 fileName.split(".mp3")[0]
             }
+
             fileName.endsWith(".m4a", true) -> {
                 fileName.split(".m4a")[0]
             }
+
             else -> {
                 ""
             }

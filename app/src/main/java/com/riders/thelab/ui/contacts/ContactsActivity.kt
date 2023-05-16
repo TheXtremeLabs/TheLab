@@ -102,10 +102,12 @@ class ContactsActivity
             android.R.id.home -> {
                 onBackPressed()
             }
+
             R.id.action_add_contact -> mContactViewModel.addNewContact(Navigator(this))
             R.id.action_search -> Timber.d("noinspection SimplifiableIfStatement")
             R.id.action_supervisor ->
                 UIManager.showActionInToast(this, "Action supervisor clicked")
+
             else -> {
                 return false
             }

@@ -16,8 +16,14 @@
 
 package com.riders.thelab.ui.googlemlkit.barcodedetection
 
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.CornerPathEffect
+import android.graphics.Paint
 import android.graphics.Paint.Style
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.RectF
 import androidx.core.content.ContextCompat
 import com.riders.thelab.R
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay

@@ -7,6 +7,7 @@ import com.squareup.moshi.JsonClass
 data class Temperature(
     @Json(name = "day")
     val day: Double = 0.0,
+
     @Json(name = "min")
     val min: Double = 0.0,
 

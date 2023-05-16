@@ -26,9 +26,8 @@ import com.riders.thelab.core.compose.ui.theme.md_theme_dark_background
 import com.riders.thelab.core.compose.utils.findActivity
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.app.App
-import kotlinx.coroutines.DelicateCoroutinesApi
 
-@OptIn(DelicateCoroutinesApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
 fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
@@ -50,6 +49,7 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                     )
                 }
             }
+
             else -> {
                 remember { UIManager.drawableToBitmap(item.appDrawableIcon!!) }
             }
@@ -101,6 +101,7 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                                     UIManager.addGradientToImageView(context, bitmap)
                                         .asImageBitmap()
                                 }
+
                                 else -> {
                                     bitmap.asImageBitmap()
                                 }
@@ -109,13 +110,12 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                             contentScale = ContentScale.Fit
                         )
                     }
-
                 }
 
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 8.dp),
+                        .padding(8.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(modifier = Modifier.fillMaxWidth(), text = title)

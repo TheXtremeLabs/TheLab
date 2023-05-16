@@ -199,20 +199,24 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                     promptChip?.setText(R.string.prompt_point_at_a_barcode)
                     startCameraPreview()
                 }
+
                 WorkflowState.CONFIRMING -> {
                     promptChip?.visibility = View.VISIBLE
                     promptChip?.setText(R.string.prompt_move_camera_closer)
                     startCameraPreview()
                 }
+
                 WorkflowState.SEARCHING -> {
                     promptChip?.visibility = View.VISIBLE
                     promptChip?.setText(R.string.prompt_searching)
                     stopCameraPreview()
                 }
+
                 WorkflowState.DETECTED, WorkflowState.SEARCHED -> {
                     promptChip?.visibility = View.GONE
                     stopCameraPreview()
                 }
+
                 else -> promptChip?.visibility = View.GONE
             }
 
@@ -247,6 +251,7 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                     }
                 }
             }
+
             R.id.settings_button -> {
                 settingsButton?.isEnabled = false
                 startActivity(Intent(this, SettingsActivity::class.java))

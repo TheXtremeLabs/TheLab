@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.utils.LabCompatibilityManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -32,7 +33,10 @@ class PaletteActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // onBackPressedDispatcher.addCallback(this@PaletteActivity, onBackPressedCallback)
+        if (LabCompatibilityManager.isTiramisu()) {
+            onBackPressedDispatcher.addCallback(this@PaletteActivity, onBackPressedCallback)
+        }
+
         viewModel.getWallpaperImages(this@PaletteActivity)
 
         lifecycleScope.launch {

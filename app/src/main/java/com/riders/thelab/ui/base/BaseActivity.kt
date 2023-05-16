@@ -21,10 +21,8 @@ open class BaseActivity : ComponentActivity() {
                 try {
                     declaredMethod.invoke(this)
                 } catch (e: IllegalAccessException) {
-                    // Utils.logException(e)
                     Timber.e(e)
                 } catch (e: InvocationTargetException) {
-                    // Utils.logException(e)
                     Timber.e(e)
                 }
             }

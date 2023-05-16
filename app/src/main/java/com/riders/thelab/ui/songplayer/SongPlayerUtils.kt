@@ -155,6 +155,7 @@ class SongPlayerUtils {
                             PlaybackState.ACTION_PLAY -> {
                                 Timber.d("controlsCallback -  PlaybackState.ACTION_PLAY")
                             }
+
                             PlaybackState.ACTION_PAUSE -> {
                                 Timber.e("controlsCallback -  PlaybackState.ACTION_PAUSE")
                             }

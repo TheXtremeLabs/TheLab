@@ -108,6 +108,7 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
                                 .align(Alignment.CenterHorizontally)
                         )
                     }
+
                     is AsyncImagePainter.State.Success -> {
                         Timber.d("state is AsyncImagePainter.State.Success")
                         LaunchedEffect(key1 = painter) {
@@ -116,9 +117,11 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
                             }
                         }
                     }
+
                     is AsyncImagePainter.State.Error -> {
                         Timber.e("state is AsyncImagePainter.State.Error | ${state.result}")
                     }
+
                     else -> {
                         Timber.e("else branch")
                     }

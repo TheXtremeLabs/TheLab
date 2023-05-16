@@ -72,12 +72,15 @@ fun VideoView(viewModel: SplashScreenViewModel, videoUri: String) {
                             Player.STATE_READY -> {
                                 Timber.d("State.READY")
                             }
+
                             Player.STATE_IDLE -> {
                                 Timber.i("State.STATE_IDLE")
                             }
+
                             Player.STATE_BUFFERING -> {
                                 Timber.d("State.STATE_BUFFERING")
                             }
+
                             Player.STATE_ENDED -> {
                                 Timber.e("State.STATE_ENDED")
 

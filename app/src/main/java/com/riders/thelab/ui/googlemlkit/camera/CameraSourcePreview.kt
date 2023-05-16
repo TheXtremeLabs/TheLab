@@ -108,6 +108,7 @@ class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(c
                     R.id.static_overlay_container -> {
                         childView.layout(0, 0, layoutWidth, layoutHeight)
                     }
+
                     else -> {
                         childView.layout(
                             0, -excessLenInHalf, layoutWidth, layoutHeight + excessLenInHalf

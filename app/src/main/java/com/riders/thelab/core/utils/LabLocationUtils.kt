@@ -6,7 +6,7 @@ import android.location.Geocoder
 import android.location.Location
 import timber.log.Timber
 import java.io.IOException
-import java.util.*
+import java.util.Locale
 
 fun main() {
     try {

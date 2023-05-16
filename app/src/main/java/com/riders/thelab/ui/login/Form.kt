@@ -253,6 +253,7 @@ fun Form(viewModel: LoginViewModel) {
                         WindowSizeClass.COMPACT -> {
                             0.dp
                         }
+
                         else -> {
                             0.dp
                         }

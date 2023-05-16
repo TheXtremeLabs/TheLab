@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.palette
 
-import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
@@ -30,7 +29,6 @@ import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -87,7 +85,7 @@ fun PaletteContent(viewModel: PaletteViewModel) {
             .data(imageUrl)
             .apply {
                 crossfade(true)
-                allowHardware(false)
+                allowHardware(true)
                 //transformations(RoundedCornersTransformation(32.dp.value))
             }
             .build(),
@@ -151,6 +149,7 @@ fun PaletteContent(viewModel: PaletteViewModel) {
                                                 .align(CenterHorizontally)
                                         )
                                     }
+
                                     is AsyncImagePainter.State.Success -> {
                                         Timber.d("state is AsyncImagePainter.State.Success")
                                         LaunchedEffect(key1 = painter) {
@@ -171,9 +170,11 @@ fun PaletteContent(viewModel: PaletteViewModel) {
                                             }
                                         }
                                     }
+
                                     is AsyncImagePainter.State.Error -> {
                                         Timber.e("state is AsyncImagePainter.State.Error | ${state.result}")
                                     }
+
                                     else -> {
                                         Timber.e("else branch")
                                     }

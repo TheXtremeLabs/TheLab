@@ -14,7 +14,11 @@ import com.riders.thelab.R
 import com.riders.thelab.databinding.FragmentSuccessfulSignUpBinding
 import com.riders.thelab.ui.signup.NextViewPagerClickListener
 import com.riders.thelab.ui.signup.SignUpViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext

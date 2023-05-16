@@ -489,6 +489,7 @@ class SongPlayerActivity : AppCompatActivity(),
                 }
 
             }
+
             R.id.btn_next -> {
                 // check if next song is there or not
                 if (currentSongIndex < (songsList.size - 1)) {
