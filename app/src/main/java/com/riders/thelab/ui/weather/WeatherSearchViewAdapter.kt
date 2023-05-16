@@ -20,8 +20,7 @@ import com.riders.thelab.utils.Constants
 class WeatherSearchViewAdapter(
     private val mContext: Context,
     private val mCursor: Cursor,
-    private val mSearchView: SearchView,
-    private val mListener: WeatherClickListener
+    private val mSearchView: SearchView
 ) : CursorAdapter(mContext, mCursor, false) {
 
     private var mLayoutInflater: LayoutInflater = LayoutInflater.from(mContext)
@@ -60,7 +59,6 @@ class WeatherSearchViewAdapter(
             } else {
                 //(context as WeatherActivity).supportActionBar?.collapseActionView()
             }
-            mListener.onWeatherItemClicked(CityModel(cursor))
         }
     }
 }

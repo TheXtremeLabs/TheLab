@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.mainactivity.fragment.weather
 
+
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -17,10 +18,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel

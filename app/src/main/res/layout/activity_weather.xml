@@ -16,7 +16,7 @@
         <!-- Declare your "variable" that hold the Companion object itself -->
         <variable
             name="dateTimeUtils"
-            type="com.riders.thelab.utils.DateTimeUtils.Companion" />
+            type="com.riders.thelab.utils.DateTimeUtils" />
 
         <variable
             name="weatherUtils"
