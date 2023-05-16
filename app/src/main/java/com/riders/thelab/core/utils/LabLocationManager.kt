@@ -89,8 +89,7 @@ class LabLocationManager constructor(
     }
 
     @WorkerThread
-    @JvmName("getLocation1")
-    fun getLocation(): Location? {
+    fun getCurrentLocation(): Location? {
         Timber.d("getLocation1()")
 
         return if (!canGetLocation()) {
@@ -105,7 +104,7 @@ class LabLocationManager constructor(
                     getLocationViaNetwork()
                 }
 
-                postLocation(this.location!!)
+                this.location?.let { postLocation(it) }
 
                 // return location object
                 return this.location
@@ -119,7 +118,7 @@ class LabLocationManager constructor(
                     getLocationViaGPS()
                 }
 
-                postLocation(this.location!!)
+                this.location?.let { postLocation(it) }
 
                 // return location object
                 return this.location

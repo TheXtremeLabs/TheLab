@@ -65,7 +65,7 @@ class WeatherWorker @AssistedInject constructor(
             return Result.failure(outputData!!)
         } else {
             try {
-                location = labLocationManager.getLocation()
+                location = labLocationManager.getCurrentLocation()
             } catch (e: Exception) {
                 // Unable to fetch user location
                 outputData = createOutputData(
