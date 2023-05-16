@@ -91,7 +91,7 @@ class WeatherFragment : BaseFragment(), LocationListener {
             labLocationManager.showSettingsAlert()
         } else {
             labLocationManager.setLocationListener()
-            labLocationManager.getLocation()
+            labLocationManager.getCurrentLocation()
         }
     }
 

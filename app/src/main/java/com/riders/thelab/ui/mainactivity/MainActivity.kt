@@ -395,7 +395,7 @@ class MainActivity : ComponentActivity(),
                 labLocationManager?.showSettingsAlert()
             } else {
                 labLocationManager?.setLocationListener()
-                labLocationManager?.getLocation()
+                labLocationManager?.getCurrentLocation()
 
                 binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
                     R.drawable.ic_location_on

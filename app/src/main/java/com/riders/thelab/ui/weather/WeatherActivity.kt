@@ -204,7 +204,7 @@ class WeatherActivity : BaseActivity() {
         Timber.d("fetchCurrentLocation()")
 
         if (labLocationManager?.canGetLocation() == true) {
-            val location = labLocationManager?.getLocation() ?: return
+            val location = labLocationManager?.getCurrentLocation() ?: return
 
             mWeatherViewModel.fetchWeather((location.latitude to location.longitude).toLocation())
         } else
