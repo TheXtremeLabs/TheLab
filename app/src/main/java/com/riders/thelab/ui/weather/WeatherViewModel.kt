@@ -17,8 +17,11 @@ import androidx.work.*
 import com.riders.thelab.core.utils.*
 import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.bean.SnackBarType
+import com.riders.thelab.data.local.model.compose.WeatherCityUIState
 import com.riders.thelab.data.local.model.compose.WeatherUIState
+import com.riders.thelab.data.local.model.weather.CityModel
 import com.riders.thelab.data.local.model.weather.WeatherData
+import com.riders.thelab.data.remote.dto.weather.CurrentWeather
 import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,19 +42,33 @@ class WeatherViewModel @Inject constructor(
     //////////////////////////////////////////
     private var _weatherUiState = MutableStateFlow<WeatherUIState>(WeatherUIState.Loading)
     val weatherUiState = _weatherUiState
+    private var _weatherCityUiState = MutableStateFlow<WeatherCityUIState>(WeatherCityUIState.None)
+    val weatherCityUiState = _weatherCityUiState
     fun updateUIState(state: WeatherUIState) {
         _weatherUiState.value = state
+    }
+
+    fun updateWeatherCityUIState(cityState: WeatherCityUIState) {
+        _weatherCityUiState.value = cityState
     }
 
     var searchText by mutableStateOf("")
 
     var expanded by mutableStateOf(false)
+    var isWeatherDataVisible by mutableStateOf(false)
 
-    var suggestions by mutableStateOf(emptyList<String>())
+    // Suggestions for search
+    var suggestions by mutableStateOf(emptyList<CityModel>())
         private set
 
+    var cityMaxTemp by mutableStateOf("")
+        private set
+    var cityMinTemp by mutableStateOf("")
+        private set
 
     fun updateSearchText(searchQuery: String) {
+        if (isWeatherDataVisible) isWeatherDataVisible = !isWeatherDataVisible
+
         searchText = searchQuery
 
         if (2 <= searchText.length) {
@@ -61,6 +78,15 @@ class WeatherViewModel @Inject constructor(
             expanded = false
         }
     }
+
+    fun updateCityMaxTemp(newTemperature: Double) {
+        cityMaxTemp = "${newTemperature.toInt()}"
+    }
+
+    fun updateCityMinTemp(newTemperature: Double) {
+        cityMinTemp = "${newTemperature.toInt()}"
+    }
+
 
     //////////////////////////////////////////
     // Coroutines
@@ -126,7 +152,7 @@ class WeatherViewModel @Inject constructor(
 
         if (suggestions.isNotEmpty()) suggestions = mutableListOf()
 
-        val tempList = mutableListOf<String>()
+        val tempList = mutableListOf<CityModel>()
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast) { // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
@@ -136,13 +162,14 @@ class WeatherViewModel @Inject constructor(
 
                 Timber.d("handleResults() | name: $name, country: $country")
 
-                tempList.add("$name, $country")
+                tempList.add(CityModel(cursor))
 
                 cursor.moveToNext()
             }
 
             suggestions = tempList.take(10).toList()
         }
+
         /* mSearchView.suggestionsAdapter =
              WeatherSearchViewAdapter(
                  context,
@@ -183,7 +210,6 @@ class WeatherViewModel @Inject constructor(
         return LabAddressesUtils.getDeviceAddress(
             Geocoder(activity, Locale.getDefault()),
             (latitude to longitude).toLocation()
-            // LabLocationUtils.buildTargetLocationObject(latitude, longitude)
         )
     }
 
@@ -251,20 +277,54 @@ class WeatherViewModel @Inject constructor(
                         hideLoader()
                         weatherResponse?.let {
                             oneCallWeather.value = it
+                            updateWeatherCityUIState(WeatherCityUIState.Success(it))
+                            isWeatherDataVisible = true
                         }
                     }
                 }
             } catch (throwable: Exception) {
-
                 Timber.e(throwable)
                 withContext(Main) {
-
                     hideLoader()
                 }
             }
         }
     }
 
+    fun getMaxMinTemperature(hourlyWeather: List<CurrentWeather>) {
+        Timber.d("getMaxMinTemperature() | hourlyWeather: $hourlyWeather")
+        var minStoredTemperature: Double = hourlyWeather[0].temperature
+        var maxStoredTemperature: Double = hourlyWeather[0].temperature
+
+        hourlyWeather.forEach { temp ->
+            if (minStoredTemperature >= temp.temperature) {
+                minStoredTemperature = temp.temperature
+            }
+        }
+
+        hourlyWeather.forEach { temp ->
+            if (temp.temperature >= maxStoredTemperature) {
+                maxStoredTemperature = temp.temperature
+            }
+        }
+        updateCityMaxTemp(maxStoredTemperature)
+        updateCityMinTemp(minStoredTemperature)
+    }
+
+
+    fun getDayFromTime(dateTimeUTC: Long): String {
+        Timber.d("getDayFromTime() | $dateTimeUTC")
+
+        val calendar = Calendar.getInstance(Locale.getDefault()).apply {
+            /*
+             * source : https://stackoverflow.com/questions/64125378/why-does-calendar-getdisplayname-always-return-the-same-day-of-week-when-given-m
+             */
+            time = Date(dateTimeUTC * 1000)
+        }
+
+        val day = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
+        return day!!
+    }
 
     /////////////////////////////////////
     //
@@ -325,6 +385,7 @@ class WeatherViewModel @Inject constructor(
                         downloadStatus.value = "Loading..."
                         updateUIState(WeatherUIState.Loading)
                     }
+
                     WorkInfo.State.SUCCEEDED -> {
 
                         // Save data in database
@@ -339,6 +400,7 @@ class WeatherViewModel @Inject constructor(
 
                         updateUIState(WeatherUIState.Success(OneCallWeatherResponse()))
                     }
+
                     WorkInfo.State.FAILED -> {
                         Timber.e("Worker FAILED")
                         downloadDone.value = true
@@ -354,6 +416,7 @@ class WeatherViewModel @Inject constructor(
                         )
                         updateUIState(WeatherUIState.Error())
                     }
+
                     WorkInfo.State.BLOCKED -> Timber.e("Worker BLOCKED")
                     WorkInfo.State.CANCELLED -> Timber.e("Worker CANCELLED")
                     else -> {

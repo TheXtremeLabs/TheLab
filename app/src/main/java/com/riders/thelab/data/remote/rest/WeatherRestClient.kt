@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit
 class WeatherRestClient {
 
     private var bulkApiService: WeatherBulkApiService
-
     private fun provideOkHttpClient(): OkHttpClient {
         val httpClientBuilder = OkHttpClient.Builder()
         httpClientBuilder.readTimeout(TimeOut.TIME_OUT_READ.value.toLong(), TimeUnit.SECONDS)

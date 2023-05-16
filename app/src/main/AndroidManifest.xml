@@ -34,7 +34,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.MODIFY_PHONE_STATE"
-        tools:ignore="ProtectedPermissions" />
+        tools:ignore="PermissionImpliesUnsupportedChromeOsHardware,ProtectedPermissions" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -605,10 +605,10 @@
 
         <!-- In order to use hilt injection in Worker -->
         <!-- If you want to disable android.startup completely. -->
-        <provider
+        <!--<provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            tools:node="remove" />
+            tools:node="remove" />-->
 
     </application>
 </manifest>

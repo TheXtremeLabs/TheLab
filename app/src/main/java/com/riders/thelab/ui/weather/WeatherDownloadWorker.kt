@@ -51,8 +51,6 @@ class WeatherDownloadWorker @AssistedInject constructor(
         }
         taskDataString = taskData!!.getString(MESSAGE_STATUS)
 
-        // val urlRequest = taskData!!.getString(URL_REQUEST) ?: return Result.failure()
-
         try {
 
             val responseFile = mRepository.getBulkWeatherCitiesFile().execute().body()
@@ -74,12 +72,10 @@ class WeatherDownloadWorker @AssistedInject constructor(
 
                 // Step 2 : Parse JSON File
                 val dtoCities: List<City>? = unzippedGZipResult?.let {
-                    LabParser
-                        .getInstance()
-                        .parseJsonFileListWithMoshi(it)
+                    LabParser.parseJsonFileListWithMoshi(it)
                 }
 
-                if (Validator.isNullOrEmpty(dtoCities)) {
+                if (dtoCities.isNullOrEmpty()) {
                     Timber.e("List<City> dtoCities is empty")
                     return Result.failure()
                 }
@@ -87,9 +83,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
                 Timber.d("Save in database...")
 
                 // Step 3 save in database
-                if (null != dtoCities) {
-                    saveCities(dtoCities)
-                }
+                saveCities(dtoCities)
 
                 outputData = createOutputData(WORK_RESULT, WORK_SUCCESS)
                 return Result.success(outputData!!)
