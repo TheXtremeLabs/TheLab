@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -22,6 +24,12 @@ import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 
+
+///////////////////////////
+//
+// COMPOSABLE
+//
+///////////////////////////
 @OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
@@ -59,6 +67,66 @@ fun TheLabTopAppBar(
                         tint = Color.White
                     )
                 }
+            },
+            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TheLabTopAppBar(
+    @PreviewParameter(TextContentPreviewProvider::class) title: String,
+    actionIcon: ImageVector,
+    actionBlock: () -> Unit,
+) {
+    val context = LocalContext.current
+
+    TheLabTheme {
+        TopAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color.Black, MaterialTheme.colorScheme.background)
+                    )
+                ),
+            title = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(start = 16.dp, bottom = 16.dp),
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    Text(text = title, color = Color.White)
+                }
+            },
+            navigationIcon = {
+                IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
+                }
+            },
+            actions = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(bottom = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    IconButton(onClick = actionBlock) {
+                        Icon(
+                            imageVector = actionIcon,
+                            contentDescription = "action icon "
+                        )
+                    }
+                }
+
             },
             colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
         )
@@ -127,5 +195,37 @@ fun TheLabTopAppBarLarge() {
             },
             colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
         )
+    }
+}
+
+///////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////
+
+@OptIn(ExperimentalMaterial3Api::class)
+@DevicePreviews
+@Composable
+private fun PreviewTheLabTopAppBar() {
+    TheLabTheme {
+        TheLabTopAppBar("Lorem Ipsum")
+    }
+}
+
+
+@DevicePreviews
+@Composable
+private fun PreviewTheLabTopAppBar(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
+    TheLabTheme {
+        TheLabTopAppBar(title, Icons.Filled.Close) {}
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewTheLabTopAppBarLarge() {
+    TheLabTheme {
+        TheLabTopAppBarLarge()
     }
 }
