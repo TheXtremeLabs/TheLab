@@ -6,14 +6,21 @@ import android.text.TextWatcher
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.database.Query
+import com.google.firebase.database.ValueEventListener
 import com.riders.thelab.core.utils.LabDeviceManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.remote.dto.kat.Kat
 import com.riders.thelab.databinding.ActivityKatBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.util.*
+import java.util.Objects
+import java.util.Random
 
 @AndroidEntryPoint
 class KatActivity : AppCompatActivity(), TextWatcher {

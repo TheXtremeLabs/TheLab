@@ -1,6 +1,6 @@
 package com.riders.thelab.utils
 
-import java.util.*
+import java.util.Random
 
 class NumberUtils {
     companion object {

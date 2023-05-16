@@ -13,7 +13,12 @@ import android.view.Surface
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.*
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -24,7 +29,7 @@ import com.riders.thelab.ui.camera.CameraPictureDetailActivity
 import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -191,12 +196,14 @@ class CameraActivity : AppCompatActivity() {
                 )
                 CameraUtils.turnOffCameraFlash(camera!!)
             }
+
             FLASH_STATE_ON -> {
                 binding.btnFlashState.setImageDrawable(
                     UIManager.getDrawable(R.drawable.ic_flash_on)
                 )
                 CameraUtils.turnOnCameraFlash(camera!!)
             }
+
             FLASH_STATE_AUTO -> {
                 binding.btnFlashState.setImageDrawable(
                     UIManager.getDrawable(R.drawable.ic_flash_auto)

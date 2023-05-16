@@ -14,6 +14,10 @@ import android.provider.Settings
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.riders.thelab.core.bus.LocationFetchedEvent
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class LabLocationManager constructor(
@@ -89,9 +93,10 @@ class LabLocationManager constructor(
     fun getLocation(): Location? {
         Timber.d("getLocation1()")
 
-        if (!canGetLocation()) {
+        return if (!canGetLocation()) {
             // no network provider is enabled
             Timber.e("no network provider is enabled")
+            null
         } else {
 
             try {
@@ -99,6 +104,11 @@ class LabLocationManager constructor(
                 if (isNetworkEnabled) {
                     getLocationViaNetwork()
                 }
+
+                postLocation(this.location!!)
+
+                // return location object
+                return this.location
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -108,13 +118,49 @@ class LabLocationManager constructor(
                 if (isGPSEnabled) {
                     getLocationViaGPS()
                 }
+
+                postLocation(this.location!!)
+
+                // return location object
+                return this.location
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+    }
+
+    fun getLocationCallback(): Location? {
+        return if (!canGetLocation()) {
+            // no network provider is enabled
+            Timber.e("no network provider is enabled")
+            null
+        } else {
+
+            try {
+                // if Network Enabled get lat/long using Network
+                if (isNetworkEnabled) {
+                    getLocationViaNetwork()
+                }
+
+                this.location
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }
 
-        // return location object
-        return this.location
+            try {
+                // if GPS Enabled get lat/long using GPS Services
+                if (isGPSEnabled) {
+                    getLocationViaGPS()
+                }
+
+                this.location
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -154,6 +200,16 @@ class LabLocationManager constructor(
         this.location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
         latitude = this.location!!.latitude
         longitude = this.location!!.longitude
+
+    }
+
+    private fun postLocation(location: Location) {
+        Timber.d("postLocation() | location: $location")
+
+        // Post event with cll info object set
+        GlobalScope.launch(Main) {
+            LocationFetchedEvent(location).triggerEvent()
+        }
     }
 
     /**

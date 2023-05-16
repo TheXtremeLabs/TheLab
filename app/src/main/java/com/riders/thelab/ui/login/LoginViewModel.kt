@@ -2,7 +2,6 @@ package com.riders.thelab.ui.login
 
 import android.util.Patterns
 import androidx.compose.runtime.*
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.BuildConfig

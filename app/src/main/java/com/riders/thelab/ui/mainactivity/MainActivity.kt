@@ -52,7 +52,7 @@ import com.riders.thelab.databinding.ActivityMainBinding
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import com.riders.thelab.ui.weather.WeatherUtils
-import com.riders.thelab.utils.Constants.Companion.GPS_REQUEST
+import com.riders.thelab.utils.Constants.GPS_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -112,6 +112,7 @@ class MainActivity : ComponentActivity(),
             Configuration.UI_MODE_NIGHT_YES -> {
                 w.statusBarColor = Color.TRANSPARENT
             }
+
             Configuration.UI_MODE_NIGHT_NO,
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {
             }
@@ -561,12 +562,15 @@ class MainActivity : ComponentActivity(),
                 )
                 return
             }
+
             item is LocalApp && -1L != item.id -> {
                 mViewModel.launchActivityOrPackage(navigator, item)
             }
+
             item is PackageApp -> {
                 mViewModel.launchActivityOrPackage(navigator, item)
             }
+
             else -> {
                 Timber.e("Item id == -1 , not app activity. Should launch package intent.")
             }
@@ -602,9 +606,11 @@ class MainActivity : ComponentActivity(),
             R.id.iv_internet_status -> {
                 Timber.e("Internet wifi icon status clicked")
             }
+
             R.id.iv_location_status -> {
                 Timber.e("Location icon status clicked")
             }
+
             R.id.iv_settings -> navigator.callSettingsActivity()
             R.id.btn_more_info -> navigator.callWeatherActivity()
             R.id.iv_linear_layout -> toggleRecyclerViewLinearLayout()

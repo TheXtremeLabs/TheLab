@@ -284,6 +284,7 @@ class UserFormFragment : Fragment(), View.OnClickListener {
 
                 isPasswordVisible = !isPasswordVisible
             }
+
             R.id.btn_continue -> {
                 Timber.d("onContinueButtonClicked()")
 

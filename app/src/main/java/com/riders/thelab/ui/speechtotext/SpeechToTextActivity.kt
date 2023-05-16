@@ -20,7 +20,8 @@ import com.karumi.dexter.listener.single.PermissionListener
 import com.riders.thelab.R
 import com.riders.thelab.databinding.ActivitySpeechToTextBinding
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
+import java.util.Random
 
 class SpeechToTextActivity : AppCompatActivity(), RecognitionListener {
 
@@ -215,6 +216,7 @@ class SpeechToTextActivity : AppCompatActivity(), RecognitionListener {
             SpeechRecognizer.ERROR_NETWORK_TIMEOUT, SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> getString(
                 R.string.error_timeout
             )
+
             SpeechRecognizer.ERROR_NO_MATCH -> getString(R.string.error_no_match)
             SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> getString(R.string.error_busy)
             SpeechRecognizer.ERROR_SERVER -> getString(R.string.error_server)

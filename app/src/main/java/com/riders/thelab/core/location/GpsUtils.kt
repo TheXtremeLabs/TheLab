@@ -7,8 +7,12 @@ import android.location.LocationManager
 import android.widget.Toast
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
-import com.riders.thelab.utils.Constants.Companion.GPS_REQUEST
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsStatusCodes
+import com.google.android.gms.location.SettingsClient
+import com.riders.thelab.utils.Constants.GPS_REQUEST
 import timber.log.Timber
 
 /**

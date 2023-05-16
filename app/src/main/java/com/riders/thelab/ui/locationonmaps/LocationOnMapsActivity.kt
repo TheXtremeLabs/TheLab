@@ -104,6 +104,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 w.statusBarColor =
                     Color.TRANSPARENT
             }
+
             Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
             }
         }

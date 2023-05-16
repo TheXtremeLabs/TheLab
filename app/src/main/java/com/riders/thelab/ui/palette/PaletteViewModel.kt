@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -39,7 +40,7 @@ class PaletteViewModel @Inject constructor(
     // Coroutines
     //////////////////////////////////////////
     private val coroutineExceptionHandler =
-        CoroutineExceptionHandler { coroutineContext, throwable ->
+        CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
             Timber.e(throwable.message)
         }
@@ -48,7 +49,7 @@ class PaletteViewModel @Inject constructor(
     // Compose
     /////////////////////////////
     private val _imageUrl: MutableStateFlow<String> = MutableStateFlow("")
-    val imageUrl = _imageUrl
+    val imageUrl: StateFlow<String> = _imageUrl
 
     val progressVisibility = mutableStateOf(false)
 

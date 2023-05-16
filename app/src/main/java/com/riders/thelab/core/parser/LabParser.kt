@@ -5,21 +5,16 @@ import com.riders.thelab.data.remote.dto.weather.City
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import timber.log.Timber
 import java.lang.reflect.Type
 
-class LabParser {
-    companion object {
-        private var mInstance: LabParser? = null
+object LabParser {
 
-        fun getInstance(): LabParser {
-            if (null == mInstance) {
-                mInstance = LabParser()
-            }
-            return mInstance as LabParser
-        }
+    fun parseJsonFileListWithKotlinSerialization(jsonToParse: String): List<City> {
+        return Json.decodeFromString<List<City>>(jsonToParse)
     }
-
 
     fun parseJsonFileListWithMoshi(jsonToParse: String): List<City>? {
         return try {

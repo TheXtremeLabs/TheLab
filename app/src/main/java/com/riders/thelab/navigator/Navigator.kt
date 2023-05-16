@@ -10,7 +10,6 @@ import com.riders.thelab.ui.settings.SettingsActivity
 import com.riders.thelab.ui.signup.SignUpActivity
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
 import com.riders.thelab.ui.weather.WeatherActivity
-import kotlinx.coroutines.DelicateCoroutinesApi
 import timber.log.Timber
 
 class Navigator constructor(

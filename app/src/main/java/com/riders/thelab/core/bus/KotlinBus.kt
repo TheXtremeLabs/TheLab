@@ -16,7 +16,7 @@ class KotlinBus private constructor() {
     }
 
     /**
-     * wE first of all found all the methods from the child class,
+     * We first of all found all the methods from the child class,
      * then we identified those method who have Listen annotation to them.
      *
      * After that we just invoked those functions using Kotlin refection.

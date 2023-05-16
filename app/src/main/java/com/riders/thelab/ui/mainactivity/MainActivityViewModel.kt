@@ -22,14 +22,18 @@ import com.riders.thelab.data.local.model.weather.ProcessedWeather
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.net.UnknownHostException
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -173,11 +177,11 @@ class MainActivityViewModel @Inject constructor(
 
     fun retrieveApplications(context: Context) {
         Timber.d("retrieveApplications()")
-        val constants = Constants(context)
+        //val constants = Constants(context)
         val appList: MutableList<App> = ArrayList()
 
         // Get constants activities
-        appList.addAll(constants.getActivityList())
+        appList.addAll(Constants.getActivityList(context))
         appList.addAll(repository.getPackageList())
 
         //  val tempList = repository.getAppListFromAssets()
@@ -192,11 +196,9 @@ class MainActivityViewModel @Inject constructor(
     fun retrieveRecentApps(context: Context) {
         Timber.d("fetchRecentApps()")
 
-        val constants = Constants(context)
-
         // Setup last 3 features added
-        val mWhatsNewApps = constants
-            .getActivityList()
+        val mWhatsNewApps = Constants
+            .getActivityList(context)
             .sortedByDescending { (it as LocalApp).appDate }
             .take(3)
 
@@ -228,6 +230,7 @@ class MainActivityViewModel @Inject constructor(
                     Timber.e("Cannot launch this activity : %s", item.toString())
                 }
             }
+
             else -> {
                 Timber.e("else branch")
             }

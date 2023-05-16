@@ -86,8 +86,10 @@ class DownloadActivity
                     Timber.d("${it.error}")
                     showDownloadError("Error ! Download Failed")
                 }
+
                 is Download.Finished -> { // Ignored
                 }
+
                 is Download.Progress -> { // Ignored
                 }
             }

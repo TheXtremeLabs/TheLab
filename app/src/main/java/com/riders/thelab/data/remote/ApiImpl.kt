@@ -9,7 +9,12 @@ import com.google.firebase.storage.StorageReference
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.data.local.model.Download
 import com.riders.thelab.data.local.model.Video
-import com.riders.thelab.data.remote.api.*
+import com.riders.thelab.data.remote.api.ArtistsAPIService
+import com.riders.thelab.data.remote.api.GoogleAPIService
+import com.riders.thelab.data.remote.api.TheLabBackApiService
+import com.riders.thelab.data.remote.api.WeatherApiService
+import com.riders.thelab.data.remote.api.WeatherBulkApiService
+import com.riders.thelab.data.remote.api.YoutubeApiService
 import com.riders.thelab.data.remote.dto.ApiResponse
 import com.riders.thelab.data.remote.dto.UserDto
 import com.riders.thelab.data.remote.dto.artist.Artist
@@ -159,10 +164,12 @@ class ApiImpl @Inject constructor(
                             emit(Download.Done(true))
                             throw Exception("missing bytes")
                         }
+
                         progressBytes > totalBytes -> {
                             emit(Download.Done(true))
                             throw Exception("too many bytes")
                         }
+
                         else ->
                             deleteFile = false
                     }
