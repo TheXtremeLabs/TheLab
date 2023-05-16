@@ -2,6 +2,11 @@ package com.riders.thelab.ui.weather
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.location.Location
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -14,13 +19,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.WorkInfo
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -31,7 +32,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
 import com.riders.thelab.core.bus.KotlinBus
 import com.riders.thelab.core.bus.Listen
-import com.riders.thelab.core.bus.LocationFetchedEvent
+import com.riders.thelab.core.bus.LocationProviderChangedEvent
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.utils.*
 import com.riders.thelab.data.local.bean.SnackBarType
@@ -48,6 +49,17 @@ class WeatherActivity : BaseActivity() {
     private val mWeatherViewModel: WeatherViewModel by viewModels()
 
     private var labLocationManager: LabLocationManager? = null
+
+    private val mGpsSwitchStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent?) {
+
+            if (intent?.action != null && intent.action?.equals("android.location.LocationManager.PROVIDERS_CHANGED_ACTION") == true) {
+                // Make an action or refresh an already managed state.
+                Timber.d("CHANGED");
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.d("onCreate()")
@@ -67,7 +79,7 @@ class WeatherActivity : BaseActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            WeatherContent(mWeatherViewModel)
+                            WeatherContent(mWeatherViewModel, labLocationManager!!)
                         }
                     }
                 }
@@ -78,12 +90,25 @@ class WeatherActivity : BaseActivity() {
     override fun onPause() {
         Timber.d("onPause()")
         super.onPause()
+
+        unregisterReceiver(mGpsSwitchStateReceiver)
     }
 
-    override fun onResume() {
+    public override fun onResume() {
         super.onResume()
         Timber.d("onResume()")
-        mWeatherViewModel.fetchCities(this)
+
+        registerReceiver(
+            mGpsSwitchStateReceiver,
+            IntentFilter("android.location.LocationManager.PROVIDERS_CHANGED_ACTION")
+        )
+
+        if (null == labLocationManager || !labLocationManager!!.canGetLocation()) {
+            mWeatherViewModel.updateUIState(WeatherUIState.Error())
+            return
+        }
+
+        mWeatherViewModel.fetchCities(this@WeatherActivity)
     }
 
     override fun onDestroy() {
@@ -97,19 +122,24 @@ class WeatherActivity : BaseActivity() {
     //
     /////////////////////////////////////
     @Listen
-    fun onLocationFetchedEventResult() {
-        Timber.e("onLocationFetchedEventResult()")
+    fun onLocationProviderChanged() {
+        Timber.e("onLocationProviderChanged()")
         lifecycleScope.launch {
-            KotlinBus.getInstance().subscribe<LocationFetchedEvent> {
-                Timber.e(
-                    "onLocationFetchedEvent() | ${it.location.latitude}, ${it.location.longitude}"
-                )
+            KotlinBus.getInstance().subscribe<LocationProviderChangedEvent> {
+                Timber.e("onLocationProviderChanged() | $it")
 
-                mWeatherViewModel.updateUIState(WeatherUIState.SuccessWeatherData(true))
+                /*if (!it) {
 
-                mWeatherViewModel.fetchWeather(
-                    it.location.run { latitude to longitude }.toLocation()
-                )
+                } else {
+
+                    val location: Location =
+                        labLocationManager?.getCurrentLocation() ?: return@subscribe
+
+                    mWeatherViewModel.updateUIState(WeatherUIState.SuccessWeatherData(true))
+                    mWeatherViewModel.fetchWeather(
+                        location.run { location.latitude to location.longitude }.toLocation()
+                    )
+                }*/
             }
         }
     }
@@ -164,32 +194,14 @@ class WeatherActivity : BaseActivity() {
     fun initViewModelObservers() {
         Timber.d("initViewModelObservers()")
 
-        mWeatherViewModel.getIsWeatherData().observe(this) {
-            if (!it) {
-                mWeatherViewModel.startWork(this)
-            } else {
-//                binding.tvDownloadStatus.visibility = View.GONE
-//                binding.weatherDataContainer.visibility = View.VISIBLE
-            }
-        }
-
         mWeatherViewModel.getWorkerStatus().observe(this) {
-
             when (it) {
                 WorkInfo.State.SUCCEEDED -> {
-//                    binding.progressBar.visibility = View.GONE
-//                    binding.weatherDataContainer.visibility = View.VISIBLE
+                    Timber.d("Succeed")
                 }
 
                 WorkInfo.State.FAILED -> {
-//                    binding.progressBar.isIndeterminate = false
-//                    binding.progressBar.setProgress(100, true)
-//                    binding.progressBar.setIndicatorColor(
-//                        ContextCompat.getColor(
-//                            this@WeatherActivity,
-//                            R.color.error
-//                        )
-//                    )
+                    Timber.e("Failed")
                 }
 
                 else -> {
@@ -215,59 +227,5 @@ class WeatherActivity : BaseActivity() {
                 SnackBarType.ALERT,
                 getString(R.string.action_ok)
             ) { }
-    }
-
-
-    private fun buildChart(hourlyWeather: List<CurrentWeather>) {
-        Timber.d("buildChart()")
-
-        // in this example, a LineChart is initialized from xml
-        val chart = this@WeatherActivity.findViewById<LineChart>(R.id.weather_hourly_chart)
-        val whiteColor = ContextCompat.getColor(this@WeatherActivity, R.color.white)
-
-        // Styling
-        WeatherUtils.stylingChartGrid(chart, whiteColor)
-
-        val temperatureForNextHours =
-            WeatherUtils.getWeatherTemperaturesForNextHours(hourlyWeather)
-        val integers = HashMap<Float, Float>()
-
-        for (i in temperatureForNextHours.indices) {
-            integers[i.toFloat()] = temperatureForNextHours[i]
-        }
-
-        val entries: MutableList<Entry> = ArrayList()
-        for ((key, value) in integers) {
-            // turn your data into Entry objects
-            entries.add(Entry(key, value))
-        }
-
-        val dataSet = LineDataSet(entries, "Label") // add entries to dataset
-        dataSet.color = whiteColor
-        dataSet.valueTextSize = 12f
-        dataSet.valueFormatter = object : ValueFormatter() {
-            override fun getPointLabel(entry: Entry): String {
-                return "${entry.y.toInt()}" + getString(R.string.degree_placeholder)
-            }
-        }
-        dataSet.valueTextColor = whiteColor
-        dataSet.getValueTextColor(whiteColor)
-
-        // the labels that should be drawn on the XAxis
-        val quarters = WeatherUtils.getWeatherTemperaturesQuarters(hourlyWeather)
-        Timber.d("quarters value : %d", quarters.size)
-
-        val formatter: ValueFormatter = object : ValueFormatter() {
-            override fun getAxisLabel(value: Float, axis: AxisBase): String {
-                return quarters[value.toInt()]
-            }
-        }
-        val xAxis = chart.xAxis
-        xAxis.granularity = 1f // minimum axis-step (interval) is 1
-        xAxis.valueFormatter = if (quarters.size > 1) formatter else DefaultAxisValueFormatter(3)
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        val lineData = LineData(dataSet)
-        chart.data = lineData
-        chart.invalidate() // refresh
     }
 }

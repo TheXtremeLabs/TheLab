@@ -333,13 +333,8 @@
             android:label="@string/activity_title_weather"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab">
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable_weather" />
-
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.location.LocationManager.PROVIDERS_CHANGED_ACTION" />
             </intent-filter>
         </activity>
 

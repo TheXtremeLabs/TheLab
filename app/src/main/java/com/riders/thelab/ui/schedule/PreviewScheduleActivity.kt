@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
@@ -47,7 +48,9 @@ import com.riders.thelab.data.local.model.compose.ScheduleJobAlarmUiState
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
+    ExperimentalLifecycleComposeApi::class
+)
 @Composable
 fun ScheduleContent(viewModel: ScheduleViewModel) {
     val scope = rememberCoroutineScope()

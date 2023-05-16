@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
@@ -24,7 +25,7 @@ import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.data.local.model.compose.ArtistsUiState
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
 @Composable
 fun RecyclerViewContent(viewModel: RecyclerViewModel) {
 

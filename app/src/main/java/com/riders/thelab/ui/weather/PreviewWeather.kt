@@ -1,11 +1,17 @@
 package com.riders.thelab.ui.weather
 
 import android.location.Address
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.GpsFixed
+import androidx.compose.material.icons.filled.GpsOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +29,9 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -43,7 +54,10 @@ import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.compose.ui.theme.Typography
+import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
+import com.riders.thelab.core.compose.ui.theme.md_theme_light_primary
 import com.riders.thelab.core.compose.utils.findActivity
+import com.riders.thelab.core.utils.LabLocationManager
 import com.riders.thelab.core.utils.toLocation
 import com.riders.thelab.data.local.bean.WindDirection
 import com.riders.thelab.data.local.model.compose.WeatherCityUIState
@@ -120,7 +134,7 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
                     modifier = Modifier
                         .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
                 ) {
-                    viewModel.suggestions.take(10).forEachIndexed { index, city ->
+                    viewModel.suggestions.take(10).forEachIndexed { _, city ->
 
                         val countryURL: String =
                             (Constants.BASE_ENDPOINT_WEATHER_FLAG
@@ -179,11 +193,11 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
     }
 }
 
+@OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun WeatherData(viewModel: WeatherViewModel) {
 
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
 
     val cityUIState by viewModel.weatherCityUiState.collectAsStateWithLifecycle()
 
@@ -209,7 +223,6 @@ fun WeatherData(viewModel: WeatherViewModel) {
                 .build(),
             placeholder = painterResource(R.drawable.logo_colors),
         )
-        val state = painter.state
 
         val address: Address =
             viewModel.getCityNameWithCoordinates(
@@ -229,39 +242,6 @@ fun WeatherData(viewModel: WeatherViewModel) {
                     R.string.degree_placeholder
                 )
             }"
-
-        val realFeels =
-            "${weather.currentWeather.feelsLike.roundToInt()} ${
-                (context.findActivity() as WeatherActivity).resources.getString(
-                    R.string.degree_placeholder
-                )
-            }"
-
-        val sunset =
-            DateTimeUtils.formatMillisToTimeHoursMinutes(
-                weather.timezone!!,
-                weather.currentWeather.sunset
-            )
-
-        // Build chart with hourly weather data
-        // buildChart(hourlyWeather)
-
-        val cloudiness: String = weather.currentWeather.clouds
-            .toString() + " " + (context.findActivity() as WeatherActivity).resources.getString(R.string.percent_placeholder)
-
-        val humidity: String = weather.currentWeather.humidity
-            .toString() + " " + (context.findActivity() as WeatherActivity).resources.getString(R.string.percent_placeholder)
-
-        val pressure: String = weather.currentWeather.pressure
-            .toString() + " " + (context.findActivity() as WeatherActivity).resources.getString(R.string.pressure_unit_placeholder)
-
-        // Wind
-        val wind: String =
-            (weather.currentWeather.windSpeed.toString() + " "
-                    + (context.findActivity() as WeatherActivity).resources.getString(R.string.meter_unit_placeholder))
-        val windDirection: WindDirection = WindDirection.getWindDirectionToTextualDescription(
-            weather.currentWeather.windDegree
-        )
 
         weather.hourlyWeather?.let { viewModel.getMaxMinTemperature(it) }
 
@@ -315,7 +295,8 @@ fun WeatherData(viewModel: WeatherViewModel) {
                             // Temperature row container
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Column(modifier = Modifier) {
                                     // current temperature
@@ -343,12 +324,17 @@ fun WeatherData(viewModel: WeatherViewModel) {
                                         )
                                     }
                                 }
+
+                                Button(onClick = { viewModel.updateMoreDataVisibility() }) {
+                                    AnimatedContent(targetState = viewModel.isWeatherMoreDataVisible) {
+                                        Text(text = if (!viewModel.isWeatherMoreDataVisible) "Show More" else "Close Panel")
+                                    }
+                                }
                             }
 
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = "Weather trends for the next 5 days"
-                            )
+                            AnimatedVisibility(visible = viewModel.isWeatherMoreDataVisible) {
+                                WeatherMoreData(weather)
+                            }
 
                             // Forecast
                             WeatherDailyForecast(
@@ -379,13 +365,177 @@ fun WeatherData(viewModel: WeatherViewModel) {
 }
 
 @Composable
+fun WeatherMoreData(weather: OneCallWeatherResponse) {
+    val context = LocalContext.current
+    val gridState = rememberLazyGridState()
+
+    val realFeels =
+        "${weather.currentWeather?.feelsLike?.roundToInt()} ${
+            (context.findActivity() as WeatherActivity).resources.getString(
+                R.string.degree_placeholder
+            )
+        }"
+
+    val cloudiness: String = "${weather.currentWeather?.clouds.toString()} ${
+        (context.findActivity() as WeatherActivity).resources.getString(R.string.percent_placeholder)
+    }"
+
+    val humidity: String = "${weather.currentWeather?.humidity.toString()} ${
+        (context.findActivity() as WeatherActivity).resources.getString(R.string.percent_placeholder)
+    }"
+
+    val pressure: String = "${weather.currentWeather?.pressure.toString()} ${
+        (context.findActivity() as WeatherActivity).resources.getString(R.string.pressure_unit_placeholder)
+    }"
+
+    // Wind
+    val wind: String = "${weather.currentWeather?.windSpeed.toString()} ${
+        (context.findActivity() as WeatherActivity).resources.getString(R.string.meter_unit_placeholder)
+    }"
+
+    val windDirection: WindDirection =
+        WindDirection.getWindDirectionToTextualDescription(weather.currentWeather?.windDegree!!)
+
+    // Build chart with hourly weather data
+    // buildChart(hourlyWeather)
+
+    TheLabTheme {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+            ) {
+                Text(text = "Real Feels")
+                Text(text = realFeels, fontWeight = FontWeight.ExtraBold)
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(
+                        8.dp,
+                        Alignment.CenterVertically
+                    )
+                ) {
+                    Image(
+                        modifier = Modifier.size(36.dp),
+                        painter = painterResource(id = R.drawable.ic_sunrise),
+                        contentDescription = "sunrise icon",
+                        colorFilter = ColorFilter.tint(
+                            color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
+                            blendMode = BlendMode.SrcIn
+                        )
+                    )
+                    Text(
+                        text = DateTimeUtils.formatMillisToTimeHoursMinutes(
+                            weather.timezone!!,
+                            weather.currentWeather.sunrise
+                        )
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(
+                        8.dp,
+                        Alignment.CenterVertically
+                    )
+                ) {
+                    Image(
+                        modifier = Modifier.size(36.dp),
+                        painter = painterResource(id = R.drawable.ic_sunset),
+                        contentDescription = "sunset icon",
+                        colorFilter = ColorFilter.tint(
+                            color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
+                            blendMode = BlendMode.SrcIn
+                        )
+                    )
+
+                    Text(
+                        text = DateTimeUtils.formatMillisToTimeHoursMinutes(
+                            weather.timezone!!,
+                            weather.currentWeather.sunset
+                        )
+                    )
+                }
+            }
+
+            LazyVerticalGrid(
+                modifier = Modifier.fillMaxWidth(),
+                state = gridState,
+                columns = GridCells.Fixed(2),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item {
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_cloud),
+                            contentDescription = "cloud icon"
+                        )
+                        Text(text = "Cloudiness: $cloudiness")
+                    }
+                }
+                item {
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_pressure),
+                            contentDescription = "pressure icon"
+                        )
+                        Text(text = "Pressure: $pressure")
+                    }
+                }
+                item {
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_wind),
+                            contentDescription = "wind icon"
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(text = "Wind: $wind")
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                painter = painterResource(id = windDirection.icon),
+                                contentDescription = "wind direction icon"
+                            )
+                        }
+                    }
+                }
+                item {
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_humidity),
+                            contentDescription = "humidity icon"
+                        )
+                        Text(text = "humidity: $humidity")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun WeatherDailyForecast(viewModel: WeatherViewModel, dailyWeatherList: List<DailyWeather>) {
     val listState = rememberLazyListState()
 
     TheLabTheme {
-        Card(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Weather trends for the next 5 days"
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary)
+        ) {
             LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 state = listState,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -454,6 +604,8 @@ fun WeatherDailyForecast(viewModel: WeatherViewModel, dailyWeatherList: List<Dai
 @Composable
 fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
 
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val composition by
     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.error_rolling_dark_theme))
     val progress by animateLottieCompositionAsState(
@@ -480,7 +632,10 @@ fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
 
                 Text("Error while getting weather for your location")
 
-                Button(onClick = { viewModel.retry() }) {
+                Button(onClick = {
+                    viewModel.retry()
+                    (context.findActivity() as WeatherActivity).onResume()
+                }) {
                     Text("Retry")
                 }
             }
@@ -488,9 +643,9 @@ fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
 @Composable
-fun WeatherContent(viewModel: WeatherViewModel) {
+fun WeatherContent(viewModel: WeatherViewModel, labLocationManager: LabLocationManager) {
 
     val context = LocalContext.current
     val weatherUIState by viewModel.weatherUiState.collectAsStateWithLifecycle()
@@ -501,8 +656,13 @@ fun WeatherContent(viewModel: WeatherViewModel) {
             topBar = {
                 TheLabTopAppBar(
                     title = stringResource(id = R.string.activity_title_weather),
-                    Icons.Filled.GpsFixed
-                ) { (context.findActivity() as WeatherActivity).fetchCurrentLocation() }
+                    if (!labLocationManager.canGetLocation()) Icons.Filled.GpsOff else Icons.Filled.GpsFixed,
+                    if (!labLocationManager.canGetLocation()) {
+                        { Timber.e("Unable to perform action due to location feature unavailable") }
+                    } else {
+                        { (context.findActivity() as WeatherActivity).fetchCurrentLocation() }
+                    }
+                )
             }
         ) { contentPadding ->
             Box(
@@ -545,9 +705,11 @@ fun WeatherContent(viewModel: WeatherViewModel) {
 @DevicePreviews
 @Composable
 fun PreviewWeatherContent() {
+    val context = LocalContext.current
     val viewModel: WeatherViewModel = hiltViewModel()
+    val labLocationManager = LabLocationManager(context)
     TheLabTheme {
-        WeatherContent(viewModel = viewModel)
+        WeatherContent(viewModel = viewModel, labLocationManager = labLocationManager)
     }
 }
 
@@ -556,6 +718,8 @@ fun PreviewWeatherContent() {
 fun PreviewWeatherSuccess() {
     val viewModel: WeatherViewModel = hiltViewModel()
     viewModel.updateUIState(SuccessWeatherData(true))
+    viewModel.updateWeatherCityUIState(WeatherCityUIState.Success(OneCallWeatherResponse.getMockResponse()))
+
     TheLabTheme {
         WeatherSuccess(viewModel = viewModel)
     }
@@ -570,6 +734,24 @@ fun PreviewWeatherData() {
     TheLabTheme {
         WeatherData(viewModel = viewModel)
     }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewWeatherMoreData() {
+    TheLabTheme {
+        WeatherMoreData(OneCallWeatherResponse.getMockResponse())
+    }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewWeatherDailyForecast() {
+    val viewModel: WeatherViewModel = hiltViewModel()
+    TheLabTheme {
+        WeatherDailyForecast(viewModel, listOf())
+    }
+
 }
 
 @DevicePreviews

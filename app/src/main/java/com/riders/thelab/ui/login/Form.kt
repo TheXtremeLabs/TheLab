@@ -27,13 +27,14 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.data.local.model.compose.WindowSizeClass
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
 @Composable
 fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
     TheLabTheme {
