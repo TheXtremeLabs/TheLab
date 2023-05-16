@@ -54,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
@@ -66,7 +67,9 @@ import com.riders.thelab.data.local.model.compose.IslandState
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
+    ExperimentalLifecycleComposeApi::class
+)
 @Composable
 fun MainContent(viewModel: MainActivityViewModel) {
 

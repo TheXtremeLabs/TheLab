@@ -10,11 +10,6 @@ buildscript {
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
     }
-
-    //dependencies {
-        // Google Services
-        //classpath(BuildPlugins.playServices)
-    //}
 }
 
 @Suppress("DSL_SCOPE_VIOLATION")

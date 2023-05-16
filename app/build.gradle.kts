@@ -111,48 +111,53 @@ dependencies {
     /////////////////////////////
     //Kotlin
     implementation(libs.kotlin.reflect)
-    implementation(KotlinDependencies.coroutinesCore)
-    implementation(KotlinDependencies.coroutinesAndroid)
-    implementation(KotlinDependencies.kotlinParcelize)
-    implementation(KotlinDependencies.kotlinSerialization)
-    implementation(KotlinDependencies.kotlinPlaySevices)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlin.parcelize)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.play.services)
 
     // AndroidX
-    implementation(Dependencies.multiDex)
-    implementation(Dependencies.coreKtx)
-    implementation(Dependencies.activityKtx)
-    implementation(Dependencies.fragmentKtx)
-    implementation(Dependencies.appcompat)
-    implementation(Dependencies.material)
-    implementation(Dependencies.palette)
-    implementation(Dependencies.constraintLayout)
-    implementation(Dependencies.cardView)
-    implementation(Dependencies.recyclerView)
-    implementation(Dependencies.springForce)
-    implementation(Dependencies.viewPager2)
-    implementation(Dependencies.window)
+    implementation(libs.androidx.multidex)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.cardview)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.palette)
+    implementation(libs.androidx.recyclerView)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.dynamicanimation)
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.androidx.window.manager)
+    implementation(libs.androidx.window.extensions)
 
     // Compose
-    implementation(platform(Dependencies.composeBom))
-    implementation(Dependencies.composeCompiler)
-    implementation(Dependencies.composeRuntime)
-    implementation(Dependencies.composeRuntimeLiveData)
-    implementation(Dependencies.composeMaterial)
-    implementation(Dependencies.composeMaterial3)
-    implementation(Dependencies.composeFoundation)
-    implementation(Dependencies.composeUi)
-    implementation(Dependencies.composeAnimation)
-    debugImplementation(Dependencies.composeUiTooling)
-    implementation(Dependencies.composeUiToolingPreview)
-    implementation(Dependencies.composeMaterialIcons)
-    implementation(Dependencies.composeMaterialIconsExtended)
-    implementation(Dependencies.composeMaterialWindowSizeClass)
-    implementation(Dependencies.composeFonts)
-    implementation(Dependencies.composeActivity)
-    implementation(Dependencies.composeLifecycleRuntime)
-    implementation(Dependencies.composeLifecycleViewModel)
-    implementation(Dependencies.composeLiveData)
-    implementation(Dependencies.composeNavigation)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.compiler)
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.runtime.livedata)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.animation)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.ui.util)
+    implementation(libs.androidx.compose.material.icons)
+    implementation(libs.androidx.compose.material.iconsExtended)
+    implementation(libs.androidx.compose.material3.windowSizeClass)
+    implementation(libs.androidx.compose.fonts)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.androidx.lifecycle.viewModelCompose)
+    implementation(libs.androidx.compose.runtime.livedata)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Coil
     implementation(libs.coil.kt)
@@ -160,47 +165,49 @@ dependencies {
     implementation(libs.coil.kt.svg)
 
     // Navigation
-    implementation(Dependencies.navigationKTX)
-    implementation(Dependencies.navigationFragmentKTX)
+    implementation(libs.androidx.navigation.ktx)
+    implementation(libs.androidx.navigation.fragment)
 
     // CameraX
-    implementation(Dependencies.camera2)
-    implementation(Dependencies.cameraLifecyle)
-    implementation(Dependencies.cameraView)
-    implementation(Dependencies.cameraExtensions)
+    implementation(libs.androidx.camera)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.extensions)
 
     // Media
-    implementation(Dependencies.media)
-    implementation(Dependencies.mediaRouter)
-    implementation(Dependencies.media3exoPlayer)
-    implementation(Dependencies.media3UI)
+    implementation(libs.androidx.media)
+    implementation(libs.androidx.media.router)
+    implementation(libs.androidx.media.exoplayer)
+    implementation(libs.androidx.media.ui)
 
     // Auto fill
-    implementation(Dependencies.autoFill)
+    implementation(libs.androidx.autofill)
 
     // Room
-    implementation(Dependencies.roomKtx)
-    implementation(Dependencies.roomRuntime)
-    kapt(Dependencies.roomCompiler)
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
+    kapt(libs.room.compiler)
+    androidTestImplementation(libs.room.testing)
 
     // Worker & concurrent
-    implementation(Dependencies.workerRuntime)
-    implementation(Dependencies.workerMultiprocess)
-    implementation(Dependencies.concurrent)
+    implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.work.multiprocess)
+    implementation(libs.androidx.concurrent)
+    androidTestImplementation(libs.androidx.work.testing)
 
     // Lifecycle
-    implementation(Dependencies.lifecycleRuntime)
-    implementation(Dependencies.lifecycleViewModel)
-    implementation(Dependencies.lifecycleLiveData)
-    implementation(Dependencies.lifecycleViewModelSavedState)
-    kapt(Dependencies.lifecycleCompiler)
-    implementation(Dependencies.lifecycleService)
-    implementation(Dependencies.lifecycleProcess)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewModel.ktx)
+    implementation(libs.androidx.lifecycle.viewModel.savedState)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    kapt(libs.androidx.lifecycle.compiler)
+    implementation(libs.androidx.lifecycle.service)
+    implementation(libs.androidx.lifecycle.process)
 
     // Datastore and Preferences
-    implementation(Dependencies.datastore)
-    implementation(Dependencies.datastorePreferences)
-    implementation(Dependencies.preferences)
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.preferences)
 
     /* Hilt - We are going to use hilt.android which includes
      * support for Activity and fragment injection so we need to include
@@ -208,74 +215,74 @@ dependencies {
     // Hilt
     //implementation(Dependencies.hilt)
     //kapt(Dependencies.hiltCompiler)
-    kapt(Dependencies.hiltAndroidXCompiler)
-    implementation(Dependencies.hiltWork)
-    kapt(Dependencies.hiltKaptAndroidXCompiler)
-    implementation(Dependencies.hiltComposeNavigation)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.ext.work)
+    kapt(libs.hilt.ext.compiler)
 
     // Google Location (Maps / Places)
-    implementation(Dependencies.maps)
-    implementation(Dependencies.mapsUtils)
-    implementation(Dependencies.location)
-    implementation(Dependencies.places)
+    implementation(libs.maps)
+    implementation(libs.maps.utils)
+    implementation(libs.location)
+    implementation(libs.places)
 
     // Google API
-    implementation(Dependencies.googleBasePlayServices)
-    implementation(Dependencies.googleAPIClientJackson2)
-    implementation(Dependencies.googleHttpClient)
-    implementation(Dependencies.googleAPIClient)
-    implementation(Dependencies.googleAPIClientAndroid)
+    implementation(libs.google.play.services.base)
+    implementation(libs.google.play.services.auth)
+    implementation(libs.google.api.drive)
+    implementation(libs.google.http.client)
+    implementation(libs.google.api.client)
+    implementation(libs.google.api.client.android)
     // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty
-    implementation(Dependencies.googleAPIClientOAuthJetty)
+    implementation(libs.google.api.client.jetty)
     // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-java6
-    implementation(Dependencies.googleAPIClientOAuthJava6)
-    implementation(Dependencies.googleAPIDrive)
-    implementation(Dependencies.playServicesAuth)
+    implementation(libs.google.api.client.oauth.java6)
+    implementation(libs.google.api.client.oauth.jackson2)
 
     // Google ML Kit
-    implementation(Dependencies.barcodeScanningML)
-    implementation(Dependencies.objectDetectionML)
-    implementation(Dependencies.objectDetectionCustomML)
+    implementation(libs.google.barcode.scanning)
+    implementation(libs.google.objectdetection)
+    implementation(libs.google.objectdetection.custom)
 
     // Firebase
-    implementation(platform(Dependencies.firebasePlatform))
-    implementation(Dependencies.firebaseAnalytics)
-    implementation(Dependencies.firebaseAuth)
-    implementation(Dependencies.firebaseCrashlytics)
-    implementation(Dependencies.firebaseMessaging)
-    implementation(Dependencies.firebasePerf)
-    implementation(Dependencies.firebaseCloudStorage)
-    implementation(Dependencies.firebaseDatabase)
-    implementation(Dependencies.firebaseAds)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.ads)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.perf)
+    implementation(libs.firebase.storage)
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
-    implementation(Dependencies.retrofit)
-    implementation(Dependencies.retrofitConverterMoshi)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.moshi)
+    implementation(libs.retrofit.kotlin.serialization)
 
     // OkHttp
     // define a BOM and its version
-    implementation(platform(Dependencies.okHttpBom))
+    implementation(platform(libs.okhttp.bom))
     // define any required OkHttp artifacts without version
-    implementation(Dependencies.okHttp)
-    implementation(Dependencies.okHttpLogging)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
 
     // Moshi
-    implementation(Dependencies.moshi)
-    implementation(Dependencies.moshiKotlin)
-    kapt(Dependencies.moshiKotlinCodeGen)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    kapt(libs.moshi.kotlin.codegen)
 
     // MPAndroidChart
-    implementation(Dependencies.androidChart)
+    implementation(libs.mpandroidchart)
 
     // Dexter
-    implementation(Dependencies.dexter)
+    implementation(libs.dexter)
 
     // Glide
-    implementation(Dependencies.glide)
-    kapt(Dependencies.glideAnnotation)
-    implementation(Dependencies.blurry)
-    implementation(Dependencies.glideTransformation)
-    implementation("com.github.skydoves:landscapist-glide:2.1.1")
+    implementation(libs.glide)
+    kapt(libs.glide.compiler)
+    implementation(libs.glide.blurry)
+    implementation(libs.glide.transformation)
+    implementation(libs.glide.landscapist)
 
     // Lottie
     implementation(libs.lottie)
@@ -291,19 +298,17 @@ dependencies {
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////
-    testImplementation(TestsDependencies.junit)
-    androidTestImplementation(TestsDependencies.testExtJUnit)
-    androidTestImplementation(TestsDependencies.espressoCore)
-    androidTestImplementation(TestsDependencies.mockitoCore)
-    androidTestImplementation(TestsDependencies.mockitoAndroid)
+    testImplementation(libs.junit4)
+    androidTestImplementation(libs.androidx.test.ext)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.mockito)
+    androidTestImplementation(libs.mockito.android)
 
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.3.3")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.3")
+    androidTestImplementation(libs.androidx.compose.ui.test)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.testManifest)
 
-    androidTestImplementation(TestsDependencies.workerTest)
-
-    androidTestImplementation(TestsDependencies.hiltAndroidTesting)
-    kaptAndroidTest(TestsDependencies.hiltKaptAndroidCompiler)
-    kaptAndroidTest(TestsDependencies.hiltKaptCompiler)
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.compiler)
+    kaptAndroidTest(libs.hilt.ext.compiler)
 }

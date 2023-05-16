@@ -1,7 +1,6 @@
 package com.riders.thelab.ui.weather
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.database.Cursor
 import android.location.Address
 import android.location.Geocoder
@@ -55,7 +54,7 @@ class WeatherViewModel @Inject constructor(
     var searchText by mutableStateOf("")
 
     var expanded by mutableStateOf(false)
-    var isWeatherDataVisible by mutableStateOf(false)
+    var isWeatherMoreDataVisible by mutableStateOf(false)
 
     // Suggestions for search
     var suggestions by mutableStateOf(emptyList<CityModel>())
@@ -67,8 +66,6 @@ class WeatherViewModel @Inject constructor(
         private set
 
     fun updateSearchText(searchQuery: String) {
-        if (isWeatherDataVisible) isWeatherDataVisible = !isWeatherDataVisible
-
         searchText = searchQuery
 
         if (2 <= searchText.length) {
@@ -85,6 +82,10 @@ class WeatherViewModel @Inject constructor(
 
     fun updateCityMinTemp(newTemperature: Double) {
         cityMinTemp = "${newTemperature.toInt()}"
+    }
+
+    fun updateMoreDataVisibility() {
+        isWeatherMoreDataVisible = !isWeatherMoreDataVisible
     }
 
 
@@ -188,14 +189,6 @@ class WeatherViewModel @Inject constructor(
         ).show()*/
     }
 
-    private fun showLoader() {
-        progressVisibility.value = true
-    }
-
-    private fun hideLoader() {
-        progressVisibility.value = false
-    }
-
     fun retry() {
         Timber.d("Retrying...")
         updateUIState(WeatherUIState.Loading)
@@ -213,15 +206,13 @@ class WeatherViewModel @Inject constructor(
         )
     }
 
-    fun fetchCities(context: Context) {
+    fun fetchCities(activity: WeatherActivity) {
         Timber.d("fetchCities()")
-        if (!LabNetworkManagerNewAPI.getInstance(context).isOnline()) {
-            hideLoader()
-            connectionStatus.value = false
+        if (!LabNetworkManagerNewAPI.getInstance(activity).isOnline()) {
+            updateUIState(WeatherUIState.Error())
             return
         } else {
-
-            showLoader()
+            updateUIState(WeatherUIState.Loading)
 
             viewModelScope.launch(IO + coroutineExceptionHandler) {
                 try {
@@ -239,13 +230,13 @@ class WeatherViewModel @Inject constructor(
                         // Only for debug purposes
                         // Use worker to make long job operation in background
                         Timber.e("Use worker to make long job operation in background...")
-                        withContext(Main) { isWeatherData.value = false }
+
+                        startWork(activity)
                     } else {
                         // In this case data already exists in database
                         // Load data then let the the user perform his request
                         Timber.d("Record found in database. Continue...")
                         withContext(Main) {
-                            hideLoader()
                             isWeatherData.value = true
                             updateUIState(WeatherUIState.SuccessWeatherData(true))
                         }
@@ -274,18 +265,16 @@ class WeatherViewModel @Inject constructor(
                     val weatherResponse = repositoryImpl.getWeatherOneCallAPI(location)
 
                     withContext(Main) {
-                        hideLoader()
                         weatherResponse?.let {
                             oneCallWeather.value = it
                             updateWeatherCityUIState(WeatherCityUIState.Success(it))
-                            isWeatherDataVisible = true
                         }
                     }
                 }
             } catch (throwable: Exception) {
                 Timber.e(throwable)
                 withContext(Main) {
-                    hideLoader()
+                    updateUIState(WeatherUIState.Error())
                 }
             }
         }
@@ -374,9 +363,7 @@ class WeatherViewModel @Inject constructor(
         WorkManager
             .getInstance(activity)
             .getWorkInfoByIdLiveData(workerId)
-            .observe(
-                activity
-            ) { workInfos: WorkInfo ->
+            .observe(activity) { workInfos: WorkInfo ->
                 when (workInfos.state) {
                     WorkInfo.State.ENQUEUED -> Timber.d("Worker ENQUEUED")
                     WorkInfo.State.RUNNING -> {
@@ -393,7 +380,6 @@ class WeatherViewModel @Inject constructor(
                             repositoryImpl.insertWeatherData(WeatherData(true))
                         }
 
-                        hideLoader()
                         downloadDone.value = true
                         downloadStatus.value = "Loading finished"
                         workerStatus.value = WorkInfo.State.SUCCEEDED

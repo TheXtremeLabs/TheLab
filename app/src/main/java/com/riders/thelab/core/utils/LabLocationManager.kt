@@ -15,6 +15,8 @@ import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.riders.thelab.core.bus.LocationFetchedEvent
+import com.riders.thelab.core.bus.LocationProviderChangedEvent
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -43,7 +45,7 @@ class LabLocationManager constructor(
     var isNetworkEnabled = false
 
     // flag for GPS status
-    var canGetLocation = false
+    private var canGetLocation = false
 
     // location
     var location: Location? = null
@@ -76,12 +78,20 @@ class LabLocationManager constructor(
         Timber.d("onStatusChanged : $provider, $status")
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onProviderDisabled(provider: String) {
-        Timber.e("onProviderDisabled")
+        Timber.e("onProviderDisabled() | provider: $provider")
+        /*GlobalScope.launch {
+            LocationProviderChangedEvent().triggerEvent(false)
+        }*/
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onProviderEnabled(provider: String) {
-        Timber.d("onProviderEnabled")
+        Timber.d("onProviderEnabled() | provider: $provider")
+        /*GlobalScope.launch {
+            LocationProviderChangedEvent().triggerEvent(true)
+        }*/
     }
 
     fun setLocationListener() {
@@ -122,39 +132,6 @@ class LabLocationManager constructor(
 
                 // return location object
                 return this.location
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-        }
-    }
-
-    fun getLocationCallback(): Location? {
-        return if (!canGetLocation()) {
-            // no network provider is enabled
-            Timber.e("no network provider is enabled")
-            null
-        } else {
-
-            try {
-                // if Network Enabled get lat/long using Network
-                if (isNetworkEnabled) {
-                    getLocationViaNetwork()
-                }
-
-                this.location
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-            try {
-                // if GPS Enabled get lat/long using GPS Services
-                if (isGPSEnabled) {
-                    getLocationViaGPS()
-                }
-
-                this.location
-
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
@@ -217,26 +194,6 @@ class LabLocationManager constructor(
      */
     fun stopUsingGPS() {
         locationManager.removeUpdates(this@LabLocationManager)
-    }
-
-    /**
-     * Function to get latitude
-     */
-    @JvmName("getLatitude1")
-    fun getLatitude(): Double {
-        latitude = this.location?.latitude!!
-
-        return latitude
-    }
-
-    /**
-     * Function to get longitude
-     */
-    @JvmName("getLongitude1")
-    fun getLongitude(): Double {
-        longitude = this.location?.longitude!!
-
-        return longitude
     }
 
     /**
