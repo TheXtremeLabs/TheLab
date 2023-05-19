@@ -106,18 +106,13 @@ fun ScheduleContent(viewModel: ScheduleViewModel) {
                         onClick = {
                             Timber.d("Start Count Down clicked")
 
-                            viewModel.countDownQuery.isNotBlank().let {
-                                if (it) {
-                                    viewModel.startAlert(activity, viewModel.countDownQuery)
-                                } else {
-                                    UIManager.showCustomToast(
-                                        activity,
-                                        ToastTypeEnum.WARNING,
-                                        "Field cannot be empty. Please enter a valid number"
-                                    )
-                                }
-                            }
-
+                            viewModel.countDownQuery.takeIf { it.isNotBlank() } // peut être convertit en référence
+                                ?.let { viewModel.startAlert(activity, it) }
+                                ?: UIManager.showCustomToast(
+                                    activity,
+                                    ToastTypeEnum.WARNING,
+                                    "Field can't be empty. Please enter a valid number"
+                                )
                         },
                         enabled = scheduleState !is ScheduleJobAlarmUiState.Started,
                     ) {
