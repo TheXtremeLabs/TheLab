@@ -70,6 +70,9 @@ android {
             // Android Gradle plugin.
             isShrinkResources = true  // Enables code shrinking for the release build type.
 
+            // Disables PNG crunching for the "release" build type.
+            isCrunchPngs = false
+
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
             proguardFiles(
@@ -119,6 +122,7 @@ dependencies {
     implementation(libs.kotlinx.play.services)
 
     // AndroidX
+    implementation(libs.androidx.multidex)
     implementation(Dependencies.multiDex)
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.activityKtx)
@@ -135,7 +139,6 @@ dependencies {
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.compiler)
     implementation(Dependencies.composeRuntime)
     implementation(Dependencies.composeRuntimeLiveData)
     implementation(Dependencies.composeMaterial)

@@ -1,7 +1,7 @@
 [versions]
 # Gradle version
 kotlinGradlePlugin = "1.8.10"
-gradleGradlePlugin = "7.4.2"
+gradleGradlePlugin = "8.0.0"
 hiltGradlePlugin = "2.45"
 # Google Services
 playServicesGradlePlugin = "4.3.15"
@@ -138,7 +138,6 @@ androidx-camera-view = { group = "androidx.camera", name = "camera-view", versio
 androidx-camera-extensions = { group = "androidx.camera", name = "camera-extensions", version.ref = "androidxCamera" }
 androidx-cardview = { group = "androidx.cardview", name = "cardview", version.ref = "androidxCardView" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
-androidx-compose-compiler = { group = "androidx.compose.compiler", name = "compiler" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
 androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
@@ -236,7 +235,7 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
-kotlinx-parcelize = { group = "org.jetbrains.kotlinx", name = "kotlinx-parcelize-runtime", version.ref = "kotlinxDatetime" }
+kotlinx-parcelize = { group = "org.jetbrains.kotlin", name = "kotlin-parcelize-runtime", version.ref = "kotlin" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinPlayServices" }
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "lint" }
