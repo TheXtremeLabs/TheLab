@@ -213,7 +213,6 @@ object LabCompatibilityManager {
 }
 
 
-
 /**
  * Android version table
  * <p>

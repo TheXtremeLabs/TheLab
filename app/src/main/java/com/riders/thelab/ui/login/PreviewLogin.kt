@@ -34,7 +34,6 @@ import com.riders.thelab.navigator.Navigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 @Composable
 fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: Navigator) {

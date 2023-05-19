@@ -15,7 +15,6 @@ import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.riders.thelab.core.bus.LocationFetchedEvent
-import com.riders.thelab.core.bus.LocationProviderChangedEvent
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope

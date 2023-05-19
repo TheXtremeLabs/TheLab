@@ -188,7 +188,7 @@
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/medium_margin"
             android:scrollbars="horizontal"
-            tools:itemCount="2"/>
+            tools:itemCount="2" />
         <!-- What's new list item -->
 
 
