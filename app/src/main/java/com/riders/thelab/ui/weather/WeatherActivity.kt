@@ -125,7 +125,7 @@ class WeatherActivity : BaseActivity() {
     fun onLocationProviderChanged() {
         Timber.e("onLocationProviderChanged()")
         lifecycleScope.launch {
-            KotlinBus.getInstance().subscribe<LocationProviderChangedEvent> {
+            KotlinBus.subscribe<LocationProviderChangedEvent> {
                 Timber.e("onLocationProviderChanged() | $it")
 
                 /*if (!it) {
