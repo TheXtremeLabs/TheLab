@@ -67,7 +67,8 @@ import com.riders.thelab.data.local.model.compose.IslandState
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
     ExperimentalLifecycleComposeApi::class
 )
 @Composable

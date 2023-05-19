@@ -48,7 +48,8 @@ import com.riders.thelab.data.local.model.compose.ScheduleJobAlarmUiState
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
     ExperimentalLifecycleComposeApi::class
 )
 @Composable
