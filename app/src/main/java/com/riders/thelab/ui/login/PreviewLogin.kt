@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -27,12 +28,16 @@ import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.ui.theme.Shapes
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.compose.utils.findActivity
 import com.riders.thelab.data.local.model.compose.LoginUiState
+import com.riders.thelab.navigator.Navigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 @Composable
-fun LoginContent(viewModel: LoginViewModel) {
+fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: Navigator) {
 
     val context = LocalContext.current
 
@@ -51,7 +56,7 @@ fun LoginContent(viewModel: LoginViewModel) {
                     .fillMaxWidth()
                     .align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically)
             ) {
                 Column(
                     modifier = Modifier
@@ -76,17 +81,18 @@ fun LoginContent(viewModel: LoginViewModel) {
                     }
                 }
 
-
                 // Version
                 AnimatedVisibility(
-                    modifier = Modifier.fillMaxWidth(0.5f),
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .align(CenterHorizontally),
                     visible = if (LocalInspectionMode.current) true else versionVisibility.value,
                     exit = fadeOut()
                 ) {
                     Text(
                         modifier = Modifier.padding(8.dp),
-                        text = if (LocalInspectionMode.current) "12.0.0" else "12.0.0",
-                        style = TextStyle(color = Color.White)
+                        text = if (LocalInspectionMode.current) "12.0.0" else viewModel.version,
+                        style = TextStyle(color = Color.White, textAlign = TextAlign.Center)
                     )
                 }
 
@@ -112,7 +118,7 @@ fun LoginContent(viewModel: LoginViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         // Should register user
-                        (context as LoginActivity).callSignUpActivity()
+                        navigator.callSignUpActivity()
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                 ) {
@@ -140,6 +146,7 @@ fun LoginContent(viewModel: LoginViewModel) {
 
     LaunchedEffect(Unit) {
         scope.launch {
+            delay(200L)
             versionVisibility.value = false
             delay(200L)
             formVisibility.value = true
@@ -149,12 +156,16 @@ fun LoginContent(viewModel: LoginViewModel) {
 
     if (loginUiState is LoginUiState.Error) {
         LaunchedEffect(Unit) {
-            scope.launch {
-                (context as LoginActivity).callMainActivity()
-            }
+            delay(TimeUnit.SECONDS.toMillis(3))
+            callMainActivity(activity, navigator)
         }
     }
+}
 
+fun callMainActivity(activity: LoginActivity, navigator: Navigator) {
+    Timber.d("callMainActivity()")
+    navigator.callMainActivity()
+    activity.finish()
 }
 
 
@@ -166,8 +177,16 @@ fun LoginContent(viewModel: LoginViewModel) {
 @DevicePreviews
 @Composable
 fun PreviewLoginContent() {
+    val context = LocalContext.current
+    val activity = context.findActivity() as LoginActivity
     val viewModel: LoginViewModel = hiltViewModel()
+    val navigator = Navigator(activity)
+
     TheLabTheme {
-        LoginContent(viewModel = viewModel)
+        LoginContent(
+            activity = activity,
+            viewModel = viewModel,
+            navigator = navigator
+        )
     }
 }

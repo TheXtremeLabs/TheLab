@@ -10,10 +10,10 @@ class FirebaseConventionPlugin : Plugin<Project> {
                 apply("com.google.firebase.firebase-perf")
             }
             pluginManager.findPlugin("com.google.gms:google-services").apply {
-                version = "4.3.14"
+                version = "4.3.15"
             }
             pluginManager.findPlugin("com.google.firebase.crashlytics").apply {
-                version = "2.9.2"
+                version = "2.9.4"
             }
             pluginManager.findPlugin("com.google.firebase.firebase-perf").apply {
                 version = "1.4.1"

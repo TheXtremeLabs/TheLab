@@ -64,9 +64,6 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -125,14 +122,13 @@ class WeatherActivity : ComponentActivity(), WeatherClickListener {
 
     override fun onPause() {
         Timber.d("onPause()")
-        EventBus.getDefault().unregister(this)
+//        EventBus.getDefault().unregister(this)
         super.onPause()
     }
 
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()")
-        EventBus.getDefault().register(this)
         mWeatherViewModel.fetchCities(this)
     }
 
@@ -238,7 +234,7 @@ class WeatherActivity : ComponentActivity(), WeatherClickListener {
     //
     /////////////////////////////////////
     @SuppressLint("BinaryOperationInTimber")
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    //@Subscribe(threadMode = ThreadMode.MAIN)
     fun onLocationFetchedEventResult(event: LocationFetchedEvent) {
         Timber.e(
             "onLocationFetchedEvent() - " +

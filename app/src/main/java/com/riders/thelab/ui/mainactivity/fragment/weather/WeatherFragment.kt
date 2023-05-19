@@ -16,9 +16,6 @@ import com.riders.thelab.databinding.FragmentWeatherBinding
 import com.riders.thelab.ui.base.BaseFragment
 import com.riders.thelab.ui.weather.WeatherUtils
 import dagger.hilt.android.AndroidEntryPoint
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.util.*
 import kotlin.math.roundToInt
@@ -78,7 +75,7 @@ class WeatherFragment : BaseFragment(), LocationListener {
 
     override fun onPause() {
         Timber.d("onPause()")
-        EventBus.getDefault().unregister(this)
+//        EventBus.getDefault().unregister(this)
         super.onPause()
     }
 
@@ -86,7 +83,6 @@ class WeatherFragment : BaseFragment(), LocationListener {
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()")
-        EventBus.getDefault().register(this)
 
         val labLocationManager = LabLocationManager(requireActivity(), this)
 
@@ -110,7 +106,7 @@ class WeatherFragment : BaseFragment(), LocationListener {
     // BUS
     //
     /////////////////////////////////////
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    //@Subscribe(threadMode = ThreadMode.MAIN)
     fun onLocationFetchedEventResult(event: LocationFetchedEvent) {
         Timber.e("onLocationFetchedEvent()")
         val location: Location = event.location

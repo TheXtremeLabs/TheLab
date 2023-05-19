@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import com.riders.thelab.core.bus.AlarmEvent
 import com.riders.thelab.core.utils.UIManager.showActionInToast
-import org.greenrobot.eventbus.EventBus
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ScheduleAlarmReceiver : BroadcastReceiver() {
@@ -18,7 +20,9 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
         Timber.d("MyBroadcastReceiver - onReceive()")
 
         // Post event with cll info object set
-        EventBus.getDefault().post(AlarmEvent())
+        GlobalScope.launch(Main) {
+            AlarmEvent().triggerEvent()
+        }
 
         // Show toast when broadcast receive intent
         showActionInToast(context, "Alarm...")

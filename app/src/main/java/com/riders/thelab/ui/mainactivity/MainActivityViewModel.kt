@@ -17,6 +17,7 @@ import com.riders.thelab.data.IRepository
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.data.local.model.app.LocalApp
 import com.riders.thelab.data.local.model.app.PackageApp
+import com.riders.thelab.data.local.model.compose.IslandState
 import com.riders.thelab.data.local.model.weather.ProcessedWeather
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
@@ -69,6 +70,11 @@ class MainActivityViewModel @Inject constructor(
 
     // The UI collects from this StateFlow to get its state updates
     val appList: StateFlow<List<App>> = _appList
+
+    val dynamicIslandState = mutableStateOf<IslandState>(IslandState.DefaultState())
+    fun displayDynamicIsland(isDisplayed: Boolean) {
+        dynamicIslandState.value = IslandState.SearchState()
+    }
 
     fun updateKeyboardVisible(isVisible: Boolean) {
         keyboardVisible.value = isVisible
@@ -235,4 +241,5 @@ class MainActivityViewModel @Inject constructor(
     private fun launchActivity(navigator: Navigator, activity: Class<out Activity>) {
         navigator.callIntentActivity(activity)
     }
+
 }

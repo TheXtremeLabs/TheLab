@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -41,7 +40,6 @@ import com.riders.thelab.core.compose.ui.theme.md_theme_dark_background
 import com.riders.thelab.core.compose.ui.theme.md_theme_light_background
 import com.riders.thelab.core.compose.utils.keyboardAsState
 import com.riders.thelab.data.local.model.compose.IslandState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -70,8 +68,6 @@ fun MainContent(viewModel: MainActivityViewModel) {
 
     val density = LocalDensity.current
     val isVisible = remember { mutableStateOf(false) }
-
-    val dynamicIslandState = remember { mutableStateOf<IslandState>(IslandState.WelcomeState()) }
 
     val appList by viewModel.appList.collectAsStateWithLifecycle()
 
@@ -146,6 +142,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
                     verticalArrangement = Arrangement.spacedBy(24.dp),
                     columns = GridCells.Fixed(2)
                 ) {
+                    // TODO : Remove top screen padding when no dynamic island is displayed
                     item(span = {
                         // Replace "maxCurrentLineSpan" with the number of spans this item should take.
                         // Use "maxCurrentLineSpan" if you want to take full width.
@@ -207,7 +204,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
                             //+ shrinkVertically()
                             + fadeOut()
                 ) {
-                    DynamicIsland(viewModel, islandState = dynamicIslandState.value)
+                    DynamicIsland(viewModel, islandState = viewModel.dynamicIslandState.value)
                 }
             }
 
@@ -223,15 +220,13 @@ fun MainContent(viewModel: MainActivityViewModel) {
         }
     }
 
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         delay(750L)
         isVisible.value = true
-    }
+    }*/
 
-    LaunchedEffect(key1 = "animateDynamicIsland") {
-        delay(3550L)
-        dynamicIslandState.value = IslandState.SearchState()
-    }
+    isVisible.value =
+        viewModel.dynamicIslandState.value is IslandState.SearchState && viewModel.keyboardVisible.value
 }
 
 
@@ -240,7 +235,6 @@ fun MainContent(viewModel: MainActivityViewModel) {
 // PREVIEWS
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalMaterialApi::class)
 @DevicePreviews
 @Composable
 private fun PreviewMainContent() {
