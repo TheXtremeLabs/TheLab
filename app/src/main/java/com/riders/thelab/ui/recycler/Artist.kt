@@ -29,6 +29,7 @@ import com.riders.thelab.core.compose.previewprovider.ArtistPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.compose.utils.findActivity
 import com.riders.thelab.data.remote.dto.artist.Artist
+import com.riders.thelab.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -111,9 +112,7 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
                         Timber.d("state is AsyncImagePainter.State.Success")
                         LaunchedEffect(key1 = painter) {
                             scope.launch {
-                                val image =
-                                    painter.imageLoader.execute(painter.request).drawable!!
-
+                                val image = painter.loadImage()
                             }
                         }
                     }

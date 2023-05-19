@@ -40,7 +40,6 @@ class Navigator constructor(
         activity.startActivity(intent, optionsCompat)
     }
 
-    @DelicateCoroutinesApi
     fun callMainActivity() {
         activity.startActivity(Intent(activity, MainActivity::class.java))
     }

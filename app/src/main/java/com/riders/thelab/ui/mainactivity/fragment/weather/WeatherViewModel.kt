@@ -67,8 +67,8 @@ class WeatherViewModel @Inject constructor(
                         address?.locality.orEmpty() +
                                 context.resources.getString(R.string.separator_placeholder)
                     val cityCountry: String = address?.countryName.orEmpty()
-                    val cityTemperature: Double = it.currentWeather?.temperature !!
-                    val weatherIconURL: String = it.currentWeather.weather?.get(0)?.icon !!
+                    val cityTemperature: Double = it.currentWeather?.temperature!!
+                    val weatherIconURL: String = it.currentWeather.weather?.get(0)?.icon!!
                     val cityWeatherDescription: String =
                         it.currentWeather.weather[0].description!!
 

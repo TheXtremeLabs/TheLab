@@ -112,6 +112,8 @@ dependencies {
     //Kotlin
     //implementation(KotlinDependencies.kotlinStdLib)
     //implementation(KotlinDependencies.kotlinStdJdk)
+    implementation(libs.kotlin.reflect)
+
     implementation(KotlinDependencies.coroutinesCore)
     implementation(KotlinDependencies.coroutinesAndroid)
     implementation(KotlinDependencies.kotlinParcelize)
@@ -155,7 +157,10 @@ dependencies {
     implementation(Dependencies.composeLiveData)
     implementation(Dependencies.composeNavigation)
 
-    implementation(Dependencies.coil)
+    // Coil
+    implementation(libs.coil.kt)
+    implementation(libs.coil.kt.compose)
+    implementation(libs.coil.kt.svg)
 
     // Navigation
     implementation(Dependencies.navigationKTX)
@@ -204,8 +209,8 @@ dependencies {
      * support for Activity and fragment injection so we need to include
      * the following dependencies */
     // Hilt
-    implementation(Dependencies.hilt)
-    kapt(Dependencies.hiltCompiler)
+    //implementation(Dependencies.hilt)
+    //kapt(Dependencies.hiltCompiler)
     kapt(Dependencies.hiltAndroidXCompiler)
     implementation(Dependencies.hiltWork)
     kapt(Dependencies.hiltKaptAndroidXCompiler)
@@ -262,9 +267,6 @@ dependencies {
     implementation(Dependencies.moshiKotlin)
     kapt(Dependencies.moshiKotlinCodeGen)
 
-    // EventBus
-    implementation(Dependencies.eventBus)
-
     // MPAndroidChart
     implementation(Dependencies.androidChart)
 
@@ -284,10 +286,6 @@ dependencies {
 
     //ThreeTen : Alternative to Android Calendar API
     implementation(libs.threeten)
-
-
-    // Timber : Logging library
-    implementation(libs.timber)
 
     // Kotools Types
     implementation(libs.kotools.types)

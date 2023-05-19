@@ -1,3 +1,7 @@
 package com.riders.thelab.core.bus
 
-object AlarmEvent
+class AlarmEvent {
+    suspend fun triggerEvent() {
+        KotlinBus.getInstance().publish("Alarm data to publish")
+    }
+}
