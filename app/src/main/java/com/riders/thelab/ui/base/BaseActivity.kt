@@ -16,16 +16,16 @@ open class BaseActivity : ComponentActivity() {
 
     private fun subscribeToKotlinBus() {
         Timber.i("subscribeToKotlinBus()")
-        for (declaredMethod in javaClass.declaredMethods) {
-            if (declaredMethod.isAnnotationPresent(Listen::class.java)) {
+        javaClass.declaredMethods
+            .filter { it.isAnnotationPresent(Listen::class.java) }
+            .forEach {
                 try {
-                    declaredMethod.invoke(this)
+                    it.invoke(this)
                 } catch (e: IllegalAccessException) {
                     Timber.e(e)
                 } catch (e: InvocationTargetException) {
                     Timber.e(e)
                 }
             }
-        }
     }
 }

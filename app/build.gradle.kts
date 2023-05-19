@@ -70,6 +70,9 @@ android {
             // Android Gradle plugin.
             isShrinkResources = true  // Enables code shrinking for the release build type.
 
+            // Disables PNG crunching for the "release" build type.
+            isCrunchPngs = false
+
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
             proguardFiles(
