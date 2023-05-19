@@ -156,7 +156,6 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
 
     if (loginUiState is LoginUiState.Error) {
         LaunchedEffect(Unit) {
-            delay(TimeUnit.SECONDS.toMillis(3))
             callMainActivity(activity, navigator)
         }
     }

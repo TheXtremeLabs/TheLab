@@ -57,7 +57,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private var _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.None)
-    val loginUiState = _loginUiState
+    val loginUiState: StateFlow<LoginUiState> = _loginUiState
 
     // Backing property to avoid state updates from other classes
     private val _networkState: MutableStateFlow<NetworkState> =
@@ -70,6 +70,10 @@ class LoginViewModel @Inject constructor(
     ////////////////////////////////////////
     // Composable methods
     ////////////////////////////////////////
+    fun updateLoginUiState(newState: LoginUiState) {
+        _loginUiState.value = newState
+    }
+
     fun updateLogin(value: String) {
         login = value
     }
@@ -95,7 +99,7 @@ class LoginViewModel @Inject constructor(
             if (throwable.message?.contains(cs404, true) == true
                 || throwable.message?.contains(cs503, true) == true
             ) {
-                _loginUiState.value = LoginUiState.Error(ApiResponse("", 404, null))
+                updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
             }
         }
 
@@ -134,7 +138,6 @@ class LoginViewModel @Inject constructor(
     // Functions
     //
     ///////////////
-
     /**
      * logging in user. Will make http post request with name, email
      * as parameters
@@ -160,7 +163,7 @@ class LoginViewModel @Inject constructor(
             return
         }
 
-        _loginUiState.value = LoginUiState.Loading
+        updateLoginUiState(LoginUiState.Connecting)
 
         makeCallLogin(login, password)
     }
@@ -195,7 +198,7 @@ class LoginViewModel @Inject constructor(
             // Use of the database to store and log users
 
             // Force response
-            _loginUiState.value = LoginUiState.Error(ApiResponse("", 404, null))
+            updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
             // }
             /*} catch (e: Exception) {
                 e.printStackTrace()

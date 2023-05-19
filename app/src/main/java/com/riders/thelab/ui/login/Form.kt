@@ -1,18 +1,47 @@
 package com.riders.thelab.ui.login
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.interaction.DragInteraction
+import androidx.compose.foundation.interaction.Interaction
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -24,13 +53,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.data.local.model.compose.LoginUiState
 import com.riders.thelab.data.local.model.compose.WindowSizeClass
 import timber.log.Timber
 
@@ -140,8 +174,12 @@ fun Password(viewModel: LoginViewModel, focusRequester: FocusRequester) {
     }
 }
 
+@OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun Submit(viewModel: LoginViewModel) {
+
+    val status by viewModel.loginUiState.collectAsStateWithLifecycle()
+
     // Hoist the MutableInteractionSource that we will provide to interactions
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -169,7 +207,8 @@ fun Submit(viewModel: LoginViewModel) {
         Button(
             modifier = Modifier
                 .fillMaxWidth(0.3f)
-                .padding(top = 8.dp)
+                .height(48.dp)
+                .padding(top = 16.dp)
                 .then(clickable)
                 .indication(
                     interactionSource = interactionSource,
@@ -184,20 +223,40 @@ fun Submit(viewModel: LoginViewModel) {
                         Timber.d("${interactions.toString()}")
                     }
                 }
-
                 viewModel.login()
             }
         ) {
-            Text(
-                modifier = Modifier.align(CenterVertically),
-                text = text
-            )
+            AnimatedContent(targetState = status) { targetState ->
+                when (targetState) {
+                    LoginUiState.Connecting -> {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        }
+                    }
 
-            Icon(
-                modifier = Modifier.align(CenterVertically),
-                imageVector = Icons.Filled.KeyboardArrowRight,
-                contentDescription = null
-            )
+                    else -> {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            Text(
+                                modifier = Modifier.align(CenterVertically),
+                                text = text
+                            )
+
+                            Icon(
+                                modifier = Modifier.align(CenterVertically),
+                                imageVector = Icons.Filled.KeyboardArrowRight,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -232,8 +291,6 @@ fun Form(viewModel: LoginViewModel) {
     } else {
         (context as LoginActivity).getDeviceWindowsSizeClass()
     }
-
-    val loginUiState by viewModel.loginUiState.collectAsState()
 
     var passwordVisibility: Boolean by remember { mutableStateOf(false) }
 
