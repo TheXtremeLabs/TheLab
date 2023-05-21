@@ -43,7 +43,6 @@ import timber.log.Timber
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Search(viewModel: MainActivityViewModel) {
-    val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val focus = remember { mutableStateOf(false) }

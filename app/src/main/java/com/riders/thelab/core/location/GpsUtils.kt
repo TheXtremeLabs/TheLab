@@ -11,6 +11,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
+import com.google.android.gms.location.Priority
 import com.google.android.gms.location.SettingsClient
 import com.riders.thelab.utils.Constants.GPS_REQUEST
 import timber.log.Timber
@@ -34,10 +35,16 @@ class GpsUtils(private val context: Context) {
         this.locationManager =
             mContext?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         this.mSettingsClient = LocationServices.getSettingsClient(mContext!!)
-        this.locationRequest = LocationRequest.create()
-        locationRequest?.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        this.locationRequest =
+            LocationRequest
+                .Builder(Priority.PRIORITY_HIGH_ACCURACY, (10 * 1000).toLong())
+                .build()
+                .apply {
+                    locationRequest?.fastestInterval = (2 * 1000).toLong()
+                }
+        /*locationRequest?.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest?.interval = (10 * 1000).toLong()
-        locationRequest?.fastestInterval = (2 * 1000).toLong()
+        locationRequest?.fastestInterval = (2 * 1000).toLong()*/
 
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest!!)
