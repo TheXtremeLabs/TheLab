@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.GpsFixed
+import androidx.compose.material.icons.filled.GpsOff
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -19,10 +21,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ComponentActivity
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.ui.weather.WeatherViewModel
 
 
 ///////////////////////////
@@ -77,7 +81,7 @@ fun TheLabTopAppBar(
 @Composable
 fun TheLabTopAppBar(
     @PreviewParameter(TextContentPreviewProvider::class) title: String,
-    actionIcon: ImageVector,
+    viewModel: WeatherViewModel,
     actionBlock: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -121,7 +125,7 @@ fun TheLabTopAppBar(
                 ) {
                     IconButton(onClick = actionBlock) {
                         Icon(
-                            imageVector = actionIcon,
+                            imageVector = if (!viewModel.iconState) Icons.Filled.GpsOff else Icons.Filled.GpsFixed,
                             contentDescription = "action icon "
                         )
                     }
@@ -217,8 +221,9 @@ private fun PreviewTheLabTopAppBar() {
 @DevicePreviews
 @Composable
 private fun PreviewTheLabTopAppBar(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
+    val viewModel: WeatherViewModel = hiltViewModel()
     TheLabTheme {
-        TheLabTopAppBar(title, Icons.Filled.Close) {}
+        TheLabTopAppBar(title, viewModel) {}
     }
 }
 

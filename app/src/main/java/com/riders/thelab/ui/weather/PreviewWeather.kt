@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.weather
 
 import android.location.Address
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -18,8 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.material.icons.filled.GpsFixed
-import androidx.compose.material.icons.filled.GpsOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -636,7 +635,7 @@ fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
                     viewModel.retry()
                     (context.findActivity() as WeatherActivity).onResume()
                 }) {
-                    Text("Retry")
+                    Text(stringResource(id = R.string.action_retry))
                 }
             }
         }
@@ -656,9 +655,16 @@ fun WeatherContent(viewModel: WeatherViewModel, labLocationManager: LabLocationM
             topBar = {
                 TheLabTopAppBar(
                     title = stringResource(id = R.string.activity_title_weather),
-                    if (!labLocationManager.canGetLocation()) Icons.Filled.GpsOff else Icons.Filled.GpsFixed,
-                    if (!labLocationManager.canGetLocation()) {
-                        { Timber.e("Unable to perform action due to location feature unavailable") }
+                    viewModel,
+                    if (!viewModel.iconState) {
+                        {
+                            Timber.e("Unable to perform action due to location feature unavailable")
+                            Toast.makeText(
+                                context,
+                                "Please make sure that the location setting is enabled",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     } else {
                         { (context.findActivity() as WeatherActivity).fetchCurrentLocation() }
                     }

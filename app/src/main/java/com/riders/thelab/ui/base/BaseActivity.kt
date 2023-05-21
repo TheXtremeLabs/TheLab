@@ -7,7 +7,6 @@ import timber.log.Timber
 import java.lang.reflect.InvocationTargetException
 
 open class BaseActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate()")

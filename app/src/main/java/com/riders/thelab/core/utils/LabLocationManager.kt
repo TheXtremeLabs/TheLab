@@ -1,98 +1,69 @@
 package com.riders.thelab.core.utils
 
 import android.annotation.SuppressLint
-import android.app.Service
+import android.app.Activity
 import android.content.Context
+import android.content.Context.LOCATION_SERVICE
 import android.content.DialogInterface
 import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.IBinder
 import android.provider.Settings
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.riders.thelab.core.bus.LocationFetchedEvent
+import com.riders.thelab.core.bus.LocationProviderChangedEvent
+import com.riders.thelab.ui.weather.WeatherActivity
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.ref.WeakReference
 
-class LabLocationManager constructor(
-    private var mContext: Context
-) : Service(), LocationListener {
+class LabLocationManager constructor(context: Context) : LocationListener {
 
-    companion object {
-        // The minimum distance to change Updates in meters
-        private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 10 // 10 meters
-
-        // The minimum time between updates in milliseconds
-        private const val MIN_TIME_BW_UPDATES = (1000 * 60 * 1).toLong() // 1 minute
-    }
+    private var mContext: Context = context
 
     // Declaring a Location Manager
-    private var locationManager: LocationManager =
-        mContext.getSystemService(LOCATION_SERVICE) as LocationManager
+    private lateinit var locationManager: LocationManager
 
     // flag for GPS status
-    var isGPSEnabled = false
+    private var isGPSEnabled = false
 
     // flag for network status
-    var isNetworkEnabled = false
+    private var isNetworkEnabled = false
 
     // flag for GPS status
     private var canGetLocation = false
 
     // location
-    var location: Location? = null
+    private var location: Location? = null
 
-    var latitude = 0.0// latitude
-    var longitude = 0.0// longitude
     private var mLocationListener: LocationListener? = null
 
+    private var mWeakReference: WeakReference<Activity>? = null
+
+    constructor(activity: Activity, locationListener: LocationListener) : this(activity) {
+        this.mContext = activity.applicationContext
+        this.mWeakReference = WeakReference(activity)
+        this.mLocationListener = locationListener
+    }
+
     init {
+        Timber.d("LabLocationManager | init")
         locationManager = mContext.getSystemService(LOCATION_SERVICE) as LocationManager
-        mLocationListener = this
     }
 
-    constructor(
-        context: Context,
-        locationListener: LocationListener
-    ) : this(context) {
-        mLocationListener = this
-    }
-
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
-
-    override fun onLocationChanged(location: Location) {
-        Timber.d("onLocationChanged : $location")
-    }
-
-    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-        Timber.d("onStatusChanged : $provider, $status")
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    override fun onProviderDisabled(provider: String) {
-        Timber.e("onProviderDisabled() | provider: $provider")
-        /*GlobalScope.launch {
-            LocationProviderChangedEvent().triggerEvent(false)
-        }*/
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    override fun onProviderEnabled(provider: String) {
-        Timber.d("onProviderEnabled() | provider: $provider")
-        /*GlobalScope.launch {
-            LocationProviderChangedEvent().triggerEvent(true)
-        }*/
-    }
-
+    /////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    /////////////////////////////////////
     fun setLocationListener() {
         mLocationListener = this
     }
@@ -106,7 +77,6 @@ class LabLocationManager constructor(
             Timber.e("no network provider is enabled")
             null
         } else {
-
             try {
                 // if Network Enabled get lat/long using Network
                 if (isNetworkEnabled) {
@@ -140,42 +110,39 @@ class LabLocationManager constructor(
 
     @SuppressLint("MissingPermission")
     private fun getLocationViaNetwork() {
-        ContextCompat.getMainExecutor(mContext).execute {
-            // This is where your UI code goes.
-            locationManager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER,
-                MIN_TIME_BW_UPDATES,
-                MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
-                mLocationListener!!
-            )
+        mContext?.let {
+            ContextCompat.getMainExecutor(it).execute {
+                // This is where your UI code goes.
+                locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
+                    mLocationListener!!
+                )
+            }
         }
-
 
         Timber.d("Network Enabled")
         this.location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!
-        latitude = this.location!!.latitude
-        longitude = this.location!!.longitude
     }
-
 
     @SuppressLint("MissingPermission")
     private fun getLocationViaGPS() {
-        ContextCompat.getMainExecutor(mContext).execute {
-            // This is where your UI code goes.
-            locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                MIN_TIME_BW_UPDATES,
-                MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
-                mLocationListener!!
+        mContext?.let {
+            ContextCompat.getMainExecutor(it).execute {
+                // This is where your UI code goes.
+                locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
+                    mLocationListener!!
 
-            )
+                )
+            }
         }
 
         Timber.d("GPS Enabled")
         this.location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
-        latitude = this.location!!.latitude
-        longitude = this.location!!.longitude
-
     }
 
     private fun postLocation(location: Location) {
@@ -213,45 +180,140 @@ class LabLocationManager constructor(
             Timber.e(ex)
         }
         canGetLocation = isGPSEnabled && isNetworkEnabled
+
+        mWeakReference?.let { ref ->
+            /* val activity: Activity? =*/
+
+            // Get activity from weak reference activity object
+            ref.get()?.let { activity ->
+                when (activity) {
+                    is WeatherActivity -> {
+                        activity.updateLocationIcon(canGetLocation)
+                    }
+
+                    else -> {
+                        Timber.e("Else branch")
+                    }
+                }
+            }
+        }
+
         return canGetLocation
     }
-
-    fun getLocationObject(): Location? {
-        return this.location
-    }
-
 
     /**
      * Function to show settings alert dialog On pressing Settings button will
      * lauch Settings Options
      */
     fun showSettingsAlert() {
-        val alertDialog = AlertDialog.Builder(mContext)
+        mContext?.let {
+            val alertDialog = AlertDialog.Builder(it)
 
-        // Setting Dialog Title
-        alertDialog.setTitle("GPS is settings")
+            // Setting Dialog Title
+            alertDialog.setTitle("GPS is settings")
 
-        // Setting Dialog Message
-        alertDialog
-            .setMessage("GPS is not enabled. Do you want to go to settings menu?")
+            // Setting Dialog Message
+            alertDialog
+                .setMessage("GPS is not enabled. Do you want to go to settings menu?")
 
-        // On pressing Settings button
-        alertDialog.setPositiveButton(
-            "Settings"
-        ) { _: DialogInterface?, _: Int ->
-            val intent = Intent(
-                Settings.ACTION_LOCATION_SOURCE_SETTINGS
-            )
-            mContext.startActivity(intent)
+            // On pressing Settings button
+            alertDialog.setPositiveButton(
+                "Settings"
+            ) { _: DialogInterface?, _: Int ->
+                val intent = Intent(
+                    Settings.ACTION_LOCATION_SOURCE_SETTINGS
+                )
+                it.startActivity(intent)
+            }
+
+            // on pressing cancel button
+            alertDialog.setNegativeButton(
+                "Cancel"
+            ) { dialog: DialogInterface, _: Int -> dialog.cancel() }
+
+            // Showing Alert Message
+            alertDialog.show()
         }
+    }
 
-        // on pressing cancel button
-        alertDialog.setNegativeButton(
-            "Cancel"
-        ) { dialog: DialogInterface, _: Int -> dialog.cancel() }
+    /////////////////////////////////////
+    //
+    // IMPLEMENTS
+    //
+    /////////////////////////////////////
+    override fun onLocationChanged(location: Location) {
+        Timber.d("onLocationChanged : $location")
+    }
 
-        // Showing Alert Message
-        alertDialog.show()
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        Timber.d("onStatusChanged : $provider, $status")
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun onProviderDisabled(provider: String) {
+        Timber.e("onProviderDisabled() | provider: $provider")
+        mWeakReference?.let { ref ->
+
+            // Get activity from weak reference activity object
+            Timber.e("Get activity from weak reference activity object and call its methods")
+            ref.get()?.let { activity ->
+                when (activity) {
+                    is WeatherActivity -> {
+                        Timber.d("call WeatherActivity methods")
+                        activity.updateLocationIcon(false)
+                        activity.lifecycleScope.launch {
+                            LocationProviderChangedEvent().triggerEvent(false)
+                        }
+                    }
+
+                    else -> {
+                        Timber.e("Else branch")
+                    }
+                }
+            }
+        }
+        /*GlobalScope.launch {
+            LocationProviderChangedEvent().triggerEvent(false)
+        }*/
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun onProviderEnabled(provider: String) {
+        Timber.d("onProviderEnabled() | provider: $provider")
+        mWeakReference?.let { ref ->
+
+            // Get activity from weak reference activity object
+            Timber.d("Get activity from weak reference activity object and call its methods")
+            ref.get()?.let { activity ->
+                when (activity) {
+                    is WeatherActivity -> {
+                        Timber.d("call WeatherActivity methods")
+                        activity.updateLocationIcon(true)
+                        activity.lifecycleScope.launch {
+                            LocationProviderChangedEvent().triggerEvent(true)
+                        }
+                    }
+
+                    else -> {
+                        Timber.e("Else branch")
+                    }
+                }
+            }
+        }
+    }
+
+
+    /////////////////////////////////////
+    //
+    // COMPANION / INNER CLASSES
+    //
+    /////////////////////////////////////
+    companion object {
+        // The minimum distance to change Updates in meters
+        private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 10 // 10 meters
+
+        // The minimum time between updates in milliseconds
+        private const val MIN_TIME_BW_UPDATES = (1000 * 60 * 1).toLong() // 1 minute
     }
 }
 

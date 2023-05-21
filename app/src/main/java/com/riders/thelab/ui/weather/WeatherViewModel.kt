@@ -55,6 +55,9 @@ class WeatherViewModel @Inject constructor(
 
     var expanded by mutableStateOf(false)
     var isWeatherMoreDataVisible by mutableStateOf(false)
+        private set
+    var iconState by mutableStateOf(false)
+        private set
 
     // Suggestions for search
     var suggestions by mutableStateOf(emptyList<CityModel>())
@@ -69,23 +72,27 @@ class WeatherViewModel @Inject constructor(
         searchText = searchQuery
 
         if (2 <= searchText.length) {
-            expanded = true
+            this.expanded = true
             getCitiesFromDb(searchText)
         } else {
-            expanded = false
+            this.expanded = false
         }
     }
 
     fun updateCityMaxTemp(newTemperature: Double) {
-        cityMaxTemp = "${newTemperature.toInt()}"
+        this.cityMaxTemp = "${newTemperature.toInt()}"
     }
 
     fun updateCityMinTemp(newTemperature: Double) {
-        cityMinTemp = "${newTemperature.toInt()}"
+        this.cityMinTemp = "${newTemperature.toInt()}"
     }
 
     fun updateMoreDataVisibility() {
-        isWeatherMoreDataVisible = !isWeatherMoreDataVisible
+        this. isWeatherMoreDataVisible = !isWeatherMoreDataVisible
+    }
+
+    fun updateIconState(iconState: Boolean) {
+        this.iconState = iconState
     }
 
 
@@ -103,22 +110,10 @@ class WeatherViewModel @Inject constructor(
     //////////////////////////////////////////
     //Live Data
     //////////////////////////////////////////
-    private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
-    private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
-    private val downloadStatus: MutableLiveData<String> = MutableLiveData()
     private val workerStatus: MutableLiveData<WorkInfo.State> = MutableLiveData()
-    private val downloadDone: MutableLiveData<Boolean> = MutableLiveData()
     private val isWeatherData: MutableLiveData<Boolean> = MutableLiveData()
-    private val weatherCursor: MutableLiveData<Cursor> = MutableLiveData()
-    private val oneCallWeather: MutableLiveData<OneCallWeatherResponse> = MutableLiveData()
 
-    fun getProgressBarVisibility(): LiveData<Boolean> = progressVisibility
-    fun getConnectionStatus(): LiveData<Boolean> = connectionStatus
-    fun getDownloadStatus(): LiveData<String> = downloadStatus
-    fun getDownloadDone(): LiveData<Boolean> = downloadDone
-    fun getIsWeatherData(): LiveData<Boolean> = isWeatherData
     fun getWorkerStatus(): LiveData<WorkInfo.State> = workerStatus
-    fun getOneCalWeather(): LiveData<OneCallWeatherResponse> = oneCallWeather
 
 
     ///////////////////////////
@@ -266,7 +261,6 @@ class WeatherViewModel @Inject constructor(
 
                     withContext(Main) {
                         weatherResponse?.let {
-                            oneCallWeather.value = it
                             updateWeatherCityUIState(WeatherCityUIState.Success(it))
                         }
                     }
@@ -369,7 +363,6 @@ class WeatherViewModel @Inject constructor(
                     WorkInfo.State.RUNNING -> {
                         Timber.d("Worker RUNNING")
                         workerStatus.value = WorkInfo.State.RUNNING
-                        downloadStatus.value = "Loading..."
                         updateUIState(WeatherUIState.Loading)
                     }
 
@@ -380,17 +373,12 @@ class WeatherViewModel @Inject constructor(
                             repositoryImpl.insertWeatherData(WeatherData(true))
                         }
 
-                        downloadDone.value = true
-                        downloadStatus.value = "Loading finished"
-                        workerStatus.value = WorkInfo.State.SUCCEEDED
-
                         updateUIState(WeatherUIState.Success(OneCallWeatherResponse()))
+                        workerStatus.value = WorkInfo.State.SUCCEEDED
                     }
 
                     WorkInfo.State.FAILED -> {
                         Timber.e("Worker FAILED")
-                        downloadDone.value = true
-                        downloadStatus.value = "Worker FAILED"
                         workerStatus.value = WorkInfo.State.FAILED
 
                         UIManager.showActionInSnackBar(

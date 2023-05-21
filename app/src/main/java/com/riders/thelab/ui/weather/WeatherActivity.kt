@@ -6,6 +6,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.location.Location
+import android.location.LocationListener
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -24,9 +26,6 @@ import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
-import com.riders.thelab.core.bus.KotlinBus
-import com.riders.thelab.core.bus.Listen
-import com.riders.thelab.core.bus.LocationProviderChangedEvent
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.utils.*
 import com.riders.thelab.data.local.bean.SnackBarType
@@ -37,47 +36,32 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class WeatherActivity : BaseActivity() {
+class WeatherActivity : BaseActivity(), LocationListener {
 
     private val mWeatherViewModel: WeatherViewModel by viewModels()
 
     private var labLocationManager: LabLocationManager? = null
 
     private val mGpsSwitchStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-
         override fun onReceive(context: Context, intent: Intent?) {
 
-            if (intent?.action != null && intent.action?.equals("android.location.LocationManager.PROVIDERS_CHANGED_ACTION") == true) {
+            if (intent?.action != null && intent.action?.equals(LOCATION_PROVIDERS_ACTION) == true) {
                 // Make an action or refresh an already managed state.
                 Timber.d("CHANGED");
             }
         }
     }
 
+    /////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    /////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.d("onCreate()")
         super.onCreate(savedInstanceState)
 
         checkLocationPermissions()
-
-        // Start a coroutine in the lifecycle scope
-        lifecycleScope.launch {
-            // repeatOnLifecycle launches the block in a new coroutine every time the
-            // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                setContent {
-                    TheLabTheme {
-                        // A surface container using the 'background' color from the theme
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
-                        ) {
-                            WeatherContent(mWeatherViewModel, labLocationManager!!)
-                        }
-                    }
-                }
-            }
-        }
     }
 
     override fun onPause() {
@@ -91,17 +75,23 @@ class WeatherActivity : BaseActivity() {
         super.onResume()
         Timber.d("onResume()")
 
-        registerReceiver(
-            mGpsSwitchStateReceiver,
-            IntentFilter("android.location.LocationManager.PROVIDERS_CHANGED_ACTION")
-        )
+        registerReceiver(mGpsSwitchStateReceiver, IntentFilter(LOCATION_PROVIDERS_ACTION))
 
-        if (null == labLocationManager || !labLocationManager!!.canGetLocation()) {
-            mWeatherViewModel.updateUIState(WeatherUIState.Error())
-            return
+        registerLabLocationManager()
+
+        // mWeatherViewModel.fetchCities(this@WeatherActivity)
+
+        labLocationManager?.let {
+            updateLocationIcon(it.canGetLocation())
+
+            if (!it.canGetLocation()) {
+                Timber.e("!it.canGetLocation() | WeatherUIState.Error()")
+                mWeatherViewModel.updateUIState(WeatherUIState.Error())
+                return
+            } else {
+                mWeatherViewModel.fetchCities(this@WeatherActivity)
+            }
         }
-
-        mWeatherViewModel.fetchCities(this@WeatherActivity)
     }
 
     override fun onDestroy() {
@@ -109,33 +99,6 @@ class WeatherActivity : BaseActivity() {
         super.onDestroy()
     }
 
-    /////////////////////////////////////
-    //
-    // BUS
-    //
-    /////////////////////////////////////
-    @Listen
-    fun onLocationProviderChanged() {
-        Timber.e("onLocationProviderChanged()")
-        lifecycleScope.launch {
-            KotlinBus.subscribe<LocationProviderChangedEvent> {
-                Timber.e("onLocationProviderChanged() | $it")
-
-                /*if (!it) {
-
-                } else {
-
-                    val location: Location =
-                        labLocationManager?.getCurrentLocation() ?: return@subscribe
-
-                    mWeatherViewModel.updateUIState(WeatherUIState.SuccessWeatherData(true))
-                    mWeatherViewModel.fetchWeather(
-                        location.run { location.latitude to location.longitude }.toLocation()
-                    )
-                }*/
-            }
-        }
-    }
 
     /////////////////////////////////////
     //
@@ -166,7 +129,24 @@ class WeatherActivity : BaseActivity() {
 
                     initViewModelObservers()
 
-                    labLocationManager = LabLocationManager(this@WeatherActivity)
+                    // Start a coroutine in the lifecycle scope
+                    lifecycleScope.launch {
+                        // repeatOnLifecycle launches the block in a new coroutine every time the
+                        // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
+                        repeatOnLifecycle(Lifecycle.State.STARTED) {
+                            setContent {
+                                TheLabTheme {
+                                    // A surface container using the 'background' color from the theme
+                                    Surface(
+                                        modifier = Modifier.fillMaxSize(),
+                                        color = MaterialTheme.colorScheme.background
+                                    ) {
+                                        WeatherContent(mWeatherViewModel, labLocationManager!!)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 override fun onPermissionRationaleShouldBeShown(
@@ -190,29 +170,44 @@ class WeatherActivity : BaseActivity() {
         mWeatherViewModel.getWorkerStatus().observe(this) {
             when (it) {
                 WorkInfo.State.SUCCEEDED -> {
-                    Timber.d("Succeed")
+                    Timber.d("getWorkerStatus().observe | Succeed")
                 }
 
                 WorkInfo.State.FAILED -> {
-                    Timber.e("Failed")
+                    Timber.e("getWorkerStatus().observe | Failed")
                 }
 
                 else -> {
-                    Timber.e("else branch")
+                    Timber.e("getWorkerStatus().observe | else branch")
                 }
             }
         }
+    }
 
+    private fun registerLabLocationManager() {
+        Timber.d("registerLabLocationManager()")
+
+        if (null == labLocationManager) {
+            labLocationManager = LabLocationManager(
+                activity = this@WeatherActivity,
+                locationListener = this@WeatherActivity
+            )
+        }
+
+        if (!labLocationManager!!.canGetLocation()) {
+            Timber.e("Cannot get location please enable position")
+
+            // TODO : Should show alert with compose dialog
+            // labLocationManager?.showSettingsAlert()
+        } else {
+            labLocationManager?.setLocationListener()
+            labLocationManager?.getCurrentLocation()
+        }
     }
 
     fun fetchCurrentLocation() {
         Timber.d("fetchCurrentLocation()")
-
-        if (labLocationManager?.canGetLocation() == true) {
-            val location = labLocationManager?.getCurrentLocation() ?: return
-
-            mWeatherViewModel.fetchWeather((location.latitude to location.longitude).toLocation())
-        } else
+        if (null == labLocationManager || labLocationManager?.canGetLocation() == false) {
             UIManager.showActionInSnackBar(
                 this,
                 findViewById(android.R.id.content),
@@ -220,5 +215,58 @@ class WeatherActivity : BaseActivity() {
                 SnackBarType.ALERT,
                 getString(R.string.action_ok)
             ) { }
+
+            return
+        }
+
+        val location = labLocationManager?.getCurrentLocation() ?: return
+        mWeatherViewModel.fetchWeather((location.latitude to location.longitude).toLocation())
+    }
+
+    fun updateLocationIcon(iconState: Boolean) {
+        Timber.d("updateLocationIcon() | state: $iconState")
+
+        if (!iconState) {
+            mWeatherViewModel.updateIconState(false)
+            mWeatherViewModel.updateUIState(WeatherUIState.Error())
+        } else {
+            mWeatherViewModel.updateIconState(true)
+            mWeatherViewModel.fetchCities(this@WeatherActivity)
+        }
+    }
+
+    /////////////////////////////////////
+    //
+    // IMPLEMENTS
+    //
+    /////////////////////////////////////
+    override fun onLocationChanged(location: Location) {
+        Timber.d("onLocationChanged : $location")
+    }
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        Timber.d("onStatusChanged : $provider, $status")
+    }
+
+    override fun onProviderDisabled(provider: String) {
+        Timber.e("onProviderDisabled() | provider: $provider")/*
+        updateLocationIcon(false)
+        lifecycleScope.launch {
+            LocationProviderChangedEvent().triggerEvent(false)
+        }*/
+    }
+
+
+    override fun onProviderEnabled(provider: String) {
+        Timber.d("onProviderEnabled() | provider: $provider")/*
+        updateLocationIcon(true)
+        lifecycleScope.launch {
+            LocationProviderChangedEvent().triggerEvent(true)
+        }*/
+    }
+
+    companion object {
+        private const val LOCATION_PROVIDERS_ACTION: String =
+            "android.location.LocationManager.PROVIDERS_CHANGED_ACTION"
     }
 }

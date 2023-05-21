@@ -344,7 +344,8 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         mProvider = mLocationManager.getBestProvider(mCriteria!!, true)!!
         if (null == mProvider) {
             Timber.e("Cannot get location please enable position")
-            val labLocationManager = LabLocationManager(this@LocationOnMapsActivity, this)
+            val labLocationManager =
+                LabLocationManager(activity = this@LocationOnMapsActivity, locationListener = this)
             labLocationManager.showSettingsAlert()
         } else {
             try {
