@@ -317,7 +317,11 @@ class MainActivity : ComponentActivity(),
         locationReceiver = LocationBroadcastReceiver()
         mGpsUtils = GpsUtils(this@MainActivity)
 
-        labLocationManager = LabLocationManager(this@MainActivity, this@MainActivity)
+        labLocationManager =
+            LabLocationManager(
+                activity = this@MainActivity,
+                locationListener = this@MainActivity
+            )
     }
 
     private fun registerLocationReceiver() {
@@ -392,7 +396,8 @@ class MainActivity : ComponentActivity(),
                 binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
                     R.drawable.ic_location_off
                 )
-                labLocationManager?.showSettingsAlert()
+                // TODO : Should show alert with compose dialog
+                // labLocationManager?.showSettingsAlert()
             } else {
                 labLocationManager?.setLocationListener()
                 labLocationManager?.getCurrentLocation()

@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.palette
 
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
@@ -29,6 +30,8 @@ import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.utils.loadImage
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
