@@ -260,7 +260,7 @@ class SongPlayerActivity : AppCompatActivity(),
 
     private fun initViewModelsObservers() {
         Timber.i("initViewModelsObservers()")
-        viewModel.getFiles().observe(this, { fileList ->
+        viewModel.getFiles().observe(this) { fileList ->
             Timber.e("getFiles().observe")
             if (null == fileList) {
                 Timber.e("File list is null")
@@ -273,7 +273,7 @@ class SongPlayerActivity : AppCompatActivity(),
                     bindData(songsList)
                 }
             }
-        })
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
