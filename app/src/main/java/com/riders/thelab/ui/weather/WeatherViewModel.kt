@@ -88,7 +88,7 @@ class WeatherViewModel @Inject constructor(
     }
 
     fun updateMoreDataVisibility() {
-        this. isWeatherMoreDataVisible = !isWeatherMoreDataVisible
+        this.isWeatherMoreDataVisible = !isWeatherMoreDataVisible
     }
 
     fun updateIconState(iconState: Boolean) {
