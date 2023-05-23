@@ -1,8 +1,10 @@
 package com.riders.thelab.core.bus
 
 import android.location.Location
+import kotlinx.serialization.Serializable
 import timber.log.Timber
 
+@Serializable
 class LocationProviderChangedEvent() {
     suspend fun triggerEvent(enabled: Boolean) {
         Timber.d("triggerEvent() | enabled: $enabled")

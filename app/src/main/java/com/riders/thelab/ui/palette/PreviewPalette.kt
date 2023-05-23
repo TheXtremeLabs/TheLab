@@ -29,6 +29,7 @@ import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -154,8 +155,7 @@ fun PaletteContent(viewModel: PaletteViewModel) {
                                         Timber.d("state is AsyncImagePainter.State.Success")
                                         LaunchedEffect(key1 = painter) {
                                             scope.launch {
-                                                val image =
-                                                    painter.imageLoader.execute(painter.request).drawable!!
+                                                val image = painter.loadImage()
 
                                                 val palette = Palette.from(
                                                     image.toBitmap(
