@@ -74,6 +74,10 @@ class LoginViewModel @Inject constructor(
         _loginUiState.value = newState
     }
 
+    fun updateNetworkState(newState: NetworkState) {
+        _networkState.value = newState
+    }
+
     fun updateLogin(value: String) {
         login = value
     }
@@ -90,38 +94,18 @@ class LoginViewModel @Inject constructor(
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Timber.e(throwable.message)
+            Timber.e("coroutineExceptionHandler | ${throwable.message}")
 
-            _networkState.value = NetworkState.Disconnected(true)
+            updateNetworkState(NetworkState.Disconnected(true))
 
             val cs404: CharSequence = "404".subSequence(0, 3)
             val cs503: CharSequence = "503".subSequence(0, 3)
             if (throwable.message?.contains(cs404, true) == true
                 || throwable.message?.contains(cs503, true) == true
             ) {
-                updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
+                //updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
             }
         }
-
-    init {
-        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
-            //try {
-            //  supervisorScope {
-            Timber.d("getApi()")
-            val response = repository.getApi()
-            Timber.d("$response")
-
-            _networkState.value = NetworkState.Available(true)
-        }
-        /*} catch (e: Exception) {
-            e.printStackTrace()
-            Timber.e(e.message)
-
-            _networkState.value = NetworkState.Disconnected(true)
-        }
-    }*/
-    }
-
 
     ///////////////
     //
@@ -174,6 +158,17 @@ class LoginViewModel @Inject constructor(
 
     fun isValidPassword() = password.trim().isNotEmpty() && password.length >= 4
 
+    fun getApi() {
+        Timber.d("getApi()")
+        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
+            Timber.d("getApi()")
+            val response = repository.getApi()
+            Timber.d("$response")
+
+            updateNetworkState(NetworkState.Available(true))
+        }
+    }
+
     fun makeCallLogin(email: String, password: String) {
         Timber.d("makeCallLogin() - with $email and $password")
 
@@ -198,7 +193,9 @@ class LoginViewModel @Inject constructor(
             // Use of the database to store and log users
 
             // Force response
+            Timber.e("Force response error: Due to Heroku back-end free services ending.")
             updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
+
             // }
             /*} catch (e: Exception) {
                 e.printStackTrace()
