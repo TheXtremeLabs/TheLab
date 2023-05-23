@@ -359,18 +359,21 @@ fun PreviewLogin() {
     val viewModel: LoginViewModel = hiltViewModel()
     Login(viewModel = viewModel, focusRequester = FocusRequester())
 }
+
 @DevicePreviews
 @Composable
 fun PreviewPassword() {
     val viewModel: LoginViewModel = hiltViewModel()
     Password(viewModel = viewModel, focusRequester = FocusRequester())
 }
+
 @DevicePreviews
 @Composable
 fun PreviewSubmit() {
     val viewModel: LoginViewModel = hiltViewModel()
     Submit(viewModel = viewModel)
 }
+
 @DevicePreviews
 @Composable
 fun PreviewForm() {
