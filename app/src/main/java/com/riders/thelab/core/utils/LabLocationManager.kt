@@ -182,7 +182,6 @@ class LabLocationManager constructor(context: Context) : LocationListener {
         canGetLocation = isGPSEnabled && isNetworkEnabled
 
         mWeakReference?.let { ref ->
-            /* val activity: Activity? =*/
 
             // Get activity from weak reference activity object
             ref.get()?.let { activity ->

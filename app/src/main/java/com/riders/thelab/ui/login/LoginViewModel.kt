@@ -21,7 +21,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val repository: IRepository
 ) : BaseViewModel() {
-    val list = listOf<String>("test", "mike", "chronopost", "john")
+    val list = listOf("test", "mike", "chronopost", "john")
 
     //////////////////////////////////////////
     // DataStore
