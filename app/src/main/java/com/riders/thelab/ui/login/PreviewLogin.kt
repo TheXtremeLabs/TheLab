@@ -65,8 +65,7 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
                     verticalArrangement = Arrangement.Center
                 ) {
                     Card(
-                        modifier = Modifier
-                            .size(96.dp),
+                        modifier = Modifier.size(96.dp),
                         shape = Shapes.large,
                         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.ic_lab_twelve_background))
                     ) {
@@ -150,6 +149,8 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
             delay(200L)
             formVisibility.value = true
             registerVisibility.value = true
+
+            viewModel.login()
         }
     }
 

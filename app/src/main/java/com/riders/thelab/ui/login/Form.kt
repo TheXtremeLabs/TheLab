@@ -11,6 +11,7 @@ import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -64,10 +65,17 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
+import com.riders.thelab.core.compose.ui.theme.md_theme_light_primary
 import com.riders.thelab.data.local.model.compose.LoginUiState
 import com.riders.thelab.data.local.model.compose.WindowSizeClass
 import timber.log.Timber
 
+///////////////////////////////////////////////////
+//
+// COMPOSE
+//
+///////////////////////////////////////////////////
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
 @Composable
 fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
@@ -204,55 +212,67 @@ fun Submit(viewModel: LoginViewModel) {
     var clickNumber = 0
 
     TheLabTheme {
-        Button(
+        Column(
             modifier = Modifier
-                .fillMaxWidth(0.3f)
-                .height(48.dp)
-                .padding(top = 16.dp)
-                .then(clickable)
-                .indication(
-                    interactionSource = interactionSource,
-                    indication = LocalIndication.current
-                ),
-            onClick = {
-                Timber.d("Login button clicked")
-                clickNumber += 1
-
-                when (clickNumber) {
-                    10, 20, 30 -> {
-                        Timber.d("${interactions.toString()}")
-                    }
-                }
-                viewModel.login()
-            }
+                .fillMaxWidth(0.35f)
+                .padding(top = 16.dp),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Center
         ) {
-            AnimatedContent(targetState = status) { targetState ->
-                when (targetState) {
-                    LoginUiState.Connecting -> {
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    //.padding(top = 16.dp)
+                    .then(clickable)
+                    .indication(
+                        interactionSource = interactionSource,
+                        indication = LocalIndication.current
+                    ),
+                onClick = {
+                    Timber.d("Login button clicked")
+                    clickNumber += 1
+
+                    when (clickNumber) {
+                        10, 20, 30 -> {
+                            Timber.d("${interactions.toString()}")
                         }
                     }
+                    viewModel.login()
+                }
+            ) {
+                AnimatedContent(targetState = status) { targetState ->
+                    when (targetState) {
+                        LoginUiState.Connecting -> {
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = if (!isSystemInDarkTheme()) md_theme_dark_primary else md_theme_light_primary
+                                )
+                            }
+                        }
 
-                    else -> {
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                        else -> {
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
 
-                            Text(
-                                modifier = Modifier.align(CenterVertically),
-                                text = text
-                            )
+                                Text(
+                                    modifier = Modifier.align(CenterVertically),
+                                    text = text
+                                )
 
-                            Icon(
-                                modifier = Modifier.align(CenterVertically),
-                                imageVector = Icons.Filled.KeyboardArrowRight,
-                                contentDescription = null
-                            )
+                                Icon(
+                                    modifier = Modifier.align(CenterVertically),
+                                    imageVector = Icons.Filled.KeyboardArrowRight,
+                                    contentDescription = null
+                                )
+                            }
                         }
                     }
                 }
@@ -328,6 +348,29 @@ fun Form(viewModel: LoginViewModel) {
 }
 
 
+///////////////////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////////////////
+@DevicePreviews
+@Composable
+fun PreviewLogin() {
+    val viewModel: LoginViewModel = hiltViewModel()
+    Login(viewModel = viewModel, focusRequester = FocusRequester())
+}
+@DevicePreviews
+@Composable
+fun PreviewPassword() {
+    val viewModel: LoginViewModel = hiltViewModel()
+    Password(viewModel = viewModel, focusRequester = FocusRequester())
+}
+@DevicePreviews
+@Composable
+fun PreviewSubmit() {
+    val viewModel: LoginViewModel = hiltViewModel()
+    Submit(viewModel = viewModel)
+}
 @DevicePreviews
 @Composable
 fun PreviewForm() {

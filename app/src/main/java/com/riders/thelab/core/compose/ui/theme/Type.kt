@@ -19,17 +19,24 @@ val Typography = Typography(
     /* Other default text styles to override*/
     titleLarge = TextStyle(
         fontFamily = samsungSangFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
     titleMedium = TextStyle(
         fontFamily = samsungSangFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.sp
+        letterSpacing = 0.2.sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = samsungSangFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.0.sp,
+        letterSpacing = 0.1.sp
     ),
     labelSmall = TextStyle(
         fontFamily = samsungSangFamily,
