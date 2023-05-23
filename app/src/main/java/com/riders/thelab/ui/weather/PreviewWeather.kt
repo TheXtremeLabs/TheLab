@@ -19,6 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -146,7 +148,7 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
                                 .data(countryURL)
                                 .apply {
                                     crossfade(true)
-                                    allowHardware(true)
+                                    allowHardware(false)
                                     //transformations(RoundedCornersTransformation(32.dp.value))
                                 }
                                 .build(),
@@ -216,7 +218,7 @@ fun WeatherData(viewModel: WeatherViewModel) {
                 )
                 .apply {
                     crossfade(true)
-                    allowHardware(true)
+                    allowHardware(false)
                     //transformations(RoundedCornersTransformation(32.dp.value))
                 }
                 .build(),
@@ -286,7 +288,8 @@ fun WeatherData(viewModel: WeatherViewModel) {
                                     Text(text = "$cityName, $country")
                                     Text(
                                         text = weather.currentWeather.weather[0].main,
-                                        fontWeight = FontWeight.Bold
+                                        style = Typography.titleSmall,
+                                        fontWeight = FontWeight.ExtraBold
                                     )
                                 }
                             }
@@ -326,7 +329,20 @@ fun WeatherData(viewModel: WeatherViewModel) {
 
                                 Button(onClick = { viewModel.updateMoreDataVisibility() }) {
                                     AnimatedContent(targetState = viewModel.isWeatherMoreDataVisible) {
-                                        Text(text = if (!viewModel.isWeatherMoreDataVisible) "Show More" else "Close Panel")
+                                        Row(
+                                            modifier = Modifier,
+                                            horizontalArrangement = Arrangement.spacedBy(
+                                                16.dp,
+                                                Alignment.CenterHorizontally
+                                            ),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(text = if (!viewModel.isWeatherMoreDataVisible) "Show More" else "Close Panel")
+                                            Icon(
+                                                imageVector = if (!viewModel.isWeatherMoreDataVisible) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
+                                                contentDescription = "more icon"
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -553,7 +569,7 @@ fun WeatherDailyForecast(viewModel: WeatherViewModel, dailyWeatherList: List<Dai
                             )
                             .apply {
                                 crossfade(true)
-                                allowHardware(true)
+                                allowHardware(false)
                             }
                             .build(),
                         placeholder = painterResource(R.drawable.logo_colors),
