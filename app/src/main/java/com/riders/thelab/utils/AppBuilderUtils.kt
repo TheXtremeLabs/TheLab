@@ -256,7 +256,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(MultipaneActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityDate("2023/06/08")
                         .build()
                 this.add(multiPane)
 
@@ -589,6 +589,7 @@ object AppBuilderUtils {
             }
             .toList()
 
+    // TODO : Remove this methods replaced by kotlin implementation
     fun buildActivities(context: Context, app: App): List<App> {
 
         val list: MutableList<App> = ArrayList()

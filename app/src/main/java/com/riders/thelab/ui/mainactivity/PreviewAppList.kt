@@ -24,8 +24,6 @@ import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.previewprovider.AppPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.compose.ui.theme.md_theme_dark_background
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
-import com.riders.thelab.core.compose.ui.theme.md_theme_light_primary
 import com.riders.thelab.core.compose.utils.findActivity
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.app.App
@@ -124,14 +122,14 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = title,
-                        color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary
+                        color = if (!isSystemInDarkTheme()) Color.Black else Color.White
                     )
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = description,
                         maxLines = 2,
-                        color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary
+                        color = if (!isSystemInDarkTheme()) Color.Black else Color.White
                     )
                 }
             }

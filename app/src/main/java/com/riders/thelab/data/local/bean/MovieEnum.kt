@@ -8,7 +8,7 @@ enum class MovieEnum(val title: String, val genre: String, val year: String, val
         "Mad Max: Fury Road",
         "Action & Adventure",
         "2015",
-        "http://www.lyricis.fr/wp-content/uploads/2015/04/Mad-Max-Fury-Road-Affiche-Finale-US.jpg"
+        "https://confluences.hypotheses.org/files/2023/01/mad-max-affiche-2.jpg"
     ),
     INSIDE_OUT(
         "Inside Out",
@@ -20,7 +20,7 @@ enum class MovieEnum(val title: String, val genre: String, val year: String, val
         "Star Wars: Episode VII - The Force Awakens",
         "Action",
         "2015",
-        "http://s2.lemde.fr/image/2015/10/19/534x0/4792408_6_5a54_2015-10-19-9644df6-23620-irycre_2fc3ea95cb36078aadd9728153e377ea.jpg"
+        "https://cdn.shopify.com/s/files/1/1057/4964/products/Star-Wars-The-Force-Awakens-Vintage-Movie-Poster-Original-1-Sheet-27x41-7308_2000x.progressive.jpg?v=1666911067"
     ),
     SHAUN_THE_SHEEP(
         "Shaun the Sheep",
@@ -38,7 +38,7 @@ enum class MovieEnum(val title: String, val genre: String, val year: String, val
         "Mission: Impossible Rogue Nation",
         "Action",
         "2015",
-        "http://www.addictomovie.com/wp-content/uploads/2015/06/mi5_affiche_11.jpg"
+        "https://fusion.molotov.tv/arts/i/446x588/Ch8SHQoUv-wmMqUTaFFU-z8fiyvejhkSwR0SA2pwZxgB/jpg"
     ),
     UP("Up", "Animation", "2009", "http://www.walle.free.fr/up/affiche_fr_big.jpg"),
     STAR_TREK(
@@ -51,7 +51,7 @@ enum class MovieEnum(val title: String, val genre: String, val year: String, val
         "The LEGO Movie",
         "Animation",
         "2014",
-        "http://www.lyricis.fr/wp-content/uploads/2013/11/The-LEGO-Movie-Affiche-USA-2.jpg"
+        "https://m.media-amazon.com/images/I/71rH-TN3BnL._AC_SY445_.jpg"
     ),
     IRON_MAN(
         "Iron Man",
@@ -75,7 +75,7 @@ enum class MovieEnum(val title: String, val genre: String, val year: String, val
         "Back to the Future",
         "Science Fiction",
         "1985",
-        "http://www.spasm.ca/wp-content/uploads/2015/05/Affiche-BackToTheFuture.jpg"
+        "https://www.filmsfantastiques.com/wp-content/uploads/2014/04/Retour-vers-le-futur-poster-703x1024.jpg"
     ),
     RAIDERS_OF_THE_LOST_ARK(
         "Raiders of the Lost Ark",
@@ -96,13 +96,9 @@ enum class MovieEnum(val title: String, val genre: String, val year: String, val
         "http://img.filmsactu.net/datas/films/l/e/les-gardiens-de-la-galaxie/xl/les-gardiens-de-la-galaxie-affiche-53b28a79becd7.jpg"
     );
 
+    fun toMovie(): Movie = Movie(this)
+
     companion object {
-        fun getMovies(): List<Movie> {
-            val list: MutableList<Movie> = ArrayList()
-            for (item in values()) {
-                list.add(Movie(item))
-            }
-            return list
-        }
+        fun getMovies(): List<Movie> = values().map { Movie(it) }
     }
 }

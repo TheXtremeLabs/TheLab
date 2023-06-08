@@ -2,24 +2,38 @@ package com.riders.thelab.ui.multipane
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.riders.thelab.R
+import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.data.local.model.Movie
 import com.riders.thelab.databinding.ActivityMultiPaneBinding
 import com.riders.thelab.navigator.Navigator
+import com.riders.thelab.ui.base.BaseActivity
 import com.riders.thelab.ui.multipane.fragments.MultiPaneDetailFragment
 import com.riders.thelab.ui.multipane.fragments.MultiPaneMainFragment
+import com.riders.thelab.ui.splashscreen.SplashScreenActivity
+import com.riders.thelab.ui.splashscreen.SplashScreenContent
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
 @AndroidEntryPoint
-class MultipaneActivity : AppCompatActivity(), MovieClickListener {
+class MultipaneActivity : ComponentActivity(), MovieClickListener {
 
     private lateinit var viewBinding: ActivityMultiPaneBinding
 
@@ -30,14 +44,30 @@ class MultipaneActivity : AppCompatActivity(), MovieClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMultiPaneBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
 
-        if (LabCompatibilityManager.isTablet(this)) {
-            bindTabletViews()
+        lifecycleScope.launch {
+            Timber.d("coroutine launch with name ${this.coroutineContext}")
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+
+                setContent {
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            MultiPaneContainer()
+                        }
+                    }
+                }
+            }
         }
 
-        initViewModelObservers()
+        /*if (LabCompatibilityManager.isTablet(this)) {
+            bindTabletViews()
+        }*/
 
+        initViewModelObservers()
     }
 
     override fun onResume() {
@@ -61,7 +91,7 @@ class MultipaneActivity : AppCompatActivity(), MovieClickListener {
 
     private fun initViewModelObservers() {
 
-        mMultiPaneViewModel.getMovies().observe(this, {
+        mMultiPaneViewModel.getMovies().observe(this) {
 
             Timber.d("onMovieFetchedSuccess()")
 
@@ -77,11 +107,11 @@ class MultipaneActivity : AppCompatActivity(), MovieClickListener {
 
             mAdapter = MoviesAdapter(this, it, this)
             viewBinding.rvMultiPane?.adapter = mAdapter
-        })
+        }
     }
 
 
-    private fun bindTabletViews() {
+    /*private fun bindTabletViews() {
         Timber.d("bindTabletViews()")
         supportFragmentManager
             .beginTransaction()
@@ -97,7 +127,7 @@ class MultipaneActivity : AppCompatActivity(), MovieClickListener {
                 MultiPaneDetailFragment.newInstance()
             )
             .commit()
-    }
+    }*/
 
     /*override fun onMovieItemSelected(movie: Movie) {
         MultiPaneDetailFragment.newInstance(movie)
