@@ -177,6 +177,8 @@ class MainActivity : ComponentActivity(),
             isTimeUpdatedStarted = false
         }
 
+        labLocationManager?.stopUsingGPS()
+
         super.onPause()
     }
 

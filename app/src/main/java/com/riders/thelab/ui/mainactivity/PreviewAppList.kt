@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.mainactivity
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -23,6 +24,8 @@ import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.previewprovider.AppPreviewProvider
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.compose.ui.theme.md_theme_dark_background
+import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
+import com.riders.thelab.core.compose.ui.theme.md_theme_light_primary
 import com.riders.thelab.core.compose.utils.findActivity
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.model.app.App
@@ -70,7 +73,7 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                 .height(dimensionResource(id = R.dimen.max_card_image_height))
                 .fillMaxWidth(),
             onClick = { (context.findActivity() as MainActivity).launchApp(item) },
-            colors = CardDefaults.cardColors(containerColor = md_theme_dark_background),
+            // colors = CardDefaults.cardColors(containerColor = md_theme_dark_background),
             elevation = CardDefaults.cardElevation(0.dp)
         ) {
             Column(
@@ -118,10 +121,17 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                         .padding(8.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(modifier = Modifier.fillMaxWidth(), text = title)
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = title,
+                        color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary
+                    )
 
                     Text(
-                        modifier = Modifier.fillMaxWidth(), text = description, maxLines = 2
+                        modifier = Modifier.fillMaxWidth(),
+                        text = description,
+                        maxLines = 2,
+                        color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary
                     )
                 }
             }

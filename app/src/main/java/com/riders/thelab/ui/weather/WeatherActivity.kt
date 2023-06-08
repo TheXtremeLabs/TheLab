@@ -69,6 +69,8 @@ class WeatherActivity : BaseActivity(), LocationListener {
         super.onPause()
 
         unregisterReceiver(mGpsSwitchStateReceiver)
+
+        labLocationManager?.stopUsingGPS()
     }
 
     public override fun onResume() {
