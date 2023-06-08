@@ -132,7 +132,7 @@ class BuiltInBrowserActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if (item.itemId == R.id.home) {
+        if (item.itemId == android.R.id.home) {
             finish()
         }
         if (item.itemId == R.id.action_bookmark) {

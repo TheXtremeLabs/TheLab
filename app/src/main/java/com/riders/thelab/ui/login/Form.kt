@@ -61,7 +61,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
@@ -76,7 +75,7 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////////////////////////
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
     TheLabTheme {
@@ -182,7 +181,7 @@ fun Password(viewModel: LoginViewModel, focusRequester: FocusRequester) {
     }
 }
 
-@OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Submit(viewModel: LoginViewModel) {
 

@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -194,7 +193,7 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
     }
 }
 
-@OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun WeatherData(viewModel: WeatherViewModel) {
 
@@ -620,7 +619,6 @@ fun WeatherDailyForecast(viewModel: WeatherViewModel, dailyWeatherList: List<Dai
 fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
 
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val composition by
     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.error_rolling_dark_theme))
     val progress by animateLottieCompositionAsState(
@@ -658,7 +656,7 @@ fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherContent(viewModel: WeatherViewModel, labLocationManager: LabLocationManager) {
 

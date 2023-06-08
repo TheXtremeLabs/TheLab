@@ -95,6 +95,8 @@ android {
         // Determines whether to support Data Binding.
         // Note that the dataBinding.enabled property is now deprecated.
         dataBinding = true
+
+        buildConfig = true
     }
 
     lint {
