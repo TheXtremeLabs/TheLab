@@ -77,6 +77,33 @@ fun TheLabTopAppBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun TheLabTopAppBar(navigationIcon: @Composable() (() -> Unit)) {
+    val context = LocalContext.current
+
+    TheLabTheme {
+        TopAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.dp)
+                .background(Color.Transparent),
+            title = {
+            },
+            navigationIcon = {
+                IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun TheLabTopAppBar(
     @PreviewParameter(TextContentPreviewProvider::class) title: String,
     viewModel: WeatherViewModel,

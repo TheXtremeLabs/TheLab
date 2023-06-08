@@ -85,14 +85,16 @@ fun main3() {
 
 // ---------- Internal code ----------
 
+/*
 inline fun <T> result(builder: ResultBuilder.() -> T): Result<T> {
     return runCatching { ResultBuilder.builder() }
 }
 
 object ResultBuilder {
     fun String.toNotBlankString(): NotBlankString =
-        kotools.types.text.toNotBlankString().getOrThrow()
+        kotools.types.text.NotBlankString.toNotBlankString().getOrThrow()
 }
+*/
 
 // ---------- Sample ----------
 
@@ -100,9 +102,11 @@ data class Artist(val firstName: NotBlankString, val lastName: NotBlankString) {
     override fun toString(): String = "$firstName $lastName"
 }
 
+/*
 fun main() {
     val result: Result<Artist> = result {
         Artist(firstName = "Pi'erre".toNotBlankString(), lastName = "Bourne".toNotBlankString())
     }
     println(result) // Success(Pi'erre Bourne)
 }
+*/

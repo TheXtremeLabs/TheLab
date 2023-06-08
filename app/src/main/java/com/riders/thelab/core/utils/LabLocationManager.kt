@@ -110,16 +110,19 @@ class LabLocationManager constructor(context: Context) : LocationListener {
 
     @SuppressLint("MissingPermission")
     private fun getLocationViaNetwork() {
-        mContext?.let {
-            ContextCompat.getMainExecutor(it).execute {
-                // This is where your UI code goes.
-                locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER,
-                    MIN_TIME_BW_UPDATES,
-                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
-                    mLocationListener!!
-                )
+        mContext.let { context ->
+            mLocationListener?.let { listener ->
+                ContextCompat.getMainExecutor(context).execute {
+                    // This is where your UI code goes.
+                    locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
+                        listener
+                    )
+                }
             }
+
         }
 
         Timber.d("Network Enabled")
@@ -128,16 +131,17 @@ class LabLocationManager constructor(context: Context) : LocationListener {
 
     @SuppressLint("MissingPermission")
     private fun getLocationViaGPS() {
-        mContext?.let {
-            ContextCompat.getMainExecutor(it).execute {
-                // This is where your UI code goes.
-                locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    MIN_TIME_BW_UPDATES,
-                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
-                    mLocationListener!!
-
-                )
+        mContext.let { context ->
+            mLocationListener?.let { listener ->
+                ContextCompat.getMainExecutor(context).execute {
+                    // This is where your UI code goes.
+                    locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
+                        listener
+                    )
+                }
             }
         }
 
@@ -205,7 +209,7 @@ class LabLocationManager constructor(context: Context) : LocationListener {
      * lauch Settings Options
      */
     fun showSettingsAlert() {
-        mContext?.let {
+        mContext.let {
             val alertDialog = AlertDialog.Builder(it)
 
             // Setting Dialog Title

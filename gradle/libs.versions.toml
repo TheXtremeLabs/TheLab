@@ -57,7 +57,7 @@ androidxWindowManager = "1.0.0"
 androidxWindowExtensions = "1.0.0-alpha01"
 androidxWork = "2.7.1"
 blurry = "4.0.1"
-coil = "2.2.2"
+coil = "2.4.0"
 dexter = "6.2.3"
 eventbus = "3.3.0"
 # Firebase
