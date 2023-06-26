@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.multipane
+package com.riders.thelab.ui.theaters
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
@@ -11,7 +11,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.with
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,17 +38,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.compose.ui.theme.md_theme_dark_background
+import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primaryContainer
 import com.riders.thelab.core.compose.ui.theme.samsungSangFamily
 import com.riders.thelab.data.local.bean.MovieEnum
 import kotlinx.coroutines.delay
@@ -60,11 +62,12 @@ import kotlinx.coroutines.delay
 //
 ///////////////////////////////////////
 @Composable
-fun MultiPaneSplash() {
+fun TheatersSplash() {
     val scale = remember { Animatable(initialValue = 2f) }
+    val theaterAdditionalTextVisibility = remember { mutableStateOf(false) }
     val visible = remember { mutableStateOf(false) }
 
-    TheLabTheme {
+    TheLabTheme(darkTheme = true) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(.7f)
@@ -72,16 +75,38 @@ fun MultiPaneSplash() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Row(
+                modifier = Modifier.padding(8.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-            Text(
-                modifier = Modifier.scale(scale.value),
-                text = "MultiPane",
-                style = TextStyle(
-                    fontFamily = samsungSangFamily,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 32.sp
+                Text(
+                    modifier = Modifier.scale(scale.value),
+                    text = "T",
+                    style = TextStyle(
+                        fontFamily = samsungSangFamily,
+                        fontWeight = FontWeight.Black,
+                        fontSize = 32.sp,
+                        color = md_theme_dark_primaryContainer
+                    ),
+                    maxLines = 1
                 )
-            )
+                AnimatedVisibility(visible = if (LocalInspectionMode.current) true else theaterAdditionalTextVisibility.value) {
+                    Text(
+                        modifier = Modifier.scale(scale.value),
+                        text = "heaters",
+                        style = TextStyle(
+                            fontFamily = samsungSangFamily,
+                            fontWeight = FontWeight.Black,
+                            fontSize = 32.sp,
+                            color = md_theme_dark_primaryContainer
+                        ),
+                        maxLines = 1
+                    )
+                }
+            }
+
 
             AnimatedVisibility(visible = if (LocalInspectionMode.current) true else visible.value) {
                 Row(
@@ -91,21 +116,22 @@ fun MultiPaneSplash() {
                 ) {
                     Text(
                         text = "Powered By",
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        color = Color.White
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Image(
                         modifier = Modifier.height(12.dp),
                         painter = painterResource(id = R.drawable.ic_lab_6_the),
                         contentDescription = "the_icon",
-                        colorFilter = ColorFilter.tint(if (!isSystemInDarkTheme()) Color.Black else Color.White)
+                        colorFilter = ColorFilter.tint(Color.White)
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Image(
                         modifier = Modifier.height(12.dp),
                         painter = painterResource(id = R.drawable.ic_lab_6_lab),
                         contentDescription = "lab_icon",
-                        colorFilter = ColorFilter.tint(if (!isSystemInDarkTheme()) Color.Black else Color.White)
+                        colorFilter = ColorFilter.tint(Color.White)
                     )
                 }
             }
@@ -117,8 +143,13 @@ fun MultiPaneSplash() {
         scale.animateTo(targetValue = 1f, initialVelocity = 0.3f)
     }
 
-    LaunchedEffect(visible) {
+    LaunchedEffect(theaterAdditionalTextVisibility) {
         delay(1000L)
+        theaterAdditionalTextVisibility.value = true
+    }
+
+    LaunchedEffect(visible) {
+        delay(1300L)
         visible.value = true
     }
 }
@@ -126,12 +157,11 @@ fun MultiPaneSplash() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MultiPaneContent() {
-    val context = LocalContext.current
+fun TheatersContent(viewModel: TheatersViewModel) {
     val lazyListState = rememberLazyListState()
     val lazyRowListState = rememberLazyListState()
 
-    TheLabTheme {
+    TheLabTheme(darkTheme = true) {
         Scaffold(
             topBar = {
                 TheLabTopAppBar {}
@@ -150,7 +180,7 @@ fun MultiPaneContent() {
                     state = lazyListState
                 ) {
                     item {
-                        TrendingMovie(movie = MovieEnum.getMovies().random())
+                        TrendingMovie(viewModel = viewModel, movie = MovieEnum.getMovies().random())
                     }
 
                     item {
@@ -173,25 +203,33 @@ fun MultiPaneContent() {
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun MultiPaneContainer() {
+fun TheatersContainer(viewModel: TheatersViewModel) {
 
     val switch = remember { mutableStateOf(false) }
 
-    TheLabTheme {
-        Box(modifier = Modifier.fillMaxSize()) {
-            AnimatedContent(
-                modifier = Modifier.align(Alignment.Center),
-                transitionSpec = {
-                    slideInVertically { height -> height } + fadeIn() with
-                            slideOutVertically { height -> -height } + fadeOut()
-                },
-                targetState = if (LocalInspectionMode.current) true else switch.value
-            ) { targetState ->
-                if (!targetState) {
-                    MultiPaneSplash()
-                } else {
-                    MultiPaneContent()
+    TheLabTheme(darkTheme = true) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(md_theme_dark_background)
+        ) {
+            if (!viewModel.once) {
+                AnimatedContent(
+                    modifier = Modifier.align(Alignment.Center),
+                    transitionSpec = {
+                        slideInVertically { height -> height } + fadeIn() with
+                                slideOutVertically { height -> -height } + fadeOut()
+                    },
+                    targetState = if (LocalInspectionMode.current) true else switch.value
+                ) { targetState ->
+                    if (!targetState) {
+                        TheatersSplash()
+                    } else {
+                        TheatersContent(viewModel = viewModel)
+                    }
                 }
+            } else {
+                TheatersContent(viewModel = viewModel)
             }
         }
     }
@@ -199,6 +237,7 @@ fun MultiPaneContainer() {
     LaunchedEffect(switch) {
         delay(3000L)
         switch.value = true
+        viewModel.updateOnce()
     }
 }
 
@@ -210,24 +249,26 @@ fun MultiPaneContainer() {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewMultiPaneSplash() {
-    TheLabTheme {
-        MultiPaneSplash()
+private fun PreviewTheatersSplash() {
+    TheLabTheme(darkTheme = true) {
+        TheatersSplash()
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewMultiPaneContent() {
-    TheLabTheme {
-        MultiPaneContent()
+private fun PreviewTheatersContent() {
+    val viewModel: TheatersViewModel = hiltViewModel()
+    TheLabTheme(darkTheme = true) {
+        TheatersContent(viewModel)
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewMultiPaneContainer() {
-    TheLabTheme {
-        MultiPaneContainer()
+private fun PreviewTheatersContainer() {
+    val viewModel: TheatersViewModel = hiltViewModel()
+    TheLabTheme(darkTheme = true) {
+        TheatersContainer(viewModel)
     }
 }

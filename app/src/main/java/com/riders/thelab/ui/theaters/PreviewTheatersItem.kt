@@ -1,10 +1,11 @@
-package com.riders.thelab.ui.multipane
+package com.riders.thelab.ui.theaters
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +33,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
@@ -35,8 +42,10 @@ import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.compose.ui.theme.Typography
+import com.riders.thelab.core.compose.utils.findActivity
 import com.riders.thelab.data.local.bean.MovieEnum
 import com.riders.thelab.data.local.model.Movie
+import com.riders.thelab.navigator.Navigator
 
 
 ///////////////////////////////////////
@@ -45,7 +54,11 @@ import com.riders.thelab.data.local.model.Movie
 //
 ///////////////////////////////////////
 @Composable
-fun TrendingMovie(movie: Movie) {
+fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
+    val context = LocalContext.current
+    val activity = context.findActivity() as TheatersActivity
+    val navigator = Navigator(activity)
+
     val painter = rememberAsyncImagePainter(
         model = ImageRequest
             .Builder(LocalContext.current)
@@ -62,7 +75,7 @@ fun TrendingMovie(movie: Movie) {
     )
     val state = painter.state
 
-    TheLabTheme {
+    TheLabTheme(darkTheme = true) {
         Box(
             modifier = Modifier
                 .defaultMinSize(1.dp)
@@ -106,11 +119,43 @@ fun TrendingMovie(movie: Movie) {
                     textAlign = TextAlign.Start
                 )
 
-                Text(
-                    modifier = Modifier.padding(24.dp),
-                    text = "${movie.title}",
-                    color = Color.White
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(modifier = Modifier.weight(1f), onClick = {}) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(imageVector = Icons.Rounded.Add, contentDescription = "Plus icon")
+                        }
+                    }
+                    Text(
+                        modifier = Modifier
+                            .weight(2f)
+                            .padding(24.dp),
+                        text = "${movie.title}",
+                        color = Color.White
+                    )
+                    IconButton(
+                        modifier = Modifier.weight(1f),
+                        onClick = { viewModel.getMovieDetail(activity, navigator, movie) }) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Info,
+                                contentDescription = "Outline more detail icon"
+                            )
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -136,7 +181,7 @@ fun MovieItem(movie: Movie) {
     )
     val state = painter.state
 
-    TheLabTheme {
+    TheLabTheme(darkTheme = true) {
 
         Card(
             modifier = Modifier.size(
@@ -159,7 +204,14 @@ fun MovieItem(movie: Movie) {
                     contentScale = ContentScale.Crop,
                 )
 
-                Text(modifier = Modifier.weight(.5f), text = "${movie.title}")
+                Text(
+                    modifier = Modifier
+                        .weight(.5f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    text = "${movie.title}",
+                    textAlign = TextAlign.Center
+                )
             }
         }
 
@@ -175,10 +227,11 @@ fun MovieItem(movie: Movie) {
 @DevicePreviews
 @Composable
 private fun PreviewTrendingMovie() {
+    val viewModel: TheatersViewModel = hiltViewModel()
     val movie = MovieEnum.getMovies().random()
 
     TheLabTheme {
-        TrendingMovie(movie)
+        TrendingMovie(viewModel, movie)
     }
 }
 
