@@ -146,10 +146,10 @@ fun AppBarContent(viewModel: MainActivityViewModel, focusManager: FocusManager) 
                 // .navigationBarsPadding(),
                 //    .background(Color.Black)
                 ,
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = Color.White,
-                    containerColor = Color.Transparent,
-                    placeholderColor = Color.LightGray,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    focusedContainerColor = Color.Transparent,
+                    focusedPlaceholderColor = Color.LightGray,
                     disabledTextColor = Color.Transparent,
                     cursorColor = md_theme_dark_primary,
                     focusedIndicatorColor = Color.Transparent,

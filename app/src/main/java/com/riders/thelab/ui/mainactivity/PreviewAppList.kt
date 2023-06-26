@@ -83,11 +83,30 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                         .fillMaxWidth()
                         .weight(2F),
                     shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-                    colors = CardDefaults.cardColors(containerColor = darkVibrantSwatch?.rgb?.let {
-                        Color(
-                            it
-                        )
-                    } ?: md_theme_dark_background),
+                    colors = CardDefaults.cardColors(
+                        containerColor =
+                        when (title) {
+                            stringResource(id = R.string.activity_title_colors),
+                            stringResource(id = R.string.activity_title_palette),
+                            stringResource(id = R.string.activity_title_youtube_like),
+                            stringResource(id = R.string.activity_title_google_drive),
+                            stringResource(id = R.string.activity_title_google_sign_in),
+                            stringResource(id = R.string.activity_title_weather),
+                            stringResource(id = R.string.activity_title_compose),
+                            stringResource(id = R.string.activity_title_lottie) -> {
+                                darkVibrantSwatch?.rgb?.let {
+                                    Color(
+                                        it
+                                    )
+                                } ?: md_theme_dark_background
+                            }
+
+                            else -> {
+                                md_theme_dark_background
+                            }
+                        }
+                    )
+
                 ) {
                     Column(
                         modifier = Modifier

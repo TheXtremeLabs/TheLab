@@ -383,10 +383,10 @@ class WeatherViewModel @Inject constructor(
 
                         UIManager.showActionInSnackBar(
                             activity,
-                            activity.findViewById(android.R.id.content),
                             "Worker FAILED",
                             SnackBarType.ALERT,
-                            "", null
+                            "",
+                            null
                         )
                         updateUIState(WeatherUIState.Error())
                     }

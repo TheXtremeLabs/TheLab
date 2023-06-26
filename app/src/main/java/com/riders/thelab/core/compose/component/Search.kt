@@ -70,10 +70,11 @@ fun Search(viewModel: MainActivityViewModel) {
             value = viewModel.searchedAppRequest.value,
             onValueChange = { viewModel.searchApp(it) },
             placeholder = { Text(text = stringResource(id = R.string.search_app_item_placeholder)) },
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = Color.White,
-                containerColor = Color.Transparent,
-                placeholderColor = Color.LightGray,
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedPlaceholderColor = Color.LightGray,
                 disabledTextColor = Color.Transparent,
                 cursorColor = md_theme_dark_primary,
                 focusedIndicatorColor = Color.Transparent,

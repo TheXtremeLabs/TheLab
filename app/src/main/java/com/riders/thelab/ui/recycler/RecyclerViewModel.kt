@@ -291,9 +291,7 @@ class RecyclerViewModel @Inject constructor(
 
         // showing snack bar with Undo option
         UIManager.showActionInSnackBar(
-            activity, activity.findViewById(android.R.id.content),
-            "$name removed from cart!", SnackBarType.WARNING,
-            "UNDO"
+            activity, "$name removed from cart!", SnackBarType.WARNING, "UNDO"
         ) {
             // undo is selected, restore the deleted item
             adapter.restoreItem(item, position)

@@ -212,7 +212,6 @@ class WeatherActivity : BaseActivity(), LocationListener {
         if (null == labLocationManager || labLocationManager?.canGetLocation() == false) {
             UIManager.showActionInSnackBar(
                 this,
-                findViewById(android.R.id.content),
                 "Cannot get location please enable device's position setting.",
                 SnackBarType.ALERT,
                 getString(R.string.action_ok)
