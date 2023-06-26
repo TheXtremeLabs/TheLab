@@ -111,7 +111,7 @@ class BiometricActivity : AppCompatActivity() {
         actionText: String,
         listener: View.OnClickListener
     ) {
-        UIManager.showActionInSnackBar(this, binding.root, message, type, actionText, listener)
+        UIManager.showActionInSnackBar(this, message, type, actionText, listener)
     }
 
     private fun authenticateWithRX() {

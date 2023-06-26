@@ -149,7 +149,6 @@ class BuiltInBrowserActivity : AppCompatActivity() {
 
             UIManager.showActionInSnackBar(
                 this,
-                viewBinding.mainContent,
                 msg,
                 SnackBarType.NORMAL,
                 "",

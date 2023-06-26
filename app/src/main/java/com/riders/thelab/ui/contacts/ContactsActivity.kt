@@ -203,7 +203,6 @@ class ContactsActivity
             // showing snack bar with Undo option
             UIManager.showActionInSnackBar(
                 this,
-                binding.coordinator,
                 "$name removed from cart!",
                 SnackBarType.WARNING,
                 "UNDO"
