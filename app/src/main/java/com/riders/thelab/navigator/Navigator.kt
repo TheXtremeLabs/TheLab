@@ -56,7 +56,7 @@ class Navigator constructor(
         activity.startActivity(Intent(activity, AddContactActivity::class.java))
     }
 
-    fun callMultipaneDetailActivity(intent: Intent?) {
+    fun callMultipaneDetailActivity(intent: Intent) {
         activity.startActivity(intent)
     }
 
