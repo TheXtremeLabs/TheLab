@@ -290,13 +290,13 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name=".ui.multipane.MultipaneActivity"
-            android:label="@string/activity_title_multipane"
+            android:name=".ui.theaters.TheatersActivity"
+            android:label="@string/activity_title_theaters"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/MultiPaneTheme" />
         <activity
-            android:name=".ui.multipane.MultipaneDetailActivity"
-            android:parentActivityName=".ui.multipane.MultipaneActivity"
+            android:name=".ui.theaters.TheatersDetailActivity"
+            android:parentActivityName=".ui.theaters.TheatersActivity"
             android:theme="@style/MultiPaneTheme" />
 
         <activity
