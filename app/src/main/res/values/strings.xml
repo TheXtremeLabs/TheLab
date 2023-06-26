@@ -279,12 +279,12 @@
     <string name="activity_title_floating_view">Floating Widget</string>
     <string name="notify_me">Notify Me !</string>
 
-    <!-- MultiPane -->
-    <string name="activity_title_multipane">MultiPane</string>
-    <string name="activity_title_multipane_detail">MultiPane Detail</string>
-    <string name="multipane_row_title_placeholder">Movie\'s Title</string>
-    <string name="multipane_row_genre_placeholder">Movie\'s genre</string>
-    <string name="multipane_row_year_placeholder">Movie\'s Year</string>
+    <!-- Theaters -->
+    <string name="activity_title_theaters">Theaters</string>
+    <string name="activity_title_theaters_detail">Theaters Detail</string>
+    <string name="theaters_row_title_placeholder">Movie\'s Title</string>
+    <string name="theaters_row_genre_placeholder">Movie\'s genre</string>
+    <string name="theaters_row_year_placeholder">Movie\'s Year</string>
 
     <!-- Speech To Text -->
     <string name="activity_title_speech_to_text">Speech To Text</string>
@@ -357,7 +357,7 @@
     <string name="action_weather_my_location">Weather for my location</string>
 
     <!-- Youtube -->
-    <string name="activity_title_youtube_like">Youtube Like Activity</string>
+    <string name="activity_title_youtube_like">Youtube</string>
     <string name="recycler_detail_btn_placeholder">DETAIL</string>
     <string name="thumb_transition_name">yt_thumb</string>
     <string name="title_transition_name">yt_title</string>
@@ -547,4 +547,6 @@
     <string name="pref_summary_delay_loading_barcode_result">Will show the loading spinner for 2s</string>
     <string name="activity_about_title">About</string>
     <string name="activity_web_view_title">WebView</string>
+    <string name="activity_title_compose">Compose</string>
+    <string name="activity_title_google_ml_kit">Google ML Kit</string>
 </resources>

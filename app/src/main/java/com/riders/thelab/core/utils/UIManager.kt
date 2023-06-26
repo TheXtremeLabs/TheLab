@@ -122,8 +122,9 @@ object UIManager {
     }
 
     fun showActionInSnackBar(
-        context: Activity, view: View?,
-        message: String, type: SnackBarType,
+        context: Activity,
+        message: String,
+        type: SnackBarType,
         actionText: String?,
         listener: View.OnClickListener?
     ) {

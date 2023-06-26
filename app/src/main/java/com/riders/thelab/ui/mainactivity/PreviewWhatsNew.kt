@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
@@ -60,7 +61,27 @@ fun WhatsNew(@PreviewParameter(AppPreviewProvider::class) item: App) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(2F)
-                        .background(darkVibrantSwatch?.rgb?.let { Color(it) } ?: Color.Transparent)
+                        .background(
+                            when (item.appTitle) {
+                                stringResource(id = R.string.activity_title_colors),
+                                stringResource(id = R.string.activity_title_palette),
+                                stringResource(id = R.string.activity_title_youtube_like),
+                                stringResource(id = R.string.activity_title_google_drive),
+                                stringResource(id = R.string.activity_title_google_sign_in),
+                                stringResource(id = R.string.activity_title_weather),
+                                stringResource(id = R.string.activity_title_compose),
+                                stringResource(id = R.string.activity_title_lottie) -> {
+                                    darkVibrantSwatch?.rgb?.let {
+                                        Color(
+                                            it
+                                        )
+                                    } ?: Color.Transparent
+                                }
+
+                                else -> {
+                                    Color.Transparent
+                                }
+                            })
                 ) {
                     Image(
                         modifier = Modifier
