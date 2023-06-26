@@ -23,10 +23,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -52,7 +53,9 @@ import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.compose.ui.theme.md_theme_dark_background
 import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primaryContainer
 import com.riders.thelab.core.compose.ui.theme.samsungSangFamily
+import com.riders.thelab.data.local.bean.MovieCategoryEnum
 import com.riders.thelab.data.local.bean.MovieEnum
+import com.riders.thelab.data.local.model.Movie
 import kotlinx.coroutines.delay
 
 
@@ -154,12 +157,46 @@ fun TheatersSplash() {
     }
 }
 
+@Composable
+fun TheaterCategoryList(
+    viewModel: TheatersViewModel,
+    rowListState: LazyListState,
+    categoryTitle: String,
+    movieList: List<Movie>
+) {
+    val list = remember { movieList }
+
+    TheLabTheme {
+        Text(
+            modifier = Modifier.padding(start = 16.dp),
+            text = categoryTitle,
+            style = TextStyle(
+                fontSize = 20.sp,
+                fontWeight = FontWeight.ExtraBold
+            )
+        )
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            state = rowListState,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            items(items = movieList.toList()) {
+                MovieItem(viewModel = viewModel, movie = it)
+            }
+        }
+    }
+}
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheatersContent(viewModel: TheatersViewModel) {
     val lazyListState = rememberLazyListState()
-    val lazyRowListState = rememberLazyListState()
+    val lazyRowTrendingListState = rememberLazyListState()
+    val lazyRowUpcomingListState = rememberLazyListState()
+    val lazyRowPopularListState = rememberLazyListState()
 
     TheLabTheme(darkTheme = true) {
         Scaffold(
@@ -177,23 +214,42 @@ fun TheatersContent(viewModel: TheatersViewModel) {
 
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
                     state = lazyListState
                 ) {
                     item {
                         TrendingMovie(viewModel = viewModel, movie = MovieEnum.getMovies().random())
                     }
 
+                    // TRENDING
                     item {
-                        LazyRow(
-                            modifier = Modifier.padding(16.dp),
-                            state = lazyRowListState,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            items(items = MovieEnum.getMovies()) {
-                                MovieItem(movie = it)
-                            }
-                        }
+                        TheaterCategoryList(
+                            viewModel = viewModel,
+                            rowListState = lazyRowTrendingListState,
+                            categoryTitle = MovieCategoryEnum.TRENDING.value,
+                            movieList = viewModel.mTrendingMovies
+                        )
+                    }
+
+                    // UPCOMING
+                    item {
+                        TheaterCategoryList(
+                            viewModel = viewModel,
+                            rowListState = lazyRowUpcomingListState,
+                            categoryTitle = MovieCategoryEnum.UPCOMING.value,
+                            movieList = viewModel.mUpcomingMovies
+                        )
+                    }
+
+                    // POPULAR
+                    item {
+                        TheaterCategoryList(
+                            viewModel = viewModel,
+                            rowListState = lazyRowPopularListState,
+                            categoryTitle = MovieCategoryEnum.POPULAR.value,
+                            movieList = viewModel.mPopularMovies
+                        )
                     }
                 }
             }

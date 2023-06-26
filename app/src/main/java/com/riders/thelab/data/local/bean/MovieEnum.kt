@@ -15,7 +15,7 @@ enum class MovieEnum(
 ) {
 
     MAD_MAX(
-        MovieCategoryEnum.POPULAR,
+        MovieCategoryEnum.UPCOMING,
         "Mad Max: Fury Road",
         "Action & Adventure",
         "2015",
@@ -26,7 +26,7 @@ enum class MovieEnum(
         3.2
     ),
     INSIDE_OUT(
-        MovieCategoryEnum.POPULAR,
+        MovieCategoryEnum.UPCOMING,
         "Inside Out",
         "Animation, Kids & Family",
         "2015",
@@ -70,7 +70,7 @@ enum class MovieEnum(
         3.2
     ),
     MI_ROGUE_NATION(
-        MovieCategoryEnum.POPULAR,
+        MovieCategoryEnum.UPCOMING,
         "Mission: Impossible Rogue Nation",
         "Action",
         "2015",
@@ -136,7 +136,6 @@ enum class MovieEnum(
         3.2
     ),
     CHICKEN_RUN(
-
         MovieCategoryEnum.POPULAR,
         "Chicken Run",
         "Animation",
@@ -148,7 +147,6 @@ enum class MovieEnum(
         3.2
     ),
     BACK_TO_FUTURE(
-
         MovieCategoryEnum.POPULAR,
         "Back to the Future",
         "Science Fiction",
@@ -172,7 +170,7 @@ enum class MovieEnum(
         3.2
     ),
     GOLD_FINGER(
-        MovieCategoryEnum.TRENDING,
+        MovieCategoryEnum.POPULAR,
         "Goldfinger",
         "Action & Adventure",
         "1965",
