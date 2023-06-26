@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -73,7 +74,6 @@ fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
             .build(),
         placeholder = painterResource(R.drawable.logo_colors),
     )
-    val state = painter.state
 
     TheLabTheme(darkTheme = true) {
         Box(
@@ -139,6 +139,7 @@ fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
                             .weight(2f)
                             .padding(24.dp),
                         text = "${movie.title}",
+                        textAlign = TextAlign.Center,
                         color = Color.White
                     )
                     IconButton(
@@ -155,16 +156,17 @@ fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
                         }
                     }
                 }
-
             }
         }
     }
-
-    //TODO : Create button add more info
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieItem(movie: Movie) {
+fun MovieItem(viewModel: TheatersViewModel, movie: Movie) {
+    val context = LocalContext.current
+    val activity = context.findActivity() as TheatersActivity
+    val navigator = Navigator(activity)
     val painter = rememberAsyncImagePainter(
         model = ImageRequest
             .Builder(LocalContext.current)
@@ -179,7 +181,6 @@ fun MovieItem(movie: Movie) {
             .build(),
         placeholder = painterResource(R.drawable.logo_colors),
     )
-    val state = painter.state
 
     TheLabTheme(darkTheme = true) {
 
@@ -187,7 +188,10 @@ fun MovieItem(movie: Movie) {
             modifier = Modifier.size(
                 width = dimensionResource(id = R.dimen.max_card_image_height),
                 height = dimensionResource(id = R.dimen.max_card_image_width)
-            )
+            ),
+            onClick = {
+                viewModel.getMovieDetail(activity, navigator, movie)
+            }
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -214,7 +218,6 @@ fun MovieItem(movie: Movie) {
                 )
             }
         }
-
     }
 }
 
@@ -238,9 +241,10 @@ private fun PreviewTrendingMovie() {
 @DevicePreviews
 @Composable
 private fun PreviewMovieItem() {
+    val viewModel: TheatersViewModel = hiltViewModel()
     val movie = MovieEnum.getMovies().random()
 
     TheLabTheme {
-        MovieItem(movie)
+        MovieItem(viewModel, movie)
     }
 }

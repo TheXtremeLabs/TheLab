@@ -2,14 +2,22 @@ package com.riders.thelab.ui.theaters
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
@@ -30,6 +38,8 @@ import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TheatersDetailContent(viewModel: TheatersDetailViewModel) {
+    val lazyListState = rememberLazyListState()
+    val lazyRowListState = rememberLazyListState()
 
     val movie by viewModel.movieUiState.collectAsStateWithLifecycle()
 
@@ -52,10 +62,31 @@ fun TheatersDetailContent(viewModel: TheatersDetailViewModel) {
     TheLabTheme(darkTheme = true) {
         Scaffold(topBar = { TheLabTopAppBar {} }
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize()
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                state = lazyListState
             ) {
-                Image(painter = painter, contentDescription = "movie image")
+                // Image
+                item {
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .defaultMinSize(1.dp)
+                            .height(650.dp),
+                        painter = painter,
+                        contentDescription = "movie image",
+                        contentScale = ContentScale.Crop,
+                    )
+                }
+
+                // Popularity and Rating
+                item {}
+
+                // Overview
+                item {
+                }
             }
         }
     }

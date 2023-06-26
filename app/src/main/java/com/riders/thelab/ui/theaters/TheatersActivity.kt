@@ -25,6 +25,9 @@ class TheatersActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mTheatersViewModel.fetchMovies()
+
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -47,7 +50,7 @@ class TheatersActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()")
-        mTheatersViewModel.fetchMovies()
+//        mTheatersViewModel.fetchMovies()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
