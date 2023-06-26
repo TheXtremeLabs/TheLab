@@ -1,18 +1,21 @@
 package com.riders.thelab.data.local.model
 
-import android.os.Parcelable
 import com.riders.thelab.data.local.bean.MovieEnum
-import com.squareup.moshi.JsonClass
-import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
-@Parcelize
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class Movie constructor(
+    var category: String? = null,
     var title: String? = null,
     var genre: String? = null,
     var year: String? = null,
-    var urlThumbnail: String? = null
-) : Parcelable {
+    var urlThumbnail: String? = null,
+    var type: String? = null,
+    var overview: String? = null,
+    var duration: Long? = null,
+    var cast: List<Actors>? = null,
+    var rating: Double? = null
+) : Serializable {
 
     constructor() : this("", "", "", "")
 
@@ -24,9 +27,18 @@ data class Movie constructor(
     }*/
 
     constructor(movieEnum: MovieEnum) : this() {
+        category = movieEnum.category.value
         title = movieEnum.title
         genre = movieEnum.genre
         year = movieEnum.year
         urlThumbnail = movieEnum.url
+        type = movieEnum.url
+        overview = movieEnum.overview
+        duration = movieEnum.duration
+        rating = movieEnum.rating
+    }
+
+    override fun toString(): String {
+        return "Movie(category=$category, title=$title, genre=$genre, year=$year, urlThumbnail=$urlThumbnail, type=$type, overview=$overview, duration=$duration, cast=$cast, rating=$rating)"
     }
 }
