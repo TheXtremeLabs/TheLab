@@ -10,7 +10,8 @@ enum class MovieEnum(
     val url: String,
     val type: String,
     var overview: String,
-    var duration: Long,
+    var duration: Int,
+    var popularity: Int,
     var rating: Double
 ) {
 
@@ -22,7 +23,8 @@ enum class MovieEnum(
         "https://confluences.hypotheses.org/files/2023/01/mad-max-affiche-2.jpg",
         "action",
         "",
-        15123665156144,
+        251,
+        62,
         3.2
     ),
     INSIDE_OUT(
@@ -33,7 +35,8 @@ enum class MovieEnum(
         "http://marvelll.fr/wp-content/uploads/2015/06/vice-versa-inside-out-film-2015-affiche-france.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     STAR_WARS(
@@ -44,7 +47,8 @@ enum class MovieEnum(
         "https://cdn.shopify.com/s/files/1/1057/4964/products/Star-Wars-The-Force-Awakens-Vintage-Movie-Poster-Original-1-Sheet-27x41-7308_2000x.progressive.jpg?v=1666911067",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     SHAUN_THE_SHEEP(
@@ -55,7 +59,8 @@ enum class MovieEnum(
         "http://marvelll.fr/wp-content/uploads/2015/04/Shaun-le-Mouton-le-Film-Affiche.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     THE_MARTIAN(
@@ -66,7 +71,8 @@ enum class MovieEnum(
         "http://fr.web.img3.acsta.net/pictures/15/09/08/15/20/305329.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     MI_ROGUE_NATION(
@@ -77,7 +83,8 @@ enum class MovieEnum(
         "https://fusion.molotov.tv/arts/i/446x588/Ch8SHQoUv-wmMqUTaFFU-z8fiyvejhkSwR0SA2pwZxgB/jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     UP(
@@ -88,7 +95,8 @@ enum class MovieEnum(
         "http://www.walle.free.fr/up/affiche_fr_big.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     STAR_TREK(
@@ -99,7 +107,8 @@ enum class MovieEnum(
         "http://www.avoir-alire.com/IMG/jpg/starr_grd.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     LEGO(
@@ -110,7 +119,8 @@ enum class MovieEnum(
         "https://m.media-amazon.com/images/I/71rH-TN3BnL._AC_SY445_.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     IRON_MAN(
@@ -121,7 +131,8 @@ enum class MovieEnum(
         "http://www.chroniquedisney.fr/imgFiliale/marvel/2008-ironman1-1-big.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     ALIENS(
@@ -132,7 +143,8 @@ enum class MovieEnum(
         "http://images.fan-de-cinema.com/affiches/large/5e/41239.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     CHICKEN_RUN(
@@ -143,7 +155,8 @@ enum class MovieEnum(
         "http://images.fan-de-cinema.com/affiches/large/51/21474.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     BACK_TO_FUTURE(
@@ -154,7 +167,8 @@ enum class MovieEnum(
         "https://www.filmsfantastiques.com/wp-content/uploads/2014/04/Retour-vers-le-futur-poster-703x1024.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     RAIDERS_OF_THE_LOST_ARK(
@@ -166,7 +180,8 @@ enum class MovieEnum(
         "http://www.goldposter.com/wp-content/uploads/2015/04/Raiders-of-the-Lost-Ark_poster_goldposter_com_44.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     GOLD_FINGER(
@@ -177,7 +192,8 @@ enum class MovieEnum(
         "http://images.commeaucinema.com/news/560_123.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     ),
     GUARDIANS_OF_THE_GALAXY(
@@ -188,7 +204,8 @@ enum class MovieEnum(
         "http://img.filmsactu.net/datas/films/l/e/les-gardiens-de-la-galaxie/xl/les-gardiens-de-la-galaxie-affiche-53b28a79becd7.jpg",
         "action",
         "",
-        15123665156144,
+        120,
+        62,
         3.2
     );
 

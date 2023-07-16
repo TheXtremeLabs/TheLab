@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.os.EnvironmentCompat
 import com.riders.thelab.R
+import com.riders.thelab.TheLabApplication
 import okhttp3.ResponseBody
 import okhttp3.internal.io.FileSystem
 import okio.buffer
@@ -258,4 +259,31 @@ object LabFileManager {
         coverart.setAdjustViewBounds(true)
         coverart.setLayoutParams(LinearLayout.LayoutParams(500, 500))
     }*/
+
+    fun getFileFromAssets(filename: String): InputStream? = TheLabApplication
+        .getInstance()
+        .getContext()
+        .assets
+        .runCatching {
+            open(filename)
+        }
+        .onFailure {
+            it.printStackTrace()
+            Timber.e("Failed to open asset file. Message : ${it.message}")
+        }
+        .getOrNull()
+
+    fun getFileInputStreamFromAssets(filename: String): InputStream? =
+        try {
+            TheLabApplication.getInstance().getContext().assets.open(filename)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            null
+        }
+
+    fun getJsonFileContentFromAssets(filename: String): String? =
+        getFileFromAssets(filename)?.let { stream ->
+            stream.bufferedReader().use { it.readText() }
+        }
+
 }
