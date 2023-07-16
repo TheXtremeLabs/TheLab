@@ -1,23 +1,42 @@
 package com.riders.thelab.data.local.model
 
 import com.riders.thelab.data.local.bean.MovieEnum
+import kotlinx.serialization.SerialName
 import java.io.Serializable
 
 @kotlinx.serialization.Serializable
 data class Movie constructor(
-    var category: String? = null,
-    var title: String? = null,
-    var genre: String? = null,
-    var year: String? = null,
-    var urlThumbnail: String? = null,
-    var type: String? = null,
-    var overview: String? = null,
-    var duration: Long? = null,
+    @SerialName("category")
+    var category: String,
+    @SerialName("title")
+    var title: String,
+    @SerialName("original_title")
+    var originalTitle: String,
+    @SerialName("synopsis")
+    var overview: String,
+    @SerialName("genre")
+    var genre: String,
+    @SerialName("year")
+    var year: String,
+    @SerialName("url")
+    var urlThumbnail: String,
+    @SerialName("type")
+    var type: String,
+    @SerialName("duration")
+    var duration: Int,
+    @SerialName("director")
+    var directors: List<Director>? = null,
+    @SerialName("scenario")
+    var scenarists: List<Scenarist>? = null,
+    @SerialName("casting")
     var cast: List<Actors>? = null,
-    var rating: Double? = null
+    @SerialName("popularity")
+    var popularity: Int,
+    @SerialName("rating")
+    var rating: Double
 ) : Serializable {
 
-    constructor() : this("", "", "", "")
+    constructor() : this("", "", "", "", "", "", "", "", 0, null, null, null, 0,0.0)
 
     /*constructor(title: String?, genre: String?, year: String?, urlThumbnail: String?) : this() {
         this.title = title
@@ -26,17 +45,19 @@ data class Movie constructor(
         this.urlThumbnail = urlThumbnail
     }*/
 
-    constructor(movieEnum: MovieEnum) : this() {
-        category = movieEnum.category.value
-        title = movieEnum.title
-        genre = movieEnum.genre
-        year = movieEnum.year
-        urlThumbnail = movieEnum.url
-        type = movieEnum.url
-        overview = movieEnum.overview
-        duration = movieEnum.duration
+    constructor(movieEnum: MovieEnum) : this(
+        category = movieEnum.category.value,
+        title = movieEnum.title,
+        originalTitle = movieEnum.title,
+        overview = movieEnum.overview,
+        genre = movieEnum.genre,
+        year = movieEnum.year,
+        urlThumbnail = movieEnum.url,
+        type = movieEnum.url,
+        duration = movieEnum.duration,
+        popularity = movieEnum.popularity,
         rating = movieEnum.rating
-    }
+    )
 
     override fun toString(): String {
         return "Movie(category=$category, title=$title, genre=$genre, year=$year, urlThumbnail=$urlThumbnail, type=$type, overview=$overview, duration=$duration, cast=$cast, rating=$rating)"

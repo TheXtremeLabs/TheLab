@@ -164,8 +164,6 @@ fun TheaterCategoryList(
     categoryTitle: String,
     movieList: List<Movie>
 ) {
-    val list = remember { movieList }
-
     TheLabTheme {
         Text(
             modifier = Modifier.padding(start = 16.dp),

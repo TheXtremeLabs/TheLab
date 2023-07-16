@@ -4,11 +4,11 @@ import kotlinx.serialization.SerialName
 import java.io.Serializable
 
 @kotlinx.serialization.Serializable
-data class Actors(
+data class Director(
     @SerialName("lastname")
-    override val lastName:String,
+    override  val lastName:String,
     @SerialName("firstname")
-    override  val firstName:String,
+    override val firstName:String,
     @SerialName("thumbnail")
-    override  val urlThumbnail: String
+    override val urlThumbnail: String
 ): Members, Serializable

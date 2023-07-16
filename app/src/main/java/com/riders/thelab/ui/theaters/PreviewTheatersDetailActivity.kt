@@ -65,7 +65,7 @@ fun TheatersDetailContent(viewModel: TheatersDetailViewModel) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 state = lazyListState
             ) {
                 // Image
@@ -82,10 +82,28 @@ fun TheatersDetailContent(viewModel: TheatersDetailViewModel) {
                 }
 
                 // Popularity and Rating
-                item {}
+                item {
+                    PopularityAndRating(movie)
+                }
 
                 // Overview
                 item {
+                    Overview(movie)
+                }
+
+                // Director
+                item {
+                    Director(movie)
+                }
+
+                // Scenarists
+                item {
+                    Scenarists(movie)
+                }
+
+                // Casting
+                item {
+                    Casting(movie)
                 }
             }
         }
