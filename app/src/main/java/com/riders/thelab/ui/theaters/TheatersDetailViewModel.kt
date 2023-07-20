@@ -67,14 +67,5 @@ class TheatersDetailViewModel : ViewModel() {
                     }
             }
         }
-
-        // Old code
-        /* val movie: Movie? = it.getString(TheatersDetailActivity.EXTRA_MOVIE)
-         ?.let { movieJsonString -> Json.decodeFromString(movieJsonString) }
-
-         if (movie != null) {
-             updateMovieUiState(movie)
-             movie.title?.let { title -> updateTitle(title) }
-         }*/
     }
 }

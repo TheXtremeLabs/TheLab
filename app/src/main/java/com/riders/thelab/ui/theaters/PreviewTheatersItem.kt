@@ -48,7 +48,6 @@ import com.riders.thelab.data.local.bean.MovieEnum
 import com.riders.thelab.data.local.model.Movie
 import com.riders.thelab.navigator.Navigator
 
-
 ///////////////////////////////////////
 //
 // COMPOSE

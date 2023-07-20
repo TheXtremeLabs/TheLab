@@ -50,7 +50,6 @@
     <!-- System Data -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
-    <uses-permission android:name="android.permission." />
     <uses-permission
         android:name="android.permission.INSTALL_PACKAGES"
         tools:ignore="ProtectedPermissions" />
@@ -77,6 +76,8 @@
     <uses-feature android:name="android.hardware.camera.external"/>
     <uses-feature android:name="android.hardware.camera.flash"/>-->
 
+    <!-- Android 13+ permission dialog -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Media Notification Foreground Service -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
