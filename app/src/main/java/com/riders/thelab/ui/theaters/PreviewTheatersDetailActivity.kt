@@ -39,7 +39,6 @@ import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 @Composable
 fun TheatersDetailContent(viewModel: TheatersDetailViewModel) {
     val lazyListState = rememberLazyListState()
-    val lazyRowListState = rememberLazyListState()
 
     val movie by viewModel.movieUiState.collectAsStateWithLifecycle()
 

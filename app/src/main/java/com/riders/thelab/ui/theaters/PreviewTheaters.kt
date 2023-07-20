@@ -110,7 +110,6 @@ fun TheatersSplash() {
                 }
             }
 
-
             AnimatedVisibility(visible = if (LocalInspectionMode.current) true else visible.value) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),

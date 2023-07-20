@@ -1,14 +1,22 @@
 package com.riders.thelab.ui.splashscreen
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -36,6 +44,12 @@ class SplashScreenActivity : AppCompatActivity(), CoroutineScope {
 
     private val mViewModel: SplashScreenViewModel by viewModels()
 
+    private val permissionRequestLauncher: ActivityResultLauncher<Array<String>> =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            Timber.d("registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) | $it")
+
+        }
+
 
     /////////////////////////////////////
     //
@@ -52,6 +66,9 @@ class SplashScreenActivity : AppCompatActivity(), CoroutineScope {
 
         super.onCreate(savedInstanceState)
 
+        if (LabCompatibilityManager.isTiramisu()) {
+            requestPermissionForAndroid13()
+        }
 
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
@@ -95,6 +112,31 @@ class SplashScreenActivity : AppCompatActivity(), CoroutineScope {
     // CLASSES METHODS
     //
     /////////////////////////////////////
+    fun requestPermissionForAndroid13() {
+        Timber.d("requestPermissionForAndroid13()")
+
+        if (ContextCompat.checkSelfPermission(
+                this@SplashScreenActivity,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            Timber.i("All permissions are granted. Continue workflow")
+
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                val packageName = this@SplashScreenActivity.packageName
+                val uri: Uri = Uri.fromParts(packageName, packageName, null)
+                data = uri
+            }.run {
+                startActivity(this)
+            }
+        } else {
+            Timber.e("Launch permissionRequestLauncher")
+            permissionRequestLauncher.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS))
+        }
+    }
+
     fun goToLoginActivity() {
         Timber.d("goToLoginActivity()")
         Navigator(this).callLoginActivity()
