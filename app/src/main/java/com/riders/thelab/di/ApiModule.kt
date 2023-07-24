@@ -2,6 +2,7 @@ package com.riders.thelab.di
 
 import android.content.res.AssetManager
 import com.google.common.net.HttpHeaders
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.storage.LabFileManager
 import com.riders.thelab.data.local.bean.TimeOut
@@ -15,7 +16,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.logging.HttpLoggingInterceptor
 import org.jetbrains.annotations.NotNull
 import retrofit2.Retrofit
@@ -185,10 +188,13 @@ internal object ApiModule {
     /* Provide Retrofit for the app */
     @Provides
     fun provideRetrofit(url: String): Retrofit {
+        val contentType = "application/json".toMediaType()
+
         return Retrofit.Builder()
             .baseUrl(url)
             .client(provideOkHttp())
             .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(Json.asConverterFactory(contentType))
             .build()
     }
 

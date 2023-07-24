@@ -5,22 +5,18 @@ import android.content.pm.PackageManager
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import com.riders.thelab.R
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.utils.Constants
 import timber.log.Timber
 
-class SplashScreenViewModel : ViewModel(), DefaultLifecycleObserver {
+class SplashScreenViewModel : ViewModel() {
 
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
     var version = mutableStateOf("")
-    val videoViewVisibility = mutableStateOf(true)
-    val splashLoadingContentVisibility = mutableStateOf(false)
     val startCountDown = mutableStateOf(false)
 
     var videoPath: String? by mutableStateOf(null)
@@ -28,13 +24,6 @@ class SplashScreenViewModel : ViewModel(), DefaultLifecycleObserver {
     var switchContent: Boolean by mutableStateOf(false)
         private set
 
-    fun updateVideoViewVisibility(isVisible: Boolean) {
-        videoViewVisibility.value = isVisible
-    }
-
-    fun updateSplashLoadingContentVisibility(isVisible: Boolean) {
-        splashLoadingContentVisibility.value = isVisible
-    }
 
     fun updateStartCountDown(started: Boolean) {
         startCountDown.value = started
@@ -77,21 +66,5 @@ class SplashScreenViewModel : ViewModel(), DefaultLifecycleObserver {
 
     } catch (error: PackageManager.NameNotFoundException) {
         Timber.e(error)
-    }
-
-
-    /////////////////////////////////////
-    //
-    // IMPLEMENTS
-    //
-    /////////////////////////////////////
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
-        Timber.d("onCreate()")
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-        Timber.e("onPause()")
     }
 }
