@@ -1,41 +1,68 @@
 package com.riders.thelab.ui.biometric
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import com.riders.thelab.R
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.utils.LabDeviceManager
 import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.data.local.bean.SnackBarType
-import com.riders.thelab.databinding.ActivityBiometricBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
+/*
+ * Source: https://medium.com/@en.mazzucchelli/biometric-authentication-jetpack-compose-146ee35e7039
+ */
 @AndroidEntryPoint
-class BiometricActivity : AppCompatActivity() {
+class BiometricActivity : FragmentActivity() {
 
-    private lateinit var context: Context
-
-    // Views
-    private var _viewBinding: ActivityBiometricBinding? = null
-
-    private val binding get() = _viewBinding!!
+    private val mViewModel: BiometricViewModel by viewModels()
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _viewBinding = ActivityBiometricBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        init()
+        // Check if fingerprint hardware is available
+        if (!LabDeviceManager.hasFingerPrintHardware(context = this)) {
+            Timber.e("The device doesn't have finger print hardware")
+            UIManager.showActionInToast(
+                this@BiometricActivity,
+                "The device doesn't have finger print hardware",
+            )
+            finish()
+            return
+        }
 
-        // initGoldFinger
-        initGoldFinger()
+        Timber.d("Fingerprint hardware ok")
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                setContent {
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            BiometricContent(mViewModel)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -47,106 +74,10 @@ class BiometricActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _viewBinding = null
-    }
-
 
     ///////////////////////
     //
     // CLASSES METHODS
     //
     ///////////////////////
-    private fun init() {
-        context = this
-
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = getString(R.string.activity_title_biometric)
-
-        binding.fingerPrintBtn.setOnClickListener {
-            Timber.d("on fingerprint button clicked")
-
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private fun initGoldFinger() {
-        LabDeviceManager.initFingerPrintWithRx(context, this)
-
-        // Check if fingerprint hardware is available
-        if (!LabDeviceManager.hasFingerPrintHardware()) {
-            Timber.e("The device doesn't have finger print hardware")
-            showSnackBar(
-                "The device doesn't have finger print hardware", SnackBarType.ALERT,
-                "LEAVE"
-            ) { finish() }
-            return
-        }
-        Timber.d("Fingerprint hardware ok")
-
-        // Check if device can authenticate
-        // TODO : Replace Gold Finger
-        /*if (!LabDeviceManager.getRxGoldFinger()?.canAuthenticate()!!) {
-            Timber.e("Cannot authenticate")
-            showSnackBar(
-                "Cannot authenticate",
-                SnackBarType.ALERT,
-                "QUIT"
-            ) { finish() }
-            return
-        }*/
-
-        // Init successfully executed
-        showSnackBar(
-            "Fingerprint initialization successfully executed",
-            SnackBarType.NORMAL,
-            "CONTINUE"
-        ) { Timber.d("User action validate") }
-    }
-
-    private fun showSnackBar(
-        message: String,
-        type: SnackBarType,
-        actionText: String,
-        listener: View.OnClickListener
-    ) {
-        UIManager.showActionInSnackBar(this, message, type, actionText, listener)
-    }
-
-    private fun authenticateWithRX() {
-        Timber.d("authenticateWithRX()")
-
-        //rxGoldFinger
-        // TODO : Replace Gold Finger
-        /*LabDeviceManager.getGoldFingerPromptParams()?.let {
-            LabDeviceManager.getRxGoldFinger()
-                ?.authenticate(it)
-                ?.subscribe(object : DisposableObserver<Goldfinger.Result?>() {
-                    override fun onComplete() {
-                        *//* Fingerprint authentication is finished *//*
-                        Timber.d("Authentication complete")
-                    }
-
-                    override fun onError(e: Throwable) {
-                        *//* Critical error happened *//*
-                        Timber.e(e)
-                    }
-
-                    override fun onNext(result: Goldfinger.Result) {
-                        *//* Result received *//*
-                        Timber.d(
-                            """
-                            Result :
-                            type : ${result.type()}
-                            value : ${result.value()}
-                            reason : ${result.reason()}
-                            message : ${result.message()}
-                            
-                            """.trimIndent()
-                        )
-                    }
-                })
-        }*/
-    }
 }

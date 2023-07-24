@@ -137,6 +137,7 @@ dependencies {
     implementation(libs.androidx.palette)
     implementation(libs.androidx.recyclerView)
     implementation(libs.androidx.material)
+    implementation(libs.androidx.biometric)
     implementation(libs.androidx.dynamicanimation)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.window.manager)

@@ -3,16 +3,19 @@ package com.riders.thelab.core.compose.utils
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.res.Resources
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
@@ -25,6 +28,10 @@ fun Context.findActivity(): Activity? = when (this) {
     is ContextWrapper -> baseContext.findActivity()
     else -> null
 }
+
+@Composable
+@ReadOnlyComposable
+private fun resourcesAsComposable(): Resources = LocalContext.current.resources
 
 object ComposeUtils {
     private const val senderPierre = "Pi'erre"

@@ -8,7 +8,7 @@ import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.view.WindowMetrics
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.FragmentActivity
+import androidx.biometric.BiometricManager
 import com.riders.thelab.utils.Constants
 import timber.log.Timber
 import java.io.File
@@ -254,22 +254,7 @@ object LabDeviceManager {
      * @param activity
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    fun initFingerPrint(context: Context?, activity: FragmentActivity) {
-
-    }
-
-    /**
-     * Init the RxGoldFinger variable
-     *
-     * @param context
-     * @param activity
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    fun initFingerPrintWithRx(context: Context?, activity: FragmentActivity) {
-
-    }
-
-    private fun initGoldFingerPromptParams(activity: FragmentActivity) {
+    fun initFingerPrint(context: Context, activity: Activity) {
 
     }
 
@@ -278,7 +263,12 @@ object LabDeviceManager {
      *
      * @return
      */
-    fun hasFingerPrintHardware(): Boolean {
-        return false
-    }
+    fun hasFingerPrintHardware(context: Context): Boolean =
+        when (BiometricManager.from(context).canAuthenticate()) {
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
+            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> false
+            BiometricManager.BIOMETRIC_SUCCESS -> true
+            else -> false
+        }
 }
