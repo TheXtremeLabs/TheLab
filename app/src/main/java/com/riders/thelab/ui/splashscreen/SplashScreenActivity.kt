@@ -7,11 +7,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.WindowManager
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,7 +32,7 @@ import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
-class SplashScreenActivity : AppCompatActivity(), CoroutineScope {
+class SplashScreenActivity : ComponentActivity(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + Job()
 

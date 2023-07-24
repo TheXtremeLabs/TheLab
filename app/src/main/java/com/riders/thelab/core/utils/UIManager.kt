@@ -125,8 +125,8 @@ object UIManager {
         context: Activity,
         message: String,
         type: SnackBarType,
-        actionText: String?,
-        listener: View.OnClickListener?
+        actionText: String? = null,
+        listener: View.OnClickListener? = null
     ) {
         // create instance
         val snackBar = Snackbar.make(

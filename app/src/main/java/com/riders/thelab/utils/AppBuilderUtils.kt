@@ -74,7 +74,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(BiometricActivity::class.java)
-                        .withActivityDate("2020/12/24")
+                        .withActivityDate("2023/07/24")
                         .build()
                 this.add(biometric)
 
