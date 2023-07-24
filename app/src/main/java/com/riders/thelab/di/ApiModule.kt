@@ -1,16 +1,14 @@
 package com.riders.thelab.di
 
-import android.content.res.AssetManager
 import com.google.common.net.HttpHeaders
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.riders.thelab.TheLabApplication
-import com.riders.thelab.core.storage.LabFileManager
+import com.riders.thelab.core.parser.LabParser
 import com.riders.thelab.data.local.bean.TimeOut
 import com.riders.thelab.data.local.model.weather.WeatherKey
 import com.riders.thelab.data.remote.api.*
 import com.riders.thelab.data.remote.dto.artist.ArtistsResponseJsonAdapter
 import com.riders.thelab.utils.Constants
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -22,9 +20,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.logging.HttpLoggingInterceptor
 import org.jetbrains.annotations.NotNull
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
-import java.io.InputStream
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -52,46 +48,18 @@ internal object ApiModule {
                 val original = chain.request()
                 val originalHttpUrl = original.url
                 var url: HttpUrl? = null
-                val json: String?
-                var mWeatherKey: WeatherKey? = null
-
-
-                val mAssetManager: AssetManager =
-                    TheLabApplication.getInstance().getContext()
-                        .resources
-                        .assets
-
-                try {
-
-                    // Get file from assets
-                    val `is`: InputStream = mAssetManager
-                        .open("weather_api.json")
-
-                    // Read file and store it into json string object
-                    json = LabFileManager.tryReadFile(`is`)
-
-                    // Use of Moshi
-                    val moshi = Moshi.Builder().build()
-                    val jsonAdapter: JsonAdapter<WeatherKey> =
-                        moshi.adapter(WeatherKey::class.java)
-                    assert(json != null)
-
-                    // Get value from josn string into WeatherKey object
-                    mWeatherKey = jsonAdapter.fromJson(json!!)
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    Timber.e(Objects.requireNonNull(e.message))
-                }
+                val mWeatherKey: WeatherKey? = LabParser.parseJsonFile<WeatherKey>(
+                    context = TheLabApplication.getInstance().getContext(),
+                    filename = "weather_api.json"
+                )
 
                 // Request customization: add request headers
-                val requestBuilder: Request.Builder
+                var requestBuilder: Request.Builder? = null
 
                 // Avoid key and metrics when requesting for bulk download
                 if (!originalHttpUrl.toString().contains("sample")) {
                     try {
-
-                        if (mWeatherKey != null) {
+                        mWeatherKey?.let {
                             url = originalHttpUrl.newBuilder()
                                 .addQueryParameter("appid", mWeatherKey.appID)
                                 .addQueryParameter("units", "metric")
@@ -105,8 +73,8 @@ internal object ApiModule {
                     assert(url != null)
 
                     // Request customization: add request headers
-                    requestBuilder = url?.let {
-                        original.newBuilder()
+                    url?.let {
+                        requestBuilder = original.newBuilder()
                             .url(it)
                             .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
                             .header(
@@ -114,22 +82,24 @@ internal object ApiModule {
                                 "close"
                             ) //.header(HttpHeaders.CONTENT_TYPE, "application/json")
                             .header(HttpHeaders.ACCEPT_ENCODING, "Identity")
-                    }!!
+
+                    }
                 } else {
-                    url = originalHttpUrl.newBuilder()
-                        .build()
+                    url = originalHttpUrl.newBuilder().build()
 
                     // Request customization: add request headers
-                    requestBuilder = original.newBuilder()
-                        .url(url)
-                        .header(HttpHeaders.CONTENT_TYPE, "text/plain")
-                        .header(HttpHeaders.CONNECTION, "close")
-                        .header(HttpHeaders.CACHE_CONTROL, "max-age=60")
-                        .header(HttpHeaders.ACCEPT_RANGES, "bytes")
-                        .header(HttpHeaders.ACCEPT_ENCODING, "Identity")
+                    url?.let {
+                        requestBuilder = original.newBuilder()
+                            .url(it)
+                            .header(HttpHeaders.CONTENT_TYPE, "text/plain")
+                            .header(HttpHeaders.CONNECTION, "close")
+                            .header(HttpHeaders.CACHE_CONTROL, "max-age=60")
+                            .header(HttpHeaders.ACCEPT_RANGES, "bytes")
+                            .header(HttpHeaders.ACCEPT_ENCODING, "Identity")
+                    }
                 }
-                val request = requestBuilder.build()
-                chain.proceed(request)
+                val request = requestBuilder?.build()
+                chain.proceed(request!!)
             })
             .addInterceptor(provideOkHttpLogger())
             .build()
@@ -193,7 +163,7 @@ internal object ApiModule {
         return Retrofit.Builder()
             .baseUrl(url)
             .client(provideOkHttp())
-            .addConverterFactory(MoshiConverterFactory.create())
+            //.addConverterFactory(MoshiConverterFactory.create())
             .addConverterFactory(Json.asConverterFactory(contentType))
             .build()
     }
@@ -201,13 +171,15 @@ internal object ApiModule {
     @Provides
     @Singleton
     fun provideRetrofitArtists(url: String): Retrofit {
+        val contentType = "application/json".toMediaType()
         val moshi = Moshi.Builder()
             .add(ArtistsResponseJsonAdapter())
             .build()
         return Retrofit.Builder()
             .baseUrl(url)
             .client(provideOkHttpArtists())
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+//            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(Json.asConverterFactory(contentType))
             .build()
     }
 
@@ -215,10 +187,14 @@ internal object ApiModule {
     @Provides
     @Singleton
     fun provideWeatherRetrofit(url: String): Retrofit {
+        val contentType = "application/json".toMediaType()
         return Retrofit.Builder()
             .baseUrl(url)
             .client(provideWeatherOkHttp())
-            .addConverterFactory(MoshiConverterFactory.create())
+            //.addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(Json {
+                ignoreUnknownKeys = true
+            }.asConverterFactory(contentType))
             .build()
     }
 

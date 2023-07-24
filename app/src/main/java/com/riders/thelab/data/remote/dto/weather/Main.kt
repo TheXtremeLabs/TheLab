@@ -1,25 +1,25 @@
 package com.riders.thelab.data.remote.dto.weather
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class Main(
-    @Json(name = "temp")
+    @SerialName("temp")
     val temperature: Double = 0.0,
 
-    @Json(name = "feels_like")
+    @SerialName("feels_like")
     val feelsLike: Double = 0.0,
 
-    @Json(name = "temp_min")
+    @SerialName("temp_min")
     val minTemperature: Double = 0.0,
 
-    @Json(name = "temp_max")
+    @SerialName("temp_max")
     val maxTemperature: Double = 0.0,
 
-    @Json(name = "pressure")
+    @SerialName("pressure")
     val pressure: Int = 0,
 
-    @Json(name = "humidity")
+    @SerialName("humidity")
     val humidity: Int = 0
-)
+) : Serializable

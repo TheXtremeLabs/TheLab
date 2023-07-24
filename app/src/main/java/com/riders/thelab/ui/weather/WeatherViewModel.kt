@@ -226,7 +226,10 @@ class WeatherViewModel @Inject constructor(
                         // Use worker to make long job operation in background
                         Timber.e("Use worker to make long job operation in background...")
 
-                        startWork(activity)
+
+                        withContext(Main) {
+                            startWork(activity)
+                        }
                     } else {
                         // In this case data already exists in database
                         // Load data then let the the user perform his request
@@ -254,15 +257,13 @@ class WeatherViewModel @Inject constructor(
 
     fun fetchWeather(location: Location) {
         Timber.d("fetchWeather()")
-        viewModelScope.launch(IO + coroutineExceptionHandler) {
+        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
             try {
-                supervisorScope {
-                    val weatherResponse = repositoryImpl.getWeatherOneCallAPI(location)
+                val weatherResponse = repositoryImpl.getWeatherOneCallAPI(location)
 
-                    withContext(Main) {
-                        weatherResponse?.let {
-                            updateWeatherCityUIState(WeatherCityUIState.Success(it))
-                        }
+                withContext(Main) {
+                    weatherResponse?.let {
+                        updateWeatherCityUIState(WeatherCityUIState.Success(it))
                     }
                 }
             } catch (throwable: Exception) {

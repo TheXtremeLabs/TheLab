@@ -1,12 +1,12 @@
 package com.riders.thelab.data.remote.dto.music
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class Artist(
-    @Json(name = "id")
+    @SerialName("id")
     val id: Int,
-    @Json(name = "name")
+    @SerialName("name")
     val name: String
-)
+) : Serializable

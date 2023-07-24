@@ -1,16 +1,16 @@
 package com.riders.thelab.data.remote.dto.weather
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class Wind(
-    @Json(name = "1h")
+    @SerialName("1h")
     val speed: Double = 0.0,
 
-    @Json(name = "deg")
+    @SerialName("deg")
     val degree: Int = 0,
 
-    @Json(name = "gust")
+    @SerialName("gust")
     val metrics: String
-)
+) : Serializable

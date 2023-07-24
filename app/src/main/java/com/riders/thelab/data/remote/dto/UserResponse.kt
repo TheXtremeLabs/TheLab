@@ -1,6 +1,11 @@
 package com.riders.thelab.data.remote.dto
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
-data class UserResponse(val code: Int, val message: String, val token: String)
+@kotlinx.serialization.Serializable
+data class UserResponse(
+    @SerialName("code") val code: Int,
+    @SerialName("message") val message: String,
+    @SerialName("token") val token: String
+) : Serializable

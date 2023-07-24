@@ -13,7 +13,7 @@ interface ContactDao {
     fun insert(contact: Contact)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRX(contact: Contact): Long
+    fun insertRX(contact: Contact): Long
 
     /* Method to insert contacts fetched from api to room */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -24,8 +24,7 @@ interface ContactDao {
 
     /* Method to fetch contacts stored locally */
     @Query("SELECT * FROM Contact")
-    suspend fun getContacts(): List<Contact>
-
+    fun getContacts(): List<Contact>
 
     @Query("DELETE FROM Contact")
     fun deleteAll()

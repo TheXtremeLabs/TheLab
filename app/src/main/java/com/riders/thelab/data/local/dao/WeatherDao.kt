@@ -9,30 +9,29 @@ import androidx.room.Query
 import com.riders.thelab.data.local.model.weather.CityModel
 import com.riders.thelab.data.local.model.weather.WeatherData
 
-
 @Dao
 interface WeatherDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRX(city: CityModel): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllRX(cities: List<CityModel>): List<Long>
-
     /* Method to insert contacts fetched from api to room */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(city: CityModel)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(isWeatherData: WeatherData): Long
+    fun insertRX(city: CityModel): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllRX(cities: List<CityModel>): List<Long>
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(isWeatherData: WeatherData): Long
 
 
     /* Method to fetch contacts stored locally */
     @Query("SELECT * FROM weather_data")
-    suspend fun getWeatherData(): WeatherData
+    fun getWeatherData(): WeatherData
 
     @Query("SELECT * FROM city")
-    suspend fun getCities(): List<CityModel>
+    fun getCities(): List<CityModel>
 
     @Query("SELECT * FROM city WHERE name LIKE :cityText")
     fun getCities(cityText: String): LiveData<List<CityModel>>

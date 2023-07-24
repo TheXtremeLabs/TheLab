@@ -1,8 +1,8 @@
 package com.riders.thelab.data.remote.dto.weather
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.decodeFromString
+import java.io.Serializable
 
 /*
  * https://stackoverflow.com/questions/58501918/whats-the-use-of-moshis-kotlin-codegen
@@ -10,30 +10,31 @@ import kotlinx.serialization.decodeFromString
  * It’s also used by the Moshi code gen annotation processor to indicate
  * which classes should have an adapter generated for them.
  */
-@JsonClass(generateAdapter = true)
+
+@kotlinx.serialization.Serializable
 data class OneCallWeatherResponse constructor(
 
-    @Json(name = "lat")
+    @SerialName("lat")
     val latitude: Double = 0.0,
 
-    @Json(name = "lon")
+    @SerialName("lon")
     val longitude: Double = 0.0,
 
-    @Json(name = "timezone")
+    @SerialName("timezone")
     val timezone: String? = null,
 
-    @Json(name = "timezone_offset")
+    @SerialName("timezone_offset")
     val timezoneOffset: Int = 0,
 
-    @Json(name = "current")
+    @SerialName("current")
     val currentWeather: CurrentWeather? = null,
 
-    @Json(name = "hourly")
+    @SerialName("hourly")
     val hourlyWeather: List<CurrentWeather>? = null,
 
-    @Json(name = "daily")
+    @SerialName("daily")
     val dailyWeather: List<DailyWeather>? = null,
-) {
+) : Serializable {
     companion object {
         private val mockDataJson: String =
             "{\"lat\":48.8534,\"lon\":2.3486,\"timezone\":\"Europe/Paris\",\"timezone_offset\":7200,\"current\":{\"dt\":1684160601,\"sunrise\":1684123772,\"sunset\":1684178672,\"temp\":15.75,\"feels_like\":15.39,\"pressure\":1016,\"humidity\":77,\"dew_point\":11.73,\"uvi\":2.21,\"clouds\":100,\"visibility\":10000,\"wind_speed\":5.14,\"wind_deg\":340,\"weather\":[{\"id\":500,\"main\":\"Rain\",\"description\":\"light rain\",\"icon\":\"10d\"}],\"rain\":{\"1h\":0.32}},\"minutely\":[{\"dt\":1684160640,\"precipitation\":0.316},{\"dt\":1684160700,\"precipitation\":0.316},{\"dt\":1684160760,\"precipitation\":0.316},{\"dt\":1684160820,\"precipitation\":0.316},{\"dt\":1684160880,\"precipitation\":0.316},{\"dt\":1684160940,\"precipitation\":0.316},{\"dt\":1684161000,\"precipitation\":0.316},{\"dt\":1684161060,\"precipitation\":0.316},{\"dt\":1684161120,\"precipitation\":0.316},{\"dt\":1684161180,\"precipitation\":0.316},{\"dt\":1684161240,\"precipitation\":0.316},{\"dt\":1684161300,\"precipitation\":0.316},{\"dt\":1684161360,\"precipitation\":0.316},{\"dt\":1684161420,\"precipitation\":0.316},{\"dt\":1684161480,\"precipitation\":0.316},{\"dt\":1684161540,\"precipitation\":0.316},{\"dt\":1684161600,\"precipitation\":0.316},{\"dt\":1684161660,\"precipitation\":0.3258},{\"dt\":1684161720,\"precipitation\":0.3356},{\"dt\":1684161780,\"precipitation\":0.3454},{\"dt\":1684161840,\"precipitation\":0.3552},{\"dt\":1684161900,\"precipitation\":0.365},{\"dt\":1684161960,\"precipitation\":0.365},{\"dt\":1684162020,\"precipitation\":0.365},{\"dt\":1684162080,\"precipitation\":0.365},{\"dt\":1684162140,\"precipitation\":0.365},{\"dt\":1684162200,\"precipitation\":0.365},{\"dt\":1684162260,\"precipitation\":0.3762},{\"dt\":1684162320,\"precipitation\":0.3874},{\"dt\":1684162380,\"precipitation\":0.3986},{\"dt\":1684162440,\"precipitation\":0.4098},{\"dt\":1684162500,\"precipitation\":0.421},{\"dt\":1684162560,\"precipitation\":0.421},{\"dt\":1684162620,\"precipitation\":0.421},{\"dt\":1684162680,\"precipitation\":0.421},{\"dt\":1684162740,\"precipitation\":0.421},{\"dt\":1684162800,\"precipitation\":0.421},{\"dt\":1684162860,\"precipitation\":0.421},{\"dt\":1684162920,\"precipitation\":0.421},{\"dt\":1684162980,\"precipitation\":0.421},{\"dt\":1684163040,\"precipitation\":0.421},{\"dt\":1684163100,\"precipitation\":0.421},{\"dt\":1684163160,\"precipitation\":0.434},{\"dt\":1684163220,\"precipitation\":0.447},{\"dt\":1684163280,\"precipitation\":0.46},{\"dt\":1684163340,\"precipitation\":0.473},{\"dt\":1684163400,\"precipitation\":0.486},{\"dt\":1684163460,\"precipitation\":0.473},{\"dt\":1684163520,\"precipitation\":0.46},{\"dt\":1684163580,\"precipitation\":0.447},{\"dt\":1684163640,\"precipitation\":0.434},{\"dt\":1684163700,\"precipitation\":0.421},{\"dt\":1684163760,\"precipitation\":0.421},{\"dt\":1684163820,\"precipitation\":0.421},{\"dt\":1684163880,\"precipitation\":0.421},{\"dt\":1684163940,\"precipitation\":0.421},{\"dt\":1684164000,\"precipitation\":0.421},{\"dt\":1684164060,\"precipitation\":0.4098},{\"dt\":1684164120,\"precipitation\":0.3986},{\"dt\":1684164180,\"precipitation\":0.3874},{\"dt\":1684164240,\"precipitation\":0.3762}],\"hourly\":[{\"dt\":1684159200,\"temp\":15.75,\"feels_like\":15.39,\"pressure\":1016,\"humidity\":77,\"dew_point\":11.73,\"uvi\":2.21,\"clouds\":100,\"visibility\":10000,\"wind_speed\":4.43,\"wind_deg\":350,\"wind_gust\":6.68,\"weather\":[{\"id\":500,\"main\":\"Rain\",\"description\":\"light rain\",\"icon\":\"10d\"}],\"pop\":0.94,\"rain\":{\"1h\":0.68}},{\"dt\":1684162800,\"temp\":15.44,\"feels_like\":15.1,\"pressure\":1016,\"humidity\":79,\"dew_point\":11.82,\"uvi\":1.55,\"clouds\":100,\"visibility\":10000,\"wind_speed\":5.35,\"wind_deg\":357,\"wind_gust\":8.03,\"weather\":[{\"id\":500,\"main\":\"Rain\",\"description\":\"light rain\",\"icon\":\"10d\"}],\"pop\":0.93,\"rain\":{\"1h\":0.42}},{\"dt\":1684166400,\"temp\":14.54,\"feels_like\":14.22,\"pressure\":1016,\"humidity\":83,\"dew_point\":11.69,\"uvi\":0.57,\"clouds\":100,\"visibility\":10000,\"wind_speed\":5.7,\"wind_deg\":0,\"wind_gust\":9.09,\"weather\":[{\"id\":500,\"main\":\"Rain\",\"description\":\"light rain\",\"icon\":\"10d\"}],\"pop\":0.91,\"rain\":{\"1h\":0.75}},{\"dt\":1684170000,\"temp\":13.3,\"feels_like\":12.88,\"pressure\":1017,\"humidity\":84,\"dew_point\":10.66,\"uvi\":0.27,\"clouds\":100,\"visibility\":10000,\"wind_speed\":5.25,\"wind_deg\":2,\"wind_gust\":9.29,\"weather\":[{\"id\":804,\"main\":\"Clouds\",\"description\":\"\n" +

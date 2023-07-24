@@ -1,12 +1,16 @@
 package com.riders.thelab.data.remote.dto
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class ApiResponse(
+    @SerialName("message")
     val message: String,
+    @SerialName("code")
     val code: Int,
+    @SerialName("token")
     val token: String? = null
-) {
+) : Serializable {
     constructor() : this("", -1)
 }

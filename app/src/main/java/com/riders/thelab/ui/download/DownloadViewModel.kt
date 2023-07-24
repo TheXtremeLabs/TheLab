@@ -32,7 +32,6 @@ class DownloadViewModel @Inject constructor(
         Timber.d("downloadFile()")
         repository.getBulkDownload()
             .collect { download ->
-
                 withContext(Dispatchers.Main) {
                     when (download) {
                         is Download.Started -> {
