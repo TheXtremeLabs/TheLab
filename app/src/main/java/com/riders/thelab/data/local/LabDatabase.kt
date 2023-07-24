@@ -10,7 +10,7 @@ import com.riders.thelab.data.local.model.weather.WeatherData
 
 @Database(
     entities = [Contact::class, CityModel::class, WeatherData::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class LabDatabase : RoomDatabase() {

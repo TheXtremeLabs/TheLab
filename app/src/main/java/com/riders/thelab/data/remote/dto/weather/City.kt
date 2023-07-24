@@ -1,18 +1,18 @@
 package com.riders.thelab.data.remote.dto.weather
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class City(
-    @Json(name = "id")
-    val id: Int,
-    @Json(name = "name")
+    @SerialName("id")
+    val id: Double,
+    @SerialName("name")
     val name: String,
-    @Json(name = "state")
+    @SerialName("state")
     val state: String,
-    @Json(name = "country")
+    @SerialName("country")
     val country: String,
-    @Json(name = "coord")
+    @SerialName("coord")
     val coordinates: Coordinates
-)
+) : Serializable

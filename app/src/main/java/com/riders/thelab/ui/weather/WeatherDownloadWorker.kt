@@ -23,7 +23,8 @@ import javax.inject.Inject
 @HiltWorker
 class WeatherDownloadWorker @AssistedInject constructor(
     @Assisted @NonNull val context: Context,
-    @Assisted @NonNull val workerParams: WorkerParameters
+    @Assisted @NonNull val workerParams: WorkerParameters,
+    val mRepository: IRepository
 ) : CoroutineWorker(context, workerParams) {
 
     companion object {
@@ -39,8 +40,8 @@ class WeatherDownloadWorker @AssistedInject constructor(
     var taskDataString: String? = null
     var outputData: Data? = null
 
-    @Inject
-    lateinit var mRepository: IRepository
+    // @Inject
+    // lateinit var mRepository: IRepository
 
     override suspend fun doWork(): Result {
         Timber.d("startWork()")
@@ -72,7 +73,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
 
                 // Step 2 : Parse JSON File
                 val dtoCities: List<City>? = unzippedGZipResult?.let {
-                    LabParser.parseJsonFileListWithMoshi(it)
+                    LabParser.parseJsonFile<List<City>>(it)
                 }
 
                 if (dtoCities.isNullOrEmpty()) {

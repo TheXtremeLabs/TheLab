@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Contract
 
 @Entity(tableName = "contact")
 data class Contact(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    var id: Long,
+    var id: Long = 0L,
 
     @ColumnInfo(name = "name")
     var name: String,

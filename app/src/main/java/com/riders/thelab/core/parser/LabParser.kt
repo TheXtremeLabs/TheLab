@@ -1,7 +1,6 @@
 package com.riders.thelab.core.parser
 
 import android.content.Context
-import com.riders.thelab.R
 import com.riders.thelab.data.local.model.app.App
 import com.riders.thelab.data.local.model.app.LocalApp
 import com.riders.thelab.data.local.model.weather.CitiesEventJsonAdapter
@@ -19,7 +18,7 @@ object LabParser {
     fun parseJsonFile(context: Context, filename: String): List<App> = runCatching {
         Timber.d("parseJsonFile() | filename: $filename")
 
-        val json = context.assets.open(filename).bufferedReader().use { it.readText() }
+        val json = context.resources.assets.open(filename).bufferedReader().use { it.readText() }
         val mLocalAppList: List<LocalApp> = Json.decodeFromString(json)
 
         if (null == mLocalAppList) {
@@ -46,15 +45,14 @@ object LabParser {
         }
         .getOrThrow<List<App>>()
 
-    inline fun <T, reified R> parseJsonFile(
+    inline fun <reified T> parseJsonFile(
         context: Context,
-        filename: String,
-        targetClass: R
-    ): R? = runCatching {
+        filename: String
+    ): T? = runCatching {
         Timber.d("parseJsonFile() | filename: $filename")
 
         val json = context.assets.open(filename).bufferedReader().use { it.readText() }
-        val mRObject: R = Json.decodeFromString(json)
+        val mRObject: T = Json.decodeFromString(json)
 
         if (null == mRObject) {
             Timber.e("List is null. Return emptyList")
@@ -69,7 +67,26 @@ object LabParser {
         .onSuccess {
             Timber.d("runCatching - onSuccess() | app list fetched successfully")
         }
-        .getOrThrow<R>()
+        .getOrThrow<T>()
+    inline fun <reified T> parseJsonFile(jsonContent: String): T? = runCatching {
+        Timber.d("parseJsonFile() | content length: ${jsonContent.length}")
+
+        val mRObject: T = Json.decodeFromString(jsonContent)
+
+        if (null == mRObject) {
+            Timber.e("List is null. Return emptyList")
+            return null
+        }
+
+        return mRObject
+    }
+        .onFailure {
+            Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+        }
+        .onSuccess {
+            Timber.d("runCatching - onSuccess() | app list fetched successfully")
+        }
+        .getOrThrow<T>()
 
     fun parseJsonFileListWithKotlinSerialization(jsonToParse: String): List<City> {
         Timber.d("parseJsonFileListWithKotlinSerialization() | json length: ${jsonToParse.length}")

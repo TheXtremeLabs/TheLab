@@ -48,80 +48,65 @@ class ApiImpl @Inject constructor(
     private var mTheLabBackApiService: TheLabBackApiService = theLabBackApiService
 
 
-    override suspend fun getStorageReference(activity: Activity): StorageReference? {
+    override suspend fun getStorageReference(activity: Activity): StorageReference? = try {
         Timber.e("getStorageReference()")
         val storage = arrayOfNulls<FirebaseStorage>(1)
         var storageRef: StorageReference? = null
 
-        return try {
+        // Initialize Firebase Auth
+        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
-            // Initialize Firebase Auth
-            val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+        val task = mAuth.signInAnonymously().await()
 
-            val task = mAuth.signInAnonymously().await()
-
-            task.user?.let {
-                Timber.d("signInAnonymously:success : $it")
-            }
-
-            if (null != mAuth.currentUser) {
-                // Sign in success, update UI with the signed-in user's information
-                Timber.d("signInAnonymously:success")
-                val user = mAuth.currentUser
-                val bucketName = "gs://the-lab-3920e.appspot.com"
-                storage[0] = FirebaseStorage.getInstance(bucketName)
-                // Create a storage reference from our app
-                storageRef = storage[0]!!.reference
-            }
-            storageRef
-
-        } catch (exception: Exception) {
-
-            // If sign in fails, display a message to the user.
-            Timber.w("signInAnonymously:failure %s", exception.toString())
-            Toast.makeText(
-                activity,
-                "Authentication failed.",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            null
+        task.user?.let {
+            Timber.d("signInAnonymously:success : $it")
         }
+
+        if (null != mAuth.currentUser) {
+            // Sign in success, update UI with the signed-in user's information
+            Timber.d("signInAnonymously:success")
+            val user = mAuth.currentUser
+            val bucketName = "gs://the-lab-3920e.appspot.com"
+            storage[0] = FirebaseStorage.getInstance(bucketName)
+            // Create a storage reference from our app
+            storageRef = storage[0]!!.reference
+        }
+        storageRef
+
+    } catch (exception: Exception) {
+
+        // If sign in fails, display a message to the user.
+        Timber.w("signInAnonymously:failure %s", exception.toString())
+        Toast.makeText(
+            activity,
+            "Authentication failed.",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        null
     }
 
-    override suspend fun getArtists(url: String): List<Artist> {
-        Timber.e("getArtists()")
-        return mArtistsAPIService.getArtists(url)
-    }
 
-    override suspend fun getVideos(): List<Video> {
-        Timber.e("getVideos()")
-        return mYoutubeApiService.fetchYoutubeVideos()
-    }
+    override suspend fun getArtists(url: String): List<Artist> = mArtistsAPIService.getArtists(url)
 
-    override suspend fun getWeatherOneCallAPI(location: Location): OneCallWeatherResponse {
-        Timber.e("getWeatherOneCallAPI()")
+    override suspend fun getVideos(): List<Video> = mYoutubeApiService.fetchYoutubeVideos()
 
-        return mWeatherApiService
+    override suspend fun getWeatherOneCallAPI(location: Location): OneCallWeatherResponse =
+        mWeatherApiService
             .getCurrentWeatherWithNewOneCallAPI(
                 location.latitude,
                 location.longitude
             )
-    }
 
-    override fun getBulkWeatherCitiesFile(): Call<ResponseBody> {
-        Timber.e("get cities bulk file()")
-        return mWeatherBulkApiService.getCitiesZipFile()
-    }
+    override fun getBulkWeatherCitiesFile(): Call<ResponseBody> =
+        mWeatherBulkApiService.getCitiesZipFile()
 
-
-    override suspend fun getBulkDownload(): Flow<Download> {
-        return mWeatherBulkApiService.getCitiesGZipFile()
+    override suspend fun getBulkDownload(): Flow<Download> =
+        mWeatherBulkApiService.getCitiesGZipFile()
             .downloadCitiesFile(
                 TheLabApplication.getInstance().getContext().externalCacheDir!!,
                 "my_file"
             )
-    }
 
 
     private suspend fun ResponseBody.downloadCitiesFile(
@@ -198,5 +183,4 @@ class ApiImpl @Inject constructor(
     override suspend fun login(user: UserDto): ApiResponse = mTheLabBackApiService.login(user)
 
     override suspend fun saveUser(user: UserDto): ApiResponse = mTheLabBackApiService.saveUser(user)
-
 }

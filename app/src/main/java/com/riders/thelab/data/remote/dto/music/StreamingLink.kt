@@ -1,14 +1,14 @@
 package com.riders.thelab.data.remote.dto.music
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class StreamingLink(
-    @Json(name = "id")
+    @SerialName("id")
     val id: Int,
-    @Json(name = "link")
+    @SerialName("link")
     val link: String,
-    @Json(name = "platform")
+    @SerialName("platform")
     val platform: String
-)
+) : Serializable

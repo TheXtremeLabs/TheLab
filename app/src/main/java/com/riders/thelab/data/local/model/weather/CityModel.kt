@@ -10,8 +10,8 @@ import com.riders.thelab.data.remote.dto.weather.City
 @Entity(tableName = "city")
 data class CityModel constructor(
     @PrimaryKey
-    @ColumnInfo(name = "_id")
-    var id: Int = 0,
+    @ColumnInfo("_id")
+    var id: Long,
 
     @ColumnInfo(name = "name")
     var name: String,
@@ -32,7 +32,7 @@ data class CityModel constructor(
 
     @Ignore
     constructor(dtoCity: City) : this() {
-        this.id = dtoCity.id
+        this.id = dtoCity.id.toLong()
         this.name = dtoCity.name
         this.state = dtoCity.state
         this.country = dtoCity.country

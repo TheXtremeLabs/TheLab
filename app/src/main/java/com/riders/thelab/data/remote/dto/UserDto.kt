@@ -1,21 +1,21 @@
 package com.riders.thelab.data.remote.dto
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class UserDto(
-    @Json(name = "firstName")
+    @SerialName("firstName")
     var firstName: String,
-    @Json(name = "lastName")
+    @SerialName("lastName")
     var lastName: String,
-    @Json(name = "email")
+    @SerialName("email")
     var email: String,
-    @Json(name = "password")
+    @SerialName("password")
     var password: String,
-    @Json(name = "token")
+    @SerialName("token")
     var token: String
-) {
+) : Serializable {
     constructor(firstName: String, lastName: String, email: String, password: String) : this(
         firstName,
         lastName,

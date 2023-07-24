@@ -1,73 +1,73 @@
 package com.riders.thelab.data.remote.dto.weather
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class DailyWeather(
-    @Json(name = "dt")
+    @SerialName("dt")
     val dateTimeUTC: Long = 0,
 
-    @Json(name = "sunrise")
+    @SerialName("sunrise")
     val sunrise: Long = 0,
 
-    @Json(name = "sunset")
+    @SerialName("sunset")
     val sunset: Long = 0,
 
-    @Json(name = "moonrise")
+    @SerialName("moonrise")
     val moonrise: Long = 0,
 
-    @Json(name = "moonset")
+    @SerialName("moonset")
     val moonset: Long = 0,
 
-    @Json(name = "moon_phase")
+    @SerialName("moon_phase")
     val moonPhase: Double = 0.0,
 
-    @Json(name = "temp")
+    @SerialName("temp")
     val temperature: Temperature,
 
-    @Json(name = "feels_like")
+    @SerialName("feels_like")
     val feelsLike: FeelsLike,
 
-    @Json(name = "pressure")
+    @SerialName("pressure")
     val pressure: Int = 0,
 
-    @Json(name = "humidity")
+    @SerialName("humidity")
     val humidity: Int = 0,
 
-    @Json(name = "dew_point")
+    @SerialName("dew_point")
     val dewPoint: Double = 0.0,
 
     // UV index
-    @Json(name = "uvi")
+    @SerialName("uvi")
     val uvIndex: Double = 0.0,
 
-    @Json(name = "clouds")
+    @SerialName("clouds")
     val clouds: Int = 0,
 
     // Average visibility, metres
-    @Json(name = "visibility")
+    @SerialName("visibility")
     val visibility: Int = 0,
 
-    @Json(name = "wind_speed")
+    @SerialName("wind_speed")
     val windSpeed: Double = 0.0,
 
-    @Json(name = "wind_deg")
+    @SerialName("wind_deg")
     val windDegree: Int = 0,
 
-    @Json(name = "wind_gust")
+    @SerialName("wind_gust")
     val windGust: Double = 0.0,
 
-    @Json(name = "weather")
+    @SerialName("weather")
     val weather: List<Weather>,
 
-    @Json(name = "rain")
+    @SerialName("rain")
     val rain: Double? = 0.0,
 
-    @Json(name = "snow")
+    @SerialName("snow")
     val snow: Double? = 0.0,
 
     // Probability of precipitation
-    @Json(name = "pop")
+    @SerialName("pop")
     var pop: Double = 0.0
-)
+) : Serializable

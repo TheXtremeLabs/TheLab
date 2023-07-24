@@ -1,16 +1,13 @@
 package com.riders.thelab.data.remote.dto.weather
 
-import android.os.Parcelable
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
-@Parcelize
+@kotlinx.serialization.Serializable
 data class Coordinates(
-    @Json(name = "lon")
+    @SerialName("lon")
     val longitude: Double = 0.0,
 
-    @Json(name = "lat")
+    @SerialName("lat")
     val latitude: Double = 0.0
-) : Parcelable
+) : Serializable

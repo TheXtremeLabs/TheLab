@@ -1,21 +1,18 @@
 package com.riders.thelab.data.local.model
 
-import android.os.Parcelable
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@Parcelize
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class Video constructor(
-    @Json(name = "id")
+    @SerialName("id")
     var id: String,
-    @Json(name = "name")
+    @SerialName("name")
     var name: String,
-    @Json(name = "description")
+    @SerialName("description")
     var description: String,
-    @Json(name = "imageUrl")
+    @SerialName("imageUrl")
     var imageUrl: String,
-    @Json(name = "videoUrl")
+    @SerialName("videoUrl")
     var videoUrl: String
-) : Parcelable
+) : Serializable

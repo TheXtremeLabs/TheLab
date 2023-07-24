@@ -1,19 +1,18 @@
 package com.riders.thelab.data.remote.dto.weather
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
 
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class Weather(
-    @Json(name = "id")
+    @SerialName("id")
     val id: Int = 0,
 
-    @Json(name = "main")
+    @SerialName("main")
     val main: String,
 
-    @Json(name = "description")
+    @SerialName("description")
     val description: String,
 
-    @Json(name = "icon")
+    @SerialName("icon")
     val icon: String
 )

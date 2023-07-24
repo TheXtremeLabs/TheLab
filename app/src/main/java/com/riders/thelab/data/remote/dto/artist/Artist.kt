@@ -1,41 +1,39 @@
 package com.riders.thelab.data.remote.dto.artist
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@Serializable
-@JsonClass(generateAdapter = true)
+@kotlinx.serialization.Serializable
 data class Artist constructor(
-    @Json(name = "artistName")
+    @SerialName("artistName")
     var artistName: String,
 
-    @Json(name = "firstName")
+    @SerialName("firstName")
     var firstName: String,
 
-    @Json(name = "secondName")
+    @SerialName("secondName")
     var secondName: String,
 
-    @Json(name = "lastName")
+    @SerialName("lastName")
     var lastName: String,
 
-    @Json(name = "dateOfBirth")
+    @SerialName("dateOfBirth")
     var dateOfBirth: String,
 
-    @Json(name = "origin")
+    @SerialName("origin")
     var origin: String,
 
-    @Json(name = "debutes")
+    @SerialName("debutes")
     var debutes: String,
 
-    @Json(name = "activities")
+    @SerialName("activities")
     var activities: String,
 
-    @Json(name = "urlThumb")
+    @SerialName("urlThumb")
     var urlThumb: String,
 
-    @Json(name = "description")
+    @SerialName("description")
     var description: String
-) {
+): Serializable {
     var id: Int = 0
 }

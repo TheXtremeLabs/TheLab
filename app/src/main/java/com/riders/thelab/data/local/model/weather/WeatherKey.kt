@@ -1,7 +1,7 @@
 package com.riders.thelab.data.local.model.weather
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
-data class WeatherKey(@Json(name = "appid") var appID: String)
+@kotlinx.serialization.Serializable
+data class WeatherKey(@SerialName("appid") var appID: String) : Serializable

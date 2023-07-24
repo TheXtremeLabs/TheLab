@@ -104,8 +104,15 @@ class ScheduleViewModel : ViewModel() {
 
         mAlarmManager =
             (activity as ScheduleActivity).getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        mAlarmManager!![AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + i * 1000] =
-            mPendingIntent
+
+
+        mAlarmManager?.let { alarm ->
+            mPendingIntent?.let { pendingIntent ->
+                alarm[AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + i * 1000] =
+                    pendingIntent
+            }
+        }
+
         UIManager.showActionInToast(activity, "Alarm set in $i seconds")
 
         updateUiContDown(i)
@@ -143,8 +150,10 @@ class ScheduleViewModel : ViewModel() {
         if (null != mServiceConnection)
             activity.unbindService(mServiceConnection!!)
 
-        if (mPendingIntent != null && mAlarmManager != null) {
-            mAlarmManager!!.cancel(mPendingIntent)
+        mAlarmManager?.let { alarm ->
+            mPendingIntent?.let { pendingIntent ->
+                alarm.cancel(pendingIntent)
+            }
         }
     }
 }
