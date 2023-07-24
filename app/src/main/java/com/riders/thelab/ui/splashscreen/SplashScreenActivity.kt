@@ -20,7 +20,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.riders.thelab.R
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.utils.LabCompatibilityManager
 import com.riders.thelab.navigator.Navigator
@@ -37,10 +36,6 @@ class SplashScreenActivity : AppCompatActivity(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + Job()
 
-    companion object {
-        private const val ANDROID_RES_PATH = "android.resource://"
-        private const val SEPARATOR = "/"
-    }
 
     private val mViewModel: SplashScreenViewModel by viewModels()
 
@@ -57,9 +52,7 @@ class SplashScreenActivity : AppCompatActivity(), CoroutineScope {
     //
     /////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        val w = window
-        w.setFlags(
+        window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
@@ -70,27 +63,12 @@ class SplashScreenActivity : AppCompatActivity(), CoroutineScope {
             requestPermissionForAndroid13()
         }
 
+        mViewModel.retrieveAppVersion(this@SplashScreenActivity)
+        mViewModel.getVideoPath(this@SplashScreenActivity)
+
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
-
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-
-                mViewModel.retrieveAppVersion(this@SplashScreenActivity)
-
-                var videoPath: String = ""
-
-                try {
-                    videoPath =
-                        ANDROID_RES_PATH +
-                                packageName.toString() +
-                                SEPARATOR +
-                                //Smartphone portrait video or Tablet landscape video
-                                if (!LabCompatibilityManager.isTablet(this@SplashScreenActivity)) R.raw.splash_intro_testing_sound_2 else R.raw.splash_intro_testing_no_sound_tablet
-
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
-
                 setContent {
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
@@ -98,7 +76,7 @@ class SplashScreenActivity : AppCompatActivity(), CoroutineScope {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            SplashScreenContent(mViewModel, videoPath)
+                            SplashScreenContent(mViewModel)
                         }
                     }
                 }

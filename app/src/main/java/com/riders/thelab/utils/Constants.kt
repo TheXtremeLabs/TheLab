@@ -7,9 +7,10 @@ object Constants {
 
     const val DATASTORE_THE_LAB_FILE_NAME = "THE_LAB_DATASTORE"
 
-
     const val EMULATOR_DEVICE_TAG = "sdk"
 
+    const val ANDROID_RES_PATH = "android.resource://"
+    const val SEPARATOR = "/"
 
     /////////////////////////////////////////////
     //
@@ -26,7 +27,6 @@ object Constants {
     private const val EMULATOR_IP_ADDRESS = "192.168.0.48"
 
     private const val PORT = ":8101"
-    private const val SEPARATOR = "/"
 
     val BASE_ENDPOINT_THE_LAB_URL: String = "https://the-lab-back.herokuapp.com"
     /*HTTP + if (LabDeviceManager.getModel().trim().lowercase()

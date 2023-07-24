@@ -51,6 +51,7 @@ import coil.request.ImageRequest
 import com.airbnb.lottie.compose.*
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
+import com.riders.thelab.core.compose.component.Lottie
 import com.riders.thelab.core.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.compose.ui.theme.Typography
@@ -69,6 +70,11 @@ import com.riders.thelab.utils.DateTimeUtils
 import timber.log.Timber
 import kotlin.math.roundToInt
 
+///////////////////////////////////////
+//
+// COMPOSABLE
+//
+///////////////////////////////////////
 @DevicePreviews
 @Composable
 fun WeatherLoading(modifier: Modifier = Modifier) {
@@ -619,12 +625,6 @@ fun WeatherDailyForecast(viewModel: WeatherViewModel, dailyWeatherList: List<Dai
 fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
 
     val context = LocalContext.current
-    val composition by
-    rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.error_rolling_dark_theme))
-    val progress by animateLottieCompositionAsState(
-        composition,
-        iterations = LottieConstants.IterateForever,
-    )
 
     TheLabTheme {
         Box(
@@ -637,10 +637,9 @@ fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                LottieAnimation(
+                Lottie(
                     modifier = Modifier.fillMaxSize(.5f),
-                    composition = composition,
-                    progress = { progress }
+                    rawResId = R.raw.error_rolling_dark_theme
                 )
 
                 Text("Error while getting weather for your location")
