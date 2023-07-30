@@ -49,3 +49,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "The Lab"
 include(":app")
+include(":core:ui")

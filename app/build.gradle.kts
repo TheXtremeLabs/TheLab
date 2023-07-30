@@ -83,7 +83,7 @@ android {
         }
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "META-INF/DEPENDENCIES"
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -95,8 +95,6 @@ android {
         // Determines whether to support Data Binding.
         // Note that the dataBinding.enabled property is now deprecated.
         dataBinding = true
-
-        buildConfig = true
     }
 
     lint {

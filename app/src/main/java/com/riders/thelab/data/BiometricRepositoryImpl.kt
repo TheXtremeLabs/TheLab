@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.UUID
 
 class BiometricRepositoryImpl(
@@ -42,9 +43,11 @@ class BiometricRepositoryImpl(
     }
 
     override suspend fun getBiometricInfo(): BiometricInfo = withContext(dispatcher) {
+        Timber.d("getBiometricInfo()")
         val biometricAuthStatus = readBiometricAuthStatus()
         val cryptoValidationResult = checkInternalWithCrypto()
-        val isBiometricTokenPresent = isTokenPresent();
+        val isBiometricTokenPresent = isTokenPresent()
+
         BiometricInfo(
             biometricTokenPresent = isBiometricTokenPresent,
             biometricAuthStatus = biometricAuthStatus,
@@ -103,28 +106,27 @@ class BiometricRepositoryImpl(
         return cryptoEngine.decrypt(encTokenData, cryptoObject)
     }
 
-    override suspend fun createCryptoObject(
-        purpose: CryptoPurpose
-    ): CryptoObject = withContext(dispatcher) {
-        validateCryptoLayer()
-        val iv: ByteArray? = when (purpose) {
-            CryptoPurpose.Decryption -> {
-                Base64.decode(
-                    keyValueStorage.getValue(BIOMETRIC_IV_KEY),
-                    CoroutineStart.DEFAULT.ordinal
-                )
+    override suspend fun createCryptoObject(purpose: CryptoPurpose): CryptoObject =
+        withContext(dispatcher) {
+            validateCryptoLayer()
+
+            val iv: ByteArray? = when (purpose) {
+                CryptoPurpose.Decryption -> {
+                    Base64.decode(
+                        keyValueStorage.getValue(BIOMETRIC_IV_KEY),
+                        CoroutineStart.DEFAULT.ordinal
+                    )
+                }
+
+                else -> null
             }
-
-            else -> null
+            cryptoEngine.createCryptoObject(purpose, iv)
         }
-        cryptoEngine.createCryptoObject(purpose, iv)
-    }
 
-    private suspend fun isTokenPresent(): Boolean {
-        return keyValueStorage.contains(key = BIOMETRIC_TOKEN_KEY) && keyValueStorage.contains(
-            BIOMETRIC_IV_KEY
-        )
-    }
+    private suspend fun isTokenPresent(): Boolean =
+        keyValueStorage.contains(key = BIOMETRIC_TOKEN_KEY)
+                && keyValueStorage.contains(BIOMETRIC_IV_KEY)
+
 
     override suspend fun clear() {
         keyValueStorage.clear()

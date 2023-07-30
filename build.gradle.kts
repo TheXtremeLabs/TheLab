@@ -37,6 +37,6 @@ tasks.register("clean", Delete::class) {
 tasks.register("printVersionName") {
     doLast {
 //        android.defaultConfig.versionName
-//        print(rootProject.versionName)
+        print(rootProject.version)
     }
 }

@@ -8,8 +8,8 @@ sealed class LoginUiState {
     data class Error(val errorResponse: ApiResponse? = null) : LoginUiState()
 
     data class Logged(
-        val usernameField: String = "",
-        val passwordField: String = "",
+        val usernameField: String = "mijih",
+        val passwordField: String = "kkhooh",
 
         /**
          * True when we want to render the "access with biometry" button
