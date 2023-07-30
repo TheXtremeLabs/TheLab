@@ -9,9 +9,24 @@ android {
 }
 
 dependencies {
+    /////////////////////////////
+    // General Dependencies
+    /////////////////////////////
+    //Kotlin
+    api(libs.kotlinx.coroutines.android)
+
+    // AndroidX
+    api(libs.androidx.core.ktx)
+    api(libs.androidx.compose.runtime)
+
+    // Firebase
     implementation(platform(libs.firebase.bom))
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.androidx.core.ktx)
+    implementation(libs.firebase.ads)
     implementation(libs.firebase.analytics)
-    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.perf)
+    implementation(libs.firebase.storage)
 }
