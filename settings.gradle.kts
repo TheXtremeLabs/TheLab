@@ -51,3 +51,4 @@ rootProject.name = "The Lab"
 include(":app")
 include(":core:data")
 include(":core:ui")
+include(":core:testing")
