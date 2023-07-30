@@ -1,14 +1,23 @@
 plugins {
     id("thelab.android.library")
-    id("thelab.android.library.compose")
     id("thelab.android.hilt")
     id("thelab.android.library.jacoco")
+    id("kotlin-parcelize")
+    id("kotlinx-serialization")
 }
 
 android {
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
+
     namespace = "com.riders.thelab.core.data"
 }
 
@@ -17,37 +26,47 @@ dependencies {
     ///////////////////////////////////
     // Project
     ///////////////////////////////////
-    // implementation(project(":core:analytics"))
-    // implementation(project(":core:data"))
-
+     implementation(project(":core:common"))
 
     ///////////////////////////////////
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
-    implementation(libs.kotlinx.datetime)
+    api(libs.kotlinx.coroutines.android)
+    api(libs.androidx.core.ktx)
+    api(libs.room.ktx)
+    api(libs.kotlinx.serialization.json)
 
-    // Compose
-    api(libs.androidx.compose.foundation)
-    api(libs.androidx.compose.foundation.layout)
-    api(libs.androidx.compose.material.iconsExtended)
-    api(libs.androidx.compose.material3)
-    api(libs.androidx.compose.runtime)
-    api(libs.androidx.compose.runtime.livedata)
-    api(libs.androidx.compose.ui.tooling.preview)
-    api(libs.androidx.compose.ui.util)
-    api(libs.androidx.metrics)
-    api(libs.androidx.tracing.ktx)
+    // Room
+    api(libs.room.ktx)
+    api(libs.room.runtime)
+    kapt(libs.room.compiler)
 
-    debugApi(libs.androidx.compose.ui.tooling)
+    // Firebase
+    api(platform(libs.firebase.bom))
+    api(libs.firebase.analytics)
+    api(libs.firebase.auth)
+    api(libs.firebase.crashlytics)
+    api(libs.firebase.database)
+    api(libs.firebase.messaging)
+    api(libs.firebase.storage)
 
-    // AndroidX
-    implementation(libs.androidx.browser)
-    implementation(libs.androidx.core.ktx)
+    /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.moshi)
+    implementation(libs.retrofit.kotlin.serialization)
 
-    // Coil
-    implementation(libs.coil.kt)
-    implementation(libs.coil.kt.compose)
+    // OkHttp
+    // define a BOM and its version
+    implementation(platform(libs.okhttp.bom))
+    // define any required OkHttp artifacts without version
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
 
-    // androidTestImplementation(project(":core:testing"))
+    // Moshi
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    kapt(libs.moshi.kotlin.codegen)
+
+     androidTestImplementation(project(":core:testing"))
 }
