@@ -1,7 +1,7 @@
 plugins {
     id("thelab.android.library")
-    id("thelab.android.library.compose")
-    id("thelab.android.library.jacoco")
+    kotlin("android")
+    kotlin("kapt")
 }
 
 android {
@@ -13,8 +13,17 @@ android {
 
 dependencies {
     ///////////////////////////////////
+    // Project
+    ///////////////////////////////////
+    implementation(project(":core:data"))
+
+    ///////////////////////////////////
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
     api(platform(libs.kotlin.bom))
+    // Moshi
+    api(libs.moshi)
+    api(libs.moshi.kotlin)
+    kapt(libs.moshi.kotlin.codegen)
 }
