@@ -246,11 +246,11 @@ class BiometricViewModel @Inject constructor(
         val username = (_uiState.value as LoginUiState.Logged).usernameField
         val password = (_uiState.value as LoginUiState.Logged).passwordField
         if (username.isBlank() || password.isBlank()) {
-            // showMessage(R.string.msg_error_username_password_required)
+            showMessage(R.string.msg_error_username_password_required)
             return
         }
         viewModelScope.launch {
-            // userRepository.login(username, password)
+             userRepository.login(username, password)
         }
     }
 
@@ -362,27 +362,24 @@ class BiometricViewModel @Inject constructor(
 
     private suspend fun prepareAuthContext(purpose: CryptoPurpose): AuthContext {
         val cryptoObject = biometricRepository.createCryptoObject(purpose)
-        return AuthContext(
-            purpose = purpose,
-            cryptoObject = cryptoObject
-        )
+        return AuthContext(purpose = purpose, cryptoObject = cryptoObject)
     }
 
     private fun handleError(ex: Throwable?) {
         Timber.e(ex, "handleException: ${ex?.message}")
         ex?.let {
-            // SnackbarManager.showMessage(R.string.msg_error_generic)
+            showMessage(R.string.msg_error_generic)
         }
     }
 
     private fun handleInvalidCryptoException(ex: InvalidCryptoLayerException, isLogin: Boolean) {
         Timber.e(ex, "handleInvalidCryptoException... isLogin: $isLogin")
         if (ex.isKeyPermanentlyInvalidated()) {
-            // SnackbarManager.showMessage(R.string.msg_error_key_permanently_invalidated)
+            showMessage(R.string.msg_error_key_permanently_invalidated)
         } else if (ex.isKeyInitFailed()) {
-            // SnackbarManager.showMessage(R.string.msg_error_key_init_fail)
+            showMessage(R.string.msg_error_key_init_fail)
         } else {
-            // SnackbarManager.showMessage(R.string.msg_error_generic)
+            showMessage(R.string.msg_error_generic)
         }
         if (isLogin) {
             //update to inform ui that login with biometry is not available
@@ -391,12 +388,12 @@ class BiometricViewModel @Inject constructor(
     }
 
     private fun showMessage(message: String) {
-        Timber.d("showMessage() | message: $message")
+        Timber.e("showMessage() | message: $message")
         // UIManager.showMessage(message)
     }
 
     private fun showMessage(@StringRes messageTextId: Int) {
-        Timber.d("showMessage() | message: $messageTextId")
+        Timber.e("showMessage() | message: $messageTextId")
         // SnackbarManager.showMessage(messageTextId)
     }
 

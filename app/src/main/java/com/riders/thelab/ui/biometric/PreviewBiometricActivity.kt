@@ -17,12 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.R
 import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.compose.ui.theme.TheLabTheme
 import com.riders.thelab.core.compose.utils.findActivity
 import com.riders.thelab.data.local.model.biometric.AuthError
+import com.riders.thelab.data.local.model.compose.LoginUiState
 import timber.log.Timber
 
 @Composable
@@ -62,6 +64,8 @@ fun BiometricPromptContainer(
 
 @Composable
 fun BiometricContent(viewModel: BiometricViewModel) {
+    val uiState: LoginUiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
     // create the state
     val promptContainerState = rememberPromptContainerState()
@@ -74,6 +78,14 @@ fun BiometricContent(viewModel: BiometricViewModel) {
         .setSubtitle("Log in using your biometric credential")
         .setNegativeButtonText("Cancel")
         .build()
+
+    (uiState as LoginUiState.Logged).authContext?.let { auth ->
+        val resources = LocalContext.current.resources
+        LaunchedEffect(key1 = auth) {
+            val promptInfo = viewModel.createPromptInfo(auth.purpose, resources)
+            promptContainerState.authenticate(promptInfo, auth.cryptoObject)
+        }
+    }
 
     TheLabTheme {
         Scaffold(
@@ -107,13 +119,14 @@ fun BiometricContent(viewModel: BiometricViewModel) {
 
                 Button(onClick = {
                     // To show the prompt.
-                    promptContainerState.authenticate(info, cryptoObject)
+                    viewModel.doLogin()
                 }) {
 
                 }
             }
         }
     }
+
 }
 
 @DevicePreviews
