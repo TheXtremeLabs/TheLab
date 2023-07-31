@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.weather
+package com.riders.thelab.feature.weather.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -7,12 +7,12 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
-import com.riders.thelab.core.parser.LabParser
+import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.common.storage.LabFileManager
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.local.model.weather.WeatherData
-import com.riders.thelab.data.remote.dto.weather.City
-import com.riders.thelab.core.common.utils.Validator
+import com.riders.thelab.core.common.utils.LabParser
+import com.riders.thelab.core.data.local.model.weather.WeatherData
+import com.riders.thelab.core.data.remote.dto.weather.City
+import com.riders.thelab.feature.weather.utils.Validator
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.runBlocking
@@ -21,9 +21,9 @@ import timber.log.Timber
 @SuppressLint("RestrictedApi")
 @HiltWorker
 class WeatherDownloadWorker @AssistedInject constructor(
-    @Assisted @NonNull val context: Context,
-    @Assisted @NonNull val workerParams: WorkerParameters,
-    val mRepository: IRepository
+    @Assisted val context: Context,
+    @Assisted val workerParams: WorkerParameters,
+    private val mRepository: IRepository
 ) : CoroutineWorker(context, workerParams) {
 
     companion object {

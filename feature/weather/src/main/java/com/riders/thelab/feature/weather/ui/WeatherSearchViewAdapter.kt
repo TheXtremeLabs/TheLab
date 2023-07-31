@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.weather
+package com.riders.thelab.feature.weather.ui
 
 import android.annotation.SuppressLint
 import android.content.Context

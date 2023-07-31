@@ -1,4 +1,4 @@
-package com.riders.thelab.core.worker
+package com.riders.thelab.feature.weather.core.worker
 
 import android.annotation.SuppressLint
 import android.appwidget.AppWidgetManager
@@ -11,15 +11,15 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
-import com.riders.thelab.R
-import com.riders.thelab.core.utils.LabAddressesUtils
-import com.riders.thelab.core.utils.LabLocationManager
-import com.riders.thelab.core.utils.LabLocationUtils
-import com.riders.thelab.core.widget.TheLabAppWidgetProvider
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
-import com.riders.thelab.ui.weather.WeatherDownloadWorker
-import com.riders.thelab.ui.weather.WeatherUtils
+import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabLocationManager
+import com.riders.thelab.core.common.utils.LabLocationUtils
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.ui.R
+import com.riders.thelab.feature.weather.core.widget.TheLabAppWidgetProvider
+import com.riders.thelab.feature.weather.ui.WeatherDownloadWorker
+import com.riders.thelab.feature.weather.ui.WeatherUtils
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.runBlocking

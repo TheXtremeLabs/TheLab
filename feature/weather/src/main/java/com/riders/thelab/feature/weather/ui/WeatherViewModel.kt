@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.weather
+package com.riders.thelab.feature.weather.ui
 
 import android.annotation.SuppressLint
 import android.database.Cursor
@@ -16,16 +16,16 @@ import androidx.work.*
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.core.common.utils.toLocation
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.compose.WeatherCityUIState
+import com.riders.thelab.core.data.local.model.compose.WeatherUIState
+import com.riders.thelab.core.data.local.model.weather.CityModel
+import com.riders.thelab.core.data.local.model.weather.WeatherData
+import com.riders.thelab.core.data.remote.dto.weather.CurrentWeather
+import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.ui.data.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.core.utils.*
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.local.model.compose.WeatherCityUIState
-import com.riders.thelab.data.local.model.compose.WeatherUIState
-import com.riders.thelab.data.local.model.weather.CityModel
-import com.riders.thelab.data.local.model.weather.WeatherData
-import com.riders.thelab.data.remote.dto.weather.CurrentWeather
-import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
-import com.riders.thelab.utils.Constants
+import com.riders.thelab.feature.weather.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO

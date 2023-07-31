@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.weather
+package com.riders.thelab.feature.weather.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,20 +26,18 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.data.local.model.compose.WeatherUIState
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.data.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.core.utils.*
-import com.riders.thelab.data.local.model.compose.WeatherUIState
-import com.riders.thelab.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class WeatherActivity : BaseActivity(), LocationListener {
+class WeatherActivity : ComponentActivity(), LocationListener {
 
     private val mWeatherViewModel: WeatherViewModel by viewModels()
 
@@ -49,7 +48,7 @@ class WeatherActivity : BaseActivity(), LocationListener {
 
             if (intent?.action != null && intent.action?.equals(LOCATION_PROVIDERS_ACTION) == true) {
                 // Make an action or refresh an already managed state.
-                Timber.d("CHANGED");
+                Timber.d("CHANGED")
             }
         }
     }
@@ -216,7 +215,7 @@ class WeatherActivity : BaseActivity(), LocationListener {
                 this,
                 "Cannot get location please enable device's position setting.",
                 SnackBarType.ALERT,
-                getString(R.string.action_ok)
+                getString(com.riders.thelab.core.ui.R.string.action_ok)
             ) { }
 
             return
