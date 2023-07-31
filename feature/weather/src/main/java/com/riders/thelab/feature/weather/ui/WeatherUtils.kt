@@ -1,10 +1,10 @@
-package com.riders.thelab.ui.weather
+package com.riders.thelab.feature.weather.ui
 
 import com.github.mikephil.charting.charts.LineChart
 import com.riders.thelab.data.local.bean.Hours
 import com.riders.thelab.data.remote.dto.weather.CurrentWeather
 import com.riders.thelab.utils.Constants
-import com.riders.thelab.core.common.utils.DateTimeUtils
+import com.riders.thelab.utils.DateTimeUtils
 import timber.log.Timber
 
 object WeatherUtils {

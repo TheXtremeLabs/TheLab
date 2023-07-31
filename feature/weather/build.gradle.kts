@@ -1,7 +1,7 @@
 plugins {
     id("thelab.android.feature")
+    id("thelab.android.library.compose")
     id("thelab.android.hilt")
-    id("thelab.android.firebase")
     id("thelab.android.library.jacoco")
 }
 
@@ -17,8 +17,9 @@ dependencies {
     ///////////////////////////////////
     // Project
     ///////////////////////////////////
-    // implementation(project(":core:analytics"))
-    // implementation(project(":core:data"))
+    implementation(project(":core:analytics"))
+    implementation(project(":core:data"))
+    implementation(project(":core:common"))
 
 
     ///////////////////////////////////
@@ -49,5 +50,27 @@ dependencies {
     implementation(libs.coil.kt)
     implementation(libs.coil.kt.compose)
 
-    // androidTestImplementation(project(":core:testing"))
+    // Worker & concurrent
+    implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.work.multiprocess)
+    implementation(libs.androidx.concurrent)
+    androidTestImplementation(libs.androidx.work.testing)
+
+    /* Hilt - We are going to use hilt.android which includes
+     * support for Activity and fragment injection so we need to include
+     * the following dependencies */
+    // Hilt
+    //implementation(Dependencies.hilt)
+    //kapt(Dependencies.hiltCompiler)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.ext.work)
+    kapt(libs.hilt.ext.compiler)
+
+    // OkHttp
+    // define a BOM and its version
+    api(platform(libs.okhttp.bom))
+    // define any required OkHttp artifacts without version
+    api(libs.okhttp)
+
+    androidTestImplementation(project(":core:testing"))
 }
