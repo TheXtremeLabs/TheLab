@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- General Preferences -->
+    <androidx.preference.PreferenceCategory android:title="@string/pref_general">
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/pref_key_dark_mode"
+            android:persistent="true"
+            android:title="@string/pref_title_dark_mode" />
+
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory android:title="@string/pref_user">
+
+        <androidx.preference.Preference
+            android:key="@string/pref_key_wipe_data"
+            android:persistent="true"
+            android:title="@string/pref_title_wipe_data" />
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory android:title="@string/pref_about">
+
+        <androidx.preference.Preference
+            android:key="@string/pref_key_about"
+            android:persistent="true"
+            android:title="@string/pref_title_about" />
+    </androidx.preference.PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

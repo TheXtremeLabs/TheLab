@@ -3,6 +3,7 @@ plugins {
     id("thelab.android.library.compose")
     id("thelab.android.hilt")
     id("thelab.android.library.jacoco")
+    kotlin("kapt")
 }
 
 android {
@@ -71,6 +72,9 @@ dependencies {
     api(platform(libs.okhttp.bom))
     // define any required OkHttp artifacts without version
     api(libs.okhttp)
+
+    // Charts
+    api(libs.mpandroidchart)
 
     androidTestImplementation(project(":core:testing"))
 }

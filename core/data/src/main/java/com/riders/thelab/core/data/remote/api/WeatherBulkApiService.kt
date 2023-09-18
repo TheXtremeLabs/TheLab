@@ -1,6 +1,6 @@
 package com.riders.thelab.core.data.remote.api
 
-import com.riders.thelab.utils.Constants
+import com.riders.thelab.core.data.utils.Constants
 
 
 import okhttp3.ResponseBody

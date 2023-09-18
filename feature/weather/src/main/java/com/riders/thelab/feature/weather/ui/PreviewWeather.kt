@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.weather
+package com.riders.thelab.feature.weather.ui
 
 import android.location.Address
 import android.widget.Toast
@@ -48,25 +48,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.airbnb.lottie.compose.*
-import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.component.Lottie
-import com.riders.thelab.core.compose.component.TheLabTopAppBar
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.ui.theme.Typography
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
-import com.riders.thelab.core.compose.ui.theme.md_theme_light_primary
-import com.riders.thelab.core.compose.utils.findActivity
-import com.riders.thelab.core.utils.LabLocationManager
-import com.riders.thelab.core.utils.toLocation
-import com.riders.thelab.data.local.bean.WindDirection
-import com.riders.thelab.data.local.model.compose.WeatherCityUIState
-import com.riders.thelab.data.local.model.compose.WeatherUIState.*
-import com.riders.thelab.data.remote.dto.weather.DailyWeather
-import com.riders.thelab.data.remote.dto.weather.OneCallWeatherResponse
-import com.riders.thelab.utils.Constants
-import com.riders.thelab.utils.DateTimeUtils
+import com.riders.thelab.core.common.utils.DateTimeUtils
+import com.riders.thelab.core.common.utils.LabLocationManager
+import com.riders.thelab.core.common.utils.toLocation
+import com.riders.thelab.core.data.local.model.compose.WeatherCityUIState
+import com.riders.thelab.core.data.local.model.compose.WeatherUIState
+import com.riders.thelab.core.data.remote.dto.weather.DailyWeather
+import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.ui.R
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.Typography
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
+import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.core.ui.data.WindDirection
+import com.riders.thelab.feature.weather.core.component.TheLabTopAppBar
+import com.riders.thelab.feature.weather.utils.Constants
 import timber.log.Timber
 import kotlin.math.roundToInt
 
@@ -243,7 +242,7 @@ fun WeatherData(viewModel: WeatherViewModel) {
 
         // Temperatures
         val temperature =
-            "${weather.currentWeather.temperature.roundToInt()} ${
+            "${weather.currentWeather!!.temperature.roundToInt()} ${
                 (context.findActivity() as WeatherActivity).getString(
                     R.string.degree_placeholder
                 )
@@ -292,7 +291,7 @@ fun WeatherData(viewModel: WeatherViewModel) {
                                 ) {
                                     Text(text = "$cityName, $country")
                                     Text(
-                                        text = weather.currentWeather.weather[0].main,
+                                        text = weather.currentWeather!!.weather!![0].main,
                                         style = Typography.titleSmall,
                                         fontWeight = FontWeight.ExtraBold
                                     )
@@ -453,7 +452,7 @@ fun WeatherMoreData(weather: OneCallWeatherResponse) {
                     Text(
                         text = DateTimeUtils.formatMillisToTimeHoursMinutes(
                             weather.timezone!!,
-                            weather.currentWeather.sunrise
+                            weather.currentWeather!!.sunrise
                         )
                     )
                 }
@@ -477,7 +476,7 @@ fun WeatherMoreData(weather: OneCallWeatherResponse) {
                     Text(
                         text = DateTimeUtils.formatMillisToTimeHoursMinutes(
                             weather.timezone!!,
-                            weather.currentWeather.sunset
+                            weather.currentWeather!!.sunset
                         )
                     )
                 }
@@ -690,16 +689,16 @@ fun WeatherContent(viewModel: WeatherViewModel, labLocationManager: LabLocationM
                     .padding(contentPadding)
             ) {
                 when (weatherUIState) {
-                    is Loading -> {
+                    is WeatherUIState.Loading -> {
                         WeatherLoading(modifier = Modifier.align(Alignment.Center))
                     }
 
-                    is SuccessWeatherData,
-                    is Success -> {
+                    is WeatherUIState.SuccessWeatherData,
+                    is WeatherUIState.Success -> {
                         WeatherSuccess(viewModel)
                     }
 
-                    is Error -> {
+                    is WeatherUIState.Error -> {
                         WeatherError(
                             modifier = Modifier.align(Alignment.Center),
                             viewModel = viewModel
@@ -736,7 +735,7 @@ fun PreviewWeatherContent() {
 @Composable
 fun PreviewWeatherSuccess() {
     val viewModel: WeatherViewModel = hiltViewModel()
-    viewModel.updateUIState(SuccessWeatherData(true))
+    viewModel.updateUIState(WeatherUIState.SuccessWeatherData(true))
     viewModel.updateWeatherCityUIState(WeatherCityUIState.Success(OneCallWeatherResponse.getMockResponse()))
 
     TheLabTheme {
@@ -748,7 +747,7 @@ fun PreviewWeatherSuccess() {
 @Composable
 fun PreviewWeatherData() {
     val viewModel: WeatherViewModel = hiltViewModel()
-    viewModel.updateUIState(SuccessWeatherData(true))
+    viewModel.updateUIState(WeatherUIState.SuccessWeatherData(true))
     viewModel.updateWeatherCityUIState(WeatherCityUIState.Success(OneCallWeatherResponse.getMockResponse()))
     TheLabTheme {
         WeatherData(viewModel = viewModel)
