@@ -1,7 +1,7 @@
-package com.riders.thelab.core.compose.previewprovider
+package com.riders.thelab.core.ui.compose.previewprovider
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.riders.thelab.R
+import com.riders.thelab.core.ui.R
 
 class VideoPathPreviewProvider : PreviewParameterProvider<String> {
     override val values: Sequence<String>
