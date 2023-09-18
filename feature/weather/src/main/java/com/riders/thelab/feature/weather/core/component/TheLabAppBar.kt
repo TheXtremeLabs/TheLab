@@ -1,5 +1,6 @@
-package com.riders.thelab.core.compose.component
+package com.riders.thelab.feature.weather.core.component
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,11 +21,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ComponentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.previewprovider.TextContentPreviewProvider
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.ui.weather.WeatherViewModel
+import com.riders.thelab.core.ui.R
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.weather.ui.WeatherViewModel
 
 
 ///////////////////////////
@@ -32,6 +33,7 @@ import com.riders.thelab.ui.weather.WeatherViewModel
 // COMPOSABLE
 //
 ///////////////////////////
+@SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
@@ -75,6 +77,7 @@ fun TheLabTopAppBar(
     }
 }
 
+@SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheLabTopAppBar(navigationIcon: @Composable() (() -> Unit)) {
@@ -102,6 +105,7 @@ fun TheLabTopAppBar(navigationIcon: @Composable() (() -> Unit)) {
     }
 }
 
+@SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheLabTopAppBar(
@@ -162,6 +166,7 @@ fun TheLabTopAppBar(
     }
 }
 
+@SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable

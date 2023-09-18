@@ -1,9 +1,9 @@
 package com.riders.thelab.core.data.remote.rest
 
-import com.riders.thelab.core.okhttp.LabInterceptors.GzipRequestInterceptor
+import com.riders.thelab.core.common.okhttp.LabInterceptors
 import com.riders.thelab.core.data.local.bean.TimeOut
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
-import com.riders.thelab.utils.Constants
+import com.riders.thelab.core.data.utils.Constants
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -42,7 +42,7 @@ class WeatherRestClient {
                 val request: Request = requestBuilder.build()
                 chain.proceed(request)
             })
-            .addInterceptor(GzipRequestInterceptor())
+            .addInterceptor(LabInterceptors.GzipRequestInterceptor())
         //                .addInterceptor(LabInterceptors.provideLoggingInterceptor());
 
         //httpClientBuilder.build();

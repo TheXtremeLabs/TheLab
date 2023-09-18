@@ -11,9 +11,10 @@ import androidx.cursoradapter.widget.CursorAdapter
 import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
-import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.utils.Constants
+import com.riders.thelab.feature.weather.R
+import com.riders.thelab.feature.weather.utils.Constants
+
 
 @SuppressLint("RestrictedApi")
 class WeatherSearchViewAdapter(
