@@ -1,4 +1,4 @@
-package com.riders.thelab.core.views
+package com.riders.thelab.core.ui.views
 
 import android.content.Context
 import android.util.DisplayMetrics
