@@ -1,7 +1,7 @@
-package com.riders.thelab.core.compose.previewprovider
+package com.riders.thelab.core.ui.compose.previewprovider
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.riders.thelab.data.local.model.music.Artist
+import com.riders.thelab.core.data.local.model.music.Artist
 import kotools.types.text.toNotBlankString
 
 class ArtistModelPreviewProvider : PreviewParameterProvider<Artist> {
@@ -23,10 +23,10 @@ class ArtistModelPreviewProvider : PreviewParameterProvider<Artist> {
 }
 
 class ArtistPreviewProvider :
-    PreviewParameterProvider<com.riders.thelab.data.remote.dto.artist.Artist> {
-    override val values: Sequence<com.riders.thelab.data.remote.dto.artist.Artist>
+    PreviewParameterProvider<com.riders.thelab.core.data.remote.dto.artist.Artist> {
+    override val values: Sequence<com.riders.thelab.core.data.remote.dto.artist.Artist>
         get() = sequenceOf(
-            com.riders.thelab.data.remote.dto.artist.Artist(
+            com.riders.thelab.core.data.remote.dto.artist.Artist(
                 "Pi'erre",
                 "Pi'erre",
                 "",
