@@ -1,4 +1,4 @@
-package com.riders.thelab.core.utils
+package com.riders.thelab.core.ui.utils
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -15,24 +15,20 @@ import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.view.Menu
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.request.RequestListener
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.riders.thelab.R
-import com.riders.thelab.TheLabApplication
-import com.riders.thelab.core.views.toast.TheLabToast
-import com.riders.thelab.core.views.toast.ToastTypeEnum
-import com.riders.thelab.data.local.bean.SnackBarType
+import com.riders.thelab.core.ui.R
+import com.riders.thelab.core.ui.data.SnackBarType
+import com.riders.thelab.core.ui.views.toast.ToastTypeEnum
 import timber.log.Timber
 
 object UIManager {
@@ -68,7 +64,6 @@ object UIManager {
      * @param negativeMessage
      * @param positiveMessage
      */
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     fun showAlertDialog(
         activity: Activity?,
         context: Context,
@@ -90,11 +85,11 @@ object UIManager {
             if (negativeMessage.equals("Réessayer", ignoreCase = true)) {
                 //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
             }
-            if (negativeMessage.equals("Réessayer", ignoreCase = true)
+            /*if (negativeMessage.equals("Réessayer", ignoreCase = true)
                 && LabNetworkManagerNewAPI.getInstance(context).isOnline()
             ) {
                 dialog.dismiss()
-            }
+            }*/
         }
         alertDialog.setPositiveButton(positiveMessage) { _: DialogInterface?, _: Int ->
             showActionInToast(context, positiveMessage)
@@ -115,10 +110,10 @@ object UIManager {
     }
 
     fun showCustomToast(context: Context, type: ToastTypeEnum, message: String) {
-        TheLabToast.Builder(context)
+        /*TheLabToast.Builder(context)
             .setType(type)
             .setText(message)
-            .show()
+            .show()*/
     }
 
     fun showActionInSnackBar(
@@ -268,20 +263,22 @@ object UIManager {
 
     //@BindingAdapter("android:src", "error", requireAll = false)
     fun loadImage(
+        context: Context,
         targetImageView: ShapeableImageView,
         iconIntRes: Int,
         error: Drawable,
     ) {
-        LabGlideUtils.getInstance().loadImage(targetImageView, iconIntRes, error)
+//        LabGlideUtils.getInstance().loadImage(context,iconIntRes, targetImageView,  error)
     }
 
     //@BindingAdapter("imageUrl", "error", requireAll = false)
     fun loadImage(
+        context: Context,
         targetImageView: ShapeableImageView,
         iconResDrawable: Drawable,
         error: Drawable,
     ) {
-        LabGlideUtils.getInstance().loadImage(targetImageView, iconResDrawable, error)
+//        LabGlideUtils.getInstance().loadImage(context,  iconResDrawable,targetImageView, error)
     }
 
     fun loadImage(
@@ -318,7 +315,7 @@ object UIManager {
      */
     fun showMenuButtons(menu: Menu) {
         // Or true to be visible
-        menu.setGroupVisible(R.id.menu_main_group, true)
+        // menu.setGroupVisible(R.id.menu_main_group, true)
     }
 
     fun getBitmapFromDrawable(context: Context, drawableResId: Int): Bitmap? {
@@ -332,19 +329,19 @@ object UIManager {
      */
     fun hideMenuButtons(menu: Menu) {
         // Or true to be visible
-        menu.setGroupVisible(R.id.menu_main_group, false)
+        // menu.setGroupVisible(R.id.menu_main_group, false)
     }
 
-    fun getDrawable(drawableResId: Int): Drawable? {
+    fun getDrawable(context: Context, drawableResId: Int): Drawable? {
         if (0 == drawableResId)
             return null
         return ContextCompat.getDrawable(
-            TheLabApplication.getInstance().getContext(),
+            context,
             drawableResId
         )
     }
 
-    fun getDrawable(context: Context, drawableRedId: Int): Bitmap? {
+    fun getDrawableAsBitmap(context: Context, drawableRedId: Int): Bitmap? {
         if (0 == drawableRedId)
             return null
         return drawableToBitmap(ContextCompat.getDrawable(context, drawableRedId)!!)

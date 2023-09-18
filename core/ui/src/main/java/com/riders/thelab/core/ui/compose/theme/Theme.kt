@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
-import com.riders.thelab.core.compose.ui.theme.Typography
 
 
 private val LightColorScheme = lightColorScheme(

@@ -1,4 +1,4 @@
-package com.riders.thelab.core.compose.utils
+package com.riders.thelab.core.ui.compose.utils
 
 import android.content.Context
 import androidx.compose.runtime.Composable

@@ -1,4 +1,4 @@
-package com.riders.thelab.core.compose.utils
+package com.riders.thelab.core.ui.compose.utils
 
 import android.app.Activity
 import android.content.Context
@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.riders.thelab.data.local.model.Message
+import com.riders.thelab.core.data.local.model.Message
 
 fun Context.findActivity(): Activity? = when (this) {
     is AppCompatActivity -> this

@@ -1,4 +1,4 @@
-package com.riders.thelab.core.utils
+package com.riders.thelab.core.ui.utils
 
 import android.graphics.drawable.Drawable
 import com.bumptech.glide.load.DataSource
