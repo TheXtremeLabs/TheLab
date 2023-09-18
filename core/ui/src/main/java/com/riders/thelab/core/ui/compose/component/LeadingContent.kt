@@ -15,9 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
-import com.riders.thelab.data.local.model.compose.IslandState
 
 @DevicePreviews
 @Composable
