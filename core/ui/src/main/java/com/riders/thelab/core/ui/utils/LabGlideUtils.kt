@@ -1,16 +1,16 @@
-package com.riders.thelab.core.utils
+package com.riders.thelab.core.ui.utils
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import androidx.databinding.BindingAdapter
+//import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.imageview.ShapeableImageView
-import com.riders.thelab.TheLabApplication
+//import com.riders.thelab.TheLabApplication
 import jp.wasabeef.glide.transformations.BlurTransformation
 
-@BindingAdapter("imageResource", "error", requireAll = false)
+/*@BindingAdapter("imageResource", "error", requireAll = false)
 fun loadImage(
     targetImageView: ShapeableImageView,
     iconResDrawable: Drawable?,
@@ -62,7 +62,7 @@ fun loadImage(
             }
             .into(targetImageView)
     }
-}
+}*/
 
 class LabGlideUtils {
 
@@ -77,7 +77,7 @@ class LabGlideUtils {
         }
     }
 
-    fun loadImage(
+    /*fun loadImage(
         targetImageView: ShapeableImageView,
         iconIntRes: Int,
         error: Drawable,
@@ -121,7 +121,7 @@ class LabGlideUtils {
                 dontTransform()
             }
             .into(targetImageView)
-    }
+    }*/
 
     fun loadImage(
         context: Context,

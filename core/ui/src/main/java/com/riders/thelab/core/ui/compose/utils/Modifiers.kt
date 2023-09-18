@@ -1,4 +1,4 @@
-package com.riders.thelab.core.compose.utils
+package com.riders.thelab.core.ui.compose.utils
 
 import android.annotation.SuppressLint
 import android.graphics.RenderEffect

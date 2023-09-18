@@ -1,4 +1,5 @@
-package com.riders.thelab.core.views.toast
+/*
+package com.riders.thelab.core.ui.views.toast
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -12,13 +13,15 @@ import android.view.animation.TranslateAnimation
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
-import com.riders.thelab.core.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.databinding.CustomToastLayoutBinding
 import timber.log.Timber
 
+*/
 /**
  * Reference : https://developer.android.com/guide/topics/ui/notifiers/toasts#CustomToastView
- */
+ *//*
+
 class TheLabToast(
     private val context: Context
 ) : Toast(context) {
@@ -26,13 +29,15 @@ class TheLabToast(
     private val binding get() = _viewBinding!!
 
 
-    /**
-     * Construct an empty Toast object.  You must call [.setView] before you
-     * can call [.show].
-     *
-     * @param context The context to use.  Usually your [Application]
-     * or [Activity] object.
-     */
+    */
+/**
+ * Construct an empty Toast object.  You must call [.setView] before you
+ * can call [.show].
+ *
+ * @param context The context to use.  Usually your [Application]
+ * or [Activity] object.
+ *//*
+
     init {
 
         run {
@@ -61,11 +66,13 @@ class TheLabToast(
         binding.ivLol.setImageDrawable(ContextCompat.getDrawable(context, drawableResourceID))
     }
 
-    /**
-     * Reference : https://stackoverflow.com/questions/47837460/how-to-set-layout-background-tint-from-string-programmatically
-     *
-     * @param color
-     */
+    */
+/**
+ * Reference : https://stackoverflow.com/questions/47837460/how-to-set-layout-background-tint-from-string-programmatically
+ *
+ * @param color
+ *//*
+
     @SuppressLint("NewApi")
     @Suppress("DEPRECATION")
     fun setBackgroundColor(color: Int) {
@@ -136,4 +143,4 @@ class TheLabToast(
         }
     }
 
-}
+}*/

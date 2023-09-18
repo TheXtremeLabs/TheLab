@@ -1,11 +1,10 @@
 package com.riders.thelab.core.ui.compose.component
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.GpsFixed
-import androidx.compose.material.icons.filled.GpsOff
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -19,12 +18,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ComponentActivity
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.ui.weather.WeatherViewModel
 
 
 ///////////////////////////
@@ -32,6 +29,7 @@ import com.riders.thelab.ui.weather.WeatherViewModel
 // COMPOSABLE
 //
 ///////////////////////////
+@SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
@@ -75,6 +73,7 @@ fun TheLabTopAppBar(
     }
 }
 
+@SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheLabTopAppBar(navigationIcon: @Composable() (() -> Unit)) {
@@ -102,66 +101,8 @@ fun TheLabTopAppBar(navigationIcon: @Composable() (() -> Unit)) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TheLabTopAppBar(
-    @PreviewParameter(TextContentPreviewProvider::class) title: String,
-    viewModel: WeatherViewModel,
-    actionBlock: () -> Unit,
-) {
-    val context = LocalContext.current
 
-    TheLabTheme {
-        TopAppBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(96.dp)
-                .background(
-                    Brush.verticalGradient(
-                        listOf(Color.Black, MaterialTheme.colorScheme.background)
-                    )
-                ),
-            title = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(start = 16.dp, bottom = 16.dp),
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    Text(text = title, color = Color.White)
-                }
-            },
-            navigationIcon = {
-                IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
-                    Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
-                }
-            },
-            actions = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(bottom = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    IconButton(onClick = actionBlock) {
-                        Icon(
-                            imageVector = if (!viewModel.iconState) Icons.Filled.GpsOff else Icons.Filled.GpsFixed,
-                            contentDescription = "action icon "
-                        )
-                    }
-                }
-
-            },
-            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
-        )
-    }
-}
-
+@SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
@@ -232,23 +173,11 @@ fun TheLabTopAppBarLarge() {
 // PREVIEWS
 //
 ///////////////////////////
-
-@OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
 private fun PreviewTheLabTopAppBar() {
     TheLabTheme {
         TheLabTopAppBar("Lorem Ipsum")
-    }
-}
-
-
-@DevicePreviews
-@Composable
-private fun PreviewTheLabTopAppBar(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
-    val viewModel: WeatherViewModel = hiltViewModel()
-    TheLabTheme {
-        TheLabTopAppBar(title, viewModel) {}
     }
 }
 

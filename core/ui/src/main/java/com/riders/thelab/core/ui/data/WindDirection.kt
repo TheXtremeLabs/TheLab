@@ -1,6 +1,6 @@
-package com.riders.thelab.core.data.local.bean
+package com.riders.thelab.core.ui.data
 
-import com.riders.thelab.R
+import com.riders.thelab.core.ui.R
 
 enum class WindDirection(
     val shortName: String,

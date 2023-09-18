@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.ui.compose.utils.customBlur
-import com.riders.thelab.core.utils.LabCompatibilityManager
 
 @Composable
 fun MetaEntity(
