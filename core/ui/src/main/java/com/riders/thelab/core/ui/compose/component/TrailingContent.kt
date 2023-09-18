@@ -10,9 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
-import com.riders.thelab.data.local.model.compose.IslandState
+
 
 @DevicePreviews
 @Composable
@@ -23,7 +24,7 @@ fun TrailingContent(@PreviewParameter(IslandStatePreviewProvider::class) state: 
         enter = fadeIn(animationSpec = tween(300, 300))
     ) {
         Box(
-            Modifier.width(state.trailingContentSize),
+            modifier = Modifier.width(state.trailingContentSize),
             contentAlignment = Alignment.Center,
         ) {
             when (state) {

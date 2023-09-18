@@ -1,6 +1,6 @@
-package com.riders.thelab.core.utils
+package com.riders.thelab.core.ui.utils
 
-import com.riders.thelab.R
+import  com.riders.thelab.core.ui.R
 
 object LabColorsManager {
     fun getDefaultColors(): IntArray = intArrayOf(

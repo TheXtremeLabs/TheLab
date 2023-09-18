@@ -1,10 +1,9 @@
-package com.riders.thelab.core.compose.ui.theme
+package com.riders.thelab.core.ui.compose.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.riders.thelab.core.ui.compose.theme.samsungSangFamily
 
 // val t = androidx.compose.material.Typography(defaultFontFamily = samsungSangFamily)
 
