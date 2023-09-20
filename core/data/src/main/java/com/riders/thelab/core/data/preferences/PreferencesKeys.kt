@@ -1,4 +1,4 @@
-package com.riders.thelab.utils
+package com.riders.thelab.core.data.preferences
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
