@@ -1,4 +1,4 @@
-package com.riders.thelab.core.utils
+package com.riders.thelab.core.common.utils
 
 import android.location.Address
 import android.location.Geocoder

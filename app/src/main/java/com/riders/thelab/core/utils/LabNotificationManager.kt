@@ -1,5 +1,6 @@
 package com.riders.thelab.core.utils
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -12,9 +13,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.session.MediaButtonReceiver
 import com.riders.thelab.R
+import com.riders.thelab.core.common.utils.Constants
+import com.riders.thelab.core.data.local.model.music.SongModel
 import com.riders.thelab.core.service.MusicMediaPlaybackService
-import com.riders.thelab.data.local.model.music.SongModel
-import com.riders.thelab.utils.Constants
+import com.riders.thelab.core.ui.utils.UIManager
 import timber.log.Timber
 
 object LabNotificationManager {
@@ -71,6 +73,7 @@ object LabNotificationManager {
             }
     }
 
+    @SuppressLint("MissingPermission")
     fun displayMusicNotification(
         context: Context,
         mediaSession: MediaSessionCompat,
@@ -131,7 +134,8 @@ object LabNotificationManager {
                 setStyle(
                     // Take advantage of MediaStyle features
                     androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(0 /* #1: pause button */)
+                        //  #1: pause button
+                        .setShowActionsInCompactView(0)
                         .setMediaSession(mediaSession.sessionToken)
 
                         // Add a cancel button
@@ -146,7 +150,7 @@ object LabNotificationManager {
                 setContentTitle(songModel.name)
                 setContentText(songModel.path)
                 setLargeIcon(
-                    UIManager.getDrawable(
+                    UIManager.getDrawableAsBitmap(
                         context,
                         R.drawable.logo_colors
                     )!!

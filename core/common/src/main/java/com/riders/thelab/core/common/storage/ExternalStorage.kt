@@ -1,35 +1,28 @@
-package com.riders.thelab.core.storage
-/*
+package com.riders.thelab.core.common.storage
 
 import android.os.Environment
 import java.io.File
 import java.util.*
 
-*/
 /**
  * Created by Michaël on 01/03/2018.
- *//*
-
+ */
 object ExternalStorage {
 
     private const val SD_CARD = "sdCard"
     private const val EXTERNAL_SD_CARD = "externalSdCard"
 
-    */
-/**
- * @return True if the external storage is available. False otherwise.
- *//*
-
-    */
-/*fun isAvailable(): Boolean {
+    /**
+     * @return True if the external storage is available. False otherwise.
+     */
+    /*fun isAvailable(): Boolean {
         val state = Environment.getExternalStorageState()
         if (Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state
         ) {
             return true
         }
         return false
-    }*//*
-
+    }*/
     fun isAvailable(): Boolean = when (Environment.getExternalStorageState()) {
         Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY -> true
         else -> false
@@ -42,11 +35,9 @@ object ExternalStorage {
     }
 
 
-    */
-/**
- * @return True if the external storage is writable. False otherwise.
- *//*
-
+    /**
+     * @return True if the external storage is writable. False otherwise.
+     */
     fun isWritable(): Boolean {
         val state = Environment.getExternalStorageState()
         if (Environment.MEDIA_MOUNTED == state) {
@@ -57,11 +48,9 @@ object ExternalStorage {
     }
 
 
-    */
-/**
- * @return A map of all storage locations available
- *//*
-
+    /**
+     * @return A map of all storage locations available
+     */
     fun getAllStorageLocations(): Map<String, File> {
         var map: MutableMap<String, File> = mutableMapOf()
 
@@ -157,4 +146,3 @@ object ExternalStorage {
     }
 }
 
-*/
