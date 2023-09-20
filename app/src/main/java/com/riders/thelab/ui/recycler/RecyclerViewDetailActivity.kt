@@ -7,11 +7,10 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.LabCompatibilityManager
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.remote.dto.artist.Artist
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityRecyclerViewDetailBinding
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 

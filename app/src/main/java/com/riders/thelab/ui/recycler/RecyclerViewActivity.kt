@@ -14,8 +14,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.imageview.ShapeableImageView
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
