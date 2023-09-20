@@ -24,11 +24,11 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.util.DebugLogger
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.previewprovider.ArtistPreviewProvider
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.utils.findActivity
-import com.riders.thelab.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.previewprovider.ArtistPreviewProvider
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber

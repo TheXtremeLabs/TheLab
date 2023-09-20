@@ -1,12 +1,17 @@
 plugins {
     id("thelab.android.library")
     id("thelab.android.hilt")
+    id("thelab.android.room")
     id("thelab.android.library.jacoco")
     id("kotlin-parcelize")
     id("kotlinx-serialization")
+    kotlin("kapt")
 }
 
 android {
+
+    useLibrary("org.apache.http.legacy")
+
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,7 +31,7 @@ dependencies {
     ///////////////////////////////////
     // Project
     ///////////////////////////////////
-     implementation(project(":core:common"))
+    implementation(project(":core:common"))
 
     ///////////////////////////////////
     // General Dependencies
@@ -37,10 +42,14 @@ dependencies {
     api(libs.room.ktx)
     api(libs.kotlinx.serialization.json)
 
+    // Compose
+    api(platform(libs.androidx.compose.bom))
+    api(libs.androidx.compose.ui.tooling)
+
     // Room
-    api(libs.room.ktx)
+    /*api(libs.room.ktx)
     api(libs.room.runtime)
-    kapt(libs.room.compiler)
+    kapt(libs.room.compiler)*/
 
     // Firebase
     api(platform(libs.firebase.bom))
@@ -52,21 +61,25 @@ dependencies {
     api(libs.firebase.storage)
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.moshi)
-    implementation(libs.retrofit.kotlin.serialization)
+    api(libs.retrofit.core)
+    api(libs.retrofit.moshi)
+    api(libs.retrofit.kotlin.serialization)
 
     // OkHttp
     // define a BOM and its version
-    implementation(platform(libs.okhttp.bom))
+    api(platform(libs.okhttp.bom))
     // define any required OkHttp artifacts without version
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
+    api(libs.okhttp)
+    api(libs.okhttp.logging)
+
+    api("org.apache.httpcomponents:httpcore:4.4.15")
 
     // Moshi
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
+    api(libs.moshi)
+    api(libs.moshi.kotlin)
     kapt(libs.moshi.kotlin.codegen)
 
-     androidTestImplementation(project(":core:testing"))
+    api(libs.kotools.types)
+
+    androidTestImplementation(project(":core:testing"))
 }

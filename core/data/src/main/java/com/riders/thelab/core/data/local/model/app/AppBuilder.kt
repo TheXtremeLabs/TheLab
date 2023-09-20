@@ -2,7 +2,7 @@ package com.riders.thelab.core.data.local.model.app
 
 import android.app.Activity
 import android.graphics.drawable.Drawable
-import com.riders.thelab.core.exception.LabApplicationInitializedException
+import com.riders.thelab.core.common.exception.LabApplicationInitializedException
 
 object AppBuilder {
 
@@ -24,55 +24,55 @@ object AppBuilder {
 
     // From Packages
     fun withAppName(appName: String): AppBuilder {
-        this.name = appName
+        name = appName
         return this
 
     }
 
     fun withAppDrawableIcon(appDrawableIcon: Drawable): AppBuilder {
-        this.drawableIcon = appDrawableIcon
+        drawableIcon = appDrawableIcon
         return this
     }
 
     fun withAppVersion(appVersion: String): AppBuilder {
-        this.version = appVersion
+        version = appVersion
         return this
     }
 
     fun withAppPackageName(appPackageName: String): AppBuilder {
-        this.packageName = appPackageName
+        packageName = appPackageName
         return this
     }
 
 
     // From activities
     fun withId(activityID: Long): AppBuilder {
-        this.id = activityID
+        id = activityID
         return this
     }
 
     fun withActivityTitle(activityTitle: String): AppBuilder {
-        this.title = activityTitle
+        title = activityTitle
         return this
     }
 
     fun withActivityDescription(activityDescription: String): AppBuilder {
-        this.description = activityDescription
+        description = activityDescription
         return this
     }
 
     fun withActivityIcon(activityIcon: Drawable): AppBuilder {
-        this.icon = activityIcon
+        icon = activityIcon
         return this
     }
 
     fun withActivityClass(targetActivity: Class<out Activity>?): AppBuilder {
-        this.activity = targetActivity
+        activity = targetActivity
         return this
     }
 
     fun withActivityDate(activityDate: String): AppBuilder {
-        this.date = activityDate
+        date = activityDate
         return this
     }
 

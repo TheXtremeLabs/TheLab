@@ -12,12 +12,12 @@ interface IRepository : IDb, IApi, IPreferences {
     /**
      * Get all packages and check if the returned list contains the target package
      */
-    fun getAppListFromAssets(context:Context): List<App>
+    fun getAppListFromAssets(context: Context): List<App>
 
     /**
      * Get all packages and check if the returned list contains the target package
      */
-    fun getPackageList(context:Context): List<App>
+    fun getPackageList(context: Context): List<App>
 
 
     fun getLocationStatusData(): LiveData<Boolean>

@@ -16,7 +16,7 @@ data class Artist(
     var description: String
 )
 
-fun com.riders.thelab.data.remote.dto.artist.Artist.toModel(): Artist = Artist(
+fun com.riders.thelab.core.data.remote.dto.artist.Artist.toModel(): Artist = Artist(
     artistName,
     firstName,
     secondName,

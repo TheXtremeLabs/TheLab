@@ -101,7 +101,7 @@ class ApiImpl @Inject constructor(
     override fun getBulkWeatherCitiesFile(): Call<ResponseBody> =
         mWeatherBulkApiService.getCitiesZipFile()
 
-    override suspend fun getBulkDownload(context:Context): Flow<Download> =
+    override suspend fun getBulkDownload(context: Context): Flow<Download> =
         mWeatherBulkApiService.getCitiesGZipFile()
             .downloadCitiesFile(
                 context.externalCacheDir!!,

@@ -34,6 +34,6 @@ data class Artist constructor(
 
     @SerialName("description")
     var description: String
-): Serializable {
+) : Serializable {
     var id: Int = 0
 }

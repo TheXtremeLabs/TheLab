@@ -1,14 +1,16 @@
 package com.riders.thelab.core.data.remote.dto.directions
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Steps(
-    @SerializedName(value = "travel_mode")
+    @SerialName(value = "travel_mode")
     var travelMode: String? = null,
 
-    @SerializedName(value = "start_location")
+    @SerialName(value = "start_location")
     var startLocation: Coordinates? = null,
 
-    @SerializedName(value = "end_location")
+    @SerialName(value = "end_location")
     var endLocation: Coordinates? = null
-)
+) : java.io.Serializable

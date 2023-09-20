@@ -12,7 +12,7 @@ import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.google.firebase.storage.StorageReference
-import com.riders.thelab.core.common.LabParser
+import com.riders.thelab.core.common.utils.LabParser
 import com.riders.thelab.core.data.local.DbImpl
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.Download
@@ -52,10 +52,11 @@ class RepositoryImpl @Inject constructor(
     private var mApiImpl: ApiImpl = apiImpl
     private var mPreferencesImpl: PreferencesImpl = preferencesImpl
 
-    override fun getAppListFromAssets(context: Context): List<App> = LabParser.parseJsonFile(
-        context = context,
-        filename = "app_list.json"
-    )
+    override fun getAppListFromAssets(context: Context): List<App> =
+        LabParser.parseJsonFile<List<App>>(
+            context = context,
+            filename = "app_list.json"
+        )!!
 
     override fun getPackageList(context: Context): List<App> {
 
@@ -63,7 +64,12 @@ class RepositoryImpl @Inject constructor(
 
         val appList: MutableList<App> = ArrayList()
 
-        if (isPackageExists(context, installedAppList as MutableList<ApplicationInfo>, TARGET_PACKAGES)) {
+        if (isPackageExists(
+                context,
+                installedAppList as MutableList<ApplicationInfo>,
+                TARGET_PACKAGES
+            )
+        ) {
             for (appInfo in installedAppList) {
                 Timber.e("package found : %s", appInfo.packageName)
                 try {
@@ -76,7 +82,6 @@ class RepositoryImpl @Inject constructor(
                     val packageName = appInfo.packageName
                     appList.add(
                         PackageApp(
-                            context,
                             context.packageManager.getApplicationLabel(appInfo).toString(),
                             icon,
                             version,

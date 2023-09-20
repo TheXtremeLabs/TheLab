@@ -1,17 +1,21 @@
 package com.riders.thelab.core.data.local.model.app
 
-import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
+import android.os.Parcel
+import android.os.Parcelable
 import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parceler
+import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
-import kotlinx.serialization.Contextual
+import java.io.Serializable
 
-//@Parcelize
-@kotlinx.serialization.Serializable
+@Parcelize
 data class PackageApp(
-    @Contextual val context: Context,
     var name: String,
-    @Contextual var drawableIcon: @RawValue Drawable?,
+    var drawableIcon: @RawValue Drawable?,
     var version: String,
     var packageName: String
 ) : App(
@@ -24,27 +28,21 @@ data class PackageApp(
     appDescription = null,
     appActivity = null,
     appDate = null
-), /*Parcelable,*/ java.io.Serializable {
+), Parcelable, Serializable {
 
-    /*@Contextual
-    private var _context: Context ?= null
-
-    init {
-        this._context = context
-    }
     private companion object : Parceler<PackageApp> {
 
         override fun create(parcel: Parcel): PackageApp {
-            *//* Source : https://stackoverflow.com/questions/9033764/how-to-add-a-drawable-object-to-a-parcel-object-in-android*//*
-            var drawable: BitmapDrawable?
+            /* Source : https://stackoverflow.com/questions/9033764/how-to-add-a-drawable-object-to-a-parcel-object-in-android*/
+            var drawable: BitmapDrawable? = null
 
             val bitmap = parcel.readValue(Bitmap::class.java.classLoader)!! as Bitmap
-            if (null != bitmap) {
+            /*if (null != bitmap) {
                 drawable =
-                    BitmapDrawable(context.resources, bitmap)
+                    BitmapDrawable(TheLabApplication.getInstance().getContext().resources, bitmap)
             } else {
                 drawable = null
-            }
+            }*/
 
             // Custom read implementation
             return PackageApp(
@@ -70,13 +68,12 @@ data class PackageApp(
             parcel.writeString(appVersion)
             parcel.writeString(appPackageName)
         }
-    }*/
+    }
 
     // From Packages
     @IgnoredOnParcel
     var paName: String? = null
 
-    @Contextual
     @IgnoredOnParcel
     var paDrawableIcon: Drawable? = null
 

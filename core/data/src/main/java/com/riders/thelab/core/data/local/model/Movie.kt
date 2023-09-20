@@ -36,7 +36,7 @@ data class Movie constructor(
     var rating: Double
 ) : Serializable {
 
-    constructor() : this("", "", "", "", "", "", "", "", 0, null, null, null, 0,0.0)
+    constructor() : this("", "", "", "", "", "", "", "", 0, null, null, null, 0, 0.0)
 
     /*constructor(title: String?, genre: String?, year: String?, urlThumbnail: String?) : this() {
         this.title = title
