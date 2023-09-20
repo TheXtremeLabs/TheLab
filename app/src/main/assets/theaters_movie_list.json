@@ -1,100 +1,100 @@
 [
-    {
-        "category": "Popular Movies",
-        "title": "Les évadés",
-        "original_title": "The Shawshank Redemption",
-        "synopsis": "Le banquier Andy Dufresne est arrêté pour avoir tué sa femme et son amant. Après une dure adaptation, il tente d'améliorer les conditions de la prison et de redonner de l'espoir à ses compagnons.",
-        "genre": "Drame",
-        "year": "1994",
-        "url": "https://m.media-amazon.com/images/M/MV5BOTc2MjMxNzIyMF5BMl5BanBnXkFtZTgwNDQ2MjEyMDE@._V1_FMjpg_UX372_.jpg",
-        "type": "Drame",
-        "duration": 142,
-        "popularity":64,
-        "rating": 4.3,
-        "director": [
-            {
-                "lastname": "Darabont",
-                "firstname": "Frank",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BNjk0MTkxNzQwOF5BMl5BanBnXkFtZTcwODM5OTMwNA@@._V1_FMjpg_UX322_.jpg"
-            }
-        ],
-        "scenario": [
-            {
-                "lastname": "Darabont",
-                "firstname": "Frank",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BNjk0MTkxNzQwOF5BMl5BanBnXkFtZTcwODM5OTMwNA@@._V1_FMjpg_UX322_.jpg"
-            },
-            {
-                "lastname": "King",
-                "firstname": "Stephen",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BMjA2ODIxNDM4Nl5BMl5BanBnXkFtZTYwMjkzMzU1._V1_FMjpg_UX257_.jpg"
-            }
-        ],
-        "casting": [
-            {
-                "lastname": "Robbins",
-                "firstname": "Tim",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTI1OTYxNzAxOF5BMl5BanBnXkFtZTYwNTE5ODI4._V1_FMjpg_UX311_.jpg"
-            },
-            {
-                "lastname": "Freeman",
-                "firstname": "Morgan",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTc0MDMyMzI2OF5BMl5BanBnXkFtZTcwMzM2OTk1MQ@@._V1_FMjpg_UX267_.jpg"
-            },
-            {
-                "lastname": "Gunton",
-                "firstname": "Bob",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BMjUyZDQ0NjktZmM5ZS00NzcxLTliMWYtNWUxNDcyMmExZjU0XkEyXkFqcGdeQXVyMTE1MjA4NzM@._V1_FMjpg_UY4811_.jpg"
-            }
-        ]
-    },
-    {
-        "category": "Popular Movies",
-        "title": "Le Parrain",
-        "original_title": "The Godfather",
-        "synopsis": "Le patriarche vieillissant d'une dynastie de la mafia New Yorkaise passe le flambeau de son empire clandestin à son fils réticent.",
-        "genre": "Policier, Drame",
-        "year": "1972",
-        "url": "https://m.media-amazon.com/images/M/MV5BYzYyYWJhZGEtZmY1YS00NGY5LTgyZjgtYmE3OWI3ZjczYTgxXkEyXkFqcGdeQXVyODIyOTEyMzY@._V1_FMjpg_UX540_.jpg",
-        "type": "Policier, Drame",
-        "duration": 175,
-        "popularity":66,
-        "rating": 4.2,
-        "director": [
-            {
-                "lastname": "Ford Cappola",
-                "firstname": "Francis",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTM5NDU3OTgyNV5BMl5BanBnXkFtZTcwMzQxODA0NA@@._V1_FMjpg_UY2048_.jpg"
-            }
-        ],
-        "scenario": [
-            {
-                "lastname": "Ford Cappola",
-                "firstname": "Francis",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTM5NDU3OTgyNV5BMl5BanBnXkFtZTcwMzQxODA0NA@@._V1_FMjpg_UY2048_.jpg"
-            },
-            {
-                "lastname": "Puzo",
-                "firstname": "Mario",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BMjE1NjkxMDE3NV5BMl5BanBnXkFtZTcwNjI0MDMyOA@@._V1_FMjpg_UY1979_.jpg"
-            }
-        ],
-        "casting": [
-            {
-                "lastname": "Brando",
-                "firstname": "Marlon",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTg3MDYyMDE5OF5BMl5BanBnXkFtZTcwNjgyNTEzNA@@._V1_FMjpg_UX1023_.jpg"
-            },
-            {
-                "lastname": "Pacino",
-                "firstname": "Al",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTQzMzg1ODAyNl5BMl5BanBnXkFtZTYwMjAxODQ1._V1_FMjpg_UX266_.jpg"
-            },
-            {
-                "lastname": "Caan",
-                "firstname": "James",
-                "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTI5NjkyNDQ3NV5BMl5BanBnXkFtZTcwNjY5NTQ0Mw@@._V1_FMjpg_UX267_.jpg"
-            }
-        ]
-    }
+  {
+    "category": "Popular Movies",
+    "title": "Les évadés",
+    "original_title": "The Shawshank Redemption",
+    "synopsis": "Le banquier Andy Dufresne est arrêté pour avoir tué sa femme et son amant. Après une dure adaptation, il tente d'améliorer les conditions de la prison et de redonner de l'espoir à ses compagnons.",
+    "genre": "Drame",
+    "year": "1994",
+    "url": "https://m.media-amazon.com/images/M/MV5BOTc2MjMxNzIyMF5BMl5BanBnXkFtZTgwNDQ2MjEyMDE@._V1_FMjpg_UX372_.jpg",
+    "type": "Drame",
+    "duration": 142,
+    "popularity": 64,
+    "rating": 4.3,
+    "director": [
+      {
+        "lastname": "Darabont",
+        "firstname": "Frank",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BNjk0MTkxNzQwOF5BMl5BanBnXkFtZTcwODM5OTMwNA@@._V1_FMjpg_UX322_.jpg"
+      }
+    ],
+    "scenario": [
+      {
+        "lastname": "Darabont",
+        "firstname": "Frank",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BNjk0MTkxNzQwOF5BMl5BanBnXkFtZTcwODM5OTMwNA@@._V1_FMjpg_UX322_.jpg"
+      },
+      {
+        "lastname": "King",
+        "firstname": "Stephen",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BMjA2ODIxNDM4Nl5BMl5BanBnXkFtZTYwMjkzMzU1._V1_FMjpg_UX257_.jpg"
+      }
+    ],
+    "casting": [
+      {
+        "lastname": "Robbins",
+        "firstname": "Tim",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTI1OTYxNzAxOF5BMl5BanBnXkFtZTYwNTE5ODI4._V1_FMjpg_UX311_.jpg"
+      },
+      {
+        "lastname": "Freeman",
+        "firstname": "Morgan",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTc0MDMyMzI2OF5BMl5BanBnXkFtZTcwMzM2OTk1MQ@@._V1_FMjpg_UX267_.jpg"
+      },
+      {
+        "lastname": "Gunton",
+        "firstname": "Bob",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BMjUyZDQ0NjktZmM5ZS00NzcxLTliMWYtNWUxNDcyMmExZjU0XkEyXkFqcGdeQXVyMTE1MjA4NzM@._V1_FMjpg_UY4811_.jpg"
+      }
+    ]
+  },
+  {
+    "category": "Popular Movies",
+    "title": "Le Parrain",
+    "original_title": "The Godfather",
+    "synopsis": "Le patriarche vieillissant d'une dynastie de la mafia New Yorkaise passe le flambeau de son empire clandestin à son fils réticent.",
+    "genre": "Policier, Drame",
+    "year": "1972",
+    "url": "https://m.media-amazon.com/images/M/MV5BYzYyYWJhZGEtZmY1YS00NGY5LTgyZjgtYmE3OWI3ZjczYTgxXkEyXkFqcGdeQXVyODIyOTEyMzY@._V1_FMjpg_UX540_.jpg",
+    "type": "Policier, Drame",
+    "duration": 175,
+    "popularity": 66,
+    "rating": 4.2,
+    "director": [
+      {
+        "lastname": "Ford Cappola",
+        "firstname": "Francis",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTM5NDU3OTgyNV5BMl5BanBnXkFtZTcwMzQxODA0NA@@._V1_FMjpg_UY2048_.jpg"
+      }
+    ],
+    "scenario": [
+      {
+        "lastname": "Ford Cappola",
+        "firstname": "Francis",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTM5NDU3OTgyNV5BMl5BanBnXkFtZTcwMzQxODA0NA@@._V1_FMjpg_UY2048_.jpg"
+      },
+      {
+        "lastname": "Puzo",
+        "firstname": "Mario",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BMjE1NjkxMDE3NV5BMl5BanBnXkFtZTcwNjI0MDMyOA@@._V1_FMjpg_UY1979_.jpg"
+      }
+    ],
+    "casting": [
+      {
+        "lastname": "Brando",
+        "firstname": "Marlon",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTg3MDYyMDE5OF5BMl5BanBnXkFtZTcwNjgyNTEzNA@@._V1_FMjpg_UX1023_.jpg"
+      },
+      {
+        "lastname": "Pacino",
+        "firstname": "Al",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTQzMzg1ODAyNl5BMl5BanBnXkFtZTYwMjAxODQ1._V1_FMjpg_UX266_.jpg"
+      },
+      {
+        "lastname": "Caan",
+        "firstname": "James",
+        "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTI5NjkyNDQ3NV5BMl5BanBnXkFtZTcwNjY5NTQ0Mw@@._V1_FMjpg_UX267_.jpg"
+      }
+    ]
+  }
 ]
