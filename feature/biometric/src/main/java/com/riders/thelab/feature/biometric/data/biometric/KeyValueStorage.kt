@@ -1,4 +1,4 @@
-package com.riders.thelab.core.data.local.model.biometric
+package com.riders.thelab.feature.biometric.data.biometric
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
