@@ -4,9 +4,10 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.riders.thelab.R
-import com.riders.thelab.data.local.model.app.App
-import com.riders.thelab.data.local.model.app.AppBuilder
-import com.riders.thelab.ui.biometric.BiometricActivity
+import com.riders.thelab.core.data.local.model.app.App
+import com.riders.thelab.core.data.local.model.app.AppBuilder
+import com.riders.thelab.feature.biometric.ui.BiometricActivity
+import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.bluetooth.BluetoothActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.camera.CameraActivity
@@ -25,7 +26,6 @@ import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
 import com.riders.thelab.ui.kat.KatActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
 import com.riders.thelab.ui.lottie.LottieActivity
-import com.riders.thelab.ui.theaters.TheatersActivity
 import com.riders.thelab.ui.palette.PaletteActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.schedule.ScheduleActivity
@@ -34,9 +34,9 @@ import com.riders.thelab.ui.songplayer.SongPlayerActivity
 import com.riders.thelab.ui.speechtotext.SpeechToTextActivity
 import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.ui.tabs.WorkingTabsActivity
+import com.riders.thelab.ui.theaters.TheatersActivity
 import com.riders.thelab.ui.transition.TransitionActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
-import com.riders.thelab.ui.weather.WeatherActivity
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity
 
 object AppBuilderUtils {
