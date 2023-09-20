@@ -23,11 +23,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.component.TheLabTopAppBar
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.utils.ComposeUtils
-import com.riders.thelab.data.local.model.Message
+import com.riders.thelab.core.data.local.model.Message
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.ComposeUtils
 
 class ComposeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +55,7 @@ fun UserMessageCard(msg: Message) {
     // surfaceColor will be updated gradually from one color to the other
     val surfaceColor: Color by animateColorAsState(
         if (isExpanded) MaterialTheme.colorScheme.primary else colorResource(id = R.color.default_dark),
+        label = "",
     )
 
     Box(modifier = Modifier.fillMaxWidth()) {

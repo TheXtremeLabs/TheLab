@@ -62,12 +62,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
-import com.riders.thelab.core.compose.ui.theme.md_theme_light_primary
-import com.riders.thelab.data.local.model.compose.LoginUiState
-import com.riders.thelab.data.local.model.compose.WindowSizeClass
+import com.riders.thelab.core.data.local.model.compose.LoginUiState
+import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
 import timber.log.Timber
 
 ///////////////////////////////////////////////////
@@ -125,9 +125,7 @@ fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
                     color = Color(0xFFF02828)
                 )
             }
-
         }
-
     }
 }
 

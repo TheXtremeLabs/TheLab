@@ -1,7 +1,7 @@
-package com.riders.thelab.data.local.model.compose
+package com.riders.thelab.feature.biometric.data.biometric
 
-import com.riders.thelab.data.local.model.biometric.AuthContext
-import com.riders.thelab.data.remote.dto.ApiResponse
+
+import com.riders.thelab.core.data.remote.dto.ApiResponse
 
 sealed class LoginUiState {
     data class Success(val response: ApiResponse) : LoginUiState()
