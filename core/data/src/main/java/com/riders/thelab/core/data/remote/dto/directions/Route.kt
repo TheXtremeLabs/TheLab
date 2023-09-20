@@ -1,29 +1,31 @@
 package com.riders.thelab.core.data.remote.dto.directions
 
-import com.google.gson.annotations.Expose
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Route(
-    @Expose
+    @SerialName("legs")
     var legs: ArrayList<Legs>? = null,
 
-    @Expose
+    @SerialName("startName")
     var startName: String,
 
-    @Expose
+    @SerialName("endName")
     var endName: String,
 
-    @Expose
+    @SerialName("startLat")
     var startLat: Double? = null,
 
-    @Expose
+    @SerialName("startLng")
     var startLng: Double? = null,
 
-    @Expose
+    @SerialName("endLat")
     var endLat: Double? = null,
 
-    @Expose
+    @SerialName("endLng")
     var endLng: Double? = null,
 
-    @Expose
+    @SerialName("overviewPolyline")
     var overviewPolyline: String? = null
-)
+) : java.io.Serializable

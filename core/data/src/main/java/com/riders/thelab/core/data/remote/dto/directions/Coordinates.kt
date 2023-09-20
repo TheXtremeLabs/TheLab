@@ -1,11 +1,13 @@
 package com.riders.thelab.core.data.remote.dto.directions
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 class Coordinates(
-    @SerializedName("lng")
+    @SerialName("longitude")
     var longitude: Double = 0.0,
 
-    @SerializedName("lat")
+    @SerialName("lat")
     var latitude: Double = 0.0,
-)
+) : java.io.Serializable

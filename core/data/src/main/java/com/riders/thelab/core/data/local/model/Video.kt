@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import java.io.Serializable
 
 @kotlinx.serialization.Serializable
-data class Video constructor(
+data class Video(
     @SerialName("id")
     var id: String,
     @SerialName("name")

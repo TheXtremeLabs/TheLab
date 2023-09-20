@@ -1,7 +1,7 @@
 package com.riders.thelab.core.data.remote.dto.kat
 
 import android.annotation.SuppressLint
-import com.riders.thelab.core.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import java.util.*
 import java.util.stream.Collectors
 

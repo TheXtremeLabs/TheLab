@@ -1,7 +1,6 @@
 package com.riders.thelab.core.data.remote.dto.weather
 
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.decodeFromString
 import java.io.Serializable
 
 /*

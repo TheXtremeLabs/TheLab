@@ -1,6 +1,7 @@
 package com.riders.thelab.core.data.local.model.app
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -8,16 +9,14 @@ import android.graphics.drawable.VectorDrawable
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.core.content.res.ResourcesCompat
-import com.riders.thelab.TheLabApplication
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
-import timber.log.Timber
-import java.io.Serializable
 import kotlin.reflect.KClass
 
 @Parcelize
+// @kotlinx.serialization.Serializable()
 data class LocalApp(
     val localId: Long,
     val localTitle: String,
@@ -35,20 +34,20 @@ data class LocalApp(
     appDrawableIcon = localDrawableIcon,
     appActivity = localActivity,
     appDate = localDate
-), Parcelable, Serializable {
+), Parcelable, java.io.Serializable {
 
     companion object : Parceler<LocalApp> {
 
         override fun create(parcel: Parcel): LocalApp {
             /* Source : https://stackoverflow.com/questions/9033764/how-to-add-a-drawable-object-to-a-parcel-object-in-android*/
-            val drawable: BitmapDrawable?
+            val drawable: BitmapDrawable? = null
 
             val bitmap = parcel.readValue(Bitmap::class.java.classLoader)!! as Bitmap
-            drawable = if (null != bitmap) {
+            /*drawable = if (null != bitmap) {
                 BitmapDrawable(TheLabApplication.getInstance().getContext().resources, bitmap)
             } else {
                 null
-            }
+            }*/
 
             // Custom read implementation
             return LocalApp(
@@ -77,7 +76,7 @@ data class LocalApp(
         }
 
 
-        @JvmStatic
+        /*@JvmStatic
         fun getActivityClassObjectByName(activityName: String): Activity? {
             return try {
 
@@ -93,14 +92,14 @@ data class LocalApp(
                     val mObject: Class<out Activity> =
                         Class.forName(activityFound).newInstance() as Class<out Activity>
 
-                    /*val types = arrayOf<Class<*>>(java.lang.Double.TYPE, this.javaClass)
+                    *//*val types = arrayOf<Class<*>>(java.lang.Double.TYPE, this.javaClass)
                     val constructor: Constructor<Class<*>> =
                         myClass.getConstructor(*types) as Constructor<Class<*>>
 
                     val parameters = arrayOf<Any>(0, this)
                     val instanceOfMyClass: Any = constructor.newInstance(parameters)
 
-                    instanceOfMyClass as Class<out Activity>*/
+                    instanceOfMyClass as Class<out Activity>*//*
                     mObject.getClass() as Activity
                 }
 
@@ -108,18 +107,17 @@ data class LocalApp(
                 exception.printStackTrace()
                 null
             }
-        }
+        }*/
 
 
         @JvmStatic
-        fun getDrawableByName(imageResName: String): Drawable {
-            val mAppContext = TheLabApplication.getInstance().applicationContext
-            val mResources = mAppContext.resources
+        fun getDrawableByName(context: Context, imageResName: String): Drawable {
+            val mResources = context.resources
 
             return ResourcesCompat.getDrawable(
                 mResources,
-                mResources.getIdentifier(imageResName, "drawable", mAppContext.packageName),
-                mAppContext.theme
+                mResources.getIdentifier(imageResName, "drawable", context.packageName),
+                context.theme
             )!!
         }
     }

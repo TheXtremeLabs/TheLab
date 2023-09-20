@@ -1,6 +1,35 @@
-package com.riders.thelab.di
+package com.riders.thelab.core.data.di
 
-/*
+import android.content.Context
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.riders.thelab.core.common.utils.LabParser
+import com.riders.thelab.core.data.local.bean.TimeOut
+import com.riders.thelab.core.data.local.model.weather.WeatherKey
+import com.riders.thelab.core.data.remote.api.ArtistsAPIService
+import com.riders.thelab.core.data.remote.api.GoogleAPIService
+import com.riders.thelab.core.data.remote.api.TheLabBackApiService
+import com.riders.thelab.core.data.remote.api.WeatherApiService
+import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
+import com.riders.thelab.core.data.remote.api.YoutubeApiService
+import com.riders.thelab.core.data.remote.dto.artist.ArtistsResponseJsonAdapter
+import com.riders.thelab.core.data.utils.Constants
+import com.squareup.moshi.Moshi
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.logging.HttpLoggingInterceptor
+import org.apache.http.HttpHeaders
+import org.jetbrains.annotations.NotNull
+import retrofit2.Retrofit
+import timber.log.Timber
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 
 @Module
@@ -13,14 +42,10 @@ internal object ApiModule {
             .setLevel(HttpLoggingInterceptor.Level.BODY)
     }
 
-    */
-/* WEATHER *//*
- */
-/* Provide OkHttp for the app *//*
-
+    /* WEATHER */ /* Provide OkHttp for the app */
     @Provides
     @Singleton
-    fun provideWeatherOkHttp(): OkHttpClient {
+    fun provideWeatherOkHttp(context: Context): OkHttpClient {
         return OkHttpClient.Builder()
             .readTimeout(TimeOut.TIME_OUT_READ.value.toLong(), TimeUnit.SECONDS)
             .connectTimeout(TimeOut.TIME_OUT_CONNECTION.value.toLong(), TimeUnit.SECONDS)
@@ -30,7 +55,7 @@ internal object ApiModule {
                 val originalHttpUrl = original.url
                 var url: HttpUrl? = null
                 val mWeatherKey: WeatherKey? = LabParser.parseJsonFile<WeatherKey>(
-                    context = TheLabApplication.getInstance().getContext(),
+                    context = context,
                     filename = "weather_api.json"
                 )
 
@@ -106,9 +131,7 @@ internal object ApiModule {
     }
 
 
-    */
-/* Provide OkHttp for the app *//*
-
+    /* Provide OkHttp for the app */
     @Provides
     fun provideOkHttp(): OkHttpClient {
         return OkHttpClient.Builder()
@@ -138,9 +161,7 @@ internal object ApiModule {
     }
 
 
-    */
-/* Provide Retrofit for the app *//*
-
+    /* Provide Retrofit for the app */
     @Provides
     fun provideRetrofit(url: String): Retrofit {
         val contentType = "application/json".toMediaType()
@@ -171,11 +192,11 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    fun provideWeatherRetrofit(url: String): Retrofit {
+    fun provideWeatherRetrofit(context: Context, url: String): Retrofit {
         val contentType = "application/json".toMediaType()
         return Retrofit.Builder()
             .baseUrl(url)
-            .client(provideWeatherOkHttp())
+            .client(provideWeatherOkHttp(context))
             //.addConverterFactory(MoshiConverterFactory.create())
             .addConverterFactory(Json {
                 ignoreUnknownKeys = true
@@ -214,16 +235,16 @@ internal object ApiModule {
     @Provides
     @Singleton
     @NotNull
-    fun provideWeatherApiService(): WeatherApiService {
-        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER)
+    fun provideWeatherApiService(@ApplicationContext context: Context): WeatherApiService {
+        return provideWeatherRetrofit(context, Constants.BASE_ENDPOINT_WEATHER)
             .create(WeatherApiService::class.java)
     }
 
     @Provides
     @Singleton
     @NotNull
-    fun proWeatherBulkApiService(): WeatherBulkApiService {
-        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
+    fun proWeatherBulkApiService(@ApplicationContext context: Context): WeatherBulkApiService {
+        return provideWeatherRetrofit(context, Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
             .create(WeatherBulkApiService::class.java)
     }
 
@@ -234,5 +255,4 @@ internal object ApiModule {
         return provideRetrofit(Constants.BASE_ENDPOINT_THE_LAB_URL)
             .create(TheLabBackApiService::class.java)
     }
-
-}*/
+}
