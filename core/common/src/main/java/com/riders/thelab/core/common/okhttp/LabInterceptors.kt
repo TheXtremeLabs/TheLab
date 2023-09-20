@@ -1,4 +1,4 @@
-package com.riders.thelab.core.okhttp
+package com.riders.thelab.core.common.okhttp
 
 import okhttp3.*
 import okio.Buffer

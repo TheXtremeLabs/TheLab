@@ -1,4 +1,4 @@
-package com.riders.thelab.utils
+package com.riders.thelab.core.common.utils
 
 import android.annotation.SuppressLint
 import java.text.SimpleDateFormat

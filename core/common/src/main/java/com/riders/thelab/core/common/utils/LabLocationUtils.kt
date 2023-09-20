@@ -1,4 +1,4 @@
-package com.riders.thelab.core.utils
+package com.riders.thelab.core.common.utils
 
 import android.content.Context
 import android.location.Address

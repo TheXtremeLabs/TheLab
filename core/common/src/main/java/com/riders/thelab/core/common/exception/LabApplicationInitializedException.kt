@@ -1,4 +1,4 @@
-package com.riders.thelab.core.exception
+package com.riders.thelab.core.common.exception
 
 class LabApplicationInitializedException : Exception() {
     override val message: String

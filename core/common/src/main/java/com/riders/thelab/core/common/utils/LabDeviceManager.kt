@@ -1,4 +1,4 @@
-package com.riders.thelab.core.utils
+package com.riders.thelab.core.common.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -9,7 +9,6 @@ import android.view.WindowManager
 import android.view.WindowMetrics
 import androidx.annotation.RequiresApi
 import androidx.biometric.BiometricManager
-import com.riders.thelab.utils.Constants
 import timber.log.Timber
 import java.io.File
 
@@ -268,6 +267,7 @@ object LabDeviceManager {
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> false
+
             BiometricManager.BIOMETRIC_SUCCESS -> true
             else -> false
         }

@@ -13,15 +13,29 @@ android {
 
 dependencies {
     ///////////////////////////////////
-    // Project
-    ///////////////////////////////////
-    implementation(project(":core:data"))
-
-    ///////////////////////////////////
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
     api(platform(libs.kotlin.bom))
+    api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.coroutines.android)
+    api(libs.kotlinx.serialization.json)
+
+    // AndroidX
+    api(libs.androidx.core.ktx)
+    api(libs.androidx.appcompat)
+    api(libs.androidx.biometric)
+
+    // Media
+    api(libs.androidx.media)
+    api(libs.androidx.media.router)
+
+    // OkHttp
+    // define a BOM and its version
+    api(platform(libs.okhttp.bom))
+    // define any required OkHttp artifacts without version
+    api(libs.okhttp)
+
     // Moshi
     api(libs.moshi)
     api(libs.moshi.kotlin)

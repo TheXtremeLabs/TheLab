@@ -1,4 +1,4 @@
-package com.riders.thelab.core.utils
+package com.riders.thelab.core.common.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -13,7 +13,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import timber.log.Timber
 
-@SuppressLint("NewApi")
+@SuppressLint("NewApi", "MissingPermission")
 class LabNetworkManagerNewAPI constructor(
     val context: Context
 //    val listener: ConnectivityListener
@@ -185,7 +185,7 @@ class LabNetworkManagerNewAPI constructor(
     fun changeWifiState(applicationContext: Context, activity: Activity) {
         Timber.d("changeWifiState()")
 
-        UIManager.showActionInToast(applicationContext, "Wifi clicked")
+        // UIManager.showActionInToast(applicationContext, "Wifi clicked")
 
         val wifiManager: WifiManager =
             applicationContext.getSystemService(AppCompatActivity.WIFI_SERVICE) as WifiManager

@@ -1,4 +1,4 @@
-package com.riders.thelab.core.utils
+package com.riders.thelab.core.common.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -14,14 +14,7 @@ import android.provider.Settings
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
-import com.riders.thelab.core.bus.LocationFetchedEvent
-import com.riders.thelab.core.bus.LocationProviderChangedEvent
-import com.riders.thelab.ui.weather.WeatherActivity
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -83,7 +76,7 @@ class LabLocationManager constructor(context: Context) : LocationListener {
                     getLocationViaNetwork()
                 }
 
-                this.location?.let { postLocation(it) }
+//                this.location?.let { postLocation(it) }
 
                 // return location object
                 return this.location
@@ -97,7 +90,7 @@ class LabLocationManager constructor(context: Context) : LocationListener {
                     getLocationViaGPS()
                 }
 
-                this.location?.let { postLocation(it) }
+//                this.location?.let { postLocation(it) }
 
                 // return location object
                 return this.location
@@ -149,14 +142,14 @@ class LabLocationManager constructor(context: Context) : LocationListener {
         this.location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
     }
 
-    private fun postLocation(location: Location) {
+    /*private fun postLocation(location: Location, lifecycleScope: CoroutineScope) {
         Timber.d("postLocation() | location: $location")
 
         // Post event with cll info object set
-        GlobalScope.launch(Main) {
+        lifecycleScope.launch(Main) {
             LocationFetchedEvent(location).triggerEvent()
         }
-    }
+    }*/
 
     /**
      * Stop using GPS listener Calling this function will stop using GPS in your
@@ -185,7 +178,7 @@ class LabLocationManager constructor(context: Context) : LocationListener {
         }
         canGetLocation = isGPSEnabled && isNetworkEnabled
 
-        mWeakReference?.let { ref ->
+        /*mWeakReference?.let { ref ->
 
             // Get activity from weak reference activity object
             ref.get()?.let { activity ->
@@ -199,7 +192,7 @@ class LabLocationManager constructor(context: Context) : LocationListener {
                     }
                 }
             }
-        }
+        }*/
 
         return canGetLocation
     }
@@ -255,7 +248,8 @@ class LabLocationManager constructor(context: Context) : LocationListener {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onProviderDisabled(provider: String) {
         Timber.e("onProviderDisabled() | provider: $provider")
-        mWeakReference?.let { ref ->
+
+        /*mWeakReference?.let { ref ->
 
             // Get activity from weak reference activity object
             Timber.e("Get activity from weak reference activity object and call its methods")
@@ -274,7 +268,7 @@ class LabLocationManager constructor(context: Context) : LocationListener {
                     }
                 }
             }
-        }
+        }*/
         /*GlobalScope.launch {
             LocationProviderChangedEvent().triggerEvent(false)
         }*/
@@ -283,7 +277,7 @@ class LabLocationManager constructor(context: Context) : LocationListener {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onProviderEnabled(provider: String) {
         Timber.d("onProviderEnabled() | provider: $provider")
-        mWeakReference?.let { ref ->
+        /*mWeakReference?.let { ref ->
 
             // Get activity from weak reference activity object
             Timber.d("Get activity from weak reference activity object and call its methods")
@@ -302,7 +296,7 @@ class LabLocationManager constructor(context: Context) : LocationListener {
                     }
                 }
             }
-        }
+        }*/
     }
 
 
