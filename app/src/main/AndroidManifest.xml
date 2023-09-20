@@ -199,7 +199,7 @@
         </activity>
 
         <activity
-            android:name=".ui.biometric.BiometricActivity"
+            android:name=".feature.biometric.ui.BiometricActivity"
             android:label="@string/activity_title_biometric"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
@@ -329,7 +329,7 @@
 
 
         <activity
-            android:name=".ui.weather.WeatherActivity"
+            android:name=".feature.weather.ui.WeatherActivity"
             android:exported="true"
             android:label="@string/activity_title_weather"
             android:parentActivityName=".ui.mainactivity.MainActivity"
@@ -449,7 +449,7 @@
 
         <!-- Widget -->
         <activity
-            android:name=".core.widget.TheLabAppWidgetConfigurationActivity"
+            android:name=".feature.weather.core.widget.TheLabAppWidgetConfigurationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -530,7 +530,7 @@
 
         <!-- Widget -->
         <receiver
-            android:name=".core.widget.TheLabAppWidgetProvider"
+            android:name=".feature.weather.core.widget.TheLabAppWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

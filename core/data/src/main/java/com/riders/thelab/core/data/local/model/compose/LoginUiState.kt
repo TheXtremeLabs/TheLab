@@ -1,5 +1,6 @@
 package com.riders.thelab.core.data.local.model.compose
 
+
 import com.riders.thelab.core.data.local.model.biometric.AuthContext
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 

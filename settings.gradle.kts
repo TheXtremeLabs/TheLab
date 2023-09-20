@@ -20,6 +20,8 @@ pluginManagement {
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+        // Android Build Server
+        maven { url = uri("../nowinandroid-prebuilts/m2repository") }
     }
 }
 
@@ -44,6 +46,8 @@ dependencyResolutionManagement {
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+        // Android Build Server
+        maven { url = uri("../nowinandroid-prebuilts/m2repository") }
     }
 }
 
@@ -52,6 +56,9 @@ include(":app")
 include(":core:analytics")
 include(":core:common")
 include(":core:data")
+include(":core:permissions")
 include(":core:ui")
 include(":core:testing")
+include(":feature:biometric")
+include(":feature:songplayer")
 include(":feature:weather")

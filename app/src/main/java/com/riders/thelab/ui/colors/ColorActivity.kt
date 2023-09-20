@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 class ColorActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
