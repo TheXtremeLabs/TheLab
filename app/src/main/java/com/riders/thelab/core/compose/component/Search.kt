@@ -32,10 +32,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
-import com.riders.thelab.data.local.model.compose.IslandState
+import com.riders.thelab.core.data.local.model.compose.IslandState
+import com.riders.thelab.core.ui.R
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 import timber.log.Timber
 
