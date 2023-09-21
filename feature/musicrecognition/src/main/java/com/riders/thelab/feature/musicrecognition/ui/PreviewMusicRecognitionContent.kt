@@ -67,7 +67,7 @@ fun MusicRecognitionContent() {
                         modifier = Modifier
                             .fillMaxWidth(.6f),
                         onClick = {
-                             (context.findActivity() as MusicRecognitionChooserActivity).launchACRCloudActivity()
+                            (context.findActivity() as MusicRecognitionChooserActivity).launchACRCloudActivity()
                         }
                     ) {
                         Text(text = "ACRCloud")
@@ -84,8 +84,6 @@ fun MusicRecognitionContent() {
                         Text(text = "Shazam")
                     }
                 }
-
-
             }
         }
     }
