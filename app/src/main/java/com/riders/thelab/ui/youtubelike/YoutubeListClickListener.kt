@@ -3,7 +3,7 @@ package com.riders.thelab.ui.youtubelike
 import android.view.View
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
-import com.riders.thelab.data.local.model.Video
+import com.riders.thelab.core.data.local.model.Video
 
 interface YoutubeListClickListener {
 
@@ -16,5 +16,4 @@ interface YoutubeListClickListener {
         video: Video,
         position: Int
     )
-
 }

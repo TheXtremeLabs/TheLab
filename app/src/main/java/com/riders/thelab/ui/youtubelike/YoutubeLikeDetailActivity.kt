@@ -16,7 +16,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.riders.thelab.data.local.model.Video
+import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.databinding.ActivityYoutubeDetailBinding
 import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
