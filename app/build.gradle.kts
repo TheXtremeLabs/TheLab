@@ -59,6 +59,7 @@ android {
 
             //applicationIdSuffix = LabBuildType.DEBUG.applicationIdSuffix
         }
+
         getByName("release") {
             isDebuggable = false
 
@@ -175,11 +176,6 @@ dependencies {
     implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    // Coil
-    /*implementation(libs.coil.kt)
-    implementation(libs.coil.kt.compose)
-    implementation(libs.coil.kt.svg)*/
-
     // Navigation
     implementation(libs.androidx.navigation.ktx)
     implementation(libs.androidx.navigation.fragment)
@@ -198,12 +194,6 @@ dependencies {
 
     // Auto fill
     implementation(libs.androidx.autofill)
-
-    // Room
-    /*implementation(libs.room.ktx)
-    implementation(libs.room.runtime)
-    kapt(libs.room.compiler)
-    androidTestImplementation(libs.room.testing)*/
 
     // Worker & concurrent
     implementation(libs.androidx.work.ktx)
@@ -288,10 +278,6 @@ dependencies {
     implementation(libs.glide.blurry)
     implementation(libs.glide.transformation)
     implementation(libs.glide.landscapist)
-
-    // Lottie
-//    implementation(libs.lottie)
-//    implementation(libs.lottie.compose)
 
     //ThreeTen : Alternative to Android Calendar API
     implementation(libs.threeten)
