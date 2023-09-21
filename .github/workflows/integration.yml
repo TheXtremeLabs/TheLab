@@ -5,13 +5,13 @@ on:
     paths:
       - './**/*gradle*'
       - './**/*.kt*'
-      - .github/workflows/ci.yml
+      - .github/workflows/integration.yml
   push:
     branches: [ develop ]
     paths:
       - './**/*gradle*'
       - './**/*.kt*'
-      - .github/workflows/ci.yml
+      - .github/workflows/integration.yml
 jobs:
   build:
     name: Build application
