@@ -22,7 +22,7 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: gradle
-      - name: Build application
+      - name: Package application
         run: ./gradlew :app:assemble
       - name: Upload APK
         uses: actions/upload-artifact@v3.1.3

@@ -28,5 +28,5 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: gradle
-      - name: Build application
-        run: ./gradlew :app:build
+      - name: Check application
+        run: ./gradlew :app:check
