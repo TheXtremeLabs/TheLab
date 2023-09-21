@@ -12,6 +12,7 @@ on:
       - './**/*gradle*'
       - './**/*.kt*'
       - .github/workflows/integration.yml
+  workflow_dispatch:
 jobs:
   build:
     name: Build application
