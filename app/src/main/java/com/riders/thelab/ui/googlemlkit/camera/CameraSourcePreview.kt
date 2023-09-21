@@ -88,7 +88,7 @@ class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(c
             } else {
                 size.width.toFloat() / size.height
             }
-        } ?: layoutWidth.toFloat() / layoutHeight.toFloat()
+        } ?: (layoutWidth.toFloat() / layoutHeight.toFloat())
 
         // Match the width of the child view to its parent.
         val childHeight = (layoutWidth / previewSizeRatio).toInt()

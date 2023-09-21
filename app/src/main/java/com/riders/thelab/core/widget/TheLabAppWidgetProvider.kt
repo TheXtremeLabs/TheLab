@@ -14,7 +14,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.AppWidgetTarget
 import com.bumptech.glide.request.transition.Transition
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.feature.weather.core.widget.TheLabAppWidgetProvider
 import com.riders.thelab.ui.mainactivity.MainActivity
 import kotlinx.coroutines.*
 import timber.log.Timber

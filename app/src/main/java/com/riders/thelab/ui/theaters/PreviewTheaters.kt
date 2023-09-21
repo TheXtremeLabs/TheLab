@@ -39,7 +39,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,15 +46,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.component.TheLabTopAppBar
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_background
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primaryContainer
-import com.riders.thelab.core.compose.ui.theme.samsungSangFamily
-import com.riders.thelab.data.local.bean.MovieCategoryEnum
-import com.riders.thelab.data.local.bean.MovieEnum
-import com.riders.thelab.data.local.model.Movie
+import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
+import com.riders.thelab.core.data.local.bean.MovieEnum
+import com.riders.thelab.core.data.local.model.Movie
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
+import com.riders.thelab.core.ui.compose.theme.samsungSangFamily
 import kotlinx.coroutines.delay
 
 
@@ -273,7 +272,8 @@ fun TheatersContainer(viewModel: TheatersViewModel) {
                         slideInVertically { height -> height } + fadeIn() with
                                 slideOutVertically { height -> -height } + fadeOut()
                     },
-                    targetState = if (LocalInspectionMode.current) true else switch.value
+                    targetState = if (LocalInspectionMode.current) true else switch.value,
+                    label = ""
                 ) { targetState ->
                     if (!targetState) {
                         TheatersSplash()

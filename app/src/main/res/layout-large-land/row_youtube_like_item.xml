@@ -7,7 +7,7 @@
 
         <variable
             name="video"
-            type="com.riders.thelab.data.local.model.Video" />
+            type="com.riders.thelab.core.data.local.model.Video" />
 
         <variable
             name="mListener"
@@ -19,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:layout_margin="@dimen/extra_small_margin_tablet"
-        android:onClick="@{(view) -> mListener.onYoutubeItemClicked(view, video)}"
         app:cardCornerRadius="@dimen/small_margin_tablet"
         app:cardElevation="@dimen/extra_small_margin_tablet"
         app:cardPreventCornerOverlap="true"

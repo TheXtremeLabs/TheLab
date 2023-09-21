@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.riders.thelab.data.remote.dto.kat.Kat
+import com.riders.thelab.core.data.remote.dto.kat.Kat
 import com.riders.thelab.databinding.RowKatMessageOtherBinding
 import com.riders.thelab.databinding.RowKatMessageSelfBinding
 import timber.log.Timber

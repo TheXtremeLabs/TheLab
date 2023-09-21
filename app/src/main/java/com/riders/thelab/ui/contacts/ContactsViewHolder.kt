@@ -3,7 +3,7 @@ package com.riders.thelab.ui.contacts
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.riders.thelab.data.local.model.Contact
+import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.databinding.RowContactItemBinding
 
 class ContactsViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -10,8 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.riders.thelab.R
-import com.riders.thelab.core.views.toast.TheLabToast
-import com.riders.thelab.core.views.toast.ToastTypeEnum
+import com.riders.thelab.core.ui.views.toast.ToastTypeEnum
 import com.riders.thelab.databinding.ActivityCustomToastBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -100,9 +99,9 @@ class CustomToastActivity : AppCompatActivity() {
 
         Timber.d("random : %s", random)
 
-        TheLabToast.Builder(this)
+        /*TheLabToast.Builder(this)
             .setText("Testing a new text")
             .setType(ToastTypeEnum.values()[random])
-            .show()
+            .show()*/
     }
 }

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.R
-import com.riders.thelab.data.local.model.WorldPopulation
+import com.riders.thelab.core.data.local.model.WorldPopulation
 
 
 class FilterListViewAdapter(context: Context, worldPopulationList: MutableList<WorldPopulation>) :

@@ -40,12 +40,12 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import coil.size.Size
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.ui.theme.Typography
-import com.riders.thelab.core.compose.utils.findActivity
-import com.riders.thelab.data.local.bean.MovieEnum
-import com.riders.thelab.data.local.model.Movie
+import com.riders.thelab.core.data.local.bean.MovieEnum
+import com.riders.thelab.core.data.local.model.Movie
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.Typography
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.navigator.Navigator
 
 ///////////////////////////////////////

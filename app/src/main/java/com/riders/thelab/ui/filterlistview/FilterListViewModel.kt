@@ -3,7 +3,7 @@ package com.riders.thelab.ui.filterlistview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.riders.thelab.data.local.model.WorldPopulation
+import com.riders.thelab.core.data.local.model.WorldPopulation
 
 class FilterListViewModel : ViewModel() {
 

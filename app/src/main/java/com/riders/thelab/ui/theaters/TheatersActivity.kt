@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -26,7 +26,7 @@ class TheatersActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mTheatersViewModel.fetchMovies()
+        mTheatersViewModel.fetchMovies(this@TheatersActivity)
 
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")

@@ -12,9 +12,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.Validator
 import com.riders.thelab.databinding.ActivityFloatingLabelsBinding
-import com.riders.thelab.utils.Validator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

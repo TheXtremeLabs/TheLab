@@ -13,9 +13,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
-import com.riders.thelab.core.utils.LabDeviceManager
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.remote.dto.kat.Kat
+import com.riders.thelab.core.common.utils.LabDeviceManager
+import com.riders.thelab.core.data.remote.dto.kat.Kat
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityKatBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber

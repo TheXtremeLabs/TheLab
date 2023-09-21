@@ -37,11 +37,11 @@ import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.LabAddressesUtils
-import com.riders.thelab.core.utils.LabLocationManager
-import com.riders.thelab.core.utils.LabLocationUtils
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.bean.MapsEnum
+import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabLocationManager
+import com.riders.thelab.core.common.utils.LabLocationUtils
+import com.riders.thelab.core.data.local.bean.MapsEnum
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityLocationOnMapsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

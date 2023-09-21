@@ -3,7 +3,7 @@ package com.riders.thelab.core.broadcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.utils.LabNetworkManagerNewAPI
 
 class ConnectivityReceiver(
     private val mConnectivityReceiverListener: ConnectivityReceiverListener?

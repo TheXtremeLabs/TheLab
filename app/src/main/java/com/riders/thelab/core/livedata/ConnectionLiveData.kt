@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import androidx.lifecycle.LiveData
-import com.riders.thelab.data.local.model.ConnectionModel
+import com.riders.thelab.core.data.local.model.ConnectionModel
 
 
 class ConnectionLiveData(

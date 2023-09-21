@@ -7,13 +7,27 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,12 +47,12 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.component.Lottie
-import com.riders.thelab.core.compose.ui.theme.Shapes
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
-import com.riders.thelab.core.compose.utils.findActivity
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.theme.Shapes
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -172,7 +186,7 @@ fun LoadingContent(viewModel: SplashScreenViewModel) {
                 Text(
                     modifier = Modifier.padding(8.dp),
                     text = if (LocalInspectionMode.current) "12.0.0" else version,
-                    style = TextStyle(color = Color.White)
+                    //style = TextStyle(color = if (isSystemInDarkTheme()) Color.White else Color.Black)
                 )
             }
 
@@ -221,7 +235,8 @@ fun SplashScreenContent(viewModel: SplashScreenViewModel) {
 
                 AnimatedContent(
                     targetState = viewModel.switchContent,
-                    transitionSpec = { fadeIn() with fadeOut() }
+                    transitionSpec = { fadeIn() with fadeOut() },
+                    label = ""
                 ) { targetState ->
                     if (!targetState) {
                         VideoView(viewModel)

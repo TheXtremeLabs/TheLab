@@ -7,7 +7,7 @@
 
         <variable
             name="video"
-            type="com.riders.thelab.data.local.model.Video" />
+            type="com.riders.thelab.core.data.local.model.Video" />
 
         <variable
             name="mListener"

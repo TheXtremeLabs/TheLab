@@ -15,7 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver
 import com.riders.thelab.core.bus.KotlinBus
 import com.riders.thelab.core.bus.Listen
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.ui.base.BaseActivity
 import kotlinx.coroutines.launch
 import timber.log.Timber

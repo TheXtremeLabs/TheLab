@@ -2,10 +2,10 @@ package com.riders.thelab.ui.kat
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.riders.thelab.data.remote.dto.kat.Kat
+import com.riders.thelab.core.common.utils.DateTimeUtils
+import com.riders.thelab.core.data.remote.dto.kat.Kat
 import com.riders.thelab.databinding.RowKatMessageOtherBinding
 import com.riders.thelab.databinding.RowKatMessageSelfBinding
-import com.riders.thelab.utils.DateTimeUtils
 import timber.log.Timber
 
 class KatViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {

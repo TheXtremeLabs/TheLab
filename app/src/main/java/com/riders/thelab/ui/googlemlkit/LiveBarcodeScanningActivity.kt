@@ -21,7 +21,7 @@ import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.UIManager
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityLiveBarcodeBinding
 import com.riders.thelab.ui.googlemlkit.barcodedetection.BarcodeField
 import com.riders.thelab.ui.googlemlkit.barcodedetection.BarcodeProcessor

@@ -10,15 +10,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.riders.thelab.core.utils.LabAddressesUtils
-import com.riders.thelab.core.utils.LabLocationUtils
-import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.local.model.app.App
-import com.riders.thelab.data.local.model.app.LocalApp
-import com.riders.thelab.data.local.model.app.PackageApp
-import com.riders.thelab.data.local.model.compose.IslandState
-import com.riders.thelab.data.local.model.weather.ProcessedWeather
+import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabLocationUtils
+import com.riders.thelab.core.common.utils.LabNetworkManagerNewAPI
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.app.App
+import com.riders.thelab.core.data.local.model.app.LocalApp
+import com.riders.thelab.core.data.local.model.app.PackageApp
+import com.riders.thelab.core.data.local.model.compose.IslandState
+import com.riders.thelab.core.data.local.model.weather.ProcessedWeather
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -182,7 +182,7 @@ class MainActivityViewModel @Inject constructor(
 
         // Get constants activities
         appList.addAll(Constants.getActivityList(context))
-        appList.addAll(repository.getPackageList())
+        appList.addAll(repository.getPackageList(context))
 
         //  val tempList = repository.getAppListFromAssets()
 

@@ -33,11 +33,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.ui.theme.md_theme_light_onPrimaryContainer
-import com.riders.thelab.core.compose.ui.theme.md_theme_light_primaryContainer
-import com.riders.thelab.core.compose.utils.findActivity
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_onPrimaryContainer
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_primaryContainer
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.ui.webview.WebViewActivity
 import com.riders.thelab.utils.Constants
 
