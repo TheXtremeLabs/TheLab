@@ -72,7 +72,7 @@ class SignUpViewModel @Inject constructor(
                         Timber.d("$saveResponse")
 
                         // Simulate long-time running operation
-                        delay(3000)
+                        delay(3_000)
 
                         withContext(mainContext) {
                             if (401 == saveResponse.code) {

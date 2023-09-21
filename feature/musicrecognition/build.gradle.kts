@@ -3,6 +3,7 @@ plugins {
     id("thelab.android.library.compose")
     id("thelab.android.hilt")
     id("thelab.android.library.jacoco")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -13,6 +14,8 @@ android {
 }
 
 dependencies {
+
+    implementation(files("libs/acrcloud-universal-sdk-1.3.22.jar"))
 
     ///////////////////////////////////
     // Project
@@ -26,6 +29,7 @@ dependencies {
     ///////////////////////////////////
     // Kotlin
     api(libs.kotlinx.coroutines.android)
+    api(libs.kotlinx.serialization.json)
 
     // AndroidX
     api(libs.androidx.core.ktx)

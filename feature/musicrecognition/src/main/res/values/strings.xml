@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="acr_cloud_app_name">ACRCloud Activity</string>
+    <string name="msg_start_recognition">Start Recognition</string>
+    <string name="msg_stop_recognition">Stop Recognition</string>
+    <string name="msg_error">Error</string>
+</resources>

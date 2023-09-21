@@ -88,6 +88,7 @@ val dark_CustomColor1Container = Color(0xFF930015)
 val dark_onCustomColor1Container = Color(0xFFFFDAD7)
 
 val Orange = Color(0xFFBD5B05)
+val success = Color(0xEE38810C)
 
 
 // Colors for shimmer effect
