@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.remote.dto.ApiResponse
-import com.riders.thelab.data.remote.dto.UserDto
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.remote.dto.ApiResponse
+import com.riders.thelab.core.data.remote.dto.UserDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

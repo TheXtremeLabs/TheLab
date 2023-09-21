@@ -56,13 +56,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
 import com.riders.thelab.core.compose.component.DynamicIsland
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_background
-import com.riders.thelab.core.compose.ui.theme.md_theme_light_background
-import com.riders.thelab.core.compose.utils.keyboardAsState
-import com.riders.thelab.data.local.model.compose.IslandState
+import com.riders.thelab.core.data.local.model.compose.IslandState
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
+import com.riders.thelab.core.ui.compose.utils.keyboardAsState
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

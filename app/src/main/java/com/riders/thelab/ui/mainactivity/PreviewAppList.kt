@@ -16,22 +16,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.previewprovider.AppPreviewProvider
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_background
-import com.riders.thelab.core.compose.utils.findActivity
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.model.app.App
+import com.riders.thelab.core.data.local.model.app.App
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.core.ui.utils.UIManager
 
 @OptIn(ExperimentalMaterial3Api::class)
-@DevicePreviews
 @Composable
-fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
+fun App(item: App) {
 
     val context = LocalContext.current
 

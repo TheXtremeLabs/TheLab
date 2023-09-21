@@ -5,12 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.local.model.Contact
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -51,13 +52,13 @@ class ContactViewModel @Inject constructor(
         Timber.d("getContactList()")
         progressVisibility.value = true
 
-        viewModelScope.launch(ioContext) {
+        viewModelScope.launch(IO + SupervisorJob()) {
             try {
                 val dbContacts = repositoryImpl.getAllContacts()
                 if (dbContacts.isEmpty()) {
                     Timber.e("Contact list is empty")
 
-                    withContext(mainContext) {
+                    withContext(Main) {
                         progressVisibility.value = false
                         hideContactsLayout.value = true
                         noContactFound.value = dbContacts
@@ -66,7 +67,7 @@ class ContactViewModel @Inject constructor(
                 } else {
                     Timber.d("contacts  : %s", contacts)
 
-                    withContext(mainContext) {
+                    withContext(Main) {
                         progressVisibility.value = false
                         showContactsLayout.value = true
                         showContactsLayout.value = true
@@ -76,7 +77,7 @@ class ContactViewModel @Inject constructor(
             } catch (throwable: Exception) {
                 Timber.e(throwable)
 
-                withContext(mainContext) {
+                withContext(Main) {
                     progressVisibility.value = false
                     hideContactsLayout.value = true
                     contactsFailed.value = true
@@ -97,11 +98,5 @@ class ContactViewModel @Inject constructor(
         intent.putExtra(ContactDetailActivity.CONTACT_EMAIL, contact.email)
         intent.putExtra(ContactDetailActivity.CONTACT_IMAGE, "")
         navigator.callContactDetailActivity(intent)
-    }
-
-
-    companion object {
-        val ioContext = Dispatchers.IO + Job()
-        val mainContext = Dispatchers.Main + Job()
     }
 }

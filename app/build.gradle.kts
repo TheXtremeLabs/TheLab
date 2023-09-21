@@ -109,6 +109,17 @@ android {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
+    ///////////////////////////////////
+    // Project
+    ///////////////////////////////////
+    implementation(project(":core:analytics"))
+    implementation(project(":core:common"))
+    implementation(project(":core:data"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:testing"))
+    implementation(project(":feature:biometric"))
+    implementation(project(":feature:weather"))
+
     /////////////////////////////
     // General Dependencies
     /////////////////////////////
@@ -164,9 +175,9 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     // Coil
-    implementation(libs.coil.kt)
+    /*implementation(libs.coil.kt)
     implementation(libs.coil.kt.compose)
-    implementation(libs.coil.kt.svg)
+    implementation(libs.coil.kt.svg)*/
 
     // Navigation
     implementation(libs.androidx.navigation.ktx)
@@ -188,10 +199,10 @@ dependencies {
     implementation(libs.androidx.autofill)
 
     // Room
-    implementation(libs.room.ktx)
+    /*implementation(libs.room.ktx)
     implementation(libs.room.runtime)
     kapt(libs.room.compiler)
-    androidTestImplementation(libs.room.testing)
+    androidTestImplementation(libs.room.testing)*/
 
     // Worker & concurrent
     implementation(libs.androidx.work.ktx)
@@ -247,17 +258,6 @@ dependencies {
     implementation(libs.google.objectdetection)
     implementation(libs.google.objectdetection.custom)
 
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.ads)
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.database)
-    implementation(libs.firebase.messaging)
-    implementation(libs.firebase.perf)
-    implementation(libs.firebase.storage)
-
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.moshi)
@@ -289,8 +289,8 @@ dependencies {
     implementation(libs.glide.landscapist)
 
     // Lottie
-    implementation(libs.lottie)
-    implementation(libs.lottie.compose)
+//    implementation(libs.lottie)
+//    implementation(libs.lottie.compose)
 
     //ThreeTen : Alternative to Android Calendar API
     implementation(libs.threeten)

@@ -37,13 +37,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.component.TheLabTopAppBar
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.utils.findActivity
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.core.views.toast.ToastTypeEnum
-import com.riders.thelab.data.local.model.compose.ScheduleJobAlarmUiState
+import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.core.ui.views.toast.ToastTypeEnum
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

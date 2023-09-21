@@ -1,6 +1,6 @@
-package com.riders.thelab.core.views.toast
+package com.riders.thelab.core.ui.views.toast
 
-import com.riders.thelab.R
+import  com.riders.thelab.core.ui.R
 
 enum class ToastTypeEnum(val drawable: Int, val color: Int) {
 

@@ -24,13 +24,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.utils.getAsyncImagePainter
-import com.riders.thelab.data.local.bean.MovieEnum
-import com.riders.thelab.data.local.model.Members
-import com.riders.thelab.data.local.model.Movie
-import com.riders.thelab.data.local.model.Scenarist
+import com.riders.thelab.core.data.local.bean.MovieEnum
+import com.riders.thelab.core.data.local.model.Members
+import com.riders.thelab.core.data.local.model.Movie
+import com.riders.thelab.core.data.local.model.Scenarist
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.getAsyncImagePainter
 import timber.log.Timber
 import java.util.Locale
 

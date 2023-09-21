@@ -5,10 +5,10 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.BuildConfig
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.local.model.compose.LoginUiState
-import com.riders.thelab.data.remote.dto.ApiResponse
-import com.riders.thelab.data.remote.dto.UserDto
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.compose.LoginUiState
+import com.riders.thelab.core.data.remote.dto.ApiResponse
+import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*

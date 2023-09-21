@@ -16,10 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.data.local.bean.MovieEnum
-import com.riders.thelab.data.local.model.Movie
+import com.riders.thelab.core.data.local.bean.MovieEnum
+import com.riders.thelab.core.data.local.model.Movie
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -73,7 +73,9 @@ fun PopularityAndRating(movie: Movie) {
 fun Overview(movie: Movie) {
     TheLabTheme {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(

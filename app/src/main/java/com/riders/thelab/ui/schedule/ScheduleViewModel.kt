@@ -15,10 +15,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
 import com.riders.thelab.core.service.ScheduleAlarmService
-import com.riders.thelab.core.utils.LabCompatibilityManager
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.model.compose.ScheduleJobAlarmUiState
+import com.riders.thelab.core.ui.utils.UIManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
 

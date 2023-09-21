@@ -2,6 +2,7 @@ plugins {
     id("thelab.android.library")
     id("thelab.android.library.compose")
     id("thelab.android.library.jacoco")
+    id("thelab.android.hilt")
 }
 
 android {
@@ -14,39 +15,36 @@ android {
 dependencies {
 
     ///////////////////////////////////
-    // Project
-    ///////////////////////////////////
-    // implementation(project(":core:analytics"))
-    // implementation(project(":core:data"))
-
-
-    ///////////////////////////////////
     // General Dependencies
     ///////////////////////////////////
-    // Kotlin
-    implementation(libs.kotlinx.datetime)
+    //Kotlin
+    api(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 
     // Compose
-    api(libs.androidx.compose.foundation)
-    api(libs.androidx.compose.foundation.layout)
-    api(libs.androidx.compose.material.iconsExtended)
-    api(libs.androidx.compose.material3)
-    api(libs.androidx.compose.runtime)
-    api(libs.androidx.compose.runtime.livedata)
-    api(libs.androidx.compose.ui.tooling.preview)
-    api(libs.androidx.compose.ui.util)
-    api(libs.androidx.metrics)
-    api(libs.androidx.tracing.ktx)
+    api(libs.androidx.compose.ui.test)
+    debugImplementation(libs.androidx.compose.ui.testManifest)
 
-    debugApi(libs.androidx.compose.ui.tooling)
+    // Room
+    androidTestImplementation(libs.room.testing)
 
-    // AndroidX
-    implementation(libs.androidx.browser)
-    implementation(libs.androidx.core.ktx)
+    // Worker & concurrent
+    androidTestImplementation(libs.androidx.work.testing)
 
-    // Coil
-    implementation(libs.coil.kt)
-    implementation(libs.coil.kt.compose)
+    /////////////////////////////
+    // Tests Dependencies
+    /////////////////////////////
+    testImplementation(libs.junit4)
+    androidTestImplementation(libs.androidx.test.ext)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.mockito)
+    androidTestImplementation(libs.mockito.android)
 
-    // androidTestImplementation(project(":core:testing"))
+    androidTestImplementation(libs.androidx.compose.ui.test)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.testManifest)
+
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.compiler)
+    kaptAndroidTest(libs.hilt.ext.compiler)
 }

@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
-import com.riders.thelab.data.IRepository
+import com.riders.thelab.core.data.IRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers.IO

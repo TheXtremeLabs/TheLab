@@ -25,10 +25,10 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.component.TheLabTopAppBar
-import com.riders.thelab.core.compose.previewprovider.TextContentPreviewProvider
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.weather.core.component.TheLabTopAppBar
 import com.riders.thelab.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber

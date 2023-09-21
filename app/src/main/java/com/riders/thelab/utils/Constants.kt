@@ -1,7 +1,7 @@
 package com.riders.thelab.utils
 
 import android.content.Context
-import com.riders.thelab.data.local.model.app.App
+import com.riders.thelab.core.data.local.model.app.App
 
 object Constants {
 

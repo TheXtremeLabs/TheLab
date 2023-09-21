@@ -5,9 +5,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.service.TheLabBootService
-import com.riders.thelab.core.utils.LabCompatibilityManager
-import com.riders.thelab.core.utils.UIManager
+import com.riders.thelab.core.ui.utils.UIManager
 import timber.log.Timber
 
 class TheLabBootBroadcastReceiver : BroadcastReceiver() {
