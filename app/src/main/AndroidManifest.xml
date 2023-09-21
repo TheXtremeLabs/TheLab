@@ -483,6 +483,13 @@
             android:label="@string/activity_web_view_title"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".feature.musicrecognition.ui.MusicRecognitionChooserActivity"
+            android:label="@string/activity_music_recognition_title"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            tools:ignore="LockedOrientationActivity" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 

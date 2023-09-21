@@ -572,4 +572,5 @@
     <string name="activity_web_view_title">WebView</string>
     <string name="activity_title_compose">Compose</string>
     <string name="activity_title_google_ml_kit">Google ML Kit</string>
+    <string name="activity_music_recognition_title">Music Recognition</string>
 </resources>
