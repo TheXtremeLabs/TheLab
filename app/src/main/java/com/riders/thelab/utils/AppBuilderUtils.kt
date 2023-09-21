@@ -7,6 +7,7 @@ import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.AppBuilder
 import com.riders.thelab.feature.biometric.ui.BiometricActivity
+import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.bluetooth.BluetoothActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
@@ -552,6 +553,23 @@ object AppBuilderUtils {
                         .withActivityDate("2021/10/13")
                         .build()
                 this.add(screenShot)
+
+                // Music Recognition
+                val musicRecognition =
+                    AppBuilder
+                        .withId(31L)
+                        .withActivityTitle("Music Recognition")
+                        .withActivityDescription("Choose ACRCLoud Or Shazam and see...")
+                        .withActivityIcon(
+                            getDrawableFromIntResource(
+                                context,
+                                R.drawable.ic_shazam
+                            )
+                        )
+                        .withActivityClass(MusicRecognitionChooserActivity::class.java)
+                        .withActivityDate("2023/09/21")
+                        .build()
+                this.add(musicRecognition)
 
                 // Google ML Kit - Live Barcode
                 val liveBarcode =
