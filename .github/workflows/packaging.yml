@@ -2,6 +2,10 @@ name: Packaging
 on:
   push:
     branches: [ master ]
+    paths:
+      - './**/*gradle*'
+      - './**/*.kt*'
+      - .github/workflows/packaging.yml
 jobs:
   build:
     name: Package application
