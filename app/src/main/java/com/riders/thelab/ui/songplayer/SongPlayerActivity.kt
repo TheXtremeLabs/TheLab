@@ -29,10 +29,10 @@ import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
+import com.riders.thelab.core.data.local.model.music.SongModel
 import com.riders.thelab.core.service.MusicMediaPlaybackService
 import com.riders.thelab.core.utils.LabNotificationManager
 import com.riders.thelab.core.utils.SongsManager
-import com.riders.thelab.data.local.model.music.SongModel
 import com.riders.thelab.databinding.ActivitySongPlayerBinding
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
@@ -172,7 +172,15 @@ class SongPlayerActivity : AppCompatActivity(),
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()")
-        registerReceiver(MediaButtonReceiver(), IntentFilter(Intent.ACTION_MEDIA_BUTTON))
+        runCatching {
+            registerReceiver(MediaButtonReceiver(), IntentFilter(Intent.ACTION_MEDIA_BUTTON))
+        }
+            .onFailure {
+                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+            }
+            .onSuccess {
+                Timber.d("runCatching - onSuccess() | app list fetched successfully")
+            }
     }
 
     override fun onStop() {
@@ -338,13 +346,13 @@ class SongPlayerActivity : AppCompatActivity(),
             val mediaSession = SongPlayerUtils.createMediaSession(this, mp)
             val mediaController = SongPlayerUtils.createMediaController(mediaSession)
 
-            LabNotificationManager.displayMusicNotification(
+            /*LabNotificationManager.displayMusicNotification(
                 this@SongPlayerActivity,
                 mediaSession,
                 mediaController,
                 mServiceMusic,
                 item
-            )
+            )*/
 
             //displaySessionNotification(item)
 

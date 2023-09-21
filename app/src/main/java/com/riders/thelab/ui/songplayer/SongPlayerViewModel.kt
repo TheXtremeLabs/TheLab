@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.riders.thelab.core.storage.LabFileManager
-import com.riders.thelab.data.local.model.music.SongModel
+import com.riders.thelab.core.common.storage.LabFileManager
+import com.riders.thelab.core.data.local.model.music.SongModel
 import com.riders.thelab.utils.Constants.SZ_SEPARATOR
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
