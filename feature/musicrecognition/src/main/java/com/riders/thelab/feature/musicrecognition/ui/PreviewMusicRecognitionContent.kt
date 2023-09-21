@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.feature.musicrecognition.R
 
 
@@ -66,7 +67,7 @@ fun MusicRecognitionContent() {
                         modifier = Modifier
                             .fillMaxWidth(.6f),
                         onClick = {
-                            // (context.findActivity() as MusicRecognitionChooserActivity).launchACRCloudActivity()
+                             (context.findActivity() as MusicRecognitionChooserActivity).launchACRCloudActivity()
                         }
                     ) {
                         Text(text = "ACRCloud")

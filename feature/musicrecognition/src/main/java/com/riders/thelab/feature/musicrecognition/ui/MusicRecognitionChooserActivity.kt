@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.musicrecognition.ui.acrcloud.ACRCloudActivity
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -42,14 +43,16 @@ class MusicRecognitionChooserActivity : ComponentActivity() {
         }
     }
 
-        /*fun launchACRCloudActivity() = Intent(this, ).apply {
-
+    fun launchACRCloudActivity() = Intent(this, ACRCloudActivity::class.java)
+        .apply {
             Timber.d("launchACRCloudActivity()")
-        }.run {
+        }
+        .run {
             startActivity(this)
         }
-        fun launchShazamActivity() {
-            Timber.d("launchShazamActivity()")
-        }*/
+
+    /*fun launchShazamActivity() {
+        Timber.d("launchShazamActivity()")
+    }*/
 
 }
