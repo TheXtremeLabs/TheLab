@@ -1,13 +1,13 @@
 name: Integration
 on:
   pull_request:
-    branches: [develop]
+    branches: [ develop ]
     paths:
       - './**/*gradle*'
       - './**/*.kt*'
       - .github/workflows/ci.yml
   push:
-    branches: [develop]
+    branches: [ develop ]
     paths:
       - './**/*gradle*'
       - './**/*.kt*'
