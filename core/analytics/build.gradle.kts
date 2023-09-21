@@ -20,13 +20,13 @@ dependencies {
     api(libs.androidx.compose.runtime)
 
     // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.ads)
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.database)
-    implementation(libs.firebase.messaging)
-    implementation(libs.firebase.perf)
-    implementation(libs.firebase.storage)
+    api(platform(libs.firebase.bom))
+    api(libs.firebase.ads)
+    api(libs.firebase.analytics)
+    api(libs.firebase.auth)
+    api(libs.firebase.crashlytics)
+    api(libs.firebase.database)
+    api(libs.firebase.messaging)
+    api(libs.firebase.perf)
+    api(libs.firebase.storage)
 }
