@@ -3,8 +3,8 @@ on:
   push:
     branches: [ master ]
     paths:
-      - './**/*gradle*'
-      - './**/*.kt*'
+      - '**gradle*'
+      - '**.kt*'
       - .github/workflows/packaging.yml
   workflow_dispatch:
 jobs:
