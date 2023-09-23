@@ -34,7 +34,8 @@ object AppHelperModule {
             ApiModule.provideYoutubeApiService(),
             ApiModule.provideWeatherApiService(context),
             ApiModule.proWeatherBulkApiService(context),
-            ApiModule.provideUserAPIService()
+            ApiModule.provideUserAPIService(),
+            ApiModule.provideSpotifyAPIService()
         )
 
     @Provides

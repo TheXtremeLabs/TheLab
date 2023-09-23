@@ -16,6 +16,7 @@ import com.riders.thelab.core.common.utils.LabParser
 import com.riders.thelab.core.data.local.DbImpl
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.Download
+import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.PackageApp
@@ -24,6 +25,7 @@ import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.preferences.PreferencesImpl
 import com.riders.thelab.core.data.remote.ApiImpl
 import com.riders.thelab.core.data.remote.dto.ApiResponse
+import com.riders.thelab.core.data.remote.dto.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.weather.City
@@ -241,6 +243,11 @@ class RepositoryImpl @Inject constructor(
     override suspend fun login(user: UserDto) = mApiImpl.login(user)
 
     override suspend fun saveUser(user: UserDto) = mApiImpl.saveUser(user)
+    override suspend fun getToken(requestToken: SpotifyRequestToken): SpotifyToken =
+        mApiImpl.getToken(requestToken = requestToken)
+
+    override suspend fun getToken(clientId: String, clientSecret: String): SpotifyToken =
+        mApiImpl.getToken(clientId = clientId, clientSecret = clientSecret)
 
 
     override fun isNightMode(): Flow<Boolean> = mPreferencesImpl.isNightMode()

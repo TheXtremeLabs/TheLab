@@ -11,17 +11,25 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.acrcloud.rec.ACRCloudClient
 import com.acrcloud.rec.ACRCloudConfig
 import com.acrcloud.rec.ACRCloudResult
 import com.acrcloud.rec.IACRCloudListener
 import com.acrcloud.rec.utils.ACRCloudLogger
+import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import timber.log.Timber
+import javax.inject.Inject
 
 ///////////////////////////////
 //
@@ -45,7 +53,10 @@ fun <viewModel : LifecycleObserver> viewModel.observeLifecycleEvents(lifecycle: 
     }
 }
 
-class ACRCloudViewModel : ViewModel(), DefaultLifecycleObserver, IACRCloudListener {
+@HiltViewModel
+class ACRCloudViewModel @Inject constructor(
+    private val repository: IRepository
+) : ViewModel(), DefaultLifecycleObserver, IACRCloudListener {
 
     private var mClient: ACRCloudClient? = null
     private var mConfig: ACRCloudConfig? = null
@@ -78,6 +89,15 @@ class ACRCloudViewModel : ViewModel(), DefaultLifecycleObserver, IACRCloudListen
         this.result = newValue
     }
 
+
+    //////////////////////////////////////////
+    // Coroutines
+    //////////////////////////////////////////
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            throwable.printStackTrace()
+            Timber.e("coroutineExceptionHandler | ${throwable.message}")
+        }
 
     ///////////////////////////////
     //
@@ -269,6 +289,37 @@ class ACRCloudViewModel : ViewModel(), DefaultLifecycleObserver, IACRCloudListen
 
     override fun onVolumeChanged(volume: Double) {
         Timber.e("onVolumeChanged() | volume: $volume")
+    }
+
+    fun getSpotifyToken() {
+        Timber.d("getSpotifyToken()")
+
+        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
+            // val mockToken = "BQD0Raowk2EjeF41DxIA4On2pkY67QH1t63CZseyUT8HMEeC2JwkmfJYOKt0P3z2jEzOMNeXPf2L_IHBt-H4ib-4ZZB0WY271fAeyN9a98cb38BobLY"
+            val token = runCatching {
+                        repository.getToken(
+                            // SpotifyRequestToken(
+                            clientId = "1714852f79e04b24afd8a49d04068558",
+                            clientSecret = "a6cf1fe73aa5486eb2490131e2fe2b45"
+                            //)
+                        )
+                    }
+                        .onFailure {
+                            it.printStackTrace()
+                            Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+                        }
+                        .onSuccess {
+                            Timber.d("runCatching - onSuccess() | spotify token fetched successfully")
+                        }
+                        .getOrNull()
+                        ?.createBearerToken()
+
+            token?.let {
+                Timber.d("token fetched: $token")
+            } ?: run {
+                Timber.e("Unable to get token")
+            }
+        }
     }
 }
 

@@ -303,3 +303,9 @@ dependencies {
     kaptAndroidTest(libs.hilt.compiler)
     kaptAndroidTest(libs.hilt.ext.compiler)
 }
+
+tasks.named("build") {
+    doLast {
+        print(rootProject.version)
+    }
+}

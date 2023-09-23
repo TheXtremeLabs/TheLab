@@ -8,14 +8,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.riders.thelab.core.data.local.model.Download
+import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.remote.api.ArtistsAPIService
 import com.riders.thelab.core.data.remote.api.GoogleAPIService
+import com.riders.thelab.core.data.remote.api.SpotifyAPIService
 import com.riders.thelab.core.data.remote.api.TheLabBackApiService
 import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
 import com.riders.thelab.core.data.remote.dto.ApiResponse
+import com.riders.thelab.core.data.remote.dto.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
@@ -38,6 +41,7 @@ class ApiImpl @Inject constructor(
     weatherApiService: WeatherApiService,
     weatherBulkApiService: WeatherBulkApiService,
     theLabBackApiService: TheLabBackApiService,
+    spotifyApiService: SpotifyAPIService,
 ) : IApi {
 
     private var mArtistsAPIService: ArtistsAPIService = artistsAPIService
@@ -46,6 +50,7 @@ class ApiImpl @Inject constructor(
     private var mWeatherApiService: WeatherApiService = weatherApiService
     private var mWeatherBulkApiService: WeatherBulkApiService = weatherBulkApiService
     private var mTheLabBackApiService: TheLabBackApiService = theLabBackApiService
+    private var mSpotifyApiService: SpotifyAPIService = spotifyApiService
 
 
     override suspend fun getStorageReference(activity: Activity): StorageReference? = try {
@@ -183,4 +188,11 @@ class ApiImpl @Inject constructor(
     override suspend fun login(user: UserDto): ApiResponse = mTheLabBackApiService.login(user)
 
     override suspend fun saveUser(user: UserDto): ApiResponse = mTheLabBackApiService.saveUser(user)
+    override suspend fun getToken(requestToken: SpotifyRequestToken): SpotifyToken =
+        mSpotifyApiService.getToken(request = requestToken)
+
+    override suspend fun getToken(
+        clientId: String,
+        clientSecret: String
+    ): SpotifyToken = mSpotifyApiService.getToken(clientId = clientId, clientSecret = clientSecret)
 }

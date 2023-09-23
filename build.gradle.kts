@@ -24,7 +24,7 @@ tasks.register("clean", Delete::class) {
 
 tasks.register("printVersionName") {
     doLast {
-        print(rootProject.version)
+        print("--> tasks.register printVersionName: ${rootProject.version}")
         rootProject.version
     }
 }
