@@ -7,6 +7,7 @@ import com.riders.thelab.core.data.local.bean.TimeOut
 import com.riders.thelab.core.data.local.model.weather.WeatherKey
 import com.riders.thelab.core.data.remote.api.ArtistsAPIService
 import com.riders.thelab.core.data.remote.api.GoogleAPIService
+import com.riders.thelab.core.data.remote.api.SpotifyAPIService
 import com.riders.thelab.core.data.remote.api.TheLabBackApiService
 import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
@@ -206,7 +207,6 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    @NotNull
     fun provideArtistsAPIService(): ArtistsAPIService {
         return provideRetrofitArtists(Constants.BASE_ENDPOINT_GOOGLE_FIREBASE_API)
             .create(ArtistsAPIService::class.java)
@@ -215,7 +215,6 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    @NotNull
     fun provideGoogleAPIService(): GoogleAPIService {
         return provideRetrofit(Constants.BASE_ENDPOINT_GOOGLE_MAPS_API).create(
             GoogleAPIService::class.java
@@ -225,7 +224,6 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    @NotNull
     fun provideYoutubeApiService(): YoutubeApiService {
         return provideRetrofit(Constants.BASE_ENDPOINT_YOUTUBE)
             .create(YoutubeApiService::class.java)
@@ -234,7 +232,6 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    @NotNull
     fun provideWeatherApiService(@ApplicationContext context: Context): WeatherApiService {
         return provideWeatherRetrofit(context, Constants.BASE_ENDPOINT_WEATHER)
             .create(WeatherApiService::class.java)
@@ -242,7 +239,6 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    @NotNull
     fun proWeatherBulkApiService(@ApplicationContext context: Context): WeatherBulkApiService {
         return provideWeatherRetrofit(context, Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
             .create(WeatherBulkApiService::class.java)
@@ -250,9 +246,14 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    @NotNull
     fun provideUserAPIService(): TheLabBackApiService {
         return provideRetrofit(Constants.BASE_ENDPOINT_THE_LAB_URL)
             .create(TheLabBackApiService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideSpotifyAPIService(): SpotifyAPIService {
+        return provideRetrofit(Constants.BASE_ENDPOINT_SPOTIFY)
+            .create(SpotifyAPIService::class.java)
     }
 }

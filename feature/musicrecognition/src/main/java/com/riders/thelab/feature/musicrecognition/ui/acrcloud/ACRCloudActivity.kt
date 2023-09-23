@@ -2,6 +2,7 @@ package com.riders.thelab.feature.musicrecognition.ui.acrcloud
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -22,16 +23,61 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabNetworkManagerNewAPI
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.musicrecognition.BuildConfig
+import com.spotify.android.appremote.api.ConnectionParams
+import com.spotify.android.appremote.api.Connector
+import com.spotify.android.appremote.api.Connector.ConnectionListener
+import com.spotify.android.appremote.api.SpotifyAppRemote
+import com.spotify.android.appremote.api.error.CouldNotFindSpotifyApp
+import com.spotify.android.appremote.api.error.NotLoggedInException
+import com.spotify.android.appremote.api.error.UserNotAuthorizedException
+import com.spotify.sdk.android.auth.AccountsQueryParameters.CLIENT_ID
+import com.spotify.sdk.android.auth.AuthorizationClient
+import com.spotify.sdk.android.auth.AuthorizationRequest
+import com.spotify.sdk.android.auth.AuthorizationResponse
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@AndroidEntryPoint
 class ACRCloudActivity : ComponentActivity() {
 
     private val mViewModel: ACRCloudViewModel by viewModels()
 
+    private var mNetworkManager: LabNetworkManagerNewAPI?=null
+
     private var permissionLauncher: ActivityResultLauncher<String>? = null
 
+    private val clientId = "1714852f79e04b24afd8a49d04068558"
+    private val redirectUri = "http://com.yourdomain.yourapp/callback"
+    private var mSpotifyAppRemote: SpotifyAppRemote? = null
+
+    // Request code will be used to verify if result comes from the login activity. Can be set to any integer.
+    private val REQUEST_CODE = 1_337
+    private val REDIRECT_URI = "yourcustomprotocol://callback"
+
+    private val mConnectionParams: ConnectionParams = ConnectionParams.Builder(clientId)
+        .apply {
+            setRedirectUri(REDIRECT_URI)
+        }
+        .build()
+
+    private var mConnectionListener: ConnectionListener = object : ConnectionListener {
+        override fun onConnected(spotifyAppRemote: SpotifyAppRemote) {
+            mSpotifyAppRemote = spotifyAppRemote
+            // setup all the things
+        }
+
+        override fun onFailure(error: Throwable?) {
+            if (error is NotLoggedInException || error is UserNotAuthorizedException) {
+                // Show login button and trigger the login flow from auth library when clicked
+            } else if (error is CouldNotFindSpotifyApp) {
+                // Show button to download Spotify
+            }
+        }
+    }
 
     ///////////////////////////////
     //
@@ -67,6 +113,13 @@ class ACRCloudActivity : ComponentActivity() {
 
         initPermissionLauncher()
 
+        if (BuildConfig.DEBUG) {
+            mNetworkManager = LabNetworkManagerNewAPI.getInstance(this@ACRCloudActivity)
+            val isOnline = mNetworkManager?.isOnline()
+            Timber.d("Is app online : $isOnline")
+            mViewModel.getSpotifyToken()
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
@@ -84,11 +137,51 @@ class ACRCloudActivity : ComponentActivity() {
         }
 
         // checkPermission()
+
+        /*val builder =
+            AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI)
+
+        builder.setScopes(arrayOf("streaming"))
+        val request = builder.build()
+
+        AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request)*/
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // We will start writing our code here.
+        /*SpotifyAppRemote.disconnect(mSpotifyAppRemote)
+        SpotifyAppRemote.connect(this, mConnectionParams, mConnectionListener)*/
+    }
+
+    private fun connected() {
+        // Then we will write some more code here.
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+
+        // Check if result comes from the correct activity
+        if (requestCode == REQUEST_CODE) {
+            val response = AuthorizationClient.getResponse(resultCode, intent)
+            when (response.type) {
+                AuthorizationResponse.Type.TOKEN -> {}
+                AuthorizationResponse.Type.ERROR -> {}
+                else -> {}
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
         checkPermission()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Aaand we will finish off here.
+        // SpotifyAppRemote.disconnect(mSpotifyAppRemote)
     }
 
     override fun onDestroy() {
