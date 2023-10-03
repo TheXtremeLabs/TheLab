@@ -1,7 +1,7 @@
 [versions]
 # Gradle version
 kotlinGradlePlugin = "1.9.0"
-androidGradlePlugin = "8.3.0-alpha04"
+androidGradlePlugin = "8.3.0-alpha06"
 hiltGradlePlugin = "2.46.1"
 # Google Services
 playServicesGradlePlugin = "4.4.0"
