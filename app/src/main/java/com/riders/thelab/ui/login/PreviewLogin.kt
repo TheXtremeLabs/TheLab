@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.login
 
+import android.annotation.SuppressLint
 import android.text.Html
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
@@ -27,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.R
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.Shapes
@@ -50,6 +51,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@SuppressLint("NewApi")
 @Composable
 fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: Navigator) {
 
@@ -98,7 +100,7 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
                 AnimatedVisibility(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
-                        .align(CenterHorizontally),
+                        .align(Alignment.CenterHorizontally),
                     visible = if (LocalInspectionMode.current) true else versionVisibility.value,
                     exit = fadeOut()
                 ) {
@@ -141,13 +143,16 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
                     ) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
-                            text =
-                            Html
-                                .fromHtml(
-                                    stringResource(id = R.string.no_account_register),
-                                    Html.FROM_HTML_MODE_LEGACY
-                                )
-                                .toString(),
+                            text = if (!LabCompatibilityManager.isNougat()) {
+                                stringResource(id = R.string.no_account_register)
+                            } else {
+                                Html
+                                    .fromHtml(
+                                        stringResource(id = R.string.no_account_register),
+                                        Html.FROM_HTML_MODE_LEGACY
+                                    )
+                                    .toString()
+                            },
                             color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
                             textAlign = TextAlign.Center
                         )
