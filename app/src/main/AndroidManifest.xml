@@ -156,6 +156,9 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="barcode" />
 
         <!-- ////////////// ACTIVITIES ////////////// -->
         <activity

@@ -16,7 +16,7 @@ android {
 dependencies {
 
     implementation(files("libs/acrcloud-universal-sdk-1.3.22.jar"))
-    implementation(files("libs/spotify-app-remote-release-0.8.0.aar"))
+    // implementation(files("libs/spotify-app-remote-release-0.8.0.aar"))
     // implementation(files("libs/spotify-auth-release-2.1.0.aar"))
     // implementation(files("libs/spotify-auth-store-release-2.1.0.aar"))
 
