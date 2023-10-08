@@ -1,4 +1,4 @@
-package com.riders.thelab.core.data.remote.dto
+package com.riders.thelab.core.data.remote.dto.spotify
 
 import kotlinx.serialization.SerialName
 import timber.log.Timber
@@ -22,7 +22,12 @@ data class SpotifyToken(
         return if (accessToken.isEmpty()) {
             "Error cannot get access token"
         } else {
+            bearerToken = "Bearer $accessToken"
             "Bearer $accessToken"
         }
+    }
+
+    companion object {
+        var bearerToken: String = "Bearer "
     }
 }

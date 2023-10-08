@@ -8,6 +8,7 @@ import com.riders.thelab.core.data.local.model.weather.WeatherKey
 import com.riders.thelab.core.data.remote.api.ArtistsAPIService
 import com.riders.thelab.core.data.remote.api.GoogleAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAPIService
+import com.riders.thelab.core.data.remote.api.SpotifyAccountAPIService
 import com.riders.thelab.core.data.remote.api.TheLabBackApiService
 import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
@@ -21,14 +22,18 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
-import okhttp3.*
+import okhttp3.ConnectionSpec
+import okhttp3.HttpUrl
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.apache.http.HttpHeaders
-import org.jetbrains.annotations.NotNull
 import retrofit2.Retrofit
 import timber.log.Timber
-import java.util.*
+import java.util.Objects
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -162,6 +167,10 @@ internal object ApiModule {
     }
 
 
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
+
     /* Provide Retrofit for the app */
     @Provides
     fun provideRetrofit(url: String): Retrofit {
@@ -171,7 +180,9 @@ internal object ApiModule {
             .baseUrl(url)
             .client(provideOkHttp())
             //.addConverterFactory(MoshiConverterFactory.create())
-            .addConverterFactory(Json.asConverterFactory(contentType))
+            .addConverterFactory(Json{
+                ignoreUnknownKeys = true
+            }.asConverterFactory(contentType))
             .build()
     }
 
@@ -250,10 +261,18 @@ internal object ApiModule {
         return provideRetrofit(Constants.BASE_ENDPOINT_THE_LAB_URL)
             .create(TheLabBackApiService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideSpotifyAccountAPIService(): SpotifyAccountAPIService {
+        return provideRetrofit(Constants.BASE_ENDPOINT_SPOTIFY_ACCOUNT)
+            .create(SpotifyAccountAPIService::class.java)
+    }
+
     @Provides
     @Singleton
     fun provideSpotifyAPIService(): SpotifyAPIService {
-        return provideRetrofit(Constants.BASE_ENDPOINT_SPOTIFY)
+        return provideRetrofit(Constants.BASE_ENDPOINT_SPOTIFY_API)
             .create(SpotifyAPIService::class.java)
     }
 }

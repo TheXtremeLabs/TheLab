@@ -25,9 +25,10 @@ import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.preferences.PreferencesImpl
 import com.riders.thelab.core.data.remote.ApiImpl
 import com.riders.thelab.core.data.remote.dto.ApiResponse
-import com.riders.thelab.core.data.remote.dto.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
+import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.weather.City
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.flow.Flow
@@ -249,6 +250,8 @@ class RepositoryImpl @Inject constructor(
     override suspend fun getToken(clientId: String, clientSecret: String): SpotifyToken =
         mApiImpl.getToken(clientId = clientId, clientSecret = clientSecret)
 
+    override suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse =
+        mApiImpl.getTrackInfo(bearerToken, trackId)
 
     override fun isNightMode(): Flow<Boolean> = mPreferencesImpl.isNightMode()
 

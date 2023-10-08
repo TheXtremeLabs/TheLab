@@ -13,14 +13,16 @@ import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.remote.api.ArtistsAPIService
 import com.riders.thelab.core.data.remote.api.GoogleAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAPIService
+import com.riders.thelab.core.data.remote.api.SpotifyAccountAPIService
 import com.riders.thelab.core.data.remote.api.TheLabBackApiService
 import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
 import com.riders.thelab.core.data.remote.dto.ApiResponse
-import com.riders.thelab.core.data.remote.dto.SpotifyToken
+import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -41,6 +43,7 @@ class ApiImpl @Inject constructor(
     weatherApiService: WeatherApiService,
     weatherBulkApiService: WeatherBulkApiService,
     theLabBackApiService: TheLabBackApiService,
+    spotifyAccountApiService: SpotifyAccountAPIService,
     spotifyApiService: SpotifyAPIService,
 ) : IApi {
 
@@ -50,6 +53,7 @@ class ApiImpl @Inject constructor(
     private var mWeatherApiService: WeatherApiService = weatherApiService
     private var mWeatherBulkApiService: WeatherBulkApiService = weatherBulkApiService
     private var mTheLabBackApiService: TheLabBackApiService = theLabBackApiService
+    private var mSpotifyAccountApiService: SpotifyAccountAPIService = spotifyAccountApiService
     private var mSpotifyApiService: SpotifyAPIService = spotifyApiService
 
 
@@ -189,10 +193,12 @@ class ApiImpl @Inject constructor(
 
     override suspend fun saveUser(user: UserDto): ApiResponse = mTheLabBackApiService.saveUser(user)
     override suspend fun getToken(requestToken: SpotifyRequestToken): SpotifyToken =
-        mSpotifyApiService.getToken(request = requestToken)
+        mSpotifyAccountApiService.getToken(request = requestToken)
 
     override suspend fun getToken(
         clientId: String,
         clientSecret: String
-    ): SpotifyToken = mSpotifyApiService.getToken(clientId = clientId, clientSecret = clientSecret)
+    ): SpotifyToken = mSpotifyAccountApiService.getToken(clientId = clientId, clientSecret = clientSecret)
+
+    override suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse = mSpotifyApiService.getTrackInfo(bearerToken, trackId)
 }

@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -24,7 +25,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabNetworkManagerNewAPI
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.feature.musicrecognition.BuildConfig
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
@@ -42,7 +46,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class ACRCloudActivity : ComponentActivity() {
+class ACRCloudActivity : BaseComponentActivity() {
 
     private val mViewModel: ACRCloudViewModel by viewModels()
 
@@ -127,7 +131,8 @@ class ACRCloudActivity : ComponentActivity() {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
+//                            color = MaterialTheme.colorScheme.background
+                            color = if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background
                         ) {
                             ACRCloudActivityContent(mViewModel)
                         }
@@ -182,6 +187,10 @@ class ACRCloudActivity : ComponentActivity() {
         super.onStop()
         // Aaand we will finish off here.
         // SpotifyAppRemote.disconnect(mSpotifyAppRemote)
+    }
+    override fun backPressed() {
+        Timber.e("backPressed()")
+        finish()
     }
 
     override fun onDestroy() {
@@ -243,8 +252,4 @@ class ACRCloudActivity : ComponentActivity() {
         }
     }
 
-    private fun backPressed() {
-        Timber.e("backPressed()")
-        finish()
-    }
 }
