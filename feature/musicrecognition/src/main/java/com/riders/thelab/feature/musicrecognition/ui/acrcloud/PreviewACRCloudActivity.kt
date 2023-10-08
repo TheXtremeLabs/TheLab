@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,8 +24,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.FabPosition
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AirplanemodeActive
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.SignalWifiConnectedNoInternet4
+import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -35,8 +41,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,16 +60,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
+import com.riders.thelab.core.common.network.NetworkConnectionState
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.component.NoConnection
 import com.riders.thelab.core.ui.compose.component.PulsarFab
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.Toast
+import com.riders.thelab.core.ui.compose.theme.Orange
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onError
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onPrimaryContainer
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
@@ -147,7 +162,7 @@ fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.Recognitio
             Timber.e("rememberAsyncImagePainter | Error while loading Image")
         }
     )
-    val painterState = painter.state
+    val painterState: AsyncImagePainter.State = painter.state
 
     TheLabTheme {
         Card(
@@ -163,16 +178,40 @@ fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.Recognitio
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     Column(modifier = Modifier.fillMaxWidth(.8f)) {
-                        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-                            Image(
-                                modifier = Modifier
-                                    .width(this.maxWidth - 16.dp)
-                                    .height(this.maxWidth - 16.dp)
-                                    .clip(RoundedCornerShape(16.dp)),
-                                painter = painter,
-                                contentDescription = "album thumb image",
-                                contentScale = ContentScale.FillBounds,
-                            )
+                        BoxWithConstraints(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            when (painterState) {
+                                is AsyncImagePainter.State.Loading -> {
+                                    CircularProgressIndicator()
+                                }
+
+                                is AsyncImagePainter.State.Success -> {
+                                    Image(
+                                        modifier = Modifier
+                                            .width(this.maxWidth - 16.dp)
+                                            .height(this.maxWidth - 16.dp)
+                                            .clip(RoundedCornerShape(16.dp)),
+                                        painter = painter,
+                                        contentDescription = "album thumb image",
+                                        contentScale = ContentScale.FillBounds,
+                                    )
+                                }
+
+                                else -> {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth(.5f)
+                                            .fillMaxHeight(.4f), contentAlignment = Alignment.Center
+                                    ) {
+                                        Lottie(
+                                            modifier = Modifier,
+                                            rawResId = com.riders.thelab.core.ui.R.raw.lottie_hot_coffee_loading
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -233,7 +272,13 @@ fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.Recognitio
 @Composable
 fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
 
+    val context = LocalContext.current
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val connectionState by viewModel.mNetworkManager.networkConnectionState.collectAsStateWithLifecycle()
+    var isConnected  by remember { mutableStateOf(false) }
+    var currentCapabilityChangedCount by remember { mutableIntStateOf(0) }
+    val maxCapabilitiesCountTaken = 1
 
     // Register lifecycle events
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
@@ -287,45 +332,102 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                 }
             }
         ) { contentPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(contentPadding)
-                    .fillMaxSize()
-                    .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
-            ) {
+
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                if (!isConnected) {
+                    NoConnection()
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .padding(contentPadding)
+                            .fillMaxSize()
+                            .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        AnimatedContent(
+                            targetState = uiState,
+                            transitionSpec = {
+                                fadeIn(
+                                    animationSpec = tween(
+                                        300,
+                                        300
+                                    )
+                                ) + slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Up,
+                                    animationSpec = tween(300, 300)
+                                ) togetherWith fadeOut(
+                                    animationSpec = tween(300, 300)
+                                ) + slideOutOfContainer(
+                                    animationSpec = tween(300, 300),
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Down
+                                )
+                            },
+                            label = "music recognition content animation"
+                        ) { targetState ->
+                            when (targetState) {
+                                is ACRUiState.Idle -> {
+                                    Idle(viewModel = viewModel)
+                                }
+
+                                is ACRUiState.ProcessRecognition -> {
+                                    Searching(viewModel = viewModel)
+                                }
+
+                                is ACRUiState.RecognitionSuccessful -> {
+                                    RecognitionResult(viewModel = viewModel, state = targetState)
+                                }
+
+                                else -> {}
+                            }
+                        }
+                    }
+                }
+
                 AnimatedContent(
-                    targetState = uiState,
-                    transitionSpec = {
-                        fadeIn(
-                            animationSpec = tween(
-                                300,
-                                300
-                            )
-                        ) + slideIntoContainer(
-                            towards = AnimatedContentTransitionScope.SlideDirection.Up,
-                            animationSpec = tween(300, 300)
-                        ) togetherWith fadeOut(
-                            animationSpec = tween(300, 300)
-                        ) + slideOutOfContainer(
-                            animationSpec = tween(300, 300),
-                            towards = AnimatedContentTransitionScope.SlideDirection.Down
-                        )
-                    },
-                    label = "music recognition content animation"
+                    targetState = connectionState,
+                    label = "Toast animation content"
                 ) { targetState ->
                     when (targetState) {
-                        is ACRUiState.Idle -> {
-                            Idle(viewModel = viewModel)
+                        is NetworkConnectionState.Connected -> {
+                            isConnected = true
+                            Toast(
+                                message = "You are connected to the internet",
+                                imageVector = Icons.Filled.Check,
+                                containerColor = success
+                            )
+                            currentCapabilityChangedCount = 0
                         }
 
-                        is ACRUiState.ProcessRecognition -> {
-                            Searching(viewModel = viewModel)
+                        is NetworkConnectionState.OnCapabilitiesChanged -> {
+                            currentCapabilityChangedCount += 1
+
+                            if (currentCapabilityChangedCount < maxCapabilitiesCountTaken) {
+                                Toast(
+                                    message = "Connection capabilities changes",
+                                    imageVector = Icons.Filled.SyncAlt,
+                                    containerColor = Orange
+                                )
+                            }
                         }
 
-                        is ACRUiState.RecognitionSuccessful -> {
-                            RecognitionResult(viewModel = viewModel, state = targetState)
+                        is NetworkConnectionState.OnLosing -> {
+                            Toast(
+                                message = "Losing Internet connection !",
+                                imageVector = Icons.Filled.SignalWifiConnectedNoInternet4,
+                                containerColor = md_theme_dark_onError
+                            )
+                        }
+
+                        is NetworkConnectionState.Lost,
+                        is NetworkConnectionState.Unavailable -> {
+                            isConnected = false
+                            Toast(
+                                message = "Internet is unavailable",
+                                imageVector = Icons.Filled.AirplanemodeActive,
+                                containerColor = md_theme_dark_onError
+                            )
+                            currentCapabilityChangedCount = 0
                         }
 
                         else -> {}

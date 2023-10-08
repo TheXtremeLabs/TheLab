@@ -11,7 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.R
-import com.riders.thelab.core.common.utils.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.ui.utils.UIManager

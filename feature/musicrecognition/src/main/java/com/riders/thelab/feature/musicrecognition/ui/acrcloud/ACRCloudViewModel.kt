@@ -18,6 +18,7 @@ import com.acrcloud.rec.ACRCloudConfig
 import com.acrcloud.rec.ACRCloudResult
 import com.acrcloud.rec.IACRCloudListener
 import com.acrcloud.rec.utils.ACRCloudLogger
+import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
@@ -30,7 +31,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
@@ -64,6 +64,8 @@ class ACRCloudViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel(), DefaultLifecycleObserver, IACRCloudListener {
 
+    lateinit var mNetworkManager: LabNetworkManagerNewAPI
+
     private var mClient: ACRCloudClient? = null
     private var mConfig: ACRCloudConfig? = null
 
@@ -81,9 +83,13 @@ class ACRCloudViewModel @Inject constructor(
     var spotifyToken by mutableStateOf("")
         private set
 
+    var showToastWithMessage: Pair<Boolean, String> by mutableStateOf(Pair(false, ""))
+        private set
+
     fun updateUiState(newState: ACRUiState) {
         this._uiState.value = newState
     }
+
 
     fun updateCanLaunchAudioRecognition(canLaunch: Boolean) {
         this.canLaunchAudioRecognition = canLaunch
@@ -99,6 +105,10 @@ class ACRCloudViewModel @Inject constructor(
 
     fun updateSpotifyToken(newValue: String) {
         this.spotifyToken = newValue
+    }
+
+    fun updateShowToastWithMessage(newValue: Pair<Boolean, String>) {
+        this.showToastWithMessage = newValue
     }
 
 
@@ -126,6 +136,18 @@ class ACRCloudViewModel @Inject constructor(
     // CLASS METHODS
     //
     ///////////////////////////////
+    fun initNetworkManager(context: Context) {
+        Timber.d("initNetworkManager()")
+        mNetworkManager = LabNetworkManagerNewAPI.getInstance(context = context)
+
+        if (null == mNetworkManager) {
+            Timber.e("NetworkManager is null")
+        } else {
+            val isOnline: Boolean = mNetworkManager!!.isOnline()
+            Timber.d("Is app online : $isOnline")
+        }
+    }
+
     fun initACRCloud(context: Context) {
         Timber.d("initACRCloud()")
         if (null == mConfig) {
@@ -235,7 +257,7 @@ class ACRCloudViewModel @Inject constructor(
                     Timber.d("Song created: ${song.toString()}")
 
                     if (null != song.externalMetadata && null != song.externalMetadata["trackID"]) {
-                            getInfoFromSpotify(song, song.externalMetadata["trackID"].toString())
+                        getInfoFromSpotify(song, song.externalMetadata["trackID"].toString())
                     } else {
                         Timber.e("trackID key not found. Make sure that the key is correctly typed.")
                         updateUiState(ACRUiState.RecognitionSuccessful(song))

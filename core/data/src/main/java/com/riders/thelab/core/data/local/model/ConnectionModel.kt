@@ -1,6 +1,6 @@
 package com.riders.thelab.core.data.local.model
 
-data class ConnectionModel(
+private data class ConnectionModel(
     var type: Int,
     var isConnected: Boolean
 )

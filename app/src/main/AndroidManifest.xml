@@ -165,11 +165,11 @@
             android:name=".ui.splashscreen.SplashScreenActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
 
         <activity
@@ -498,13 +498,7 @@
             android:name=".feature.musicrecognition.ui.acrcloud.ACRCloudActivity"
             android:parentActivityName=".feature.musicrecognition.ui.MusicRecognitionChooserActivity"
             android:screenOrientation="portrait"
-            android:exported="true"
             tools:ignore="LockedOrientationActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <!-- ////////////// ACTIVITIES ////////////// -->
 

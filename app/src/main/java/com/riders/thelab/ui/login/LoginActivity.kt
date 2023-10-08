@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.WindowMetricsCalculator
 import com.riders.thelab.BuildConfig
-import com.riders.thelab.core.common.utils.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager

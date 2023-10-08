@@ -42,7 +42,7 @@ import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.bus.LocationFetchedEvent
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
-import com.riders.thelab.core.common.utils.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
@@ -52,7 +52,6 @@ import com.riders.thelab.core.location.OnGpsListener
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.LabGlideUtils
 import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.core.utils.*
 import com.riders.thelab.databinding.ActivityMainBinding
 import com.riders.thelab.feature.weather.ui.WeatherUtils
 import com.riders.thelab.navigator.Navigator
