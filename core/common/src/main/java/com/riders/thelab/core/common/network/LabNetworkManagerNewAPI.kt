@@ -1,37 +1,45 @@
-package com.riders.thelab.core.common.utils
+package com.riders.thelab.core.common.network
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.*
+import android.net.ConnectivityManager
 import android.net.ConnectivityManager.NetworkCallback
+import android.net.LinkProperties
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 
 @SuppressLint("NewApi", "MissingPermission")
-class LabNetworkManagerNewAPI constructor(
-    val context: Context
-//    val listener: ConnectivityListener
-) : NetworkCallback() {
+class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
 
 //    val mListener: ConnectivityListener get() = listener
 
-    private lateinit var connectivityManager: ConnectivityManager
+    private var connectivityManager: ConnectivityManager
     var currentNetwork: Network? = null
 
     var caps: NetworkCapabilities? = null
     var linkProperties: LinkProperties? = null
 
+    var mType: Int = 0
     var isConnected: Boolean = false
     var isWifiConn: Boolean = false
     var isMobileConn: Boolean = false
 
     private val connectionState: MutableLiveData<Boolean> = MutableLiveData()
+
+    private var _networkConnectionState: MutableStateFlow<NetworkConnectionState> =
+        MutableStateFlow(NetworkConnectionState.NONE)
+    val networkConnectionState: StateFlow<NetworkConnectionState> = _networkConnectionState
 
     init {
         Timber.d("init")
@@ -48,6 +56,7 @@ class LabNetworkManagerNewAPI constructor(
         @Suppress("DEPRECATION")
         connectivityManager.allNetworks.forEach { network ->
             connectivityManager.getNetworkInfo(network)?.apply {
+                mType = type
                 if (type == ConnectivityManager.TYPE_WIFI) {
                     isWifiConn = isWifiConn or isConnected
                 }
@@ -71,17 +80,25 @@ class LabNetworkManagerNewAPI constructor(
         return connectionState
     }
 
+    private fun updateNetworkConnectionState(newState: NetworkConnectionState) {
+        this._networkConnectionState.value = newState
+    }
+
     override fun onAvailable(network: Network) {
         super.onAvailable(network)
         Timber.d("onAvailable()")
         Timber.e("The default network is now: $network")
 
         (context as Activity).runOnUiThread {
+            updateNetworkConnectionState(
+                NetworkConnectionState.Connected(
+                    ConnectionModel(mType, true),
+                    network
+                )
+            )
+
             connectionState.value = true
         }
-
-        /*isConnected = true
-        mListener.onConnected()*/
     }
 
     override fun onCapabilitiesChanged(
@@ -89,6 +106,15 @@ class LabNetworkManagerNewAPI constructor(
         networkCapabilities: NetworkCapabilities
     ) {
         Timber.e("The default network changed capabilities: $networkCapabilities")
+
+        (context as Activity).runOnUiThread {
+            updateNetworkConnectionState(
+                NetworkConnectionState.OnCapabilitiesChanged(
+                    network,
+                    networkCapabilities
+                )
+            )
+        }
     }
 
     override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
@@ -103,6 +129,12 @@ class LabNetworkManagerNewAPI constructor(
     override fun onLosing(network: Network, maxMsToLive: Int) {
         super.onLosing(network, maxMsToLive)
         Timber.e("onLosing()")
+
+        (context as Activity).runOnUiThread {
+            updateNetworkConnectionState(
+                NetworkConnectionState.OnLosing(network, maxMsToLive)
+            )
+        }
     }
 
     override fun onLost(network: Network) {
@@ -111,6 +143,7 @@ class LabNetworkManagerNewAPI constructor(
         Timber.e("The application no longer has a default network. The last default network was $network")
 
         (context as Activity).runOnUiThread {
+            updateNetworkConnectionState(NetworkConnectionState.Lost(network))
             connectionState.value = false
         }
     }
@@ -120,17 +153,18 @@ class LabNetworkManagerNewAPI constructor(
         Timber.e("onUnavailable()")
 
         (context as Activity).runOnUiThread {
+            updateNetworkConnectionState(NetworkConnectionState.Unavailable)
             connectionState.value = false
         }
     }
 
-    fun isOnline(): Boolean {
+    fun isOnline(): Boolean = connectivityManager.activeNetworkInfo?.run {
         Timber.d("isOnline()")
-
-        val networkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
-        return networkInfo?.isConnected == true
+        this.isConnected == true
+    } ?: run {
+        Timber.e("isOnline() | false")
+        false
     }
-
 
     @SuppressLint("NewApi")
     private fun getConnectionInfo() {
@@ -161,7 +195,10 @@ class LabNetworkManagerNewAPI constructor(
                 Timber.e("The default network changed capabilities: $networkCapabilities")
             }
 
-            override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
+            override fun onLinkPropertiesChanged(
+                network: Network,
+                linkProperties: LinkProperties
+            ) {
                 Timber.e("The default network changed link properties: $linkProperties")
             }
         })
@@ -216,7 +253,7 @@ class LabNetworkManagerNewAPI constructor(
         fun getInstance(context: Context): LabNetworkManagerNewAPI {
             Timber.d("getInstance()")
             if (null == INSTANCE) {
-                Timber.d("create a new PraeterNetworkManagerNewAPI instance")
+                Timber.d("create a new LabNetworkManagerNewAPI instance")
                 INSTANCE = LabNetworkManagerNewAPI(context)
             }
 

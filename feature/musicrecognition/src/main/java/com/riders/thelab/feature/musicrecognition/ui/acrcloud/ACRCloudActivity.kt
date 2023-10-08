@@ -6,9 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.window.OnBackInvokedDispatcher
-import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,7 +13,6 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
@@ -24,22 +20,19 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.common.utils.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.feature.musicrecognition.BuildConfig
 import com.spotify.android.appremote.api.ConnectionParams
-import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.Connector.ConnectionListener
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.spotify.android.appremote.api.error.CouldNotFindSpotifyApp
 import com.spotify.android.appremote.api.error.NotLoggedInException
 import com.spotify.android.appremote.api.error.UserNotAuthorizedException
-import com.spotify.sdk.android.auth.AccountsQueryParameters.CLIENT_ID
 import com.spotify.sdk.android.auth.AuthorizationClient
-import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -49,8 +42,6 @@ import timber.log.Timber
 class ACRCloudActivity : BaseComponentActivity() {
 
     private val mViewModel: ACRCloudViewModel by viewModels()
-
-    private var mNetworkManager: LabNetworkManagerNewAPI?=null
 
     private var permissionLauncher: ActivityResultLauncher<String>? = null
 
@@ -95,34 +86,11 @@ class ACRCloudActivity : BaseComponentActivity() {
         if (LabCompatibilityManager.isTiramisu()) {
             // init Post notifications
             initPostNotificationsForAndroid13()
-
-            // Handle onBackPressed for Android 13+
-            onBackInvokedDispatcher
-                .registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
-                    Timber.e("Android 13+ onBackInvokedDispatcher | OnBackInvokedDispatcher.registerOnBackInvokedCallback()")
-                    backPressed()
-                }
-        } else {
-            onBackPressedDispatcher
-                .addCallback(
-                    this,
-                    object : OnBackPressedCallback(true) {
-                        override fun handleOnBackPressed() {
-                            Timber.e("Android 13- onBackPressedDispatcher | OnBackPressedCallback.handleOnBackPressed() | finish()")
-                            // Back is pressed... Finishing the activity
-                            backPressed()
-                        }
-                    })
         }
 
         initPermissionLauncher()
 
-        if (BuildConfig.DEBUG) {
-            mNetworkManager = LabNetworkManagerNewAPI.getInstance(this@ACRCloudActivity)
-            val isOnline = mNetworkManager?.isOnline()
-            Timber.d("Is app online : $isOnline")
-            mViewModel.getSpotifyToken()
-        }
+        mViewModel.initNetworkManager(this@ACRCloudActivity)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -141,6 +109,7 @@ class ACRCloudActivity : BaseComponentActivity() {
             }
         }
 
+        initObservers()
         // checkPermission()
 
         /*val builder =
@@ -188,6 +157,7 @@ class ACRCloudActivity : BaseComponentActivity() {
         // Aaand we will finish off here.
         // SpotifyAppRemote.disconnect(mSpotifyAppRemote)
     }
+
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()
@@ -252,4 +222,14 @@ class ACRCloudActivity : BaseComponentActivity() {
         }
     }
 
+    private fun initObservers() {
+        Timber.d("initObservers()")
+        mViewModel.mNetworkManager?.getConnectionState()?.observe(this) {
+            if (!it) {
+                Timber.e("getConnectionState().observe | NOT connected: $it")
+            } else {
+                mViewModel.getSpotifyToken()
+            }
+        }
+    }
 }

@@ -7,10 +7,9 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
-import androidx.appcompat.resources.Compatibility
 import androidx.lifecycle.LiveData
+import com.riders.thelab.core.common.network.ConnectionModel
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.data.local.model.ConnectionModel
 
 
 class ConnectionLiveData(private val context: Context) : LiveData<ConnectionModel>() {
@@ -52,10 +51,12 @@ class ConnectionLiveData(private val context: Context) : LiveData<ConnectionMode
     }
 
     private fun isNetworkAvailable(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (LabCompatibilityManager.isMarshmallow()) {
-            val activeNetwork      = connectivityManager.activeNetwork ?: return false
-            val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+            val activeNetwork = connectivityManager.activeNetwork ?: return false
+            val networkCapabilities =
+                connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
             return when {
                 networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
                 networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true

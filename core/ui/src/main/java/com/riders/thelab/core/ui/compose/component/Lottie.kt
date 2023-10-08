@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -29,7 +30,7 @@ fun Lottie(modifier: Modifier, @RawRes rawResId: Int) {
         iterations = LottieConstants.IterateForever,
     )
 
-    Box(modifier = Modifier.then(modifier)) {
+    Box(modifier = Modifier.then(modifier), contentAlignment = Alignment.Center) {
         LottieAnimation(
             modifier = Modifier.fillMaxSize(),
             composition = composition,
