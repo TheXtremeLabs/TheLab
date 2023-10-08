@@ -8,14 +8,14 @@ import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.remote.dto.ApiResponse
-import com.riders.thelab.core.data.remote.dto.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
+import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.Query
 
 interface IApi {
 
@@ -39,7 +39,9 @@ interface IApi {
     // Spotify
     suspend fun getToken(requestToken: SpotifyRequestToken): SpotifyToken
     suspend fun getToken(
-        @Query("client_id") clientId: String = "client_id",
-        @Query("client_secret") clientSecret: String = "client_secret",
+        clientId: String = "client_id",
+        clientSecret: String = "client_secret",
     ): SpotifyToken
+
+    suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse
 }

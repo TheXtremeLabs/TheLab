@@ -1,22 +1,29 @@
 package com.riders.thelab.feature.musicrecognition.ui.acrcloud
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.FabPosition
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
@@ -24,8 +31,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,22 +39,37 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.transform.RoundedCornersTransformation
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.PulsarFab
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onPrimaryContainer
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_primaryContainer
 import com.riders.thelab.core.ui.compose.theme.success
 import com.riders.thelab.feature.musicrecognition.R
 import kotlinx.coroutines.delay
+import timber.log.Timber
 
 
 ///////////////////////////////
@@ -61,8 +81,10 @@ import kotlinx.coroutines.delay
 fun Idle(viewModel: ACRCloudViewModel) {
     TheLabTheme {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalAlignment = Alignment.Top
         ) {
             Text(modifier = Modifier, text = viewModel.result)
             Button(
@@ -84,13 +106,18 @@ fun Idle(viewModel: ACRCloudViewModel) {
 fun Searching(viewModel: ACRCloudViewModel) {
     TheLabTheme {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
         ) {
             Text(modifier = Modifier, text = viewModel.result)
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth(.75f))
+            PulsarFab {
+                Image(
+                    modifier = Modifier.size(72.dp),
+                    painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_the_lab_12_logo_white),
+                    contentDescription = null,
+                )
+            }
         }
     }
 }
@@ -99,69 +126,98 @@ fun Searching(viewModel: ACRCloudViewModel) {
 fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.RecognitionSuccessful) {
     var expanded = remember { mutableStateOf(false) }
 
-    TheLabTheme {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(modifier = Modifier, text = state.songFetched.title)
-                    Text(modifier = Modifier, text = state.songFetched.artists.joinToString(","))
-                    Text(modifier = Modifier, text = state.songFetched.album)
-                }
+    val painter = rememberAsyncImagePainter(
+        model = ImageRequest
+            .Builder(LocalContext.current)
+            .data(state.songFetched.albumThumbUrl)
+            .apply {
+                crossfade(true)
+                allowHardware(false)
+                transformations(RoundedCornersTransformation(16.dp.value))
+            }
+            .build(),
+        placeholder = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors),
+        onLoading = {
+            Timber.i("rememberAsyncImagePainter | Loading Image...")
+        },
+        onSuccess = {
+            Timber.d("rememberAsyncImagePainter | Image successfully loaded")
+        },
+        onError = {
+            Timber.e("rememberAsyncImagePainter | Error while loading Image")
+        }
+    )
+    val painterState = painter.state
 
+    TheLabTheme {
+        Card(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            shape = RoundedCornerShape(20.dp)
+        ) {
+            Box(modifier = Modifier.padding(8.dp)) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .weight(.4f),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    Card(
-                        modifier = Modifier
-                            .size(40.dp),
-                        shape = CircleShape,
-                        colors = CardDefaults.cardColors(containerColor = success)
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Check,
-                                contentDescription = "round check icon",
-                                tint = Color.White
+                    Column(modifier = Modifier.fillMaxWidth(.8f)) {
+                        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                            Image(
+                                modifier = Modifier
+                                    .width(this.maxWidth - 16.dp)
+                                    .height(this.maxWidth - 16.dp)
+                                    .clip(RoundedCornerShape(16.dp)),
+                                painter = painter,
+                                contentDescription = "album thumb image",
+                                contentScale = ContentScale.FillBounds,
                             )
                         }
                     }
-                }
-            }
 
-            AnimatedVisibility(visible = expanded.value) {
-                Button(
-                    modifier = Modifier,
-                    onClick = { viewModel.startRecognition() },
-                    enabled = viewModel.canLaunchAudioRecognition
-                ) {
-                    Text(
-                        text = if (!viewModel.isRecognizing) stringResource(id = R.string.msg_start_recognition) else stringResource(
-                            id = R.string.msg_stop_recognition
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier,
+                            text = state.songFetched.title,
+                            style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 24.sp)
                         )
-                    )
+                        Text(
+                            modifier = Modifier,
+                            text = state.songFetched.artists.joinToString(","),
+                            style = TextStyle(fontSize = 16.sp)
+                        )
+                        Text(
+                            modifier = Modifier, text = state.songFetched.album,
+                            style = TextStyle(fontSize = 18.sp)
+                        )
+                    }
+                }
+
+                Card(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp),
+                    shape = CircleShape,
+                    colors = CardDefaults.cardColors(containerColor = success)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Check,
+                            contentDescription = "round check icon",
+                            tint = Color.White
+                        )
+                    }
                 }
             }
         }
@@ -182,86 +238,97 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
     // Register lifecycle events
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-    val widthFraction by animateFloatAsState(
+    val animatedHeight by animateDpAsState(
         targetValue = when (uiState) {
-            is ACRUiState.RecognitionSuccessful -> {
-                .7f
+            is ACRUiState.ProcessRecognition -> {
+                0.dp
             }
 
             else -> {
-                .6f
+                56.dp
             }
         },
-        animationSpec = tween(2000),
-        label = "widthFraction_animation"
-    )
-
-    val heightFraction by animateFloatAsState(
-        targetValue = when (uiState) {
-            is ACRUiState.RecognitionSuccessful -> {
-                .7f
-            }
-
-            else -> {
-                .45f
-            }
-        },
-        animationSpec = tween(2000),
+        animationSpec = tween(500),
         label = "heightFraction_animation"
     )
 
+
     TheLabTheme {
-        Scaffold(
+        androidx.compose.material.Scaffold(
+            modifier = Modifier.background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
             topBar = {
                 TheLabTopAppBar(title = stringResource(id = R.string.acr_cloud_app_name)) { }
+            },
+            floatingActionButton = {
+                androidx.compose.material.FloatingActionButton(
+                    onClick = {
+                        viewModel.startRecognition()
+                    }) {
+                    Icon(
+                        modifier = Modifier.size(40.dp),
+                        painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_the_lab_12_logo_black),
+                        contentDescription = "the lab logo",
+                        tint = md_theme_dark_onPrimaryContainer
+                    )
+                }
+            },
+            floatingActionButtonPosition = FabPosition.Center,
+            isFloatingActionButtonDocked = true,
+            bottomBar = {
+                androidx.compose.material.BottomAppBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(animatedHeight)
+                        .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+                    backgroundColor = if (!isSystemInDarkTheme()) md_theme_light_primaryContainer else md_theme_dark_primaryContainer,
+                    cutoutShape = CircleShape
+                ) {
+
+                }
             }
         ) { contentPadding ->
             Column(
                 modifier = Modifier
+                    .padding(contentPadding)
                     .fillMaxSize()
-                    .padding(contentPadding),
-                horizontalAlignment = Alignment.Start
+                    .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
             ) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(.4f)
-                        .padding(16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (!isSystemInDarkTheme()) md_theme_light_primaryContainer else md_theme_dark_primaryContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(
-                            16.dp,
-                            Alignment.CenterVertically
+                AnimatedContent(
+                    targetState = uiState,
+                    transitionSpec = {
+                        fadeIn(
+                            animationSpec = tween(
+                                300,
+                                300
+                            )
+                        ) + slideIntoContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Up,
+                            animationSpec = tween(300, 300)
+                        ) togetherWith fadeOut(
+                            animationSpec = tween(300, 300)
+                        ) + slideOutOfContainer(
+                            animationSpec = tween(300, 300),
+                            towards = AnimatedContentTransitionScope.SlideDirection.Down
                         )
-                    ) {
-                        AnimatedContent(
-                            targetState = uiState,
-                            transitionSpec = { fadeIn() togetherWith fadeOut() },
-                            label = "music recognition content animation"
-                        ) { targetState ->
-                            when (targetState) {
-                                is ACRUiState.Idle -> {
-                                    Idle(viewModel = viewModel)
-                                }
-
-                                is ACRUiState.ProcessRecognition -> {
-                                    Searching(viewModel = viewModel)
-                                }
-
-                                is ACRUiState.RecognitionSuccessful -> {
-                                    RecognitionResult(viewModel = viewModel, state = targetState)
-                                }
-
-                                else -> {}
-                            }
+                    },
+                    label = "music recognition content animation"
+                ) { targetState ->
+                    when (targetState) {
+                        is ACRUiState.Idle -> {
+                            Idle(viewModel = viewModel)
                         }
+
+                        is ACRUiState.ProcessRecognition -> {
+                            Searching(viewModel = viewModel)
+                        }
+
+                        is ACRUiState.RecognitionSuccessful -> {
+                            RecognitionResult(viewModel = viewModel, state = targetState)
+                        }
+
+                        else -> {}
                     }
                 }
             }

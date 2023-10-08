@@ -89,9 +89,12 @@ data class Song(
     val externalMetadata: HashMap<String, String>
 ) : Serializable {
 
+    var albumThumbUrl: String? = null
+
     companion object {
 
-        val mock = Song(buildSet { add("Rap/Hip-Hop") },
+        val mock = Song(
+            buildSet { add("Rap/Hip-Hop") },
             "6 foot 7 foot",
             buildSet { add("Toonchi") },
             "Young Money Cash Money Billionaires",
@@ -109,11 +112,11 @@ data class Song(
             album: JSONObject,
             externalMetadata: JSONObject
         ): Song {
-            val spotify = externalMetadata.getJSONObject("spotify")
-            val track = spotify.getJSONObject("track")
-            val trackName = track.getString("name")
-            val trackID = track.getString("id")
-            val albumName = album.getString("name")
+            val albumName = album.run { this.getString("name") } ?: ""
+            val spotify = externalMetadata.getJSONObject("spotify") ?: null
+            val track = spotify?.run { this.getJSONObject("track") }
+            val trackName = track?.run { this.getString("name") } ?: ""
+            val trackID = track?.run { this.getString("id") } ?: ""
             // val albumID = album.getString("id")
 
             return Song(

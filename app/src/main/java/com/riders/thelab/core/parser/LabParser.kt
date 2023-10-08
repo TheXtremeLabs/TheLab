@@ -18,22 +18,22 @@ object LabParser {
         Timber.d("parseJsonFile() | filename: $filename")
 
         val json = context.resources.assets.open(filename).bufferedReader().use { it.readText() }
-        val mLocalAppList: List<LocalApp> = Json.decodeFromString(json)
+        val mLocalAppList: List<LocalApp>? = Json.decodeFromString(json)
 
-        if (null == mLocalAppList) {
+        return mLocalAppList?.let {
+            it.map { localApp ->
+                LocalApp(
+                    localApp.id,
+                    localApp.title!!,
+                    localApp.description!!,
+                    LocalApp.getDrawableByName(context, localApp.icon!!),
+                    localApp.activity,
+                    localApp.date!!
+                )
+            }
+        } ?: run {
             Timber.e("List is null. Return emptyList")
             return arrayListOf<App>()
-        }
-
-        return mLocalAppList.map { localApp ->
-            LocalApp(
-                localApp.id,
-                localApp.title!!,
-                localApp.description!!,
-                LocalApp.getDrawableByName(context, localApp.icon!!),
-                localApp.activity,
-                localApp.date!!
-            )
         }
     }
         .onFailure {

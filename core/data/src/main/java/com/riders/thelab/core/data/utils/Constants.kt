@@ -50,7 +50,8 @@ object Constants {
     const val WEATHER_COUNTRY_CODE_GUYANE = "GF"
     const val WEATHER_COUNTRY_CODE_REUNION = "RE"
     const val FIREBASE_DATABASE_NAME = "kat"
-    const val BASE_ENDPOINT_SPOTIFY = "https://accounts.spotify.com/api/"
+    const val BASE_ENDPOINT_SPOTIFY_ACCOUNT = "https://accounts.spotify.com/api/"
+    const val BASE_ENDPOINT_SPOTIFY_API = "https://api.spotify.com/"
 
     // Palette
     const val PALETTE_URL = "http://i.ytimg.com/vi/aNHOfJCphwk/maxresdefault.jpg"

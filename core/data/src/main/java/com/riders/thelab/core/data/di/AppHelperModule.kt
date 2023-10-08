@@ -35,6 +35,7 @@ object AppHelperModule {
             ApiModule.provideWeatherApiService(context),
             ApiModule.proWeatherBulkApiService(context),
             ApiModule.provideUserAPIService(),
+            ApiModule.provideSpotifyAccountAPIService(),
             ApiModule.provideSpotifyAPIService()
         )
 

@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.musicrecognition.ui.acrcloud
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -20,6 +21,8 @@ import com.acrcloud.rec.utils.ACRCloudLogger
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
+import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
+import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers.IO
@@ -27,6 +30,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 import javax.inject.Inject
@@ -43,6 +48,7 @@ import javax.inject.Inject
  *
  * The ViewModel will implement DefaultLifecycleObserver and will start receiving lifecycle events.
  */
+@SuppressLint("ComposableNaming")
 @Composable
 fun <viewModel : LifecycleObserver> viewModel.observeLifecycleEvents(lifecycle: Lifecycle) {
     DisposableEffect(lifecycle) {
@@ -72,6 +78,8 @@ class ACRCloudViewModel @Inject constructor(
 
     var result by mutableStateOf("")
         private set
+    var spotifyToken by mutableStateOf("")
+        private set
 
     fun updateUiState(newState: ACRUiState) {
         this._uiState.value = newState
@@ -87,6 +95,10 @@ class ACRCloudViewModel @Inject constructor(
 
     fun updateResult(newValue: String) {
         this.result = newValue
+    }
+
+    fun updateSpotifyToken(newValue: String) {
+        this.spotifyToken = newValue
     }
 
 
@@ -176,12 +188,23 @@ class ACRCloudViewModel @Inject constructor(
             val json = JSONObject(acrResult)
             val status: JSONObject = json.getJSONObject("status")
             val code = status.getInt("code")
+            when (code) {
+                0 -> {
+
+                }
+
+                else -> {
+                    Timber.e("Else branch")
+
+                    acrResult
+                }
+            }
             if (code == 0) {
                 val metadata: JSONObject = json.getJSONObject("metadata")
                 if (metadata.has("music")) {
                     val musics = metadata.getJSONArray("music")
                     val tt = musics[0] as JSONObject
-                    val genres = tt.getJSONArray("genres")
+                    val genres = tt.getJSONArray("genres") ?: JSONArray()
                     // val genre = genres[0] as JSONObject
                     val title = tt.getString("title")
                     val label = tt.getString("label")
@@ -211,15 +234,22 @@ class ACRCloudViewModel @Inject constructor(
 
                     Timber.d("Song created: ${song.toString()}")
 
-                    updateUiState(ACRUiState.RecognitionSuccessful(song))
+                    if (null != song.externalMetadata && null != song.externalMetadata["trackID"]) {
+                            getInfoFromSpotify(song, song.externalMetadata["trackID"].toString())
+                    } else {
+                        Timber.e("trackID key not found. Make sure that the key is correctly typed.")
+                        updateUiState(ACRUiState.RecognitionSuccessful(song))
+                    }
 
                     "$title ($artist)"
                 } else {
                     Timber.e("acrResult JSONObject has no metadata")
+                    updateUiState(ACRUiState.Error("Error while parsing data"))
                     acrResult
                 }
             } else {
                 // TODO: Handle error
+                updateUiState(ACRUiState.Error("Error while parsing data"))
                 acrResult
             }
         }
@@ -231,6 +261,7 @@ class ACRCloudViewModel @Inject constructor(
             }
             .getOrElse {
                 Timber.e("runCatching | getOrElse | error caught with message: ${it.message}")
+                updateUiState(ACRUiState.Error("Error while parsing data, message: it.message"))
                 "Error parsing metadata"
             }
 
@@ -297,29 +328,60 @@ class ACRCloudViewModel @Inject constructor(
         viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
             // val mockToken = "BQD0Raowk2EjeF41DxIA4On2pkY67QH1t63CZseyUT8HMEeC2JwkmfJYOKt0P3z2jEzOMNeXPf2L_IHBt-H4ib-4ZZB0WY271fAeyN9a98cb38BobLY"
             val token = runCatching {
-                        repository.getToken(
-                            // SpotifyRequestToken(
-                            clientId = "1714852f79e04b24afd8a49d04068558",
-                            clientSecret = "a6cf1fe73aa5486eb2490131e2fe2b45"
-                            //)
-                        )
-                    }
-                        .onFailure {
-                            it.printStackTrace()
-                            Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
-                        }
-                        .onSuccess {
-                            Timber.d("runCatching - onSuccess() | spotify token fetched successfully")
-                        }
-                        .getOrNull()
-                        ?.createBearerToken()
+                repository.getToken(
+                    // SpotifyRequestToken(
+                    clientId = "1714852f79e04b24afd8a49d04068558",
+                    clientSecret = "a6cf1fe73aa5486eb2490131e2fe2b45"
+                    //)
+                )
+            }
+                .onFailure {
+                    it.printStackTrace()
+                    Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+                }
+                .onSuccess {
+                    Timber.d("runCatching - onSuccess() | spotify token fetched successfully")
+                }
+                .getOrNull()
+                ?.createBearerToken()
 
             token?.let {
-                Timber.d("token fetched: $token")
+                Timber.d("token fetched: $it")
+                updateSpotifyToken(it)
             } ?: run {
                 Timber.e("Unable to get token")
             }
         }
+    }
+
+    fun getInfoFromSpotify(song: Song, trackID: String) {
+        Timber.d("getInfoFromSpotify()")
+
+        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
+            runCatching {
+                if (SpotifyToken.bearerToken.isNotBlank()) {
+                    val trackInfo: SpotifyResponse = repository.getTrackInfo(
+                        bearerToken = SpotifyToken.bearerToken,
+                        trackId = trackID
+                    )
+
+                    Timber.d("info: ${trackInfo.album.images[0].toString()}")
+
+                    song.albumThumbUrl = trackInfo.album.images[0].url
+
+                    updateUiState(ACRUiState.RecognitionSuccessful(song))
+                }
+            }
+                .onFailure {
+                    it.printStackTrace()
+                    Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+                }
+                .onSuccess {
+                    Timber.d("runCatching - onSuccess() | spotify track info fetched successfully")
+                }
+                .getOrNull()
+        }
+
     }
 }
 
