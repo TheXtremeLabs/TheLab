@@ -52,10 +52,10 @@ dependencies {
     implementation(libs.coil.kt.compose)
 
     // Worker & concurrent
-    implementation(libs.androidx.work.ktx)
-    implementation(libs.androidx.work.multiprocess)
-    implementation(libs.androidx.concurrent)
-    androidTestImplementation(libs.androidx.work.testing)
+    api(libs.androidx.work.ktx)
+    api(libs.androidx.work.multiprocess)
+    api(libs.androidx.concurrent)
+    androidTestApi(libs.androidx.work.testing)
 
     /* Hilt - We are going to use hilt.android which includes
      * support for Activity and fragment injection so we need to include

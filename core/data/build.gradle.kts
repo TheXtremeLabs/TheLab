@@ -6,6 +6,7 @@ plugins {
     id("kotlin-parcelize")
     id("kotlinx-serialization")
     kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -39,7 +40,6 @@ dependencies {
     // Kotlin
     api(libs.kotlinx.coroutines.android)
     api(libs.androidx.core.ktx)
-    api(libs.room.ktx)
     api(libs.kotlinx.serialization.json)
 
     // Compose
@@ -47,9 +47,9 @@ dependencies {
     api(libs.androidx.compose.ui.tooling)
 
     // Room
-    /*api(libs.room.ktx)
+    api(libs.room.ktx)
     api(libs.room.runtime)
-    kapt(libs.room.compiler)*/
+    ksp(libs.room.compiler)
 
     // Firebase
     api(platform(libs.firebase.bom))

@@ -27,15 +27,11 @@ dependencies {
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
-    api(platform(libs.kotlin.bom))
+    implementation(platform(libs.kotlin.bom))
 
     // AndroidX
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.biometric)
-
-    // Coil
-    implementation(libs.coil.kt)
-    implementation(libs.coil.kt.compose)
 
     androidTestImplementation(project(":core:testing"))
 }

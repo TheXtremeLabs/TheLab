@@ -91,7 +91,6 @@ android {
         }
     }
 
-
     buildFeatures {
         // Determines whether to support Data Binding.
         // Note that the dataBinding.enabled property is now deprecated.
@@ -139,42 +138,42 @@ dependencies {
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.activity.ktx)
+    /*implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.fragment)
-    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.fragment)*/
+//    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.cardview)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.palette)
     implementation(libs.androidx.recyclerView)
     implementation(libs.androidx.material)
-    implementation(libs.androidx.biometric)
+//    implementation(libs.androidx.biometric)
     implementation(libs.androidx.dynamicanimation)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.window.manager)
     implementation(libs.androidx.window.extensions)
 
     // Compose
-    implementation(platform(libs.androidx.compose.bom))
+    /*implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.compiler)
     implementation(libs.androidx.compose.runtime)
-    implementation(libs.androidx.compose.runtime.livedata)
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.runtime.livedata)*/
+    /*implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material3)*/
+    /*implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.animation)
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.ui.util)
-    implementation(libs.androidx.compose.material.icons)
+    implementation(libs.androidx.compose.ui.util)*/
+    /*implementation(libs.androidx.compose.material.icons)
     implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(libs.androidx.compose.material3.windowSizeClass)
-    implementation(libs.androidx.compose.fonts)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.androidx.compose.material3.windowSizeClass)*/
+    /*implementation(libs.androidx.compose.fonts)
+    implementation(libs.androidx.activity.compose)*/
+    /*implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.androidx.compose.runtime.livedata)
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)*/
 
     // Navigation
     implementation(libs.androidx.navigation.ktx)
@@ -195,11 +194,11 @@ dependencies {
     // Auto fill
     implementation(libs.androidx.autofill)
 
-    // Worker & concurrent
-    implementation(libs.androidx.work.ktx)
+    // Worker & concurrent: implemented in weather feature
+    /*implementation(libs.androidx.work.ktx)
     implementation(libs.androidx.work.multiprocess)
     implementation(libs.androidx.concurrent)
-    androidTestImplementation(libs.androidx.work.testing)
+    androidTestImplementation(libs.androidx.work.testing)*/
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -294,10 +293,10 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.mockito)
     androidTestImplementation(libs.mockito.android)
-
+/*
     androidTestImplementation(libs.androidx.compose.ui.test)
     debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.testManifest)
+    debugImplementation(libs.androidx.compose.ui.testManifest)*/
 
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.compiler)
