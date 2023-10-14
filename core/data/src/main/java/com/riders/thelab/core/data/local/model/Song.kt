@@ -86,10 +86,20 @@ data class Song(
     val label: String,
     val releaseDate: String,
     val album: String,
-    val externalMetadata: HashMap<String, String>
+    val externalMetadata: HashMap<String, String>,
+    var albumThumbUrl: String? = null
 ) : Serializable {
 
-    var albumThumbUrl: String? = null
+    constructor(song: Song, albumThumbUrl: String) : this(
+        song.genres,
+        song.title,
+        song.artists,
+        song.label,
+        song.releaseDate,
+        song.album,
+        song.externalMetadata,
+        albumThumbUrl
+    )
 
     companion object {
 

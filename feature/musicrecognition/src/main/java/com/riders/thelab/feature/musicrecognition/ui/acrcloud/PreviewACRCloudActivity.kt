@@ -139,7 +139,7 @@ fun Searching(viewModel: ACRCloudViewModel) {
 
 @Composable
 fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.RecognitionSuccessful) {
-    var expanded = remember { mutableStateOf(false) }
+    val expanded = remember { mutableStateOf(false) }
 
     val painter = rememberAsyncImagePainter(
         model = ImageRequest

@@ -41,6 +41,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
         MutableStateFlow(NetworkConnectionState.NONE)
     val networkConnectionState: StateFlow<NetworkConnectionState> = _networkConnectionState
 
+
     init {
         Timber.d("init")
 
@@ -53,7 +54,6 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
             connectivityManager.registerDefaultNetworkCallback(this)
         }
 
-        @Suppress("DEPRECATION")
         connectivityManager.allNetworks.forEach { network ->
             connectivityManager.getNetworkInfo(network)?.apply {
                 mType = type
@@ -68,6 +68,10 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
 
         Timber.d("Wifi connected: $isWifiConn")
         Timber.d("Mobile connected: $isMobileConn")
+
+        isConnected = isMobileConn || isWifiConn
+
+        updateIsConnected(isConnected)
     }
 
     /**
@@ -81,7 +85,25 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
     }
 
     private fun updateNetworkConnectionState(newState: NetworkConnectionState) {
-        this._networkConnectionState.value = newState
+        (context as Activity).runOnUiThread {
+            this._networkConnectionState.value = newState
+        }
+    }
+
+    fun updateIsConnected(isConnected: Boolean) {
+        Timber.d("updateIsConnected() | isConnected: $isConnected")
+
+        if (!isConnected) {
+            currentNetwork?.let { NetworkConnectionState.Lost(it) }
+                ?.let { updateNetworkConnectionState(it) }
+        } else {
+            currentNetwork?.let {
+                NetworkConnectionState.Connected(
+                    ConnectionModel(mType, isConnected),
+                    it
+                )
+            }?.let { updateNetworkConnectionState(it) }
+        }
     }
 
     override fun onAvailable(network: Network) {
@@ -89,16 +111,15 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
         Timber.d("onAvailable()")
         Timber.e("The default network is now: $network")
 
-        (context as Activity).runOnUiThread {
-            updateNetworkConnectionState(
-                NetworkConnectionState.Connected(
-                    ConnectionModel(mType, true),
-                    network
-                )
-            )
+        currentNetwork = network
 
-            connectionState.value = true
+        currentNetwork?.let {
+            updateNetworkConnectionState(
+                NetworkConnectionState.Connected(ConnectionModel(mType, true), it)
+            )
         }
+
+        (context as Activity).runOnUiThread { connectionState.value = true }
     }
 
     override fun onCapabilitiesChanged(
@@ -107,32 +128,39 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
     ) {
         Timber.e("The default network changed capabilities: $networkCapabilities")
 
-        (context as Activity).runOnUiThread {
-            updateNetworkConnectionState(
-                NetworkConnectionState.OnCapabilitiesChanged(
-                    network,
-                    networkCapabilities
+        currentNetwork = network
+        caps = networkCapabilities
+
+        currentNetwork?.let { validNetwork ->
+            caps?.let { validCapabilities ->
+                updateNetworkConnectionState(
+                    NetworkConnectionState.OnCapabilitiesChanged(
+                        validNetwork,
+                        validCapabilities
+                    )
                 )
-            )
+            }
         }
     }
 
     override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
-        Timber.e("The default network changed link properties: $linkProperties")
+        // Timber.e("The default network changed link properties: $linkProperties")
     }
 
     override fun onBlockedStatusChanged(network: Network, blocked: Boolean) {
         super.onBlockedStatusChanged(network, blocked)
-        Timber.e("onBlockedStatusChanged()")
+        Timber.e("onBlockedStatusChanged() | network: $network, blocked: $blocked")
     }
 
     override fun onLosing(network: Network, maxMsToLive: Int) {
         super.onLosing(network, maxMsToLive)
         Timber.e("onLosing()")
 
-        (context as Activity).runOnUiThread {
+        currentNetwork = network
+
+        currentNetwork?.let {
             updateNetworkConnectionState(
-                NetworkConnectionState.OnLosing(network, maxMsToLive)
+                NetworkConnectionState.OnLosing(it, maxMsToLive)
             )
         }
     }
@@ -142,29 +170,51 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
         Timber.e("onLost()")
         Timber.e("The application no longer has a default network. The last default network was $network")
 
-        (context as Activity).runOnUiThread {
-            updateNetworkConnectionState(NetworkConnectionState.Lost(network))
-            connectionState.value = false
-        }
+        currentNetwork = network
+
+        currentNetwork?.let { updateNetworkConnectionState(NetworkConnectionState.Lost(it)) }
+
+        connectionState.value = false
     }
 
     override fun onUnavailable() {
         super.onUnavailable()
         Timber.e("onUnavailable()")
 
-        (context as Activity).runOnUiThread {
-            updateNetworkConnectionState(NetworkConnectionState.Unavailable)
-            connectionState.value = false
-        }
+        updateNetworkConnectionState(NetworkConnectionState.Unavailable)
+        connectionState.value = false
     }
 
-    fun isOnline(): Boolean = connectivityManager.activeNetworkInfo?.run {
+    fun isOnline(): Boolean {
         Timber.d("isOnline()")
-        this.isConnected == true
+
+        var connected: Boolean = false
+
+        connectivityManager.allNetworks.run {
+            this.forEach { network ->
+                connectivityManager.getNetworkInfo(network)?.apply {
+                    if (type == ConnectivityManager.TYPE_WIFI) {
+                        isWifiConn = isWifiConn or isConnected
+                    }
+                    if (type == ConnectivityManager.TYPE_MOBILE) {
+                        isMobileConn = isMobileConn or isConnected
+                    }
+
+                    connected = isWifiConn || isMobileConn
+                }
+            }
+        }
+
+        updateIsConnected(connected)
+        return connected
+    }
+    /*fun isOnline(): Boolean = connectivityManager.allNetworks.run {
+        Timber.d("isOnline()")
+        isConnected == true
     } ?: run {
         Timber.e("isOnline() | false")
         false
-    }
+    }*/
 
     @SuppressLint("NewApi")
     private fun getConnectionInfo() {
@@ -178,8 +228,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
         caps = connectivityManager.getNetworkCapabilities(currentNetwork)
         linkProperties = connectivityManager.getLinkProperties(currentNetwork)
 
-        connectivityManager.registerDefaultNetworkCallback(object :
-            ConnectivityManager.NetworkCallback() {
+        connectivityManager.registerDefaultNetworkCallback(object : NetworkCallback() {
             override fun onAvailable(network: Network) {
                 Timber.e("The default network is now: $network")
             }
