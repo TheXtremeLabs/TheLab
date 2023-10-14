@@ -87,7 +87,7 @@ data class Song(
     val releaseDate: String,
     val album: String,
     val externalMetadata: HashMap<String, String>,
-    var albumThumbUrl: String? = null
+    var albumThumbUrl: String
 ) : Serializable {
 
     constructor(song: Song, albumThumbUrl: String) : this(
@@ -110,7 +110,8 @@ data class Song(
             "Young Money Cash Money Billionaires",
             "2010-12-16",
             "Tha Carter IV",
-            HashMap()
+            HashMap(),
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Marvel_Logo.svg/langfr-1920px-Marvel_Logo.svg.png"
         )
 
         fun toModel(
@@ -159,7 +160,8 @@ data class Song(
                     put("spotify_metadata", "spotify_metadata")
                     put("trackName", trackName)
                     put("trackID", trackID)
-                }
+                },
+                albumThumbUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Marvel_Logo.svg/langfr-1920px-Marvel_Logo.svg.png"
             )
         }
     }

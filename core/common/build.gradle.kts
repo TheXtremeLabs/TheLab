@@ -16,7 +16,7 @@ dependencies {
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
-    api(platform(libs.kotlin.bom))
+    // api(platform(libs.kotlin.bom))
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.android)
     api(libs.kotlinx.serialization.json)
