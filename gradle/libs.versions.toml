@@ -121,6 +121,8 @@ threeten = "1.4.4"
 timber = "5.0.1"
 turbine = "0.12.1"
 types = "4.0.0"
+kotlin1910 = "1.9.10"
+junit = "1.1.5"
 
 
 [libraries]
@@ -294,6 +296,7 @@ ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devto
 play-services-gradlePlugin = { group = "com.google.gms", name = "google-services", version.ref = "playServicesGradlePlugin" }
 firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "crashlyticsGradlePlugin" }
 firebase-performances-gradlePlugin = { group = "com.google.firebase", name = "perf-plugin", version.ref = "performancesGradlePlugin" }
+junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -309,3 +312,4 @@ playservices = { id = "com.google.gms.google-services", version.ref = "playServi
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsGradlePlugin" }
 performances = { id = "com.google.firebase.firebase-perf", version.ref = "performancesGradlePlugin" }
 navigation = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationGradlePlugin" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin1910" }

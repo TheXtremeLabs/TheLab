@@ -2,6 +2,7 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.riders.thelab.configureKotlinAndroid
 import com.riders.thelab.configurePrintApksTask
+import com.riders.thelab.configureTimber
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -24,6 +25,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 defaultConfig.versionCode = AndroidConfiguration.Application.code
                 defaultConfig.versionName = AndroidConfiguration.Application.version.toString()
                 // configureFlavors(this)
+                configureTimber(this)
             }
             extensions.configure<ApplicationAndroidComponentsExtension> {
                 configurePrintApksTask(this)

@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,7 +49,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -61,9 +64,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.transform.RoundedCornersTransformation
 import com.riders.thelab.core.common.network.NetworkConnectionState
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
@@ -76,12 +76,15 @@ import com.riders.thelab.core.ui.compose.component.Toast
 import com.riders.thelab.core.ui.compose.theme.Orange
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onBackground
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onError
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onPrimaryContainer
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_onBackground
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_onPrimaryContainer
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_primaryContainer
 import com.riders.thelab.core.ui.compose.theme.success
+import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.feature.musicrecognition.R
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -118,6 +121,38 @@ fun Idle(viewModel: ACRCloudViewModel) {
 }
 
 @Composable
+fun ACRError(viewModel: ACRCloudViewModel) {
+    TheLabTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
+        ) {
+
+            Box(modifier = Modifier.fillMaxWidth(.75f), contentAlignment = Alignment.Center) {
+                Lottie(
+                    modifier = Modifier.fillMaxSize(),
+                    rawResId = com.riders.thelab.core.ui.R.raw.lottie_hot_coffee_loading
+                )
+            }
+
+            Text(
+                modifier = Modifier,
+                text = "An error occurred. please verify your internet connection or maybe retry to get the playing song"
+            )
+            Button(
+                modifier = Modifier,
+                onClick = { viewModel.startRecognition() },
+                enabled = viewModel.canLaunchAudioRecognition
+            ) {
+                Text(text = "Retry")
+            }
+        }
+    }
+}
+
+@Composable
 fun Searching(viewModel: ACRCloudViewModel) {
     TheLabTheme {
         Column(
@@ -141,27 +176,11 @@ fun Searching(viewModel: ACRCloudViewModel) {
 fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.RecognitionSuccessful) {
     val expanded = remember { mutableStateOf(false) }
 
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest
-            .Builder(LocalContext.current)
-            .data(state.songFetched.albumThumbUrl)
-            .apply {
-                crossfade(true)
-                allowHardware(false)
-                transformations(RoundedCornersTransformation(16.dp.value))
-            }
-            .build(),
-        placeholder = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors),
-        onLoading = {
-            Timber.i("rememberAsyncImagePainter | Loading Image...")
-        },
-        onSuccess = {
-            Timber.d("rememberAsyncImagePainter | Image successfully loaded")
-        },
-        onError = {
-            Timber.e("rememberAsyncImagePainter | Error while loading Image")
-        }
+    val painter: AsyncImagePainter = getCoilAsyncImagePainter(
+        context = LocalContext.current,
+        dataUrl = state.songFetched.albumThumbUrl
     )
+
     val painterState: AsyncImagePainter.State = painter.state
 
     TheLabTheme {
@@ -184,7 +203,7 @@ fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.Recognitio
                         ) {
                             when (painterState) {
                                 is AsyncImagePainter.State.Loading -> {
-                                    CircularProgressIndicator()
+                                    CircularProgressIndicator(modifier = Modifier.padding(8.dp))
                                 }
 
                                 is AsyncImagePainter.State.Success -> {
@@ -268,7 +287,7 @@ fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.Recognitio
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
 
@@ -276,7 +295,7 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val connectionState by viewModel.mNetworkManager.networkConnectionState.collectAsStateWithLifecycle()
-    var isConnected  by remember { mutableStateOf(false) }
+    val isConnected by viewModel.mNetworkManager.getConnectionState().observeAsState()
     var currentCapabilityChangedCount by remember { mutableIntStateOf(0) }
     val maxCapabilitiesCountTaken = 1
 
@@ -306,14 +325,24 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
             },
             floatingActionButton = {
                 androidx.compose.material.FloatingActionButton(
+                    backgroundColor = if (!viewModel.isRecognizing) {
+                        md_theme_light_onPrimaryContainer
+                    } else {
+                        if (!isSystemInDarkTheme()) md_theme_light_onBackground else md_theme_dark_onBackground
+                    },
                     onClick = {
-                        viewModel.startRecognition()
-                    }) {
+                        if (!viewModel.isRecognizing) {
+                            viewModel.startRecognition()
+                        } else {
+                            Timber.e("FloatingActionButton | onClick | recognition is already running")
+                        }
+                    },
+                ) {
                     Icon(
                         modifier = Modifier.size(40.dp),
-                        painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_the_lab_12_logo_black),
+                        painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_the_lab_12_logo_white),
                         contentDescription = "the lab logo",
-                        tint = md_theme_dark_onPrimaryContainer
+                        tint = Color.White
                     )
                 }
             },
@@ -332,9 +361,8 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                 }
             }
         ) { contentPadding ->
-
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                if (!isConnected) {
+                if (!isConnected!!) {
                     NoConnection()
                 } else {
                     Column(
@@ -378,7 +406,9 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                                     RecognitionResult(viewModel = viewModel, state = targetState)
                                 }
 
-                                else -> {}
+                                else -> {
+                                    ACRError(viewModel = viewModel)
+                                }
                             }
                         }
                     }
@@ -390,7 +420,6 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                 ) { targetState ->
                     when (targetState) {
                         is NetworkConnectionState.Connected -> {
-                            isConnected = true
                             Toast(
                                 message = "You are connected to the internet",
                                 imageVector = Icons.Filled.Check,
@@ -421,7 +450,6 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
 
                         is NetworkConnectionState.Lost,
                         is NetworkConnectionState.Unavailable -> {
-                            isConnected = false
                             Toast(
                                 message = "Internet is unavailable",
                                 imageVector = Icons.Filled.AirplanemodeActive,
@@ -450,6 +478,15 @@ fun PreviewIdle() {
     val viewModel: ACRCloudViewModel = hiltViewModel()
     TheLabTheme {
         Idle(viewModel = viewModel)
+    }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewACRError() {
+    val viewModel: ACRCloudViewModel = hiltViewModel()
+    TheLabTheme {
+        ACRError(viewModel = viewModel)
     }
 }
 

@@ -59,7 +59,7 @@ fun Toast(message: String, imageVector: ImageVector? = null, containerColor: Col
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = Color(0xFF1E1E1E)),
+                .background(color = if (LocalInspectionMode.current) Color(0xFF1E1E1E) else Color.Transparent),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
@@ -116,7 +116,7 @@ fun Toast(message: String, imageVector: ImageVector? = null, containerColor: Col
         }
     }
 
-    LaunchedEffect(animated) {
+    LaunchedEffect(Unit) {
         scope.launch {
             animated = true
             delay(1_500)

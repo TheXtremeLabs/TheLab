@@ -57,9 +57,13 @@ internal fun Project.configureKotlinAndroid(
     }
 
     val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+    val bom = libs.findLibrary("kotlin-bom").get()
 
     dependencies {
         add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
+
+        // Kotlin bom
+        add("implementation", platform(bom))
 
         // Timber : Logging library
         add("implementation", libs.findLibrary("timber").get())

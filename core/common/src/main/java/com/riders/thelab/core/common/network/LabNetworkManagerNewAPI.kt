@@ -35,7 +35,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
     var isWifiConn: Boolean = false
     var isMobileConn: Boolean = false
 
-    private val connectionState: MutableLiveData<Boolean> = MutableLiveData()
+    private val connectionLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     private var _networkConnectionState: MutableStateFlow<NetworkConnectionState> =
         MutableStateFlow(NetworkConnectionState.NONE)
@@ -81,7 +81,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
      * @return
      */
     fun getConnectionState(): LiveData<Boolean> {
-        return connectionState
+        return connectionLiveData
     }
 
     private fun updateNetworkConnectionState(newState: NetworkConnectionState) {
@@ -119,7 +119,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
             )
         }
 
-        (context as Activity).runOnUiThread { connectionState.value = true }
+        (context as Activity).runOnUiThread { connectionLiveData.value = true }
     }
 
     override fun onCapabilitiesChanged(
@@ -174,7 +174,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
 
         currentNetwork?.let { updateNetworkConnectionState(NetworkConnectionState.Lost(it)) }
 
-        connectionState.value = false
+        (context as Activity).runOnUiThread { connectionLiveData.value = false}
     }
 
     override fun onUnavailable() {
@@ -182,7 +182,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
         Timber.e("onUnavailable()")
 
         updateNetworkConnectionState(NetworkConnectionState.Unavailable)
-        connectionState.value = false
+        (context as Activity).runOnUiThread {  connectionLiveData.value = false}
     }
 
     fun isOnline(): Boolean {

@@ -228,6 +228,7 @@ class ACRCloudActivity : BaseComponentActivity() {
             if (!it) {
                 Timber.e("getConnectionState().observe | NOT connected: $it")
             } else {
+                mViewModel.mNetworkManager.updateIsConnected(true)
                 mViewModel.getSpotifyToken()
             }
         }

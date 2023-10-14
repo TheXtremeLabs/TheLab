@@ -30,14 +30,14 @@ import com.riders.thelab.core.data.local.model.Movie
 import com.riders.thelab.core.data.local.model.Scenarist
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.utils.getAsyncImagePainter
+import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import timber.log.Timber
 import java.util.Locale
 
 
 @Composable
 fun MemberItem(member: Members) {
-    val painter = getAsyncImagePainter(
+    val painter = getCoilAsyncImagePainter(
         context = LocalContext.current,
         dataUrl = member.urlThumbnail
     )
@@ -84,7 +84,7 @@ fun Director(movie: Movie) {
         return
     }
 
-    val painter = getAsyncImagePainter(
+    val painter = getCoilAsyncImagePainter(
         context = LocalContext.current,
         dataUrl = movie.directors!![0].urlThumbnail
     )

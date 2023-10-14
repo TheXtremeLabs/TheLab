@@ -2,6 +2,7 @@ import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import com.riders.thelab.configureKotlinAndroid
 import com.riders.thelab.configurePrintApksTask
+import com.riders.thelab.configureTimber
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
@@ -22,6 +23,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = AndroidConfiguration.Sdk.target
                 // configureFlavors(this)
+                configureTimber(this)
             }
             extensions.configure<LibraryAndroidComponentsExtension> {
                 configurePrintApksTask(this)
