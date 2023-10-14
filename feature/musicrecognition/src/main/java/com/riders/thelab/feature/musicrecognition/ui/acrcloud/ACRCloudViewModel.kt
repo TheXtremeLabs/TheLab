@@ -143,7 +143,7 @@ class ACRCloudViewModel @Inject constructor(
         if (null == mNetworkManager) {
             Timber.e("NetworkManager is null")
         } else {
-            val isOnline: Boolean = mNetworkManager!!.isOnline()
+            val isOnline: Boolean = mNetworkManager.isOnline()
             Timber.d("Is app online : $isOnline")
         }
     }
@@ -226,7 +226,7 @@ class ACRCloudViewModel @Inject constructor(
                 if (metadata.has("music")) {
                     val musics = metadata.getJSONArray("music")
                     val tt = musics[0] as JSONObject
-                    val genres = tt.getJSONArray("genres") ?: JSONArray()
+                    val genres = runCatching { tt.getJSONArray("genres") }.getOrElse { JSONArray() }
                     // val genre = genres[0] as JSONObject
                     val title = tt.getString("title")
                     val label = tt.getString("label")
@@ -376,7 +376,7 @@ class ACRCloudViewModel @Inject constructor(
         }
     }
 
-    fun getInfoFromSpotify(song: Song, trackID: String) {
+    private fun getInfoFromSpotify(song: Song, trackID: String) {
         Timber.d("getInfoFromSpotify()")
 
         viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
@@ -388,8 +388,10 @@ class ACRCloudViewModel @Inject constructor(
                     )
 
                     Timber.d("info: ${trackInfo.album.images[0].toString()}")
+                    val albumThumbnail = trackInfo.album.images[0].url
 
-                    song.albumThumbUrl = trackInfo.album.images[0].url
+                    song.albumThumbUrl = albumThumbnail
+                    Timber.d("song: ${song.toString()}")
 
                     updateUiState(ACRUiState.RecognitionSuccessful(song))
                 }
@@ -403,7 +405,6 @@ class ACRCloudViewModel @Inject constructor(
                 }
                 .getOrNull()
         }
-
     }
 }
 
