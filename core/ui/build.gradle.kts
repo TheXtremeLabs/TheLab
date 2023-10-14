@@ -30,11 +30,17 @@ dependencies {
     implementation(libs.kotlinx.datetime)
 
     // AndroidX
-    api(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.ktx)
     api(libs.androidx.activity.ktx)
+    api(libs.androidx.fragment)
     api(libs.androidx.appcompat)
+    api(libs.material)
+    api(libs.androidx.browser)
 
     // Compose
+    api(libs.androidx.compose.compiler)
+    api(libs.androidx.compose.runtime)
+    api(libs.androidx.compose.runtime.livedata)
     api(libs.androidx.activity.compose)
     api(libs.androidx.compose.animation)
     api(libs.androidx.compose.fonts)
@@ -47,6 +53,7 @@ dependencies {
     api(libs.androidx.compose.material3)
     api(libs.androidx.compose.runtime)
     api(libs.androidx.compose.runtime.livedata)
+    debugApi(libs.androidx.compose.ui.tooling)
     api(libs.androidx.compose.ui.tooling.preview)
     api(libs.androidx.compose.ui.util)
     api(libs.androidx.hilt.navigation.compose)
@@ -54,13 +61,6 @@ dependencies {
     api(libs.androidx.lifecycle.viewModelCompose)
     api(libs.androidx.metrics)
     api(libs.androidx.tracing.ktx)
-
-    debugApi(libs.androidx.compose.ui.tooling)
-
-    // AndroidX
-    implementation(libs.androidx.browser)
-    api(libs.androidx.core.ktx)
-    api(libs.material)
 
     // Dexter
     api(libs.dexter)
@@ -83,5 +83,13 @@ dependencies {
 
     api(libs.kotools.types)
 
+
+    /////////////////////////////
+    // Tests Dependencies
+    /////////////////////////////
     androidTestImplementation(project(":core:testing"))
+
+    androidTestApi(libs.androidx.compose.ui.test)
+    androidTestDebugApi(libs.androidx.compose.ui.tooling)
+    androidTestDebugApi(libs.androidx.compose.ui.testManifest)
 }
