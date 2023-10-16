@@ -2,7 +2,15 @@ package com.riders.thelab.ui.mainactivity
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -17,22 +25,18 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.previewprovider.AppPreviewProvider
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.utils.findActivity
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.model.app.App
-import kotlinx.coroutines.DelicateCoroutinesApi
+import com.riders.thelab.core.data.local.model.app.App
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.core.ui.utils.UIManager
 
-@OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
-@DevicePreviews
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WhatsNew(@PreviewParameter(AppPreviewProvider::class) item: App) {
+fun WhatsNew(item: App) {
 
     val context = LocalContext.current
 
@@ -60,7 +64,27 @@ fun WhatsNew(@PreviewParameter(AppPreviewProvider::class) item: App) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(2F)
-                        .background(darkVibrantSwatch?.rgb?.let { Color(it) } ?: Color.Transparent)
+                        .background(
+                            when (item.appTitle) {
+                                stringResource(id = R.string.activity_title_colors),
+                                stringResource(id = R.string.activity_title_palette),
+                                stringResource(id = R.string.activity_title_youtube_like),
+                                stringResource(id = R.string.activity_title_google_drive),
+                                stringResource(id = R.string.activity_title_google_sign_in),
+                                stringResource(id = R.string.activity_title_weather),
+                                stringResource(id = R.string.activity_title_compose),
+                                stringResource(id = R.string.activity_title_lottie) -> {
+                                    darkVibrantSwatch?.rgb?.let {
+                                        Color(
+                                            it
+                                        )
+                                    } ?: Color.Transparent
+                                }
+
+                                else -> {
+                                    Color.Transparent
+                                }
+                            })
                 ) {
                     Image(
                         modifier = Modifier

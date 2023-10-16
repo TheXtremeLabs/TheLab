@@ -3,14 +3,13 @@ package com.riders.thelab.navigator
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.contacts.addcontact.AddContactActivity
 import com.riders.thelab.ui.login.LoginActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
 import com.riders.thelab.ui.settings.SettingsActivity
 import com.riders.thelab.ui.signup.SignUpActivity
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
-import com.riders.thelab.ui.weather.WeatherActivity
-import kotlinx.coroutines.DelicateCoroutinesApi
 import timber.log.Timber
 
 class Navigator constructor(
@@ -57,7 +56,7 @@ class Navigator constructor(
         activity.startActivity(Intent(activity, AddContactActivity::class.java))
     }
 
-    fun callMultipaneDetailActivity(intent: Intent?) {
+    fun callMultipaneDetailActivity(intent: Intent) {
         activity.startActivity(intent)
     }
 

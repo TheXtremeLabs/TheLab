@@ -7,7 +7,7 @@ import android.text.TextWatcher
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.riders.thelab.data.local.model.WorldPopulation
+import com.riders.thelab.core.data.local.model.WorldPopulation
 import com.riders.thelab.databinding.ActivityFilterListviewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber

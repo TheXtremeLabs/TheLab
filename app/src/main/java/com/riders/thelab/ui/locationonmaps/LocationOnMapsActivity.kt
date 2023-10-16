@@ -37,11 +37,11 @@ import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.LabAddressesUtils
-import com.riders.thelab.core.utils.LabLocationManager
-import com.riders.thelab.core.utils.LabLocationUtils
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.bean.MapsEnum
+import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabLocationManager
+import com.riders.thelab.core.common.utils.LabLocationUtils
+import com.riders.thelab.core.data.local.bean.MapsEnum
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityLocationOnMapsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -104,6 +104,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 w.statusBarColor =
                     Color.TRANSPARENT
             }
+
             Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
             }
         }
@@ -343,7 +344,8 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         mProvider = mLocationManager.getBestProvider(mCriteria!!, true)!!
         if (null == mProvider) {
             Timber.e("Cannot get location please enable position")
-            val labLocationManager = LabLocationManager(this@LocationOnMapsActivity, this)
+            val labLocationManager =
+                LabLocationManager(activity = this@LocationOnMapsActivity, locationListener = this)
             labLocationManager.showSettingsAlert()
         } else {
             try {

@@ -7,7 +7,6 @@ import timber.log.Timber
 import java.lang.reflect.InvocationTargetException
 
 open class BaseActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate()")
@@ -16,18 +15,16 @@ open class BaseActivity : ComponentActivity() {
 
     private fun subscribeToKotlinBus() {
         Timber.i("subscribeToKotlinBus()")
-        for (declaredMethod in javaClass.declaredMethods) {
-            if (declaredMethod.isAnnotationPresent(Listen::class.java)) {
+        javaClass.declaredMethods
+            .filter { it.isAnnotationPresent(Listen::class.java) }
+            .forEach {
                 try {
-                    declaredMethod.invoke(this)
+                    it.invoke(this)
                 } catch (e: IllegalAccessException) {
-                    // Utils.logException(e)
                     Timber.e(e)
                 } catch (e: InvocationTargetException) {
-                    // Utils.logException(e)
                     Timber.e(e)
                 }
             }
-        }
     }
 }

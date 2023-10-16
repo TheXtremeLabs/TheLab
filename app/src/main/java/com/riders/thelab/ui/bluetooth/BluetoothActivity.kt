@@ -55,6 +55,7 @@ class BluetoothActivity : AppCompatActivity(),
                     bluetoothDevicesSearchList.add("name : $deviceName, hardware : $deviceHardwareAddress")
 
                 }
+
                 BluetoothAdapter.ACTION_STATE_CHANGED -> {
                     when (intent.getIntExtra(
                         BluetoothAdapter.EXTRA_STATE,
@@ -73,15 +74,18 @@ class BluetoothActivity : AppCompatActivity(),
                                 false
                             )
                         }
+
                         BluetoothAdapter.STATE_TURNING_OFF -> {
                             // Bluetooth is turning off;
                             Timber.e("BluetoothAdapter.STATE_TURNING_OFF")
                             binding.progressSearchedDevices.visibility = View.GONE
                         }
+
                         BluetoothAdapter.STATE_ON -> {
                             // Bluetooth is on
                             Timber.e("BluetoothAdapter.STATE_ON")
                         }
+
                         BluetoothAdapter.STATE_TURNING_ON -> {
                             // Bluetooth is turning on
                             Timber.e("BluetoothAdapter.STATE_TURNING_ON")
@@ -94,6 +98,7 @@ class BluetoothActivity : AppCompatActivity(),
                     Timber.e("BluetoothAdapter.ACTION_DISCOVERY_STARTED")
 
                 }
+
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
                     Timber.e("BluetoothAdapter.ACTION_DISCOVERY_FINISHED")
 
@@ -111,6 +116,7 @@ class BluetoothActivity : AppCompatActivity(),
                         true
                     )
                 }
+
                 BluetoothAdapter.ACTION_SCAN_MODE_CHANGED -> {
                     when (intent.getIntExtra(
                         BluetoothAdapter.EXTRA_SCAN_MODE,
@@ -119,19 +125,23 @@ class BluetoothActivity : AppCompatActivity(),
                         BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE -> {
                             Timber.e("BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE")
                         }
+
                         BluetoothAdapter.SCAN_MODE_CONNECTABLE -> {
                             Timber.e("BluetoothAdapter.SCAN_MODE_CONNECTABLE")
                         }
+
                         BluetoothAdapter.SCAN_MODE_NONE -> {
                             Timber.e("BluetoothAdapter.SCAN_MODE_NONE")
                         }
                     }
 
                 }
+
                 BluetoothDevice.ACTION_ACL_CONNECTED -> {
                     Timber.e("BluetoothDevice.ACTION_ACL_CONNECTED")
 
                 }
+
                 BluetoothDevice.ACTION_ACL_DISCONNECTED -> {
                     Timber.e("BluetoothDevice.ACTION_ACL_DISCONNECTED")
 

@@ -4,12 +4,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.riders.thelab.core.bus.AlarmEvent
-import com.riders.thelab.core.utils.UIManager.showActionInToast
+import com.riders.thelab.core.ui.utils.UIManager.showActionInToast
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@OptIn(DelicateCoroutinesApi::class)
 class ScheduleAlarmReceiver : BroadcastReceiver() {
 
     companion object {

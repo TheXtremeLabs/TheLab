@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.youtubelike
 
-
 import android.content.Intent
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
@@ -12,13 +11,14 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.local.model.Video
+import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.Video
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
@@ -79,19 +79,19 @@ class YoutubeLikeViewModel @Inject constructor(
 
         Timber.e("Fetch Content")
 
-        viewModelScope.launch(ioContext) {
+        viewModelScope.launch(IO) {
             try {
                 supervisorScope {
                     val videos = repositoryImpl.getVideos()
 
                     if (videos.isEmpty()) {
-                        withContext(mainContext) {
+                        withContext(Main) {
                             youtubeVideosFailed.value = true
                             progressVisibility.value = false
                             youtubeVideos.value = videos
                         }
                     } else {
-                        withContext(mainContext) {
+                        withContext(Main) {
                             progressVisibility.value = false
                             youtubeVideos.value = videos
                         }
@@ -100,7 +100,7 @@ class YoutubeLikeViewModel @Inject constructor(
 
             } catch (throwable: Exception) {
                 Timber.e(throwable)
-                withContext(mainContext) {
+                withContext(Main) {
                     progressVisibility.value = false
                     youtubeVideosFailed.value = true
                 }
@@ -194,10 +194,5 @@ class YoutubeLikeViewModel @Inject constructor(
                 it
             )
         }
-    }
-
-    companion object {
-        val ioContext = Dispatchers.IO
-        val mainContext = Dispatchers.Main
     }
 }

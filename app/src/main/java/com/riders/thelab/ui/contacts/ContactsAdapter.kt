@@ -7,7 +7,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.riders.thelab.R
-import com.riders.thelab.data.local.model.Contact
+import com.riders.thelab.core.data.local.model.Contact
 import timber.log.Timber
 
 class ContactsAdapter(

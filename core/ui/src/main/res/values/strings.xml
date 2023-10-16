@@ -1,0 +1,575 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">The Lab</string>
+
+    <!-- Google API Keys -->
+    <string name="google_maps_key">AIzaSyDuywb98tO1xXHb9lflC2iTLs_67jgihgQ</string>
+    <string name="google_ads_key">ca-app-pub-2216496940806622~2620241949</string>
+    <!-- Server Client ID.  This should be a valid Web OAuth 2.0 Client ID obtained
+         from https://console.developers.google.com/ -->
+    <string name="server_client_id">759951804103-0v514jklc3ljftruf5f7dfb397b7hoce.apps.googleusercontent.com</string>
+
+    <!-- General -->
+    <string name="action_settings">Settings</string>
+    <string name="force_crash">Force Crash</string>
+    <string name="connection_settings">Connection info</string>
+    <string name="location_settings">location_settings</string>
+
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur ipsum in placerat molestie. Fusce quis mauris a enim sollicitudin ultrices non eget velit. Aliquam eu pulvinar enim. Praesent libero nisl, ultricies vel maximus eu, maximus et nisi. Phasellus pharetra nec ligula vitae mollis. Quisque porttitor ornare magna, quis dignissim libero aliquam id. Donec sollicitudin ultrices ante, a semper erat tristique in. Vivamus sodales in ligula at sodales. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla tempus bibendum nibh, ac tincidunt quam convallis non. Proin dolor nunc, egestas et tortor consequat, dignissim lacinia odio. Ut ut aliquet erat.  Ut non scelerisque elit. Morbi dolor neque, iaculis eu justo rutrum, aliquet dictum mauris. Phasellus quis massa ut ligula feugiat congue a et dolor. Etiam a dui a sapien ornare accumsan ac ut lorem. Suspendisse vehicula lorem dapibus nibh rhoncus ultricies. Proin sem nulla, elementum quis pharetra quis, commodo vitae nisi. Donec urna orci, posuere et iaculis sit amet, fringilla quis sapien. Pellentesque nec posuere felis. Praesent malesuada tellus nisi, non dictum justo interdum eget. Quisque mollis euismod libero, non aliquam lorem interdum vitae. Aliquam vehicula efficitur purus eget rutrum. Sed pulvinar fermentum risus ac viverra. Cras laoreet ligula quam, ac lacinia nisl elementum in. Aenean velit arcu, euismod a venenatis non, pulvinar pulvinar massa. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur ipsum in placerat molestie. Fusce quis mauris a enim sollicitudin ultrices non eget velit. Aliquam eu pulvinar enim. Praesent libero nisl, ultricies vel maximus eu, maximus et nisi. Phasellus pharetra nec ligula vitae mollis. Quisque porttitor ornare magna, quis dignissim libero aliquam id. Donec sollicitudin ultrices ante, a semper erat tristique in. Vivamus sodales in ligula at sodales. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla tempus bibendum nibh, ac tincidunt quam convallis non. Proin dolor nunc, egestas et tortor consequat, dignissim lacinia odio. Ut ut aliquet erat.  Ut non scelerisque elit. Morbi dolor neque, iaculis eu justo rutrum, aliquet dictum mauris. Phasellus quis massa ut ligula feugiat congue a et dolor. Etiam a dui a sapien ornare accumsan ac ut lorem. Suspendisse vehicula lorem dapibus nibh rhoncus ultricies. Proin sem nulla, elementum quis pharetra quis, commodo vitae nisi. Donec urna orci, posuere et iaculis sit amet, fringilla quis sapien. Pellentesque nec posuere felis. Praesent malesuada tellus nisi, non dictum justo interdum eget. Quisque mollis euismod libero, non aliquam lorem interdum vitae. Aliquam vehicula efficitur purus eget rutrum. Sed pulvinar fermentum risus ac viverra. Cras laoreet ligula quam, ac lacinia nisl elementum in. Aenean velit arcu, euismod a venenatis non, pulvinar pulvinar massa.</string>
+
+    <string name="action_yes">Yes</string>
+    <string name="action_no">No</string>
+    <string name="action_ok">OK</string>
+    <string name="action_cancel" tools:ignore="ButtonCase">CANCEL</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_done">Done</string>
+    <string name="action_later">Later</string>
+    <string name="action_enter">Enter</string>
+    <string name="action_exit">Quit</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_go">GO !</string>
+    <string name="action_save">Save</string>
+    <string name="action_remove">Remove</string>
+
+    <!-- Network connection status -->
+    <string name="network_status_connected">Good! Connected to Internet</string>
+    <string name="network_status_disconnected">Sorry! Not connected to internet</string>
+    <string name="network_status_pending">Retry! Internet connection pending</string>
+    <string name="network_status_lost">Lost! Connection lost. Try to reconnect</string>
+    <string name="network_check_connection">Please check your cellular network or Wi-Fi network</string>
+
+    <!-- Notification -->
+    <string name="main_channel_name">TheLab Notification Main Channel</string>
+    <string name="main_channel_description">App Main notification channel</string>
+
+    <string name="notification_title">The Lab is live</string>
+    <string name="notification_content_text">Welcome to The Lab, explore several features in this app</string>
+    <string name="notification_big_text">"Welcome to The Lab, explore several features in this app that implements a lot of cool things</string>
+
+
+    <!-- Transition names -->
+    <string name="splash_background_transition_name">splash_background_transition_name</string>
+
+
+    <!-- Login -->
+    <string name="title_activity_login">Login</string>
+    <string name="remember_me">Remember my credentials</string>
+    <string name="btn_sign_in">Sign In</string>
+    <string name="err_msg_wrong_email_or_password">Email or password is not correct. Please verified your credentials.</string>
+
+    <string name="btn_go_to_main_activity">Go To Home</string>
+
+    <string name="no_account_register"><u>You don\'t have any account ?<br />Sign up</u></string>
+
+    <string name="action_logout">Logout</string>
+
+    <!-- License agreement -->
+    <string name="title_activity_license_agreement">Terms Of Service</string>
+    <string name="accept_agreement_license">I accept the terms of service displayed above</string>
+    <string name="err_msg_license_agreement_approval_mandatory">Your terms of service agreement\'s approval is mandatory in order to continue.</string>
+
+    <!-- User Inscription Form  -->
+    <string name="title_activity_user_inscription_form">User Form</string>
+    <string name="hint_gender">Gender</string>
+    <string name="hint_first_name">First Name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="hint_confirm_password">Confirm your password</string>
+    <string name="hint_phone_number">Phone Number</string>
+    <string name="hint_date_of_birth">Date Of Birth (optional)</string>
+    <string name="err_msg_form_last_name">Enter your last name</string>
+    <string name="err_msg_form_first_name">Enter your first name</string>
+    <string name="err_msg_form_email">Wrong email format, verify your email</string>
+    <string name="err_msg_form_password">Enter a correct password</string>
+    <string name="err_msg_form_confirm_password">Make sure that the password matches the one above</string>
+    <string name="err_msg_form_phone_number">Enter your phone number</string>
+    <string name="err_msg_form_date_of_birth">Enter your date of birth</string>
+
+    <!-- Successful Sign Up -->
+    <string name="title_activity_successful_sign_up">Validation</string>
+    <string name="msg_title_saving_in_progress">Saving in progress</string>
+    <string name="msg_text_please_wait">Please, wait until the process is finished…</string>
+    <string name="msg_title_congratulations">Congratulations !</string>
+    <string name="dialog_msg_successfully_signed_up">You are successfully registered to the app.<br /><br />We wish you to have a nice experience using our application.<br /><br />Fly away to the culture.</string>
+
+    <!-- Main Activity -->
+    <string name="title_main_page">Choose your testing app</string>
+    <string name="load_new_data">Load new random data</string>
+
+    <string name="welcome_to_placeholder">Welcome to</string>
+    <string name="the_lab_eleven_placeholder">TheLab 11</string>
+    <string name="what_s_new_placeholder">What\s new?</string>
+    <string name="app_not_to_miss_placeholder">Most recent Applications, must watch !</string>
+    <string name="app_list_placeholder">Applications</string>
+    <string name="app_list_detail_placeholder">List of features that composes the application</string>
+    <string name="more_info">More Details</string>
+
+
+    <string name="service_started">007</string>
+    <string name="service_stopped">Service stopped</string>
+    <string name="service_connected">Service is connected</string>
+    <string name="service_disconnected">Service is disconnected</string>
+
+
+    <string name="activity_in_vehicle">In Vehicle</string>
+    <string name="activity_on_bicycle">On Bicycle</string>
+    <string name="activity_on_foot">On Foot</string>
+    <string name="activity_running">Running</string>
+    <string name="activity_still">Still</string>
+    <string name="activity_tilting">Tilting</string>
+    <string name="activity_walking">walking</string>
+    <string name="activity_unknown">Unknown</string>
+
+
+    <string name="hint_content_title">Video\'s title</string>
+    <string name="hint_content_description">Video\'s description link</string>
+
+    <string name="lire">Play</string>
+    <string name="ajouter_aux_favoris">Add to favorite</string>
+    <string name="error_audio_error">audio error</string>
+    <string name="error_client">client error</string>
+    <string name="error_permission">error permission</string>
+    <string name="error_network">network error cannot connect</string>
+    <string name="error_timeout">timout error</string>
+    <string name="error_no_match">no match</string>
+    <string name="error_busy">busy</string>
+    <string name="error_server">servere side error</string>
+    <string name="error_understand">do\'t understand</string>
+    <string name="speech_recording">Recording…</string>
+
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <!-- Splash Screen -->
+    <string name="version_placeholder">"v "</string>
+    <string name="splash_version_to_time_transition_name">splash_version_to_time_transition_name</string>
+
+
+    <!-- Main Activity Screen -->
+    <string name="last_features_title_placeholder">Discover the last 3 features</string>
+    <string name="search_app_item_placeholder">Search an App...</string>
+
+
+    <!-- Settings -->
+    <string name="activity_settings_title">Settings</string>
+
+    <!-- Colors -->
+    <string name="activity_title_colors">Colors</string>
+    <string name="colors_text_placeholder">Yoo Pi\'erre you want to come out here ?</string>
+    <string name="btn_change_color">Change color</string>
+
+    <!-- Recycler -->
+    <string name="activity_title_recycler_view">Recycler View</string>
+
+
+    <!-- Biometric -->
+    <string name="activity_title_biometric">Biometric</string>
+    <string name="use_biometric_authentication_placeholder">Use Biometric authentication</string>
+    <string name="username_placeholder">Username</string>
+    <string name="password_placeholder">Password</string>
+    <string name="login_button_text">Login</string>
+    <string name="home_content_message">This is the home page</string>
+    <string name="logout_button_text">Logout</string>
+    <string name="button_biometric_text">Use Biometric</string>
+    <string name="button_biometric_content_descr">Biometric Login button</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="msg_error_generic">Ops, something went wrong</string>
+    <string name="msg_error_key_permanently_invalidated">A new enrollment is required</string>
+    <string name="msg_error_key_init_fail">Unable to initiate biometric operation</string>
+    <string name="msg_error_username_password_required">Username and password required</string>
+    <string name="prompt_title_enroll_token">Enable Biometric Login?</string>
+    <string name="prompt_subtitle_enroll_token">Authenticate yourself to enroll your credential</string>
+    <string name="prompt_cancel">Cancel</string>
+    <string name="prompt_title_login">Biometric Login</string>
+    <string name="prompt_subtitle_login">Login using your biometric credentials</string>
+
+
+    <!-- Tabs Fragments -->
+    <string name="activity_title_working_tabs">Working Tabs</string>
+    <string name="activity_title_tabs">Tabs</string>
+    <string name="one">ONE</string>
+    <string name="two">TWO</string>
+    <string name="three">THREE</string>
+    <string name="four">FOUR</string>
+    <string name="five">FIVE</string>
+    <string name="six">SIX</string>
+    <string name="seven">SEVEN</string>
+    <string name="eight">EIGHT</string>
+    <string name="nine">NINE</string>
+    <string name="ten">TEN</string>
+
+    <!-- Transition -->
+    <string name="activity_title_transition">Transitions</string>
+    <string name="button_next_activity">Next Activity</string>
+    <string name="logo_transition_name">logo_transition</string>
+    <string name="button_transition_name">button_transition</string>
+    <string name="activity_title_transition_detail">Transitions Detail</string>
+
+    <!-- Floating Labels-->
+    <string name="activity_title_floating_labels">Floating Labels</string>
+    <string name="hint_name">Full Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_sign_up">Sign Up</string>
+    <string name="err_msg_name">Enter your full name</string>
+    <string name="err_msg_email">Enter valid email address</string>
+    <string name="err_msg_password">Enter the password</string>
+
+    <!-- Location -->
+    <string name="activity_title_location">Location</string>
+    <string name="lbl_you_are_at">YOU ARE AT</string>
+    <string name="btn_get_location">GET MY LOCATION</string>
+    <string name="btn_start_location_updates">START LOCATION UPDATES</string>
+    <string name="btn_stop_location_updates">STOP LOCATION UPDATES</string>
+
+    <!-- Schedule Jobs -->
+    <string name="activity_title_schedule_jobs">Schedule Jobs</string>
+    <string name="start_job">Start Schedule</string>
+
+    <!-- Device Information -->
+    <string name="activity_title_device_information">Device Information</string>
+    <string name="device_specification_header">Device Specs</string>
+    <string name="device_info_device_name_placeholder">Device Name</string>
+    <string name="device_info_device_brand_placeholder">Brand</string>
+    <string name="device_info_device_model_placeholder">Model</string>
+    <string name="device_info_device_processor_placeholder">Processor</string>
+    <string name="device_info_device_hardware_placeholder">Hardware</string>
+    <string name="device_info_device_screen_dimensions_placeholder">Screen Dimensions</string>
+    <string name="device_info_device_screen_width_placeholder">Screen Width</string>
+    <string name="device_info_device_screen_height_placeholder">Screen Height</string>
+    <string name="device_info_device_serial_placeholder">Serial</string>
+    <string name="device_info_device_fingerprint_placeholder">Fingerprint</string>
+
+    <string name="device_android_specification_header">Android Specs</string>
+    <string name="device_android_name_placeholder">Name</string>
+    <string name="device_android_sdk_version_placeholder">Version</string>
+    <string name="device_android_release_placeholder">Release</string>
+    <string name="device_android_rooted_placeholder">Rooted</string>
+
+    <!-- Contacts Database -->
+    <string name="activity_title_database_contacts">Database Contacts</string>
+    <string name="toolbar_title">Contacts</string>
+    <string name="action_add_contact">Add Contact</string>
+    <string name="action_search">Search</string>
+    <string name="action_supervise">Supervisor</string>
+    <string name="search_hint">Type name…</string>
+    <string name="activity_title_detail_contacts">Detail Contact</string>
+    <string name="activity_title_add_new_contact">Add Contact</string>
+    <string name="delete">DELETE</string>
+    <string name="contact_no_record_found">No record found !</string>
+    <string name="add_a_new_contact_msg">Do you want to add a new contact ?</string>
+    <string name="btn_add_a_new_contact">Add a new contact</string>
+
+    <string name="button_update">Update</string>
+    <string name="button_add">Add</string>
+    <string name="button_reset">Reset</string>
+    <string name="button_cancel">Cancel</string>
+
+    <string name="contact_add_name">Name : </string>
+    <string name="contact_add_firstname">Firstname : </string>
+    <string name="contact_add_phone">Phone : </string>
+    <string name="contact_add_email">E-mail : </string>
+    <string name="contact_add_address">Address : </string>
+
+    <string name="contact_add_hint_name">Your Name </string>
+    <string name="contact_add_hint_firstname">Your Firstname </string>
+    <string name="contact_add_hint_phone">Ex : 0614759326 </string>
+    <string name="contact_add_hint_email">Ex : yourmail@gmail.com </string>
+    <string name="contact_add_hint_address">Your address </string>
+
+    <string name="hint_contact_search">Search an contact</string>
+
+    <!-- Location on Maps -->
+    <string name="activity_title_location_on_maps">Location On Maps</string>
+
+
+    <!-- Palette -->
+    <string name="activity_title_palette">Palette</string>
+
+    <!-- Filter ListView -->
+    <string name="activity_title_filter_list_view">Filter ListView</string>
+    <string name="activity_title_filter_list_view_detail">Filter ListView Detail</string>
+    <string name="ranklabel">"Rank : "</string>
+    <string name="countrylabel">"Country : "</string>
+    <string name="populationlabel">"Population : "</string>
+
+
+    <!-- Floating View -->
+    <string name="activity_title_floating_view">Floating Widget</string>
+    <string name="notify_me">Notify Me !</string>
+
+    <!-- Theaters -->
+    <string name="activity_title_theaters">Theaters</string>
+    <string name="activity_title_theaters_detail">Theaters Detail</string>
+    <string name="theaters_row_title_placeholder">Movie\'s Title</string>
+    <string name="theaters_row_genre_placeholder">Movie\'s genre</string>
+    <string name="theaters_row_year_placeholder">Movie\'s Year</string>
+
+    <!-- Speech To Text -->
+    <string name="activity_title_speech_to_text">Speech To Text</string>
+
+    <!-- Search box -->
+    <string name="search_box_today_we_are">Aujourd\'hui nous sommes le</string>
+
+    <!-- Admin Splash -->
+    <string name="admin_security_co">Security and Co. Ltd</string>
+
+    <!-- Admin Dashboard -->
+    <string name="admin_header_powered_by">Powered by</string>
+    <string name="admin_header_security_and_co">Security And Co. Ltd</string>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_home</item>
+        <item>@string/title_device_usage</item>
+        <item>@string/title_space_available</item>
+        <item>@string/title_device_info</item>
+        <item>@string/title_visit_us</item>
+        <item>@string/title_about</item>
+    </string-array>
+
+    <string name="nav_item_home">Home</string>
+    <string name="nav_item_device_usage">Device Usage</string>
+    <string name="nav_item_space_available">Space Available</string>
+    <string name="nav_item_device_info">Device Info</string>
+    <string name="nav_item_visit_us">Visit Us</string>
+    <string name="nav_item_about">About</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_device_usage">Device Usage</string>
+    <string name="title_space_available">Space Available</string>
+    <string name="title_device_info">Device Info</string>
+    <string name="title_visit_us">Visit Us</string>
+    <string name="title_about">About</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Built-in WebView -->
+    <string name="activity_title_built_in_web_view">Built-in WebView</string>
+    <string name="action_back">Back</string>
+    <string name="action_forward">Forward</string>
+    <string name="action_bookmark">Bookmark</string>
+    <string name="info_settings">Device info</string>
+
+    <!-- Weather -->
+    <string name="activity_title_weather">Weather</string>
+    <string name="search_hint_weather">Type city name…</string>
+    <string name="weather_data_provided_by">Weather data provided by</string>
+    <string name="separator_placeholder">,</string>
+    <string name="degree_placeholder">°C</string>
+    <string name="weather_main_description_placeholder">Broken clouds</string>
+    <string name="temperature_placeholder">Temperature :</string>
+    <string name="temperature_real_feels_placeholder">Real Feels :</string>
+    <string name="cloudiness_placeholder">Cloudiness :</string>
+    <string name="humidity_placeholder">Humidity :</string>
+    <string name="pressure_placeholder">Pressure :</string>
+    <string name="pressure_unit_placeholder">inHg</string>
+    <string name="wind_placeholder">Wind :</string>
+    <string name="wind_speed_placeholder">Wind Speed:</string>
+    <string name="wind_direction_placeholder">Wind Direction :</string>
+    <string name="percent_placeholder">%</string>
+    <string name="meter_unit_placeholder">m/h</string>
+    <string name="kilometer_unit_placeholder">km/h</string>
+    <string name="form_hint_search_city">Looking for a city…</string>
+    <string name="use_my_current_location">Use my current location</string>
+    <string name="action_weather_my_location">Weather for my location</string>
+
+    <!-- Youtube -->
+    <string name="activity_title_youtube_like">Youtube</string>
+    <string name="recycler_detail_btn_placeholder">DETAIL</string>
+    <string name="thumb_transition_name">yt_thumb</string>
+    <string name="title_transition_name">yt_title</string>
+    <string name="description_transition_name">yt_desc</string>
+
+
+    <!-- Custom Toast -->
+    <string name="activity_title_custom_toast">Custom Toast</string>
+    <string name="click_on_display_button_message">Click on button to display custom toast</string>
+    <string name="display_toast">Display custom Toast</string>
+
+    <!-- Vector Drawables -->
+    <string name="activity_title_vector_drawables">Vector Drawables</string>
+    <!-- Handwriting paths -->
+    <string name="path_funky_six">M302.14,60.72C302.29,61.46 276.46,97.06 270.1,112.55C260.87,138.44 278.6,149.83 284.3,152.76C299.15,160.38 316.85,150.27 323.08,141.43C329.3,132.59 333.05,109.99 316.85,100.57C306.85,94.75 290.54,97.32 290.2,97.06C289.85,96.79 276.32,81.31 276.46,80.88C276.6,80.45 294.73,77.62 302.88,84.28C315.76,92.99 315.62,114.99 306.84,127.42C298.06,139.85 276.46,144.38 260.54,130.73C238.46,111.79 259.06,85.64 260.87,83.1C260.87,83.1 286.23,46.19 286.83,46.03C287.43,45.87 301.99,59.99 302.14,60.72Z</string>
+    <string name="path_one_googleio">M211,45L235,45A2,2 0,0 1,237 47L237,155A2,2 0,0 1,235 157L211,157A2,2 0,0 1,209 155L209,47A2,2 0,0 1,211 45z</string>
+
+    <!-- Spring -->
+    <string name="activity_title_spring">Spring</string>
+
+    <!-- Chat -->
+    <string name="activity_title_kat">Chat</string>
+
+    <!-- Music Player -->
+    <string name="activity_title_music">Music</string>
+    <string name="action_play">play</string>
+    <string name="action_pause">pause</string>
+    <string name="action_previous">previous</string>
+    <string name="action_next">next</string>
+    <string name="music_channel_name">Music Player</string>
+    <string name="music_channel_description">Music Player Channel Description</string>
+
+
+    <!-- Google -->
+    <string name="activity_title_google_sign_in">Google SignIn</string>
+    <string name="title_text">Google Sign-In\nQuickstart</string>
+    <!-- Sign-in status messages -->
+    <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="signed_in">Signed in</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="signed_out">Signed out</string>
+    <string name="signed_in_err">"Error: please check logs."</string>
+    <string name="error_null_person">
+        Error: Plus.PeopleApi.getCurrentPerson returned null. Ensure that the Google+ API is
+        enabled for your project, you have a properly configured google-services.json file
+        and that your device has an internet connection.
+    </string>
+    <string name="loading">Loading…</string>
+    <string name="auth_code_fmt">Auth Code: %s</string>
+    <string name="id_token_fmt">ID Token: %s</string>
+    <!-- Google Play Services error for Toast -->
+    <string name="play_services_error_fmt">Google Play Services Error: %i</string>
+
+    <!-- Button labels -->
+    <string name="sign_out">Sign Out</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="refresh_token">Get Fresh Token</string>
+    <!-- Content Description for images -->
+    <string name="desc_google_icon">Google Logo</string>
+
+    <!-- Rationale for asking for Contacts -->
+    <string name="contacts_permission_rationale">Contacts access is needed in order to retrieve your email address.</string>
+
+    <string name="name_id_token_activity">IdTokenActivity</string>
+    <string name="desc_id_token_activity">Retrieving an ID Token for the user.</string>
+
+    <string name="activity_title_google_drive">Google Drive</string>
+
+
+    <!-- Download -->
+    <string name="activity_title_download">Download</string>
+
+    <!-- Lottie -->
+    <string name="activity_title_lottie">Lottie</string>
+
+    <!-- Bluetooth -->
+    <string name="activity_bluetooth_title">Bluetooth</string>
+    <string name="bluetooth_on">Bluetooth On</string>
+    <string name="bluetooth_off">Bluetooth Off</string>
+    <string name="bluetooth_start_discovery">Start Discovery</string>
+    <string name="bluetooth_cancel_discovery">Cancel Discovery</string>
+    <string name="bluetooth_unable_to_discover">Unable to discover devices</string>
+
+    <!-- Compose -->
+    <string name="activity_compose_title">Jetpack Compose</string>
+
+    <!-- Camera -->
+    <string name="activity_camera_title">Camera</string>
+    <string name="activity_camera_detail_title">Camera Detail</string>
+
+    <!-- Screen shot -->
+    <string name="activity_screenshot_title">Screenshot</string>
+
+    <!-- Widget -->
+    <string name="the_lab_appwidget_description">TheLab Widget Description</string>
+    <string name="logo">logo</string>
+
+
+    <!-- Google ML Kit -->
+    <string name="activity_barcode_scanning_title">Live Barcode Scanning</string>
+    <string name="mode_odt_live_title">Object Detection: Live Camera</string>
+    <string name="mode_odt_live_subtitle">A device’s live camera can be used to detect objects in an environment.</string>
+    <string name="mode_odt_static_title">Object Detection: Static Image</string>
+    <string name="mode_odt_static_subtitle">One or more objects can be detected from a provided image.</string>
+    <string name="mode_barcode_live_title">Barcode Scanning</string>
+    <string name="mode_barcode_live_subtitle">Read data encoded in most standard barcode formats.</string>
+    <string name="custom_model_live_title">Object Detection: Live Camera with Custom Classification (Birds)</string>
+    <string name="custom_model_live_subtitle">A device\'s live camera can be used to detect birds in an environment.</string>
+    <string name="settings_title">MLKit Showcase Settings</string>
+    <string name="cd_settings_button">Settings</string>
+    <string name="cd_close_button">Back</string>
+    <string name="cd_flash_button">Toggle camera flash</string>
+    <string name="cd_photo_library_button">Upload image</string>
+    <string name="prompt_point_at_an_object">Point your camera at an object</string>
+    <string name="prompt_point_at_a_barcode">Point your camera at a barcode</string>
+    <string name="prompt_point_at_a_bird">Point your camera at a bird</string>
+    <string name="prompt_hold_camera_steady">Keep camera still for a moment</string>
+    <string name="prompt_move_camera_closer">Move closer to search</string>
+    <string name="prompt_searching">Searching&#8230;</string>
+    <string name="product_search_button">Search object</string>
+    <plurals name="bottom_sheet_title">
+        <item quantity="one">%d match found</item>
+        <item quantity="other">%d matches found</item>
+    </plurals>
+    <string name="buttom_sheet_custom_model_title">Custom object found</string>
+    <string name="static_image_prompt_detected_no_results">No results found</string>
+    <string name="static_image_prompt_detected_results">Tap on a dot to inspect</string>
+    <string name="static_image_card_no_result_title">No result found</string>
+    <string name="static_image_card_no_result_subtitle">Support text place holder</string>
+    <string name="static_image_preview_card_subtitle">+%d more results</string>
+
+    <!-- Strings for application settings. -->
+    <string name="pref_general">General</string>
+    <string name="pref_key_dark_mode" translatable="false">Dark Mode</string>
+    <string name="pref_title_dark_mode">Dark Mode</string>
+
+    <!-- Strings for user settings. -->
+    <string name="pref_user">User</string>
+    <string name="pref_key_wipe_data" translatable="false">Delete user data</string>
+    <string name="pref_title_wipe_data">Delete user data</string>
+
+    <!-- Strings for about settings. -->
+    <string name="pref_about">About</string>
+    <string name="pref_key_about" translatable="false">About The Lab</string>
+    <string name="pref_title_about">About The Lab</string>
+
+    <!-- Strings for camera settings. -->
+    <string name="pref_category_camera">Camera</string>
+    <string name="pref_key_rear_camera_preview_size" translatable="false">rcpvs</string>
+    <string name="pref_key_rear_camera_picture_size" translatable="false">rcpts</string>
+    <string name="pref_title_rear_camera_preview_size">Rear camera preview size</string>
+
+    <!-- Strings for object detection settings. -->
+    <string name="pref_category_object_detection">Object detection</string>
+    <string name="pref_key_object_detector_enable_multiple_objects" translatable="false">odemo</string>
+    <string name="pref_title_object_detector_enable_multiple_objects">Enable multiple objects</string>
+    <string name="pref_key_object_detector_enable_classification" translatable="false">odec</string>
+    <string name="pref_title_object_detector_enable_classification">Enable classification</string>
+
+    <!-- Strings for product search settings. -->
+    <string name="pref_category_product_search">Product search</string>
+    <string name="pref_key_enable_auto_search" translatable="false">pkeas</string>
+    <string name="pref_title_enable_auto_search">Enable auto search</string>
+    <string name="pref_key_confirmation_time_in_manual_search" translatable="false">ctims</string>
+    <string name="pref_title_confirmation_time_in_manual_search">Confirmation time in manual search</string>
+    <string name="pref_summary_confirmation_time_in_manual_search">Ranges from 100ms to 1000ms</string>
+    <string name="pref_key_confirmation_time_in_auto_search" translatable="false">ctias</string>
+    <string name="pref_title_confirmation_time_in_auto_search">Confirmation time in auto search</string>
+    <string name="pref_summary_confirmation_time_in_auto_search">Ranges from 500ms to 2000ms</string>
+
+    <!-- Strings for barcode detection settings. -->
+    <string name="pref_category_barcode_detection">Barcode detection</string>
+    <string name="pref_key_barcode_reticle_width" translatable="false">barcode_brw</string>
+    <string name="pref_title_barcode_reticle_width">Barcode reticle width</string>
+    <string name="pref_summary_barcode_reticle_width" formatted="false">Relative to the camera view width, ranges from 50% to 95%</string>
+    <string name="pref_key_barcode_reticle_height" translatable="false">barcode_brh</string>
+    <string name="pref_title_barcode_reticle_height">Barcode reticle height</string>
+    <string name="pref_summary_barcode_reticle_height" formatted="false">Relative to the camera view height, ranges from 20% to 80%</string>
+    <string name="pref_key_enable_barcode_size_check" translatable="false">barcode_ebsc</string>
+    <string name="pref_title_enable_barcode_size_check">Enable barcode size check</string>
+    <string name="pref_summary_enable_barcode_size_check">Will prompt user to move camera closer if the detected barcode is too small</string>
+    <string name="pref_key_minimum_barcode_width" translatable="false">barcode_mbw</string>
+    <string name="pref_title_minimum_barcode_width">Minimum barcode width</string>
+    <string name="pref_summary_minimum_barcode_width" formatted="false">Relative to the reticle width, ranges from 20% to 80% (only applicable when barcode size check enabled)</string>
+    <string name="pref_key_delay_loading_barcode_result" translatable="false">barcode_dlbr</string>
+    <string name="pref_title_delay_loading_barcode_result">Delay loading barcode result</string>
+    <string name="pref_summary_delay_loading_barcode_result">Will show the loading spinner for 2s</string>
+    <string name="activity_about_title">About</string>
+    <string name="activity_web_view_title">WebView</string>
+    <string name="activity_title_compose">Compose</string>
+    <string name="activity_title_google_ml_kit">Google ML Kit</string>
+</resources>

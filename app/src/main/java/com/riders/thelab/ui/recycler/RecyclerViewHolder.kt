@@ -3,9 +3,9 @@ package com.riders.thelab.ui.recycler
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.riders.thelab.core.utils.LabCompatibilityManager
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.remote.dto.artist.Artist
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.RowRecyclerViewBinding
 import timber.log.Timber
 

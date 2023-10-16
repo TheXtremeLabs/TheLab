@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.riders.thelab.R
-import com.riders.thelab.data.local.model.music.SongModel
+import com.riders.thelab.core.data.local.model.music.SongModel
 import com.riders.thelab.databinding.RowSongPlayerBinding
 import timber.log.Timber
 

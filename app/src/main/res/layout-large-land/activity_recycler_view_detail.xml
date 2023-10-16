@@ -11,7 +11,7 @@
 
         <variable
             name="artist"
-            type="com.riders.thelab.data.remote.dto.artist.Artist" />
+            type="com.riders.thelab.core.data.remote.dto.artist.Artist" />
 
     </data>
 

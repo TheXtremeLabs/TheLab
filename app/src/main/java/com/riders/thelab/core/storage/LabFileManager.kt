@@ -1,4 +1,5 @@
 package com.riders.thelab.core.storage
+/*
 
 import android.content.ContentResolver
 import android.content.Context
@@ -13,6 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.os.EnvironmentCompat
 import com.riders.thelab.R
+import com.riders.thelab.TheLabApplication
 import okhttp3.ResponseBody
 import okhttp3.internal.io.FileSystem
 import okio.buffer
@@ -25,17 +27,21 @@ import java.io.IOException
 import java.io.InputStream
 import java.util.zip.GZIPInputStream
 
+*/
 /**
  * Utils for I/O operations.
- */
+ *//*
+
 object LabFileManager {
 
-    /**
-     * Reads file and returns a String.
-     *
-     * @param file the file to read
-     * @return the string with file content or null
-     */
+    */
+/**
+ * Reads file and returns a String.
+ *
+ * @param file the file to read
+ * @return the string with file content or null
+ *//*
+
     fun tryReadFile(file: File): String? {
         try {
             FileSystem.SYSTEM.source(file).buffer().use {
@@ -47,12 +53,14 @@ object LabFileManager {
         }
     }
 
-    /**
-     * Reads InputStream and returns a String. It will close stream after usage.
-     *
-     * @param stream the stream to read
-     * @return the string with file content or null
-     */
+    */
+/**
+ * Reads InputStream and returns a String. It will close stream after usage.
+ *
+ * @param stream the stream to read
+ * @return the string with file content or null
+ *//*
+
     fun tryReadFile(stream: InputStream): String? {
         try {
             stream.source().buffer().use { source -> return source.readUtf8() }
@@ -62,35 +70,41 @@ object LabFileManager {
         }
     }
 
-    /**
-     * Reads file and returns a String.
-     *
-     * @param file the file to read
-     * @return the string content
-     */
+    */
+/**
+ * Reads file and returns a String.
+ *
+ * @param file the file to read
+ * @return the string content
+ *//*
+
     @Throws(IOException::class)
     fun readFile(file: File): String {
         FileSystem.SYSTEM.source(file).buffer().use { source -> return source.readUtf8() }
     }
 
-    /**
-     * Reads InputStream and returns a String. It will close stream after usage.
-     *
-     * @param stream the stream to read
-     * @return the string content
-     */
+    */
+/**
+ * Reads InputStream and returns a String. It will close stream after usage.
+ *
+ * @param stream the stream to read
+ * @return the string content
+ *//*
+
     @Throws(IOException::class)
     fun readFile(stream: InputStream): String {
         stream.source().buffer().use { source -> return source.readUtf8() }
     }
 
-    /**
-     * Ref : https://stackoverflow.com/questions/10469407/android-decompress-downloaded-xml-gz-file
-     * https://stackoverflow.com/questions/216894/get-an-outputstream-into-a-string
-     *
-     * @param responseBody
-     * @return
-     */
+    */
+/**
+ * Ref : https://stackoverflow.com/questions/10469407/android-decompress-downloaded-xml-gz-file
+ * https://stackoverflow.com/questions/216894/get-an-outputstream-into-a-string
+ *
+ * @param responseBody
+ * @return
+ *//*
+
     fun unzipGzip(responseBody: ResponseBody): String? {
         Timber.d("unzipGzip()")
         var json: String? = null
@@ -140,11 +154,13 @@ object LabFileManager {
     }
 
 
-    /**
-     * returns a list of all available sd cards paths, or null if not found.
-     *
-     * @param includePrimaryExternalStorage set to true if you wish to also include the path of the primary external storage
-     */
+    */
+/**
+ * returns a list of all available sd cards paths, or null if not found.
+ *
+ * @param includePrimaryExternalStorage set to true if you wish to also include the path of the primary external storage
+ *//*
+
     fun getSdCardPaths(
         context: Context,
         includePrimaryExternalStorage: Boolean
@@ -228,9 +244,11 @@ object LabFileManager {
 
     fun getOutputDirectory(context: Context): File {
         Timber.e("getOutputDirectory()")
-        /*val mediaDir = externalMediaDirs.firstOrNull()?.let {
+        */
+/*val mediaDir = externalMediaDirs.firstOrNull()?.let {
             File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
-        }*/
+        }*//*
+
 
         val mediaDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).let {
             File(it, context.resources.getString(R.string.app_name)).apply { mkdirs() }
@@ -240,7 +258,8 @@ object LabFileManager {
             mediaDir else context.filesDir
     }
 
-    /*fun getMetaDataImage() {
+    */
+/*fun getMetaDataImage() {
         val mmr = MediaMetadataRetriever()
          mmr.setDataSource(songsList.get(songIndex).get("songPath"))
 
@@ -257,5 +276,33 @@ object LabFileManager {
 
         coverart.setAdjustViewBounds(true)
         coverart.setLayoutParams(LinearLayout.LayoutParams(500, 500))
-    }*/
-}
+    }*//*
+
+
+    fun getFileFromAssets(filename: String): InputStream? = TheLabApplication
+        .getInstance()
+        .getContext()
+        .assets
+        .runCatching {
+            open(filename)
+        }
+        .onFailure {
+            it.printStackTrace()
+            Timber.e("Failed to open asset file. Message : ${it.message}")
+        }
+        .getOrNull()
+
+    fun getFileInputStreamFromAssets(filename: String): InputStream? =
+        try {
+            TheLabApplication.getInstance().getContext().assets.open(filename)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            null
+        }
+
+    fun getJsonFileContentFromAssets(filename: String): String? =
+        getFileFromAssets(filename)?.let { stream ->
+            stream.bufferedReader().use { it.readText() }
+        }
+
+}*/

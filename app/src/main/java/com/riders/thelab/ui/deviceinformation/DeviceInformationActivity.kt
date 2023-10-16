@@ -6,7 +6,7 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
-import com.riders.thelab.data.local.model.DeviceInformation
+import com.riders.thelab.core.data.local.model.DeviceInformation
 import com.riders.thelab.databinding.ActivityDeviceInformationBinding
 import dagger.hilt.android.AndroidEntryPoint
 

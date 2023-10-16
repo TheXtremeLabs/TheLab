@@ -64,6 +64,7 @@ class SpringActivity : AppCompatActivity(), View.OnClickListener {
                 xAnimation!!.cancel()
                 yAnimation!!.cancel()
             }
+
             MotionEvent.ACTION_MOVE -> {
                 //  a different approach would be to change the view's LayoutParams.
                 binding.imageView.animate()
@@ -80,6 +81,7 @@ class SpringActivity : AppCompatActivity(), View.OnClickListener {
                     .setDuration(0)
                     .start()
             }
+
             MotionEvent.ACTION_UP -> {
                 xAnimation!!.start()
                 yAnimation!!.start()
@@ -234,6 +236,7 @@ class SpringActivity : AppCompatActivity(), View.OnClickListener {
                     dX = view.x - motionEvent.rawX
                     dY = view.y - motionEvent.rawY
                 }
+
                 MotionEvent.ACTION_MOVE -> {
                     val newX = motionEvent.rawX + dX
                     val newY = motionEvent.rawY + dY

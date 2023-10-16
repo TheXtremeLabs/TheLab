@@ -2,11 +2,27 @@ package com.riders.thelab.ui.schedule
 
 import android.os.CountDownTimer
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Schedule
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -21,13 +37,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.component.TheLabTopAppBar
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.utils.findActivity
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.core.views.toast.ToastTypeEnum
-import com.riders.thelab.data.local.model.compose.ScheduleJobAlarmUiState
+import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.core.ui.views.toast.ToastTypeEnum
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -87,18 +103,13 @@ fun ScheduleContent(viewModel: ScheduleViewModel) {
                         onClick = {
                             Timber.d("Start Count Down clicked")
 
-                            viewModel.countDownQuery.isNotBlank().let {
-                                if (it) {
-                                    viewModel.startAlert(activity, viewModel.countDownQuery)
-                                } else {
-                                    UIManager.showCustomToast(
-                                        activity,
-                                        ToastTypeEnum.WARNING,
-                                        "Field cannot be empty. Please enter a valid number"
-                                    )
-                                }
-                            }
-
+                            viewModel.countDownQuery.takeIf { it.isNotBlank() } // peut être convertit en référence
+                                ?.let { viewModel.startAlert(activity, it) }
+                                ?: UIManager.showCustomToast(
+                                    activity,
+                                    ToastTypeEnum.WARNING,
+                                    "Field can't be empty. Please enter a valid number"
+                                )
                         },
                         enabled = scheduleState !is ScheduleJobAlarmUiState.Started,
                     ) {

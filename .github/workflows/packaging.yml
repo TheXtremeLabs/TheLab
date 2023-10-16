@@ -1,0 +1,32 @@
+name: Packaging
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '**gradle*'
+      - '**.kt*'
+      - .github/workflows/packaging.yml
+  workflow_dispatch:
+jobs:
+  build:
+    name: Package application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.0
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1.0.6
+      - name: Setup Java & Gradle
+        uses: actions/setup-java@v3.11.0
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+      - name: Package application
+        run: ./gradlew :app:assemble
+      - name: Upload APK
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          name: TheLab
+          path: app/build/outputs/apk/**/*.apk
+          if-no-files-found: error

@@ -7,7 +7,7 @@
 
         <variable
             name="songModel"
-            type="com.riders.thelab.data.local.model.music.SongModel" />
+            type="com.riders.thelab.core.data.local.model.music.SongModel" />
 
     </data>
 

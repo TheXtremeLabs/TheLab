@@ -4,9 +4,9 @@ import android.util.DisplayMetrics
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.riders.thelab.core.utils.LabCompatibilityManager
-import com.riders.thelab.core.utils.LabDeviceManager
-import com.riders.thelab.data.local.model.DeviceInformation
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabDeviceManager
+import com.riders.thelab.core.data.local.model.DeviceInformation
 import timber.log.Timber
 
 class DeviceInfoViewModel : ViewModel() {

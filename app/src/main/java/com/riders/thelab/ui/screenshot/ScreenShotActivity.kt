@@ -12,7 +12,7 @@ import com.riders.thelab.databinding.ActivityScreenShotBinding
 import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
 import java.io.File
-import java.util.*
+import java.util.Date
 
 
 class ScreenShotActivity : AppCompatActivity() {

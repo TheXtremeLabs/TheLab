@@ -11,7 +11,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
 import com.riders.thelab.R
-import com.riders.thelab.core.storage.LabFileManager
+import com.riders.thelab.core.common.storage.LabFileManager
 import timber.log.Timber
 
 class SongPlayerUtils {
@@ -155,6 +155,7 @@ class SongPlayerUtils {
                             PlaybackState.ACTION_PLAY -> {
                                 Timber.d("controlsCallback -  PlaybackState.ACTION_PLAY")
                             }
+
                             PlaybackState.ACTION_PAUSE -> {
                                 Timber.e("controlsCallback -  PlaybackState.ACTION_PAUSE")
                             }

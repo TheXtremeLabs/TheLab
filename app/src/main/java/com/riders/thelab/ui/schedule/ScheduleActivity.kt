@@ -15,7 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver
 import com.riders.thelab.core.bus.KotlinBus
 import com.riders.thelab.core.bus.Listen
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.ui.base.BaseActivity
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -94,9 +94,8 @@ class ScheduleActivity : BaseActivity() {
     fun onEventTriggered() {
         Timber.d("onEventTriggered()")
         lifecycleScope.launch {
-            KotlinBus.getInstance().subscribe<String> {
+            KotlinBus.subscribe<String> {
                 Timber.d("Received | Count down finished event with, $it")
-                //UIManager.hideKeyboard(this@ScheduleActivity, binding.root)
                 mViewModel.updateCountDownDone(true)
             }
         }

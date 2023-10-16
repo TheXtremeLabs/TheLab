@@ -20,7 +20,7 @@
         <Constraint android:id="@+id/btn_enter">
             <CustomAttribute
                 motion:attributeName="enabled"
-                motion:customBoolean="false"/>
+                motion:customBoolean="false" />
         </Constraint>
 
         <Constraint android:id="@+id/progressBar">
@@ -82,7 +82,7 @@
         <Constraint android:id="@+id/btn_enter">
             <CustomAttribute
                 motion:attributeName="enabled"
-                motion:customBoolean="true"/>
+                motion:customBoolean="true" />
         </Constraint>
 
         <Constraint android:id="@id/btn_no_account_register">

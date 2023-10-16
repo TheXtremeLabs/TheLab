@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.bean.SnackBarType
-import com.riders.thelab.data.local.model.Contact
+import com.riders.thelab.core.data.local.model.Contact
+import com.riders.thelab.core.ui.data.SnackBarType
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityContactsBinding
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.contacts.RecyclerItemTouchHelper.RecyclerItemTouchHelperListener
@@ -102,10 +102,12 @@ class ContactsActivity
             android.R.id.home -> {
                 onBackPressed()
             }
+
             R.id.action_add_contact -> mContactViewModel.addNewContact(Navigator(this))
             R.id.action_search -> Timber.d("noinspection SimplifiableIfStatement")
             R.id.action_supervisor ->
                 UIManager.showActionInToast(this, "Action supervisor clicked")
+
             else -> {
                 return false
             }
@@ -201,7 +203,6 @@ class ContactsActivity
             // showing snack bar with Undo option
             UIManager.showActionInSnackBar(
                 this,
-                binding.coordinator,
                 "$name removed from cart!",
                 SnackBarType.WARNING,
                 "UNDO"

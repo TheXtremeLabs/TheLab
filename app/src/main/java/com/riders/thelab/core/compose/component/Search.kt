@@ -7,7 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,7 +23,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -28,17 +32,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
-import com.riders.thelab.data.local.model.compose.IslandState
+import com.riders.thelab.core.data.local.model.compose.IslandState
+import com.riders.thelab.core.ui.R
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 import timber.log.Timber
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Search(viewModel: MainActivityViewModel) {
-    val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val focus = remember { mutableStateOf(false) }
@@ -67,10 +70,11 @@ fun Search(viewModel: MainActivityViewModel) {
             value = viewModel.searchedAppRequest.value,
             onValueChange = { viewModel.searchApp(it) },
             placeholder = { Text(text = stringResource(id = R.string.search_app_item_placeholder)) },
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = Color.White,
-                containerColor = Color.Transparent,
-                placeholderColor = Color.LightGray,
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedPlaceholderColor = Color.LightGray,
                 disabledTextColor = Color.Transparent,
                 cursorColor = md_theme_dark_primary,
                 focusedIndicatorColor = Color.Transparent,

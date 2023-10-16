@@ -3,7 +3,11 @@ package com.riders.thelab.ui.schedule
 import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,10 +15,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
 import com.riders.thelab.core.service.ScheduleAlarmService
-import com.riders.thelab.core.utils.LabCompatibilityManager
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.model.compose.ScheduleJobAlarmUiState
+import com.riders.thelab.core.ui.utils.UIManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
 
@@ -100,8 +104,15 @@ class ScheduleViewModel : ViewModel() {
 
         mAlarmManager =
             (activity as ScheduleActivity).getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        mAlarmManager!![AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + i * 1000] =
-            mPendingIntent
+
+
+        mAlarmManager?.let { alarm ->
+            mPendingIntent?.let { pendingIntent ->
+                alarm[AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + i * 1000] =
+                    pendingIntent
+            }
+        }
+
         UIManager.showActionInToast(activity, "Alarm set in $i seconds")
 
         updateUiContDown(i)
@@ -139,8 +150,10 @@ class ScheduleViewModel : ViewModel() {
         if (null != mServiceConnection)
             activity.unbindService(mServiceConnection!!)
 
-        if (mPendingIntent != null && mAlarmManager != null) {
-            mAlarmManager!!.cancel(mPendingIntent)
+        mAlarmManager?.let { alarm ->
+            mPendingIntent?.let { pendingIntent ->
+                alarm.cancel(pendingIntent)
+            }
         }
     }
 }
