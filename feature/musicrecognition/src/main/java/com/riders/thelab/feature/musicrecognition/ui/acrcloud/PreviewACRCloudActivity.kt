@@ -35,7 +35,6 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,9 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -324,27 +321,38 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                 TheLabTopAppBar(title = stringResource(id = R.string.acr_cloud_app_name)) { }
             },
             floatingActionButton = {
-                androidx.compose.material.FloatingActionButton(
-                    backgroundColor = if (!viewModel.isRecognizing) {
-                        md_theme_light_onPrimaryContainer
-                    } else {
-                        if (!isSystemInDarkTheme()) md_theme_light_onBackground else md_theme_dark_onBackground
-                    },
-                    onClick = {
-                        if (!viewModel.isRecognizing) {
-                            viewModel.startRecognition()
-                        } else {
-                            Timber.e("FloatingActionButton | onClick | recognition is already running")
+
+                AnimatedContent(
+                    targetState = viewModel.isRecognizing,
+                    label = "something"
+                ) { target ->
+                    if (!target) {
+                        androidx.compose.material.FloatingActionButton(
+                            backgroundColor = if (!viewModel.isRecognizing) {
+                                md_theme_light_onPrimaryContainer
+                            } else {
+                                if (!isSystemInDarkTheme()) md_theme_light_onBackground else md_theme_dark_onBackground
+                            },
+                            onClick = {
+                                if (!viewModel.isRecognizing) {
+                                    viewModel.startRecognition()
+                                } else {
+                                    Timber.e("FloatingActionButton | onClick | recognition is already running")
+                                }
+                            },
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(40.dp),
+                                painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_the_lab_12_logo_white),
+                                contentDescription = "the lab logo",
+                                tint = Color.White
+                            )
                         }
-                    },
-                ) {
-                    Icon(
-                        modifier = Modifier.size(40.dp),
-                        painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_the_lab_12_logo_white),
-                        contentDescription = "the lab logo",
-                        tint = Color.White
-                    )
+                    } else {
+                        Box(modifier = Modifier)
+                    }
                 }
+
             },
             floatingActionButtonPosition = FabPosition.Center,
             isFloatingActionButtonDocked = true,
