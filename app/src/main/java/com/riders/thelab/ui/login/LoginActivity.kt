@@ -14,10 +14,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.WindowMetricsCalculator
 import com.riders.thelab.BuildConfig
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.utils.LabNetworkManagerNewAPI
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.model.compose.WindowSizeClass
+import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
+import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*

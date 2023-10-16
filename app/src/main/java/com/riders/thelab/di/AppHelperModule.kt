@@ -1,12 +1,13 @@
 package com.riders.thelab.di
+/*
 
 import android.content.Context
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.RepositoryImpl
-import com.riders.thelab.data.local.DbImpl
-import com.riders.thelab.data.local.LabDatabase
-import com.riders.thelab.data.preferences.PreferencesImpl
-import com.riders.thelab.data.remote.ApiImpl
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.RepositoryImpl
+import com.riders.thelab.core.data.local.DbImpl
+import com.riders.thelab.core.data.local.LabDatabase
+import com.riders.thelab.core.data.preferences.PreferencesImpl
+import com.riders.thelab.core.data.remote.ApiImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,4 +47,4 @@ object AppHelperModule {
     @Singleton
     fun provideRepository(dbImpl: DbImpl, apiImpl: ApiImpl, preferencesImpl: PreferencesImpl) =
         RepositoryImpl(dbImpl, apiImpl, preferencesImpl) as IRepository
-}
+}*/

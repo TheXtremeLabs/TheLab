@@ -24,11 +24,11 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.util.DebugLogger
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.previewprovider.ArtistPreviewProvider
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.utils.findActivity
-import com.riders.thelab.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.previewprovider.ArtistPreviewProvider
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -108,17 +108,18 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
                                 .align(Alignment.CenterHorizontally)
                         )
                     }
+
                     is AsyncImagePainter.State.Success -> {
                         Timber.d("state is AsyncImagePainter.State.Success")
                         LaunchedEffect(key1 = painter) {
-                            scope.launch {
-                                val image = painter.loadImage()
-                            }
+                            scope.launch { val image = painter.loadImage() }
                         }
                     }
+
                     is AsyncImagePainter.State.Error -> {
                         Timber.e("state is AsyncImagePainter.State.Error | ${state.result}")
                     }
+
                     else -> {
                         Timber.e("else branch")
                     }

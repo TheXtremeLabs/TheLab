@@ -115,6 +115,7 @@ class WebViewActivity : AppCompatActivity() {
                         // save the x
                         m_downX = event.x
                     }
+
                     MotionEvent.ACTION_MOVE, MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
 
                         // set x so that it doesn't move

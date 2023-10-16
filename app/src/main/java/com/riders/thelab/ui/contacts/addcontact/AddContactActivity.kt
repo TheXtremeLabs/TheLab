@@ -9,10 +9,10 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.model.Contact
+import com.riders.thelab.core.common.utils.Validator
+import com.riders.thelab.core.data.local.model.Contact
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityAddContactBinding
-import com.riders.thelab.utils.Validator
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 

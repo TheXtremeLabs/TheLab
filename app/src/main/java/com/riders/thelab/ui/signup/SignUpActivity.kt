@@ -107,9 +107,11 @@ class SignUpActivity : AppCompatActivity(),
                         Timber.e("Remove previous")
                         removeToolbarUserForm()
                     }
+
                     1 -> {
                         updateToolbarUserForm()
                     }
+
                     2 -> {
                         updateToolbarSuccessful()
                         if (2 == binding.viewPager.currentItem) {

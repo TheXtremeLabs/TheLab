@@ -1,0 +1,164 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <bool name="isTab">false</bool>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="activity_margin">16dp</dimen>
+
+    <!-- GLOBAL -->
+
+    <!-- Smartphone -->
+    <dimen name="ultra_small_margin">2dp</dimen>
+    <dimen name="extra_small_margin">4dp</dimen>
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="medium_margin">16dp</dimen>
+    <dimen name="big_margin">24dp</dimen>
+    <dimen name="big_medium_margin">32dp</dimen>
+    <dimen name="extra_big_margin">48dp</dimen>
+    <dimen name="ultra_big_margin">56dp</dimen>
+
+    <dimen name="dots_height">30dp</dimen>
+    <dimen name="dots_margin_bottom">20dp</dimen>
+
+
+    <!-- Tablet -->
+    <dimen name="ultra_small_margin_tablet">4dp</dimen>
+    <dimen name="extra_small_margin_tablet">8dp</dimen>
+    <dimen name="small_margin_tablet">16dp</dimen>
+    <dimen name="medium_margin_tablet">24dp</dimen>
+    <dimen name="big_margin_tablet">36dp</dimen>
+    <dimen name="big_medium_margin_tablet">48dp</dimen>
+    <dimen name="extra_big_margin_tablet">64dp</dimen>
+    <dimen name="ultra_big_margin_tablet">72dp</dimen>
+    <dimen name="ultra_ultra_big_margin_tablet">96dp</dimen>
+
+    <!-- CardView -->
+    <!-- Default Card View Dimens -->
+    <dimen name="card_elevation">8dp</dimen>
+    <dimen name="max_card_image_width">344dp</dimen>
+    <dimen name="max_card_image_height">194dp</dimen>
+
+    <dimen name="activity_section_title">20sp</dimen>
+
+    <dimen name="admin_dashboard_nav_drawer_width">260dp</dimen>
+
+    <dimen name="tab_max_width">264dp</dimen>
+    <dimen name="tab_padding_bottom">16dp</dimen>
+    <dimen name="tab_label">14sp</dimen>
+    <dimen name="custom_tab_layout_height">72dp</dimen>
+
+    <dimen name="search_box_date_textSize">18sp</dimen>
+    <dimen name="search_box_time_textSize">72sp</dimen>
+
+    <dimen name="bandeau_pictures_horizontal_margin">102dp</dimen>
+    <dimen name="bandeau_pictures_vertical_margin">24dp</dimen>
+    <dimen name="bandeau_pictures_singer_name_textSize">24sp</dimen>
+    <dimen name="bandeau_pictures_singer_biography_textSize">16sp</dimen>
+
+
+    <dimen name="thumb_margin">16sp</dimen>
+    <dimen name="thumb_width">147sp</dimen>
+    <dimen name="thumb_height">82sp</dimen>
+
+
+    <dimen name="thumb_width_content">197sp</dimen>
+    <dimen name="thumb_height_content">132sp</dimen>
+
+
+    <dimen name="gridlayout_big_thumb_width">410dp</dimen>
+    <dimen name="gridlayout_small_thumb_width">200dp</dimen>
+
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="spacing_xsmall">2dp</dimen>
+    <dimen name="spacing_medium">8dp</dimen>
+    <dimen name="spacing_large">16dp</dimen>
+    <dimen name="spacing_xlarge">32dp</dimen>
+
+    <dimen name="elevation_low">9dp</dimen>
+    <dimen name="elevation_high">12dp</dimen>
+    <dimen name="status_bar_height">25dp</dimen>
+
+
+    <!-- Contacts -->
+    <dimen name="thumbnail">40dp</dimen>
+    <dimen name="row_padding">10dp</dimen>
+    <dimen name="ic_delete">30dp</dimen>
+    <dimen name="contact_name">15dp</dimen>
+    <dimen name="contact_number">12dp</dimen>
+
+    <!-- Built-in WebView -->
+    <dimen name="detail_backdrop_height">270dp</dimen>
+
+    <!-- Vector Drawables -->
+    <item name="hashtag_stroke_width" format="float" type="dimen">5</item>
+
+
+    <!-- Google ML Kit -->
+    <dimen name="top_action_bar_padding_horizontal">8dp</dimen>
+    <dimen name="top_action_bar_height">64dp</dimen>
+    <dimen name="top_action_button_padding">12dp</dimen>
+    <dimen name="search_progress_bar_size">48dp</dimen>
+    <dimen name="search_button_text_size">16sp</dimen>
+    <dimen name="search_button_margin_bottom">24dp</dimen>
+    <dimen name="bottom_prompt_chip_text_size">14sp</dimen>
+    <dimen name="bottom_prompt_chip_margin_bottom">28dp</dimen>
+    <dimen name="bottom_prompt_chip_corner_radius">8dp</dimen>
+    <dimen name="bottom_sheet_title_margin">16dp</dimen>
+    <dimen name="bottom_sheet_title_size">16sp</dimen>
+    <dimen name="bounding_box_stroke_width">1dp</dimen>
+    <dimen name="bounding_box_confirmed_stroke_width">2dp</dimen>
+    <dimen name="bounding_box_corner_radius">12dp</dimen>
+    <dimen name="product_item_padding">16dp</dimen>
+    <dimen name="product_item_image_size">80dp</dimen>
+    <dimen name="product_item_image_margin_end">16dp</dimen>
+    <dimen name="product_item_title_size">18sp</dimen>
+    <dimen name="product_item_subtitle_size">14sp</dimen>
+    <dimen name="object_reticle_ripple_stroke_width">4dp</dimen>
+    <dimen name="object_reticle_ripple_size_offset">24dp</dimen>
+    <dimen name="object_reticle_outer_ring_fill_radius">22dp</dimen>
+    <dimen name="object_reticle_outer_ring_stroke_radius">24dp</dimen>
+    <dimen name="object_reticle_outer_ring_stroke_width">4dp</dimen>
+    <dimen name="object_reticle_inner_ring_stroke_radius">14dp</dimen>
+    <dimen name="object_reticle_inner_ring_stroke_width">2dp</dimen>
+    <dimen name="object_selection_distance_threshold">24dp</dimen>
+    <dimen name="object_dot_radius">@dimen/object_reticle_inner_ring_stroke_radius</dimen>
+    <dimen name="object_thumbnail_height">120dp</dimen>
+    <dimen name="object_thumbnail_margin">24dp</dimen>
+    <dimen name="object_thumbnail_stroke_width">@dimen/bounding_box_confirmed_stroke_width</dimen>
+    <dimen name="preview_card_carousel_padding_top">16dp</dimen>
+    <dimen name="preview_card_carousel_padding_bottom">8dp</dimen>
+    <dimen name="preview_card_carousel_height">120dp</dimen>
+    <dimen name="preview_card_width">240dp</dimen>
+    <dimen name="preview_card_height">96dp</dimen>
+    <dimen name="preview_card_spacing">8dp</dimen>
+    <dimen name="preview_card_corner_radius">8dp</dimen>
+    <dimen name="preview_card_image_size">80dp</dimen>
+    <dimen name="preview_card_image_margin">8dp</dimen>
+    <dimen name="preview_card_title_text_size">14sp</dimen>
+    <dimen name="preview_card_title_padding_top">12dp</dimen>
+    <dimen name="preview_card_subtitle_text_size">14sp</dimen>
+    <dimen name="preview_card_subtitle_padding_top">4dp</dimen>
+    <dimen name="static_image_dot_view_size">48dp</dimen>
+    <dimen name="static_image_dot_radius_selected">14dp</dimen>
+    <dimen name="static_image_dot_radius_unselected">10dp</dimen>
+    <dimen name="static_image_view_padding_horizontal">16dp</dimen>
+    <dimen name="static_image_loading_view_text_size">14sp</dimen>
+    <dimen name="static_image_loading_view_text_margin_bottom">32dp</dimen>
+    <dimen name="barcode_bottom_sheet_padding_vertical">12dp</dimen>
+    <dimen name="barcode_reticle_ripple_stroke_width">4dp</dimen>
+    <dimen name="barcode_reticle_ripple_size_offset">40dp</dimen>
+    <dimen name="barcode_reticle_stroke_width">4dp</dimen>
+    <dimen name="barcode_reticle_corner_radius">8dp</dimen>
+    <dimen name="barcode_field_padding_horizontal">24dp</dimen>
+    <dimen name="barcode_field_padding_vertical">12dp</dimen>
+    <dimen name="barcode_field_value_size">16sp</dimen>
+    <dimen name="barcode_field_value_padding">16dp</dimen>
+    <dimen name="barcode_field_label_size">12sp</dimen>
+    <dimen name="barcode_field_label_padding">4dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+</resources>

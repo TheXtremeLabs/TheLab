@@ -26,9 +26,9 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_primary
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
@@ -146,10 +146,10 @@ fun AppBarContent(viewModel: MainActivityViewModel, focusManager: FocusManager) 
                 // .navigationBarsPadding(),
                 //    .background(Color.Black)
                 ,
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = Color.White,
-                    containerColor = Color.Transparent,
-                    placeholderColor = Color.LightGray,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    focusedContainerColor = Color.Transparent,
+                    focusedPlaceholderColor = Color.LightGray,
                     disabledTextColor = Color.Transparent,
                     cursorColor = md_theme_dark_primary,
                     focusedIndicatorColor = Color.Transparent,

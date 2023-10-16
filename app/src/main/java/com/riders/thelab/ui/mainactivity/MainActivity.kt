@@ -40,19 +40,23 @@ import com.riders.thelab.R
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.bus.LocationFetchedEvent
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabLocationManager
+import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
+import com.riders.thelab.core.data.local.model.app.App
+import com.riders.thelab.core.data.local.model.app.LocalApp
+import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.interfaces.ConnectivityListener
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
-import com.riders.thelab.core.utils.*
-import com.riders.thelab.data.local.model.app.App
-import com.riders.thelab.data.local.model.app.LocalApp
-import com.riders.thelab.data.local.model.app.PackageApp
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.utils.LabGlideUtils
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityMainBinding
+import com.riders.thelab.feature.weather.ui.WeatherUtils
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
-import com.riders.thelab.ui.weather.WeatherUtils
-import com.riders.thelab.utils.Constants.Companion.GPS_REQUEST
+import com.riders.thelab.utils.Constants.GPS_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -112,6 +116,7 @@ class MainActivity : ComponentActivity(),
             Configuration.UI_MODE_NIGHT_YES -> {
                 w.statusBarColor = Color.TRANSPARENT
             }
+
             Configuration.UI_MODE_NIGHT_NO,
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {
             }
@@ -175,6 +180,8 @@ class MainActivity : ComponentActivity(),
         if (isTimeUpdatedStarted) {
             isTimeUpdatedStarted = false
         }
+
+        labLocationManager?.stopUsingGPS()
 
         super.onPause()
     }
@@ -316,7 +323,11 @@ class MainActivity : ComponentActivity(),
         locationReceiver = LocationBroadcastReceiver()
         mGpsUtils = GpsUtils(this@MainActivity)
 
-        labLocationManager = LabLocationManager(this@MainActivity, this@MainActivity)
+        labLocationManager =
+            LabLocationManager(
+                activity = this@MainActivity,
+                locationListener = this@MainActivity
+            )
     }
 
     private fun registerLocationReceiver() {
@@ -391,10 +402,11 @@ class MainActivity : ComponentActivity(),
                 binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
                     R.drawable.ic_location_off
                 )
-                labLocationManager?.showSettingsAlert()
+                // TODO : Should show alert with compose dialog
+                // labLocationManager?.showSettingsAlert()
             } else {
                 labLocationManager?.setLocationListener()
-                labLocationManager?.getLocation()
+                labLocationManager?.getCurrentLocation()
 
                 binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
                     R.drawable.ic_location_on
@@ -561,12 +573,15 @@ class MainActivity : ComponentActivity(),
                 )
                 return
             }
+
             item is LocalApp && -1L != item.id -> {
                 mViewModel.launchActivityOrPackage(navigator, item)
             }
+
             item is PackageApp -> {
                 mViewModel.launchActivityOrPackage(navigator, item)
             }
+
             else -> {
                 Timber.e("Item id == -1 , not app activity. Should launch package intent.")
             }
@@ -602,9 +617,11 @@ class MainActivity : ComponentActivity(),
             R.id.iv_internet_status -> {
                 Timber.e("Internet wifi icon status clicked")
             }
+
             R.id.iv_location_status -> {
                 Timber.e("Location icon status clicked")
             }
+
             R.id.iv_settings -> navigator.callSettingsActivity()
             R.id.btn_more_info -> navigator.callWeatherActivity()
             R.id.iv_linear_layout -> toggleRecyclerViewLinearLayout()

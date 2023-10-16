@@ -1,6 +1,7 @@
 package com.riders.thelab.ui.mainactivity
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -15,23 +16,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.previewprovider.AppPreviewProvider
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.ui.theme.md_theme_dark_background
-import com.riders.thelab.core.compose.utils.findActivity
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.model.app.App
-import kotlinx.coroutines.DelicateCoroutinesApi
+import com.riders.thelab.core.data.local.model.app.App
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.core.ui.utils.UIManager
 
-@OptIn(DelicateCoroutinesApi::class, ExperimentalMaterial3Api::class)
-@DevicePreviews
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
+fun App(item: App) {
 
     val context = LocalContext.current
 
@@ -50,6 +46,7 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                     )
                 }
             }
+
             else -> {
                 remember { UIManager.drawableToBitmap(item.appDrawableIcon!!) }
             }
@@ -70,7 +67,7 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                 .height(dimensionResource(id = R.dimen.max_card_image_height))
                 .fillMaxWidth(),
             onClick = { (context.findActivity() as MainActivity).launchApp(item) },
-            colors = CardDefaults.cardColors(containerColor = md_theme_dark_background),
+            // colors = CardDefaults.cardColors(containerColor = md_theme_dark_background),
             elevation = CardDefaults.cardElevation(0.dp)
         ) {
             Column(
@@ -82,11 +79,30 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                         .fillMaxWidth()
                         .weight(2F),
                     shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-                    colors = CardDefaults.cardColors(containerColor = darkVibrantSwatch?.rgb?.let {
-                        Color(
-                            it
-                        )
-                    } ?: md_theme_dark_background),
+                    colors = CardDefaults.cardColors(
+                        containerColor =
+                        when (title) {
+                            stringResource(id = R.string.activity_title_colors),
+                            stringResource(id = R.string.activity_title_palette),
+                            stringResource(id = R.string.activity_title_youtube_like),
+                            stringResource(id = R.string.activity_title_google_drive),
+                            stringResource(id = R.string.activity_title_google_sign_in),
+                            stringResource(id = R.string.activity_title_weather),
+                            stringResource(id = R.string.activity_title_compose),
+                            stringResource(id = R.string.activity_title_lottie) -> {
+                                darkVibrantSwatch?.rgb?.let {
+                                    Color(
+                                        it
+                                    )
+                                } ?: md_theme_dark_background
+                            }
+
+                            else -> {
+                                md_theme_dark_background
+                            }
+                        }
+                    )
+
                 ) {
                     Column(
                         modifier = Modifier
@@ -101,6 +117,7 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                                     UIManager.addGradientToImageView(context, bitmap)
                                         .asImageBitmap()
                                 }
+
                                 else -> {
                                     bitmap.asImageBitmap()
                                 }
@@ -109,19 +126,25 @@ fun App(@PreviewParameter(AppPreviewProvider::class) item: App) {
                             contentScale = ContentScale.Fit
                         )
                     }
-
                 }
 
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 8.dp),
+                        .padding(8.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(modifier = Modifier.fillMaxWidth(), text = title)
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = title,
+                        color = if (!isSystemInDarkTheme()) Color.Black else Color.White
+                    )
 
                     Text(
-                        modifier = Modifier.fillMaxWidth(), text = description, maxLines = 2
+                        modifier = Modifier.fillMaxWidth(),
+                        text = description,
+                        maxLines = 2,
+                        color = if (!isSystemInDarkTheme()) Color.Black else Color.White
                     )
                 }
             }

@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.model.Video
+import com.riders.thelab.core.data.local.model.Video
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityYoutubeBinding
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,20 +63,20 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
 
     private fun initViewModelsObservers() {
 
-        mYoutubeViewModel.getProgressBarVisibility().observe(this, {
+        mYoutubeViewModel.getProgressBarVisibility().observe(this) {
             if (!it) viewBinding.youtubeContentLoader.visibility = View.GONE
             else viewBinding.youtubeContentLoader.visibility = View.VISIBLE
-        })
+        }
 
-        mYoutubeViewModel.getConnectionStatus().observe(this, {
+        mYoutubeViewModel.getConnectionStatus().observe(this) {
             viewBinding.noConnectionLinearContainer.visibility = View.VISIBLE
-        })
+        }
 
-        mYoutubeViewModel.getYoutubeVideosFailed().observe(this, {
+        mYoutubeViewModel.getYoutubeVideosFailed().observe(this) {
             UIManager.showActionInToast(this, "Unable to fetch content")
-        })
+        }
 
-        mYoutubeViewModel.getYoutubeVideos().observe(this, { youtubeList ->
+        mYoutubeViewModel.getYoutubeVideos().observe(this) { youtubeList ->
             val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             viewBinding.youtubeContentRecyclerView.layoutManager = layoutManager
             viewBinding.youtubeContentRecyclerView.itemAnimator = DefaultItemAnimator()
@@ -86,7 +86,7 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
                 viewBinding.youtubeContentRecyclerView.visibility = View.VISIBLE
                 viewBinding.youtubeContentRecyclerView.adapter = contentAdapter
             }
-        })
+        }
 
     }
 

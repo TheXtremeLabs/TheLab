@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.TheLab" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <!--        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>-->
+
+        <!-- Customize your theme here. -->
+        <item name="android:navigationBarColor">@color/dark_grey</item>
+        <item name="android:statusBarColor">@color/dark_grey</item>
+
+        <item name="android:textColor">@color/white</item>
+
+        <!-- Font overriding -->
+        <!-- https://stackoverflow.com/questions/16404820/how-to-set-default-font-family-for-entire-android-app -->
+        <!--        <item name="android:typeface">serif</item>-->
+        <item name="android:fontFamily">@font/samsungsans_thin</item>
+        <item name="fontFamily">@font/samsungsans_thin
+        </item> <!-- target android sdk versions < 26 and > 14 if theme other than AppCompat -->
+    </style>
+
+
+    <style name="Theme.TheLab.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <item name="android:textColor">@color/white</item>
+
+        <!-- Font overriding -->
+        <!-- https://stackoverflow.com/questions/16404820/how-to-set-default-font-family-for-entire-android-app -->
+        <!--        <item name="android:typeface">serif</item>-->
+        <item name="android:fontFamily">@font/samsungsans_thin</item>
+        <item name="fontFamily">@font/samsungsans_thin</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:statusBarColor">@color/default_dark</item>
+    </style>
+
+    <!-- Splash Theme -->
+    <style name="SplashTheme" parent="Theme.TheLab.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!-- Login Theme -->
+    <style name="LoginTheme" parent="Theme.TheLab.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@transition/fade</item>
+        <item name="android:windowExitTransition">@transition/fade</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/change_image_transform
+        </item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/change_image_transform
+        </item>
+    </style>
+
+    <!-- Tab Theme -->
+    <style name="TabTheme" parent="TabStyleTheme.Base" />
+
+    <style name="TabStyleTheme.Base" parent="Theme.TheLab">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/tabColorPrimary</item>
+        <item name="colorPrimaryDark">@color/tabColorPrimaryDark</item>
+        <item name="colorAccent">@color/tabColorAccent</item>
+    </style>
+
+
+    <!-- Recycler Theme -->
+    <style name="RecyclerTheme" parent="RecyclerStyleTheme.Base" />
+
+    <style name="RecyclerStyleTheme.Base" parent="Theme.TheLab.NoActionBar">
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
+        <item name="android:windowContentTransitions">true</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/change_image_transform
+        </item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/change_image_transform
+        </item>
+    </style>
+
+
+    <!-- SwipeDown Theme -->
+    <style name="SwipeDownTheme" parent="SwipeDownStyleTheme.Base" />
+
+    <style name="SwipeDownStyleTheme.Base" parent="Theme.TheLab">
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="colorPrimary">@color/swipeDownColorPrimary</item>
+        <item name="colorPrimaryDark">@color/swipeDownColorPrimaryDark</item>
+        <item name="colorAccent">@color/swipeDownColorAccent</item>
+    </style>
+
+    <!--Location Theme-->
+    <style name="LocationTheme" parent="LocationStyleTheme.Base" />
+
+    <style name="LocationStyleTheme.Base" parent="Theme.TheLab">
+
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+
+        <item name="colorPrimary">@color/swipeDownColorPrimary</item>
+        <item name="colorPrimaryDark">@color/swipeDownColorPrimaryDark</item>
+        <item name="colorAccent">@color/swipeDownColorAccent</item>
+    </style>
+
+
+    <!-- Palette Theme -->
+    <style name="PaletteTheme" parent="PaletteStyleTheme.Base" />
+
+    <style name="PaletteStyleTheme.Base" parent="Theme.TheLab">
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="colorPrimary">@color/tabColorPrimary</item>
+        <item name="colorPrimaryDark">@color/tabColorPrimaryDark</item>
+        <item name="colorAccent">@color/tabColorAccent</item>
+        <item name="textAppearanceBody1">@color/black</item>
+
+    </style>
+
+
+    <!-- Filter ListView Theme -->
+    <style name="FilterListViewTheme" parent="FilterListViewStyleTheme.Base" />
+
+    <style name="FilterListViewStyleTheme.Base" parent="Theme.TheLab">
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="colorPrimary">@color/filterListViewColorPrimary</item>
+        <item name="colorPrimaryDark">@color/filterListViewColorPrimaryDark</item>
+        <item name="colorAccent">@color/filterListViewColorAccent</item>
+    </style>
+
+    <!-- Multi-Pane Theme -->
+    <style name="MultiPaneTheme" parent="MultiPaneStyleTheme.Base" />
+
+    <style name="MultiPaneStyleTheme.Base" parent="Theme.TheLab">
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="colorPrimary">@color/multiPaneColorPrimary</item>
+        <item name="colorPrimaryDark">@color/multiPaneColorPrimaryDark</item>
+        <item name="colorAccent">@color/multiPaneColorAccent</item>
+    </style>
+
+    <!-- Built-in WebView Theme -->
+    <style name="BuiltInWebViewTheme" parent="BuiltInWebViewStyleTheme.Base" />
+
+    <style name="BuiltInWebViewStyleTheme.Base" parent="Theme.TheLab">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/builtInWebViewColorPrimary</item>
+        <item name="colorPrimaryDark">@color/builtInWebViewColorPrimaryDark</item>
+        <item name="colorAccent">@color/builtInWebViewColorAccent</item>
+    </style>
+
+    <!-- Youtube Theme -->
+    <style name="YoutubeTheme" parent="YoutubeStyleTheme.Base" />
+
+    <style name="YoutubeStyleTheme.Base" parent="Theme.TheLab">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/swipeDownColorPrimary</item>
+        <item name="colorPrimaryDark">@color/swipeDownColorPrimaryDark</item>
+        <item name="colorAccent">@color/swipeDownColorAccent</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@transition/explode</item>
+        <item name="android:windowExitTransition">@transition/explode</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowContentTransitions">true</item>
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/change_image_transform
+        </item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/change_image_transform
+        </item>
+
+    </style>
+
+
+    <!-- Transition Theme -->
+    <style name="TransitionTheme" parent="TransitionStyleTheme.Base" />
+
+    <style name="TransitionStyleTheme.Base" parent="Theme.TheLab">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/adminDashboardColorPrimary</item>
+        <item name="colorPrimaryDark">@color/adminDashboardColorPrimaryDark</item>
+        <item name="colorAccent">@color/adminDashboardSelectedItemAccent</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
+        <item name="android:windowContentTransitions">true</item>
+        <!--         specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@transition/explode</item>
+        <item name="android:windowExitTransition">@transition/explode</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/change_bounds_transform
+        </item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/change_bounds_transform
+        </item>
+    </style>
+</resources>

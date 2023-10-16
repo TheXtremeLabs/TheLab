@@ -10,9 +10,9 @@ import android.os.Binder
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.riders.thelab.R
-import com.riders.thelab.core.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.core.utils.LabNotificationManager
-import com.riders.thelab.core.utils.UIManager
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
 import com.riders.thelab.utils.Constants
 import timber.log.Timber

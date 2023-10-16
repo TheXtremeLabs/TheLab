@@ -30,6 +30,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
             Timber.e("Should ask user for delete all preferences")
             true
         }
-
     }
 }

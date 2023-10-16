@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.local.model.Contact
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.contacts.ContactsActivity
 import dagger.hilt.android.lifecycle.HiltViewModel

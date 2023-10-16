@@ -1,5 +1,6 @@
 package com.riders.thelab.core.bus
 
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope.coroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -7,7 +8,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterIsInstance
 
-class KotlinBus private constructor() {
+object KotlinBus {
     private val _events = MutableSharedFlow<Any>()
     val events = _events.asSharedFlow()
 
@@ -16,7 +17,7 @@ class KotlinBus private constructor() {
     }
 
     /**
-     * wE first of all found all the methods from the child class,
+     * We first of all found all the methods from the child class,
      * then we identified those method who have Listen annotation to them.
      *
      * After that we just invoked those functions using Kotlin refection.
@@ -28,17 +29,5 @@ class KotlinBus private constructor() {
                 coroutineContext.ensureActive()
                 onEvent(event)
             }
-    }
-
-    companion object {
-        private var mInstance: KotlinBus? = null
-
-        fun getInstance(): KotlinBus {
-            if (null == mInstance) {
-                mInstance = KotlinBus()
-            }
-
-            return mInstance as KotlinBus
-        }
     }
 }

@@ -5,8 +5,8 @@ plugins {
 group = "com.riders.thelab.buildlogic"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
@@ -14,6 +14,10 @@ dependencies {
 
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.firebase.crashlytics.gradlePlugin)
+    compileOnly(libs.firebase.performances.gradlePlugin)
+    compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.ksp.gradlePlugin)
 }
 
 gradlePlugin {
@@ -53,6 +57,10 @@ gradlePlugin {
         register("androidHilt") {
             id = "thelab.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
+        }
+        register("androidRoom") {
+            id = "thelab.android.room"
+            implementationClass = "AndroidRoomConventionPlugin"
         }
         register("firebase") {
             id = "thelab.firebase"

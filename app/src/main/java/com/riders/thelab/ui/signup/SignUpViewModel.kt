@@ -4,11 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.remote.dto.ApiResponse
-import com.riders.thelab.data.remote.dto.UserDto
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.remote.dto.ApiResponse
+import com.riders.thelab.core.data.remote.dto.UserDto
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -67,7 +72,7 @@ class SignUpViewModel @Inject constructor(
                         Timber.d("$saveResponse")
 
                         // Simulate long-time running operation
-                        delay(3000)
+                        delay(3_000)
 
                         withContext(mainContext) {
                             if (401 == saveResponse.code) {

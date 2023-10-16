@@ -11,7 +11,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
-import com.riders.thelab.data.local.model.Video
+import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.databinding.RowYoutubeLikeItemBinding
 import timber.log.Timber
 

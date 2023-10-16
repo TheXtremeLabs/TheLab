@@ -2,14 +2,13 @@ package com.riders.thelab.ui.login
 
 import android.util.Patterns
 import androidx.compose.runtime.*
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.BuildConfig
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.local.model.compose.LoginUiState
-import com.riders.thelab.data.remote.dto.ApiResponse
-import com.riders.thelab.data.remote.dto.UserDto
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.compose.LoginUiState
+import com.riders.thelab.core.data.remote.dto.ApiResponse
+import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -22,7 +21,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val repository: IRepository
 ) : BaseViewModel() {
-    val list = listOf<String>("test", "mike", "chronopost", "john")
+    val list = listOf("test", "mike", "chronopost", "john")
 
     //////////////////////////////////////////
     // DataStore
@@ -58,7 +57,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private var _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.None)
-    val loginUiState = _loginUiState
+    val loginUiState: StateFlow<LoginUiState> = _loginUiState
 
     // Backing property to avoid state updates from other classes
     private val _networkState: MutableStateFlow<NetworkState> =
@@ -71,6 +70,14 @@ class LoginViewModel @Inject constructor(
     ////////////////////////////////////////
     // Composable methods
     ////////////////////////////////////////
+    fun updateLoginUiState(newState: LoginUiState) {
+        _loginUiState.value = newState
+    }
+
+    fun updateNetworkState(newState: NetworkState) {
+        _networkState.value = newState
+    }
+
     fun updateLogin(value: String) {
         login = value
     }
@@ -87,38 +94,18 @@ class LoginViewModel @Inject constructor(
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Timber.e(throwable.message)
+            Timber.e("coroutineExceptionHandler | ${throwable.message}")
 
-            _networkState.value = NetworkState.Disconnected(true)
+            updateNetworkState(NetworkState.Disconnected(true))
 
             val cs404: CharSequence = "404".subSequence(0, 3)
             val cs503: CharSequence = "503".subSequence(0, 3)
             if (throwable.message?.contains(cs404, true) == true
                 || throwable.message?.contains(cs503, true) == true
             ) {
-                _loginUiState.value = LoginUiState.Error(ApiResponse("", 404, null))
+                //updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
             }
         }
-
-    init {
-        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
-            //try {
-            //  supervisorScope {
-            Timber.d("getApi()")
-            val response = repository.getApi()
-            Timber.d("$response")
-
-            _networkState.value = NetworkState.Available(true)
-        }
-        /*} catch (e: Exception) {
-            e.printStackTrace()
-            Timber.e(e.message)
-
-            _networkState.value = NetworkState.Disconnected(true)
-        }
-    }*/
-    }
-
 
     ///////////////
     //
@@ -135,7 +122,6 @@ class LoginViewModel @Inject constructor(
     // Functions
     //
     ///////////////
-
     /**
      * logging in user. Will make http post request with name, email
      * as parameters
@@ -161,7 +147,7 @@ class LoginViewModel @Inject constructor(
             return
         }
 
-        _loginUiState.value = LoginUiState.Loading
+        updateLoginUiState(LoginUiState.Connecting)
 
         makeCallLogin(login, password)
     }
@@ -171,6 +157,17 @@ class LoginViewModel @Inject constructor(
         login.trim().isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(login).matches()
 
     fun isValidPassword() = password.trim().isNotEmpty() && password.length >= 4
+
+    fun getApi() {
+        Timber.d("getApi()")
+        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
+            Timber.d("getApi()")
+            val response = repository.getApi()
+            Timber.d("$response")
+
+            updateNetworkState(NetworkState.Available(true))
+        }
+    }
 
     fun makeCallLogin(email: String, password: String) {
         Timber.d("makeCallLogin() - with $email and $password")
@@ -196,7 +193,9 @@ class LoginViewModel @Inject constructor(
             // Use of the database to store and log users
 
             // Force response
-            _loginUiState.value = LoginUiState.Error(ApiResponse("", 404, null))
+            Timber.e("Force response error: Due to Heroku back-end free services ending.")
+            updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
+
             // }
             /*} catch (e: Exception) {
                 e.printStackTrace()

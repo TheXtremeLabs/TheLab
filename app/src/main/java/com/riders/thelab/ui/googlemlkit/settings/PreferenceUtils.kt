@@ -52,6 +52,7 @@ object PreferenceUtils {
             R.string.pref_key_confirmation_time_in_auto_search,
             1500
         )
+
         else -> getIntPref(context, R.string.pref_key_confirmation_time_in_manual_search, 500)
     }
 

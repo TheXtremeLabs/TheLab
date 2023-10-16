@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.riders.thelab.R
-import com.riders.thelab.data.local.model.Download
+import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.databinding.ActivityDownloadBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -86,8 +86,10 @@ class DownloadActivity
                     Timber.d("${it.error}")
                     showDownloadError("Error ! Download Failed")
                 }
+
                 is Download.Finished -> { // Ignored
                 }
+
                 is Download.Progress -> { // Ignored
                 }
             }
@@ -102,7 +104,7 @@ class DownloadActivity
         lifecycleScope.launch(coroutineContext) {
             try {
                 supervisorScope {
-                    mViewModel.downloadFile()
+                    mViewModel.downloadFile(this@DownloadActivity)
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()

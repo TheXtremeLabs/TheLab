@@ -1,10 +1,11 @@
 package com.riders.thelab.ui.download
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.riders.thelab.data.IRepository
-import com.riders.thelab.data.local.model.Download
+import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.Download
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,11 +29,10 @@ class DownloadViewModel @Inject constructor(
     }
 
 
-    suspend fun downloadFile() {
+    suspend fun downloadFile(context: Context) {
         Timber.d("downloadFile()")
-        repository.getBulkDownload()
+        repository.getBulkDownload(context)
             .collect { download ->
-
                 withContext(Dispatchers.Main) {
                     when (download) {
                         is Download.Started -> {

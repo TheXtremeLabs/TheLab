@@ -13,9 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.previewprovider.IslandStatePreviewProvider
-import com.riders.thelab.data.local.model.compose.IslandState
+import com.riders.thelab.core.data.local.model.compose.IslandState
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.FaceUnlock
+import com.riders.thelab.core.ui.compose.component.LeadingContent
+import com.riders.thelab.core.ui.compose.component.TrailingContent
+import com.riders.thelab.core.ui.compose.component.Welcome
+import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 
 @Composable

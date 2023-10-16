@@ -3,7 +3,7 @@ package com.riders.thelab.core.utils
 import android.content.Context
 import android.content.SharedPreferences
 
-class LabPreferenceManager(context: Context?) {
+class LabPreferenceManager(context: Context) {
     companion object {
 
         // Sharedpref file name

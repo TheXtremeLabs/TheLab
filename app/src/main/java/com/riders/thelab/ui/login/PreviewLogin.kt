@@ -1,18 +1,33 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.riders.thelab.ui.login
 
+import android.annotation.SuppressLint
 import android.text.Html
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -25,17 +40,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.R
-import com.riders.thelab.core.compose.annotation.DevicePreviews
-import com.riders.thelab.core.compose.ui.theme.Shapes
-import com.riders.thelab.core.compose.ui.theme.TheLabTheme
-import com.riders.thelab.core.compose.utils.findActivity
-import com.riders.thelab.data.local.model.compose.LoginUiState
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.data.local.model.compose.LoginUiState
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.Shapes
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.navigator.Navigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
+@SuppressLint("NewApi")
 @Composable
 fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: Navigator) {
 
@@ -66,8 +82,7 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
                     verticalArrangement = Arrangement.Center
                 ) {
                     Card(
-                        modifier = Modifier
-                            .size(96.dp),
+                        modifier = Modifier.size(96.dp),
                         shape = Shapes.large,
                         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.ic_lab_twelve_background))
                     ) {
@@ -85,7 +100,7 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
                 AnimatedVisibility(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
-                        .align(CenterHorizontally),
+                        .align(Alignment.CenterHorizontally),
                     visible = if (LocalInspectionMode.current) true else versionVisibility.value,
                     exit = fadeOut()
                 ) {
@@ -128,13 +143,16 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
                     ) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
-                            text =
-                            Html
-                                .fromHtml(
-                                    stringResource(id = R.string.no_account_register),
-                                    Html.FROM_HTML_MODE_LEGACY
-                                )
-                                .toString(),
+                            text = if (!LabCompatibilityManager.isNougat()) {
+                                stringResource(id = R.string.no_account_register)
+                            } else {
+                                Html
+                                    .fromHtml(
+                                        stringResource(id = R.string.no_account_register),
+                                        Html.FROM_HTML_MODE_LEGACY
+                                    )
+                                    .toString()
+                            },
                             color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
                             textAlign = TextAlign.Center
                         )
@@ -151,12 +169,13 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
             delay(200L)
             formVisibility.value = true
             registerVisibility.value = true
+
+            viewModel.login()
         }
     }
 
     if (loginUiState is LoginUiState.Error) {
         LaunchedEffect(Unit) {
-            delay(TimeUnit.SECONDS.toMillis(3))
             callMainActivity(activity, navigator)
         }
     }

@@ -15,9 +15,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
+import com.riders.thelab.core.ui.data.SnackBarType
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.core.utils.BrowserUtils
-import com.riders.thelab.core.utils.UIManager
-import com.riders.thelab.data.local.bean.SnackBarType
 import com.riders.thelab.databinding.ActivityBuiltInBrowserBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -132,7 +132,7 @@ class BuiltInBrowserActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if (item.itemId == R.id.home) {
+        if (item.itemId == android.R.id.home) {
             finish()
         }
         if (item.itemId == R.id.action_bookmark) {
@@ -149,7 +149,6 @@ class BuiltInBrowserActivity : AppCompatActivity() {
 
             UIManager.showActionInSnackBar(
                 this,
-                viewBinding.mainContent,
                 msg,
                 SnackBarType.NORMAL,
                 "",

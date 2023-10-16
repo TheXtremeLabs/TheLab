@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+    <!--<color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>-->
+
+
+    <color name="transparent">#00000000</color>
+
+    <!-- Palette -->
+    <color name="black">#000000</color>
+    <color name="dark_grey">#121212</color>
+    <color name="default_dark">#1E1E1E</color>
+    <color name="jet">#222222</color>
+    <color name="carbon">#2D2D2D</color>
+    <color name="petrol">#323232</color>
+    <color name="oil">#333333</color>
+    <color name="black_panther">#444444</color>
+    <color name="panther">#505050</color>
+    <color name="hawk">#555555</color>
+    <color name="sail">#666666</color>
+    <color name="monsoon">#777777</color>
+    <color name="jumbo">#888888</color>
+    <color name="aluminum">#999999</color>
+    <color name="base">#AAAAAA</color>
+    <color name="iron">#CCCCCC</color>
+    <color name="iron_light">#DDDDDD</color>
+    <color name="light">#EEEEEE</color>
+    <color name="white">#ffffff</color>
+
+
+    <!-- Google palette -->
+    <color name="blue_grey_500">#607D8B</color>
+    <color name="blue_grey_600">#546E7A</color>
+    <color name="blue_grey_700">#455A64</color>
+    <color name="blue_grey_800">#37474F</color>
+    <color name="blue_grey_900">#263238</color>
+
+
+    <color name="red">#CF3B0A</color>
+    <color name="blue">#0A9ECF</color>
+    <color name="green">#00A424</color>
+    <color name="orange">#D95C00</color>
+    <color name="purple">#650ACF</color>
+    <color name="yellow">#FFEB3B</color>
+
+
+    <color name="list_divider">#dedede</color>
+
+    <!-- Splash Layout -->
+    <color name="ball1">#FFD91C</color>
+    <color name="ball2">#FF4B4A</color>
+    <color name="ball3">#3D8EFF</color>
+    <color name="ball4">#43A047</color>
+
+    <integer-array name="splashBallsColors">
+        <item>@color/ball1</item>
+        <item>@color/ball2</item>
+        <item>@color/ball3</item>
+        <item>@color/ball4</item>
+    </integer-array>
+
+    <array name="hello_google_custom">
+        <item>@color/ball1</item>
+        <item>@color/ball2</item>
+        <item>@color/ball3</item>
+        <item>@color/ball4</item>
+    </array>
+
+    <color name="splashProgressbarTint">#2750FF</color>
+
+
+    <!-- Tab Layout-->
+    <color name="tabColorPrimary">#125688</color>
+    <color name="tabColorPrimaryDark">#125688</color>
+    <color name="windowBackground">#ffffff</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="tabColorAccent">#c8e8ff</color>
+
+
+    <!--SwipeDown Refresh-->
+    <color name="swipeDownColorPrimary">#d32f2f</color>
+    <color name="swipeDownColorPrimaryDark">#b71c1c</color>
+    <color name="swipeDownColorAccent">#ef5350</color>
+    <color name="swipeDownWindowBackground">#ffffff</color>
+
+    <string-array name="movie_serial_background">
+        <item>#24c6d5</item>
+        <item>#57dd86</item>
+        <item>#ad7dcf</item>
+        <item>#ff484d</item>
+        <item>#fcba59</item>
+        <item>#24c6d5</item>
+    </string-array>
+
+
+    <!-- Location-->
+    <color name="locationColorPrimary">#d32f2f</color>
+    <color name="locationColorPrimaryDark">#b71c1c</color>
+    <color name="locationColorAccent">#ef5350</color>
+    <color name="view_bg">#b20e0f</color>
+    <color name="btn_bg">#3e4a56</color>
+
+
+    <!-- Filter ListView -->
+    <color name="filterListViewColorPrimary">#FB8C00</color>
+    <color name="filterListViewColorPrimaryDark">#EF6C00</color>
+    <color name="filterListViewColorAccent">#FFCC80</color>
+
+
+    <!-- Fragment Multi-Pane -->
+    <color name="multiPaneColorPrimary">#9c27b0</color>
+    <color name="multiPaneColorPrimaryDark">#7b1fa2</color>
+    <color name="multiPaneColorAccent">#ba68c8</color>
+    <color name="year">#999999</color>
+    <color name="title">#222222</color>
+
+
+    <!-- Contacts with Database -->
+    <color name="contactsDatabaseColorPrimary">#43A047</color>
+    <color name="contactsDatabaseColorPrimaryDark">#2E7D32</color>
+    <color name="contactsDatabaseColorAccent">#81C784</color>
+    <color name="contactsDatabase_view_bg">#EEEEEE</color>
+    <color name="first_name">#999999</color>
+    <color name="name">#222222</color>
+    <color name="bg_row_background">#fa315b</color>
+
+    <!-- Admin Splash Activity -->
+    <color name="admin_splash_bg">#0C5DA5</color>
+
+
+    <!-- Admin Dashboard Activity -->
+    <color name="adminDashboardColorPrimary">#00BCD4</color>
+    <color name="adminDashboardColorPrimaryDark">#0097A7</color>
+    <color name="adminDashboardColorAccent">#81C784</color>
+    <color name="adminDashboardSelectedItemAccent">#FFEB3B</color>
+    <color name="adminDashboardSelectedItemAccentTranslucent">#80FFEB3B</color>
+    <color name="adminDashboardSelectedItemAccentBright">#FFF493</color>
+    <color name="adminDashboardRelative_bg">#55656C</color>
+
+    <!-- Recycler Basics Activity -->
+    <color name="selected_overlay">#00BCD4</color>
+
+    <!-- Built-in WebView Activity -->
+    <color name="builtInWebViewColorPrimary">#5f50e1</color>
+    <color name="builtInWebViewColorPrimaryDark">#4432b9</color>
+    <color name="builtInWebViewColorAccent">#FF4081</color>
+
+
+    <color name="bg_gradient_start">#31244e</color>
+    <color name="bg_gradient_end">#6b394c</color>
+
+
+    <color name="success">#43A047</color>
+    <color name="warning">#FB8C00</color>
+    <color name="error">#d32f2f</color>
+
+    <color name="login_connection_button">#20adbc</color>
+
+    <color name="headers">#a07be0</color>
+    <color name="card_header">#7a69e9</color>
+
+    <color name="chatbot_user_message_background">#393c8c</color>
+
+    <color name="background_row_root_cause">#5d56aa</color>
+    <color name="background_row_action_selected">#12798a</color>
+
+
+    <!-- Vector drawables -->
+
+    <!-- Handwriting -->
+    <color name="indigo_400">#5C6BC0</color>
+    <color name="cyan_a100">#84FFFF</color>
+    <color name="pink_500">#E91E63</color>
+    <color name="cyan_300">#4DD0E1</color>
+
+
+    <!-- Screens background color-->
+    <color name="bg_screen1">#f64c73</color>
+    <color name="bg_screen2">#20d2bb</color>
+    <color name="bg_screen3">#3395ff</color>
+    <color name="bg_screen4">#c873f4</color>
+
+
+    <!-- Google ML Kit -->
+    <color name="lighter_grey">#DDDDDD</color>
+    <color name="dark">#9A000000</color>
+    <color name="home_page_mode_item_subtitle">#CCFFFFFF</color>
+    <color name="reticle_ripple">#9AFFFFFF</color>
+    <color name="bounding_box_gradient_start">#00FFFFFF</color>
+    <color name="bounding_box_gradient_end">@color/white</color>
+    <color name="object_detected_bg_gradient_start">#00000000</color>
+    <color name="object_detected_bg_gradient_end">#66000000</color>
+    <color name="object_confirmed_bg_gradient_start">#40000000</color>
+    <color name="object_confirmed_bg_gradient_end">#A0000000</color>
+    <color name="object_reticle_outer_ring_fill">#1F000000</color>
+    <color name="object_reticle_outer_ring_stroke">#9AFFFFFF</color>
+    <color name="object_reticle_inner_ring">@color/white</color>
+    <color name="barcode_reticle_background">#99000000</color>
+    <color name="barcode_reticle_stroke">#40000000</color>
+    <color name="barcode_field_value">#797979</color>
+    <color name="barcode_field_box_stroke">#757575</color>
+    <color name="product_description">#5F6368</color>
+
+
+</resources>
