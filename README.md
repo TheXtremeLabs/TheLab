@@ -38,7 +38,7 @@ principles.
 
 * [***Material Design***](https://github.com/MichaelStH/MaterialDesignFeatures)
 * [***Testing***](https://github.com/MichaelStH/Testing/tree/develop)
-* [***TheKoLab***](https://github.com/LVMVRQUXL/thekolab/tree/master) (
+* [***TheKoLab***](https://github.com/TheXtremeLabs/TheKoLab) (
   Repository created and maintained by LAMARQUE Loïc ([*@LVMVRQUXL*](https://github.com/LVMVRQUXL)
   on *Github*))
 
