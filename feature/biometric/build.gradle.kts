@@ -27,7 +27,7 @@ dependencies {
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
-    implementation(platform(libs.kotlin.bom))
+    // implementation(platform(libs.kotlin.bom))
 
     // AndroidX
     implementation(libs.androidx.core.ktx)

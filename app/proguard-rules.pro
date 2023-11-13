@@ -23,3 +23,14 @@
 -keepclassmembers class * extends androidx.work.Worker {
     public <init>(android.content.Context,androidx.work.WorkerParameters);
 }
+
+# Jackson
+-dontwarn com.fasterxml.jackson.databind.deser.std.StdDeserializer
+-dontwarn com.fasterxml.jackson.databind.ser.std.StdSerializer
+
+# Net HTTP
+-dontwarn android.net.http.**
+
+# Apache HTTP
+-keep class org.apache.http.** { *; }
+-dontwarn org.apache.http.**
