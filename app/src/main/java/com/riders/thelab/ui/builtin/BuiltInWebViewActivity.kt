@@ -50,6 +50,7 @@ class BuiltInWebViewActivity : AppCompatActivity() {
     private fun initWebView() {
         viewBinding.contentBuiltInWebview.builtInWebView.webChromeClient = MyWebChromeClient(this)
         viewBinding.contentBuiltInWebview.builtInWebView.webViewClient = object : WebViewClient() {
+            @Deprecated("Deprecated in Java")
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 /**
                  * Check for the url, if the url is from same domain

@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.bluetooth
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
@@ -14,12 +15,16 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.ListView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.riders.thelab.R
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.databinding.ActivityBluetoothBinding
 import timber.log.Timber
+
 
 class BluetoothActivity : AppCompatActivity(),
     CompoundButton.OnCheckedChangeListener, View.OnClickListener {
@@ -35,10 +40,21 @@ class BluetoothActivity : AppCompatActivity(),
     private lateinit var bluetoothManager: BluetoothManager
     private lateinit var bluetoothDevicesSearchList: ArrayList<String>
 
+    var activityResultLauncher = registerForActivityResult<Intent, ActivityResult>(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+        if (result.resultCode == RESULT_OK) {
+            Timber.d("OK")
+            // There are no request codes
+            val data = result.data
+            mViewModel.fetchBoundedDevices(bluetoothManager)
+        }
+    }
 
     // Create a BroadcastReceiver for ACTION_FOUND.
     private val receiver = object : BroadcastReceiver() {
 
+        @SuppressLint("MissingPermission")
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action.toString()) {
                 BluetoothDevice.ACTION_FOUND -> {
@@ -167,7 +183,12 @@ class BluetoothActivity : AppCompatActivity(),
         initSwitch()
         initButton()
 
-        mViewModel.fetchBoundedDevices(bluetoothManager)
+        if (LabCompatibilityManager.isTiramisu()) {
+            val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            activityResultLauncher.launch(intent)
+        } else {
+            mViewModel.fetchBoundedDevices(bluetoothManager)
+        }
     }
 
     override fun onResume() {
@@ -216,7 +237,7 @@ class BluetoothActivity : AppCompatActivity(),
     }
 
     private fun initViewModelsObservers() {
-        mViewModel.getBluetoothEnabled().observe(this, {
+        mViewModel.getBluetoothEnabled().observe(this) {
             Timber.d("getBluetoothEnabled().observe : $it")
             binding.switchBluetooth.isChecked = it
             binding.switchBluetooth.text =
@@ -233,16 +254,16 @@ class BluetoothActivity : AppCompatActivity(),
                 )!!,
                 it
             )
-        })
+        }
 
-        mViewModel.getBoundedDevices().observe(this, {
+        mViewModel.getBoundedDevices().observe(this) {
             if (it.isEmpty()) {
                 Timber.e("Bluetooth bounded devices size = 0")
 
             } else {
                 bindListView(binding.lvBoundedDevices, it)
             }
-        })
+        }
     }
 
     private fun initSwitch() {
@@ -291,6 +312,7 @@ class BluetoothActivity : AppCompatActivity(),
         }
     }
 
+    @SuppressLint("MissingPermission")
     override fun onClick(view: View?) {
         when (view?.id) {
 

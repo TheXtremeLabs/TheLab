@@ -29,9 +29,7 @@ object Validator {
      * @param <T>  Generic list Object
      * @return The result of test
     </T> */
-    fun <T> isNullOrEmpty(list: Collection<T>): Boolean {
-        return list == null || list.isEmpty()
-    }
+    fun <T> isNullOrEmpty(list: Collection<T>): Boolean = list.isEmpty()
 
     /**
      * Verify if String is full numeric

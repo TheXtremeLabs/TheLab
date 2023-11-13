@@ -64,7 +64,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
 
                 // Step 1 : Unzip
                 val unzippedGZipResult = LabFileManager.unzipGzip(responseFile)
-                if (Validator.isEmpty(unzippedGZipResult)) {
+                if (unzippedGZipResult?.isEmpty() == true) {
                     Timber.e("String unzippedGZipResult is empty")
                     return Result.failure()
                 }

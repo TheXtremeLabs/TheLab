@@ -3,6 +3,8 @@ package com.riders.thelab.feature.biometric.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MenuItem
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +15,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
@@ -45,6 +48,26 @@ class BiometricActivity : FragmentActivity() {
 
         Timber.d("Fingerprint hardware ok")
 
+        if (LabCompatibilityManager.isTiramisu()) {
+            // Handle onBackPressed for Android 13+
+            onBackInvokedDispatcher
+                .registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
+                    Timber.e("Android 13+ onBackInvokedDispatcher | OnBackInvokedDispatcher.registerOnBackInvokedCallback()")
+                    backPressed()
+                }
+        } else {
+            onBackPressedDispatcher
+                .addCallback(
+                    this,
+                    object : OnBackPressedCallback(true) {
+                        override fun handleOnBackPressed() {
+                            Timber.e("Android 13- onBackPressedDispatcher | OnBackPressedCallback.handleOnBackPressed() | finish()")
+                            // Back is pressed... Finishing the activity
+                            backPressed()
+                        }
+                    })
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
@@ -65,10 +88,14 @@ class BiometricActivity : FragmentActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                backPressed()
             }
         }
         return true
+    }
+
+    private fun backPressed() {
+
     }
 
 
