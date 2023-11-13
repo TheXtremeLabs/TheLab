@@ -19,10 +19,10 @@ import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
 import com.riders.thelab.core.data.remote.dto.ApiResponse
-import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
+import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -113,7 +113,7 @@ class ApiImpl @Inject constructor(
     override suspend fun getBulkDownload(context: Context): Flow<Download> =
         mWeatherBulkApiService.getCitiesGZipFile()
             .downloadCitiesFile(
-                context.externalCacheDir!!,
+                context.filesDir!!,
                 "my_file"
             )
 
@@ -150,6 +150,8 @@ class ApiImpl @Inject constructor(
                         outputStream.write(data, 0, bytes)
                         progressBytes += bytes
 
+                        val progress = ((progressBytes * 100) / totalBytes).toInt()
+                        Timber.d("downloadToFileWithProgress() | progress: $progress")
                         emit(Download.Progress(percent = ((progressBytes * 100) / totalBytes).toInt()))
                     }
 
@@ -198,7 +200,9 @@ class ApiImpl @Inject constructor(
     override suspend fun getToken(
         clientId: String,
         clientSecret: String
-    ): SpotifyToken = mSpotifyAccountApiService.getToken(clientId = clientId, clientSecret = clientSecret)
+    ): SpotifyToken =
+        mSpotifyAccountApiService.getToken(clientId = clientId, clientSecret = clientSecret)
 
-    override suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse = mSpotifyApiService.getTrackInfo(bearerToken, trackId)
+    override suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse =
+        mSpotifyApiService.getTrackInfo(bearerToken, trackId)
 }
