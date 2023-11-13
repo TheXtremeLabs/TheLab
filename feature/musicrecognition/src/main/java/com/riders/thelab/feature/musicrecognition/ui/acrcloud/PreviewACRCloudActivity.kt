@@ -170,6 +170,19 @@ fun Searching(viewModel: ACRCloudViewModel) {
 }
 
 @Composable
+fun RecognitionError() {
+    TheLabTheme {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(text = "An error occurred while processing audio data. Please retry.")
+        }
+    }
+}
+
+@Composable
 fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.RecognitionSuccessful) {
     val expanded = remember { mutableStateOf(false) }
 
@@ -370,7 +383,7 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
             }
         ) { contentPadding ->
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                if (!isConnected!!) {
+                if (null == isConnected || isConnected?.equals(false) == true) {
                     NoConnection()
                 } else {
                     Column(
@@ -414,7 +427,11 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                                     RecognitionResult(viewModel = viewModel, state = targetState)
                                 }
 
-                                else -> {
+                                is ACRUiState.RecognitionError -> {
+                                    RecognitionError()
+                                }
+
+                                is ACRUiState.Error -> {
                                     ACRError(viewModel = viewModel)
                                 }
                             }
@@ -517,6 +534,12 @@ fun PreviewRecognitionResult() {
             state = ACRUiState.RecognitionSuccessful(songFetched = Song.mock)
         )
     }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewRecognitionError() {
+    TheLabTheme { RecognitionError() }
 }
 
 @DevicePreviews
