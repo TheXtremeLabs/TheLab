@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterIsInstance
 
+@DelicateCoroutinesApi
 object KotlinBus {
     private val _events = MutableSharedFlow<Any>()
     val events = _events.asSharedFlow()

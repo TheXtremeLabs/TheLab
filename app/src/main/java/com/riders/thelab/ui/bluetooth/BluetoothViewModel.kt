@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.bluetooth
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,6 +21,7 @@ class BluetoothViewModel : ViewModel() {
         return boundedDevices
     }
 
+    @SuppressLint("MissingPermission")
     fun setBluetooth(bluetoothManager: BluetoothManager, enable: Boolean) {
 
         val isEnabled = bluetoothManager.adapter.isEnabled

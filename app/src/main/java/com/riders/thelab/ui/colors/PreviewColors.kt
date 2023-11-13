@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,21 +33,8 @@ fun Color() {
 
     // get current Context and coroutineScope
     val colorActivity = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
 
-    // Get colors values in order to take a random
-    val colors = LabColorsManager.getDefaultColors()
-
-    // Get a random color
-    fun getRandomColor(excludeColor: Int? = null): Int = colors.filterNot { it == excludeColor }
-        .random()
-
-    // use of lambda
-    val randomColor: (Int?) -> Int = { excludeColor ->
-        colors.filterNot { it == excludeColor }.random()
-    }
-
-    val firstRandomColor = getRandomColor()
+    val firstRandomColor = LabColorsManager.getRandomColor()
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -54,8 +42,6 @@ fun Color() {
 
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-
-    /*if (isPressed) colors[Random().nextInt(colors.size)] else MaterialTheme.colorScheme.primary*/
 
     Scaffold(
         topBar = {
@@ -75,7 +61,7 @@ fun Color() {
                         )
                     }
                 },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(androidx.compose.ui.graphics.Color.Black)
+                colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Black)
             )
         }) { contentPadding ->
         // Screen content
@@ -100,9 +86,8 @@ fun Color() {
 
             AnimatedVisibility(visible = expanded) {
                 Button(
-                    onClick = { colorState.value = getRandomColor(colorState.value) },
-                    modifier = Modifier
-                        .padding(8.dp),
+                    onClick = { colorState.value = LabColorsManager.getRandomColor(colorState.value) },
+                    modifier = Modifier.padding(8.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = colorState.value)),
                     shape = RoundedCornerShape(16.dp),
                     interactionSource = interactionSource
@@ -116,10 +101,8 @@ fun Color() {
         }
     }
 
-    run {
-        coroutineScope.launch {
-            delay(300)
-            expanded = !expanded
-        }
+    LaunchedEffect(key1 = Unit) {
+        delay(300)
+        expanded = !expanded
     }
 }

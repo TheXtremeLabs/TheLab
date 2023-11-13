@@ -25,7 +25,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 defaultConfig.versionCode = AndroidConfiguration.Application.code
                 defaultConfig.versionName = AndroidConfiguration.Application.version.toString()
                 // configureFlavors(this)
-                configureTimber(this)
+                configureTimber()
             }
             extensions.configure<ApplicationAndroidComponentsExtension> {
                 configurePrintApksTask(this)

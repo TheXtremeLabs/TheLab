@@ -75,7 +75,6 @@ fun BiometricPromptContainer(
 fun BiometricContent(viewModel: BiometricViewModel) {
     val uiState: LoginUiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val context = LocalContext.current
     // Create the state
     val promptContainerState = rememberPromptContainerState()
     // we will see later this part. However crypto object should be provided via our view model

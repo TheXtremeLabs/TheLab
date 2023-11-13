@@ -23,7 +23,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = AndroidConfiguration.Sdk.target
                 // configureFlavors(this)
-                configureTimber(this)
+                configureTimber()
             }
             extensions.configure<LibraryAndroidComponentsExtension> {
                 configurePrintApksTask(this)
