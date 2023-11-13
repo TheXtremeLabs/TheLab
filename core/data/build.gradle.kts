@@ -11,8 +11,6 @@ plugins {
 
 android {
 
-    useLibrary("org.apache.http.legacy")
-
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -72,7 +70,7 @@ dependencies {
     api(libs.okhttp)
     api(libs.okhttp.logging)
 
-    api("org.apache.httpcomponents:httpcore:4.4.15")
+    // api("org.apache.httpcomponents:httpcore:4.4.15")
 
     // Moshi
     api(libs.moshi)

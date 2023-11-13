@@ -45,7 +45,7 @@ fun MetaContainer(
     if (!LabCompatibilityManager.isTiramisu()) {
         Box(
             modifier.background(Color.Transparent),
-            content = content,
+            content = content
         )
     } else {
         val metaShader = remember { RuntimeShader(ShaderSource) }
@@ -58,7 +58,7 @@ fun MetaContainer(
                         .createRuntimeShaderEffect(metaShader, "composable")
                         .asComposeRenderEffect()
                 },
-            content = content,
+            content = content
         )
     }
 }

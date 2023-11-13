@@ -26,8 +26,6 @@ android {
      */
     // compileSdk = ConfigData.compileSdkVersion
 
-    useLibrary("org.apache.http.legacy")
-
     ndkVersion = "21.3.6528147"
 
     defaultConfig {
@@ -118,6 +116,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:testing"))
     implementation(project(":feature:biometric"))
+    implementation(project(":feature:kat"))
     implementation(project(":feature:musicrecognition"))
     implementation(project(":feature:weather"))
 
