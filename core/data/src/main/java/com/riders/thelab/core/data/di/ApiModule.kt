@@ -15,6 +15,7 @@ import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
 import com.riders.thelab.core.data.remote.dto.artist.ArtistsResponseJsonAdapter
 import com.riders.thelab.core.data.utils.Constants
+import com.riders.thelab.core.data.utils.Headers
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -30,7 +31,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-import org.apache.http.HttpHeaders
 import retrofit2.Retrofit
 import timber.log.Timber
 import java.util.Objects
@@ -38,10 +38,10 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
+
 @Module
 @InstallIn(SingletonComponent::class)
 internal object ApiModule {
-
     @Provides
     fun provideOkHttpLogger(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor { message: String -> Timber.tag("OkHttp").d(message) }
@@ -88,12 +88,9 @@ internal object ApiModule {
                     url?.let {
                         requestBuilder = original.newBuilder()
                             .url(it)
-                            .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
-                            .header(
-                                HttpHeaders.CONNECTION,
-                                "close"
-                            ) //.header(HttpHeaders.CONTENT_TYPE, "application/json")
-                            .header(HttpHeaders.ACCEPT_ENCODING, "Identity")
+                            .header(Headers.CONTENT_TYPE.value, "application/json; charset=utf-8")
+                            .header(Headers.CONNECTION.value, "close")
+                            .header(Headers.ACCEPT_ENCODING.value, "Identity")
 
                     }
                 } else {
@@ -103,11 +100,11 @@ internal object ApiModule {
                     url?.let {
                         requestBuilder = original.newBuilder()
                             .url(it)
-                            .header(HttpHeaders.CONTENT_TYPE, "text/plain")
-                            .header(HttpHeaders.CONNECTION, "close")
-                            .header(HttpHeaders.CACHE_CONTROL, "max-age=60")
-                            .header(HttpHeaders.ACCEPT_RANGES, "bytes")
-                            .header(HttpHeaders.ACCEPT_ENCODING, "Identity")
+                            .header(Headers.CONTENT_TYPE.value, "text/plain")
+                            .header(Headers.CONNECTION.value, "close")
+                            .header(Headers.CACHE_CONTROL.value, "max-age=60")
+                            .header(Headers.ACCEPT_RANGES.value, "bytes")
+                            .header(Headers.ACCEPT_ENCODING.value, "Identity")
                     }
                 }
                 val request = requestBuilder?.build()
@@ -147,9 +144,9 @@ internal object ApiModule {
                 val original = chain.request()
                 // Customize the request
                 val request = original.newBuilder()
-                    .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
-                    .header(HttpHeaders.CONNECTION, "close")
-                    .header(HttpHeaders.ACCEPT_ENCODING, "Identity")
+                    .header(Headers.CONTENT_TYPE.value, "application/json; charset=utf-8")
+                    .header(Headers.CONNECTION.value, "close")
+                    .header(Headers.ACCEPT_ENCODING.value, "Identity")
                     .build()
                 val response = chain.proceed(request)
                 response.cacheResponse
@@ -180,9 +177,7 @@ internal object ApiModule {
             .baseUrl(url)
             .client(provideOkHttp())
             //.addConverterFactory(MoshiConverterFactory.create())
-            .addConverterFactory(Json{
-                ignoreUnknownKeys = true
-            }.asConverterFactory(contentType))
+            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
 
@@ -190,14 +185,14 @@ internal object ApiModule {
     @Singleton
     fun provideRetrofitArtists(url: String): Retrofit {
         val contentType = "application/json".toMediaType()
-        val moshi = Moshi.Builder()
+        /*val moshi = Moshi.Builder()
             .add(ArtistsResponseJsonAdapter())
-            .build()
+            .build()*/
         return Retrofit.Builder()
             .baseUrl(url)
             .client(provideOkHttpArtists())
 //            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .addConverterFactory(Json.asConverterFactory(contentType))
+            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
 
@@ -210,9 +205,7 @@ internal object ApiModule {
             .baseUrl(url)
             .client(provideWeatherOkHttp(context))
             //.addConverterFactory(MoshiConverterFactory.create())
-            .addConverterFactory(Json {
-                ignoreUnknownKeys = true
-            }.asConverterFactory(contentType))
+            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
 
