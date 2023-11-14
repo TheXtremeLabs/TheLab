@@ -217,8 +217,9 @@ object LabDeviceManager {
             if (file.exists()) {
                 return true
             }
-        } catch (e1: Exception) {
+        } catch (exception: Exception) {
             // ignore
+            exception.printStackTrace()
         }
 
         // try executing commands

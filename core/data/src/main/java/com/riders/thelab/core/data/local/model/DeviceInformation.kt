@@ -1,19 +1,19 @@
 package com.riders.thelab.core.data.local.model
 
-data class DeviceInformation constructor(
-    var name: String,
-    var brand: String,
-    var model: String,
-    var serial: String,
-    var fingerPrint: String,
-    var hardware: String,
-    var IMEI: String,
-    var id: String,
-    var screenWidth: Int = 0,
-    var screenHeight: Int = 0,
+data class DeviceInformation(
+    val name: String,
+    val brand: String,
+    val model: String,
+    val serial: String,
+    val fingerPrint: String,
+    val hardware: String,
+    val IMEI: String,
+    val id: String,
+    val screenWidth: Int = 0,
+    val screenHeight: Int = 0,
 
-    var androidVersionName: String,
-    var sdkVersion: Int = 0,
-    var androidRelease: String,
-    var rooted: Boolean = false
+    val androidVersionName: String,
+    val sdkVersion: Int = 0,
+    val androidRelease: String,
+    val rooted: Boolean = false
 )
