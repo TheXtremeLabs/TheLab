@@ -4,14 +4,12 @@
 [![Kotlin][kotlin-badge]][kotlin]
 [![kotlinx.serialization][kotlinx.serialization-badge]][kotlinx.serialization]
 
-## Description
-
 TheLab is the third version of ***Material Design***, an *Android* application originally developed
 to show several use-cases of Google's Android Material Design components such as (CardView,
 RecyclerView, so on and so forth), it's implementing now the new Jetpack Compose.
 
 It turns out to a "Lab App", where multiples libraries and use-cases are developed and tested in
-this app (biometric section, speech-to-text, floating widgets and more)
+this app (biometric section, speech-to-text, floating widgets, file downloading, notifications and more)
 
 ## Libraries
 
