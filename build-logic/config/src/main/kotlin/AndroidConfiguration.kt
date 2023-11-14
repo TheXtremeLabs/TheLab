@@ -10,7 +10,7 @@ object AndroidConfiguration {
 
     object Application {
         const val code: Int = 1
-        val version: Version = Version(major = 12, minor = 0, patch = 13)
+        val version: Version = Version(major = 12, minor = 0, patch = 14)
     }
 }
 
