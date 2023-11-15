@@ -22,9 +22,9 @@ import java.util.Random
 
 @AndroidEntryPoint
 class CustomToastActivity : AppCompatActivity() {
-    private var context: Context? = null
 
-    lateinit var viewBinding: ActivityCustomToastBinding
+    private var _viewBinding: ActivityCustomToastBinding? = null
+    private val binding: ActivityCustomToastBinding get() = _viewBinding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,36 +34,34 @@ class CustomToastActivity : AppCompatActivity() {
         val w = window
         w.statusBarColor = Color.TRANSPARENT
 
-        viewBinding = ActivityCustomToastBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        _viewBinding = ActivityCustomToastBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        context = this
-
-        viewBinding.buttonCustom.setOnClickListener {
-            viewBinding.progressIndicator.animate()
+        binding.buttonCustom.setOnClickListener {
+            binding.progressIndicator.animate()
                 .setDuration(2000)
                 .alpha(1.0f)
                 .setListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
-                        viewBinding.progressIndicator.visibility = View.VISIBLE
-                        viewBinding.progressIndicator.alpha = 0f
-                        viewBinding.progressIndicator.setIndicatorColor(
-                            ContextCompat.getColor(context!!, R.color.success),
-                            ContextCompat.getColor(context!!, R.color.warning),
-                            ContextCompat.getColor(context!!, R.color.error)
+                        binding.progressIndicator.visibility = View.VISIBLE
+                        binding.progressIndicator.alpha = 0f
+                        binding.progressIndicator.setIndicatorColor(
+                            ContextCompat.getColor(this@CustomToastActivity, R.color.success),
+                            ContextCompat.getColor(this@CustomToastActivity, R.color.warning),
+                            ContextCompat.getColor(this@CustomToastActivity, R.color.error)
                         )
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(2000)
-                            viewBinding.progressIndicator.animate()
+                            binding.progressIndicator.animate()
                                 .setDuration(1500)
                                 .alpha(0.0f)
                                 .setListener(object : Animator.AnimatorListener {
                                     override fun onAnimationStart(animation: Animator) {}
                                     override fun onAnimationEnd(animation: Animator) {
-                                        viewBinding.progressIndicator.visibility = View.GONE
+                                        binding.progressIndicator.visibility = View.GONE
                                     }
 
                                     override fun onAnimationCancel(animation: Animator) {}
@@ -92,10 +90,11 @@ class CustomToastActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(false)
+        _viewBinding = null
     }
 
     private fun displayCustomToastUsingClass() {
-        val random = Random().nextInt(ToastTypeEnum.values().size)
+        val random = Random().nextInt(ToastTypeEnum.entries.size)
 
         Timber.d("random : %s", random)
 
