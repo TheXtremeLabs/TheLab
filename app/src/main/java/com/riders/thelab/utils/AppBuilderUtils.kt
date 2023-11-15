@@ -205,8 +205,8 @@ object AppBuilderUtils {
                                 R.drawable.ic_device_information
                             )
                         )
-                        .withActivityClass(DeviceInformationActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityClass(com.riders.thelab.feature.deviceinformation.DeviceInformationActivity::class.java)
+                        .withActivityDate("2023/11/15")
                         .build()
                 this.add(deviceInformation)
 

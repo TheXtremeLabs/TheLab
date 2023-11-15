@@ -277,6 +277,11 @@
             android:theme="@style/SwipeDownTheme" />
 
         <activity
+            android:name=".feature.deviceinformation.DeviceInformationActivity"
+            android:label="@string/activity_title_device_information"
+            android:parentActivityName=".ui.mainactivity.MainActivity" />
+
+        <activity
             android:name=".ui.palette.PaletteActivity"
             android:label="@string/activity_title_palette"
             android:parentActivityName=".ui.mainactivity.MainActivity"
@@ -494,8 +499,7 @@
             android:name=".feature.musicrecognition.ui.acrcloud.ACRCloudActivity"
             android:parentActivityName=".feature.musicrecognition.ui.MusicRecognitionChooserActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" >
-        </activity>
+            tools:ignore="LockedOrientationActivity" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
