@@ -116,6 +116,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:testing"))
     implementation(project(":feature:biometric"))
+    implementation(project(":feature:deviceinformation"))
     implementation(project(":feature:kat"))
     implementation(project(":feature:musicrecognition"))
     implementation(project(":feature:weather"))
