@@ -471,7 +471,7 @@
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".ui.settings.SettingsActivity"
+            android:name=".feature.settings.SettingsActivity"
             android:label="@string/activity_settings_title"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
