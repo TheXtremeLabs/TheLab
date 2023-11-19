@@ -67,7 +67,6 @@ abstract class BaseComponentActivity : ComponentActivity() {
     // CLASS METHODS
     //
     ///////////////////////////////
-
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun initPostNotificationsForAndroid13() {
         Timber.d("initPostNotificationsForAndroid13()")
