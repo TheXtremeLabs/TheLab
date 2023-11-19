@@ -53,6 +53,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.LabGlideUtils
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityMainBinding
+import com.riders.thelab.feature.settings.SettingsActivity
 import com.riders.thelab.feature.weather.ui.WeatherUtils
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
@@ -216,7 +217,9 @@ class MainActivity : ComponentActivity(),
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
+//        super.onBackPressed()
         // super.onBackPressed()
         ExitDialog(this).apply {
             window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -588,6 +591,14 @@ class MainActivity : ComponentActivity(),
         }
     }
 
+    fun launchSettings() {
+        Timber.d("launchSettings()")
+
+        navigator.callSettingsActivity()
+
+//        Intent(this, SettingsActivity::class.java).run { startActivity(this) }
+    }
+
 
     /////////////////////////////////////
     //
@@ -663,4 +674,5 @@ class MainActivity : ComponentActivity(),
     override fun onLocationChanged(location: Location) {
         Timber.d("$location")
     }
+
 }
