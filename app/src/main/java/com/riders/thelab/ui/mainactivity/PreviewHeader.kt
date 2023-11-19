@@ -21,21 +21,32 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.utils.findActivity
 
+
+///////////////////////////////
+//
+// COMPOSE
+//
+///////////////////////////////
 @Composable
 fun Header(viewModel: MainActivityViewModel) {
 
+    val context = LocalContext.current
     val config = LocalConfiguration.current
     val toolbarHeight = 112.dp
 
@@ -70,15 +81,32 @@ fun Header(viewModel: MainActivityViewModel) {
                         fontWeight = FontWeight.Thin
                     )
 
-                    Image(
-                        modifier = Modifier.clickable {
-                            viewModel.updateKeyboardVisible(true)
-                            viewModel.displayDynamicIsland(true)
-                        },
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(if (!isSystemInDarkTheme()) Color.Black else Color.White)
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        // Search
+                        Image(
+                            modifier = Modifier.clickable {
+                                viewModel.updateKeyboardVisible(true)
+                                viewModel.displayDynamicIsland(true)
+                            },
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(if (!isSystemInDarkTheme()) Color.Black else Color.White)
+                        )
+
+                        // Settings
+                        Image(
+                            modifier = Modifier.clickable {
+                                (context.findActivity() as MainActivity).launchSettings()
+                            },
+                            imageVector = Icons.Rounded.Settings,
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(if (!isSystemInDarkTheme()) Color.Black else Color.White)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.size(16.dp))
@@ -89,7 +117,11 @@ fun Header(viewModel: MainActivityViewModel) {
     }
 }
 
-
+///////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////
 @DevicePreviews
 @Composable
 fun PreviewHeader() {
