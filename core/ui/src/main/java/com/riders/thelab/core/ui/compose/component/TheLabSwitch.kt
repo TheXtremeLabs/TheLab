@@ -31,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 @Composable
 fun TheLabSwitch(
@@ -116,5 +118,14 @@ private fun animateAlignmentAsState(
     val bias by animateFloatAsState(targetBiasValue, label = "")
     return remember {
         derivedStateOf { BiasAlignment(horizontalBias = bias, verticalBias = 0f) }
+    }
+}
+
+
+@DevicePreviews
+@Composable
+private fun PreviewTheLabSwitch() {
+    TheLabTheme {
+        TheLabSwitch()
     }
 }
