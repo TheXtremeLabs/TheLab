@@ -119,6 +119,7 @@ dependencies {
     implementation(project(":feature:deviceinformation"))
     implementation(project(":feature:kat"))
     implementation(project(":feature:musicrecognition"))
+    implementation(project(":feature:settings"))
     implementation(project(":feature:weather"))
 
     /////////////////////////////

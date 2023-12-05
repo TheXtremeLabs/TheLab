@@ -27,13 +27,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.palette.graphics.Palette
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.utils.Constants
 
+
+///////////////////////////////
+//
+// COMPOSE
+//
+///////////////////////////////
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WhatsNew(item: App) {
@@ -127,5 +136,33 @@ fun WhatsNewList(viewModel: MainActivityViewModel) {
                 WhatsNew(item = whatsNewItem)
             }
         }
+    }
+}
+
+
+///////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////
+@DevicePreviews
+@Composable
+private fun PreviewWhatsNew() {
+
+    val context = LocalContext.current
+
+    val item = Constants.getActivityList(context)
+
+    TheLabTheme {
+        WhatsNew(item = item[0])
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewWhatsNewList() {
+    val viewModel: MainActivityViewModel = hiltViewModel()
+    TheLabTheme {
+        WhatsNewList(viewModel = viewModel)
     }
 }

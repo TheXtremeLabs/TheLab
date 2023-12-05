@@ -1,7 +1,7 @@
 [versions]
 # Gradle version
-kotlinGradlePlugin = "1.9.10"
-androidGradlePlugin = "8.1.3"
+kotlinGradlePlugin = "1.9.20"
+androidGradlePlugin = "8.1.4"
 hiltGradlePlugin = "2.48"
 # Google Services
 playServicesGradlePlugin = "4.4.0"
@@ -13,19 +13,19 @@ navigationGradlePlugin = "2.7.5"
 # Dependencies version
 accompanist = "0.32.0"
 androidDesugarJdkLibs = "2.0.4"
-androidxActivity = "1.8.0"
+androidxActivity = "1.8.1"
 androidxAppCompat = "1.6.1"
 androidxAutoFill = "1.1.0"
 androidxBiometric = "1.1.0"
-androidxBrowser = "1.6.0"
+androidxBrowser = "1.7.0"
 # Camera
 androidxCamera = "1.3.0"
 androidxCameraAlpha = "1.3.0"
 # Compose
 androidxComposeBom = "2023.10.01"
-androidxComposeCompiler = "1.5.3"
+androidxComposeCompiler = "1.5.4"
 androidxComposeRuntime = "1.5.3"
-androidxComposeRuntimeTracing = "1.0.0-alpha04"
+androidxComposeRuntimeTracing = "1.0.0-alpha05"
 androidxCardView = "1.0.0"
 androidxConstraintLayout = "2.1.4"
 androidxConcurrent = "1.1.0"
@@ -39,7 +39,7 @@ androidxEspresso = "3.5.0"
 androidxFragment = "1.6.2"
 androidxHiltNavigationCompose = "1.1.0"
 androidxLifecycle = "2.6.2"
-androidxMacroBenchmark = "1.2.0"
+androidxMacroBenchmark = "1.2.1"
 androidxMetrics = "1.0.0-alpha04"
 androidxMultiDex = "2.0.1"
 androidxNavigation = "2.7.5"
@@ -55,7 +55,7 @@ androidxTestRunner = "1.5.2"
 androidxTracing = "1.1.0"
 androidxUiAutomator = "2.2.0"
 androidxViewPager2 = "1.0.0"
-androidxWindowManager = "1.1.0"
+androidxWindowManager = "1.2.0"
 androidxWindowExtensions = "1.0.0-alpha01"
 androidxWork = "2.8.1"
 blurry = "4.0.1"
@@ -63,7 +63,7 @@ coil = "2.4.0"
 dexter = "6.2.3"
 eventbus = "3.3.1"
 # Firebase
-firebaseBom = "32.5.0"
+firebaseBom = "32.6.0"
 firebaseKtx = "23.0.3"
 firebaseAds = "22.5.0"
 # Google Api
@@ -80,23 +80,23 @@ googleObjectDetection = "17.0.0"
 googlePlayServicesBase = "18.2.0"
 googlePlayServices = "16.0.0"
 googlePlayServicesAuth = "20.7.0"
-glide = "4.15.1"
+glide = "4.16.0"
 glideTransformation = "4.3.0"
 hilt = "2.48.1"
 hiltExt = "1.1.0"
 jacoco = "0.8.7"
 junit = "1.1.5"
 junit4 = "4.13.2"
-kotlin = "1.9.10"
-kotlinReflect = "1.9.10"
+kotlin = "1.9.20"
+#kotlinReflect = "1.9.10"
 kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.4.1"
-kotlinxParcelize = "1.9.10"
+#kotlinxParcelize = "1.9.10"
 kotlinPlayServices = "1.7.3"
 kotlinxSerializationJson = "1.6.0"
-ksp = "1.9.10-1.0.13"
+ksp = "1.9.20-1.0.14"
 landscapist = "2.1.1"
-lint = "31.1.3"
+lint = "31.1.4"
 location = "21.0.1"
 lottie = "6.0.1"
 maps = "18.2.0"
@@ -105,12 +105,12 @@ mapsUtils = "3.4.0"
 # Media Exo Player
 media = "1.6.0"
 mediaRouter = "1.6.0"
-media3 = "1.1.1"
+media3 = "1.2.0"
 mockito = "5.2.0"
 moshi = "1.14.0"
 mpAndroidChart = "3.1.0"
 okhttp = "4.12.0"
-places = "3.2.0"
+places = "3.3.0"
 protobuf = "3.24.4"
 protobufPlugin = "0.9.4"
 retrofit = "2.9.0"
@@ -122,6 +122,8 @@ threeten = "1.4.4"
 timber = "5.0.1"
 turbine = "1.0.0"
 types = "4.3.1"
+zxing = "3.5.2"
+zxingAndroid = "3.3.0"
 
 
 [libraries]
@@ -251,12 +253,12 @@ hilt-ext-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hi
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
-kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlinReflect" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
-kotlin-parcelize = { group = "org.jetbrains.kotlin", name = "kotlin-parcelize-runtime", version.ref = "kotlinxParcelize" }
+kotlin-parcelize = { group = "org.jetbrains.kotlin", name = "kotlin-parcelize-runtime", version.ref = "kotlin" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinPlayServices" }
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "lint" }
@@ -290,6 +292,10 @@ threeten = { group = "com.jakewharton.threetenabp", name = "threetenabp", versio
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 kotools-types = { group = "org.kotools", name = "types", version.ref = "types" }
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
+zxing-parent = { group = "com.google.zxing", name = "zxing-parent", version.ref = "zxing" }
+zxing-android-core = { group = "com.google.zxing", name = "android-core", version.ref = "zxingAndroid" }
+zxing-android-integration = { group = "com.google.zxing", name = "android-integration", version.ref = "zxingAndroid" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
