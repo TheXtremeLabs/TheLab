@@ -46,29 +46,30 @@ class YoutubeLikeViewHolder constructor(
 
         Glide.with(context)
             .load(itemYoutubeVideo.imageUrl)
-            .addListener(object : RequestListener<Drawable?> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    Timber.e(e)
-                    viewBinding.loaderItem.visibility = View.GONE
-                    return false
-                }
+            .addListener(
+                object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Timber.e(e)
+                        viewBinding.loaderItem.visibility = View.GONE
+                        return false
+                    }
 
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    viewBinding.loaderItem.visibility = View.GONE
-                    return false
-                }
-            })
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        viewBinding.loaderItem.visibility = View.GONE
+                        return false
+                    }
+                })
             .into(viewBinding.imageItem)
     }
 }

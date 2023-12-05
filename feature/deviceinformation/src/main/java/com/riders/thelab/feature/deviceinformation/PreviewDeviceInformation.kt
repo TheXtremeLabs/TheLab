@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.deviceinformation
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -163,6 +166,9 @@ fun AndroidSpecs(deviceInfo: DeviceInformation) {
 
 @Composable
 fun DeviceInformationContent(viewModel: DeviceInformationViewModel) {
+
+    val verticalScroll: ScrollState = rememberScrollState()
+
     TheLabTheme {
         Scaffold(
             topBar = { TheLabTopAppBar(title = stringResource(id = R.string.app_name_device_info)) {} }
@@ -191,7 +197,8 @@ fun DeviceInformationContent(viewModel: DeviceInformationViewModel) {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(8.dp),
+                                .padding(8.dp)
+                                .verticalScroll(verticalScroll),
                             horizontalAlignment = Alignment.Start,
                             verticalArrangement = Arrangement.spacedBy(
                                 24.dp,

@@ -87,18 +87,23 @@ class YoutubeLikeDetailActivity : AppCompatActivity() {
         //Load the thumb image clicked before
         Glide.with(this)
             .load(item.imageUrl)
-            .listener(object : RequestListener<Drawable> {
+            .listener(
+                object : RequestListener<Drawable> {
                 override fun onLoadFailed(
-                    e: GlideException?, model: Any,
-                    target: Target<Drawable>, isFirstResource: Boolean
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
                 ): Boolean {
                     supportStartPostponedEnterTransition()
                     return false
                 }
 
                 override fun onResourceReady(
-                    resource: Drawable, model: Any,
-                    target: Target<Drawable>, dataSource: DataSource,
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>,
+                    dataSource: DataSource,
                     isFirstResource: Boolean
                 ): Boolean {
                     supportStartPostponedEnterTransition()
