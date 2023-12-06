@@ -1,48 +1,26 @@
 package com.riders.thelab.ui.signup
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.Fragment
-import androidx.viewpager2.widget.ViewPager2
-import com.riders.thelab.R
-import com.riders.thelab.databinding.ActivitySignUpBinding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.navigator.Navigator
-import com.riders.thelab.ui.signup.successfulsignup.SuccessfulSignUpFragment
-import com.riders.thelab.ui.signup.terms.TermsOfServiceFragment
-import com.riders.thelab.ui.signup.userform.UserFormFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
-class SignUpActivity : AppCompatActivity(),
-    CoroutineScope, NextViewPagerClickListener {
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + Job()
-
-    private var _viewBinding: ActivitySignUpBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _viewBinding!!
+class SignUpActivity : BaseComponentActivity() {
 
     private val mViewModel: SignUpViewModel by viewModels()
-
-
-    /**
-     * The pager adapter, which provides the pages to the view pager widget.
-     */
-    private var pagerAdapter: ViewPager2Adapter? = null
-    private var fragmentList: MutableList<Fragment>? = null
 
     /////////////////////////////////////
     //
@@ -52,21 +30,34 @@ class SignUpActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        _viewBinding = ActivitySignUpBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        lifecycleScope.launch {
+            Timber.d("coroutine launch with name ${this.coroutineContext}")
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                setContent {
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            SignUpContent(viewModel = mViewModel)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-        postponeEnterTransition()
-        binding.root.doOnPreDraw { startPostponedEnterTransition() }
+    override fun backPressed() {
+        Timber.e("backPressed()")
 
-        initViews()
-        setListeners()
-        initViewModelsObservers()
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        _viewBinding = null
     }
+
 
     /////////////////////////////////////
     //
@@ -74,60 +65,7 @@ class SignUpActivity : AppCompatActivity(),
     //
     /////////////////////////////////////
 
-    private fun initViews() {
-        // Instantiate a ViewPager2 and a PagerAdapter.
-        fragmentList = ArrayList()
-
-        // add Fragments in your ViewPagerFragmentAdapter class
-        fragmentList!!.add(TermsOfServiceFragment.newInstance())
-        fragmentList!!.add(UserFormFragment.newInstance())
-        fragmentList!!.add(SuccessfulSignUpFragment.newInstance())
-
-        pagerAdapter = ViewPager2Adapter(this@SignUpActivity, fragmentList as ArrayList<Fragment>)
-
-        // set Orientation in your ViewPager2
-        binding.viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        binding.viewPager.adapter = pagerAdapter
-
-        binding.viewPager.isUserInputEnabled = false
-    }
-
-    private fun initViewModelsObservers() {
-        Timber.d("initViewModelsObservers()")
-    }
-
-    private fun setListeners() {
-        Timber.d("setListeners()")
-        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-
-                when (position) {
-                    0 -> {
-                        Timber.e("Remove previous")
-                        removeToolbarUserForm()
-                    }
-
-                    1 -> {
-                        updateToolbarUserForm()
-                    }
-
-                    2 -> {
-                        updateToolbarSuccessful()
-                        if (2 == binding.viewPager.currentItem) {
-
-                            val successfulFragmentInstance: SuccessfulSignUpFragment =
-                                pagerAdapter?.getFragment(position) as SuccessfulSignUpFragment
-
-                            successfulFragmentInstance.saveUser()
-                        }
-                    }
-                }
-            }
-        })
-    }
-
-    @SuppressLint("NewApi")
+    /*@SuppressLint("NewApi")
     private fun updateToolbarUserForm() {
         Timber.d("updateToolbarUserForm()")
         if (binding.includeToolbarSignUpLayout.progressBarUserForm.progress == 0) {
@@ -188,19 +126,10 @@ class SignUpActivity : AppCompatActivity(),
                 )
             )
         }
-    }
+    }*/
 
-    override fun onNextViewPagerClicked() {
-        Timber.d("onNextViewPagerClicked()")
-        binding.viewPager.setCurrentItem(binding.viewPager.currentItem + 1, true)
-    }
-
-    override fun onLastViewPagerClicked() {
-        binding.viewPager.setCurrentItem(pagerAdapter?.itemCount?.minus(1)!!, true)
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    override fun onFinishSignUp() {
+    fun launchMainActivity() {
+        Timber.d("launchMainActivity()")
         Navigator(this).callMainActivity()
         finish()
     }

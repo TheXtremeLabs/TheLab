@@ -1,3 +1,4 @@
+/*
 package com.riders.thelab.ui.signup.userform
 
 import android.annotation.SuppressLint
@@ -19,7 +20,6 @@ import androidx.fragment.app.activityViewModels
 import com.riders.thelab.BuildConfig
 import com.riders.thelab.R
 import com.riders.thelab.databinding.FragmentUserFormBinding
-import com.riders.thelab.ui.signup.NextViewPagerClickListener
 import com.riders.thelab.ui.signup.SignUpViewModel
 import timber.log.Timber
 
@@ -99,9 +99,11 @@ class UserFormFragment : Fragment(), View.OnClickListener {
         binding.inputConfirmPassword.setText("johndoe")
     }
 
-    /**
+    */
+/**
      * Validating form
-     */
+     *//*
+
     private fun submitForm() {
         if (!validateLastName()) {
             return
@@ -304,4 +306,4 @@ class UserFormFragment : Fragment(), View.OnClickListener {
             return fragment
         }
     }
-}
+}*/

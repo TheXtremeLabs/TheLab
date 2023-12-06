@@ -1,3 +1,4 @@
+/*
 package com.riders.thelab.ui.signup.successfulsignup
 
 import android.content.Context
@@ -12,7 +13,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.riders.thelab.R
 import com.riders.thelab.databinding.FragmentSuccessfulSignUpBinding
-import com.riders.thelab.ui.signup.NextViewPagerClickListener
 import com.riders.thelab.ui.signup.SignUpViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -167,4 +167,4 @@ class SuccessfulSignUpFragment : Fragment(),
             return fragment
         }
     }
-}
+}*/

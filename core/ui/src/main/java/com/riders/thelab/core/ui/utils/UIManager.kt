@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.request.RequestListener
 import com.google.android.material.imageview.ShapeableImageView
@@ -81,9 +82,12 @@ object UIManager {
         // Setting Dialog Message
         alertDialog.setMessage(message)
         alertDialog.setNegativeButton(negativeMessage) { dialog: DialogInterface, _: Int ->
-            showActionInToast(context, negativeMessage)
-            if (negativeMessage.equals("Réessayer", ignoreCase = true)) {
-                //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
+            if (negativeMessage != null) {
+                showActionInToast(context, negativeMessage)
+
+                if (negativeMessage.equals("Réessayer", ignoreCase = true)) {
+                    //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
+                }
             }
             /*if (negativeMessage.equals("Réessayer", ignoreCase = true)
                 && LabNetworkManagerNewAPI.getInstance(context).isOnline()
@@ -105,7 +109,15 @@ object UIManager {
     }
 
 
-    fun showActionInToast(context: Context?, textToShow: String?) {
+    fun showToast(context: Context, @StringRes stringResId: Int) {
+        showToast(context, context.getString(stringResId))
+    }
+
+    fun showToast(context: Context, message: String) =
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
+
+    fun showActionInToast(context: Context, textToShow: String) {
         Toast.makeText(context, textToShow, Toast.LENGTH_SHORT).show()
     }
 

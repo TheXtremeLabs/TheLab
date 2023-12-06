@@ -53,7 +53,8 @@ class LoginViewModel @Inject constructor(
 
     val loginHasLocalError by derivedStateOf {
         // synchronous call
-        !Patterns.EMAIL_ADDRESS.matcher(login).matches()
+        // !Patterns.EMAIL_ADDRESS.matcher(login).matches()
+        login.isBlank()
     }
 
     private var _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.None)
@@ -103,7 +104,7 @@ class LoginViewModel @Inject constructor(
             if (throwable.message?.contains(cs404, true) == true
                 || throwable.message?.contains(cs503, true) == true
             ) {
-                //updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
+                updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
             }
         }
 
@@ -194,7 +195,7 @@ class LoginViewModel @Inject constructor(
 
             // Force response
             Timber.e("Force response error: Due to Heroku back-end free services ending.")
-            updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
+            // updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
 
             // }
             /*} catch (e: Exception) {

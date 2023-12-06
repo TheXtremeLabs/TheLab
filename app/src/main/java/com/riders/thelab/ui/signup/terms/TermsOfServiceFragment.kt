@@ -1,3 +1,4 @@
+/*
 package com.riders.thelab.ui.signup.terms
 
 import android.content.Context
@@ -12,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.riders.thelab.R
 import com.riders.thelab.databinding.FragmentTermsOfServiceBinding
-import com.riders.thelab.ui.signup.NextViewPagerClickListener
 import timber.log.Timber
 
 class TermsOfServiceFragment : Fragment(),
@@ -136,4 +136,4 @@ class TermsOfServiceFragment : Fragment(),
             return fragment
         }
     }
-}
+}*/
