@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.riders.thelab.core.data.local.LabDatabase
 import com.riders.thelab.core.data.local.dao.ContactDao
+import com.riders.thelab.core.data.local.dao.UserDao
 import com.riders.thelab.core.data.local.dao.WeatherDao
 import dagger.Module
 import dagger.Provides
@@ -26,6 +27,10 @@ internal object AppModule {
             .build()
     }
 
+    @Provides
+    fun provideUserDao(appDatabase: LabDatabase): UserDao {
+        return appDatabase.getUserDao()
+    }
     @Provides
     fun provideContactDao(appDatabase: LabDatabase): ContactDao {
         return appDatabase.getContactDao()

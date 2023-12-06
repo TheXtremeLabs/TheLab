@@ -17,6 +17,7 @@ import com.riders.thelab.core.data.local.DbImpl
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
+import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.PackageApp
@@ -161,6 +162,22 @@ class RepositoryImpl @Inject constructor(
     override fun removeLocationStatusDataSource(data: LiveData<Boolean>) {
         mLocationData.removeSource(data)
     }
+
+    override fun insertUser(user: User) = mDbImpl.insertUser(user)
+
+    override fun insertAllUsers(users: List<User>) = mDbImpl.insertAllUsers(users)
+
+    override fun getUsers(): Flow<List<User>> = mDbImpl.getUsers()
+
+    override fun getUsersSync(): List<User> = mDbImpl.getUsersSync()
+
+    override fun getUserByID(userId: Int): User = mDbImpl.getUserByID(userId)
+
+    override fun getUserByName(username: String): User = mDbImpl.getUserByName(username)
+
+    override fun getUserByEmail(email: String): User = mDbImpl.getUserByEmail(email)
+
+    override fun deleteUser(userId: Int) = mDbImpl.deleteUser(userId)
 
 
     override fun insertContact(contact: Contact) {
