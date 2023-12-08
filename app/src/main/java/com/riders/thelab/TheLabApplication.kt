@@ -48,7 +48,6 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
         super.onCreate()
 
         mInstance = this
-        LAB_PACKAGE_NAME = packageName
 
         initTimberAndThreeten()
         initAdsAndFirebase()
@@ -74,8 +73,9 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
         Timber.e("onTerminate() | ${this@TheLabApplication::class.java.simpleName} was killed")
     }
 
-    override fun getWorkManagerConfiguration() =
-        Configuration.Builder()
+    // New Worker configuration since version 2.9.0
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .setMinimumLoggingLevel(Log.DEBUG)
             .build()
@@ -154,9 +154,7 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
         return super.getApplicationContext()
     }
 
-    fun getLabPackageName(): String? {
-        return LAB_PACKAGE_NAME
-    }
+    fun getLabPackageName(): String = packageName
 
     private fun notifyAppInBackground() {
         Timber.e("App went in background")
