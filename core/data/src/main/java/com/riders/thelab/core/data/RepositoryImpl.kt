@@ -68,12 +68,7 @@ class RepositoryImpl @Inject constructor(
 
         val appList: MutableList<App> = ArrayList()
 
-        if (isPackageExists(
-                context,
-                installedAppList as MutableList<ApplicationInfo>,
-                TARGET_PACKAGES
-            )
-        ) {
+        if (isPackageExists(context, TARGET_PACKAGES)) {
             for (appInfo in installedAppList) {
                 Timber.e("package found : %s", appInfo.packageName)
                 try {
@@ -107,7 +102,6 @@ class RepositoryImpl @Inject constructor(
     @SuppressLint("QueryPermissionsNeeded")
     fun isPackageExists(
         context: Context,
-        installedAppList: MutableList<ApplicationInfo>,
         targetPackages: Array<String>
     ): Boolean {
         var isPackageFound = false
@@ -163,7 +157,7 @@ class RepositoryImpl @Inject constructor(
         mLocationData.removeSource(data)
     }
 
-    override fun insertUser(user: User) = mDbImpl.insertUser(user)
+    override fun insertUser(user: User): Long = mDbImpl.insertUser(user)
 
     override fun insertAllUsers(users: List<User>) = mDbImpl.insertAllUsers(users)
 
@@ -176,6 +170,8 @@ class RepositoryImpl @Inject constructor(
     override fun getUserByName(username: String): User = mDbImpl.getUserByName(username)
 
     override fun getUserByEmail(email: String): User = mDbImpl.getUserByEmail(email)
+    override fun logUser(usernameOrMail: String, passwordEncoded: String): User? =
+        mDbImpl.logUser(usernameOrMail, passwordEncoded)
 
     override fun deleteUser(userId: Int) = mDbImpl.deleteUser(userId)
 

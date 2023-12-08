@@ -15,13 +15,14 @@ interface IDb {
     // USERS
     //
     /////////////////////////////////////
-    fun insertUser(user: User)
+    fun insertUser(user: User): Long
     fun insertAllUsers(users: List<User>)
     fun getUsers(): Flow<List<User>>
     fun getUsersSync(): List<User>
-    fun getUserByID(userId:Int): User
-    fun getUserByName(username:String): User
-    fun getUserByEmail(email:String): User
+    fun getUserByID(userId: Int): User
+    fun getUserByName(username: String): User
+    fun getUserByEmail(email: String): User
+    fun logUser(usernameOrMail: String, passwordEncoded: String): User?
     fun deleteUser(userId: Int)
 
 

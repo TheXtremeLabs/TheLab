@@ -22,7 +22,19 @@ class DbImpl @Inject constructor(
     private var mUserDao: UserDao = userDao
     private var mContactDao: ContactDao = contactDao
     private var mWeatherDao: WeatherDao = weatherDao
-    override fun insertUser(user: User) = mUserDao.insertUser(user)
+    override fun insertUser(user: User): Long {
+        val maybeAdminUser: User = user
+
+        if (
+            "admin" == maybeAdminUser.username ||
+            "michaelSth" == maybeAdminUser.username ||
+            "theLabAdmin" == maybeAdminUser.username
+        ) {
+            maybeAdminUser.isAdmin = true
+        }
+
+        return mUserDao.insertUser(maybeAdminUser)
+    }
 
     override fun insertAllUsers(users: List<User>) = mUserDao.insertAllUsers(users)
 
@@ -35,6 +47,16 @@ class DbImpl @Inject constructor(
     override fun getUserByName(username: String): User = mUserDao.getUserByName(username)
 
     override fun getUserByEmail(email: String): User = mUserDao.getUserByEmail(email)
+    override fun logUser(usernameOrMail: String, passwordEncoded: String): User? {
+        return runCatching {
+            return mUserDao.logInWithUsername(usernameOrMail, passwordEncoded)
+                ?: mUserDao.logInWithEmail(usernameOrMail, passwordEncoded)
+        }
+            .onFailure {
+                it.printStackTrace()
+            }
+            .getOrNull()
+    }
 
     override fun deleteUser(userId: Int) = mUserDao.deleteUser(userId)
 
