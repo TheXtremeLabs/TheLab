@@ -1,8 +1,14 @@
 package com.riders.thelab.ui.colors
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.DragInteraction
+import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,6 +30,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,8 +48,89 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.utils.LabColorsManager
 import kotlinx.coroutines.delay
+import timber.log.Timber
+
+///////////////////////////////////////////////////
+//
+// COMPOSE
+//
+///////////////////////////////////////////////////
+@Composable
+fun ColorsButton(currentColor: Int, onButtonClicked: () -> Unit) {
+
+    // Hoist the MutableInteractionSource that we will provide to interactions
+    val interactionSource = remember { MutableInteractionSource() }
+
+    // SnapshotStateList we will use to track incoming Interactions in the order they are emitted
+    val interactions = remember { mutableStateListOf<Interaction>() }
+
+    val clickable = Modifier.clickable(
+        interactionSource = interactionSource,
+        indication = LocalIndication.current
+    ) { /* update some business state here */ }
+
+    // Observe changes to the binary state for these interactions
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    // Use the state to change our UI
+    val (text, color) = when {
+        isPressed -> "Pressed" to Color.Blue
+        // Default / baseline state
+        else -> "Log In" to Color.Black
+    }
+
+    var clickNumber = 0
+
+    TheLabTheme {
+        Button(
+            modifier = Modifier
+                .fillMaxWidth(.85f)
+                //.height(40.dp)
+                .padding(8.dp)
+                .then(clickable)
+                .indication(
+                    interactionSource = interactionSource,
+                    indication = LocalIndication.current
+                ),
+            onClick = {
+                clickNumber += 1
+
+                when (clickNumber) {
+                    10, 20, 30 -> {
+                        Timber.d("${interactions.toString()}")
+                    }
+                }
+
+                onButtonClicked()
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = currentColor)),
+            shape = RoundedCornerShape(16.dp),
+            interactionSource = interactionSource
+        ) {
+            Text(
+                stringResource(id = R.string.btn_change_color).uppercase(),
+                color = colorResource(id = if (currentColor == R.color.white || currentColor == R.color.yellow) R.color.black else R.color.white)
+            )
+        }
+    }
+
+    // Collect Interactions - if they are new, add them to `interactions`. If they represent stop /
+    // cancel events for existing Interactions, remove them from `interactions` so it will only
+    // contain currently active `interactions`.
+    LaunchedEffect(interactionSource) {
+        interactionSource.interactions.collect { interaction ->
+            when (interaction) {
+                is PressInteraction.Press -> interactions.add(interaction)
+                is PressInteraction.Release -> interactions.remove(interaction.press)
+                is PressInteraction.Cancel -> interactions.remove(interaction.press)
+                is DragInteraction.Start -> interactions.add(interaction)
+                is DragInteraction.Stop -> interactions.remove(interaction.start)
+                is DragInteraction.Cancel -> interactions.remove(interaction.start)
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,14 +139,7 @@ fun Color(viewModel: ColorViewModel) {
     // get current Context and coroutineScope
     val colorActivity = LocalContext.current
 
-    val firstRandomColor = LabColorsManager.getRandomColor()
-
     var expanded by remember { mutableStateOf(false) }
-
-    val colorState = remember { mutableStateOf(firstRandomColor) }
-
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
 
     TheLabTheme(darkTheme = viewModel.isDarkMode) {
         Scaffold(
@@ -67,7 +148,7 @@ fun Color(viewModel: ColorViewModel) {
                     title = {
                         Text(
                             text = stringResource(id = R.string.activity_title_colors),
-                            color = colorResource(id = colorState.value)
+                            color = colorResource(id = viewModel.randomColor)
                         )
                     },
                     navigationIcon = {
@@ -75,13 +156,14 @@ fun Color(viewModel: ColorViewModel) {
                             Icon(
                                 imageVector = Icons.Filled.KeyboardArrowLeft,
                                 contentDescription = "Back",
-                                tint = colorResource(id = colorState.value)
+                                tint = colorResource(id = viewModel.randomColor)
                             )
                         }
                     },
                     colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Black)
                 )
-            }) { contentPadding ->
+            }
+        ) { contentPadding ->
             // Screen content
             Column(
                 modifier = Modifier
@@ -98,30 +180,16 @@ fun Color(viewModel: ColorViewModel) {
                     style = TextStyle(
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center,
-                        color = colorResource(id = colorState.value),
+                        color = colorResource(id = viewModel.randomColor),
                     )
                 )
 
                 AnimatedVisibility(visible = expanded) {
-                    Button(
-                        onClick = {
-                            colorState.value = LabColorsManager.getRandomColor(colorState.value)
-                        },
-                        modifier = Modifier.padding(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = colorState.value)),
-                        shape = RoundedCornerShape(16.dp),
-                        interactionSource = interactionSource
-                    ) {
-                        Text(
-                            stringResource(id = R.string.btn_change_color).uppercase(),
-                            color = colorResource(id = if (colorState.value == R.color.white || colorState.value == R.color.yellow) R.color.black else R.color.white)
-                        )
-                    }
+                    ColorsButton(viewModel.randomColor) { viewModel.updateRandomColor() }
                 }
             }
         }
     }
-
 
     LaunchedEffect(key1 = Unit) {
         delay(300)
@@ -129,6 +197,20 @@ fun Color(viewModel: ColorViewModel) {
     }
 }
 
+
+///////////////////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////////////////
+@DevicePreviews
+@Composable
+private fun PreviewColorsButton() {
+    TheLabTheme {
+        ColorsButton(R.color.tabColorAccent) {
+        }
+    }
+}
 
 @DevicePreviews
 @Composable
