@@ -130,7 +130,10 @@
     <string name="msg_title_saving_in_progress">Saving in progress</string>
     <string name="msg_text_please_wait">Please, wait until the process is finished…</string>
     <string name="msg_title_congratulations">Congratulations !</string>
-    <string name="dialog_msg_successfully_signed_up">You are successfully registered to the app.<br /><br />We wish you to have a nice experience using our application.<br /><br />Fly away to the culture.</string>
+    <string name="dialog_msg_successfully_signed_up">
+        <![CDATA[
+        You are successfully registered to TheLab app.<br /><br />We wish you to have a nice experience while using TheLab application.<br /><br />
+]]></string>
 
     <!-- Main Activity -->
     <string name="title_main_page">Choose your testing app</string>

@@ -1,8 +1,9 @@
 package com.riders.thelab.ui.signup
 
-import android.text.util.Linkify
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,16 +26,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
-import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.R
-import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.LabHtmlText
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.utils.UIManager
 
 
@@ -50,14 +48,16 @@ fun EULAScreen(viewModel: SignUpViewModel, onNavigateToUserFormScreen: () -> Uni
     val verticalScroll: ScrollState = rememberScrollState()
     val eulaAgreementChecked = remember { mutableStateOf(false) }
     // parsing html string using the HtmlCompat class
-    val spannedText = HtmlCompat.fromHtml(
+    /*val spannedText = HtmlCompat.fromHtml(
         stringResource(id = R.string.eula_content),
         if (LabCompatibilityManager.isNougat()) HtmlCompat.FROM_HTML_MODE_COMPACT else 0
-    )
+    )*/
 
     TheLabTheme(darkTheme = viewModel.isDarkMode) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
@@ -67,10 +67,22 @@ fun EULAScreen(viewModel: SignUpViewModel, onNavigateToUserFormScreen: () -> Uni
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .verticalScroll(verticalScroll)
             ) {
-                AndroidView(
+                LabHtmlText(
+                    modifier = Modifier.fillMaxWidth(),
+                    stringResId = com.riders.thelab.core.ui.R.string.eula_content
+                )
+                /*AndroidView(
                     modifier = Modifier.fillMaxWidth(),
                     factory = {
                         MaterialTextView(it).apply {
+                            text = spannedText
+                            setTextColor(
+                                if (!viewModel.isDarkMode) ContextCompat.getColor(
+                                    context,
+                                    R.color.black
+                                ) else ContextCompat.getColor(context, R.color.white)
+                            )
+
                             // links
                             autoLinkMask = Linkify.WEB_URLS
                             linksClickable = true
@@ -82,20 +94,19 @@ fun EULAScreen(viewModel: SignUpViewModel, onNavigateToUserFormScreen: () -> Uni
                                     if (!viewModel.isDarkMode) R.color.blue_grey_700 else R.color.tabColorAccent
                                 )
                             )
-                            setTextColor(
-                                if (!viewModel.isDarkMode) ContextCompat.getColor(
-                                    context,
-                                    R.color.black
-                                ) else ContextCompat.getColor(context, R.color.white)
-                            )
-                            text = spannedText
                         }
                     },
                     update = {
                         // it.maxLines = currentMaxLines
+                        it.setTextColor(
+                            if (!viewModel.isDarkMode) ContextCompat.getColor(
+                                context,
+                                R.color.black
+                            ) else ContextCompat.getColor(context, R.color.white)
+                        )
                         it.text = spannedText
                     }
-                )
+                )*/
             }
 
             Row(

@@ -50,27 +50,29 @@ fun LabHtmlText(modifier: Modifier, @StringRes stringResId: Int) {
         if (LabCompatibilityManager.isNougat()) HtmlCompat.FROM_HTML_MODE_COMPACT else 0
     )
 
-    AndroidView(
-        modifier = modifier,
-        factory = {
-            MaterialTextView(it).apply {
-                text = spannedText
-                setTextColor(textColor)
+    Box(modifier = modifier, contentAlignment = Alignment.TopStart) {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = {
+                MaterialTextView(it).apply {
+                    text = spannedText
+                    setTextColor(textColor)
 
-                // links
-                autoLinkMask = Linkify.WEB_URLS
-                linksClickable = true
-                movementMethod = LinkMovementMethodCompat.getInstance()
-                // setting the color to use forr highlihting the links
-                setLinkTextColor(linksTextColor)
+                    // links
+                    autoLinkMask = Linkify.WEB_URLS
+                    linksClickable = true
+                    movementMethod = LinkMovementMethodCompat.getInstance()
+                    // setting the color to use forr highlihting the links
+                    setLinkTextColor(linksTextColor)
+                }
+            },
+            update = {
+                // it.maxLines = currentMaxLines
+                it.setTextColor(textColor)
+                it.text = spannedText
             }
-        },
-        update = {
-            // it.maxLines = currentMaxLines
-            it.setTextColor(textColor)
-            it.text = spannedText
-        }
-    )
+        )
+    }
 }
 
 ///////////////////////////////
