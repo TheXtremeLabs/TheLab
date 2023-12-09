@@ -7,7 +7,7 @@ object LabColorsManager {
     /**
      * Get list of colors
      */
-    fun getDefaultColors(): IntArray = intArrayOf(
+    private fun getDefaultColors(): IntArray = intArrayOf(
         R.color.white,
         R.color.red,
         R.color.blue,

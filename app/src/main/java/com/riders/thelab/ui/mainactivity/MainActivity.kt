@@ -226,9 +226,8 @@ class MainActivity : ComponentActivity(),
     override fun onBackPressed() {
 //        super.onBackPressed()
         // super.onBackPressed()
-        ExitDialog(this).apply {
-            window?.setBackgroundDrawableResource(android.R.color.transparent)
-        }
+        ExitDialog(this)
+            .apply { window?.setBackgroundDrawableResource(android.R.color.transparent) }
             .show()
     }
 
