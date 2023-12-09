@@ -142,7 +142,7 @@ fun AppSettingsSection(viewModel: SettingsViewModel) {
                                     checked = viewModel.isDarkMode,
                                     onCheckedChange = {
                                         // viewModel.toggleDarkMode()
-                                        viewModel.updateDarkModeDatastore(it)
+                                        viewModel.updateDarkModeDatastore()
                                     }
                                 )
                             }

@@ -255,6 +255,8 @@ fun SplashScreenContent(viewModel: SplashScreenViewModel) {
             }
         }
     }
+
+    // TODO: if user chose to set dark mode using system update dark mode value. if set to light or dark use datastore value
 }
 
 
