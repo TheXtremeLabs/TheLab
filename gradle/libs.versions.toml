@@ -1,8 +1,6 @@
 [versions]
 # Gradle version
-kotlinGradlePlugin = "1.9.21"
 androidGradlePlugin = "8.2.0"
-hiltGradlePlugin = "2.48"
 # Google Services
 playServicesGradlePlugin = "4.4.0"
 crashlyticsGradlePlugin = "2.9.9"
@@ -82,16 +80,19 @@ googlePlayServices = "16.0.0"
 googlePlayServicesAuth = "20.7.0"
 glide = "4.16.0"
 glideTransformation = "4.3.0"
-hilt = "2.48.1"
+# Hilt (for gradle plugin version and dependency)
+hilt = "2.49"
 hiltExt = "1.1.0"
 jacoco = "0.8.7"
 junit = "1.1.5"
 junit4 = "4.13.2"
+# Kotlin (for gradle plugin version and dependency)
 kotlin = "1.9.21"
 kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.4.1"
 kotlinPlayServices = "1.7.3"
 kotlinxSerializationJson = "1.6.0"
+# KSP - Kotlin Symbol Processing (for gradle plugin version and dependency)
 ksp = "1.9.21-1.0.15"
 landscapist = "2.1.1"
 lint = "31.2.0"
@@ -298,7 +299,7 @@ zxing-android-integration = { group = "com.google.zxing", name = "android-integr
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 androidx-navigation-gradlePlugin = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navigationGradlePlugin" }
-kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 play-services-gradlePlugin = { group = "com.google.gms", name = "google-services", version.ref = "playServicesGradlePlugin" }
 firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "crashlyticsGradlePlugin" }
