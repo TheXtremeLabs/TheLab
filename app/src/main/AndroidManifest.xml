@@ -17,6 +17,7 @@
     <!--ACCESS_FINE_LOCATION permission need for google play services version.-->
     <!-- For GPS based location, this one -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="com.riders.thelab.permission.MAPS_RECEIVE" />
     <uses-permission android:name="com.google.android.providers.gsf.perssion.READ_GSERVICES" />
 
