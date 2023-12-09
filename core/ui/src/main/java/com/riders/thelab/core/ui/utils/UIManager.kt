@@ -273,26 +273,6 @@ object UIManager {
         }
     }
 
-    //@BindingAdapter("android:src", "error", requireAll = false)
-    fun loadImage(
-        context: Context,
-        targetImageView: ShapeableImageView,
-        iconIntRes: Int,
-        error: Drawable,
-    ) {
-//        LabGlideUtils.getInstance().loadImage(context,iconIntRes, targetImageView,  error)
-    }
-
-    //@BindingAdapter("imageUrl", "error", requireAll = false)
-    fun loadImage(
-        context: Context,
-        targetImageView: ShapeableImageView,
-        iconResDrawable: Drawable,
-        error: Drawable,
-    ) {
-//        LabGlideUtils.getInstance().loadImage(context,  iconResDrawable,targetImageView, error)
-    }
-
     fun loadImage(
         context: Context,
         iconResDrawable: Any,

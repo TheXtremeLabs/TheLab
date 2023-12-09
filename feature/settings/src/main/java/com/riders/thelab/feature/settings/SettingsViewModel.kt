@@ -17,7 +17,7 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
         }
     }
 
-    fun updateDarkModeDatastore(isDarkMode: Boolean) {
+    fun updateDarkModeDatastore() {
         viewModelScope.launch {
             repository.toggleNightMode()
         }

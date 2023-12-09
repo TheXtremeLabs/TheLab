@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.utils.Constants
 import timber.log.Timber
 

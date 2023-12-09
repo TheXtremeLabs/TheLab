@@ -88,8 +88,11 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
     ////////////////////////////////////////
     private fun initTimberAndThreeten() {
         Timber.d("initTimberAndThreeten()")
-        // Timber : logging
-        Timber.plant(Timber.DebugTree())
+
+        if(BuildConfig.DEBUG){
+            // Timber : logging
+            Timber.plant(Timber.DebugTree())
+        }
 
         // ThreeTen Date Time Library
         AndroidThreeTen.init(this)
