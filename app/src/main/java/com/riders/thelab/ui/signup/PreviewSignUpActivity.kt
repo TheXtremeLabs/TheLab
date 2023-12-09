@@ -1,6 +1,8 @@
 package com.riders.thelab.ui.signup
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +20,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import timber.log.Timber
 
@@ -52,7 +56,7 @@ fun SignUpNavHost(
         composable(SignUpScreen.Form.route) {
             FormScreen(
                 viewModel = viewModel,
-                onNavigateToSignUpSuccessScreen = { navController.navigate(SignUpScreen.Form.route) }
+                onNavigateToSignUpSuccessScreen = { navController.navigate(SignUpScreen.SignUpSuccess.route) }
             )
         }
         composable(SignUpScreen.SignUpSuccess.route) {
@@ -77,7 +81,11 @@ fun SignUpContent(viewModel: SignUpViewModel) {
 
     TheLabTheme(darkTheme = viewModel.isDarkMode) {
         Scaffold(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background)
+            ) {
                 // Header
                 viewModel.currentDestination?.let {
                     SignUpHeader(

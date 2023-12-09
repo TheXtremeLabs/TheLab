@@ -42,6 +42,8 @@ import androidx.navigation.NavDestination
 import com.riders.thelab.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -71,6 +73,7 @@ fun SignUpHeader(viewModel: SignUpViewModel, currentDestination: NavDestination)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background)
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
