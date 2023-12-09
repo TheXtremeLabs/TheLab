@@ -84,7 +84,7 @@ class WebViewActivity : AppCompatActivity() {
 
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
-                if (null != binding)
+                if (null != _viewBinding)
                     binding.progressBar.visibility = View.GONE
                 invalidateOptionsMenu()
             }

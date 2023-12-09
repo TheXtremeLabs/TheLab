@@ -21,8 +21,10 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.riders.thelab.core.data.local.model.Message
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 
 fun Context.findActivity(): Activity? = when (this) {
+    is BaseComponentActivity -> this
     is AppCompatActivity -> this
     is ComponentActivity -> this
     is ContextWrapper -> baseContext.findActivity()

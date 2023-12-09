@@ -83,13 +83,13 @@ class PaletteViewModel @Inject constructor(
                                 val iRandom = Random.nextInt(max)
 
                                 // Get item url using random int
-                                val item = listResult.items[iRandom]
+                                val item: StorageReference = listResult.items[iRandom]
 
                                 // Make rest call
                                 item
                                     .downloadUrl
                                     .addOnSuccessListener { uri: Uri ->
-                                        Timber.d("${uri.toString()}")
+                                        Timber.d("downloadUrl | addOnSuccessListener | uri: ${uri.toString()}")
                                         _imageUrl.value = uri.toString()
                                     }
                             }

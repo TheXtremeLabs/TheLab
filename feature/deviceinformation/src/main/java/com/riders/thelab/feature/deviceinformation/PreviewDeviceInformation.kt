@@ -28,7 +28,6 @@ import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 
-
 @Composable
 fun DeviceSpecs(deviceInfo: DeviceInformation) {
     Column(

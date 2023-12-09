@@ -7,6 +7,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.Video
@@ -74,7 +75,11 @@ class ApiImpl @Inject constructor(
         if (null != mAuth.currentUser) {
             // Sign in success, update UI with the signed-in user's information
             Timber.d("signInAnonymously:success")
-            val user = mAuth.currentUser
+
+            if (BuildConfig.DEBUG) {
+                Timber.d("auth user: ${mAuth.currentUser}")
+            }
+
             val bucketName = "gs://the-lab-3920e.appspot.com"
             storage[0] = FirebaseStorage.getInstance(bucketName)
             // Create a storage reference from our app

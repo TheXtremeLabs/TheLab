@@ -13,7 +13,7 @@ import timber.log.Timber
 class TheLabBootBroadcastReceiver : BroadcastReceiver() {
 
     @SuppressLint("NewApi")
-    override fun onReceive(context: Context?, intent: Intent?) {
+    override fun onReceive(context: Context, intent: Intent?) {
         Timber.i("onReceive()")
         if (null != intent) {
             val action = intent.action
@@ -24,7 +24,7 @@ class TheLabBootBroadcastReceiver : BroadcastReceiver() {
                         context,
                         "action == \"android.intent.action.BOOT_COMPLETED\""
                     )
-                    val i = Intent(context!!, TheLabBootService::class.java)
+                    val i = Intent(context, TheLabBootService::class.java)
 
                     if (LabCompatibilityManager.isOreo()) {
                         ContextCompat.startForegroundService(context, i)
