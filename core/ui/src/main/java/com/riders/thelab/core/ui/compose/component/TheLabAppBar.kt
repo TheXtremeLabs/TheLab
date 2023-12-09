@@ -38,6 +38,7 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 
 
 ///////////////////////////
@@ -147,7 +148,7 @@ fun TheLabTopAppBar(navigationIcon: @Composable() (() -> Unit)) {
             title = {
             },
             navigationIcon = {
-                IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
+                IconButton(onClick = { (context.findActivity() as ComponentActivity).onBackPressed() }) {
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
