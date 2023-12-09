@@ -40,9 +40,9 @@ import com.riders.thelab.R
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.bus.LocationFetchedEvent
+import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
-import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
@@ -53,16 +53,21 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.LabGlideUtils
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityMainBinding
-import com.riders.thelab.feature.settings.SettingsActivity
 import com.riders.thelab.feature.weather.ui.WeatherUtils
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import com.riders.thelab.utils.Constants.GPS_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -435,36 +440,22 @@ class MainActivity : ComponentActivity(),
     @DelicateCoroutinesApi
     private fun initViewModelsObservers() {
 
-        mViewModel
-            .getConnectionStatus()
-            .observe(
-                this
-            ) { connectionStatus ->
-                UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
-                updateToolbarConnectionIcon(connectionStatus)
-            }
+        mViewModel.getConnectionStatus().observe(this) { connectionStatus ->
+            UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
+            updateToolbarConnectionIcon(connectionStatus)
+        }
 
-        mViewModel
-            .getConnectionStatus()
-            .observe(
-                this
-            ) { connectionStatus ->
-                UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
-                updateToolbarConnectionIcon(connectionStatus)
-            }
+        mViewModel.getConnectionStatus().observe(this) { connectionStatus ->
+            UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
+            updateToolbarConnectionIcon(connectionStatus)
+        }
 
-        mViewModel
-            .getLocationData()
-            .observe(
-                this
-            ) { locationStatus ->
-                Timber.d("getLocationData().observe : $locationStatus")
+        mViewModel.getLocationData().observe(this) { locationStatus ->
+            Timber.d("getLocationData().observe : $locationStatus")
 
-            }
+        }
 
-        mViewModel.getWeather().observe(
-            this
-        ) {
+        mViewModel.getWeather().observe(this) {
             Timber.d("getWeather().observe : $it")
 
             LabGlideUtils.getInstance().loadImage(

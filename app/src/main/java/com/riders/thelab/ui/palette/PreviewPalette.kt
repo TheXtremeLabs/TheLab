@@ -28,8 +28,8 @@ import com.riders.thelab.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.utils.loadImage
 import com.riders.thelab.feature.weather.core.component.TheLabTopAppBar
-import com.riders.thelab.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

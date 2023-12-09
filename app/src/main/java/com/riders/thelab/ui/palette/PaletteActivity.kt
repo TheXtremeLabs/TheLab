@@ -14,28 +14,19 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
-class PaletteActivity : ComponentActivity() {
+class PaletteActivity : BaseComponentActivity() {
 
     private val viewModel: PaletteViewModel by viewModels()
 
-    private val onBackPressedCallback: OnBackPressedCallback =
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                showAppClosingDialog()
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (LabCompatibilityManager.isTiramisu()) {
-            onBackPressedDispatcher.addCallback(this@PaletteActivity, onBackPressedCallback)
-        }
 
         viewModel.getWallpaperImages(this@PaletteActivity)
 
@@ -55,6 +46,11 @@ class PaletteActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun backPressed() {
+        Timber.e("backPressed")
+        showAppClosingDialog()
     }
 
     private fun showAppClosingDialog() {
