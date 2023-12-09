@@ -3,6 +3,7 @@ package com.riders.thelab.core.common.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.os.BatteryManager
 import android.os.Build
 import android.util.DisplayMetrics
 import android.view.WindowManager
@@ -134,6 +135,9 @@ object LabDeviceManager {
         return Build.VERSION.RELEASE
     }
 
+    ///////////////////////////////////////////////////////
+    // Screen Dimensions
+    ///////////////////////////////////////////////////////
     @SuppressLint("NewApi")
     fun getScreenHeight(activity: Activity): Int {
         val screenHeight: Int = if (LabCompatibilityManager.isAndroid10()
@@ -197,7 +201,9 @@ object LabDeviceManager {
         )
     }
 
-
+    ///////////////////////////////////////////////////////
+    // Rooted
+    ///////////////////////////////////////////////////////
     /**
      * Checks if the device is rooted.
      *
@@ -247,6 +253,10 @@ object LabDeviceManager {
         return executedSuccesfully
     }
 
+
+    ///////////////////////////////////////////////////////
+    // Biometric
+    ///////////////////////////////////////////////////////
     /**
      * Init the basic GoldFinger variable
      *
@@ -272,4 +282,17 @@ object LabDeviceManager {
             BiometricManager.BIOMETRIC_SUCCESS -> true
             else -> false
         }
+
+
+    ///////////////////////////////////////////////////////
+    // Battery level
+    ///////////////////////////////////////////////////////
+    // Call battery manager service
+    private fun getBatteryManager(context: Context): BatteryManager =
+        context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+
+    // Get the battery percentage and store it in a INT variable
+    fun getBatteryLevel(context: Context): Int =
+        getBatteryManager(context).getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+
 }
