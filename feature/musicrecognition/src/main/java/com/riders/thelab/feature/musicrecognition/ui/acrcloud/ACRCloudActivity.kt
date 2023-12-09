@@ -20,12 +20,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
-import com.riders.thelab.feature.musicrecognition.BuildConfig
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector.ConnectionListener
 import com.spotify.android.appremote.api.SpotifyAppRemote
@@ -224,12 +222,14 @@ class ACRCloudActivity : BaseComponentActivity() {
 
     private fun initObservers() {
         Timber.d("initObservers()")
-        mViewModel.mNetworkManager?.getConnectionState()?.observe(this) {
-            if (!it) {
-                Timber.e("getConnectionState().observe | NOT connected: $it")
-            } else {
-                mViewModel.mNetworkManager.updateIsConnected(true)
-                mViewModel.getSpotifyToken()
+        if (null != mViewModel.mNetworkManager) {
+            mViewModel.mNetworkManager.getConnectionState().observe(this) {
+                if (!it) {
+                    Timber.e("getConnectionState().observe | NOT connected: $it")
+                } else {
+                    mViewModel.mNetworkManager.updateIsConnected(true)
+                    mViewModel.getSpotifyToken()
+                }
             }
         }
     }

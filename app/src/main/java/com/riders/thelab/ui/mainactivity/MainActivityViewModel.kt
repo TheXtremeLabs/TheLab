@@ -1,8 +1,8 @@
 package com.riders.thelab.ui.mainactivity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import androidx.compose.runtime.mutableStateOf
@@ -10,9 +10,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.riders.thelab.core.common.utils.LabAddressesUtils
-import com.riders.thelab.core.common.utils.LabLocationUtils
 import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabLocationUtils
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
@@ -128,6 +129,7 @@ class MainActivityViewModel @Inject constructor(
     // Suspend functions are only allowed to be called from a coroutine or another suspend function.
     // You can see that the async function which includes the keyword suspend.
     // So, in order to use that, we need to make our function suspend too.
+    @SuppressLint("NewApi")
     fun fetchWeather(context: Context, latitude: Double, longitude: Double) {
         Timber.d("suspend fetchWeather()")
         viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
@@ -143,24 +145,54 @@ class MainActivityViewModel @Inject constructor(
                     if (null == fetchWeather) {
                         Timber.e("Fetch weather error")
                     } else {
-                        val address: Address? =
-                            LabAddressesUtils.getDeviceAddress(
+
+                        if (!LabCompatibilityManager.isTiramisu()) {
+                            LabAddressesUtils.getDeviceAddressLegacy(
                                 Geocoder(context, Locale.getDefault()),
                                 LabLocationUtils.buildTargetLocationObject(
                                     fetchWeather.latitude,
                                     fetchWeather.longitude
                                 )
-                            )
-                        val cityName: String =
-                            address?.locality.orEmpty()
-                        val cityCountry: String = address?.countryName.orEmpty()
+                            )?.let { address ->
+                                val cityName: String =
+                                    address?.locality.orEmpty()
+                                val cityCountry: String = address?.countryName.orEmpty()
 
-                        val mProcessedWeather =
-                            ProcessedWeather(cityName, cityCountry, fetchWeather)
+                                val mProcessedWeather =
+                                    ProcessedWeather(cityName, cityCountry, fetchWeather)
 
-                        // back on UI thread
-                        withContext(Main) {
-                            weather.value = mProcessedWeather
+                                // back on UI thread
+                                withContext(Main) {
+                                    weather.value = mProcessedWeather
+                                }
+                            } ?: run {
+                                Timber.e("address object is null")
+                            }
+                        } else {
+                            // back on UI thread
+                            withContext(Main) {
+                                LabAddressesUtils.getDeviceAddressAndroid13(
+                                    Geocoder(context, Locale.getDefault()),
+                                    LabLocationUtils.buildTargetLocationObject(
+                                        fetchWeather.latitude,
+                                        fetchWeather.longitude
+                                    )
+                                )
+                                { address ->
+                                    address?.let {
+                                        val cityName: String =
+                                            address?.locality.orEmpty()
+                                        val cityCountry: String = address?.countryName.orEmpty()
+
+                                        val mProcessedWeather =
+                                            ProcessedWeather(cityName, cityCountry, fetchWeather)
+
+                                        weather.value = mProcessedWeather
+                                    } ?: run {
+                                        Timber.e("address object is null")
+                                    }
+                                }
+                            }
                         }
                     }
                 }

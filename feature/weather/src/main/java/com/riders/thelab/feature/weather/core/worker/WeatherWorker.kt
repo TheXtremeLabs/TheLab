@@ -12,6 +12,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.LabLocationUtils
 import com.riders.thelab.core.data.IRepository
@@ -25,7 +26,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -50,6 +51,7 @@ class WeatherWorker @AssistedInject constructor(
     @Inject
     lateinit var mRepository: IRepository
 
+    @SuppressLint("NewApi")
     override suspend fun doWork(): Result {
         Timber.d("doWork()")
 
@@ -81,39 +83,71 @@ class WeatherWorker @AssistedInject constructor(
         return try {
             suspendCancellableCoroutine {
 
-                val job = runBlocking {
+                val oneCallWeatherResponse: OneCallWeatherResponse? = runBlocking {
                     mRepository.getWeatherOneCallAPI(location)
                 }
 
                 // Check if response is null
-                if (null == job) {
+                if (null == oneCallWeatherResponse) {
                     Result.failure()
                 } else {
-
                     Timber.d("observer.onSuccess(responseFile)")
 
-                    val address = LabAddressesUtils
-                        .getDeviceAddress(
+
+                    if (!LabCompatibilityManager.isTiramisu()) {
+                        LabAddressesUtils.getDeviceAddressAndroid13(
                             Geocoder(context, Locale.getDefault()),
                             LabLocationUtils.buildTargetLocationObject(
-                                job.latitude,
-                                job.longitude
+                                oneCallWeatherResponse.latitude,
+                                oneCallWeatherResponse.longitude
                             )
+                        ) {
+
+                            it?.let {
+                                // Load city name
+                                val cityName = it.locality
+                                val country = it.countryName
+
+                                val weatherBundle = buildWeatherBundle(
+                                    oneCallWeatherResponse,
+                                    cityName!!,
+                                    country!!
+                                )
+                                updateWidgetViaBroadcast(weatherBundle)
+
+                                // Create and send outputData
+                                outputData = createOutputData(
+                                    WORK_RESULT,
+                                    WORK_SUCCESS
+                                )
+                                Result.success(outputData!!)
+                            }
+                        }
+                    } else {
+                        val address = LabAddressesUtils
+                            .getDeviceAddressLegacy(
+                                Geocoder(context, Locale.getDefault()),
+                                LabLocationUtils.buildTargetLocationObject(
+                                    oneCallWeatherResponse.latitude,
+                                    oneCallWeatherResponse.longitude
+                                )
+                            )
+
+                        // Load city name
+                        val cityName = address?.locality
+                        val country = address?.countryName
+
+                        val weatherBundle =
+                            buildWeatherBundle(oneCallWeatherResponse, cityName!!, country!!)
+                        updateWidgetViaBroadcast(weatherBundle)
+
+                        // Create and send outputData
+                        outputData = createOutputData(
+                            WORK_RESULT,
+                            WORK_SUCCESS
                         )
-
-                    // Load city name
-                    val cityName = address?.locality
-                    val country = address?.countryName
-
-                    val weatherBundle = buildWeatherBundle(job, cityName!!, country!!)
-                    updateWidgetViaBroadcast(weatherBundle)
-
-                    // Create and send outputData
-                    outputData = createOutputData(
-                        WORK_RESULT,
-                        WORK_SUCCESS
-                    )
-                    Result.success(outputData!!)
+                        Result.success(outputData!!)
+                    }
                 }
             }
         } catch (throwable: Exception) {
