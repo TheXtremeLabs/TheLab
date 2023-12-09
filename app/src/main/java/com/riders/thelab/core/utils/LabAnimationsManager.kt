@@ -13,9 +13,9 @@ import timber.log.Timber
 
 object LabAnimationsManager {
 
-    var shortAnimationDuration = 0
-    var mediumAnimationDuration = 0
-    var longAnimationDuration = 0
+    private var shortAnimationDuration = 0
+    private var mediumAnimationDuration = 0
+    private var longAnimationDuration = 0
 
     init {
 
@@ -72,14 +72,14 @@ object LabAnimationsManager {
      * @param objectAnimator
      * @param duration
      */
-    fun startAnimation(objectAnimator: ObjectAnimator?, duration: Int) {
+    private fun startAnimation(objectAnimator: ObjectAnimator?, duration: Int) {
         if (null != objectAnimator) {
             objectAnimator.duration = duration.toLong()
             objectAnimator.start()
         }
     }
 
-    suspend fun clearAnimations(vararg objectAnimators: ObjectAnimator) {
+    fun clearAnimations(vararg objectAnimators: ObjectAnimator) {
         Timber.d("clearAnimations()")
         try {
             for (element in objectAnimators) {

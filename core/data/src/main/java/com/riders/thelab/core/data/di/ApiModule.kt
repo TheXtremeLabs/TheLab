@@ -13,10 +13,8 @@ import com.riders.thelab.core.data.remote.api.TheLabBackApiService
 import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
-import com.riders.thelab.core.data.remote.dto.artist.ArtistsResponseJsonAdapter
 import com.riders.thelab.core.data.utils.Constants
 import com.riders.thelab.core.data.utils.Headers
-import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,7 +34,6 @@ import timber.log.Timber
 import java.util.Objects
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-
 
 
 @Module

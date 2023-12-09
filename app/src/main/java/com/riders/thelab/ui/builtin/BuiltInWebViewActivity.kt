@@ -26,7 +26,7 @@ class BuiltInWebViewActivity : AppCompatActivity() {
 
     lateinit var viewBinding: ActivityBuiltInWebviewBinding
 
-    private var m_downX = 0f
+    private var mDownX = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,9 +87,9 @@ class BuiltInWebViewActivity : AppCompatActivity() {
                 true
             }
             when (event.action) {
-                MotionEvent.ACTION_DOWN -> m_downX = event.x // save the x
+                MotionEvent.ACTION_DOWN -> mDownX = event.x // save the x
                 MotionEvent.ACTION_MOVE, MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP ->                     // set x so that it doesn't move
-                    event.setLocation(m_downX, event.y)
+                    event.setLocation(mDownX, event.y)
             }
             false
         }

@@ -8,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.utils.Constants
 import timber.log.Timber
 
@@ -30,7 +29,7 @@ class SplashScreenViewModel : ViewModel() {
         startCountDown.value = started
     }
 
-    fun updateVideoPath(path: String) {
+    private fun updateVideoPath(path: String) {
         this.videoPath = path
     }
 

@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import timber.log.Timber
 
 @Serializable
-class LocationProviderChangedEvent() {
+class LocationProviderChangedEvent {
     suspend fun triggerEvent(enabled: Boolean) {
         Timber.d("triggerEvent() | enabled: $enabled")
 //        KotlinBus.getInstance().publish(enabled)

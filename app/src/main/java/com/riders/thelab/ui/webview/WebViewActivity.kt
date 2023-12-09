@@ -25,7 +25,7 @@ class WebViewActivity : AppCompatActivity() {
     private val binding get() = _viewBinding!!
 
     private var mUrl: String? = null
-    private var m_downX = 0f
+    private var mDownX = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,13 +113,13 @@ class WebViewActivity : AppCompatActivity() {
                     MotionEvent.ACTION_DOWN -> {
 
                         // save the x
-                        m_downX = event.x
+                        mDownX = event.x
                     }
 
                     MotionEvent.ACTION_MOVE, MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
 
                         // set x so that it doesn't move
-                        event.setLocation(m_downX, event.y)
+                        event.setLocation(mDownX, event.y)
                     }
                 }
                 return false

@@ -20,7 +20,7 @@ class DeviceInformationViewModel : ViewModel() {
     var deviceInfo: DeviceInformation? by mutableStateOf(null)
         private set
 
-    fun updateDeviceInfo(deviceInformation: DeviceInformation) {
+    private fun updateDeviceInfo(deviceInformation: DeviceInformation) {
         this.deviceInfo = deviceInformation
     }
 

@@ -76,8 +76,7 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
                 .selectable(
                     selected = artist.id == selectedIndex,
                     onClick = {
-                        if (selectedIndex != artist.id)
-                            selectedIndex = artist.id else selectedIndex = -1
+                        selectedIndex = if (selectedIndex != artist.id) artist.id else -1
 
                         (context.findActivity() as RecyclerViewActivity).onDetailClick(artist)
                     }),

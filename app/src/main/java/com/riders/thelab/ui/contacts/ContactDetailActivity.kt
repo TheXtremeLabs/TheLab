@@ -32,8 +32,8 @@ class ContactDetailActivity : AppCompatActivity() {
 
     var itemNameDetail: String? = null
     var itemSurnameDetail: String? = null
-    var itemEmailDetail: String? = null
-    var itemImage: String? = null
+    private var itemEmailDetail: String? = null
+    private var itemImage: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

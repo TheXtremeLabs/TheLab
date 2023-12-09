@@ -14,12 +14,10 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.LoginFieldsUIState
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
 import com.riders.thelab.core.data.remote.dto.ApiResponse
-import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
@@ -101,7 +99,7 @@ class LoginViewModel @Inject constructor(
     ////////////////////////////////////////
     // Composable methods
     ////////////////////////////////////////
-    fun updateLoginUiState(newState: LoginUiState) {
+    private fun updateLoginUiState(newState: LoginUiState) {
         _loginUiState.value = newState
     }
 
@@ -113,7 +111,7 @@ class LoginViewModel @Inject constructor(
         _passwordFieldUiState.value = newPasswordFieldState
     }
 
-    fun updateNetworkState(newState: NetworkState) {
+    private fun updateNetworkState(newState: NetworkState) {
         _networkState.value = newState
     }
 
@@ -128,7 +126,7 @@ class LoginViewModel @Inject constructor(
     fun updateIsRememberCredentials(remember: Boolean) {
         this.isRememberCredentials = remember
 
-        viewModelScope.launch(IO + coroutineExceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             repository.saveRememberCredentialsPref(
                 remember
             )
@@ -219,7 +217,6 @@ class LoginViewModel @Inject constructor(
 
         updateLoginUiState(LoginUiState.Connecting)
 
-        // makeCallLogin(login, password)
         logUser(login, password)
     }
 
@@ -233,55 +230,12 @@ class LoginViewModel @Inject constructor(
 
     fun getApi() {
         Timber.d("getApi()")
-        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             Timber.d("getApi()")
             val response = repository.getApi()
             Timber.d("$response")
 
             updateNetworkState(NetworkState.Available(true))
-        }
-    }
-
-    fun makeCallLogin(email: String, password: String) {
-        Timber.d("makeCallLogin() - with $email and $password")
-
-        val encodedPassword: String =
-            LoginUtils.encodedHashedPassword(
-                LoginUtils.convertToSHA1(password)!!
-            )!!
-
-        val user = UserDto(email, password, encodedPassword)
-
-        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
-            delay(2_500L)
-
-            /*try {
-                supervisorScope {*/
-            /*val response = repository.login(user)
-            Timber.d("$response")
-
-            _loginUiState.value = LoginUiState.Success(response)*/
-
-            //TODO : Due to Heroku back-end free services ending,
-            // Use of the database to store and log users
-
-            // Force response
-            Timber.e("Force response error: Due to Heroku back-end free services ending.")
-            // updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
-
-            // }
-            /*} catch (e: Exception) {
-                e.printStackTrace()
-                Timber.e(e.message)*/
-
-            /*val cs404: CharSequence = "404".subSequence(0, 3)
-            val cs503: CharSequence = "503".subSequence(0, 3)
-            if (e.message?.contains(cs404, true) == true
-                || e.message?.contains(cs503, true) == true
-            ) {
-                _loginUiState.value = LoginUiState.Error(ApiResponse("", 404, null))
-            }*/
-            //}
         }
     }
 
@@ -311,7 +265,7 @@ class LoginViewModel @Inject constructor(
     private fun saveUserDataInDataStore(email: String, password: String) =
         runCatching {
             Timber.d("saveUserDataInDataStore() | runCatching")
-            viewModelScope.launch(IO) {
+            viewModelScope.launch(Dispatchers.IO) {
                 repository.saveEmailPref(email)
                 repository.savePasswordPref(password)
             }

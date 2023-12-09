@@ -225,7 +225,7 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         mWeatherViewModel.fetchWeather((location.latitude to location.longitude).toLocation())
     }
 
-    fun updateLocationIcon(iconState: Boolean) {
+    private fun updateLocationIcon(iconState: Boolean) {
         Timber.d("updateLocationIcon() | state: $iconState")
 
         if (!iconState) {

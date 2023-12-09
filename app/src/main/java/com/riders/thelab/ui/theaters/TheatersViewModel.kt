@@ -26,11 +26,11 @@ class TheatersViewModel @Inject constructor() : ViewModel() {
     var once by mutableStateOf(false)
         private set
 
-    var mJosnAssetsMovies: MutableList<Movie> = mutableListOf<Movie>()
-    var mEnumMovies: MutableList<Movie> = mutableListOf<Movie>()
-    var mTrendingMovies: MutableList<Movie> = mutableListOf<Movie>()
-    var mUpcomingMovies: MutableList<Movie> = mutableListOf<Movie>()
-    var mPopularMovies: MutableList<Movie> = mutableListOf<Movie>()
+    var mJosnAssetsMovies: MutableList<Movie> = mutableListOf()
+    var mEnumMovies: MutableList<Movie> = mutableListOf()
+    var mTrendingMovies: MutableList<Movie> = mutableListOf()
+    var mUpcomingMovies: MutableList<Movie> = mutableListOf()
+    var mPopularMovies: MutableList<Movie> = mutableListOf()
 
     ////////////////////////////////////////
     // Composable methods
@@ -96,7 +96,7 @@ class TheatersViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getMovieDetail(activity: Context, navigator: Navigator, movie: Movie) {
-        Timber.d("getMovieDetail() | movie: ${movie.toString()}")
+        Timber.d("getMovieDetail() | movie: $movie")
 
         Intent(activity, TheatersDetailActivity::class.java)
             .apply {

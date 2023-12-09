@@ -23,7 +23,7 @@ class BiometricPromptContainerState {
         cryptoObject: BiometricPrompt.CryptoObject
     ) {
         _promptInfo = promptInfo
-        _cryptoObject = cryptoObject;
+        _cryptoObject = cryptoObject
         _isPromptToShow.value = true
     }
 

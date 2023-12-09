@@ -10,7 +10,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.riders.thelab.BuildConfig
-import com.riders.thelab.core.common.utils.encodeToSha256
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.compose.UserState
@@ -95,10 +94,10 @@ class SignUpViewModel @Inject constructor(
         private set
     var message: String by mutableStateOf("")
         private set
-    var shouldShowExitDialogConfirmation: Boolean by mutableStateOf(false)
+    private var shouldShowExitDialogConfirmation: Boolean by mutableStateOf(false)
         private set
 
-    fun updateUserState(newState: UserState) {
+    private fun updateUserState(newState: UserState) {
         this._userState.value = newState
     }
 
@@ -143,7 +142,7 @@ class SignUpViewModel @Inject constructor(
         this.shouldShowExitDialogConfirmation = show
     }
 
-    fun updateIsSubmitSuccess(isSuccess: Boolean) {
+    private fun updateIsSubmitSuccess(isSuccess: Boolean) {
         this.isSubmitSuccess = isSuccess
     }
 
@@ -162,7 +161,7 @@ class SignUpViewModel @Inject constructor(
     /////////////////////////////////////
     // Coroutine
     /////////////////////////////////////
-    val coroutineExceptionHandler =
+    private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             Timber.e("CoroutineExceptionHandler | Error caught with message: ${throwable.message}")
             UIManager.showToast(context, "Error while saving user to Database")
@@ -245,7 +244,7 @@ class SignUpViewModel @Inject constructor(
 
     private fun isValidPassword() = password.trim().isNotEmpty() && password.length >= 4
 
-    private fun saveUser(user: User): Unit {
+    private fun saveUser(user: User) {
         Timber.d("saveUser() | user: $user")
         Timber.d("attempt to insert user in database...")
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {

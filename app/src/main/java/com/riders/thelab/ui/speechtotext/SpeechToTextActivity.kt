@@ -31,7 +31,7 @@ class SpeechToTextActivity : AppCompatActivity(), RecognitionListener {
     var speech: SpeechRecognizer? = null
     var recognizerIntent: Intent? = null
     var message: String? = null
-    var currentFloatDB = 0f
+    private var currentFloatDB = 0f
 
     // TAG & Context
     private var context: Context? = null
@@ -144,7 +144,7 @@ class SpeechToTextActivity : AppCompatActivity(), RecognitionListener {
     }
 
 
-    fun hideRecordingView() {
+    private fun hideRecordingView() {
         viewBinding.recordingTextView.visibility = View.INVISIBLE
     }
 
@@ -154,7 +154,7 @@ class SpeechToTextActivity : AppCompatActivity(), RecognitionListener {
     }
 
 
-    fun hideEq() {
+    private fun hideEq() {
         viewBinding.eqImageView.visibility = View.INVISIBLE
     }
 
@@ -180,13 +180,11 @@ class SpeechToTextActivity : AppCompatActivity(), RecognitionListener {
             if (currentFloatDB > rmsdB) {
                 // Random negative
                 val negRandom = random.nextInt(toZero - min) + toZero
-                viewBinding.eqImageView.layoutParams.height =
-                    viewBinding.eqImageView.layoutParams.height - negRandom
+                viewBinding.eqImageView.layoutParams.height -= negRandom
             } else if (currentFloatDB < rmsdB) {
                 // Random positive
                 val posRandom = random.nextInt(max + toZero) + toZero
-                viewBinding.eqImageView.layoutParams.height =
-                    viewBinding.eqImageView.layoutParams.height + posRandom
+                viewBinding.eqImageView.layoutParams.height += posRandom
             }
 
             // eqImageView.getLayoutParams().height = eqImageView.getLayoutParams().height + random;

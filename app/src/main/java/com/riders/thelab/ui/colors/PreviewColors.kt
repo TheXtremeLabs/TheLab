@@ -98,7 +98,7 @@ fun ColorsButton(currentColor: Int, onButtonClicked: () -> Unit) {
 
                 when (clickNumber) {
                     10, 20, 30 -> {
-                        Timber.d("${interactions.toString()}")
+                        Timber.d("$interactions")
                     }
                 }
 

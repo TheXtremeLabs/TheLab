@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
@@ -70,7 +69,6 @@ fun PaletteItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaletteContent(viewModel: PaletteViewModel) {
 
@@ -147,7 +145,7 @@ fun PaletteContent(viewModel: PaletteViewModel) {
                                             color = MaterialTheme.colorScheme.primary,
                                             modifier = Modifier
                                                 .scale(0.5f)
-                                                .align(CenterHorizontally)
+                                                .align(Alignment.CenterHorizontally)
                                         )
                                     }
 

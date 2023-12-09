@@ -190,7 +190,7 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun buildProcessWeather(fetchWeather: OneCallWeatherResponse, address: Address) {
+    private fun buildProcessWeather(fetchWeather: OneCallWeatherResponse, address: Address) {
         Timber.d("buildProcessWeather()")
 
         val cityName: String =
@@ -217,7 +217,7 @@ class MainActivityViewModel @Inject constructor(
         } ?: run { Timber.e("Temperature object is null") }
     }
 
-    fun setProcessedWeather(processedWeather: ProcessedWeather) {
+    private fun setProcessedWeather(processedWeather: ProcessedWeather) {
         Timber.d("setProcessedWeather()")
         weather.value = processedWeather
     }

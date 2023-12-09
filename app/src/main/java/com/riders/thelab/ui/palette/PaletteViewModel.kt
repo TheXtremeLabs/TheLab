@@ -51,7 +51,7 @@ class PaletteViewModel @Inject constructor(
     private val _imageUrl: MutableStateFlow<String> = MutableStateFlow("")
     val imageUrl: StateFlow<String> = _imageUrl
 
-    val progressVisibility = mutableStateOf(false)
+    private val progressVisibility = mutableStateOf(false)
 
     ////////////////////////////
     //
@@ -89,7 +89,7 @@ class PaletteViewModel @Inject constructor(
                                 item
                                     .downloadUrl
                                     .addOnSuccessListener { uri: Uri ->
-                                        Timber.d("downloadUrl | addOnSuccessListener | uri: ${uri.toString()}")
+                                        Timber.d("downloadUrl | addOnSuccessListener | uri: $uri")
                                         _imageUrl.value = uri.toString()
                                     }
                             }

@@ -27,7 +27,7 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
 
     private lateinit var item: Artist
 
-    var scrollRange = -1
+    private var scrollRange = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -173,12 +173,12 @@ class KatActivity : AppCompatActivity(), TextWatcher {
         fetchedList: List<Kat>
     ): List<Kat> {
         Timber.d("compareListAndGetAddedItem()")
-        val differences: MutableList<Kat> = ArrayList(fetchedList)
-        differences.removeAll(currentList)
+        val differences: Set<Kat> = buildSet { ArrayList<Kat>(fetchedList) } //ArrayList(fetchedList)
+        // differences.removeAll(currentList)
         for (katElement in differences) {
             Timber.e("Differences : %s", katElement.toString())
         }
-        return differences
+        return differences.toList()
     }
 
     private fun removeAll() {

@@ -606,7 +606,7 @@ object AppBuilderUtils {
             }
             .toList()
 
-    fun getDrawableFromIntResource(context: Context, redId: Int): Drawable {
+    private fun getDrawableFromIntResource(context: Context, redId: Int): Drawable {
         return ContextCompat.getDrawable(context, redId)!!
     }
 }

@@ -302,26 +302,11 @@ object UIManager {
         LabGlideUtils.getInstance().loadImageBlurred(context, imageURL, targetImageView)
     }
 
-    /**
-     * Display menu buttons when collapsing toolbar is collapsed
-     */
-    fun showMenuButtons(menu: Menu) {
-        // Or true to be visible
-        // menu.setGroupVisible(R.id.menu_main_group, true)
-    }
 
     fun getBitmapFromDrawable(context: Context, drawableResId: Int): Bitmap? {
         if (0 == drawableResId)
             return null
         return drawableToBitmap(ContextCompat.getDrawable(context, drawableResId)!!)
-    }
-
-    /**
-     * Hide menu buttons when collapse toolbar is expanded
-     */
-    fun hideMenuButtons(menu: Menu) {
-        // Or true to be visible
-        // menu.setGroupVisible(R.id.menu_main_group, false)
     }
 
     fun getDrawable(context: Context, drawableResId: Int): Drawable? {

@@ -1,6 +1,5 @@
 package com.riders.thelab.core.data.local
 
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.riders.thelab.core.data.local.dao.ContactDao

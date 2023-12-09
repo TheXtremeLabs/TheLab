@@ -9,7 +9,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -253,7 +253,6 @@ fun TheatersContent(viewModel: TheatersViewModel) {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TheatersContainer(viewModel: TheatersViewModel) {
 
@@ -269,8 +268,8 @@ fun TheatersContainer(viewModel: TheatersViewModel) {
                 AnimatedContent(
                     modifier = Modifier.align(Alignment.Center),
                     transitionSpec = {
-                        slideInVertically { height -> height } + fadeIn() with
-                                slideOutVertically { height -> -height } + fadeOut()
+                        (slideInVertically { height -> height } + fadeIn()).togetherWith(
+                            slideOutVertically { height -> -height } + fadeOut())
                     },
                     targetState = if (LocalInspectionMode.current) true else switch.value,
                     label = ""

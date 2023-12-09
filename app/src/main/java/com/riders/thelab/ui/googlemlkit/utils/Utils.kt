@@ -36,6 +36,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
 import kotlin.math.abs
+import kotlin.math.max
 
 /** Utility class to provide helper methods.  */
 object Utils {
@@ -46,7 +47,7 @@ object Utils {
      */
     const val ASPECT_RATIO_TOLERANCE = 0.01f
 
-    internal const val REQUEST_CODE_PHOTO_LIBRARY = 1
+    private const val REQUEST_CODE_PHOTO_LIBRARY = 1
 
     private const val TAG = "Utils"
 
@@ -182,7 +183,7 @@ object Utils {
             opts.inJustDecodeBounds = true
             BitmapFactory.decodeStream(inputStreamForSize, null, opts)/* outPadding= */
             val inSampleSize =
-                Math.max(opts.outWidth / maxImageDimension, opts.outHeight / maxImageDimension)
+                max(opts.outWidth / maxImageDimension, opts.outHeight / maxImageDimension)
 
             opts = BitmapFactory.Options()
             opts.inSampleSize = inSampleSize

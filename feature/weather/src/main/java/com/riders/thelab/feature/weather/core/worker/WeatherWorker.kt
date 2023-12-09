@@ -60,10 +60,7 @@ class WeatherWorker @AssistedInject constructor(
 
         if (!labLocationManager.canGetLocation()) {
             // Unable to fetch user location
-            outputData = createOutputData(
-                WORK_RESULT,
-                WORK_LOCATION_FAILED
-            )
+            outputData = createOutputData(WORK_LOCATION_FAILED)
             return Result.failure(outputData!!)
         } else {
             try {
@@ -71,7 +68,6 @@ class WeatherWorker @AssistedInject constructor(
             } catch (e: Exception) {
                 // Unable to fetch user location
                 outputData = createOutputData(
-                    WORK_RESULT,
                     "$WORK_LOCATION_FAILED | You may check if required permissions are granted"
                 )
                 return Result.failure(outputData!!)
@@ -116,10 +112,7 @@ class WeatherWorker @AssistedInject constructor(
                                 updateWidgetViaBroadcast(weatherBundle)
 
                                 // Create and send outputData
-                                outputData = createOutputData(
-                                    WORK_RESULT,
-                                    WORK_SUCCESS
-                                )
+                                outputData = createOutputData(WORK_SUCCESS)
                                 Result.success(outputData!!)
                             }
                         }
@@ -142,10 +135,7 @@ class WeatherWorker @AssistedInject constructor(
                         updateWidgetViaBroadcast(weatherBundle)
 
                         // Create and send outputData
-                        outputData = createOutputData(
-                            WORK_RESULT,
-                            WORK_SUCCESS
-                        )
+                        outputData = createOutputData(WORK_SUCCESS)
                         Result.success(outputData!!)
                     }
                 }
@@ -154,10 +144,7 @@ class WeatherWorker @AssistedInject constructor(
 
             Timber.e(WeatherDownloadWorker.WORK_DOWNLOAD_FAILED)
             Timber.e(throwable)
-            outputData = createOutputData(
-                WORK_RESULT,
-                WORK_DOWNLOAD_FAILED
-            )
+            outputData = createOutputData(WORK_DOWNLOAD_FAILED)
             Result.failure(outputData!!)
         }
     }
@@ -165,15 +152,15 @@ class WeatherWorker @AssistedInject constructor(
     /**
      * Creates ouput data to send back to the activity / presenter which is listening to it
      *
-     * @param outputDataKey
      * @param message
      * @return
      */
+
     @SuppressLint("RestrictedApi")
-    private fun createOutputData(outputDataKey: String, message: String): Data {
+    private fun createOutputData(message: String): Data {
         Timber.d("createOutputData()")
         return Data.Builder()
-            .put(outputDataKey, message)
+            .put("work_result", message)
             .build()
     }
 

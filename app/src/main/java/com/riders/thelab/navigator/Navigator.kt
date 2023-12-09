@@ -7,12 +7,11 @@ import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.contacts.addcontact.AddContactActivity
 import com.riders.thelab.ui.login.LoginActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
-import com.riders.thelab.ui.settings.SettingsActivity
 import com.riders.thelab.ui.signup.SignUpActivity
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
 import timber.log.Timber
 
-class Navigator constructor(
+class Navigator(
     private val activity: Activity
 ) {
 

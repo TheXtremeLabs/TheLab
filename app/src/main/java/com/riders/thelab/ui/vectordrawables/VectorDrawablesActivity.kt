@@ -11,8 +11,8 @@ class VectorDrawablesActivity : AppCompatActivity() {
 
     lateinit var viewBinding: ActivityVectorDrawablesBinding
 
-    var googleIOAnimatedVectorDrawable: AnimatedVectorDrawable? = null
-    var progressBarAnimatedVectorDrawable: AnimatedVectorDrawable? = null
+    private var googleIOAnimatedVectorDrawable: AnimatedVectorDrawable? = null
+    private var progressBarAnimatedVectorDrawable: AnimatedVectorDrawable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

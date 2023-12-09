@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.OrientationHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller.ScrollVectorProvider
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class ItemSnapHelper : LinearSnapHelper() {
 
@@ -48,7 +51,7 @@ class ItemSnapHelper : LinearSnapHelper() {
         for (i in 0 until childCount) {
             val child = layoutManager.getChildAt(i)
             val childStart = helper.getDecoratedStart(child)
-            val absDistanceToStart = Math.abs(childStart - start)
+            val absDistanceToStart = abs(childStart - start)
             if (absDistanceToStart < absClosest) {
                 absClosest = absDistanceToStart
                 closestView = child
@@ -96,8 +99,8 @@ class ItemSnapHelper : LinearSnapHelper() {
                 val snapDistance = calculateDistanceToFinalSnap(layoutManager, targetView)
                 val dx = snapDistance[0]
                 val dy = snapDistance[1]
-                val dt = calculateTimeForDeceleration(Math.abs(dx))
-                val time = Math.max(1, Math.min(MAX_SCROLL_ON_FLING_DURATION_MS, dt))
+                val dt = calculateTimeForDeceleration(abs(dx))
+                val time = max(1, min(MAX_SCROLL_ON_FLING_DURATION_MS, dt))
                 action.update(dx, dy, time, mDecelerateInterpolator)
             }
 

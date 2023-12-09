@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import timber.log.Timber
 
 
+@SuppressLint("MissingPermission")
 class BluetoothViewModel : ViewModel() {
 
     private val isBluetoothEnabled: MutableLiveData<Boolean> = MutableLiveData()

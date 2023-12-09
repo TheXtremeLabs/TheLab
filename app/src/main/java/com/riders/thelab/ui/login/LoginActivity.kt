@@ -33,7 +33,7 @@ class LoginActivity : BaseComponentActivity() {
     private var mNetworkManager: LabNetworkManagerNewAPI? = null
     private lateinit var mNavigator: Navigator
 
-    var networkState: Boolean = false
+    private var networkState: Boolean = false
 
     private var windowSize: WindowSizeClass? = null
 
@@ -82,16 +82,16 @@ class LoginActivity : BaseComponentActivity() {
                 // collecting when the lifecycle is STOPPED
                 mViewModel.networkState.collect { state ->
                     // New value received
-                    when (state) {
+                    networkState = when (state) {
                         is NetworkState.Available -> {
-                            networkState = state.available
+                            state.available
                             //enableEditTexts()
                             //enableButton()
                             // hideMainActivityButton()
                         }
 
                         is NetworkState.Disconnected -> {
-                            networkState = state.disconnected
+                            state.disconnected
                             //disableEditTexts()
                             // disableButton()
                             //showGoToMainActivityButton()

@@ -73,7 +73,7 @@ object LabNotificationManager {
             }
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission", "ForegroundServiceType")
     fun displayMusicNotification(
         context: Context,
         mediaSession: MediaSessionCompat,

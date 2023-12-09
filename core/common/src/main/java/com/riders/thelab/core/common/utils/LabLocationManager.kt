@@ -14,11 +14,10 @@ import android.provider.Settings
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.DelicateCoroutinesApi
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
-class LabLocationManager constructor(context: Context) : LocationListener {
+class LabLocationManager(context: Context) : LocationListener {
 
     private var mContext: Context = context
 
@@ -209,8 +208,7 @@ class LabLocationManager constructor(context: Context) : LocationListener {
             alertDialog.setTitle("GPS is settings")
 
             // Setting Dialog Message
-            alertDialog
-                .setMessage("GPS is not enabled. Do you want to go to settings menu?")
+            alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?")
 
             // On pressing Settings button
             alertDialog.setPositiveButton(
@@ -241,11 +239,17 @@ class LabLocationManager constructor(context: Context) : LocationListener {
         Timber.d("onLocationChanged : $location")
     }
 
+    @Deprecated(
+        "Deprecated in Java",
+        ReplaceWith(
+            "Timber.d(\"onStatusChanged : \$provider, \$status\")",
+            "timber.log.Timber"
+        )
+    )
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
         Timber.d("onStatusChanged : $provider, $status")
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onProviderDisabled(provider: String) {
         Timber.e("onProviderDisabled() | provider: $provider")
 
@@ -274,7 +278,6 @@ class LabLocationManager constructor(context: Context) : LocationListener {
         }*/
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onProviderEnabled(provider: String) {
         Timber.d("onProviderEnabled() | provider: $provider")
         /*mWeakReference?.let { ref ->

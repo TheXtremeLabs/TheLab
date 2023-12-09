@@ -152,6 +152,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             .check()
     }
 
+    @Deprecated("DEPRECATED - Use registerActivityForResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Timber.e("onActivityResult()")
         // Check for the integer request code originally supplied to startResolutionForResult().
@@ -167,7 +168,6 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             }
         }
 
-        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
     }
 

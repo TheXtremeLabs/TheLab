@@ -5,7 +5,7 @@ import com.riders.thelab.core.data.local.model.DeviceInformation
 
 class PreviewProviderDeviceInformation : PreviewParameterProvider<DeviceInformation> {
     override val values: Sequence<DeviceInformation>
-        get() = sequenceOf<DeviceInformation>(
+        get() = sequenceOf(
             DeviceInformation(
                 "Galaxy Note 8",
                 "Samsung",

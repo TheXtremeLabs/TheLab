@@ -65,7 +65,7 @@ object LabAddressesUtils {
             location.longitude,
             1
         ) {
-            val address = it.get(0)
+            val address = it[0]
             Timber.e("addresses : %s", address)
 
             callback(address)

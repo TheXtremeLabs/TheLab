@@ -5,7 +5,6 @@ import android.location.Address
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -223,7 +222,6 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
 }
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun WeatherData(viewModel: WeatherViewModel) {
 
@@ -425,11 +423,11 @@ fun WeatherMoreData(weather: OneCallWeatherResponse) {
             )
         }"
 
-    val cloudiness: String = "${weather.currentWeather?.clouds.toString()} ${
+    val cloudiness = "${weather.currentWeather?.clouds.toString()} ${
         (context.findActivity() as WeatherActivity).resources.getString(R.string.percent_placeholder)
     }"
 
-    val humidity: String = "${weather.currentWeather?.humidity.toString()} ${
+    val humidity = "${weather.currentWeather?.humidity.toString()} ${
         (context.findActivity() as WeatherActivity).resources.getString(R.string.percent_placeholder)
     }"
 
@@ -684,7 +682,6 @@ fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherContent(viewModel: WeatherViewModel, labLocationManager: LabLocationManager) {
 

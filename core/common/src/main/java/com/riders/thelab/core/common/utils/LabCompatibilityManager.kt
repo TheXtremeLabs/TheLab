@@ -19,9 +19,7 @@ object LabCompatibilityManager {
     /**
      * Get the current Android API level.
      */
-    fun getSdkVersion(): Int {
-        return Build.VERSION.SDK_INT
-    }
+    private fun getSdkVersion(): Int = Build.VERSION.SDK_INT
 
     /**
      * Determine if the device is running API level 8 or higher.
@@ -33,7 +31,7 @@ object LabCompatibilityManager {
     /**
      * Determine if the device is running API level 11 or higher.
      */
-    fun isHoneycomb(): Boolean {
+    private fun isHoneycomb(): Boolean {
         return getSdkVersion() >= VERSION_CODES.HONEYCOMB
     }
 
@@ -128,33 +126,31 @@ object LabCompatibilityManager {
      *
      * @param context The calling context.
      */
-    fun isTablet(context: Context): Boolean {
-        return (context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
+    fun isTablet(context: Context): Boolean =
+        (context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE)
-    }
+
 
     /**
      * Determine if the device is a HoneyComb tablet.
      *
      * @param context The calling context.
      */
-    fun isHoneycombTablet(context: Context): Boolean {
-        return isHoneycomb() && isTablet(context)
-    }
+    fun isHoneycombTablet(context: Context): Boolean = isHoneycomb() && isTablet(context)
 
 
     @SuppressLint("NewApi")
     fun getOSName(): String {
         var fields: Array<Field>? = VERSION_CODES::class.java.fields
-        var OSName = "UNKNOWN"
+        var osName = "UNKNOWN"
         if (fields != null) {
             for (field in fields) {
                 try {
                     if (field.getInt(VERSION_CODES::class.java) == Build.VERSION.SDK_INT - 1) {
-                        OSName = field.name
-                        Timber.e("code name %s", OSName)
+                        osName = field.name
+                        Timber.e("code name %s", osName)
                         if (isOreo()) {
-                            OSName = getOsVersionName(OSName)
+                            osName = getOsVersionName(osName)
                         }
                     }
                 } catch (e: IllegalAccessException) {
@@ -189,7 +185,7 @@ object LabCompatibilityManager {
 
         Timber.e("OS: %s", builder.toString())
         // TEST
-        return OSName
+        return osName
     }
 
 
@@ -202,6 +198,10 @@ object LabCompatibilityManager {
      */
     @RequiresApi(api = VERSION_CODES.O)
     fun getOsVersionName(name: String): String {
+        if (name == "U") return "Android 14"
+        if (name == "T") return "Tiramisu"
+        if (name == "S") return "Snow Cone"
+        if (name == "R") return "Red Velvet"
         if (name == "Q") return "Android 10"
         if (name == "P") return "Pie"
         if (name == "O") return "Oreo"

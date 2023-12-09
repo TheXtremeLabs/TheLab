@@ -135,25 +135,25 @@ fun AndroidSpecs(deviceInfo: DeviceInformation) {
                     .padding(8.dp)
             ) {
                 // Name
-                Row() {
+                Row {
                     Text(modifier = Modifier.weight(1f), text = "Name")
                     Text(modifier = Modifier.weight(1f), text = deviceInfo.androidVersionName)
 
                 }
                 // Version
-                Row() {
+                Row {
                     Text(modifier = Modifier.weight(1f), text = "Version")
                     Text(modifier = Modifier.weight(1f), text = "${deviceInfo.sdkVersion}")
 
                 }
                 // Release
-                Row() {
+                Row {
                     Text(modifier = Modifier.weight(1f), text = "Release")
                     Text(modifier = Modifier.weight(1f), text = deviceInfo.androidRelease)
 
                 }
                 // Rooted
-                Row() {
+                Row {
                     Text(modifier = Modifier.weight(1f), text = "Rooted")
                     Text(modifier = Modifier.weight(1f), text = "${deviceInfo.rooted}")
 

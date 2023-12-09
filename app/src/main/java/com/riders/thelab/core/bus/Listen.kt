@@ -5,4 +5,4 @@ package com.riders.thelab.core.bus
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
-annotation class Listen()
+annotation class Listen

@@ -18,7 +18,7 @@ abstract class BaseViewModel : ViewModel() {
         private set
     var isDarkMode: Boolean by mutableStateOf(true)
         private set
-    var isVibration: Boolean by mutableStateOf(true)
+    private var isVibration: Boolean by mutableStateOf(true)
         private set
 
     fun toggleDarkMode() {
@@ -33,7 +33,7 @@ abstract class BaseViewModel : ViewModel() {
         this.isVibration = !this.isVibration
     }
 
-     fun updateVersion(appVersion: String) {
+     private fun updateVersion(appVersion: String) {
         this.version = appVersion
     }
 

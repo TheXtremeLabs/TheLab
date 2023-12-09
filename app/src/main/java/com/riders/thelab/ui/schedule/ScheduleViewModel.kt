@@ -48,7 +48,7 @@ class ScheduleViewModel : ViewModel() {
         private set
     var isCountDownDone by mutableStateOf(false)
         private set
-    var isLoadingViewVisible by mutableStateOf(false)
+    private var isLoadingViewVisible by mutableStateOf(false)
         private set
     var uiCountDown by mutableStateOf(0L)
         private set

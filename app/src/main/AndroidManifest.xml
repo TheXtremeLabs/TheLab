@@ -272,12 +272,6 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name=".ui.deviceinformation.DeviceInformationActivity"
-            android:label="@string/activity_title_device_information"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/SwipeDownTheme" />
-
-        <activity
             android:name=".feature.deviceinformation.DeviceInformationActivity"
             android:label="@string/activity_title_device_information"
             android:parentActivityName=".ui.mainactivity.MainActivity" />

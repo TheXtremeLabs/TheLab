@@ -15,9 +15,9 @@ import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.databinding.RowYoutubeLikeItemBinding
 import timber.log.Timber
 
-class YoutubeLikeViewHolder constructor(
+class YoutubeLikeViewHolder(
     private val context: Context,
-    val itemBinding: RowYoutubeLikeItemBinding,
+    private val itemBinding: RowYoutubeLikeItemBinding,
     private val listener: YoutubeListClickListener
 ) : RecyclerView.ViewHolder(itemBinding.root) {
 

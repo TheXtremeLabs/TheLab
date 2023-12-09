@@ -212,7 +212,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
                 AnimatedVisibility(
                     modifier = Modifier.align(Alignment.TopCenter),
                     visible = isVisible.value,
-                    enter = slideInVertically() {
+                    enter = slideInVertically {
                         // Slide in from 40 dp from the top.
                         with(density) { -40.dp.roundToPx() }
                     }
@@ -220,7 +220,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
                         // Fade in with the initial alpha of 0.3f.
                         initialAlpha = 0.3f
                     ),
-                    exit = slideOutVertically() {
+                    exit = slideOutVertically {
                         // Slide in from 40 dp from the top.
                         with(density) { -40.dp.roundToPx() }
                     }

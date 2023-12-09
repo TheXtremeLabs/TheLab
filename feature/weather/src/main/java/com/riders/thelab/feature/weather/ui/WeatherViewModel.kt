@@ -98,15 +98,15 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    fun updateCityMaxTemp(newTemperature: Double) {
+    private fun updateCityMaxTemp(newTemperature: Double) {
         this.cityMaxTemp = "${newTemperature.toInt()}"
     }
 
-    fun updateCityMinTemp(newTemperature: Double) {
+    private fun updateCityMinTemp(newTemperature: Double) {
         this.cityMinTemp = "${newTemperature.toInt()}"
     }
 
-    fun updateWeatherAddress(newAddress: Address) {
+    private fun updateWeatherAddress(newAddress: Address) {
         this.weatherAddress = newAddress
     }
 
@@ -144,7 +144,7 @@ class WeatherViewModel @Inject constructor(
     // Class methods
     //
     ///////////////////////////
-    fun getCitiesFromDb(query: String) {
+    private fun getCitiesFromDb(query: String) {
         Timber.d("getCitiesFromDb() | query: $query")
 
         if (null != searchDbJob && searchDbJob?.isActive == true) {
@@ -167,7 +167,7 @@ class WeatherViewModel @Inject constructor(
     }
 
     private fun handleResults(cursor: Cursor) {
-        Timber.d("handleResults() | available cursor's column: ${cursor.columnNames.toString()}")
+        Timber.d("handleResults() | available cursor's column: ${cursor.columnNames}")
 
         if (suggestions.isNotEmpty()) suggestions = mutableListOf()
 
@@ -243,7 +243,7 @@ class WeatherViewModel @Inject constructor(
                 Geocoder(activity, Locale.getDefault()),
                 (latitude to longitude).toLocation()
             ) { address ->
-                address?.let { it -> updateWeatherAddress(it) }
+                address?.let { updateWeatherAddress(it) }
             }
         }
     }

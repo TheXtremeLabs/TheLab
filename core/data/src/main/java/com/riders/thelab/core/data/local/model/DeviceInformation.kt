@@ -7,7 +7,7 @@ data class DeviceInformation(
     val serial: String,
     val fingerPrint: String,
     val hardware: String,
-    val IMEI: String,
+    val imei: String,
     val id: String,
     val screenWidth: Int = 0,
     val screenHeight: Int = 0,

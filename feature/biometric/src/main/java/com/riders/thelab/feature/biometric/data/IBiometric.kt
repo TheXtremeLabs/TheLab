@@ -22,7 +22,7 @@ interface IBiometric {
      * Store the token using the [cryptoObject] passed as parameter.
      *
      * @param cryptoObject the cryptoObject to use for encryption operations
-     * @throws com.riders.thelab.core.exception.InvalidCryptoLayerException if
+     * @throws [com.riders.thelab.feature.biometric.core.exception.InvalidCryptoLayerException] if
      * crypto layer is invalid
      */
     suspend fun fetchAndStoreEncryptedToken(cryptoObject: CryptoObject)
@@ -32,8 +32,7 @@ interface IBiometric {
      *
      * @param cryptoObject the cryptoObject to use for decryption operations
      * @return the token as string
-     * @throws com.riders.thelab.core.exception.InvalidCryptoLayerException if
-     * crypto layer is invalid
+     * @throws [com.riders.thelab.feature.biometric.core.exception.InvalidCryptoLayerException] if crypto layer is invalid
      */
     suspend fun decryptToken(cryptoObject: CryptoObject): String
 
@@ -41,8 +40,7 @@ interface IBiometric {
      * Create a new [CryptoObject] instance for the specified purpose
      *
      * @param purpose the final purpose of the required cryptoObject
-     * @throws com.riders.thelab.core.exception.InvalidCryptoLayerException if
-     * crypto layer is invalid
+     * @throws [com.riders.thelab.feature.biometric.core.exception.InvalidCryptoLayerException] if crypto layer is invalid
      */
     suspend fun createCryptoObject(purpose: CryptoPurpose): CryptoObject
 

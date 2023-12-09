@@ -16,8 +16,8 @@ class FilterListViewAdapter(context: Context, worldPopulationList: MutableList<W
 
     private var mWorldPopulationList: MutableList<WorldPopulation>? = worldPopulationList
     private var arraylist: ArrayList<WorldPopulation>? = null
-    var mContext: Context? = context
-    var mInflater: LayoutInflater? = null
+    private var mContext: Context? = context
+    private var mInflater: LayoutInflater? = null
 
     init {
         mInflater = LayoutInflater.from(mContext)

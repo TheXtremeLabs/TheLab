@@ -54,10 +54,6 @@ class SignUpActivity : BaseComponentActivity() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
 
     /////////////////////////////////////
     //

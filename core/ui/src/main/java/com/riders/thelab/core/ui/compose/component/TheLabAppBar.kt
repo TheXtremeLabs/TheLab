@@ -52,7 +52,7 @@ import com.riders.thelab.core.ui.compose.utils.findActivity
 @Composable
 fun TheLabTopAppBar(
     @PreviewParameter(TextContentPreviewProvider::class) title: String,
-    navigationIcon: @Composable() (() -> Unit)? = null
+    navigationIcon: @Composable (() -> Unit)? = null
 ) {
     val context = LocalContext.current
 
@@ -95,7 +95,7 @@ fun TheLabTopAppBar(
 fun TheLabTopAppBar(
     viewModel:BaseViewModel,
     @PreviewParameter(TextContentPreviewProvider::class) title: String,
-    navigationIcon: @Composable() (() -> Unit)? = null
+    navigationIcon: @Composable (() -> Unit)? = null
 ) {
     val context = LocalContext.current
 
@@ -136,7 +136,7 @@ fun TheLabTopAppBar(
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TheLabTopAppBar(navigationIcon: @Composable() (() -> Unit)) {
+fun TheLabTopAppBar(navigationIcon: @Composable (() -> Unit)) {
     val context = LocalContext.current
 
     TheLabTheme {
