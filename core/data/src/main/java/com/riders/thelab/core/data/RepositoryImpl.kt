@@ -170,8 +170,8 @@ class RepositoryImpl @Inject constructor(
     override fun getUserByName(username: String): User = mDbImpl.getUserByName(username)
 
     override fun getUserByEmail(email: String): User = mDbImpl.getUserByEmail(email)
-    override fun logUser(usernameOrMail: String, passwordEncoded: String): User? =
-        mDbImpl.logUser(usernameOrMail, passwordEncoded)
+    override fun logUser(usernameOrMail: String, encodedPassword: String): User? =
+        mDbImpl.logUser(usernameOrMail, encodedPassword)
 
     override fun deleteUser(userId: Int) = mDbImpl.deleteUser(userId)
 

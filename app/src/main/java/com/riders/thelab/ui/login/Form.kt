@@ -2,19 +2,16 @@ package com.riders.thelab.ui.login
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.DragInteraction
-import androidx.compose.foundation.interaction.Interaction
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
-import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,6 +26,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,14 +37,13 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -54,14 +51,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
 import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
@@ -78,6 +78,10 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
+
+    val loginFieldState by viewModel.loginFieldUiState.collectAsStateWithLifecycle()
+    val loginHasError by viewModel.loginHasError.collectAsStateWithLifecycle()
+
     TheLabTheme {
         Column(modifier = Modifier.fillMaxWidth()) {
             TextField(
@@ -110,7 +114,6 @@ fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
                 )
             )
 
-            val loginHasError by viewModel.loginHasError.collectAsStateWithLifecycle()
 
             AnimatedVisibility(visible = loginHasError) {
                 Text(
@@ -132,9 +135,11 @@ fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Password(viewModel: LoginViewModel, focusRequester: FocusRequester) {
-    val passwordVisible = remember { mutableStateOf(false) }
+    val passwordFieldState by viewModel.passwordFieldUiState.collectAsStateWithLifecycle()
 
     val keyboardController = LocalSoftwareKeyboardController.current
+    val passwordVisible = remember { mutableStateOf(false) }
+
     TheLabTheme {
         TextField(
             modifier = Modifier
@@ -179,116 +184,130 @@ fun Password(viewModel: LoginViewModel, focusRequester: FocusRequester) {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Submit(viewModel: LoginViewModel) {
+fun ErrorMessage(viewModel: LoginViewModel) {
+    val loginUiState by viewModel.loginUiState.collectAsStateWithLifecycle()
+    val alphaAnimation = remember { Animatable(0f) }
 
-    val status by viewModel.loginUiState.collectAsStateWithLifecycle()
+    // Text error
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .alpha(alphaAnimation.value),
+        text = stringResource(id = R.string.err_msg_wrong_email_or_password),
+        color = Color.Red
+    )
 
-    // Hoist the MutableInteractionSource that we will provide to interactions
-    val interactionSource = remember { MutableInteractionSource() }
-
-    // SnapshotStateList we will use to track incoming Interactions in the order they are emitted
-    val interactions = remember { mutableStateListOf<Interaction>() }
-
-    val clickable = Modifier.clickable(
-        interactionSource = interactionSource,
-        indication = LocalIndication.current
-    ) { /* update some business state here */ }
-
-    // Observe changes to the binary state for these interactions
-    val isPressed by interactionSource.collectIsPressedAsState()
-
-    // Use the state to change our UI
-    val (text, color) = when {
-        isPressed -> "Pressed" to Color.Blue
-        // Default / baseline state
-        else -> "Log In" to Color.Black
-    }
-
-    var clickNumber = 0
-
-    TheLabTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(0.35f)
-                .padding(top = 16.dp),
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.Center
-        ) {
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(40.dp)
-                    //.padding(top = 16.dp)
-                    .then(clickable)
-                    .indication(
-                        interactionSource = interactionSource,
-                        indication = LocalIndication.current
-                    ),
-                onClick = {
-                    Timber.d("Login button clicked")
-                    clickNumber += 1
-
-                    when (clickNumber) {
-                        10, 20, 30 -> {
-                            Timber.d("${interactions.toString()}")
-                        }
-                    }
-                    viewModel.login()
+    if (loginUiState is LoginUiState.UserError) {
+        LaunchedEffect(loginUiState) {
+            when (loginUiState) {
+                is LoginUiState.UserError -> {
+                    alphaAnimation.animateTo(1f)
                 }
-            ) {
-                AnimatedContent(targetState = status) { targetState ->
-                    when (targetState) {
-                        LoginUiState.Connecting -> {
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(24.dp),
-                                    color = if (!isSystemInDarkTheme()) md_theme_dark_primary else md_theme_light_primary
-                                )
-                            }
-                        }
 
-                        else -> {
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-
-                                Text(
-                                    modifier = Modifier.align(CenterVertically),
-                                    text = text
-                                )
-
-                                Icon(
-                                    modifier = Modifier.align(CenterVertically),
-                                    imageVector = Icons.Filled.KeyboardArrowRight,
-                                    contentDescription = null
-                                )
-                            }
-                        }
-                    }
+                else -> {
+                    alphaAnimation.animateTo(0f)
                 }
             }
         }
     }
+}
 
-    // Collect Interactions - if they are new, add them to `interactions`. If they represent stop /
-    // cancel events for existing Interactions, remove them from `interactions` so it will only
-    // contain currently active `interactions`.
-    LaunchedEffect(interactionSource) {
-        interactionSource.interactions.collect { interaction ->
-            when (interaction) {
-                is PressInteraction.Press -> interactions.add(interaction)
-                is PressInteraction.Release -> interactions.remove(interaction.press)
-                is PressInteraction.Cancel -> interactions.remove(interaction.press)
-                is DragInteraction.Start -> interactions.add(interaction)
-                is DragInteraction.Stop -> interactions.remove(interaction.start)
-                is DragInteraction.Cancel -> interactions.remove(interaction.start)
+@Composable
+fun RememberUser(modifier: Modifier, viewModel: LoginViewModel) {
+    Box(modifier = modifier, contentAlignment = CenterStart) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = viewModel.isRememberCredentials,
+                onCheckedChange = { viewModel.updateIsRememberCredentials(it) }
+            )
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.remember_me),
+                fontSize = 12.sp,
+                maxLines = 2
+            )
+        }
+    }
+}
+
+@Composable
+fun Submit(modifier: Modifier, viewModel: LoginViewModel) {
+
+    val uiState by viewModel.loginUiState.collectAsStateWithLifecycle()
+
+    TheLabTheme {
+        Box(modifier = modifier, contentAlignment = Alignment.CenterEnd) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.Center
+            ) {
+
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp),
+                    onClick = {
+                        Timber.d("Login button clicked")
+                        viewModel.login()
+                    },
+                    contentPadding = PaddingValues(8.dp),
+                    enabled = uiState !is LoginUiState.Connecting
+                ) {
+                    AnimatedContent(
+                        targetState = uiState,
+                        label = "login_button_animated_content"
+                    ) { targetState ->
+                        when (targetState) {
+                            LoginUiState.Connecting -> {
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(24.dp),
+                                        color = if (!isSystemInDarkTheme()) md_theme_dark_primary else md_theme_light_primary
+                                    )
+                                }
+                            }
+
+                            else -> {
+                                Row(
+                                    modifier = Modifier.fillMaxSize(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f),
+                                        text = "Log In",
+                                        fontSize = 14.sp,
+                                        maxLines = 1
+                                    )
+
+                                    Icon(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .weight(.5f),
+                                        imageVector = Icons.Filled.KeyboardArrowRight,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -297,9 +316,9 @@ fun Submit(viewModel: LoginViewModel) {
 
 @Composable
 fun Form(viewModel: LoginViewModel) {
+    val loginUiState by viewModel.loginUiState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
-
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
@@ -308,8 +327,6 @@ fun Form(viewModel: LoginViewModel) {
     } else {
         (context as LoginActivity).getDeviceWindowsSizeClass()
     }
-
-    var passwordVisibility: Boolean by remember { mutableStateOf(false) }
 
     TheLabTheme {
         Column(
@@ -326,7 +343,7 @@ fun Form(viewModel: LoginViewModel) {
                         }
 
                         WindowSizeClass.COMPACT -> {
-                            0.dp
+                            16.dp
                         }
 
                         else -> {
@@ -339,7 +356,21 @@ fun Form(viewModel: LoginViewModel) {
         ) {
             Login(viewModel, focusRequester)
             Password(viewModel, focusRequester)
-            Submit(viewModel)
+            AnimatedVisibility(visible = loginUiState is LoginUiState.UserError) {
+                Spacer(modifier = Modifier.size(8.dp))
+                ErrorMessage(viewModel)
+                Spacer(modifier = Modifier.size(8.dp))
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RememberUser(modifier = Modifier.weight(2f), viewModel = viewModel)
+                Submit(modifier = Modifier.weight(1f), viewModel = viewModel)
+            }
         }
     }
 }
@@ -368,7 +399,7 @@ fun PreviewPassword() {
 @Composable
 fun PreviewSubmit() {
     val viewModel: LoginViewModel = hiltViewModel()
-    Submit(viewModel = viewModel)
+    Submit(modifier = Modifier, viewModel = viewModel)
 }
 
 @DevicePreviews

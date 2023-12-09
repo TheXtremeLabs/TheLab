@@ -11,6 +11,7 @@ import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.remote.dto.weather.City
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 import javax.inject.Inject
 
 class DbImpl @Inject constructor(
@@ -47,10 +48,15 @@ class DbImpl @Inject constructor(
     override fun getUserByName(username: String): User = mUserDao.getUserByName(username)
 
     override fun getUserByEmail(email: String): User = mUserDao.getUserByEmail(email)
-    override fun logUser(usernameOrMail: String, passwordEncoded: String): User? {
+    override fun logUser(usernameOrMail: String, encodedPassword: String): User? {
+        Timber.d("logUser() | username Or Mail: $usernameOrMail, password:$encodedPassword")
         return runCatching {
-            return mUserDao.logInWithUsername(usernameOrMail, passwordEncoded)
-                ?: mUserDao.logInWithEmail(usernameOrMail, passwordEncoded)
+            var user: User? = mUserDao.logInWithUsername(usernameOrMail, encodedPassword)
+            if (null == user) {
+                user = mUserDao.logInWithEmail(usernameOrMail, encodedPassword)
+            }
+
+            user
         }
             .onFailure {
                 it.printStackTrace()

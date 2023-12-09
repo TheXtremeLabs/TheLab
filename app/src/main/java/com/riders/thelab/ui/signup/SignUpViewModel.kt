@@ -235,7 +235,7 @@ class SignUpViewModel @Inject constructor(
             email,
             password,
             System.currentTimeMillis()
-        ).apply { this@apply.password = password.encodeToSha256() }
+        )
 
         saveUser(user)
     }

@@ -2,7 +2,6 @@ package com.riders.thelab.ui.login
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,24 +15,23 @@ import androidx.window.layout.WindowMetricsCalculator
 import com.riders.thelab.BuildConfig
 import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class LoginActivity : ComponentActivity() {
+class LoginActivity : BaseComponentActivity() {
 
     //TODO : Due to Heroku back-end free services ending,
     // Use of the database to store and log users
     private val mViewModel: LoginViewModel by viewModels()
 
     private var mNetworkManager: LabNetworkManagerNewAPI? = null
-    private lateinit var navigator: Navigator
-
-    private var isChecked: Boolean = false
+    private lateinit var mNavigator: Navigator
 
     var networkState: Boolean = false
 
@@ -49,7 +47,7 @@ class LoginActivity : ComponentActivity() {
             Timber.d("Is app online : $isOnline")
         }
 
-        navigator = Navigator(this)
+        mNavigator = Navigator(this)
 
         mViewModel.retrieveAppVersion(this@LoginActivity)
 
@@ -67,11 +65,7 @@ class LoginActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            LoginContent(
-                                activity = this@LoginActivity,
-                                viewModel = mViewModel,
-                                navigator = navigator
-                            )
+                            LoginContent(viewModel = mViewModel)
                         }
                     }
                 }
@@ -106,6 +100,17 @@ class LoginActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun backPressed() {
+        Timber.e("backPressed()")
+
+        finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.e("onDestroy()")
     }
 
     /////////////////////////////////////////////////////
@@ -163,5 +168,11 @@ class LoginActivity : ComponentActivity() {
                 it
             )
         }
+    }
+
+    fun launchSignUpActivity() = mNavigator.callSignUpActivity()
+    fun launchMainActivity() {
+        mNavigator.callMainActivity()
+        finish()
     }
 }

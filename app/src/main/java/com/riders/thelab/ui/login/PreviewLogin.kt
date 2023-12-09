@@ -39,6 +39,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.riders.thelab.BuildConfig
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
@@ -46,24 +47,21 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.Shapes
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
-import com.riders.thelab.navigator.Navigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @SuppressLint("NewApi")
 @Composable
-fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: Navigator) {
+fun LoginContent(viewModel: LoginViewModel) {
 
     val context = LocalContext.current
-
-    val loginUiState by viewModel.loginUiState.collectAsState()
+    val scope = rememberCoroutineScope()
 
     val versionVisibility = remember { mutableStateOf(true) }
     val formVisibility = remember { mutableStateOf(false) }
     val registerVisibility = remember { mutableStateOf(false) }
 
-    val scope = rememberCoroutineScope()
+    val loginUiState by viewModel.loginUiState.collectAsState()
 
     TheLabTheme {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -74,6 +72,7 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically)
             ) {
+                // Logo icon with version
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -113,7 +112,9 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
 
                 // Form
                 AnimatedVisibility(
-                    modifier = Modifier.fillMaxWidth(0.85f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                     visible = if (LocalInspectionMode.current) false else formVisibility.value
                 ) {
                     Spacer(modifier = Modifier.size(32.dp))
@@ -133,7 +134,7 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         // Should register user
-                        navigator.callSignUpActivity()
+                        (context.findActivity() as LoginActivity).launchSignUpActivity()
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                 ) {
@@ -170,21 +171,17 @@ fun LoginContent(activity: LoginActivity, viewModel: LoginViewModel, navigator: 
             formVisibility.value = true
             registerVisibility.value = true
 
-            viewModel.login()
+            if (BuildConfig.DEBUG) {
+                viewModel.login()
+            }
         }
     }
 
-    if (loginUiState is LoginUiState.Error) {
+    if (loginUiState is LoginUiState.UserSuccess) {
         LaunchedEffect(Unit) {
-            callMainActivity(activity, navigator)
+            (context.findActivity() as LoginActivity).launchMainActivity()
         }
     }
-}
-
-fun callMainActivity(activity: LoginActivity, navigator: Navigator) {
-    Timber.d("callMainActivity()")
-    navigator.callMainActivity()
-    activity.finish()
 }
 
 
@@ -196,16 +193,7 @@ fun callMainActivity(activity: LoginActivity, navigator: Navigator) {
 @DevicePreviews
 @Composable
 fun PreviewLoginContent() {
-    val context = LocalContext.current
-    val activity = context.findActivity() as LoginActivity
     val viewModel: LoginViewModel = hiltViewModel()
-    val navigator = Navigator(activity)
 
-    TheLabTheme {
-        LoginContent(
-            activity = activity,
-            viewModel = viewModel,
-            navigator = navigator
-        )
-    }
+    TheLabTheme { LoginContent(viewModel = viewModel) }
 }
