@@ -39,9 +39,7 @@ dependencies {
      * support for Activity and fragment injection so we need to include
      * the following dependencies */
     // Hilt
-    //implementation(Dependencies.hilt)
-    //kapt(Dependencies.hiltCompiler)
-    kapt(libs.hilt.compiler)
+    // The others dependencies has been added into the Hilt plugin convention class
     implementation(libs.hilt.ext.work)
     kapt(libs.hilt.ext.compiler)
 
