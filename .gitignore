@@ -13,6 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+gradle.properties
+/gradle.properties
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/androidstudio
