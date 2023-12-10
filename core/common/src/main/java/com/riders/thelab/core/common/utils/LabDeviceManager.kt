@@ -3,11 +3,11 @@ package com.riders.thelab.core.common.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.os.BatteryManager
 import android.os.Build
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.view.WindowMetrics
-import androidx.annotation.RequiresApi
 import androidx.biometric.BiometricManager
 import timber.log.Timber
 import java.io.File
@@ -36,12 +36,9 @@ object LabDeviceManager {
         Timber.i("Version Code: %s ", Build.VERSION.RELEASE)
     }
 
-    fun getDevice(): String? {
-        return Build.DEVICE
-    }
+    fun getDevice(): String? = Build.DEVICE
 
-    fun getSerial(): String? {
-        var serial: String? = null
+    fun getSerial(): String? = try {
         /**
          * http://stackoverflow.com/questions/14161282/serial-number-from-samsung-device-running-android
          *
@@ -62,78 +59,50 @@ object LabDeviceManager {
          * These settings appear to be the usual suspects, when looking for the device serial, but shouldn't be taken for granted,
          * and as such, shouldn't be relied on for tracking unique app installations.
          */
-        try {
-            @SuppressLint("PrivateApi") val c = Class.forName("android.os.SystemProperties")
-            val get = c.getMethod("get", String::class.java, String::class.java)
-            serial = get.invoke(c, "ril.serialnumber", "unknown") as String
-            return serial
-        } catch (e: Exception) {
-            Timber.e("Some error occurred : %s", e.message)
-        }
-        return serial
-//        return Build.SERIAL;
+
+        @SuppressLint("PrivateApi") val c = Class.forName("android.os.SystemProperties")
+        val get = c.getMethod("get", String::class.java, String::class.java)
+        val serial = get.invoke(c, "ril.serialnumber", "unknown") as String
+        serial
+    } catch (e: Exception) {
+        Timber.e("Some error occurred : %s", e.message)
+        null
     }
 
-    fun getModel(): String {
-        return Build.MODEL
-    }
+    fun getModel(): String = Build.MODEL
 
-    fun getID(): String? {
-        return Build.ID
-    }
+    fun getID(): String? = Build.ID
 
-    fun getManufacturer(): String? {
-        return Build.MANUFACTURER
-    }
+    fun getManufacturer(): String? = Build.MANUFACTURER
 
-    fun getBrand(): String? {
-        return Build.BRAND
-    }
+    fun getBrand(): String? = Build.BRAND
 
-    fun getType(): String? {
-        return Build.TYPE
-    }
+    fun getType(): String? = Build.TYPE
 
-    fun getUser(): String? {
-        return Build.USER
-    }
+    fun getUser(): String? = Build.USER
 
-    fun getVersionBase(): Int {
-        return Build.VERSION_CODES.BASE
-    }
+    fun getVersionBase(): Int = Build.VERSION_CODES.BASE
 
-    fun getVersionIncremental(): String? {
-        return Build.VERSION.INCREMENTAL
-    }
+    fun getVersionIncremental(): String? = Build.VERSION.INCREMENTAL
 
-    fun getSdkVersion(): Int {
-        return Build.VERSION.SDK_INT
-    }
+    fun getSdkVersion(): Int = Build.VERSION.SDK_INT
 
-    fun getBoard(): String? {
-        return Build.BOARD
-    }
+    fun getBoard(): String? = Build.BOARD
 
-    fun getHost(): String? {
-        return Build.HOST
-    }
+    fun getHost(): String? = Build.HOST
 
-    fun getFingerPrint(): String? {
-        return Build.FINGERPRINT
-    }
+    fun getFingerPrint(): String? = Build.FINGERPRINT
 
-    fun getVersionCode(): String? {
-        return Build.VERSION.RELEASE
-    }
+    fun getVersionCode(): String? = Build.VERSION.RELEASE
 
-    fun getHardware(): String? {
-        return Build.HARDWARE
-    }
+    fun getHardware(): String? = Build.HARDWARE
 
-    fun getRelease(): String? {
-        return Build.VERSION.RELEASE
-    }
+    fun getRelease(): String? = Build.VERSION.RELEASE
 
+
+    ///////////////////////////////////////////////////////
+    // Screen Dimensions
+    ///////////////////////////////////////////////////////
     @SuppressLint("NewApi")
     fun getScreenHeight(activity: Activity): Int {
         val screenHeight: Int = if (LabCompatibilityManager.isAndroid10()
@@ -197,7 +166,9 @@ object LabDeviceManager {
         )
     }
 
-
+    ///////////////////////////////////////////////////////
+    // Rooted
+    ///////////////////////////////////////////////////////
     /**
      * Checks if the device is rooted.
      *
@@ -217,8 +188,9 @@ object LabDeviceManager {
             if (file.exists()) {
                 return true
             }
-        } catch (e1: Exception) {
+        } catch (exception: Exception) {
             // ignore
+            exception.printStackTrace()
         }
 
         // try executing commands
@@ -234,29 +206,18 @@ object LabDeviceManager {
      * @param command
      * @return
      */
-    private fun canExecuteCommand(command: String): Boolean {
-        val executedSuccesfully: Boolean
-        executedSuccesfully = try {
-            // executes a command on the system
-            Runtime.getRuntime().exec(command)
-            true
-        } catch (e: Exception) {
-            false
-        }
-        return executedSuccesfully
+    private fun canExecuteCommand(command: String): Boolean = try {
+        // executes a command on the system
+        Runtime.getRuntime().exec(command)
+        true
+    } catch (e: Exception) {
+        false
     }
 
-    /**
-     * Init the basic GoldFinger variable
-     *
-     * @param context
-     * @param activity
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    fun initFingerPrint(context: Context, activity: Activity) {
 
-    }
-
+    ///////////////////////////////////////////////////////
+    // Biometric
+    ///////////////////////////////////////////////////////
     /**
      * This method returns if the device has fingerprint hardware or not
      *
@@ -271,4 +232,17 @@ object LabDeviceManager {
             BiometricManager.BIOMETRIC_SUCCESS -> true
             else -> false
         }
+
+
+    ///////////////////////////////////////////////////////
+    // Battery level
+    ///////////////////////////////////////////////////////
+    // Call battery manager service
+    private fun getBatteryManager(context: Context): BatteryManager =
+        context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+
+    // Get the battery percentage and store it in a INT variable
+    fun getBatteryLevel(context: Context): Int =
+        getBatteryManager(context).getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+
 }

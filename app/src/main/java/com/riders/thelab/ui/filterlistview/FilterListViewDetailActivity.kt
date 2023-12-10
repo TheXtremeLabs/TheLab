@@ -12,9 +12,9 @@ class FilterListViewDetailActivity : AppCompatActivity() {
 
     lateinit var viewBinding: ActivityFilterListviewDetailBinding
 
-    var rank: String? = null
-    var country: String? = null
-    var population: String? = null
+    private var rank: String? = null
+    private var country: String? = null
+    private var population: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

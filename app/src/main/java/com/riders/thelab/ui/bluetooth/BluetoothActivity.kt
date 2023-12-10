@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.ListView
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -40,16 +41,15 @@ class BluetoothActivity : AppCompatActivity(),
     private lateinit var bluetoothManager: BluetoothManager
     private lateinit var bluetoothDevicesSearchList: ArrayList<String>
 
-    var activityResultLauncher = registerForActivityResult<Intent, ActivityResult>(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result: ActivityResult ->
-        if (result.resultCode == RESULT_OK) {
-            Timber.d("OK")
-            // There are no request codes
-            val data = result.data
-            mViewModel.fetchBoundedDevices(bluetoothManager)
+    private var activityResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                Timber.d("OK")
+                // There are no request codes
+                val data = result.data
+                mViewModel.fetchBoundedDevices(bluetoothManager)
+            }
         }
-    }
 
     // Create a BroadcastReceiver for ACTION_FOUND.
     private val receiver = object : BroadcastReceiver() {

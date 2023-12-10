@@ -30,7 +30,7 @@ class TheatersDetailViewModel : ViewModel() {
     ////////////////////////////////////////
     // Composable methods
     ////////////////////////////////////////
-    fun updateMovieUiState(newMovie: Movie) {
+    private fun updateMovieUiState(newMovie: Movie) {
         this._movieUiState.value = newMovie
     }
 
@@ -62,7 +62,7 @@ class TheatersDetailViewModel : ViewModel() {
                         Timber.e("runCatching - onFailure() | error caught: ${it.message}")
                     }
                     .onSuccess {
-                        Timber.d("runCatching - onSuccess() |  Bundle is not null. movie: ${_movieUiState.value.toString()}")
+                        Timber.d("runCatching - onSuccess() |  Bundle is not null. movie: ${_movieUiState.value}")
                     }
             }
         }

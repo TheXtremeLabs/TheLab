@@ -20,7 +20,7 @@ class KatMessagesAdapter(
     private var mKatModelList: MutableList<Kat> = katModelList as MutableList<Kat>
 
     override fun getItemCount(): Int {
-        return if (!mKatModelList.isEmpty()) mKatModelList.size else 0
+        return if (mKatModelList.isNotEmpty()) mKatModelList.size else 0
     }
 
     override fun getItemId(position: Int): Long {

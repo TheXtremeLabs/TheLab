@@ -1,7 +1,6 @@
 package com.riders.thelab.core.compose.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -127,7 +126,6 @@ fun DynamicIsland(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 private val bubbleEnterTransition = scaleIn(initialScale = .7f) + slideInHorizontally(
     animationSpec = spring(
         stiffness = Spring.StiffnessLow,
@@ -135,7 +133,6 @@ private val bubbleEnterTransition = scaleIn(initialScale = .7f) + slideInHorizon
     )
 ) { -it }
 
-@OptIn(ExperimentalAnimationApi::class)
 private val bubbleExitTransition = scaleOut(targetScale = .7f) + slideOutHorizontally(
     animationSpec = spring(
         stiffness = Spring.StiffnessLow

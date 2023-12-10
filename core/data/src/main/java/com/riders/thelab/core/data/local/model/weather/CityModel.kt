@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 import com.riders.thelab.core.data.remote.dto.weather.City
 
 @Entity(tableName = "city")
-data class CityModel constructor(
+data class CityModel(
     @PrimaryKey
     @ColumnInfo("_id")
     var id: Long,

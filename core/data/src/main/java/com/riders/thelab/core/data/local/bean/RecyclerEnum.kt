@@ -17,7 +17,7 @@ enum class RecyclerEnum(val fullName: String) {
     companion object {
         fun getRecyclerItems(): List<RecyclerItem> {
             val list: MutableList<RecyclerItem> = ArrayList()
-            for (item in values()) {
+            for (item in entries) {
                 list.add(RecyclerItem(item))
             }
             return list

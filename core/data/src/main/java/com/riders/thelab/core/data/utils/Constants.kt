@@ -25,7 +25,7 @@ object Constants {
 
     private const val PORT = ":8101"
 
-    val BASE_ENDPOINT_THE_LAB_URL: String = "https://the-lab-back.herokuapp.com"
+    const val BASE_ENDPOINT_THE_LAB_URL: String = "https://the-lab-back.herokuapp.com"
     /*HTTP + if (LabDeviceManager.getModel().trim().lowercase()
             .contains("sdk")
     ) EMULATOR_IP_ADDRESS else IP_ADDRESS + PORT*/

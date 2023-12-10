@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import java.io.Serializable
 
 @kotlinx.serialization.Serializable
-data class Movie constructor(
+data class Movie(
     @SerialName("category")
     var category: String,
     @SerialName("title")

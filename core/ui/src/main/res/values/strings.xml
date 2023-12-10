@@ -63,7 +63,49 @@
     <string name="action_logout">Logout</string>
 
     <!-- License agreement -->
-    <string name="title_activity_license_agreement">Terms Of Service</string>
+    <string name="title_activity_license_agreement">EULA</string>
+    <string name="eula_content">
+        <![CDATA[
+<br />
+        <h1>TheLab EULA (End-User License Agreement)</h1>
+<br />
+
+<p><b>Version 12.0.14, effective as of December 5, 2023</b></p>
+<br />
+
+<h4><b>IMPORTANT! READ CAREFULLY:</b></h4>
+<br />
+
+<h1>
+  THIS IS A LEGAL AGREEMENT. BY CLICKING ON THE “I AGREE” (OR SIMILAR) BUTTON
+  THAT IS PRESENTED TO YOU AT THE TIME OF PURCHASE, OR BY DOWNLOADING,
+  INSTALLING, COPYING, SAVING ON YOUR DEVICE, OR OTHERWISE USING JETBRAINS
+  SOFTWARE, SUPPORT, OR PRODUCTS, YOU BECOME A PARTY TO THIS AGREEMENT, YOU
+  DECLARE YOU HAVE THE LEGAL CAPACITY TO ENTER INTO THIS AGREEMENT, AND YOU
+  CONSENT TO BE BOUND BY ALL THE TERMS AND CONDITIONS SET FORTH BELOW.
+</h1>
+<br />
+
+<p>
+  <b>TheLab and Customer may each also be referred to individually as a “Party” or jointly as the “Parties”.</b>
+</p>
+<br />
+
+<p>
+  1. PARTIES<br />
+  1.1. “Customer” or “you” means the individual specified, the sole proprietor
+  or natural person with sufficient legal capacity to enter into this Agreement
+  using the Redistributable Product in accordance with this Agreement. For the
+  avoidance of doubt, Customer is a natural person and not a corporation,
+  company, partnership, association, or other entity or organization.<br />
+  1.2. “TheLab” or “we” means XtremeLabs/TheLab, having its principal place of
+  business at Paris, 93100, France, registered in the Commercial Register
+  maintained by the Municipal Court of Paris, Section C, File 86211, ID No.: 265
+  02 275.<br /><br />
+  For further information, please contact us at
+  <u>xtremelabs.support@gmail.com</u>.
+</p>
+        ]]></string>
     <string name="accept_agreement_license">I accept the terms of service displayed above</string>
     <string name="err_msg_license_agreement_approval_mandatory">Your terms of service agreement\'s approval is mandatory in order to continue.</string>
 
@@ -88,7 +130,17 @@
     <string name="msg_title_saving_in_progress">Saving in progress</string>
     <string name="msg_text_please_wait">Please, wait until the process is finished…</string>
     <string name="msg_title_congratulations">Congratulations !</string>
-    <string name="dialog_msg_successfully_signed_up">You are successfully registered to the app.<br /><br />We wish you to have a nice experience using our application.<br /><br />Fly away to the culture.</string>
+    <string name="msg_successfully_signed_up">
+        <![CDATA[
+        <p>You are successfully registered to TheLab app.</p>
+        <br />
+        <br />
+
+        <p>We wish you to have a nice experience using our application.</p>
+        <br />
+        <br />
+        ]]>
+    </string>
 
     <!-- Main Activity -->
     <string name="title_main_page">Choose your testing app</string>

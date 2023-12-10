@@ -137,7 +137,7 @@ fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
                         modifier = Modifier
                             .weight(2f)
                             .padding(24.dp),
-                        text = "${movie.title}",
+                        text = movie.title,
                         textAlign = TextAlign.Center,
                         color = Color.White
                     )
@@ -212,7 +212,7 @@ fun MovieItem(viewModel: TheatersViewModel, movie: Movie) {
                         .weight(.5f)
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),
-                    text = "${movie.title}",
+                    text = movie.title,
                     textAlign = TextAlign.Center
                 )
             }

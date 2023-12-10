@@ -7,7 +7,7 @@ import com.riders.thelab.core.data.local.model.WorldPopulation
 
 class FilterListViewModel : ViewModel() {
 
-    val populations: MutableLiveData<List<WorldPopulation>> = MutableLiveData()
+    private val populations: MutableLiveData<List<WorldPopulation>> = MutableLiveData()
 
     fun getPopulations(): LiveData<List<WorldPopulation>> {
         return populations
@@ -31,7 +31,7 @@ class FilterListViewModel : ViewModel() {
         val list: MutableList<WorldPopulation> = ArrayList()
 
         for (i in rank.indices) {
-            val wp = WorldPopulation(rank.get(i), country.get(i), population.get(i))
+            val wp = WorldPopulation(rank[i], country[i], population[i])
             // Binds all strings into an array
             list.add(wp)
         }

@@ -6,6 +6,6 @@ sealed class WeatherUIState {
     data class SuccessWeatherData(val isWeatherData: Boolean) : WeatherUIState()
     data class Success(val weather: OneCallWeatherResponse) : WeatherUIState()
     data class Error(val errorResponse: Throwable? = null) : WeatherUIState()
-    object Loading : WeatherUIState()
-    object None : WeatherUIState()
+    data object Loading : WeatherUIState()
+    data object None : WeatherUIState()
 }

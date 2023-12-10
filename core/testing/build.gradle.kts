@@ -44,7 +44,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.testManifest)
 
-    androidTestImplementation(libs.hilt.android.testing)
+    /*androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.compiler)
-    kaptAndroidTest(libs.hilt.ext.compiler)
+    kaptAndroidTest(libs.hilt.ext.compiler)*/
 }

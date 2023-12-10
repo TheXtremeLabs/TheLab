@@ -80,30 +80,30 @@ class ACRCloudViewModel @Inject constructor(
 
     var result by mutableStateOf("")
         private set
-    var spotifyToken by mutableStateOf("")
+    private var spotifyToken by mutableStateOf("")
         private set
 
-    var showToastWithMessage: Pair<Boolean, String> by mutableStateOf(Pair(false, ""))
+    private var showToastWithMessage: Pair<Boolean, String> by mutableStateOf(Pair(false, ""))
         private set
 
-    fun updateUiState(newState: ACRUiState) {
+    private fun updateUiState(newState: ACRUiState) {
         this._uiState.value = newState
     }
 
 
-    fun updateCanLaunchAudioRecognition(canLaunch: Boolean) {
+    private fun updateCanLaunchAudioRecognition(canLaunch: Boolean) {
         this.canLaunchAudioRecognition = canLaunch
     }
 
-    fun updateIsRecognizing(isRecognizing: Boolean) {
+    private fun updateIsRecognizing(isRecognizing: Boolean) {
         this.isRecognizing = isRecognizing
     }
 
-    fun updateResult(newValue: String) {
+    private fun updateResult(newValue: String) {
         this.result = newValue
     }
 
-    fun updateSpotifyToken(newValue: String) {
+    private fun updateSpotifyToken(newValue: String) {
         this.spotifyToken = newValue
     }
 
@@ -245,7 +245,7 @@ class ACRCloudViewModel @Inject constructor(
                             externalMetadata
                         )
 
-                        Timber.d("Song created: ${song.toString()}")
+                        Timber.d("Song created: $song")
 
                         if (null != song.externalMetadata && null != song.externalMetadata["trackID"]) {
                             getInfoFromSpotify(song, song.externalMetadata["trackID"].toString())
@@ -386,11 +386,11 @@ class ACRCloudViewModel @Inject constructor(
                         trackId = trackID
                     )
 
-                    Timber.d("info: ${trackInfo.album.images[0].toString()}")
+                    Timber.d("info: ${trackInfo.album.images[0]}")
                     val albumThumbnail = trackInfo.album.images[0].url
 
                     song.albumThumbUrl = albumThumbnail
-                    Timber.d("song: ${song.toString()}")
+                    Timber.d("song: $song")
 
                     updateUiState(ACRUiState.RecognitionSuccessful(song))
                 }

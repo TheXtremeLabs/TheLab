@@ -33,7 +33,7 @@ object LabParser {
             }
         } ?: run {
             Timber.e("List is null. Return emptyList")
-            return arrayListOf<App>()
+            return arrayListOf()
         }
     }
         .onFailure {

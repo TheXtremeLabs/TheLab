@@ -6,7 +6,12 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,7 +38,8 @@ fun IslandContent(
         animationSpec = spring(
             stiffness = Spring.StiffnessLow,
             dampingRatio = .6f,
-        )
+        ),
+        label = "width animation"
     )
 
     val height by animateDpAsState(
@@ -41,7 +47,8 @@ fun IslandContent(
         animationSpec = spring(
             stiffness = Spring.StiffnessLow,
             dampingRatio = .6f,
-        )
+        ),
+        label = "height animation"
     )
 
     Box(

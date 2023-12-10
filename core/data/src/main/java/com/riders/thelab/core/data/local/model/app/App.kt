@@ -27,6 +27,7 @@ open class App(
         -1L, "", "", null, ""
     )
 
+    @Suppress("RedundantNullableReturnType")
     fun getBitmap(vectorDrawable: VectorDrawable): Bitmap? {
         val bitmap = Bitmap.createBitmap(
             vectorDrawable.intrinsicWidth,

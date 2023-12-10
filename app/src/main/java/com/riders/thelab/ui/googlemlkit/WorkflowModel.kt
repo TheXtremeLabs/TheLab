@@ -30,14 +30,14 @@ import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 /** View model for handling application workflow based on camera preview.  */
 class WorkflowModel(application: Application) : AndroidViewModel(application) {
 
-    val workflowState = MutableLiveData<WorkflowState>()
-    val objectToSearch = MutableLiveData<DetectedObjectInfo>()
-    val searchedObject = MutableLiveData<SearchedObject>()
+    private val workflowState = MutableLiveData<WorkflowState>()
+    private val objectToSearch = MutableLiveData<DetectedObjectInfo>()
+    private val searchedObject = MutableLiveData<SearchedObject>()
     val detectedBarcode = MutableLiveData<Barcode>()
 
     private val objectIdsToSearch = HashSet<Int>()
 
-    var isCameraLive = false
+    private var isCameraLive = false
         private set
 
     private var confirmedObject: DetectedObjectInfo? = null

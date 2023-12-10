@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
-class RecyclerItemTouchHelper constructor(
+class RecyclerItemTouchHelper(
     dragDirs: Int,
     swipeDirs: Int,
     listener: RecyclerItemTouchHelperListener?

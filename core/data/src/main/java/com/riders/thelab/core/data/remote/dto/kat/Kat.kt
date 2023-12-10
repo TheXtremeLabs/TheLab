@@ -5,7 +5,7 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import java.util.*
 import java.util.stream.Collectors
 
-data class Kat constructor(
+data class Kat(
     var chatId: String? = null,
     var messageId: String? = null,
     var senderId: String? = null,

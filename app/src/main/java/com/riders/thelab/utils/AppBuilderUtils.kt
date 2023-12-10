@@ -16,7 +16,6 @@ import com.riders.thelab.ui.colors.ColorActivity
 import com.riders.thelab.ui.compose.ComposeActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
-import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity
 import com.riders.thelab.ui.download.DownloadActivity
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity
@@ -205,8 +204,8 @@ object AppBuilderUtils {
                                 R.drawable.ic_device_information
                             )
                         )
-                        .withActivityClass(DeviceInformationActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityClass(com.riders.thelab.feature.deviceinformation.DeviceInformationActivity::class.java)
+                        .withActivityDate("2023/11/15")
                         .build()
                 this.add(deviceInformation)
 
@@ -607,7 +606,7 @@ object AppBuilderUtils {
             }
             .toList()
 
-    fun getDrawableFromIntResource(context: Context, redId: Int): Drawable {
+    private fun getDrawableFromIntResource(context: Context, redId: Int): Drawable {
         return ContextCompat.getDrawable(context, redId)!!
     }
 }

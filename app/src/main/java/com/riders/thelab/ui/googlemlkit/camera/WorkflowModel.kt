@@ -31,8 +31,8 @@ import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 class WorkflowModel(application: Application) : AndroidViewModel(application) {
 
     val workflowState = MutableLiveData<WorkflowState>()
-    val objectToSearch = MutableLiveData<DetectedObjectInfo>()
-    val searchedObject = MutableLiveData<SearchedObject>()
+    private val objectToSearch = MutableLiveData<DetectedObjectInfo>()
+    private val searchedObject = MutableLiveData<SearchedObject>()
     val detectedBarcode = MutableLiveData<Barcode>()
 
     private val objectIdsToSearch = HashSet<Int>()

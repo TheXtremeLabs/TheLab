@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.mainactivity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.location.Address
@@ -10,15 +11,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.riders.thelab.core.common.utils.LabAddressesUtils
-import com.riders.thelab.core.common.utils.LabLocationUtils
 import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabLocationUtils
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.data.local.model.weather.ProcessedWeather
+import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -128,13 +131,14 @@ class MainActivityViewModel @Inject constructor(
     // Suspend functions are only allowed to be called from a coroutine or another suspend function.
     // You can see that the async function which includes the keyword suspend.
     // So, in order to use that, we need to make our function suspend too.
+    @SuppressLint("NewApi")
     fun fetchWeather(context: Context, latitude: Double, longitude: Double) {
         Timber.d("suspend fetchWeather()")
         viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
             try {
                 supervisorScope {
 
-                    val fetchWeather =
+                    val fetchWeather: OneCallWeatherResponse? =
                         repository.getWeatherOneCallAPI(Location("").apply {
                             this.latitude = latitude
                             this.longitude = longitude
@@ -143,24 +147,36 @@ class MainActivityViewModel @Inject constructor(
                     if (null == fetchWeather) {
                         Timber.e("Fetch weather error")
                     } else {
-                        val address: Address? =
-                            LabAddressesUtils.getDeviceAddress(
+
+                        if (!LabCompatibilityManager.isTiramisu()) {
+                            LabAddressesUtils.getDeviceAddressLegacy(
                                 Geocoder(context, Locale.getDefault()),
                                 LabLocationUtils.buildTargetLocationObject(
                                     fetchWeather.latitude,
                                     fetchWeather.longitude
                                 )
-                            )
-                        val cityName: String =
-                            address?.locality.orEmpty()
-                        val cityCountry: String = address?.countryName.orEmpty()
+                            )?.let { address ->
 
-                        val mProcessedWeather =
-                            ProcessedWeather(cityName, cityCountry, fetchWeather)
+                                buildProcessWeather(fetchWeather, address)
 
-                        // back on UI thread
-                        withContext(Main) {
-                            weather.value = mProcessedWeather
+                            } ?: run {
+                                Timber.e("address object is null")
+                            }
+                        } else {
+                            // back on UI thread
+                            withContext(Main) {
+                                LabAddressesUtils.getDeviceAddressAndroid13(
+                                    Geocoder(context, Locale.getDefault()),
+                                    LabLocationUtils.buildTargetLocationObject(
+                                        fetchWeather.latitude,
+                                        fetchWeather.longitude
+                                    )
+                                ) { address ->
+                                    address?.let {
+                                        buildProcessWeather(fetchWeather, it)
+                                    } ?: run { Timber.e("address object is null") }
+                                }
+                            }
                         }
                     }
                 }
@@ -172,7 +188,38 @@ class MainActivityViewModel @Inject constructor(
                 Timber.e(exception.message)
             }
         }
+    }
 
+    private fun buildProcessWeather(fetchWeather: OneCallWeatherResponse, address: Address) {
+        Timber.d("buildProcessWeather()")
+
+        val cityName: String =
+            address.locality.orEmpty()
+        val cityCountry: String = address.countryName.orEmpty()
+        val temperature: Int? =
+            fetchWeather.currentWeather?.temperature?.toInt()
+        val weatherIconUrl: String? =
+            fetchWeather.currentWeather?.weather?.get(0)?.icon
+
+        temperature?.let { temp ->
+            weatherIconUrl?.let { icon ->
+
+                val mProcessedWeather =
+                    ProcessedWeather(
+                        cityName,
+                        cityCountry,
+                        temp,
+                        icon
+                    )
+
+                setProcessedWeather(mProcessedWeather)
+            } ?: run { Timber.e("Weather icon object is null") }
+        } ?: run { Timber.e("Temperature object is null") }
+    }
+
+    private fun setProcessedWeather(processedWeather: ProcessedWeather) {
+        Timber.d("setProcessedWeather()")
+        weather.value = processedWeather
     }
 
     fun retrieveApplications(context: Context) {

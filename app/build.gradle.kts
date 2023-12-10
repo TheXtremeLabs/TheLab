@@ -116,8 +116,10 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:testing"))
     implementation(project(":feature:biometric"))
-    implementation(project(":feature:kat"))
+    implementation(project(":feature:deviceinformation"))
+//    implementation(project(":feature:kat"))
     implementation(project(":feature:musicrecognition"))
+    implementation(project(":feature:settings"))
     implementation(project(":feature:weather"))
 
     /////////////////////////////
@@ -219,7 +221,7 @@ dependencies {
     // Hilt
     //implementation(Dependencies.hilt)
     //kapt(Dependencies.hiltCompiler)
-    kapt(libs.hilt.compiler)
+    // The others dependencies has been added into the Hilt plugin convention class
     implementation(libs.hilt.ext.work)
     kapt(libs.hilt.ext.compiler)
 
@@ -292,14 +294,24 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.mockito)
     androidTestImplementation(libs.mockito.android)
-/*
-    androidTestImplementation(libs.androidx.compose.ui.test)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.testManifest)*/
+    /*
+        androidTestImplementation(libs.androidx.compose.ui.test)
+        debugImplementation(libs.androidx.compose.ui.tooling)
+        debugImplementation(libs.androidx.compose.ui.testManifest)*/
 
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.compiler)
     kaptAndroidTest(libs.hilt.ext.compiler)
+}
+
+kapt {
+    correctErrorTypes = true
+}
+
+// Aggregating Task
+// The Hilt Gradle plugin offers an option for performing Hilt’s classpath aggregation in a dedicated Gradle task.
+hilt {
+    enableAggregatingTask = true
 }
 
 tasks.named("build") {

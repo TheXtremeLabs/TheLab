@@ -19,7 +19,7 @@ class SongPlayerAdapter(
     private var lastClickedPosition = -1
 
     // This keeps track of the currently selected position
-    var selectedPosition by Delegates.observable(-1) { _, oldPos, newPos ->
+    private var selectedPosition by Delegates.observable(-1) { _, oldPos, newPos ->
         if (newPos in fileList.indices) {
             notifyItemChanged(oldPos)
             notifyItemChanged(newPos)

@@ -56,7 +56,7 @@ object WeatherUtils {
             if (hour == "00") {
                 break
             } else {
-                for (element in Hours.values()) if (element.hourValue == hour) temperatures.add(
+                for (element in Hours.entries) if (element.hourValue == hour) temperatures.add(
                     hourlyWeather[i].temperature.toFloat()
                 )
             }
@@ -78,7 +78,7 @@ object WeatherUtils {
                 Timber.e("hour.equals(\"00\")")
                 break
             } else {
-                for (element in Hours.values()) if (element.hourValue == hourSplit) {
+                for (element in Hours.entries) if (element.hourValue == hourSplit) {
                     temperaturesQuarters.add(hour)
                 }
             }

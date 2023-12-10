@@ -13,17 +13,17 @@ class LabGlideListener(
     override fun onLoadFailed(
         e: GlideException?,
         model: Any?,
-        target: Target<Drawable>?,
+        target: Target<Drawable>,
         isFirstResource: Boolean
     ): Boolean {
         return onLoadingFailed()
     }
 
     override fun onResourceReady(
-        resource: Drawable?,
-        model: Any?,
-        target: Target<Drawable>?,
-        dataSource: DataSource?,
+        resource: Drawable,
+        model: Any,
+        target: Target<Drawable>,
+        dataSource: DataSource,
         isFirstResource: Boolean
     ): Boolean {
         return onLoadingSuccess(resource)

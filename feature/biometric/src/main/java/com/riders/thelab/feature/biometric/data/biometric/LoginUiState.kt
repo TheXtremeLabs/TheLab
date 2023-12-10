@@ -33,7 +33,7 @@ sealed class LoginUiState {
         val authContext: AuthContext? = null
     ) : LoginUiState()
 
-    object Connecting : LoginUiState()
-    object Loading : LoginUiState()
-    object None : LoginUiState()
+    data object Connecting : LoginUiState()
+    data object Loading : LoginUiState()
+    data object None : LoginUiState()
 }

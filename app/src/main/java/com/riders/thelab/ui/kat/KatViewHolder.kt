@@ -8,7 +8,7 @@ import com.riders.thelab.databinding.RowKatMessageOtherBinding
 import com.riders.thelab.databinding.RowKatMessageSelfBinding
 import timber.log.Timber
 
-class KatViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class KatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private var rowOtherBinding: RowKatMessageOtherBinding? = null
     private var rowSelfBinding: RowKatMessageSelfBinding? = null

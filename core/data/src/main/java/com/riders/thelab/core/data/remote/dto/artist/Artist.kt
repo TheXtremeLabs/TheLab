@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import java.io.Serializable
 
 @kotlinx.serialization.Serializable
-data class Artist constructor(
+data class Artist(
     @SerialName("artistName")
     var artistName: String,
 

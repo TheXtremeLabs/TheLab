@@ -172,12 +172,12 @@ class FloatingViewService : Service() {
                         }
 
                         MotionEvent.ACTION_UP -> {
-                            val Xdiff = (event.rawX - initialTouchX).toInt()
-                            val Ydiff = (event.rawY - initialTouchY).toInt()
+                            val xDiff = (event.rawX - initialTouchX).toInt()
+                            val yDiff = (event.rawY - initialTouchY).toInt()
 
                             //The check for Xdiff <10 && YDiff< 10 because sometime elements moves a little while clicking.
                             //So that is click event.
-                            if (Xdiff < 10 && Ydiff < 10) {
+                            if (xDiff < 10 && yDiff < 10) {
                                 if (isViewCollapsed()) {
                                     //When user clicks on the image view of the collapsed layout,
                                     //visibility of the collapsed layout will be changed to "View.GONE"
