@@ -167,7 +167,8 @@ class RepositoryImpl @Inject constructor(
 
     override fun getUserByID(userId: Int): User = mDbImpl.getUserByID(userId)
 
-    override fun getUserByName(username: String): User = mDbImpl.getUserByName(username)
+    override fun getUserByName(lastname: String): User = mDbImpl.getUserByName(lastname)
+    override fun getUserByUsername(username: String): User = mDbImpl.getUserByUsername(username)
 
     override fun getUserByEmail(email: String): User = mDbImpl.getUserByEmail(email)
     override fun logUser(usernameOrMail: String, encodedPassword: String): User? =

@@ -31,6 +31,7 @@ dependencies {
     // Project
     ///////////////////////////////////
     implementation(project(":core:common"))
+    implementation(project(":core:testing"))
 
     ///////////////////////////////////
     // General Dependencies
@@ -41,13 +42,18 @@ dependencies {
     api(libs.kotlinx.serialization.json)
 
     // Compose
-    api(platform(libs.androidx.compose.bom))
-    api(libs.androidx.compose.ui.tooling)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui.tooling)
 
     // Room
     api(libs.room.ktx)
     api(libs.room.runtime)
+    api(libs.room.paging)
     ksp(libs.room.compiler)
+    androidTestImplementation(libs.room.testing)
+
+    // Worker & concurrent
+    androidTestImplementation(libs.androidx.work.testing)
 
     // Firebase
     api(platform(libs.firebase.bom))
@@ -79,5 +85,11 @@ dependencies {
 
     api(libs.kotools.types)
 
+    /////////////////////////////
+    // Tests Dependencies
+    /////////////////////////////
+    //tesImplementation(project(":core:testing"))
     androidTestImplementation(project(":core:testing"))
+
+    androidTestImplementation(libs.androidx.test.truth)
 }

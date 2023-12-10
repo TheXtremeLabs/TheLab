@@ -20,7 +20,8 @@ interface IDb {
     fun getUsers(): Flow<List<User>>
     fun getUsersSync(): List<User>
     fun getUserByID(userId: Int): User
-    fun getUserByName(username: String): User
+    fun getUserByName(lastname: String): User
+    fun getUserByUsername(username: String): User
     fun getUserByEmail(email: String): User
     fun logUser(usernameOrMail: String, encodedPassword: String): User?
     fun deleteUser(userId: Int)
