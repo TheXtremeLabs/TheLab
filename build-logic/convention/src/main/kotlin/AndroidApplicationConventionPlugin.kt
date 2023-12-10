@@ -20,7 +20,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk = AndroidConfiguration.Sdk.target
+                defaultConfig.targetSdk = AndroidConfiguration.Sdk.TARGET
 
                 defaultConfig.versionCode = AndroidConfiguration.Application.code
                 defaultConfig.versionName = AndroidConfiguration.Application.version.toString()
