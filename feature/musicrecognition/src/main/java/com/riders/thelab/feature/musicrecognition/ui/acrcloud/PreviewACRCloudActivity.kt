@@ -183,7 +183,7 @@ fun RecognitionError() {
 }
 
 @Composable
-fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.RecognitionSuccessful) {
+fun RecognitionResult(state: ACRUiState.RecognitionSuccessful) {
     val expanded = remember { mutableStateOf(false) }
 
     val painter: AsyncImagePainter = getCoilAsyncImagePainter(
@@ -300,8 +300,6 @@ fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.Recognitio
 
 @Composable
 fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
-
-    val context = LocalContext.current
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val connectionState by viewModel.mNetworkManager.networkConnectionState.collectAsStateWithLifecycle()
@@ -424,7 +422,7 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                                 }
 
                                 is ACRUiState.RecognitionSuccessful -> {
-                                    RecognitionResult(viewModel = viewModel, state = targetState)
+                                    RecognitionResult(state = targetState)
                                 }
 
                                 is ACRUiState.RecognitionError -> {
@@ -527,10 +525,8 @@ fun PreviewSearching() {
 @DevicePreviews
 @Composable
 fun PreviewRecognitionResult() {
-    val viewModel: ACRCloudViewModel = hiltViewModel()
     TheLabTheme {
         RecognitionResult(
-            viewModel = viewModel,
             state = ACRUiState.RecognitionSuccessful(songFetched = Song.mock)
         )
     }

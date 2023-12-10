@@ -31,8 +31,6 @@ import timber.log.Timber
 
 @Composable
 fun RecyclerViewContent(viewModel: RecyclerViewModel) {
-
-    val scope = rememberCoroutineScope()
     val lazyState = rememberLazyGridState()
 
     val artistUiState by viewModel.artistUiState.collectAsStateWithLifecycle()

@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.recycler
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +26,7 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
     private var _viewDetailBinding: ActivityRecyclerViewDetailBinding? = null
     private val binding get() = _viewDetailBinding!!
 
-    private lateinit var item: Artist
+    private var item: Artist? = null
 
     private var scrollRange = -1
 
@@ -50,14 +51,28 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
      *
      * And bind value in artist object
      */
+    @Suppress("DEPRECATION")
+    @SuppressLint("NewApi")
     private fun getBundle() {
-        val extras = intent.extras
-        item = Json.decodeFromString(extras!!.getSerializable(EXTRA_RECYCLER_ITEM)!! as String)
-        Timber.d("item : %s", item.toString())
+        Timber.d("getBundle()")
+
+        // Try to get bundle values
+        intent.extras?.let {
+            val extraRecyclerItemJson: String? = if (!LabCompatibilityManager.isTiramisu()) {
+                it.getSerializable(EXTRA_RECYCLER_ITEM) as String?
+            } else {
+                it.getSerializable(EXTRA_RECYCLER_ITEM, String::class.java)
+            }
+
+            extraRecyclerItemJson?.let { recyclerItem ->
+                item = Json.decodeFromString(recyclerItem)
+                // Log
+                Timber.d("item : %s", item.toString())
+            } ?: run { Timber.e("Extra recycler view item object is null") }
+        } ?: run { Timber.e("Intent extras are null") }
     }
 
     private fun initCollapsingToolbar() {
-
         setSupportActionBar(binding.toolbarRecyclerViewDetail)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -72,23 +87,26 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
      * Display artist value
      */
     private fun bindData() {
-        binding.artist = item
+        item?.let { artist: Artist ->
 
-        if (LabCompatibilityManager.isTablet(this)) {
-            //Load the background  thumb image
-            binding.ivBackgroundBlurred?.let {
-                UIManager.loadImageBlurred(
-                    this,
-                    item.urlThumb,
-                    it
-                )
+            binding.artist = artist
+
+            if (LabCompatibilityManager.isTablet(this)) {
+
+                //Load the background  thumb image
+                binding.ivBackgroundBlurred?.let {
+                    UIManager.loadImageBlurred(
+                        this,
+                        artist.urlThumb,
+                        it
+                    )
+                }
+                //viewDetailBinding.tvDebutesDetail?.text = String.format("Since : %s", item.debutes)
             }
-            //viewDetailBinding.tvDebutesDetail?.text = String.format("Since : %s", item.debutes)
+
+            // Display image
+            UIManager.loadImage(this, artist.urlThumb, binding.transitionImageView)
         }
-
-        // Display image
-        UIManager.loadImage(this, item.urlThumb, binding.transitionImageView)
-
 
         /*val sb = StringBuilder()
         sb.append(item.firstName)
@@ -109,6 +127,7 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
     }
 
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
         finishAfterTransition()

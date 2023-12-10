@@ -10,6 +10,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.riders.thelab.BuildConfig
+import com.riders.thelab.core.common.utils.encodeToSha256
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.compose.UserState
@@ -232,7 +233,7 @@ class SignUpViewModel @Inject constructor(
             lastname,
             username,
             email,
-            password,
+            password.encodeToSha256(),
             System.currentTimeMillis()
         )
 

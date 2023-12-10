@@ -71,25 +71,28 @@ import timber.log.Timber
 fun MainContent(viewModel: MainActivityViewModel) {
 
     val context = LocalContext.current
+    val density = LocalDensity.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    // Declaring Coroutine scope
+    val scope = rememberCoroutineScope()
+    val lazyState = rememberLazyGridState()
 
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isFocus by interactionSource.collectIsFocusedAsState()
     val focusManager: FocusManager = LocalFocusManager.current
 
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val isKeyboardOpen by keyboardAsState()
-
-    // Declaring Coroutine scope
-    val scope = rememberCoroutineScope()
-    val lazyState = rememberLazyGridState()
-
     // Declaring a Boolean value to
     // store bottom sheet collapsed state
     val scaffoldState =
-        rememberBottomSheetScaffoldState(bottomSheetState = BottomSheetState(initialValue = BottomSheetValue.Collapsed))
+        rememberBottomSheetScaffoldState(
+            bottomSheetState = BottomSheetState(
+                initialValue = BottomSheetValue.Collapsed,
+                density = density
+            )
+        )
 
-    val density = LocalDensity.current
     val isVisible = remember { mutableStateOf(false) }
 
     val appList by viewModel.appList.collectAsStateWithLifecycle()

@@ -43,7 +43,9 @@ class FloatingViewService : Service() {
                     WindowManager.LayoutParams.WRAP_CONTENT,  // Above Oreo
                     // WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                     // Below Oreo
-                    WindowManager.LayoutParams.TYPE_PHONE,
+//                    WindowManager.LayoutParams.TYPE_PHONE,
+                    // 'TYPE_PHONE: Int' is deprecated. Deprecated in Java, REPLACE WITH TYPE_APPLICATION_OVERLAY
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                     PixelFormat.TRANSLUCENT
                 )

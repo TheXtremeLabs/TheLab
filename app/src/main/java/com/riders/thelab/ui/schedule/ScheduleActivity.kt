@@ -17,6 +17,7 @@ import com.riders.thelab.core.bus.KotlinBus
 import com.riders.thelab.core.bus.Listen
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.ui.base.BaseActivity
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -71,6 +72,7 @@ class ScheduleActivity : BaseActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -90,6 +92,7 @@ class ScheduleActivity : BaseActivity() {
     // EVENT BUS
     //
     ////////////////////////////
+    @OptIn(DelicateCoroutinesApi::class)
     @Listen
     fun onEventTriggered() {
         Timber.d("onEventTriggered()")
