@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(user: User):Long
+    fun insertUser(user: User): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllUsers(users: List<User>)
@@ -24,16 +24,20 @@ interface UserDao {
     @Query("SELECT * FROM user WHERE id LIKE :userId")
     fun getUserByID(userId: Int): User
 
+    @Query("SELECT * FROM user WHERE last_name LIKE :lastname")
+    fun getUserByName(lastname: String): User
+
     @Query("SELECT * FROM user WHERE username LIKE :username")
-    fun getUserByName(username: String): User
+    fun getUserByUsername(username: String): User
 
     @Query("SELECT * FROM user WHERE email LIKE :email")
     fun getUserByEmail(email: String): User
+
     @Query("SELECT * FROM user WHERE username LIKE :username AND  password LIKE :password ")
-    fun logInWithUsername(username: String, password:String): User?
+    fun logInWithUsername(username: String, password: String): User?
 
     @Query("SELECT * FROM user WHERE email LIKE :email AND  password LIKE :password ")
-    fun logInWithEmail(email: String, password:String): User?
+    fun logInWithEmail(email: String, password: String): User?
 
     @Query("DELETE FROM user WHERE id LIKE :userId")
     fun deleteUser(userId: Int)

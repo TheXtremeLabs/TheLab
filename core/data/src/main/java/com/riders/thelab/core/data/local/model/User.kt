@@ -36,8 +36,16 @@ data class User(
 
     constructor() : this("", "", "", "", "", 0L)
 
-    init {
+    /*init {
         Timber.d("User | init method")
         this.password = password.encodeToSha256()
+    }*/
+
+    companion object {
+        val mockUserForTests: List<User> = listOf(
+            User("Jane", "Doe","JaneDoe345" ,"jane.doe@test.com","test1234".encodeToSha256(), 1702222514L),
+            User("John", "Smith","JohnSmith27" ,"test@test.com","test1234".encodeToSha256(), 1702222522L),
+            User("Mike", "Law","Mike1552" ,"test@test.fr","test1234".encodeToSha256(), 1702222536L)
+        )
     }
 }

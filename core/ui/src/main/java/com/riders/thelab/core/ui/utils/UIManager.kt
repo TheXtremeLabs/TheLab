@@ -81,7 +81,7 @@ object UIManager {
 
         // Setting Dialog Message
         alertDialog.setMessage(message)
-        alertDialog.setNegativeButton(negativeMessage) { dialog: DialogInterface, _: Int ->
+        alertDialog.setNegativeButton(negativeMessage) { _: DialogInterface, _: Int ->
             if (negativeMessage != null) {
                 showActionInToast(context, negativeMessage)
 

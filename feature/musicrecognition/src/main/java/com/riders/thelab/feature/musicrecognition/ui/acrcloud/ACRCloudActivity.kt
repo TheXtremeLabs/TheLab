@@ -211,14 +211,12 @@ class ACRCloudActivity : BaseComponentActivity() {
 
     private fun initObservers() {
         Timber.d("initObservers()")
-        if (null != mViewModel.mNetworkManager) {
-            mViewModel.mNetworkManager.getConnectionState().observe(this) {
-                if (!it) {
-                    Timber.e("getConnectionState().observe | NOT connected: $it")
-                } else {
-                    mViewModel.mNetworkManager.updateIsConnected(true)
-                    mViewModel.getSpotifyToken()
-                }
+        mViewModel.mNetworkManager.getConnectionState().observe(this) {
+            if (!it) {
+                Timber.e("getConnectionState().observe | NOT connected: $it")
+            } else {
+                mViewModel.mNetworkManager.updateIsConnected(true)
+                mViewModel.getSpotifyToken()
             }
         }
     }

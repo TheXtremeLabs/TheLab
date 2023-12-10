@@ -54,21 +54,32 @@ class BluetoothActivity : AppCompatActivity(),
     // Create a BroadcastReceiver for ACTION_FOUND.
     private val receiver = object : BroadcastReceiver() {
 
-        @SuppressLint("MissingPermission")
+        @Suppress("DEPRECATION")
+        @SuppressLint("MissingPermission", "NewApi")
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action.toString()) {
                 BluetoothDevice.ACTION_FOUND -> {
                     Timber.e("BluetoothDevice.ACTION_FOUND")
                     // Discovery has found a device. Get the BluetoothDevice
                     // object and its info from the Intent.
-                    val device: BluetoothDevice =
-                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)!!
-                    val deviceName = device.name
-                    val deviceHardwareAddress = device.address // MAC address
+                    val device: BluetoothDevice? = if (!LabCompatibilityManager.isTiramisu()) {
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                    } else {
+                        intent.getParcelableExtra(
+                            BluetoothDevice.EXTRA_DEVICE,
+                            BluetoothDevice::class.java
+                        )
+                    }
 
-                    Timber.e("name : $deviceName, hardware : $deviceHardwareAddress")
+                    device?.let {
+                        val deviceName = device.name
+                        val deviceHardwareAddress = device.address // MAC address
 
-                    bluetoothDevicesSearchList.add("name : $deviceName, hardware : $deviceHardwareAddress")
+                        Timber.e("name : $deviceName, hardware : $deviceHardwareAddress")
+
+                        bluetoothDevicesSearchList.add("name : $deviceName, hardware : $deviceHardwareAddress")
+                    } ?: run { Timber.e("Device object is null") }
+
 
                 }
 

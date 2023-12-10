@@ -71,8 +71,6 @@ fun PaletteItem(
 
 @Composable
 fun PaletteContent(viewModel: PaletteViewModel) {
-
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val lazyState = rememberLazyGridState()
 

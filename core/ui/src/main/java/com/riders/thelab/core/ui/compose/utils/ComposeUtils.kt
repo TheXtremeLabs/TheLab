@@ -43,7 +43,6 @@ fun isKeyboardVisible(): Boolean = WindowInsets.ime.getBottom(LocalDensity.curre
 /*
 use example :
 val isKeyboardOpen by keyboardAsState() // true or false
-
  */
 @Composable
 fun keyboardAsState(): State<Boolean> {

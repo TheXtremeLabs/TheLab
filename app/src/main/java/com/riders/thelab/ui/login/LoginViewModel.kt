@@ -68,9 +68,9 @@ class LoginViewModel @Inject constructor(
     // The UI collects from this StateFlow to get its state updates
     val networkState: StateFlow<NetworkState> = _networkState
 
-    var login by mutableStateOf(if (BuildConfig.DEBUG) "test@test.fr" else "")
+    var login by mutableStateOf(if (BuildConfig.DEBUG) "jane.doe@test.com" else "")
         private set
-    var password by mutableStateOf(if (BuildConfig.DEBUG) "test12356" else "")
+    var password by mutableStateOf(if (BuildConfig.DEBUG) "test1234" else "")
         private set
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -139,7 +139,7 @@ class LoginViewModel @Inject constructor(
     // Coroutines
     //////////////////////////////////////////
     private val coroutineExceptionHandler =
-        CoroutineExceptionHandler { coroutineContext, throwable ->
+        CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
             Timber.e("coroutineExceptionHandler | ${throwable.message}")
 
