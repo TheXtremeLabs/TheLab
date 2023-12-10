@@ -7,6 +7,7 @@ import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.AppBuilder
 import com.riders.thelab.feature.biometric.ui.BiometricActivity
+import com.riders.thelab.feature.kat.KatSplashscreenActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.bluetooth.BluetoothActivity
@@ -23,7 +24,6 @@ import com.riders.thelab.ui.floatingview.FloatingViewActivity
 import com.riders.thelab.ui.googledrive.GoogleDriveActivity
 import com.riders.thelab.ui.googlemlkit.LiveBarcodeScanningActivity
 import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
-import com.riders.thelab.ui.kat.KatActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
 import com.riders.thelab.ui.lottie.LottieActivity
 import com.riders.thelab.ui.palette.PaletteActivity
@@ -399,8 +399,8 @@ object AppBuilderUtils {
                         .withActivityTitle("Chat")
                         .withActivityDescription("Realtime chat using firebase realtime database features")
                         .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_k_at))
-                        .withActivityClass(KatActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityClass(KatSplashscreenActivity::class.java)
+                        .withActivityDate("2023/12/10")
                         .build()
                 this.add(kat)
 
