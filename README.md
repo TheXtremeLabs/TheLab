@@ -49,10 +49,10 @@ Repository created and maintained by Saint-Honoré Michaël ([
 [kotools-types-badge]: https://img.shields.io/static/v1?label=version&message=12.0.13&color=blue
 [kotools-types-project]: https://github.com/kotools/types
 [kotlin]: https://kotlinlang.org
-[kotlin-badge]: https://img.shields.io/badge/kotlin-1.9.10-blue?logo=kotlin
+[kotlin-badge]: https://img.shields.io/badge/kotlin-1.9.21-blue?logo=kotlin
 [kotlin.ArithmeticException]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-arithmetic-exception
 [kotlinx.serialization]: https://github.com/Kotlin/kotlinx.serialization
-[kotlinx.serialization-badge]: https://img.shields.io/badge/kotlinx.serialization-1.5.1-blue
+[kotlinx.serialization-badge]: https://img.shields.io/badge/kotlinx.serialization-1.6.0-blue
 [total-functions]: https://xlinux.nist.gov/dads/HTML/totalfunc.html
 [jetpack-compose]: https://developer.android.com/jetpack/compose?hl=fr
 [coil]: https://coil-kt.github.io/coil/
