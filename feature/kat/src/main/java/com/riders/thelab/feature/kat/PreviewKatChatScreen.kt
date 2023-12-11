@@ -12,11 +12,13 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.firebase.Timestamp
 import com.riders.thelab.core.data.remote.dto.kat.KatUser
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 
 
 ///////////////////////////////
@@ -26,6 +28,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 ///////////////////////////////
 @Composable
 fun KatChatScreen(users: List<KatUser>) {
+    val context = LocalContext.current
     val lazyListState = rememberLazyListState()
 
     TheLabTheme {
@@ -51,6 +54,7 @@ fun KatChatScreen(users: List<KatUser>) {
                             username = if (item.userId == FirebaseUtils.getCurrentUserID()) "${item.username} (Me)" else item.username,
                             phoneNumber = item.phone
                         ) {
+                            (context.findActivity() as KatMainActivity).launchKatActivity(item.username)
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.kat
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -54,5 +55,15 @@ class KatMainActivity : BaseComponentActivity() {
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()
+    }
+
+    fun launchKatActivity(username: String) {
+        Intent(this, KatActivity::class.java)
+            .apply {
+            putExtra(KatActivity.EXTRA_USERNAME, username)
+        }
+            .run {
+            startActivity(this)
+            }
     }
 }

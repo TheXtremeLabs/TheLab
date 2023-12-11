@@ -29,6 +29,8 @@ class KatActivity : BaseComponentActivity() {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate()")
 
+        getBundle()
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
@@ -38,7 +40,7 @@ class KatActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            KatContent(/*viewModel = mViewModel*/)
+                            KatContent(viewModel = mViewModel)
                         }
                     }
                 }
@@ -54,5 +56,20 @@ class KatActivity : BaseComponentActivity() {
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()
+    }
+
+
+    private fun getBundle() {
+        Timber.d("getBundle()")
+        intent.extras?.let {
+            val username = it.getString(EXTRA_USERNAME)
+            if (username != null) {
+                mViewModel.updateKatUsername(username)
+            }
+        }
+    }
+
+    companion object {
+        const val EXTRA_USERNAME: String = "EXTRA_USERNAME"
     }
 }
