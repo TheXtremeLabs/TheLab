@@ -1,9 +1,8 @@
 package com.riders.thelab.feature.kat
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,8 +15,11 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@SuppressLint("CustomSplashScreen")
-class KatSplashscreenActivity : BaseComponentActivity() {
+class KatActivity : BaseComponentActivity() {
+
+    private val mViewModel: KatViewModel by viewModels<KatViewModel>()
+
+
     /////////////////////////////////////
     //
     // OVERRIDE
@@ -36,7 +38,7 @@ class KatSplashscreenActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            KatSplashScreenContent()
+                            KatContent(viewModel = mViewModel)
                         }
                     }
                 }
@@ -44,19 +46,13 @@ class KatSplashscreenActivity : BaseComponentActivity() {
         }
     }
 
-    override fun backPressed() {
-        Timber.e("backPressed()")
-        finish()
+    public override fun onStart() {
+        super.onStart()
+        mViewModel.checkIfUserSignIn(this@KatActivity)
     }
 
-
-    /////////////////////////////////////
-    //
-    // CLASS METHODS
-    //
-    /////////////////////////////////////
-    fun launchKatActivity() {
-        startActivity(Intent(this, KatActivity::class.java))
+    override fun backPressed() {
+        Timber.e("backPressed()")
         finish()
     }
 }

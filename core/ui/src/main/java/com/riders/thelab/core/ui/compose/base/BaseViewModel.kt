@@ -14,7 +14,7 @@ abstract class BaseViewModel : ViewModel() {
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    var version:String by mutableStateOf("")
+    var version: String by mutableStateOf("")
         private set
     var isDarkMode: Boolean by mutableStateOf(true)
         private set
@@ -33,7 +33,7 @@ abstract class BaseViewModel : ViewModel() {
         this.isVibration = !this.isVibration
     }
 
-     private fun updateVersion(appVersion: String) {
+    private fun updateVersion(appVersion: String) {
         this.version = appVersion
     }
 
