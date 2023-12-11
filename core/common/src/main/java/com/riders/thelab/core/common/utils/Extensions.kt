@@ -1,7 +1,23 @@
 package com.riders.thelab.core.common.utils
 
+import timber.log.Timber
 import java.security.MessageDigest
 
+
+/////////////////////////////////////////////////////
+// String commons
+/////////////////////////////////////////////////////
+fun String.isValidPhone(): String {
+    Timber.d("isValidPhone() | phone value: $this")
+
+    val phoneNumberLength = 10
+//    require(phoneNumberLength == this.length)
+    return if (phoneNumberLength == this.length) {
+        this
+    } else {
+        throw IllegalArgumentException("phone number length must equal 10")
+    }
+}
 
 /////////////////////////////////////////////////////
 // String encoding

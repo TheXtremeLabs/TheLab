@@ -56,7 +56,7 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
 
         if (BuildConfig.DEBUG) {
             LabDeviceManager.logDeviceInfo()
-            Timber.d("${TheLabApplication::class.java.simpleName} successfully initialized")
+            Timber.i("${TheLabApplication::class.java.simpleName} successfully initialized")
         }
     }
 
@@ -181,7 +181,6 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
     }
 
     companion object {
-        private var LAB_PACKAGE_NAME: String? = null
         private var mInstance: TheLabApplication? = null
 
         @Synchronized

@@ -1,14 +1,14 @@
 package com.riders.thelab.feature.kat
 
+import android.app.Activity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentReference
 import com.riders.thelab.core.common.utils.LabDeviceManager
-import com.riders.thelab.core.data.local.model.User
+import com.riders.thelab.core.common.utils.isValidPhone
 import com.riders.thelab.core.data.remote.dto.kat.KatUser
 import com.riders.thelab.core.data.remote.dto.kat.KatUserAuth
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
@@ -16,7 +16,7 @@ import com.riders.thelab.core.ui.utils.UIManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import timber.log.Timber
 
-class KatViewModel : BaseViewModel() {
+class KatMainViewModel : BaseViewModel() {
 
     /////////////////////////
     // Variables
@@ -37,12 +37,19 @@ class KatViewModel : BaseViewModel() {
     var userEmail: String by mutableStateOf("")
         private set
 
+    var chatRooms: List<KatUser> by mutableStateOf(emptyList())
+        private set
+
     private fun updateModelName(newModelName: String) {
         this.modelName = newModelName
     }
 
     private fun updateUserEmail(newEmail: String) {
         this.userEmail = newEmail
+    }
+
+    private fun updateChatRooms(newChatRooms: List<KatUser>) {
+        this.chatRooms = newChatRooms
     }
 
     /////////////////////////
@@ -61,7 +68,7 @@ class KatViewModel : BaseViewModel() {
     //
     /////////////////////////////////////
     init {
-        Timber.d("KatViewModel | init method")
+        Timber.d("KatMainViewModel | init method")
 
         pairUserByDevice()
 
@@ -125,7 +132,7 @@ class KatViewModel : BaseViewModel() {
         mKatUserAuth?.let { updateUserEmail(it.email) }
     }
 
-    fun checkIfUserSignIn(context: KatActivity) {
+    fun checkIfUserSignIn(context: Activity) {
         Timber.d("checkIfUserSignIn()")
 
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -133,32 +140,19 @@ class KatViewModel : BaseViewModel() {
 
             val currentUser: FirebaseUser? = firebaseAuth.currentUser
             if (null == currentUser) {
-                val mockRandomUser: User = User.mockUserForTests.random()
-
-                FirebaseUtils.signInWithEmailAndPassword(
-                    firebaseAuth,
-                    mKatUserAuth.email,
-                    mKatUserAuth.password
-                    // "test1234"
-                )
-                    .addOnFailureListener { throwable ->
+                FirebaseUtils.signInWithEmailAndPasswordWithCallbacks(
+                    context = context,
+                    auth = firebaseAuth,
+                    email = mKatUserAuth.email,
+                    password = mKatUserAuth.password,
+                    onFailure = { throwable ->
                         Timber.e("signInWithEmailAndPassword | addOnFailureListener | message: ${throwable.message}")
+                    },
+                    onSuccess = { user: FirebaseUser ->
+                        Timber.d("user: $user")
+                        setUsernameToFirestoreDatabase(context)
                     }
-                    .addOnCompleteListener(context) { task ->
-                        if (task.isSuccessful) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Timber.d("signInWithEmail:success")
-                            val user = firebaseAuth.currentUser
-                            Timber.d("user: $user")
-
-                            setUsernameToFirestoreDatabase(context)
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Timber.e("signInWithEmail:failure", task.exception)
-                            UIManager.showToast(context, "Authentication failed.")
-                        }
-                    }
-
+                )
             } else {
                 Timber.d("User is authenticated")
 
@@ -168,16 +162,17 @@ class KatViewModel : BaseViewModel() {
                     // Do nothing
                 }
             }
-        } ?: run { Timber.e("Firebase Auth object is null") }
+        } ?: run { Timber.e("checkIfUserSignIn | Firebase Auth object is null") }
     }
 
 
-    fun setUsernameToFirestoreDatabase(context: KatActivity) {
+    private fun setUsernameToFirestoreDatabase(context: Activity) {
         Timber.d("setUsernameToFirestoreDatabase()")
         if (null == mKatUser) {
             if (null != mKatUserAuth) {
                 val newKatUser = KatUser(
-                    phone = "06145809",
+                    userId = FirebaseUtils.getCurrentUserID(),
+                    phone = "0614589309".isValidPhone(),
                     username = mKatUserAuth!!.email,
                     createdTimestamp = Timestamp.now()
                 )
@@ -189,51 +184,49 @@ class KatViewModel : BaseViewModel() {
         }
 
         mKatUser?.let { katUser ->
-            FirebaseUtils.currentUserDetails()?.let { documentReference: DocumentReference ->
-                documentReference
-                    .set(katUser)
-                    .addOnFailureListener { throwable ->
-                        Timber.e("currentUserDetails.set() | addOnFailureListener | message: ${throwable.message}")
-                    }
-                    .addOnCompleteListener(context) { task ->
-                        if (task.isSuccessful) {
-                            Timber.d("Successfully logged in Firebase Firestore")
+            FirebaseUtils.setUser(
+                context = context,
+                katUser = katUser,
+                onFailure = { throwable ->
+                    Timber.e("currentUserDetails.set() | onFailure | message: ${throwable.message}")
 
-                            getUsernameFromFirestoreDatabase(context)
-                        }
-                    }
-            } ?: run { Timber.e("Document reference object is null") }
-        } ?: run { Timber.e("mKatUser object is null") }
-
-
+                },
+                onSuccess = {
+                    getUsernameFromFirestoreDatabase(context)
+                }
+            )
+        } ?: run { Timber.e("setUsernameToFirestoreDatabase | mKatUser object is null") }
     }
 
-    fun getUsernameFromFirestoreDatabase(context: KatActivity) {
+    private fun getUsernameFromFirestoreDatabase(context: Activity) {
         Timber.d("getUsernameFromFirestoreDatabase()")
 
-        FirebaseUtils.currentUserDetails()?.let { documentReference: DocumentReference ->
-            documentReference
-                .get()
-                .addOnFailureListener { throwable ->
-                    Timber.e("currentUserDetails.get() | addOnFailureListener | message: ${throwable.message}")
+        FirebaseUtils.getUserByUID(
+            context = context,
+            onFailure = { throwable ->
+                Timber.e("currentUserDetails.get() | onFailure | message: ${throwable.message}")
+            },
+            onSuccess = { user ->
+                if (null == user) {
+                    setUsernameToFirestoreDatabase(context)
+                } else {
+                    getAllUsers(context)
                 }
-                .addOnCompleteListener(context) { task ->
-                    if (task.isSuccessful) {
-                        Timber.e(
-                            "currentUserDetails.get() | addOnCompleteListener | task.isSuccessful: ${
-                                task.result.toObject(
-                                    String::class.java
-                                )
-                            }"
-                        )
+            }
+        )
+    }
 
-                        val katUser = task.result.toObject(KatUser::class.java)
+    private fun getAllUsers(context: Activity) {
+        Timber.d("getAllUsers()")
 
-                        katUser?.let {
-                            mKatUser = katUser
-                        } ?: run { Timber.e("Error kat user model is null") }
-                    }
-                }
-        } ?: run { Timber.e("Document reference object is null") }
+        FirebaseUtils.getUsersWithCallbacks(
+            onFailure = { throwable ->
+                Timber.e("getUsers | onFailure | message: ${throwable.message}")
+                UIManager.showToast(context, "Unable to get all users")
+            },
+            onSuccess = {
+                updateChatRooms(it)
+            }
+        )
     }
 }
