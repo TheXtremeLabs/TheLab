@@ -14,6 +14,10 @@ import java.io.File
 
 object LabDeviceManager {
 
+    const val MODEL_NAME_GALAXY_NOTE_4 = "SM-N910F"
+    const val MODEL_NAME_GALAXY_NOTE_8 = "SM-N950F"
+    const val MODEL_NAME_GALAXY_NOTE_20_ULTRA = "SM-N980B"
+
     // TODO : GoldFinger deprecated
 
     @Suppress("DEPRECATION")
