@@ -39,6 +39,8 @@ class KatMainViewModel : BaseViewModel() {
 
     var chatRooms: List<KatUser> by mutableStateOf(emptyList())
         private set
+    var extraUsername: String by mutableStateOf("")
+        private set
 
     private fun updateModelName(newModelName: String) {
         this.modelName = newModelName
@@ -50,6 +52,10 @@ class KatMainViewModel : BaseViewModel() {
 
     private fun updateChatRooms(newChatRooms: List<KatUser>) {
         this.chatRooms = newChatRooms
+    }
+
+    fun updateKatUsername(extraUsername: String) {
+        this.extraUsername = extraUsername
     }
 
     /////////////////////////
