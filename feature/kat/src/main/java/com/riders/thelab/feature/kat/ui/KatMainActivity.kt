@@ -1,9 +1,9 @@
-package com.riders.thelab.feature.kat
+package com.riders.thelab.feature.kat.ui
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,8 +16,11 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@SuppressLint("CustomSplashScreen")
-class KatSplashscreenActivity : BaseComponentActivity() {
+class KatMainActivity : BaseComponentActivity() {
+
+    private val mViewModel: KatMainViewModel by viewModels<KatMainViewModel>()
+
+
     /////////////////////////////////////
     //
     // OVERRIDE
@@ -36,7 +39,7 @@ class KatSplashscreenActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            KatSplashScreenContent()
+                            KatMainContent(viewModel = mViewModel)
                         }
                     }
                 }
@@ -44,19 +47,25 @@ class KatSplashscreenActivity : BaseComponentActivity() {
         }
     }
 
+    public override fun onStart() {
+        super.onStart()
+        mViewModel.checkIfUserSignIn(this@KatMainActivity)
+    }
+
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()
     }
 
-
-    /////////////////////////////////////
-    //
-    // CLASS METHODS
-    //
-    /////////////////////////////////////
-    fun launchKatActivity() {
-        startActivity(Intent(this, KatActivity::class.java))
-        finish()
+    fun launchKatChatActivity(userId: String, phone: String, username: String) {
+        Intent(this, KatChatActivity::class.java)
+            .apply {
+                putExtra(KatChatActivity.EXTRA_USER_ID, userId)
+                putExtra(KatChatActivity.EXTRA_PHONE, phone)
+                putExtra(KatChatActivity.EXTRA_USERNAME, username)
+            }
+            .run {
+                startActivity(this)
+            }
     }
 }

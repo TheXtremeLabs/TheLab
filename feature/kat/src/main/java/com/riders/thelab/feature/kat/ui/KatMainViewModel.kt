@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.kat
+package com.riders.thelab.feature.kat.ui
 
 import android.app.Activity
 import androidx.compose.runtime.getValue
@@ -13,6 +13,8 @@ import com.riders.thelab.core.data.remote.dto.kat.KatUser
 import com.riders.thelab.core.data.remote.dto.kat.KatUserAuth
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.feature.kat.BuildConfig
+import com.riders.thelab.feature.kat.utils.FirebaseUtils
 import kotlinx.coroutines.CoroutineExceptionHandler
 import timber.log.Timber
 

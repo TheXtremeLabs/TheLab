@@ -376,22 +376,22 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name=".feature.kat.KatSplashscreenActivity"
+            android:name=".feature.kat.ui.KatSplashscreenActivity"
             android:launchMode="singleTask"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
         <activity
-            android:name=".feature.kat.KatMainActivity"
+            android:name=".feature.kat.ui.KatMainActivity"
             android:label="@string/activity_title_kat"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name=".feature.kat.KatActivity"
+            android:name=".feature.kat.ui.KatChatActivity"
             android:label="@string/activity_title_kat"
-            android:parentActivityName=".feature.kat.KatMainActivity"
+            android:parentActivityName=".feature.kat.ui.KatMainActivity"
             android:theme="@style/Theme.TheLab"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 

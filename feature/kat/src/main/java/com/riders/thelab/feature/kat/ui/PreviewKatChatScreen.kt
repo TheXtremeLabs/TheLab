@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.kat
+package com.riders.thelab.feature.kat.ui
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +19,7 @@ import com.riders.thelab.core.data.remote.dto.kat.KatUser
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.feature.kat.utils.FirebaseUtils
 
 
 ///////////////////////////////
@@ -54,7 +55,11 @@ fun KatChatScreen(users: List<KatUser>) {
                             username = if (item.userId == FirebaseUtils.getCurrentUserID()) "${item.username} (Me)" else item.username,
                             phoneNumber = item.phone
                         ) {
-                            (context.findActivity() as KatMainActivity).launchKatActivity(item.username)
+                            (context.findActivity() as KatMainActivity).launchKatChatActivity(
+                                item.userId!!,
+                                item.phone,
+                                item.username
+                            )
                         }
                     }
                 }

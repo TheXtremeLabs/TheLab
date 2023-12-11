@@ -1,22 +1,30 @@
-package com.riders.thelab.feature.kat
+package com.riders.thelab.feature.kat.utils
 
 import android.app.Activity
 import com.google.android.gms.tasks.Task
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
+import com.riders.thelab.core.data.remote.dto.kat.KatChatRoomModel
+import com.riders.thelab.core.data.remote.dto.kat.KatModel
 import com.riders.thelab.core.data.remote.dto.kat.KatUser
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.feature.kat.ui.KatChatActivity
+import kotools.types.text.NotBlankString
 import timber.log.Timber
 
 object FirebaseUtils {
 
     // Collections
     private const val COLLECTION_USERS: String = "users"
+    private const val COLLECTION_CHAT_ROOMS: String = "chatrooms"
     private const val COLLECTION_CHATS: String = "chats"
 
     ///////////////////////////////////////////////////
@@ -195,6 +203,7 @@ object FirebaseUtils {
         onFailure: (throwable: Throwable) -> Unit,
         onSuccess: (users: List<KatUser>) -> Unit
     ) {
+        Timber.d("getUsers()")
         FirebaseFirestore.getInstance()
             .collection(COLLECTION_USERS)
             .addSnapshotListener { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
@@ -215,4 +224,107 @@ object FirebaseUtils {
             }
     }
 
+    fun getChatRoom(
+        context: Activity,
+        chatroomId: String,
+        otherUserId: String,
+        onFailure: (throwable: Throwable) -> Unit,
+        onSuccess: (chats: KatChatRoomModel) -> Unit
+    ) {
+        Timber.d("getChatRoom()")
+        FirebaseFirestore.getInstance().collection(COLLECTION_CHAT_ROOMS).document(chatroomId)
+            .get()
+            .addOnFailureListener { throwable ->
+                Timber.e("getChatRoom() | addOnFailureListener | message: ${throwable.message}")
+                onFailure(throwable)
+            }
+            .addOnCompleteListener(context) { task ->
+                if (task.isSuccessful) {
+                    Timber.e("getChatRoom() | addOnCompleteListener | task.isSuccessful: ${task.result}")
+                    var chatRoomModel: KatChatRoomModel? =
+                        task.result.toObject(KatChatRoomModel::class.java)
+
+                    if (null == chatRoomModel) {
+                        // First time chatting
+                        chatRoomModel = KatChatRoomModel(
+                            chatroomId,
+                            listOf(getCurrentUserID()!!, otherUserId),
+                            Timestamp.now(),
+                            ""
+                        )
+
+                        FirebaseFirestore.getInstance()
+                            .collection(COLLECTION_CHAT_ROOMS)
+                            .document(chatroomId)
+                            .set(chatRoomModel)
+
+                        onSuccess(chatRoomModel)
+                    }
+
+                    // Return chat room
+                    onSuccess(chatRoomModel)
+                }
+            }
+    }
+
+    // Method user to return a unique chatroom id
+    fun getChatRoomId(userId1: String, userId2: String): String =
+        if (userId1.hashCode() < userId2.hashCode()) {
+            userId1 + "_" + userId2
+        } else {
+            userId2 + "_" + userId1
+        }
+
+    ///////////////////////////////////////////////////
+    // Messages
+    ///////////////////////////////////////////////////
+    fun getChatRoomMessagesReference(chatroomId: String): DocumentReference? =
+        FirebaseFirestore.getInstance()
+            .collection(COLLECTION_CHAT_ROOMS)
+            .document(chatroomId)
+
+    fun getChatRoomMessages(chatroomId: String): CollectionReference? {
+        return getChatRoomMessagesReference(chatroomId)?.collection(COLLECTION_CHATS) ?: run {
+            Timber.e("getChatRoomMessagesReference | Document reference object is null")
+            null
+        }
+    }
+
+
+    fun sendMessageToUser(
+        context: Activity,
+        message: NotBlankString,
+        chatroomId: String,
+        chatRoomModel: KatChatRoomModel,
+        onFailure: (throwable: Throwable) -> Unit,
+        onSuccess: (sent: Boolean) -> Unit
+    ) {
+        Timber.d("sendMessageToUser() | message: %s", message)
+
+        val chatRoomUpdated: KatChatRoomModel = chatRoomModel.copy(
+            lastSenderId = getCurrentUserID()!!,
+            lastMessageTimestamp = Timestamp.now()
+        )
+
+        FirebaseFirestore.getInstance()
+            .collection(COLLECTION_CHAT_ROOMS)
+            .document(chatroomId)
+            .set(chatRoomUpdated)
+
+        val chatModel = KatModel(
+            message = message.toString(),
+            senderId = getCurrentUserID()!!,
+            timestamp = Timestamp.now()
+        )
+
+        getChatRoomMessages(chatroomId = chatroomId)?.let {
+            it.add(chatModel).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    (context.findActivity() as KatChatActivity).clearMessageTextField()
+                }
+            }
+        } ?: run {
+            Timber.e("getChatRoomMessages | Collection reference object is null")
+        }
+    }
 }
