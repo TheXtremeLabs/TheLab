@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.kat.ui
 
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -17,6 +20,7 @@ import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalAbsoluteTonalElevation
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +58,28 @@ import com.riders.thelab.feature.kat.data.KatScreenRoute
 // COMPOSE
 //
 ///////////////////////////////
+@DevicePreviews
+@Composable
+fun UserIcon(
+    modifier: Modifier = Modifier.size(40.dp),
+    card: Color = MaterialTheme.colorScheme.primaryContainer,
+    iconColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
+) {
+    Card(
+        modifier = modifier,
+        shape = CircleShape,
+        colors = CardDefaults.cardColors(containerColor = card)
+//                    colors = CardDefaults.cardColors(containerColor = if (!isSystemInDarkTheme()) md_theme_dark_primaryContainer else md_theme_light_primaryContainer)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(imageVector = Icons.Filled.Person, contentDescription = null, tint = iconColor)
+        }
+    }
+}
+
 @Composable
 fun KatHeader(modelName: String, userEmail: String) {
     TheLabTheme {
@@ -104,20 +130,26 @@ fun KatNavHost(
     modifier: Modifier,
     navController: NavHostController,
     startDestination: String = KatScreenRoute.Chat.route,
-    viewModel: KatMainViewModel
+    viewModel: KatMainViewModel,
+    profileViewModel: KatProfileViewModel
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Down) },
+        exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Up) },
     ) {
         composable(KatScreenRoute.Chat.route) { KatChatScreen(viewModel.chatRooms) }
-        composable(KatScreenRoute.Profile.route) { KatUserScreen() }
+        composable(KatScreenRoute.Profile.route) { KatUserScreen(profileViewModel) }
     }
 }
 
 @Composable
-fun KatMainContent(viewModel: KatMainViewModel) {
+fun KatMainContent(
+    viewModel: KatMainViewModel,
+    profileViewModel: KatProfileViewModel
+) {
 
     val navController: NavHostController = rememberNavController()
 
@@ -193,7 +225,8 @@ fun KatMainContent(viewModel: KatMainViewModel) {
                     KatNavHost(
                         modifier = Modifier.fillMaxSize(),
                         navController = navController,
-                        viewModel = viewModel
+                        viewModel = viewModel,
+                        profileViewModel = profileViewModel
                     )
                 }
             }
@@ -219,11 +252,13 @@ private fun PreviewKatHeader() {
 @Composable
 private fun PreviewKatNavHost() {
     val viewModel: KatMainViewModel = hiltViewModel()
+    val profileViewModel: KatProfileViewModel = hiltViewModel()
     val navController = rememberNavController()
 
     TheLabTheme {
         KatNavHost(
             viewModel = viewModel,
+            profileViewModel = profileViewModel,
             modifier = Modifier.fillMaxSize(),
             navController = navController
         )
@@ -233,8 +268,9 @@ private fun PreviewKatNavHost() {
 @DevicePreviews
 @Composable
 private fun PreviewKatMainContent() {
-    val viewModel = KatMainViewModel()
+    val viewModel: KatMainViewModel = hiltViewModel()
+    val profileViewModel: KatProfileViewModel = hiltViewModel()
     TheLabTheme {
-        KatMainContent(viewModel = viewModel)
+        KatMainContent(viewModel = viewModel, profileViewModel = profileViewModel)
     }
 }

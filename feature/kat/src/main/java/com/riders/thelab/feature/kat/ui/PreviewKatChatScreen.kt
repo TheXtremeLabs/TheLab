@@ -77,18 +77,24 @@ fun KatChatScreen(users: List<KatUser>) {
 @Composable
 private fun PreviewKaChatScreen() {
     val list = listOf(
-        KatUser(FirebaseUtils.getCurrentUserID(), "0614589309", "jahef", Timestamp(121251530L, 25)),
+        KatUser(
+            FirebaseUtils.getCurrentUserID(),
+            "0614589309",
+            "jahef",
+            Timestamp(121251530L, 25),
+            ""
+        ),
         KatUser(
             FirebaseUtils.getCurrentUserID(),
             "0614589309",
             "JohnSmith21",
-            Timestamp(121256513L, 25)
+            Timestamp(121256513L, 25), ""
         ),
         KatUser(
             FirebaseUtils.getCurrentUserID(),
             "0614589309",
             "Mikedjcbihyd",
-            Timestamp(121258953L, 25)
+            Timestamp(121258953L, 25), ""
         ),
     )
 

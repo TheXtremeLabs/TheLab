@@ -67,10 +67,14 @@ fun ChatRoomItem(username: String, phoneNumber: String, onChatRoomClicked: () ->
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = username,
-                        color = if (!isSystemInDarkTheme()) md_theme_light_onPrimaryContainer else md_theme_dark_onPrimaryContainer
-                    )
+                    Row() {
+                        Text(
+                            text = username,
+                            color = if (!isSystemInDarkTheme()) md_theme_light_onPrimaryContainer else md_theme_dark_onPrimaryContainer
+                        )
+
+//                        Text(text = lastMessageTimestamp)
+                    }
                     Text(
                         text = phoneNumber,
                         color = if (!isSystemInDarkTheme()) Color.DarkGray else Color.LightGray

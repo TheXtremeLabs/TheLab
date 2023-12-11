@@ -78,6 +78,9 @@ class KatChatActivity : BaseComponentActivity() {
             }
             val userId = it.getString(EXTRA_USER_ID)
             mOtherUserId = userId
+            if(userId != null) {
+                mViewModel.updateKatOtherUserId(userId)
+            }
         }
     }
 

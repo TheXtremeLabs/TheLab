@@ -10,13 +10,16 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.messaging.FirebaseMessaging
 import com.riders.thelab.core.data.remote.dto.kat.KatChatRoomModel
 import com.riders.thelab.core.data.remote.dto.kat.KatModel
 import com.riders.thelab.core.data.remote.dto.kat.KatUser
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.kat.ui.KatChatActivity
+import com.riders.thelab.feature.kat.ui.KatMainActivity
 import kotools.types.text.NotBlankString
 import timber.log.Timber
 
@@ -113,6 +116,10 @@ object FirebaseUtils {
 
     fun isLoggedIn(): Boolean = null != getCurrentUserID()
 
+    fun logOut() {
+        Timber.e("logOut()")
+        FirebaseAuth.getInstance().signOut()
+    }
 
     // Current user
     fun getCurrentUserID(): String? = FirebaseAuth.getInstance().uid
@@ -154,6 +161,29 @@ object FirebaseUtils {
                     }
                 }
         } ?: run { Timber.e("setUsernameToFirestoreDatabase | Document reference object is null") }
+    }
+
+    fun getFcmToken(context: Activity) {
+        Timber.d("getFcmToken()")
+
+        FirebaseMessaging.getInstance()
+            .token
+            .addOnFailureListener { throwable ->
+                Timber.e("FirebaseMessaging.getToken() | addOnFailureListener | message: ${throwable.message}")
+
+            }
+            .addOnCompleteListener { task ->
+                Timber.d("FirebaseMessaging.getToken() | addOnCompleteListener")
+                if (task.isSuccessful) {
+                    val token = task.result
+                    Timber.d("token: $token")
+
+                    currentUserDetails()?.let {
+                        it.update("fcmToken", token)
+                        (context.findActivity() as KatMainActivity).notifyNewToken(token)
+                    } ?: run { Timber.e("getFcmToken | Document reference object is null") }
+                }
+            }
     }
 
 
@@ -283,13 +313,44 @@ object FirebaseUtils {
             .collection(COLLECTION_CHAT_ROOMS)
             .document(chatroomId)
 
-    fun getChatRoomMessages(chatroomId: String): CollectionReference? {
-        return getChatRoomMessagesReference(chatroomId)?.collection(COLLECTION_CHATS) ?: run {
+    fun getChatRoomMessages(chatRoomId: String): CollectionReference? {
+        Timber.d("getChatRoomMessages() | chatroomId: $chatRoomId")
+        return getChatRoomMessagesReference(chatRoomId)?.collection(COLLECTION_CHATS) ?: run {
             Timber.e("getChatRoomMessagesReference | Document reference object is null")
             null
         }
     }
 
+    fun getMessages(
+        context: Activity,
+        chatRoomId: String,
+        onFailure: (throwable: Throwable) -> Unit,
+        onSuccess: (chatMessageList: List<KatModel>) -> Unit
+    ) {
+        Timber.d("getMessages() | chatroomId: $chatRoomId")
+
+        getChatRoomMessagesReference(chatroomId = chatRoomId)?.let {
+            it.collection(COLLECTION_CHATS)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener(context) { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
+
+                    if (null != error) {
+                        Timber.e("Error caught: ${error.message}")
+                        onFailure(error)
+                        return@addSnapshotListener
+                    }
+
+                    if (null == value) {
+                        onFailure(Throwable("Value is null"))
+                    } else {
+                        Timber.d("value: ${value.toString()}")
+                        val messages: List<KatModel> = value.toObjects(KatModel::class.java)
+                        Timber.d("users: ${messages.toString()}")
+                        onSuccess(messages)
+                    }
+                }
+        }
+    }
 
     fun sendMessageToUser(
         context: Activity,
@@ -317,14 +378,17 @@ object FirebaseUtils {
             timestamp = Timestamp.now()
         )
 
-        getChatRoomMessages(chatroomId = chatroomId)?.let {
+        getChatRoomMessages(chatRoomId = chatroomId)?.let {
             it.add(chatModel).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    onSuccess(true)
                     (context.findActivity() as KatChatActivity).clearMessageTextField()
                 }
             }
         } ?: run {
             Timber.e("getChatRoomMessages | Collection reference object is null")
+            onFailure(Throwable("getChatRoomMessages | Collection reference object is null"))
         }
     }
+
 }

@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +32,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -38,11 +42,16 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.riders.thelab.core.data.remote.dto.kat.KatModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -54,7 +63,6 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KatTopAppBar(title: String, onNavigationBackClicked: () -> Unit) {
-
     TheLabTheme {
         TopAppBar(
             title = {
@@ -76,7 +84,7 @@ fun KatTopAppBar(title: String, onNavigationBackClicked: () -> Unit) {
                         }
                     }
 
-                    Text(text = title)
+                    Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }, navigationIcon = {
                 Box(modifier = Modifier.size(56.dp), contentAlignment = Alignment.Center) {
@@ -107,6 +115,7 @@ fun KatSendButton(onSendClicked: () -> Unit) {
 @Composable
 fun KatChatRoomContent(viewModel: KatChatViewModel) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     val lazyListState = rememberLazyListState()
     val focusRequester = remember { FocusRequester() }
@@ -138,7 +147,9 @@ fun KatChatRoomContent(viewModel: KatChatViewModel) {
                         },
                     state = lazyListState
                 ) {
-
+                    itemsIndexed(items = viewModel.chatMessages.reversed()) { _, item ->
+                        KatItem(chatItem = item)
+                    }
                 }
 
                 Row(
@@ -166,16 +177,31 @@ fun KatChatRoomContent(viewModel: KatChatViewModel) {
                     Box(modifier = Modifier.weight(.5f), contentAlignment = Alignment.Center) {
                         KatSendButton {
                             Timber.d("Send message: ${viewModel.message}")
+
                             viewModel.sendMessage(
                                 context = (context.findActivity() as KatChatActivity),
                                 textInput = viewModel.message
                             )
+
+                            scrollToBottom(scope, lazyListState, viewModel.chatMessages)
                         }
                     }
                 }
             }
         }
+    }
 
+    LaunchedEffect(key1 = viewModel.chatMessages) {
+        scrollToBottom(scope, lazyListState, viewModel.chatMessages)
+    }
+}
+
+fun scrollToBottom(scope: CoroutineScope, lazyListState: LazyListState, items: List<KatModel>) {
+    if (items.isNotEmpty()) {
+        scope.launch {
+            delay(300L)
+            lazyListState.animateScrollToItem(items.lastIndex)
+        }
     }
 }
 
