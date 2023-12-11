@@ -19,6 +19,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.feature.weather.core.worker.WeatherWorker
 import com.riders.thelab.feature.weather.ui.WeatherDownloadWorker
 import dagger.hilt.android.HiltAndroidApp
@@ -52,6 +53,11 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
         initTimberAndThreeten()
         initAdsAndFirebase()
         // delayedInit()
+
+        if (BuildConfig.DEBUG) {
+            LabDeviceManager.logDeviceInfo()
+            Timber.d("${TheLabApplication::class.java.simpleName} successfully initialized")
+        }
     }
 
     override fun onTrimMemory(level: Int) {
@@ -89,7 +95,7 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
     private fun initTimberAndThreeten() {
         Timber.d("initTimberAndThreeten()")
 
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             // Timber : logging
             Timber.plant(Timber.DebugTree())
         }
