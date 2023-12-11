@@ -1,13 +1,13 @@
-package com.riders.thelab.feature.kat
+package com.riders.thelab.feature.kat.ui
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,11 +30,13 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -103,17 +105,17 @@ fun KatSendButton(onSendClicked: () -> Unit) {
 }
 
 @Composable
-fun KatContent(viewModel: KatMainViewModel) {
+fun KatChatRoomContent(viewModel: KatChatViewModel) {
     val context = LocalContext.current
 
     val lazyListState = rememberLazyListState()
-    val textInput = remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
 
     TheLabTheme {
         Scaffold(
             topBar = {
                 KatTopAppBar(title = viewModel.extraUsername) {
-                    (context.findActivity() as KatActivity).backPressed()
+                    (context.findActivity() as KatChatActivity).backPressed()
                 }
             }
         ) { contentPadding ->
@@ -126,7 +128,14 @@ fun KatContent(viewModel: KatMainViewModel) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f),
+                        .weight(1f)
+                        .pointerInput(Unit) {
+                            detectTapGestures(onTap = {
+                                Timber.d("detectTapGestures | onTap")
+                                focusRequester.freeFocus()
+                            })
+
+                        },
                     state = lazyListState
                 ) {
 
@@ -135,24 +144,32 @@ fun KatContent(viewModel: KatMainViewModel) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(72.dp)
+                        .heightIn(72.dp, 180.dp)
                         .padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Bottom
                 ) {
 
                     TextField(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(2f),
-                        value = textInput.value,
-                        onValueChange = { textInput.value = it },
+                            .weight(2f)
+                            .focusRequester(focusRequester),
+                        value = viewModel.message,
+                        onValueChange = { viewModel.updateMessageText(it) },
                         placeholder = { Text(text = "Enter a message") },
-                        shape = RoundedCornerShape(50),
-                        colors = TextFieldDefaults.colors(unfocusedIndicatorColor = Color.Transparent)
+                        shape = RoundedCornerShape(16.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        )
                     )
+
                     Box(modifier = Modifier.weight(.5f), contentAlignment = Alignment.Center) {
                         KatSendButton {
-                            Timber.d("Send message: ${textInput.value}")
+                            Timber.d("Send message: ${viewModel.message}")
+                            viewModel.sendMessage(
+                                context = (context.findActivity() as KatChatActivity),
+                                textInput = viewModel.message
+                            )
                         }
                     }
                 }
@@ -189,8 +206,8 @@ private fun PreviewKatSendButton() {
 @DevicePreviews
 @Composable
 private fun PreviewKatContent() {
-    val viewModel: KatMainViewModel = hiltViewModel()
+    val viewModel: KatChatViewModel = hiltViewModel()
     TheLabTheme {
-        KatContent(viewModel = viewModel)
+        KatChatRoomContent(viewModel = viewModel)
     }
 }

@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.kat
+package com.riders.thelab.feature.kat.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable

@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.kat
+package com.riders.thelab.feature.kat.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +46,7 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
+import com.riders.thelab.feature.kat.data.KatScreenRoute
 
 
 ///////////////////////////////
