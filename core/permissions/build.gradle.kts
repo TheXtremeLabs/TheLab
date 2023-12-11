@@ -10,12 +10,10 @@ android {
 }
 
 dependencies {
-
     ///////////////////////////////////
     // Project
     ///////////////////////////////////
     implementation(project(":core:data"))
-
 
     ///////////////////////////////////
     // General Dependencies
@@ -23,7 +21,6 @@ dependencies {
     // Kotlin
     api(libs.kotlinx.datetime)
 
-
     // Dexter
-    implementation(libs.dexter)
+    api(libs.dexter)
 }

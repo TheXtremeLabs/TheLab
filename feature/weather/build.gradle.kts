@@ -21,6 +21,7 @@ dependencies {
     implementation(project(":core:analytics"))
     implementation(project(":core:data"))
     implementation(project(":core:common"))
+    implementation(project(":core:permissions"))
 
 
     ///////////////////////////////////
@@ -61,17 +62,11 @@ dependencies {
      * support for Activity and fragment injection so we need to include
      * the following dependencies */
     // Hilt
-    //implementation(Dependencies.hilt)
-    //kapt(Dependencies.hiltCompiler)
     // The others dependencies has been added into the Hilt plugin convention class
     implementation(libs.hilt.ext.work)
     kapt(libs.hilt.ext.compiler)
 
-    // OkHttp
-    // define a BOM and its version
-    api(platform(libs.okhttp.bom))
-    // define any required OkHttp artifacts without version
-    api(libs.okhttp)
+    // OkHttp: provided by data module
 
     // Charts
     api(libs.mpandroidchart)
