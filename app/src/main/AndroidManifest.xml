@@ -366,13 +366,14 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
+
+        <!-- Kat Activities -->
         <activity
             android:name=".ui.kat.KatActivity"
             android:label="@string/activity_title_kat"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-
 
         <activity
             android:name=".feature.kat.KatSplashscreenActivity"
@@ -381,9 +382,16 @@
             android:theme="@style/Theme.TheLab" />
 
         <activity
-            android:name=".feature.kat.KatActivity"
+            android:name=".feature.kat.KatMainActivity"
             android:label="@string/activity_title_kat"
             android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".feature.kat.KatActivity"
+            android:label="@string/activity_title_kat"
+            android:parentActivityName=".feature.kat.KatMainActivity"
             android:theme="@style/Theme.TheLab"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 

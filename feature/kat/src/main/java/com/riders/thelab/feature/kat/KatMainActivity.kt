@@ -15,7 +15,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class KatActivity : BaseComponentActivity() {
+class KatMainActivity : BaseComponentActivity() {
 
     private val mViewModel: KatMainViewModel by viewModels<KatMainViewModel>()
 
@@ -38,7 +38,7 @@ class KatActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            KatContent(/*viewModel = mViewModel*/)
+                            KatMainContent(viewModel = mViewModel)
                         }
                     }
                 }
@@ -48,7 +48,7 @@ class KatActivity : BaseComponentActivity() {
 
     public override fun onStart() {
         super.onStart()
-        mViewModel.checkIfUserSignIn(this@KatActivity)
+        mViewModel.checkIfUserSignIn(this@KatMainActivity)
     }
 
     override fun backPressed() {
