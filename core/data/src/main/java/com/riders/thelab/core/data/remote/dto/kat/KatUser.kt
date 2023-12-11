@@ -9,8 +9,12 @@ data class KatUserAuth(val email: String, val password: String) : Serializable {
 }
 
 data class KatUser(
-    val userId: String?, val phone: String, val username: String, val createdTimestamp: Timestamp
+    val userId: String?,
+    val phone: String,
+    val username: String,
+    val createdTimestamp: Timestamp,
+    val fcmToken: String
 ) : Serializable {
-    constructor() : this("", "", "", Timestamp.now())
+    constructor() : this("", "", "", Timestamp.now(), "")
 }
 

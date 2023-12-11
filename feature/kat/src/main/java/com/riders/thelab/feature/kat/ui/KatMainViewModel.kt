@@ -1,6 +1,8 @@
 package com.riders.thelab.feature.kat.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,19 +14,32 @@ import com.riders.thelab.core.common.utils.isValidPhone
 import com.riders.thelab.core.data.remote.dto.kat.KatUser
 import com.riders.thelab.core.data.remote.dto.kat.KatUserAuth
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.kat.BuildConfig
 import com.riders.thelab.feature.kat.utils.FirebaseUtils
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import timber.log.Timber
+import javax.inject.Inject
 
-class KatMainViewModel : BaseViewModel() {
+@HiltViewModel
+@SuppressLint("StaticFieldLeak")
+class KatMainViewModel @Inject constructor(
+    @ApplicationContext private val context: Context
+) : BaseViewModel() {
 
     /////////////////////////
     // Variables
     /////////////////////////
     private var auth: FirebaseAuth? = null
     private var mKatUser: KatUser? = null
+    private var deviceFCMToken: String? = null
+
+    fun updateToken(newToken: String) {
+        this.deviceFCMToken = newToken
+    }
 
     // TODO: DEBUG only
     private lateinit var mKatUserAuth: KatUserAuth
@@ -41,8 +56,6 @@ class KatMainViewModel : BaseViewModel() {
 
     var chatRooms: List<KatUser> by mutableStateOf(emptyList())
         private set
-    var extraUsername: String by mutableStateOf("")
-        private set
 
     private fun updateModelName(newModelName: String) {
         this.modelName = newModelName
@@ -56,9 +69,6 @@ class KatMainViewModel : BaseViewModel() {
         this.chatRooms = newChatRooms
     }
 
-    fun updateKatUsername(extraUsername: String) {
-        this.extraUsername = extraUsername
-    }
 
     /////////////////////////
     // Coroutines
@@ -137,7 +147,9 @@ class KatMainViewModel : BaseViewModel() {
             }
         }
 
-        mKatUserAuth?.let { updateUserEmail(it.email) }
+        mKatUserAuth?.let {
+            updateUserEmail(it.email)
+        }
     }
 
     fun checkIfUserSignIn(context: Activity) {
@@ -171,6 +183,8 @@ class KatMainViewModel : BaseViewModel() {
                 }
             }
         } ?: run { Timber.e("checkIfUserSignIn | Firebase Auth object is null") }
+
+        (context.findActivity() as KatMainActivity).notifyCurrentUsername(userEmail)
     }
 
 
@@ -182,7 +196,8 @@ class KatMainViewModel : BaseViewModel() {
                     userId = FirebaseUtils.getCurrentUserID(),
                     phone = "0614589309".isValidPhone(),
                     username = mKatUserAuth!!.email,
-                    createdTimestamp = Timestamp.now()
+                    createdTimestamp = Timestamp.now(),
+                    fcmToken = deviceFCMToken!!
                 )
 
                 mKatUser = newKatUser

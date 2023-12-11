@@ -11,14 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.firebase.messaging.FirebaseMessaging
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.kat.utils.FirebaseUtils
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@AndroidEntryPoint
 class KatMainActivity : BaseComponentActivity() {
 
-    private val mViewModel: KatMainViewModel by viewModels<KatMainViewModel>()
+    private val mMainViewModel: KatMainViewModel by viewModels<KatMainViewModel>()
+    private val mProfileViewModel: KatProfileViewModel by viewModels<KatProfileViewModel>()
 
 
     /////////////////////////////////////
@@ -30,6 +35,8 @@ class KatMainActivity : BaseComponentActivity() {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate()")
 
+        FirebaseUtils.getFcmToken(this)
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
@@ -39,7 +46,10 @@ class KatMainActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            KatMainContent(viewModel = mViewModel)
+                            KatMainContent(
+                                viewModel = mMainViewModel,
+                                profileViewModel = mProfileViewModel
+                            )
                         }
                     }
                 }
@@ -49,12 +59,20 @@ class KatMainActivity : BaseComponentActivity() {
 
     public override fun onStart() {
         super.onStart()
-        mViewModel.checkIfUserSignIn(this@KatMainActivity)
+        mMainViewModel.checkIfUserSignIn(this@KatMainActivity)
     }
 
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()
+    }
+
+
+    fun notifyCurrentUsername(currentUsername: String) {
+        mProfileViewModel.updateCurrentProfileUsername(currentUsername)
+    }
+    fun notifyNewToken(newToken: String) {
+        mMainViewModel.updateToken(newToken)
     }
 
     fun launchKatChatActivity(userId: String, phone: String, username: String) {

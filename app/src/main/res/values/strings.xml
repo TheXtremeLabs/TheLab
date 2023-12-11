@@ -8,6 +8,8 @@
          from https://console.developers.google.com/ -->
     <string name="server_client_id">759951804103-0v514jklc3ljftruf5f7dfb397b7hoce.apps.googleusercontent.com</string>
 
+    <string name="fcm_notification_channel_id">miscellaneous</string>
+
     <!-- General -->
     <string name="action_settings">Settings</string>
     <string name="force_crash">Force Crash</string>
