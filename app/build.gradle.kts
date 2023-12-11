@@ -113,6 +113,7 @@ dependencies {
     implementation(project(":core:analytics"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
+    implementation(project(":core:permissions"))
     implementation(project(":core:ui"))
     implementation(project(":core:testing"))
     implementation(project(":feature:biometric"))
@@ -139,42 +140,19 @@ dependencies {
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
-    /*implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.fragment)*/
-//    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.cardview)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.palette)
     implementation(libs.androidx.recyclerView)
     implementation(libs.androidx.material)
-//    implementation(libs.androidx.biometric)
     implementation(libs.androidx.dynamicanimation)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.window.manager)
     implementation(libs.androidx.window.extensions)
 
-    // Compose
-    /*implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.compiler)
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.androidx.compose.runtime.livedata)*/
-    /*implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material3)*/
-    /*implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.animation)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.ui.util)*/
-    /*implementation(libs.androidx.compose.material.icons)
-    implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(libs.androidx.compose.material3.windowSizeClass)*/
-    /*implementation(libs.androidx.compose.fonts)
-    implementation(libs.androidx.activity.compose)*/
-    /*implementation(libs.androidx.lifecycle.runtimeCompose)
-    implementation(libs.androidx.lifecycle.viewModelCompose)
-    implementation(libs.androidx.compose.runtime.livedata)
-    implementation(libs.androidx.hilt.navigation.compose)*/
+    // Compose: provided by ui module
+    // The others dependencies has been added into the AndroidCompose plugin convention class
+
 
     // Navigation
     implementation(libs.androidx.navigation.ktx)
@@ -196,10 +174,6 @@ dependencies {
     implementation(libs.androidx.autofill)
 
     // Worker & concurrent: implemented in weather feature
-    /*implementation(libs.androidx.work.ktx)
-    implementation(libs.androidx.work.multiprocess)
-    implementation(libs.androidx.concurrent)
-    androidTestImplementation(libs.androidx.work.testing)*/
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -210,17 +184,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.service)
     implementation(libs.androidx.lifecycle.process)
 
-    // Datastore and Preferences
-    implementation(libs.androidx.datastore.core)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.preferences)
+    // Datastore and Preferences: provided by data module
+
+    // Firebase BOM and Dependencies: provided by analytics module
 
     /* Hilt - We are going to use hilt.android which includes
      * support for Activity and fragment injection so we need to include
      * the following dependencies */
     // Hilt
-    //implementation(Dependencies.hilt)
-    //kapt(Dependencies.hiltCompiler)
     // The others dependencies has been added into the Hilt plugin convention class
     implementation(libs.hilt.ext.work)
     kapt(libs.hilt.ext.compiler)
@@ -250,27 +221,17 @@ dependencies {
     implementation(libs.google.objectdetection.custom)
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.moshi)
-    implementation(libs.retrofit.kotlin.serialization)
+    // Retrofit: provided by data module
 
-    // OkHttp
-    // define a BOM and its version
-    implementation(platform(libs.okhttp.bom))
-    // define any required OkHttp artifacts without version
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
+    // OkHttp: provided by data module
 
-    // Moshi
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
+    // Moshi: provided by data module
     kapt(libs.moshi.kotlin.codegen)
 
     // MPAndroidChart
     implementation(libs.mpandroidchart)
 
-    // Dexter
-    implementation(libs.dexter)
+    // Dexter: provided by permissions module
 
     // Glide
     implementation(libs.glide)
@@ -282,8 +243,7 @@ dependencies {
     //ThreeTen : Alternative to Android Calendar API
     implementation(libs.threeten)
 
-    // Kotools Types
-    implementation(libs.kotools.types)
+    // Kotools Types: provided by data module
 
 
     /////////////////////////////

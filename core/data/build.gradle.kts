@@ -55,16 +55,18 @@ dependencies {
     // Worker & concurrent
     androidTestImplementation(libs.androidx.work.testing)
 
-    // Firebase
-    api(platform(libs.firebase.bom))
-    api(libs.firebase.analytics)
-    api(libs.firebase.auth)
-    api(libs.firebase.crashlytics)
-    api(libs.firebase.database)
-    api(libs.firebase.messaging)
-    api(libs.firebase.storage)
+    // Datastore and Preferences
+    api(libs.androidx.datastore.core)
+    api(libs.androidx.datastore.preferences)
+    api(libs.androidx.preferences)
 
-    /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
+
+    /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi, Serialization  */
     api(libs.retrofit.core)
     api(libs.retrofit.moshi)
     api(libs.retrofit.kotlin.serialization)
