@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.firebase.messaging.FirebaseMessaging
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.kat.utils.FirebaseUtils
@@ -35,7 +34,13 @@ class KatMainActivity : BaseComponentActivity() {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate()")
 
-        FirebaseUtils.getFcmToken(this)
+        FirebaseUtils.getFcmToken(
+            context = this@KatMainActivity,
+            onFailure = {
+                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+            },
+            onSuccess = { newToken -> mMainViewModel.updateToken(newToken) }
+        )
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -67,12 +72,8 @@ class KatMainActivity : BaseComponentActivity() {
         finish()
     }
 
-
     fun notifyCurrentUsername(currentUsername: String) {
         mProfileViewModel.updateCurrentProfileUsername(currentUsername)
-    }
-    fun notifyNewToken(newToken: String) {
-        mMainViewModel.updateToken(newToken)
     }
 
     fun launchKatChatActivity(userId: String, phone: String, username: String) {

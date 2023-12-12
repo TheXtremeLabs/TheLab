@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.kat.data
+package com.riders.thelab.feature.kat.data.local.compose
 
 import androidx.annotation.StringRes
 import com.riders.thelab.feature.kat.R

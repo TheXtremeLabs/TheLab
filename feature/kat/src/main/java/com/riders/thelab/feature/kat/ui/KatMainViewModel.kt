@@ -7,12 +7,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.core.common.utils.isValidPhone
-import com.riders.thelab.core.data.remote.dto.kat.KatUser
-import com.riders.thelab.core.data.remote.dto.kat.KatUserAuth
+import com.riders.thelab.core.data.local.model.kat.KatUserAuthModel
+import com.riders.thelab.core.data.local.model.kat.KatUserModel
+import com.riders.thelab.core.data.local.model.kat.toDto
+import com.riders.thelab.core.data.remote.dto.kat.FCDKatUser
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
@@ -33,16 +34,15 @@ class KatMainViewModel @Inject constructor(
     /////////////////////////
     // Variables
     /////////////////////////
-    private var auth: FirebaseAuth? = null
-    private var mKatUser: KatUser? = null
+    // TODO: DEBUG only
+    private lateinit var mKatUserAuth: KatUserAuthModel
+    private var mFirebaseCloudDatastoreUser: FCDKatUser? = null
     private var deviceFCMToken: String? = null
 
     fun updateToken(newToken: String) {
         this.deviceFCMToken = newToken
     }
 
-    // TODO: DEBUG only
-    private lateinit var mKatUserAuth: KatUserAuth
     // private var mKatUserAuth: KatUserAuth? = null
 
 
@@ -54,7 +54,7 @@ class KatMainViewModel @Inject constructor(
     var userEmail: String by mutableStateOf("")
         private set
 
-    var chatRooms: List<KatUser> by mutableStateOf(emptyList())
+    var chatRooms: List<KatUserModel> by mutableStateOf(emptyList())
         private set
 
     private fun updateModelName(newModelName: String) {
@@ -65,7 +65,7 @@ class KatMainViewModel @Inject constructor(
         this.userEmail = newEmail
     }
 
-    private fun updateChatRooms(newChatRooms: List<KatUser>) {
+    private fun updateChatRooms(newChatRooms: List<KatUserModel>) {
         this.chatRooms = newChatRooms
     }
 
@@ -91,11 +91,7 @@ class KatMainViewModel @Inject constructor(
         pairUserByDevice()
 
         // Initialize Firebase Auth
-        auth = FirebaseAuth.getInstance().apply {
-            if (BuildConfig.DEBUG) {
-                this.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
-            }
-        }
+        FirebaseUtils.initAuth()
     }
 
     override fun onCleared() {
@@ -125,38 +121,39 @@ class KatMainViewModel @Inject constructor(
             }
         )
 
-        mKatUserAuth = when (modelName) {
-            "TC56" -> {
-                KatUserAuth("jane.doe@test.com", "test1234")
-            }
-
-            "TC57" -> {
-                KatUserAuth("john.smith@test.com", "test1234")
-            }
-
-            "TC58" -> {
-                KatUserAuth("mike@test.fr", "test1234")
-            }
-
-            else -> {
-                if (modelName.contains(LabDeviceManager.MODEL_NAME_GALAXY_NOTE_8, true)) {
-                    KatUserAuth("michael.sainthonore@gmail.com", "test1234")
-                } else {
-                    KatUserAuth("test@test.fr", "test1234")
+        mKatUserAuth = KatUserAuthModel(
+            email = when (modelName) {
+                "TC56" -> {
+                    "jane.doe@test.com"
                 }
-            }
-        }
 
-        mKatUserAuth?.let {
-            updateUserEmail(it.email)
-        }
+                "TC57" -> {
+                    "john.smith@test.com"
+                }
+
+                "TC58" -> {
+                    "mike@test.fr"
+                }
+
+                else -> {
+                    if (modelName.contains(LabDeviceManager.MODEL_NAME_GALAXY_NOTE_8, true)) {
+                        "michael.sainthonore@gmail.com"
+                    } else {
+                        "test@test.fr"
+                    }
+                }
+            },
+            password = "test1234"
+        )
+
+        mKatUserAuth?.let { updateUserEmail(it.email) }
     }
 
     fun checkIfUserSignIn(context: Activity) {
         Timber.d("checkIfUserSignIn()")
 
         // Check if user is signed in (non-null) and update UI accordingly.
-        auth?.let { firebaseAuth ->
+        FirebaseUtils.auth?.let { firebaseAuth ->
 
             val currentUser: FirebaseUser? = firebaseAuth.currentUser
             if (null == currentUser) {
@@ -190,9 +187,9 @@ class KatMainViewModel @Inject constructor(
 
     private fun setUsernameToFirestoreDatabase(context: Activity) {
         Timber.d("setUsernameToFirestoreDatabase()")
-        if (null == mKatUser) {
+        if (null == mFirebaseCloudDatastoreUser) {
             if (null != mKatUserAuth) {
-                val newKatUser = KatUser(
+                val newKatUser = KatUserModel(
                     userId = FirebaseUtils.getCurrentUserID(),
                     phone = "0614589309".isValidPhone(),
                     username = mKatUserAuth!!.email,
@@ -200,16 +197,16 @@ class KatMainViewModel @Inject constructor(
                     fcmToken = deviceFCMToken!!
                 )
 
-                mKatUser = newKatUser
+                mFirebaseCloudDatastoreUser = newKatUser.toDto()
             }
         } else {
             Timber.d("Already logged in")
         }
 
-        mKatUser?.let { katUser ->
+        mFirebaseCloudDatastoreUser?.let { fcdUser ->
             FirebaseUtils.setUser(
                 context = context,
-                katUser = katUser,
+                katUser = fcdUser,
                 onFailure = { throwable ->
                     Timber.e("currentUserDetails.set() | onFailure | message: ${throwable.message}")
 

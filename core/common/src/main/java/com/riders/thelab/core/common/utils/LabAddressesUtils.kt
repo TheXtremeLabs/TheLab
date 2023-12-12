@@ -13,7 +13,7 @@ object LabAddressesUtils {
     /**
      * Get address for current location (legacy method for Android SDK < Android 33)
      *
-     * Consider using {@link #getDeviceAddressAndroid13(geocoder, location, callback)} if your Android SDK equals or is above Android 33
+     * Consider using [getDeviceAddressAndroid13(geocoder, location, callback)][getDeviceAddressAndroid13] if your Android SDK equals or is above Android 33
      *
      * @param geocoder Geocoding is the process of transform street address or other description of a location into a (latitude, longitude) coordinate.
      * @param location latitude and longitude coordinates
@@ -45,7 +45,7 @@ object LabAddressesUtils {
     /**
      * Get address for current location (new method for Android SDK >= Android 33)
      *
-     * Consider using {@link #getDeviceAddressLegacy(geocoder, location)} if your Android SDK is below Android 33
+     * Consider using [getDeviceAddressLegacy(geocoder, location)][getDeviceAddressLegacy] if your Android SDK is below Android 33
      *
      * @param geocoder Geocoding is the process of transform street address or other description of a location into a (latitude, longitude) coordinate.
      * @param location latitude and longitude coordinates

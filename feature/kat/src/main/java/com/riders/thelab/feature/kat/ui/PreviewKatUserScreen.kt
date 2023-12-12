@@ -96,7 +96,6 @@ fun KatUserScreen(viewModel: KatProfileViewModel) {
                         unfocusedIndicatorColor = Color.Transparent
                     )
                 )
-
             }
 
             Column(
@@ -113,7 +112,7 @@ fun KatUserScreen(viewModel: KatProfileViewModel) {
 
                 Button(
                     onClick = {
-                        Timber.d("logout user")
+                        Timber.e("Button logout clicked. Call logout user | logOut()")
                         FirebaseUtils.logOut()
                         (context.findActivity() as KatMainActivity).finish()
                     },
@@ -123,7 +122,6 @@ fun KatUserScreen(viewModel: KatProfileViewModel) {
                 }
             }
         }
-
     }
 }
 

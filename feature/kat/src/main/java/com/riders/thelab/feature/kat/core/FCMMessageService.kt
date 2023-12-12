@@ -1,9 +1,10 @@
 package com.riders.thelab.feature.kat.core
 
 import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
 
-class FCMMessageService: FirebaseMessagingService (){
+class FCMMessageService : FirebaseMessagingService() {
 
     /**
      * Called if the FCM registration token is updated. This may occur if the security of
@@ -19,5 +20,21 @@ class FCMMessageService: FirebaseMessagingService (){
         // FCM registration token to your app server.
         //applicationContext
         //sendRegistrationToServer(token)
+    }
+
+    override fun onMessageReceived(message: RemoteMessage) {
+        super.onMessageReceived(message)
+        Timber.d("onMessageReceived() | remote message: $message")
+        Timber.d("should Show notification here")
+    }
+
+    override fun onMessageSent(msgId: String) {
+        super.onMessageSent(msgId)
+        Timber.d("onMessageSent() | message ID: $msgId")
+    }
+
+    override fun onDeletedMessages() {
+        super.onDeletedMessages()
+        Timber.e("onDeletedMessages")
     }
 }

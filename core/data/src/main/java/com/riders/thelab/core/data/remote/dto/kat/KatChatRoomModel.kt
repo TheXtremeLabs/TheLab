@@ -2,7 +2,7 @@ package com.riders.thelab.core.data.remote.dto.kat
 
 import com.google.firebase.Timestamp
 
-data class KatChatRoomModel(
+data class KatChatRoom(
     val chatRoomId: String,
     val userIds: List<String>,
     val lastMessageTimestamp: Timestamp,

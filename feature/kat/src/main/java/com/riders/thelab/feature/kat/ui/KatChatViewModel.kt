@@ -6,9 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.riders.thelab.core.data.remote.dto.kat.KatChatRoomModel
-import com.riders.thelab.core.data.remote.dto.kat.KatModel
-import com.riders.thelab.core.data.remote.dto.kat.KatUser
+import com.riders.thelab.core.data.local.model.kat.KatModel
+import com.riders.thelab.core.data.remote.dto.kat.KatChatRoom
+import com.riders.thelab.core.data.remote.dto.kat.NotificationData
+import com.riders.thelab.core.data.remote.dto.kat.PushNotification
+import com.riders.thelab.core.data.remote.rest.KatRestClient
+import com.riders.thelab.feature.kat.R
 import com.riders.thelab.feature.kat.utils.FirebaseUtils
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -16,25 +19,16 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotools.types.text.NotBlankString
 import kotools.types.text.toNotBlankString
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONObject
 import timber.log.Timber
 
 
 class KatChatViewModel : ViewModel() {
 
-
     /////////////////////////
     // variables
     /////////////////////////
     private var mChatRoomId: String? = null
-    private var mChatRoom: KatChatRoomModel? = null
+    private var mChatRoom: KatChatRoom? = null
 
     fun setChatRoomId(chatRoomId: String) {
         this.mChatRoomId = chatRoomId
@@ -129,7 +123,7 @@ class KatChatViewModel : ViewModel() {
                 onFailure = { Timber.e("runCatching | onFailure() | Error caught: ${it}") },
                 onSuccess = {
                     if (it) {
-                        sendNotification(message)
+                        sendNotification(context, message)
                     }
                 }
             )
@@ -137,45 +131,41 @@ class KatChatViewModel : ViewModel() {
             .onFailure { it.printStackTrace() }
     }
 
-    private fun sendNotification(message: NotBlankString) {
+    private fun sendNotification(context: Activity, message: NotBlankString) {
         Timber.d("sendNotification() ")
 
-        FirebaseUtils.currentUserDetails()?.get()?.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val userModel: KatUser? = task.result.toObject(KatUser::class.java)
+        FirebaseUtils.getUser(context = context,
+            onFailure = { Timber.e("sendNotification | onFailure() | Error caught: ${it.message}") },
+            onSuccess = { userModel ->
 
-                if (null != userModel) {
-                    Timber.d("user: $userModel")
+                val pushNotification = PushNotification(
+                    data = NotificationData(
+                        title = userModel.username,
+                        message = message.toString()
+                    ),
+                    to = extraOtherUserId
+                )
 
-                    runCatching {
-                        val jsonObject: JSONObject = JSONObject()
-                        val notificationObject: JSONObject = JSONObject().apply {
-                            put("title", userModel.username)
-                            put("body", message)
-                        }
+                // Call REST Client and make call
+                viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+                    val callResponseBody =
+                        KatRestClient(context.getString(R.string.fcm_server_key))
+                            .getApiService()
+                            .sendNotification(pushNotification)
 
-                        val dataObject: JSONObject = JSONObject().apply {
-                            put("userId", userModel.userId)
-                        }
-
-                        jsonObject.apply {
-                            put("notification", notificationObject)
-                            put("data", dataObject)
-                            put("to", dataObject)
-                        }
-
-                        callApi(jsonObject = jsonObject)
+                    if (!callResponseBody.isSuccessful) {
+                        Timber.e("Error call sendNotification Endpoint")
+                    } else {
+                        val response = callResponseBody.body().toString()
+                        Timber.d("response: $response")
                     }
-                        .onFailure { it.printStackTrace() }
-                        .onSuccess { Timber.d("Notification sent successfully") }
-
                 }
             }
-        }
+        )
     }
 
 
-    private fun callApi(jsonObject: JSONObject) {
+    /*private fun callApi(jsonObject: JSONObject) {
         Timber.d("callApi() ")
         val jsonMediaType: MediaType = "application/json".toMediaType()
         val client = OkHttpClient
@@ -186,10 +176,7 @@ class KatChatViewModel : ViewModel() {
                 }
                     .setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
-//        val url = "https://fcm.googleapis.com/fcm/send/"
-        val serverToken: String =
-            "AAAAsPCoRsc:APA91bEXatUhfSdxp9iuIgsR6qCn-W3ZMtnqekms6Y65jWdhS3KuN60N-38kbQJxQ5PtJeYVEFlsfuszSJJX0nqUEQE2CL-_am7GXU76uX8YF6pcY6_M7CaHNvDF-lAx1jwsSlci_AEI"
-        val url = " https://fcm.googleapis.com/v1/projects/the-lab-3920e/messages:send/"
+
 
         val body: RequestBody =
             jsonObject.toString().toRequestBody(contentType = jsonMediaType)
@@ -200,10 +187,10 @@ class KatChatViewModel : ViewModel() {
                 "Authorization",
                 "Bearer 759951804103-a49rs2ee6v6603o39u0pu06egtofcgh1.apps.googleusercontent.com"
             )
-            /*.header(
+            *//*.header(
                 "project_id",
                 "759951804103"
-            )*/
+            )*//*
             .build()
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
@@ -211,5 +198,5 @@ class KatChatViewModel : ViewModel() {
                 client.newCall(request).execute().use { response -> response.body!!.string() }
             Timber.d("response: $response")
         }
-    }
+    }*/
 }

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.firebase.Timestamp
-import com.riders.thelab.core.data.remote.dto.kat.KatUser
+import com.riders.thelab.core.data.local.model.kat.KatUserModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
@@ -28,7 +28,7 @@ import com.riders.thelab.feature.kat.utils.FirebaseUtils
 //
 ///////////////////////////////
 @Composable
-fun KatChatScreen(users: List<KatUser>) {
+fun KatChatScreen(users: List<KatUserModel>) {
     val context = LocalContext.current
     val lazyListState = rememberLazyListState()
 
@@ -77,25 +77,25 @@ fun KatChatScreen(users: List<KatUser>) {
 @Composable
 private fun PreviewKaChatScreen() {
     val list = listOf(
-        KatUser(
+        KatUserModel(
             FirebaseUtils.getCurrentUserID(),
             "0614589309",
             "jahef",
             Timestamp(121251530L, 25),
             ""
         ),
-        KatUser(
+        KatUserModel(
             FirebaseUtils.getCurrentUserID(),
             "0614589309",
             "JohnSmith21",
             Timestamp(121256513L, 25), ""
         ),
-        KatUser(
+        KatUserModel(
             FirebaseUtils.getCurrentUserID(),
             "0614589309",
             "Mikedjcbihyd",
             Timestamp(121258953L, 25), ""
-        ),
+        )
     )
 
     TheLabTheme {
