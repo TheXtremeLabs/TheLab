@@ -86,7 +86,7 @@ object FirebaseUtils {
 
 
     // Sign-In
-    fun signInWithEmailAndPassword(
+    fun signInWithEmailAndPasswordTask(
         auth: FirebaseAuth,
         email: String,
         password: String
@@ -96,7 +96,7 @@ object FirebaseUtils {
         return auth.signInWithEmailAndPassword(email, password)
     }
 
-    fun signInWithEmailAndPasswordWithCallbacks(
+    fun signInWithEmailAndPassword(
         context: Activity,
         auth: FirebaseAuth,
         email: String,
@@ -138,16 +138,42 @@ object FirebaseUtils {
 
     fun logOut() = auth?.signOut()
 
+    // Token
+    fun getFcmToken(
+        context: Activity,
+        onFailure: (throwable: Throwable) -> Unit,
+        onSuccess: (newToken: String) -> Unit
+    ) {
+        Timber.d("getFcmToken()")
+
+        FirebaseMessaging.getInstance()
+            .token
+            .addOnFailureListener(context) { throwable ->
+                Timber.e("FirebaseMessaging.getToken() | addOnFailureListener | message: ${throwable.message}")
+                onFailure(throwable)
+            }
+            .addOnCompleteListener(context) { task ->
+                Timber.d("FirebaseMessaging.getToken() | addOnCompleteListener")
+                if (task.isSuccessful) {
+                    val token = task.result
+                    Timber.d("token: $token")
+
+                    currentUserDetails()?.let {
+                        it.update("fcmToken", token)
+                        onSuccess(token)
+                    } ?: run { Timber.e("getFcmToken | currentUserDetails Document reference object is null") }
+                }
+            }
+    }
 
     // Current user
     fun getCurrentUserID(): String? = auth?.run {
-        Timber.d("getCurrentUserID() with uid: $uid")
+        // Timber.d("getCurrentUserID() with uid: $uid")
         uid
     }
 
     fun currentUserDetails(): DocumentReference? = getCurrentUserID()?.run {
-        Timber.d("currentUserDetails() | userID: $this")
-        getCollectionReference(COLLECTION_USERS).document(getCurrentUserID()!!)
+        getCollectionReference(COLLECTION_USERS).document(this)
     }
 
     // Set User
@@ -176,6 +202,8 @@ object FirebaseUtils {
         } ?: run { Timber.e("setUsernameToFirestoreDatabase | Document reference object is null") }
     }
 
+
+    // Get Users
     fun getUser(
         context: Activity,
         onFailure: (throwable: Throwable) -> Unit,
@@ -185,7 +213,7 @@ object FirebaseUtils {
             documentReference
                 .get()
                 .addOnFailureListener { throwable ->
-                    Timber.e("currentUserDetails.get() | addOnFailureListener | message: ${throwable.message}")
+                    Timber.e("getUser | addOnFailureListener | message: ${throwable.message}")
                     onFailure(throwable)
                 }
                 .addOnCompleteListener(context) { task ->
@@ -201,42 +229,39 @@ object FirebaseUtils {
                 }
         } ?: run {
             val errorMessage = "Unable to fetch current user data"
-            Timber.e("getUserFromFirestoreDatabase | Document reference object is null")
+            Timber.e("getUser | Document reference object is null")
             onFailure(Throwable(errorMessage))
             UIManager.showToast(context, errorMessage)
         }
     }
 
-    fun getFcmToken(
+    fun getUserById(
         context: Activity,
+        fcmKatUserId: String,
         onFailure: (throwable: Throwable) -> Unit,
-        onSuccess: (newToken: String) -> Unit
+        onSuccess: (userModel: KatUserModel) -> Unit
     ) {
-        Timber.d("getFcmToken()")
-
-        FirebaseMessaging.getInstance()
-            .token
+        getCollectionReference(COLLECTION_USERS)
+            .document(fcmKatUserId)
+            .get()
             .addOnFailureListener(context) { throwable ->
-                Timber.e("FirebaseMessaging.getToken() | addOnFailureListener | message: ${throwable.message}")
+                Timber.e("currentUserDetails.get() | addOnFailureListener | message: ${throwable.message}")
                 onFailure(throwable)
             }
             .addOnCompleteListener(context) { task ->
-                Timber.d("FirebaseMessaging.getToken() | addOnCompleteListener")
                 if (task.isSuccessful) {
-                    val token = task.result
-                    Timber.d("token: $token")
+                    val fcdUserModel: FCDKatUser? = task.result.toObject(FCDKatUser::class.java)
 
-                    currentUserDetails()?.let {
-                        it.update("fcmToken", token)
-                        onSuccess(token)
-                    } ?: run { Timber.e("getFcmToken | Document reference object is null") }
+                    if (null == fcdUserModel) {
+                        onFailure(Throwable("User model is null"))
+                    } else {
+                        onSuccess(fcdUserModel.toModel())
+                    }
                 }
             }
     }
 
-
-    // Get Users
-    fun getUserByUID(
+    fun getAuthenticatedUserByID(
         context: Activity,
         onFailure: (throwable: Throwable) -> Unit,
         onSuccess: (user: KatUserModel?) -> Unit
@@ -432,7 +457,6 @@ object FirebaseUtils {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         onSuccess(true)
-                        (context.findActivity() as KatChatActivity).clearMessageTextField()
                     }
                 }
         } ?: run {

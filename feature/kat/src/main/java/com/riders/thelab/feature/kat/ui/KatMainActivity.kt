@@ -13,7 +13,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.feature.kat.utils.FirebaseUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,13 +33,7 @@ class KatMainActivity : BaseComponentActivity() {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate()")
 
-        FirebaseUtils.getFcmToken(
-            context = this@KatMainActivity,
-            onFailure = {
-                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
-            },
-            onSuccess = { newToken -> mMainViewModel.updateToken(newToken) }
-        )
+        mMainViewModel.checkIfUserSignIn(this@KatMainActivity)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -62,10 +55,11 @@ class KatMainActivity : BaseComponentActivity() {
         }
     }
 
-    public override fun onStart() {
+    override fun onStart() {
         super.onStart()
-        mMainViewModel.checkIfUserSignIn(this@KatMainActivity)
+        mMainViewModel.getFCMToken(this@KatMainActivity)
     }
+
 
     override fun backPressed() {
         Timber.e("backPressed()")

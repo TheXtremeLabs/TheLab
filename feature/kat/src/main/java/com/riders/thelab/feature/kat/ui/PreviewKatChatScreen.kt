@@ -50,7 +50,7 @@ fun KatChatScreen(users: List<KatUserModel>) {
                     state = lazyListState,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    itemsIndexed(items = users) { index, item ->
+                    itemsIndexed(items = users) { _, item ->
                         ChatRoomItem(
                             username = if (item.userId == FirebaseUtils.getCurrentUserID()) "${item.username} (Me)" else item.username,
                             phoneNumber = item.phone

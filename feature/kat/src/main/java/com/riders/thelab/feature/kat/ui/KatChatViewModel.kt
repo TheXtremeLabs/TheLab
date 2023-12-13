@@ -1,12 +1,14 @@
 package com.riders.thelab.feature.kat.ui
 
 import android.app.Activity
+import android.content.Intent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.local.model.kat.KatModel
+import com.riders.thelab.core.data.local.model.kat.KatUserModel
 import com.riders.thelab.core.data.remote.dto.kat.KatChatRoom
 import com.riders.thelab.core.data.remote.dto.kat.NotificationData
 import com.riders.thelab.core.data.remote.dto.kat.PushNotification
@@ -27,13 +29,24 @@ class KatChatViewModel : ViewModel() {
     /////////////////////////
     // variables
     /////////////////////////
-    private var mChatRoomId: String? = null
     private var mChatRoom: KatChatRoom? = null
+        private set
+
+    // Local variables
+    private var mExtraOtherUserId: String? = null
+    private var mExtraUsername: String? = null
+    private var mChatRoomId: String? = null
+    private var mOtherKatUser: KatUserModel? = null
+        private set
+
 
     fun setChatRoomId(chatRoomId: String) {
         this.mChatRoomId = chatRoomId
     }
 
+    fun setOtherKatUser(otherKatUser: KatUserModel) {
+        this.mOtherKatUser = otherKatUser
+    }
 
     /////////////////////////
     // Composable States
@@ -41,20 +54,20 @@ class KatChatViewModel : ViewModel() {
     var message: String by mutableStateOf("")
         private set
 
-    var extraOtherUserId: String by mutableStateOf("")
+    private var otherUserId: String by mutableStateOf("")
         private set
-    var extraUsername: String by mutableStateOf("")
+    var otherUsername: String by mutableStateOf("")
         private set
 
     var chatMessages: List<KatModel> by mutableStateOf(emptyList())
         private set
 
     fun updateKatOtherUserId(extraUserId: String) {
-        this.extraOtherUserId = extraUserId
+        this.otherUserId = extraUserId
     }
 
-    fun updateKatUsername(extraUsername: String) {
-        this.extraUsername = extraUsername
+    fun updateKatOtherUsername(extraUsername: String) {
+        this.otherUsername = extraUsername
     }
 
     fun updateMessageText(newText: String) {
@@ -80,26 +93,78 @@ class KatChatViewModel : ViewModel() {
     // CLASS METHODS
     //
     //////////////////////////////////////////
-    fun getOrCreateChatRoomReference(context: Activity, chatRoomId: String, otherUserId: String) {
-        Timber.d("getOrCreateChatRoomReference() | chatRoomId: $chatRoomId")
+    fun getBundle(intent: Intent) {
+        Timber.d("getBundle()")
 
-        FirebaseUtils.getChatRoom(
-            context = context,
-            chatroomId = chatRoomId,
-            otherUserId = otherUserId,
-            onFailure = {
-                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
-            },
-            onSuccess = {
-                mChatRoom = it
+        intent.extras?.let { extras ->
 
-                getMessages(context = context, chatRoomId = chatRoomId)
+            // EXTRA OTHER USER USERNAME
+            extras.getString(KatChatActivity.EXTRA_USERNAME)?.let {
+                this.mExtraUsername = it
+                updateKatOtherUsername(it)
             }
-        )
+                ?: run { Timber.e("EXTRA_USERNAME is null") }
+
+            // EXTRA OTHER USER ID
+            extras.getString(KatChatActivity.EXTRA_USER_ID)?.let {
+                this.mExtraOtherUserId = it
+                updateKatOtherUserId(it)
+            }
+                ?: run { Timber.e("EXTRA_USER_ID is null") }
+        } ?: run { Timber.e("Intent extras is null") }
+    }
+
+    fun setChatRoomId() {
+        Timber.d("setChatRoomId()")
+
+        FirebaseUtils.getCurrentUserID()?.let { firebaseUserId ->
+            otherUserId?.let { userId ->
+                setChatRoomId(FirebaseUtils.getChatRoomId(firebaseUserId, userId))
+            }
+        }
+    }
+
+    fun findOtherUserById(context: KatChatActivity) {
+        Timber.d("findOtherUserById()")
+
+        otherUserId?.let { userId ->
+                FirebaseUtils.getUserById(
+                    context = context,
+                    fcmKatUserId = userId,
+                    onFailure = { Timber.e("Failed to get user") },
+                    onSuccess = { otherUser ->
+                        setOtherKatUser(otherUser)
+                    }
+                )
+        } ?: run { Timber.e("Other user id is null") }
+    }
+
+    fun getOrCreateChatRoomReference(context: Activity) {
+        Timber.d("getOrCreateChatRoomReference() | chatRoomId: $mChatRoomId")
+
+        mChatRoomId?.let { chatRoomId ->
+            otherUserId?.let { userId ->
+
+                FirebaseUtils.getChatRoom(
+                    context = context,
+                    chatroomId = chatRoomId,
+                    otherUserId = userId,
+                    onFailure = {
+                        Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+                    },
+                    onSuccess = {
+                        mChatRoom = it
+
+                        getMessages(context = context, chatRoomId = chatRoomId)
+                    }
+                )
+            } ?: run { Timber.e("Other User ID is null") }
+        } ?: run { Timber.e("Chat room id is null") }
+
     }
 
     fun getMessages(context: Activity, chatRoomId: String) {
-        Timber.d("getMessages() | mChatRoomId: $mChatRoomId")
+        Timber.d("getMessages() | for chat room id: $mChatRoomId")
         FirebaseUtils.getMessages(
             context = context,
             chatRoomId = chatRoomId,
@@ -123,6 +188,9 @@ class KatChatViewModel : ViewModel() {
                 onFailure = { Timber.e("runCatching | onFailure() | Error caught: ${it}") },
                 onSuccess = {
                     if (it) {
+                        // clear Message TextField
+                        updateMessageText("")
+
                         sendNotification(context, message)
                     }
                 }
@@ -134,69 +202,36 @@ class KatChatViewModel : ViewModel() {
     private fun sendNotification(context: Activity, message: NotBlankString) {
         Timber.d("sendNotification() ")
 
-        FirebaseUtils.getUser(context = context,
-            onFailure = { Timber.e("sendNotification | onFailure() | Error caught: ${it.message}") },
-            onSuccess = { userModel ->
+        mOtherKatUser?.let { user ->
+            FirebaseUtils.getUser(
+                context = context,
+                onFailure = { Timber.e("sendNotification | onFailure() | Error caught: ${it.message}") },
+                onSuccess = { userModel ->
 
-                val pushNotification = PushNotification(
-                    data = NotificationData(
-                        title = userModel.username,
-                        message = message.toString()
-                    ),
-                    to = extraOtherUserId
-                )
+                    val pushNotification = PushNotification(
+                        data = NotificationData(
+                            title = userModel.username,
+                            message = message.toString()
+                        ),
+                        to = user.fcmToken
+                    )
 
-                // Call REST Client and make call
-                viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-                    val callResponseBody =
-                        KatRestClient(context.getString(R.string.fcm_server_key))
-                            .getApiService()
-                            .sendNotification(pushNotification)
+                    // Call REST Client and make call
+                    viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+                        val callResponseBody =
+                            KatRestClient(context.getString(R.string.fcm_server_key))
+                                .getApiService()
+                                .sendNotification(pushNotification)
 
-                    if (!callResponseBody.isSuccessful) {
-                        Timber.e("Error call sendNotification Endpoint")
-                    } else {
-                        val response = callResponseBody.body().toString()
-                        Timber.d("response: $response")
+                        if (!callResponseBody.isSuccessful) {
+                            Timber.e("Error call sendNotification Endpoint")
+                        } else {
+                            val response = callResponseBody.body().toString()
+                            Timber.d("response: $response")
+                        }
                     }
                 }
-            }
-        )
-    }
-
-
-    /*private fun callApi(jsonObject: JSONObject) {
-        Timber.d("callApi() ")
-        val jsonMediaType: MediaType = "application/json".toMediaType()
-        val client = OkHttpClient
-            .Builder()
-            .addInterceptor(
-                HttpLoggingInterceptor { message: String ->
-                    Timber.tag("OkHttp").i(message)
-                }
-                    .setLevel(HttpLoggingInterceptor.Level.BODY))
-            .build()
-
-
-        val body: RequestBody =
-            jsonObject.toString().toRequestBody(contentType = jsonMediaType)
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .header(
-                "Authorization",
-                "Bearer 759951804103-a49rs2ee6v6603o39u0pu06egtofcgh1.apps.googleusercontent.com"
             )
-            *//*.header(
-                "project_id",
-                "759951804103"
-            )*//*
-            .build()
-
-        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            val response: String =
-                client.newCall(request).execute().use { response -> response.body!!.string() }
-            Timber.d("response: $response")
-        }
-    }*/
+        } ?: run { Timber.e("Other Kat user not available") }
+    }
 }

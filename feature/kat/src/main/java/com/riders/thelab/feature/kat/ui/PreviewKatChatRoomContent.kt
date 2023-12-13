@@ -123,7 +123,7 @@ fun KatChatRoomContent(viewModel: KatChatViewModel) {
     TheLabTheme {
         Scaffold(
             topBar = {
-                KatTopAppBar(title = viewModel.extraUsername) {
+                KatTopAppBar(title = viewModel.otherUsername) {
                     (context.findActivity() as KatChatActivity).backPressed()
                 }
             }

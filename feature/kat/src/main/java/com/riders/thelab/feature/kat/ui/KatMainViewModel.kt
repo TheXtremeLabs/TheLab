@@ -149,6 +149,20 @@ class KatMainViewModel @Inject constructor(
         mKatUserAuth?.let { updateUserEmail(it.email) }
     }
 
+    fun getFCMToken(context: KatMainActivity) {
+        FirebaseUtils.getFcmToken(
+            context = context,
+            onFailure = {
+                Timber.e("getFCMToken | onFailure | Error caught: ${it.message}")
+            },
+            onSuccess = { newToken ->
+                Timber.d("getFCMToken | onSuccess | token: $newToken")
+                updateToken(newToken)
+                checkIfUserSignIn(context)
+            }
+        )
+    }
+
     fun checkIfUserSignIn(context: Activity) {
         Timber.d("checkIfUserSignIn()")
 
@@ -156,8 +170,9 @@ class KatMainViewModel @Inject constructor(
         FirebaseUtils.auth?.let { firebaseAuth ->
 
             val currentUser: FirebaseUser? = firebaseAuth.currentUser
+
             if (null == currentUser) {
-                FirebaseUtils.signInWithEmailAndPasswordWithCallbacks(
+                FirebaseUtils.signInWithEmailAndPassword(
                     context = context,
                     auth = firebaseAuth,
                     email = mKatUserAuth.email,
@@ -166,7 +181,7 @@ class KatMainViewModel @Inject constructor(
                         Timber.e("signInWithEmailAndPassword | addOnFailureListener | message: ${throwable.message}")
                     },
                     onSuccess = { user: FirebaseUser ->
-                        Timber.d("user: $user")
+                        Timber.d("checkIfUserSignIn | onSuccess | user: $user")
                         setUsernameToFirestoreDatabase(context)
                     }
                 )
@@ -187,6 +202,12 @@ class KatMainViewModel @Inject constructor(
 
     private fun setUsernameToFirestoreDatabase(context: Activity) {
         Timber.d("setUsernameToFirestoreDatabase()")
+
+        if (null == deviceFCMToken) {
+            UIManager.showToast(context, "Device token is null")
+            return
+        }
+
         if (null == mFirebaseCloudDatastoreUser) {
             if (null != mKatUserAuth) {
                 val newKatUser = KatUserModel(
@@ -221,7 +242,7 @@ class KatMainViewModel @Inject constructor(
     private fun getUsernameFromFirestoreDatabase(context: Activity) {
         Timber.d("getUsernameFromFirestoreDatabase()")
 
-        FirebaseUtils.getUserByUID(
+        FirebaseUtils.getAuthenticatedUserByID(
             context = context,
             onFailure = { throwable ->
                 Timber.e("currentUserDetails.get() | onFailure | message: ${throwable.message}")

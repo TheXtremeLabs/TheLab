@@ -8,15 +8,17 @@ import java.io.Serializable
 /**
  * Representing FCM Kat User remote object to local object in order to store remote user info
  */
-@kotlinx.serialization.Serializable
+//@kotlinx.serialization.Serializable
 data class KatUserModel(
     val userId: String?,
     val phone: String,
     val username: String,
-    @kotlinx.serialization.Serializable(with = FirebaseTimestampSerializer::class)
+    //@kotlinx.serialization.Serializable(with = FirebaseTimestampSerializer::class)
     val createdTimestamp: Timestamp,
     val fcmToken: String
-) : Serializable
+) : Serializable {
+    constructor() : this("", "", "", Timestamp.now(), "")
+}
 
 
 /**

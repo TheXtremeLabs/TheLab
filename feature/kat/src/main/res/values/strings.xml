@@ -2,6 +2,5 @@
 <resources>
     <string name="title_chat">Chat</string>
     <string name="title_profile">Profile</string>
-    <!-- TODO: Remove -->
-    <string name="tempfkiign_fclfr_m_gkkdf">AAAAsPCoRsc:APA91bEXatUhfSdxp9iuIgsR6qCn-W3ZMtnqekms6Y65jWdhS3KuN60N-38kbQJxQ5PtJeYVEFlsfuszSJJX0nqUEQE2CL-_am7GXU76uX8YF6pcY6_M7CaHNvDF-lAx1jwsSlci_AEI</string>
+    <string name="kat_notification_channel">Kat Notifications Channel</string>
 </resources>

@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.kat.utils.FirebaseUtils
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -27,6 +28,13 @@ class KatSplashscreenActivity : BaseComponentActivity() {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate()")
 
+        // If user already authenticated launch Kat main activity
+        if (FirebaseUtils.isLoggedIn()) {
+            launchKatActivity()
+            return
+        }
+
+        // else display splashscreen
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
