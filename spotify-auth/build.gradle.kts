@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.riders.spotify_app_remote"
+    namespace = "com.riders.spotify_auth"
     compileSdk = 34
 
     defaultConfig {
@@ -22,11 +22,8 @@ android {
             )
         }
     }
+}
 
-    /*
-     * https://stackoverflow.com/questions/60878599/error-building-android-library-direct-local-aar-file-dependencies-are-not-supp
-     */
-    configurations.maybeCreate("default")
-    // To fix build with CI we must use library as we can't implement aar directly in project
-    artifacts.add("default", file("spotify-app-remote-release-0.8.0.aar"))
+dependencies {
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
 }

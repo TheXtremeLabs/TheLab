@@ -6,10 +6,6 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import java.util.Collections
 import java.util.stream.Collectors
 
-data class KatModel(val message: String, val senderId: String, val timestamp: Timestamp) {
-    constructor() : this("", "", Timestamp.now())
-}
-
 data class Kat(
     var chatId: String? = null,
     var messageId: String? = null,

@@ -12,17 +12,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.feature.kat.utils.FirebaseUtils
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class KatChatActivity : BaseComponentActivity() {
 
     private val mViewModel: KatChatViewModel by viewModels<KatChatViewModel>()
-
-    private var mOtherUserId: String? = null
-    private var mOtherUsername: String? = null
-    private var mChatRoomId: String? = null
 
 
     /////////////////////////////////////
@@ -34,15 +29,9 @@ class KatChatActivity : BaseComponentActivity() {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate()")
 
-        getBundle()
+        mViewModel.getBundle(intent)
 
-        FirebaseUtils.getCurrentUserID()?.let { firebaseUserId ->
-            mOtherUserId?.let { otherUserId ->
-                mChatRoomId = FirebaseUtils.getChatRoomId(firebaseUserId, otherUserId)
-
-                mViewModel.setChatRoomId(mChatRoomId!!)
-            }
-        }
+        mViewModel.setChatRoomId()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -60,32 +49,18 @@ class KatChatActivity : BaseComponentActivity() {
             }
         }
 
-        mViewModel.getOrCreateChatRoomReference(this, mChatRoomId!!, mOtherUserId!!)
+        mViewModel.findOtherUserById(this@KatChatActivity)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        mViewModel.getOrCreateChatRoomReference(this@KatChatActivity)
     }
 
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()
-    }
-
-
-    private fun getBundle() {
-        Timber.d("getBundle()")
-        intent.extras?.let {
-            val username = it.getString(EXTRA_USERNAME)
-            if (username != null) {
-                mViewModel.updateKatUsername(username)
-            }
-            val userId = it.getString(EXTRA_USER_ID)
-            mOtherUserId = userId
-            if(userId != null) {
-                mViewModel.updateKatOtherUserId(userId)
-            }
-        }
-    }
-
-    fun clearMessageTextField() {
-        mViewModel.updateMessageText("")
     }
 
     companion object {

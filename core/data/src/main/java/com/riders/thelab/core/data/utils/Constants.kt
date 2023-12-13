@@ -34,6 +34,7 @@ object Constants {
     //REST client Base URL
     const val BASE_ENDPOINT_YOUTUBE = "https://raw.githubusercontent.com"
     const val BASE_ENDPOINT_SEARCH = "https://ajax.googleapis.com"
+    const val BASE_ENDPOINT_FIREBASE_CLOUD_MESSAGING = "https://fcm.googleapis.com/"
     const val BASE_ENDPOINT_GOOGLE_FIREBASE_API = " https://firebasestorage.googleapis.com/"
     const val BASE_ENDPOINT_GOOGLE_MAPS_API = "https://maps.googleapis.com/maps/api/"
     const val BASE_ENDPOINT_GOOGLE_PLACES = "https://maps.googleapis.com/maps/api/place/"
