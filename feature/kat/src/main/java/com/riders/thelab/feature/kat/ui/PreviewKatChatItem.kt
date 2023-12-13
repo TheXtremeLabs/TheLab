@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.firebase.Timestamp
 import com.riders.thelab.core.data.local.model.kat.KatModel
@@ -93,14 +94,16 @@ fun Me(message: String) {
 }
 
 @Composable
-fun KatItem(chatItem: KatModel) {
+fun KatItem(isValid: Boolean, chatItem: KatModel) {
     TheLabTheme {
-        if (null != FirebaseUtils.currentUserDetails()) {
+        if (isValid) {
             if (FirebaseUtils.getCurrentUserID()!! == chatItem.senderId) {
                 Me(message = chatItem.message)
             } else {
                 OtherSender(message = chatItem.message)
             }
+        } else {
+            Text(text = "Error", color = Color.Red, fontWeight = FontWeight.ExtraBold)
         }
     }
 }
@@ -132,6 +135,9 @@ private fun PreviewMe() {
 private fun PreviewKatItem() {
     val chatItem = KatModel("Hello How are you?", "ksdjbnsdkjnvojbdshuovbsdjbvsdv", Timestamp.now())
     TheLabTheme {
-        KatItem(chatItem)
+        Column {
+            KatItem(true, chatItem)
+            KatItem(false, chatItem)
+        }
     }
 }

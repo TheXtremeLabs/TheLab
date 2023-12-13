@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.DocumentReference
 import com.riders.thelab.core.data.local.model.kat.KatModel
 import com.riders.thelab.core.data.local.model.kat.KatUserModel
 import com.riders.thelab.core.data.remote.dto.kat.KatChatRoom
@@ -51,6 +52,8 @@ class KatChatViewModel : ViewModel() {
     /////////////////////////
     // Composable States
     /////////////////////////
+    var currentUserDocument : DocumentReference? by mutableStateOf(null)
+    private set
     var message: String by mutableStateOf("")
         private set
 
@@ -62,6 +65,9 @@ class KatChatViewModel : ViewModel() {
     var chatMessages: List<KatModel> by mutableStateOf(emptyList())
         private set
 
+    fun updateCurrentUserDocument(currentUserDocument: DocumentReference) {
+        this.currentUserDocument = currentUserDocument
+    }
     fun updateKatOtherUserId(extraUserId: String) {
         this.otherUserId = extraUserId
     }
@@ -87,6 +93,10 @@ class KatChatViewModel : ViewModel() {
             Timber.e(throwable.message)
         }
 
+
+    init {
+        FirebaseUtils.currentUserDetails()?.let { updateCurrentUserDocument(it) }
+    }
 
     //////////////////////////////////////////
     //

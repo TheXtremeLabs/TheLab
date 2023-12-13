@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
@@ -112,6 +111,8 @@ class FCMMessageService : FirebaseMessagingService() {
             channel_id
         )
             .setSubText("Kat - new messages")
+            .setContentTitle(title)
+            .setContentText(message)
             .setSmallIcon(com.riders.thelab.core.ui.R.drawable.ic_the_lab_12_logo_black)
             .setAutoCancel(true)
             .setVibrate(
@@ -127,7 +128,7 @@ class FCMMessageService : FirebaseMessagingService() {
         // A customized design for the notification can be
         // set only for Android versions 4.1 and above. Thus
         // condition for the same is checked here.
-       // builder = builder.setContent(getCustomDesign(title, message))
+        // builder = builder.setContent(getCustomDesign(title, message))
 //        builder = builder.setCustomContentView(getBigCustomDesign(title, message))
 //        builder = builder.setCustomBigContentView(getBigCustomDesign(title, message))
 
@@ -147,10 +148,10 @@ class FCMMessageService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(notificationChannel)
         }
         notificationManager.notify(0, builder.build())
-/*
-        with(NotificationManagerCompat.from(this){
+        /*
+                with(NotificationManagerCompat.from(this){
 
-        }*/
+                }*/
     }
 
     // Method to get the custom Design for the display of

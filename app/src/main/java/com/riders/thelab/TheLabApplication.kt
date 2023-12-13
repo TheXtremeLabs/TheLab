@@ -5,6 +5,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -31,8 +35,9 @@ import java.time.Duration
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+
 @HiltAndroidApp
-class TheLabApplication : MultiDexApplication(), Configuration.Provider {
+class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configuration.Provider {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
@@ -53,6 +58,9 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
         initTimberAndThreeten()
         initAdsAndFirebase()
         // delayedInit()
+
+//        val appLifecycleObserver = TheLabAppLifecycleObserver()
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
         if (BuildConfig.DEBUG) {
             LabDeviceManager.logDeviceInfo()
@@ -215,6 +223,30 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
                 null
+            }
+        }
+    }
+
+
+    ////////////////////////////////////////
+    //
+    // LIFECYCLE
+    //
+    ////////////////////////////////////////
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when (event) {
+            Lifecycle.Event.ON_CREATE -> {}
+
+            Lifecycle.Event.ON_PAUSE -> {
+                Timber.e("App in background")
+            }
+
+            Lifecycle.Event.ON_RESUME -> {
+                Timber.d("App in foreground")
+            }
+
+            else -> {
+                // Do nothing
             }
         }
     }
