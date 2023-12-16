@@ -149,8 +149,8 @@ fun AppBarContent(viewModel: MainActivityViewModel, focusManager: FocusManager) 
             Spacer(modifier = Modifier.size(8.dp))
 
             TextField(
-                value = viewModel.searchedAppRequest.value,
-                onValueChange = { newValue -> viewModel.searchApp(newValue) },
+                value = viewModel.searchedAppRequest,
+                onValueChange = { newValue -> viewModel.updateSearchAppRequest(newValue) },
                 placeholder = { Text(text = "Search an App...") },
                 modifier = Modifier
                     .fillMaxHeight()
@@ -185,9 +185,9 @@ fun AppBarContent(viewModel: MainActivityViewModel, focusManager: FocusManager) 
                 ),
                 maxLines = 1,
                 trailingIcon = {
-                    if (viewModel.searchedAppRequest.value.isNotBlank()) {
+                    if (viewModel.searchedAppRequest.isNotBlank()) {
                         IconButton(
-                            onClick = { viewModel.searchApp("") }
+                            onClick = { viewModel.updateSearchAppRequest("") }
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Close,

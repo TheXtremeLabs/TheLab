@@ -1,4 +1,4 @@
-package com.riders.thelab.core.ui.compose.component
+package com.riders.thelab.core.ui.compose.component.fab
 
 import androidx.compose.animation.core.InfiniteRepeatableSpec
 import androidx.compose.animation.core.RepeatMode

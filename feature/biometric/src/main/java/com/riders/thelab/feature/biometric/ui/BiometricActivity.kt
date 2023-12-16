@@ -95,7 +95,7 @@ class BiometricActivity : FragmentActivity() {
     }
 
     private fun backPressed() {
-
+        finish()
     }
 
 

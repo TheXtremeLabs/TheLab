@@ -201,10 +201,10 @@ fun MainContent(viewModel: MainActivityViewModel) {
 
                     items(items = appList.filter {
                         (it.appName != null && it.appName?.contains(
-                            viewModel.searchedAppRequest.value, ignoreCase = true
+                            viewModel.searchedAppRequest, ignoreCase = true
                         )!!)
                                 || (it.appTitle != null && it.appTitle?.contains(
-                            viewModel.searchedAppRequest.value, ignoreCase = true
+                            viewModel.searchedAppRequest, ignoreCase = true
                         )!!)
                     }/*, key = { it.id }*/) { appItem ->
                         App(item = appItem)

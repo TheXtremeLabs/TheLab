@@ -1,4 +1,4 @@
-package com.riders.thelab.core.ui.compose.component
+package com.riders.thelab.core.ui.compose.component.dynamicisland
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

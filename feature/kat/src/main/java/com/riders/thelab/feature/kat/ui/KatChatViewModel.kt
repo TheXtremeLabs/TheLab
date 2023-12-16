@@ -52,8 +52,8 @@ class KatChatViewModel : ViewModel() {
     /////////////////////////
     // Composable States
     /////////////////////////
-    var currentUserDocument : DocumentReference? by mutableStateOf(null)
-    private set
+    var currentUserDocument: DocumentReference? by mutableStateOf(null)
+        private set
     var message: String by mutableStateOf("")
         private set
 
@@ -68,6 +68,7 @@ class KatChatViewModel : ViewModel() {
     fun updateCurrentUserDocument(currentUserDocument: DocumentReference) {
         this.currentUserDocument = currentUserDocument
     }
+
     fun updateKatOtherUserId(extraUserId: String) {
         this.otherUserId = extraUserId
     }
@@ -138,14 +139,14 @@ class KatChatViewModel : ViewModel() {
         Timber.d("findOtherUserById()")
 
         otherUserId?.let { userId ->
-                FirebaseUtils.getUserById(
-                    context = context,
-                    fcmKatUserId = userId,
-                    onFailure = { Timber.e("Failed to get user") },
-                    onSuccess = { otherUser ->
-                        setOtherKatUser(otherUser)
-                    }
-                )
+            FirebaseUtils.getUserById(
+                context = context,
+                fcmKatUserId = userId,
+                onFailure = { Timber.e("Failed to get user") },
+                onSuccess = { otherUser ->
+                    setOtherKatUser(otherUser)
+                }
+            )
         } ?: run { Timber.e("Other user id is null") }
     }
 
@@ -190,6 +191,7 @@ class KatChatViewModel : ViewModel() {
 
         runCatching {
             val message: NotBlankString = textInput.toNotBlankString().getOrThrow()
+
             FirebaseUtils.sendMessageToUser(
                 context = context,
                 message = message,

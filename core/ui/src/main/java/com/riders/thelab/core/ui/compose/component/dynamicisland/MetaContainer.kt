@@ -1,4 +1,4 @@
-package com.riders.thelab.core.ui.compose.component
+package com.riders.thelab.core.ui.compose.component.dynamicisland
 
 import android.annotation.SuppressLint
 import android.graphics.RenderEffect
