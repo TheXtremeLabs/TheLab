@@ -62,7 +62,6 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
-import com.riders.thelab.core.ui.compose.utils.keyboardAsState
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -252,7 +251,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
     }*/
 
     isVisible.value =
-        viewModel.dynamicIslandState.value is IslandState.SearchState && viewModel.keyboardVisible.value
+        (viewModel.dynamicIslandState.value is IslandState.SearchState || viewModel.dynamicIslandState.value is IslandState.CallState) && viewModel.keyboardVisible.value
 }
 
 

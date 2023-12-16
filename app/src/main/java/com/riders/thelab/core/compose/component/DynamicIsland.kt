@@ -97,13 +97,16 @@ fun DynamicIsland(
                     )
                 }
             ) {
-                if (islandState is IslandState.SearchState) {
-                    IslandContent(
-                        state = islandState,
-                        searchApp = { viewModel.updateSearchAppRequest(it) },
-                        isKeyboardVisible = { viewModel.updateKeyboardVisible(it) })
-                } else {
-                    IslandContent(viewModel = viewModel, state = islandState)
+                when (islandState) {
+                    is IslandState.SearchState -> {
+                        IslandContent(
+                            state = islandState,
+                            searchApp = { viewModel.updateSearchAppRequest(it) },
+                            isKeyboardVisible = { viewModel.updateKeyboardVisible(it) })
+                    }
+                    else -> {
+                        IslandContent(viewModel = viewModel, state = islandState)
+                    }
                 }
             }
 
