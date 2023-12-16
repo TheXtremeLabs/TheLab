@@ -18,10 +18,8 @@ import com.riders.thelab.core.data.local.model.kat.KatUserModel
 import com.riders.thelab.core.data.remote.dto.kat.FCDKatUser
 import com.riders.thelab.core.data.remote.dto.kat.KatChatRoom
 import com.riders.thelab.core.data.remote.dto.kat.toModel
-import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.kat.BuildConfig
-import com.riders.thelab.feature.kat.ui.KatChatActivity
 import kotools.types.text.NotBlankString
 import timber.log.Timber
 
@@ -45,8 +43,50 @@ object FirebaseUtils {
         }
     }
 
+
+    /**
+     * Returns the collection reference from given name
+     *
+     * @param collectionName name of the desired collection
+     *
+     * @return [CollectionReference] object for the given parameters
+     */
     private fun getCollectionReference(collectionName: String): CollectionReference =
         FirebaseFirestore.getInstance().collection(collectionName)
+
+
+    /**
+     * Returns the document reference for the given document path
+     *
+     * @param collectionName root collection
+     * @param documentPath root document path
+     *
+     * @return [DocumentReference] object for the given parameters
+     */
+    private fun getDocumentReference(
+        collectionName: String,
+        documentPath: String? = null
+    ): DocumentReference = if (null == documentPath) {
+        getCollectionReference(collectionName).document()
+    } else {
+        getCollectionReference(collectionName).document(documentPath)
+    }
+
+    /**
+     * Returns the sub collection reference from root collection reference for the given root document path
+     *
+     * @param rootCollectionName root collection
+     * @param rootDocumentPath root document path
+     * @param subCollectionName sub collection targeted
+     *
+     * @return [CollectionReference] object for the given parameters
+     */
+    private fun getSubCollectionReference(
+        rootCollectionName: String,
+        rootDocumentPath: String,
+        subCollectionName: String
+    ): CollectionReference =
+        getDocumentReference(rootCollectionName, rootDocumentPath).collection(subCollectionName)
 
 
     ///////////////////////////////////////////////////
@@ -86,16 +126,6 @@ object FirebaseUtils {
 
 
     // Sign-In
-    fun signInWithEmailAndPasswordTask(
-        auth: FirebaseAuth,
-        email: String,
-        password: String
-    ): Task<AuthResult> {
-        Timber.d("signInWithEmailAndPassword() | email: $email, password: $password")
-
-        return auth.signInWithEmailAndPassword(email, password)
-    }
-
     fun signInWithEmailAndPassword(
         context: Activity,
         auth: FirebaseAuth,
@@ -161,7 +191,8 @@ object FirebaseUtils {
                     currentUserDetails()?.let {
                         it.update("fcmToken", token)
                         onSuccess(token)
-                    } ?: run { Timber.e("getFcmToken | currentUserDetails Document reference object is null") }
+                    }
+                        ?: run { Timber.e("getFcmToken | currentUserDetails Document reference object is null") }
                 }
             }
     }
@@ -174,6 +205,10 @@ object FirebaseUtils {
 
     fun currentUserDetails(): DocumentReference? = getCurrentUserID()?.run {
         getCollectionReference(COLLECTION_USERS).document(this)
+    }
+
+    fun currentUserReference(): DocumentReference? = getCurrentUserID()?.run {
+        getDocumentReference(COLLECTION_USERS, this)
     }
 
     // Set User
@@ -381,16 +416,6 @@ object FirebaseUtils {
     ///////////////////////////////////////////////////
     // Messages
     ///////////////////////////////////////////////////
-    private fun getChatRoomMessagesReference(chatroomId: String): DocumentReference? =
-        getCollectionReference(COLLECTION_CHAT_ROOMS)
-            .document(chatroomId)
-
-    private fun getChatRoomMessages(chatRoomId: String): CollectionReference? =
-        getChatRoomMessagesReference(chatRoomId)?.run {
-            Timber.d("getChatRoomMessages() | chatroomId: $chatRoomId")
-            this.collection(COLLECTION_CHATS)
-        }
-
     fun getMessages(
         context: Activity,
         chatRoomId: String,
@@ -399,27 +424,28 @@ object FirebaseUtils {
     ) {
         Timber.d("getMessages() | chatroomId: $chatRoomId")
 
-        getChatRoomMessagesReference(chatroomId = chatRoomId)?.let {
-            it.collection(COLLECTION_CHATS)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .addSnapshotListener(context) { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
+        // Get chat room id reference
+        getDocumentReference(COLLECTION_CHAT_ROOMS, chatRoomId)
+            // Get chat chat messages collection reference
+            .collection(COLLECTION_CHATS)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .addSnapshotListener(context) { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
 
-                    if (null != error) {
-                        Timber.e("Error caught: ${error.message}")
-                        onFailure(error)
-                        return@addSnapshotListener
-                    }
-
-                    if (null == value) {
-                        onFailure(Throwable("Value is null"))
-                    } else {
-                        Timber.d("value: ${value.toString()}")
-                        val messages: List<KatModel> = value.toObjects(KatModel::class.java)
-                        Timber.d("users: ${messages.toString()}")
-                        onSuccess(messages)
-                    }
+                if (null != error) {
+                    Timber.e("Error caught: ${error.message}")
+                    onFailure(error)
+                    return@addSnapshotListener
                 }
-        }
+
+                if (null == value) {
+                    onFailure(Throwable("Value is null"))
+                } else {
+                    Timber.d("value: ${value.toString()}")
+                    val messages: List<KatModel> = value.toObjects(KatModel::class.java)
+                    Timber.d("users: ${messages.toString()}")
+                    onSuccess(messages)
+                }
+            }
     }
 
     fun sendMessageToUser(
@@ -447,21 +473,26 @@ object FirebaseUtils {
             timestamp = Timestamp.now()
         )
 
-        getChatRoomMessages(chatRoomId = chatroomId)?.let { roomReference ->
-            roomReference
-                .add(chatModel)
-                .addOnFailureListener { throwable ->
-                    Timber.e("getChatRoom() | addOnFailureListener | message: ${throwable.message}")
-                    onFailure(throwable)
+        // Get chat messages collection from chat room collection reference for given chat room id
+        val chatMessagesCollectionReference =
+            getSubCollectionReference(
+                rootCollectionName = COLLECTION_CHAT_ROOMS,
+                rootDocumentPath = chatroomId,
+                subCollectionName = COLLECTION_CHATS
+            )
+
+        chatMessagesCollectionReference
+            .add(chatModel)
+            .addOnFailureListener(context) { throwable ->
+                Timber.e("getChatRoom() | addOnFailureListener | message: ${throwable.message}")
+                onFailure(throwable)
+            }
+            .addOnCompleteListener(context) { task ->
+                if (task.isSuccessful) {
+                    onSuccess(true)
                 }
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        onSuccess(true)
-                    }
-                }
-        } ?: run {
-            Timber.e("sendMessageToUser | Collection reference object is null")
-            onFailure(Throwable("$COLLECTION_CHATS Collection reference object is null"))
-        }
+            }
     }
 }
+
+
