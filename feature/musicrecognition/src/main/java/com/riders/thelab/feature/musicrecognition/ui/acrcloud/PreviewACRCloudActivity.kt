@@ -66,10 +66,10 @@ import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
-import com.riders.thelab.core.ui.compose.component.NoConnection
-import com.riders.thelab.core.ui.compose.component.PulsarFab
+import com.riders.thelab.core.ui.compose.component.network.NoConnection
+import com.riders.thelab.core.ui.compose.component.fab.PulsarFab
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
-import com.riders.thelab.core.ui.compose.component.Toast
+import com.riders.thelab.core.ui.compose.component.toast.Toast
 import com.riders.thelab.core.ui.compose.theme.Orange
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background

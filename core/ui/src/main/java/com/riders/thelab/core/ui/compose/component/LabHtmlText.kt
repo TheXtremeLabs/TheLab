@@ -98,3 +98,22 @@ private fun PreviewLabHtmlText() {
         }
     }
 }
+
+@DevicePreviews
+@Composable
+private fun PreviewLabHtmlTextEULA() {
+    TheLabTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .background(color = if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+            contentAlignment = Alignment.TopStart
+        ) {
+            LabHtmlText(
+                modifier = Modifier.fillMaxSize(),
+                stringResId = R.string.eula_content
+            )
+        }
+    }
+}

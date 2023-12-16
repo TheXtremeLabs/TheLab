@@ -1,4 +1,4 @@
-package com.riders.thelab.core.ui.compose.component
+package com.riders.thelab.core.ui.compose.component.dynamicisland
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding

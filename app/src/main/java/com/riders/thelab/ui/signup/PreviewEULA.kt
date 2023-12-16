@@ -71,42 +71,6 @@ fun EULAScreen(viewModel: SignUpViewModel, onNavigateToUserFormScreen: () -> Uni
                     modifier = Modifier.fillMaxWidth(),
                     stringResId = com.riders.thelab.core.ui.R.string.eula_content
                 )
-                /*AndroidView(
-                    modifier = Modifier.fillMaxWidth(),
-                    factory = {
-                        MaterialTextView(it).apply {
-                            text = spannedText
-                            setTextColor(
-                                if (!viewModel.isDarkMode) ContextCompat.getColor(
-                                    context,
-                                    R.color.black
-                                ) else ContextCompat.getColor(context, R.color.white)
-                            )
-
-                            // links
-                            autoLinkMask = Linkify.WEB_URLS
-                            linksClickable = true
-                            movementMethod = LinkMovementMethodCompat.getInstance()
-                            // setting the color to use forr highlihting the links
-                            setLinkTextColor(
-                                ContextCompat.getColor(
-                                    context,
-                                    if (!viewModel.isDarkMode) R.color.blue_grey_700 else R.color.tabColorAccent
-                                )
-                            )
-                        }
-                    },
-                    update = {
-                        // it.maxLines = currentMaxLines
-                        it.setTextColor(
-                            if (!viewModel.isDarkMode) ContextCompat.getColor(
-                                context,
-                                R.color.black
-                            ) else ContextCompat.getColor(context, R.color.white)
-                        )
-                        it.text = spannedText
-                    }
-                )*/
             }
 
             Row(

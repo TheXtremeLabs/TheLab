@@ -1,4 +1,4 @@
-package com.riders.thelab.core.ui.compose.component
+package com.riders.thelab.core.ui.compose.component.customswitch
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background

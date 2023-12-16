@@ -38,6 +38,11 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 import timber.log.Timber
 
+///////////////////////////////////////
+//
+// COMPOSE
+//
+///////////////////////////////////////
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Search(viewModel: MainActivityViewModel) {
@@ -45,6 +50,7 @@ fun Search(viewModel: MainActivityViewModel) {
 
     val focus = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -66,8 +72,8 @@ fun Search(viewModel: MainActivityViewModel) {
                         }
                     }
                 },
-            value = viewModel.searchedAppRequest.value,
-            onValueChange = { viewModel.searchApp(it) },
+            value = viewModel.searchedAppRequest,
+            onValueChange = { viewModel.updateSearchAppRequest(it) },
             placeholder = { Text(text = stringResource(id = R.string.search_app_item_placeholder)) },
             colors = TextFieldDefaults.colors(
                 focusedTextColor = Color.White,
@@ -85,9 +91,9 @@ fun Search(viewModel: MainActivityViewModel) {
             ),
             maxLines = 1,
             trailingIcon = {
-                if (viewModel.searchedAppRequest.value.isNotBlank()) {
+                if (viewModel.searchedAppRequest.isNotBlank()) {
                     IconButton(
-                        onClick = { viewModel.searchApp("") }
+                        onClick = { viewModel.updateSearchAppRequest("") }
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Close,
@@ -110,10 +116,100 @@ fun Search(viewModel: MainActivityViewModel) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun Search(
+    dynamicIslandState: IslandState,
+    searchApp: (String) -> Unit,
+    isKeyboardVisible: (Boolean) -> Unit
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
 
+    val focus = remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
+
+    val searchedAppRequest = remember { mutableStateOf("") }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    if (focus.value != it.isFocused) {
+                        focus.value = it.isFocused
+                        if (!it.isFocused) {
+                            keyboardController?.hide()
+                            isKeyboardVisible(it.isFocused)
+                        } else {
+                            isKeyboardVisible(it.isFocused)
+                        }
+                    }
+                },
+            value = searchedAppRequest.value,
+            onValueChange = { searchApp(it) },
+            placeholder = { Text(text = stringResource(id = R.string.search_app_item_placeholder)) },
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedPlaceholderColor = Color.LightGray,
+                disabledTextColor = Color.Transparent,
+                cursorColor = md_theme_dark_primary,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
+            textStyle = TextStyle(
+                textAlign = TextAlign.Start
+            ),
+            maxLines = 1,
+            trailingIcon = {
+                if (searchedAppRequest.value.isNotBlank()) {
+                    IconButton(
+                        onClick = { searchApp("") }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = "close_icon"
+                        )
+                    }
+                }
+            },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrect = false,
+                KeyboardType.Text,
+                ImeAction.Done
+            )
+        )
+    }
+
+    if (dynamicIslandState is IslandState.SearchState) {
+        Timber.d("Should request focus for textField")
+    }
+}
+
+
+///////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////
 @DevicePreviews
 @Composable
 fun PreviewSearch() {
     val viewModel: MainActivityViewModel = hiltViewModel()
     Search(viewModel)
+}
+
+@DevicePreviews
+@Composable
+fun PreviewSearchWithCallbacks() {
+    Search(IslandState.SearchState(), {}, {})
 }

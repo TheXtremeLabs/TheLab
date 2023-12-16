@@ -6,7 +6,9 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,6 +31,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -61,7 +64,9 @@ class MainActivityViewModel @Inject constructor(
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    var searchedAppRequest = mutableStateOf("")
+    var searchedAppRequest by mutableStateOf("")
+        private set
+
     var keyboardVisible = mutableStateOf(false)
 
     // Backing property to avoid state updates from other classes
@@ -80,7 +85,15 @@ class MainActivityViewModel @Inject constructor(
 
     val dynamicIslandState = mutableStateOf<IslandState>(IslandState.DefaultState())
     fun displayDynamicIsland(isDisplayed: Boolean) {
-        dynamicIslandState.value = IslandState.SearchState()
+        viewModelScope.launch {
+            dynamicIslandState.value = IslandState.SearchState()
+            delay(750L)
+            dynamicIslandState.value = IslandState.CallState()
+        }
+    }
+
+    fun updateSearchAppRequest(inputApp: String) {
+        this.searchedAppRequest = inputApp
     }
 
     fun updateKeyboardVisible(isVisible: Boolean) {
@@ -119,10 +132,6 @@ class MainActivityViewModel @Inject constructor(
     // CLASS METHODS
     //
     //////////////////////////////////
-    fun searchApp(requestedAppName: String) {
-        searchedAppRequest.value = requestedAppName
-    }
-
     fun checkConnection(context: Context) {
         connectionStatus.value = LabNetworkManagerNewAPI.getInstance(context).isOnline()
     }
