@@ -15,6 +15,20 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildTypes.forEach {
+        it.buildConfigField(
+            "String",
+            "SERVER_API_KEY_OPEN_WEATHER",
+            "\"5DqVP9+VVFrVkvP0T/uQg+nMLe0aolqAw1GUhz11K7kuFPM9tV/Uc1+PJnxrsvTj\""
+        )
+
+        it.buildConfigField(
+            "String",
+            "SERVER_API_KEY_FCM",
+            "\"p4VULzqDBI5HWbwOKU3zXZQI7+NU4DdKiTQ+qa8HkmZCwpW/SWK78boLuqaZPJkxUnS8IRoVerujUGXSCnfyRnSut4lKBXF1f6JatwPd+EE40LCqECTduZ6WqgFYlvtpAtjs8usgKUuuBDEo/q8sKdhiLE3smCpJ7K2HUvma49uBK1cY7i1Pu3lOxh/nEVQmOMT/2DqZySHx9/R3KtnXtA==\""
+        )
+    }
+
     testOptions {
         unitTests {
             isIncludeAndroidResources = true

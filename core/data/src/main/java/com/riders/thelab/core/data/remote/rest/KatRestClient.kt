@@ -1,6 +1,8 @@
 package com.riders.thelab.core.data.remote.rest
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.riders.thelab.core.common.utils.decrypt
+import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.bean.TimeOut
 import com.riders.thelab.core.data.remote.api.KatFCMService
 import com.riders.thelab.core.data.utils.Constants
@@ -36,7 +38,7 @@ class KatRestClient(private val serverKey: String) {
                 // Customize the request
                 val request: Request = original.newBuilder()
                     .header(Headers.CONTENT_TYPE.value, "application/json; charset=utf-8")
-                    .header("Authorization", "key=$serverKey")
+                    .header("Authorization", "key=${BuildConfig.SERVER_API_KEY_FCM.decrypt()}")
                     .build()
                 val response: Response = chain.proceed(request)
                 response.cacheResponse

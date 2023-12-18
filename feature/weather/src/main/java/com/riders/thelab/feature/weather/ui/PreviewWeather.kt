@@ -153,14 +153,16 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
                             Modifier.clickable { viewModel.expanded = !viewModel.expanded }
                         )
                     },
+                    singleLine = true,
+                    maxLines = 1
                     //readOnly = true,
                 )
 
                 ExposedDropdownMenu(
-                    expanded = viewModel.expanded,
-                    onDismissRequest = { viewModel.expanded = false },
                     modifier = Modifier
-                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() }),
+                    expanded = viewModel.expanded,
+                    onDismissRequest = { viewModel.expanded = false }
                 ) {
                     viewModel.suggestions.take(10).forEachIndexed { _, city ->
 
