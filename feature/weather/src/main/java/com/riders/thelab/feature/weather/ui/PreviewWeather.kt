@@ -1,11 +1,11 @@
 package com.riders.thelab.feature.weather.ui
 
-import android.annotation.SuppressLint
 import android.location.Address
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
@@ -42,6 +44,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -223,23 +226,16 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
     }
 }
 
-@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @Composable
 fun WeatherData(viewModel: WeatherViewModel) {
 
     val context = LocalContext.current
-
+    val verticalScroll: ScrollState = rememberScrollState()
     val cityUIState by viewModel.weatherCityUiState.collectAsStateWithLifecycle()
 
     if (cityUIState is WeatherCityUIState.Success) {
 
         val weather = (cityUIState as WeatherCityUIState.Success).weather
-
-        viewModel.getCityNameWithCoordinates(
-            context.findActivity() as WeatherActivity,
-            weather.latitude,
-            weather.longitude
-        )
 
         val painter = rememberAsyncImagePainter(
             model = ImageRequest
@@ -261,11 +257,11 @@ fun WeatherData(viewModel: WeatherViewModel) {
             placeholder = painterResource(R.drawable.logo_colors),
         )
 
-        val address: Address = viewModel.weatherAddress!!
+        val address: Address? = viewModel.weatherAddress
 
         // Load city name
-        val cityName = address.locality
-        val country = address.countryName
+        val cityName = address?.locality
+        val country = address?.countryName
 
         // Temperatures
         val temperature =
@@ -282,7 +278,7 @@ fun WeatherData(viewModel: WeatherViewModel) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     Card(
                         modifier = Modifier
@@ -362,7 +358,7 @@ fun WeatherData(viewModel: WeatherViewModel) {
                                     AnimatedContent(
                                         targetState = viewModel.isWeatherMoreDataVisible,
                                         label = "weather_visibility_animation"
-                                    ) {
+                                    ) { targetState ->
                                         Row(
                                             modifier = Modifier,
                                             horizontalArrangement = Arrangement.spacedBy(
@@ -371,9 +367,9 @@ fun WeatherData(viewModel: WeatherViewModel) {
                                             ),
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            Text(text = if (!viewModel.isWeatherMoreDataVisible) "Show More" else "Close Panel")
+                                            Text(text = if (!targetState) "Show More" else "Close Panel")
                                             Icon(
-                                                imageVector = if (!viewModel.isWeatherMoreDataVisible) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
+                                                imageVector = if (!targetState) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
                                                 contentDescription = "more icon"
                                             )
                                         }
@@ -409,6 +405,14 @@ fun WeatherData(viewModel: WeatherViewModel) {
                     }
                 }
             }
+        }
+
+        LaunchedEffect(weather) {
+            viewModel.getCityNameWithCoordinates(
+                context.findActivity() as WeatherActivity,
+                weather.latitude,
+                weather.longitude
+            )
         }
     }
 }
