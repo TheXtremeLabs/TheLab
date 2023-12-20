@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.riders.thelab.core.common.utils.LabBiometricManager
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -36,7 +37,7 @@ class BiometricActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         // Check if fingerprint hardware is available
-        if (!LabDeviceManager.hasFingerPrintHardware(context = this)) {
+        if (!LabBiometricManager.hasFingerPrintHardware(context = this)) {
             Timber.e("The device doesn't have finger print hardware")
             UIManager.showActionInToast(
                 this@BiometricActivity,
