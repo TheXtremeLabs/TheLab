@@ -31,7 +31,6 @@ import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.schedule.ScheduleActivity
 import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.songplayer.SongPlayerActivity
-import com.riders.thelab.ui.speechtotext.SpeechToTextActivity
 import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.ui.tabs.WorkingTabsActivity
 import com.riders.thelab.ui.theaters.TheatersActivity
@@ -259,18 +258,6 @@ object AppBuilderUtils {
                         .withActivityDate("2023/06/08")
                         .build()
                 this.add(theaters)
-
-                //Speech to Text
-                val speechToText =
-                    AppBuilder
-                        .withId(13L)
-                        .withActivityTitle("My Speech To Text")
-                        .withActivityDescription("Own speech to text implementation...")
-                        .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_mic))
-                        .withActivityClass(SpeechToTextActivity::class.java)
-                        .withActivityDate("01/20/2015")
-                        .build()
-                this.add(speechToText)
 
                 // Built-In Web View
                 val builtInWebView =

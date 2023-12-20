@@ -327,13 +327,6 @@
             android:theme="@style/YoutubeTheme" />
 
         <activity
-            android:name=".ui.speechtotext.SpeechToTextActivity"
-            android:label="@string/activity_title_speech_to_text"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
-
-
-        <activity
             android:name=".feature.weather.ui.WeatherActivity"
             android:exported="true"
             android:label="@string/activity_title_weather"
