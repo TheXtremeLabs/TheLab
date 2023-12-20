@@ -20,7 +20,6 @@ dependencies {
     implementation(project(":core:analytics"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
-    //api(project(":feature:weather"))
 
 
     ///////////////////////////////////
