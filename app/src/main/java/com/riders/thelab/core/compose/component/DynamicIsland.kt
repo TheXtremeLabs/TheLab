@@ -40,10 +40,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun DynamicIsland(
-    viewModel: MainActivityViewModel,
-    islandState: IslandState
-) {
+fun DynamicIsland(viewModel: MainActivityViewModel, islandState: IslandState) {
     val config = LocalConfiguration.current
 
     val startPadding by animateDpAsState(
@@ -71,9 +68,7 @@ fun DynamicIsland(
         }
     }
 
-    MetaContainer(
-        modifier = Modifier.height(200.dp)
-    ) {
+    MetaContainer(modifier = Modifier.height(200.dp)) {
         Row(
             modifier = Modifier
                 .padding(top = 20.dp)
@@ -97,111 +92,7 @@ fun DynamicIsland(
                     )
                 }
             ) {
-                when (islandState) {
-                    is IslandState.SearchState -> {
-                        IslandContent(
-                            state = islandState,
-                            searchApp = { viewModel.updateSearchAppRequest(it) },
-                            isKeyboardVisible = { viewModel.updateKeyboardVisible(it) })
-                    }
-                    else -> {
-                        IslandContent(viewModel = viewModel, state = islandState)
-                    }
-                }
-            }
-
-            AnimatedVisibility(
-                visible = islandState.hasBubbleContent,
-                modifier = Modifier.padding(start = 8.dp),
-                enter = bubbleEnterTransition,
-                exit = bubbleExitTransition,
-            ) {
-                MetaEntity(
-                    metaContent = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    Color.Black,
-                                    shape = RoundedCornerShape(50.dp)
-                                )
-                        )
-                    }
-                ) {
-                    IslandBubbleContent(state = islandState)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun DynamicIsland(
-    islandState: IslandState,
-    searchApp: (String) -> Unit = { null },
-    isKeyboardVisible: (Boolean) -> Unit = { null }
-) {
-    val config = LocalConfiguration.current
-
-    val startPadding by animateDpAsState(
-        targetValue = (config.screenWidthDp.dp / 2) - islandState.fullWidth / 2,
-        animationSpec = spring(
-            stiffness = Spring.StiffnessLow,
-            dampingRatio = Spring.DampingRatioLowBouncy,
-        ),
-        label = ""
-    )
-
-    val scope = rememberCoroutineScope()
-
-    val shake = remember { androidx.compose.animation.core.Animatable(0f) }
-    LaunchedEffect(islandState.hasBubbleContent) {
-        scope.launch {
-            shake.animateTo(15f)
-            shake.animateTo(
-                targetValue = 0f,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow,
-                )
-            )
-        }
-    }
-
-    MetaContainer(
-        modifier = Modifier.height(200.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(top = 20.dp)
-                .padding(start = startPadding)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.Top,
-        ) {
-
-            MetaEntity(
-                modifier = Modifier
-                    .offset { IntOffset(shake.value.roundToInt(), 0) }
-                    .zIndex(10f),
-                metaContent = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                color = Color.Black,
-                                shape = RoundedCornerShape(35.dp)
-                            )
-                    )
-                }
-            ) {
-                if (islandState is IslandState.SearchState) {
-                    IslandContent(
-                        state = islandState,
-                        searchApp = { searchApp(it) },
-                        isKeyboardVisible = { isKeyboardVisible(it) })
-                } else {
-                    IslandContent( state = islandState, searchApp = searchApp, isKeyboardVisible = isKeyboardVisible)
-                }
+                IslandContent(viewModel = viewModel, state = islandState)
             }
 
             AnimatedVisibility(
@@ -237,13 +128,7 @@ fun DynamicIsland(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewDynamicIsland() {
+fun PreviewDynamicIsland(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
     val viewModel: MainActivityViewModel = hiltViewModel()
-    DynamicIsland(viewModel, IslandStatePreviewProvider().values.first())
-}
-
-@DevicePreviews
-@Composable
-fun PreviewDynamicIslandWithCallbacks(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
-    DynamicIsland(state, {}, {})
+    DynamicIsland(viewModel, state)
 }

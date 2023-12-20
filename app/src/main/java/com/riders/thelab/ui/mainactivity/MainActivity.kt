@@ -17,6 +17,9 @@ import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.provider.Settings
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.activity.ComponentActivity
@@ -34,8 +37,11 @@ import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.DexterError
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.karumi.dexter.listener.single.PermissionListener
 import com.riders.thelab.R
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
@@ -75,7 +81,7 @@ import kotlin.coroutines.CoroutineContext
 class MainActivity : ComponentActivity(),
     CoroutineScope,
     View.OnClickListener,
-    ConnectivityListener, LocationListener, OnGpsListener {
+    ConnectivityListener, LocationListener, OnGpsListener, RecognitionListener {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
@@ -105,6 +111,11 @@ class MainActivity : ComponentActivity(),
     private var isTimeUpdatedStarted: Boolean = false
     private var isConnected: Boolean = true
 
+    // Speech
+    var speech: SpeechRecognizer? = null
+    var recognizerIntent: Intent? = null
+    var message: String? = null
+
 
     /////////////////////////////////////
     //
@@ -131,6 +142,10 @@ class MainActivity : ComponentActivity(),
 
         _viewBinding = ActivityMainBinding.inflate(layoutInflater)
         // setContentView(binding.root)
+
+
+        // Variables
+        initActivityVariables()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -240,6 +255,9 @@ class MainActivity : ComponentActivity(),
         } catch (exception: RuntimeException) {
             Timber.e("NetworkCallback was already unregistered")
         }
+
+        if (speech != null) speech!!.stopListening()
+
         super.onDestroy()
 
         _viewBinding = null
@@ -301,9 +319,6 @@ class MainActivity : ComponentActivity(),
 
                     retrieveApplications()
 
-                    // Variables
-                    initActivityVariables()
-
                     registerLocationReceiver()
                 }
 
@@ -325,7 +340,7 @@ class MainActivity : ComponentActivity(),
         Timber.d("initActivityVariables()")
 
         mConnectivityManager =
-            this@MainActivity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager?
+            this@MainActivity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         networkManager = LabNetworkManagerNewAPI(this@MainActivity)
         locationReceiver = LocationBroadcastReceiver()
         mGpsUtils = GpsUtils(this@MainActivity)
@@ -483,6 +498,73 @@ class MainActivity : ComponentActivity(),
     private fun toggleLocation() {
         Timber.e("toggleLocation()")
         if (!isGPS) mGpsUtils.turnGPSOn(this)
+    }
+
+    fun launchSpeechToText() {
+        // Check permission first
+        Dexter
+            .withContext(this@MainActivity)
+            .withPermission(Manifest.permission.RECORD_AUDIO)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(grantedResponse: PermissionGrantedResponse?) {
+                    // if all the permissions are granted we are displaying
+                    // a simple toast message.
+                    UIManager.showToast(this@MainActivity, "Permissions Granted..")
+
+                    initSpeechToText()
+                    startListening()
+                }
+
+                override fun onPermissionDenied(permissionDenied: PermissionDeniedResponse?) {
+                    // if the permissions are not accepted we are displaying
+                    // a toast message as permissions denied on below line.
+                    UIManager.showToast(this@MainActivity, "Permissions Denied..")
+
+                }
+
+                // on below line we are calling on permission
+                // rational should be shown method.
+                override fun onPermissionRationaleShouldBeShown(
+                    permissionRequest: PermissionRequest?,
+                    token: PermissionToken?
+                ) {
+                    // in this method we are calling continue
+                    // permission request until permissions are not granted.
+                    token?.continuePermissionRequest()
+                }
+            })
+            .withErrorListener {
+
+                // on below line method will be called when dexter
+                // throws any error while requesting permissions.
+                UIManager.showToast(this@MainActivity, it.name)
+            }
+            .check()
+    }
+
+    // Init Speech To Text Variables
+    private fun initSpeechToText() {
+        Timber.i("initSpeechToText()")
+
+
+        speech = SpeechRecognizer.createSpeechRecognizer(this).apply {
+            setRecognitionListener(this@MainActivity)
+        }
+
+        recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this@MainActivity.packageName)
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+        }
+    }
+
+    private fun startListening() {
+        Timber.i("startListening() ... ")
+        speech?.startListening(recognizerIntent)
     }
 
     @SuppressLint("InlinedApi")
@@ -662,7 +744,74 @@ class MainActivity : ComponentActivity(),
     }
 
     override fun onLocationChanged(location: Location) {
-        Timber.d("$location")
+        Timber.d("onLocationChanged | location: $location")
     }
 
+
+    override fun onReadyForSpeech(params: Bundle?) {
+        Timber.e("onReadyForSpeech()")
+    }
+
+    override fun onBeginningOfSpeech() {
+        Timber.i("onBeginningOfSpeech()")
+    }
+
+    override fun onRmsChanged(rmsdB: Float) {
+        // Timber.d("onRmsChanged() : volume $rmsdB")
+    }
+
+    override fun onBufferReceived(buffer: ByteArray?) {
+        Timber.d("onBufferReceived() : %s", buffer)
+    }
+
+    override fun onEndOfSpeech() {
+        Timber.d("onEndOfSpeech()")
+    }
+
+    override fun onError(error: Int) {
+        Timber.e("FAILED %s", error)
+
+        message = when (error) {
+            SpeechRecognizer.ERROR_AUDIO -> getString(R.string.error_audio_error)
+            SpeechRecognizer.ERROR_CLIENT -> getString(R.string.error_client)
+            SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> getString(R.string.error_permission)
+            SpeechRecognizer.ERROR_NETWORK -> getString(R.string.error_network)
+            SpeechRecognizer.ERROR_NETWORK_TIMEOUT, SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> getString(
+                R.string.error_timeout
+            )
+
+            SpeechRecognizer.ERROR_NO_MATCH -> getString(R.string.error_no_match)
+            SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> getString(R.string.error_busy)
+            SpeechRecognizer.ERROR_SERVER -> getString(R.string.error_server)
+            else -> getString(R.string.error_understand)
+        }
+
+        Timber.e("Error message caught: $message")
+
+        mViewModel.updateMicrophoneEnabled(false)
+    }
+
+    override fun onResults(results: Bundle?) {
+        Timber.e("onResults()")
+
+        results
+            ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+            ?.let { matches ->
+                for (element in matches) {
+                    Timber.d("match element found: $element")
+                }
+
+                // Take first result should be the most accurate word
+                mViewModel.updateSearchAppRequest(matches[0])
+                mViewModel.updateMicrophoneEnabled(false)
+            }
+    }
+
+    override fun onPartialResults(partialResults: Bundle?) {
+        Timber.i("onPartialResults()")
+    }
+
+    override fun onEvent(eventType: Int, params: Bundle?) {
+        Timber.i("onEvent()")
+    }
 }

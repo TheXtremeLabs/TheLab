@@ -62,6 +62,7 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -229,10 +230,9 @@ fun MainContent(viewModel: MainActivityViewModel) {
                             //+ shrinkVertically()
                             + fadeOut()
                 ) {
-                    DynamicIsland(viewModel, islandState = viewModel.dynamicIslandState.value)
+                    DynamicIsland(viewModel,viewModel.dynamicIslandState.value)
                 }
             }
-
         }
     }
 

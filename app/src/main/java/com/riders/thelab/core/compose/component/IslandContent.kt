@@ -34,10 +34,7 @@ import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 //
 ///////////////////////////////////////
 @Composable
-fun IslandContent(
-    viewModel: MainActivityViewModel,
-    @PreviewParameter(IslandStatePreviewProvider::class) state: IslandState
-) {
+fun IslandContent(viewModel: MainActivityViewModel, state: IslandState) {
 
     val width by animateDpAsState(
         targetValue = state.fullWidth,
@@ -94,81 +91,7 @@ fun IslandContent(
                     }
 
                     is IslandState.SearchState -> {
-                        Search(viewModel)
-                    }
-
-                    else -> {}
-                }
-            }
-            TrailingContent(state)
-        }
-    }
-}
-
-@Composable
-fun IslandContent(
-    @PreviewParameter(IslandStatePreviewProvider::class) state: IslandState,
-    searchApp: (String) -> Unit = { null },
-    isKeyboardVisible: (Boolean) -> Unit = { null }
-) {
-
-    val width by animateDpAsState(
-        targetValue = state.fullWidth,
-        animationSpec = spring(
-            stiffness = Spring.StiffnessLow,
-            dampingRatio = .6f,
-        ),
-        label = "width animation"
-    )
-
-    val height by animateDpAsState(
-        targetValue = state.contentSize.height,
-        animationSpec = spring(
-            stiffness = Spring.StiffnessLow,
-            dampingRatio = .6f,
-        ),
-        label = "height animation"
-    )
-
-    Box(
-        modifier = Modifier
-            .width(width)
-            .height(height)
-    ) {
-
-        AnimatedVisibility(
-            visible = state.hasMainContent,
-            enter = fadeIn(
-                animationSpec = tween(300, 300)
-            )
-        ) {
-            Box(
-                modifier = Modifier.size(state.contentSize)
-            ) {
-                when (state) {
-                    is IslandState.FaceUnlockState -> {
-                        FaceUnlock()
-                    }
-
-                    else -> {}
-                }
-            }
-        }
-
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            LeadingContent(state)
-            Box(Modifier.weight(1f)) {
-                when (state) {
-                    is IslandState.WelcomeState -> {
-                        Welcome()
-                    }
-
-                    is IslandState.SearchState -> {
-                        // Search(viewModel)
-                        Search(state, searchApp, isKeyboardVisible)
+                        Search(viewModel, state)
                     }
 
                     else -> {}
@@ -187,13 +110,7 @@ fun IslandContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewIslandContent() {
+fun PreviewIslandContent(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
     val viewModel: MainActivityViewModel = hiltViewModel()
-    IslandContent(viewModel, IslandStatePreviewProvider().values.first())
-}
-
-@DevicePreviews
-@Composable
-fun PreviewIslandContentWithCallbacks(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
-    IslandContent(state, {}, {})
+    IslandContent(viewModel, state)
 }

@@ -31,7 +31,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -42,14 +41,80 @@ import java.net.UnknownHostException
 import java.util.Locale
 import javax.inject.Inject
 
+
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
 
+    //////////////////////////////////////////
+    // Variables
+    //////////////////////////////////////////
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
-
     private val weather: MutableLiveData<ProcessedWeather> = MutableLiveData()
+
+    //////////////////////////////////////////
+    // Compose states
+    //////////////////////////////////////////
+    // App List
+    // Backing property to avoid state updates from other classes
+    private val _whatsNewAppList: MutableStateFlow<List<App>> = MutableStateFlow(emptyList())
+
+    // The UI collects from this StateFlow to get its state updates
+    val whatsNewAppList: StateFlow<List<App>> = _whatsNewAppList
+
+    // Backing property to avoid state updates from other classes
+    private val _appList: MutableStateFlow<List<App>> = MutableStateFlow(emptyList())
+
+    // The UI collects from this StateFlow to get its state updates
+    val appList: StateFlow<List<App>> = _appList
+
+    // Dynamic Island
+    val dynamicIslandState = mutableStateOf<IslandState>(IslandState.DefaultState())
+
+    // Search
+    var searchedAppRequest by mutableStateOf("")
+        private set
+    var keyboardVisible = mutableStateOf(false)
+    var isMicrophoneEnabled by mutableStateOf(false)
+        private set
+
+    // Location
+
+    // App List
+    private fun updateWhatsNewList(whatsNewList: List<App>) {
+        this._whatsNewAppList.value = whatsNewList
+    }
+
+    private fun updateAppList(appList: List<App>) {
+        this._appList.value = appList
+    }
+
+    // Dynamic Island
+    fun updateDynamicIslandState(newIslandState: IslandState) {
+        viewModelScope.launch {
+            dynamicIslandState.value = newIslandState
+        }
+    }
+
+    fun displayDynamicIsland(isDisplayed: Boolean) {
+        viewModelScope.launch {
+            dynamicIslandState.value = IslandState.SearchState()
+        }
+    }
+
+    // Search
+    fun updateSearchAppRequest(inputApp: String) {
+        this.searchedAppRequest = inputApp
+    }
+
+    fun updateKeyboardVisible(isVisible: Boolean) {
+        keyboardVisible.value = isVisible
+    }
+
+    fun updateMicrophoneEnabled(isMicEnabled: Boolean) {
+        this.isMicrophoneEnabled = isMicEnabled
+    }
 
     //////////////////////////////////////////
     // Coroutines
@@ -60,45 +125,6 @@ class MainActivityViewModel @Inject constructor(
             Timber.e(throwable.message)
         }
 
-
-    //////////////////////////////////////////
-    // Compose states
-    //////////////////////////////////////////
-    var searchedAppRequest by mutableStateOf("")
-        private set
-
-    var keyboardVisible = mutableStateOf(false)
-
-    // Backing property to avoid state updates from other classes
-    private val _whatsNewAppList: MutableStateFlow<List<App>> =
-        MutableStateFlow(emptyList())
-
-    // The UI collects from this StateFlow to get its state updates
-    val whatsNewAppList: StateFlow<List<App>> = _whatsNewAppList
-
-    // Backing property to avoid state updates from other classes
-    private val _appList: MutableStateFlow<List<App>> =
-        MutableStateFlow(emptyList())
-
-    // The UI collects from this StateFlow to get its state updates
-    val appList: StateFlow<List<App>> = _appList
-
-    val dynamicIslandState = mutableStateOf<IslandState>(IslandState.DefaultState())
-    fun displayDynamicIsland(isDisplayed: Boolean) {
-        viewModelScope.launch {
-            dynamicIslandState.value = IslandState.SearchState()
-            delay(750L)
-            dynamicIslandState.value = IslandState.CallState()
-        }
-    }
-
-    fun updateSearchAppRequest(inputApp: String) {
-        this.searchedAppRequest = inputApp
-    }
-
-    fun updateKeyboardVisible(isVisible: Boolean) {
-        keyboardVisible.value = isVisible
-    }
 
     //////////////////////////////////
     //
@@ -233,19 +259,16 @@ class MainActivityViewModel @Inject constructor(
 
     fun retrieveApplications(context: Context) {
         Timber.d("retrieveApplications()")
-        //val constants = Constants(context)
         val appList: MutableList<App> = ArrayList()
 
         // Get constants activities
         appList.addAll(Constants.getActivityList(context))
         appList.addAll(repository.getPackageList(context))
 
-        //  val tempList = repository.getAppListFromAssets()
-
         if (appList.isEmpty()) {
             Timber.e("app list is empty")
         } else {
-            _appList.value = appList
+            updateAppList(appList)
         }
     }
 
@@ -258,7 +281,7 @@ class MainActivityViewModel @Inject constructor(
             .sortedByDescending { (it as LocalApp).appDate }
             .take(3)
 
-        _whatsNewAppList.value = mWhatsNewApps
+        updateWhatsNewList(mWhatsNewApps)
     }
 
     fun launchActivityOrPackage(navigator: Navigator, item: App) {
@@ -300,5 +323,4 @@ class MainActivityViewModel @Inject constructor(
     private fun launchActivity(navigator: Navigator, activity: Class<out Activity>) {
         navigator.callIntentActivity(activity)
     }
-
 }
