@@ -71,7 +71,7 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
 
     fun updateVibrationDatastore() {
         viewModelScope.launch {
-            repository.toggleNightMode()
+            repository.toggleVibration()
         }
     }
 
