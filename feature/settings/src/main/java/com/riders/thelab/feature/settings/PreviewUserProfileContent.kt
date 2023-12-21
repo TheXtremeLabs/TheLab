@@ -255,8 +255,8 @@ fun FormFields(viewModel: UserProfileViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.password,
             onValueChange = { viewModel.updatePassword(it) },
-            placeholder = { Text(text = "Password (6+ characters") },
-            label = { Text(text = "Password (6+ characters") },
+            placeholder = { Text(text = "New Password (6+ characters") },
+            label = { Text(text = "New Password (6+ characters") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Lock,
@@ -310,8 +310,8 @@ fun FormFields(viewModel: UserProfileViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.passwordConfirmation,
             onValueChange = { viewModel.updatePasswordConfirmation(it) },
-            placeholder = { Text(text = "Confirm Password (6+ characters") },
-            label = { Text(text = "Confirm Password (6+ characters") },
+            placeholder = { Text(text = "New Confirm Password (6+ characters") },
+            label = { Text(text = "New Confirm Password (6+ characters") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Lock,
