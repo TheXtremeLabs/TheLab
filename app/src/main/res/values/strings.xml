@@ -60,7 +60,7 @@
 
     <string name="btn_go_to_main_activity">Go To Home</string>
 
-    <string name="no_account_register"><u>You don\'t have any account ?<br />Sign up</u></string>
+    <string name="no_account_register"><![CDATA[<u>You don\'t have any account ? Sign up</u>]]></string>
 
     <string name="action_logout">Logout</string>
 

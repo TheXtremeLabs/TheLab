@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.signup
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,6 +56,7 @@ import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.compose.UserState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import timber.log.Timber
 
 ///////////////////////////////
 //
@@ -669,6 +671,11 @@ fun FormScreen(viewModel: SignUpViewModel, onNavigateToSignUpSuccessScreen: () -
         if (viewModel.isSubmitSuccess) {
             onNavigateToSignUpSuccessScreen()
         }
+    }
+
+    BackHandler(enabled = true) {
+        Timber.e("BackHandler()")
+        viewModel.updateShouldShowExitDialogConfirmation(true)
     }
 }
 

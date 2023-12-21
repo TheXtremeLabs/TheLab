@@ -50,8 +50,7 @@ class SignUpActivity : BaseComponentActivity() {
 
     override fun backPressed() {
         Timber.e("backPressed()")
-
-
+        finish()
     }
 
 

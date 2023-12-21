@@ -1,8 +1,10 @@
 package com.riders.thelab.core.ui.compose.component
 
 import android.text.util.Linkify
+import android.view.View
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,7 +34,12 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 //
 ///////////////////////////////
 @Composable
-fun LabHtmlText(modifier: Modifier, @StringRes stringResId: Int) {
+fun LabHtmlText(
+    modifier: Modifier,
+    @StringRes stringResId: Int,
+    textAlignment: Int = View.TEXT_ALIGNMENT_TEXT_START,
+    onClick: () -> Unit = { }
+) {
     val context = LocalContext.current
     val textColor = ContextCompat.getColor(
         context,
@@ -52,18 +59,21 @@ fun LabHtmlText(modifier: Modifier, @StringRes stringResId: Int) {
 
     Box(modifier = modifier, contentAlignment = Alignment.TopStart) {
         AndroidView(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable { onClick() },
             factory = {
                 MaterialTextView(it).apply {
-                    text = spannedText
-                    setTextColor(textColor)
+                    this.text = spannedText
+                    this.textAlignment = textAlignment
+                    this.setTextColor(textColor)
 
                     // links
-                    autoLinkMask = Linkify.WEB_URLS
-                    linksClickable = true
-                    movementMethod = LinkMovementMethodCompat.getInstance()
+                    this.autoLinkMask = Linkify.WEB_URLS
+                    this.linksClickable = true
+                    this.movementMethod = LinkMovementMethodCompat.getInstance()
                     // setting the color to use forr highlihting the links
-                    setLinkTextColor(linksTextColor)
+                    this.setLinkTextColor(linksTextColor)
                 }
             },
             update = {
@@ -113,6 +123,24 @@ private fun PreviewLabHtmlTextEULA() {
             LabHtmlText(
                 modifier = Modifier.fillMaxSize(),
                 stringResId = R.string.eula_content
+            )
+        }
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewLabHtmlTextSignUp() {
+    TheLabTheme {
+        Box(
+            modifier = Modifier
+                .padding(16.dp)
+                .background(color = if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+            contentAlignment = Alignment.TopStart
+        ) {
+            LabHtmlText(
+                modifier = Modifier,
+                stringResId = R.string.no_account_register
             )
         }
     }

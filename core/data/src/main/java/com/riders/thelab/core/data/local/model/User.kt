@@ -1,12 +1,13 @@
 package com.riders.thelab.core.data.local.model
 
+import androidx.compose.runtime.Stable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.riders.thelab.core.common.utils.encodeToSha256
-import timber.log.Timber
 import java.io.Serializable
 
+@Stable
 @kotlinx.serialization.Serializable
 @Entity(tableName = "user")
 data class User(
@@ -43,9 +44,30 @@ data class User(
 
     companion object {
         val mockUserForTests: List<User> = listOf(
-            User("Jane", "Doe","JaneDoe345" ,"jane.doe@test.com","test1234".encodeToSha256(), 1702222514L),
-            User("John", "Smith","JohnSmith27" ,"john.smith@test.com","test1234".encodeToSha256(), 1702222522L),
-            User("Mike", "Law","Mike1552" ,"mike@test.fr","test1234".encodeToSha256(), 1702222536L)
+            User(
+                "Jane",
+                "Doe",
+                "JaneDoe345",
+                "jane.doe@test.com",
+                "test1234".encodeToSha256(),
+                1702222514L
+            ),
+            User(
+                "John",
+                "Smith",
+                "JohnSmith27",
+                "john.smith@test.com",
+                "test1234".encodeToSha256(),
+                1702222522L
+            ),
+            User(
+                "Mike",
+                "Law",
+                "Mike1552",
+                "mike@test.fr",
+                "test1234".encodeToSha256(),
+                1702222536L
+            )
         )
     }
 }
