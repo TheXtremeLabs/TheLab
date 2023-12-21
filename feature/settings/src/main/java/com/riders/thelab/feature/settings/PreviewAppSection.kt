@@ -96,10 +96,7 @@ fun AppThemeCardRowItem(
         ) {
             TextField(
                 value = selectedText.value,
-                onValueChange = { newValue: String ->
-                    selectedText.value = newValue
-                    onOptionsSelected(newValue)
-                },
+                onValueChange = { newValue: String -> selectedText.value = newValue },
                 modifier = Modifier
                     .fillMaxWidth()
                     .onGloballyPositioned { coordinates ->
@@ -135,8 +132,10 @@ fun AppThemeCardRowItem(
             )
 
             ExposedDropdownMenu(
-                modifier = Modifier.width(
-                    with(LocalDensity.current) { textFieldSize.width.toDp() }
+                modifier = Modifier
+                    .width(with(LocalDensity.current) {
+                        textFieldSize.width.toDp()
+                    }
                 ),
                 expanded = expanded.value,
                 onDismissRequest = { expanded.value = false }
@@ -146,6 +145,7 @@ fun AppThemeCardRowItem(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             onOptionsSelected(option)
+                            selectedText.value = option
                             expanded.value = false
                             focusManager.clearFocus(true)
                         },
@@ -237,16 +237,13 @@ fun AppSettingsSection(viewModel: SettingsViewModel) {
                                 true
                             )
                         } else viewModel.themeOptions[2],
-                        themeOptions = viewModel.themeOptions) {
-                        viewModel.updateDarkMode(
-                            if (it.contains("Light", true)) {
-                                false
-                            } else if (it.contains("Dark", true)) {
-                                true
-                            } else {
-                                viewModel.isDarkMode
-                            }
-                        )
+                        themeOptions = viewModel.themeOptions
+                    ) {
+                        if (it.contains("system", true)) {
+                            viewModel.updateDarkMode(viewModel.isDarkMode)
+                        } else {
+                            viewModel.updateDarkModeDatastore()
+                        }
                     }
 
                     VibrationCardRowItem(isVibration = viewModel.isVibration) {

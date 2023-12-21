@@ -75,7 +75,15 @@ object LabDeviceManager {
         null
     }
 
-    fun getModel(): String = Build.MODEL
+    fun getModel(): String = Build.MODEL.run {
+        if (this.contains(MODEL_NAME_GALAXY_NOTE_8, true)) {
+            "$this (Galaxy Note 8)"
+        } else if (this.contains(MODEL_NAME_GALAXY_NOTE_4, true)) {
+            "$this (Galaxy Note 4)"
+        } else {
+            this
+        }
+    }
 
     fun getID(): String? = Build.ID
 

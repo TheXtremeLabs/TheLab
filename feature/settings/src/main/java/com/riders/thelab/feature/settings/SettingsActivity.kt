@@ -43,6 +43,12 @@ class SettingsActivity : BaseComponentActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        mViewModel.fetchDeviceInformation(this@SettingsActivity)
+    }
+
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()

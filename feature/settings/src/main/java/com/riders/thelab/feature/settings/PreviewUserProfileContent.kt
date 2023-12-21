@@ -11,14 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
@@ -91,7 +90,6 @@ private val darkGradient =
 // COMPOSE
 //
 ///////////////////////////////
-
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FormFields(viewModel: UserProfileViewModel) {
@@ -110,7 +108,7 @@ fun FormFields(viewModel: UserProfileViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // First Name
@@ -176,77 +174,6 @@ fun FormFields(viewModel: UserProfileViewModel) {
                 unfocusedIndicatorColor = Color.Transparent
             )
         )
-
-        // Username
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
-            value = viewModel.username,
-            onValueChange = { viewModel.updateUsername(it) },
-            placeholder = { Text(text = "Username") },
-            label = { Text(text = "Username") },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Person,
-                    contentDescription = null
-                )
-            },
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
-            ),
-            shape = shape,
-            // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
-                // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
-                // textColor = if (!focus.value) Color.Gray else Color.White,
-                cursorColor = Color.Blue,
-                focusedIndicatorColor = Color.Transparent, //hide the indicator
-                unfocusedIndicatorColor = Color.Transparent
-            )
-        )
-
-        // Email
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
-            value = viewModel.email,
-            onValueChange = { viewModel.updateEmail(it) },
-            placeholder = { Text(text = "Email") },
-            label = { Text(text = "Email") },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.AlternateEmail,
-                    contentDescription = null
-                )
-            },
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next
-            ),
-            shape = shape,
-            // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
-                // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
-                // textColor = if (!focus.value) Color.Gray else Color.White,
-                cursorColor = Color.Blue,
-                focusedIndicatorColor = Color.Transparent, //hide the indicator
-                unfocusedIndicatorColor = Color.Transparent
-            )
-        )
-
-        AnimatedVisibility(visible = emailHasError) {
-            Text(
-                text = "Please enter a valid e-mail address.",
-                color = Color(0xFFF02828)
-            )
-        }
 
         // Password
         TextField(
@@ -356,57 +283,66 @@ fun FormFields(viewModel: UserProfileViewModel) {
 
 @Composable
 fun UserProfileContent(viewModel: UserProfileViewModel) {
-    val verticalScroll = rememberScrollState()
+    val lazyListState = rememberLazyListState()
 
     TheLabTheme(viewModel.isDarkMode) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = { TheLabTopAppBar(title = stringResource(id = R.string.title_activity_user_information)) }
+            topBar = {
+                TheLabTopAppBar(
+                    viewModel = viewModel,
+                    title = stringResource(id = R.string.title_activity_user_information)
+                )
+            }
         ) { contentPadding ->
+            // Background
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(brush = Brush.verticalGradient(if (!viewModel.isDarkMode) lightGradient else darkGradient))
+                    .zIndex(1f)
+            )
+
+            // Content
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(contentPadding)
+                    .zIndex(5f),
+                state = lazyListState,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Background
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(brush = Brush.verticalGradient(if (!isSystemInDarkTheme()) lightGradient else darkGradient))
-                        .zIndex(1f)
-                )
+                item {
 
-                // Content
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                        .verticalScroll(verticalScroll)
-                        .zIndex(5f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-
-                    // USer Profile Image
-                    Card(
-                        modifier = Modifier.size(96.dp),
-                        shape = CircleShape,
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                    // User Profile Image
+                    Box(
+                        modifier = Modifier.padding(top = 16.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Box(
+                        Card(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
+                                .size(96.dp),
+                            shape = CircleShape,
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                         ) {
-                            Icon(
-                                modifier = Modifier.fillMaxSize(),
-                                imageVector = Icons.Filled.Person,
-                                contentDescription = null
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    modifier = Modifier.fillMaxSize(),
+                                    imageVector = Icons.Filled.Person,
+                                    contentDescription = null
+                                )
+                            }
                         }
                     }
+                }
 
+                item {
                     AnimatedContent(
                         targetState = null != viewModel.user,
                         label = ""
@@ -417,6 +353,7 @@ fun UserProfileContent(viewModel: UserProfileViewModel) {
                         } else {
                             // Username and Email
                             Column(
+                                modifier = Modifier.padding(top = 8.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
@@ -441,7 +378,10 @@ fun UserProfileContent(viewModel: UserProfileViewModel) {
                                 FormFields(viewModel = viewModel)
 
                                 // Update buttons
-                                Button(onClick = { viewModel.updateUser() }) {
+                                Button(
+                                    modifier = Modifier.padding(bottom = 16.dp),
+                                    onClick = { viewModel.updateUser() }
+                                ) {
                                     Text(text = "Update Info".uppercase(Locale.getDefault()))
                                 }
                             }

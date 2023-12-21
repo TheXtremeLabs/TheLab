@@ -82,11 +82,11 @@ class UserProfileViewModel @Inject constructor(
         this.lastname = lastname
     }
 
-    fun updateEmail(email: String) {
+    private fun updateEmail(email: String) {
         this.email = email
     }
 
-    fun updateUsername(username: String) {
+    private fun updateUsername(username: String) {
         this.username = username
     }
 

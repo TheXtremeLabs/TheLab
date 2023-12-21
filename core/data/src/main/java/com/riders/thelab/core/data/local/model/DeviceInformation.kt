@@ -1,5 +1,10 @@
 package com.riders.thelab.core.data.local.model
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
+
+@Stable
+@Immutable
 data class DeviceInformation(
     val name: String,
     val brand: String,

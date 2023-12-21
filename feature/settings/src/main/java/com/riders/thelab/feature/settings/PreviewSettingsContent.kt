@@ -47,7 +47,7 @@ fun SettingsContent(viewModel: SettingsViewModel) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item { AppSettingsSection(viewModel) }
-                item { DeviceInfoSection() }
+                item { DeviceInfoSection(viewModel) }
 
                 if (null != viewModel.user) {
                     item {
