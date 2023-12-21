@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="com.riders.thelab.permission.MAPS_RECEIVE" />
     <uses-permission android:name="com.google.android.providers.gsf.perssion.READ_GSERVICES" />
+
     <permission
         android:name="com.riders.thelab.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
@@ -27,7 +28,8 @@
     <!-- Device -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -489,6 +491,12 @@
             android:name=".feature.settings.SettingsActivity"
             android:label="@string/activity_settings_title"
             android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.settings.UserProfileActivity"
+            android:label="@string/activity_settings_title"
+            android:parentActivityName=".feature.settings.SettingsActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 

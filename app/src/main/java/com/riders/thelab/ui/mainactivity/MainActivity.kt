@@ -143,10 +143,6 @@ class MainActivity : ComponentActivity(),
         _viewBinding = ActivityMainBinding.inflate(layoutInflater)
         // setContentView(binding.root)
 
-
-        // Variables
-        initActivityVariables()
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
@@ -316,6 +312,9 @@ class MainActivity : ComponentActivity(),
                     }
 
                     navigator = Navigator(this@MainActivity)
+
+                    // Variables
+                    initActivityVariables()
 
                     retrieveApplications()
 

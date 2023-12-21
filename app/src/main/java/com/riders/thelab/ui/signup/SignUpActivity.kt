@@ -34,7 +34,7 @@ class SignUpActivity : BaseComponentActivity() {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-                    TheLabTheme {
+                    TheLabTheme(mViewModel.isDarkMode) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),

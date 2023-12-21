@@ -1,6 +1,5 @@
 package com.riders.thelab.feature.settings
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -18,9 +17,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class SettingsActivity : BaseComponentActivity() {
+class UserProfileActivity : BaseComponentActivity() {
 
-    private val mViewModel: SettingsViewModel by viewModels()
+    private val mViewModel: UserProfileViewModel by viewModels<UserProfileViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +34,7 @@ class SettingsActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            SettingsContent(viewModel = mViewModel)
+                            UserProfileContent(viewModel = mViewModel)
                         }
                     }
                 }
@@ -52,7 +51,4 @@ class SettingsActivity : BaseComponentActivity() {
         super.onDestroy()
         Timber.e("onDestroy()")
     }
-
-    fun launchEditProfileActivity() =
-        Intent(this, UserProfileActivity::class.java).run { startActivity(this) }
 }

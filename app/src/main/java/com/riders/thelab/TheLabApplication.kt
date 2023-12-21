@@ -251,3 +251,7 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
         }
     }
 }
+
+// TODO:
+//  maybe move device info in settings view
+//  create settings' user section with an update screen
