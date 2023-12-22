@@ -26,8 +26,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,10 +74,11 @@ fun LabHorizontalViewPager(
         )
     )
 
-    val expanded = remember { mutableStateOf(false) }
-    val dotsVisibility = remember { mutableStateOf(false) }
     val dotsAnimatedAlpha =
-        animateFloatAsState(targetValue = if (!dotsVisibility.value) 0.0f else 1f, label = "")
+        animateFloatAsState(
+            targetValue = if (!viewModel.viewPagerDotVisibility) 0.0f else 1f,
+            label = ""
+        )
 
     TheLabTheme {
         Column(
@@ -90,8 +89,8 @@ fun LabHorizontalViewPager(
             HorizontalPager(
                 state = pagerState,
                 pageSpacing = 16.dp,
+                contentPadding = contentPadding,
                 beyondBoundsPageCount = 2,
-                contentPadding = PaddingValues(horizontal = 16.dp),
                 flingBehavior = fling
             ) { page: Int ->
 
@@ -124,7 +123,7 @@ fun LabHorizontalViewPager(
                 }
             }
 
-            AnimatedVisibility(visible = expanded.value) {
+            AnimatedVisibility(visible = viewModel.viewPagerDotExpanded) {
                 HorizontalPagerIndicator(
                     modifier = Modifier.alpha(dotsAnimatedAlpha.value),
                     pageCount = pageCount,
@@ -144,10 +143,10 @@ fun LabHorizontalViewPager(
 
     LaunchedEffect(Unit) {
         delay(750L)
-        expanded.value = true
+        viewModel.updateViewPagerExpanded(true)
 
         delay(500L)
-        dotsVisibility.value = true
+        viewModel.updateViewPagerDotVisibility(true)
     }
 }
 
