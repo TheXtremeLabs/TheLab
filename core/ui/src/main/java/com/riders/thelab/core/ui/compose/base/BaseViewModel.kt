@@ -20,6 +20,8 @@ abstract class BaseViewModel : ViewModel() {
         private set
     var isVibration: Boolean by mutableStateOf(true)
         private set
+    var viewPagerCurrentIndex: Int by mutableStateOf(0)
+        private set
 
     fun toggleDarkMode() {
         isDarkMode = !isDarkMode
@@ -53,5 +55,9 @@ abstract class BaseViewModel : ViewModel() {
         } catch (error: PackageManager.NameNotFoundException) {
             Timber.e(error)
         }
+    }
+
+    fun onCurrentPageChanged(pageChangedIndex: Int) {
+        this.viewPagerCurrentIndex = pageChangedIndex
     }
 }

@@ -132,9 +132,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
             // Defaults to true
             sheetGesturesEnabled = false
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 LazyVerticalGrid(
                     state = lazyState,
                     modifier = Modifier

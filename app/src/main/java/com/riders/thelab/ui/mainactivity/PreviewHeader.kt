@@ -7,6 +7,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +36,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.HorizontalPagerIndicator
+import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPager
 import com.riders.thelab.core.ui.compose.utils.findActivity
 
 
@@ -43,6 +48,7 @@ import com.riders.thelab.core.ui.compose.utils.findActivity
 // COMPOSE
 //
 ///////////////////////////////
+@OptIn( ExperimentalFoundationApi::class)
 @Composable
 fun Header(viewModel: MainActivityViewModel) {
 
@@ -111,7 +117,14 @@ fun Header(viewModel: MainActivityViewModel) {
 
                 Spacer(modifier = Modifier.size(16.dp))
 
-                WhatsNewList(viewModel = viewModel)
+//                WhatsNewList(viewModel = viewModel)
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    val newList by viewModel.whatsNewAppList.collectAsStateWithLifecycle()
+
+                    LabHorizontalViewPager(viewModel = viewModel, items = newList) {
+                        WhatsNew(item = newList[viewModel.viewPagerCurrentIndex])
+                    }
+                }
             }
         }
     }

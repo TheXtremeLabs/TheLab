@@ -41,13 +41,10 @@ dependencies {
     api(libs.accompanist.drawablepainter)
     api(libs.accompanist.flowlayout)
     api(libs.accompanist.navigation.material)
+    api(libs.accompanist.pager)
     api(libs.accompanist.permissions)
     api(libs.accompanist.systemuicontroller)
     api(libs.accompanist.testharness)
-
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.accompanist.flowlayout)
-    implementation("com.google.accompanist:accompanist-pager:0.28.0")
 
     // Compose
     api(libs.androidx.compose.compiler)
