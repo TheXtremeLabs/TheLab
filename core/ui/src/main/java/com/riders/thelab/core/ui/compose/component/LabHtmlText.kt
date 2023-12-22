@@ -37,6 +37,55 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 fun LabHtmlText(
     modifier: Modifier,
     @StringRes stringResId: Int,
+    textAlignment: Int = View.TEXT_ALIGNMENT_TEXT_START
+) {
+    val context = LocalContext.current
+    val textColor = ContextCompat.getColor(
+        context,
+        if (!isSystemInDarkTheme()) R.color.black else R.color.white
+    )
+
+    val linksTextColor = ContextCompat.getColor(
+        context,
+        if (!isSystemInDarkTheme()) R.color.blue_grey_500 else R.color.tabColorAccent
+    )
+
+    // parsing html string using the HtmlCompat class
+    val spannedText = HtmlCompat.fromHtml(
+        stringResource(id = stringResId),
+        if (LabCompatibilityManager.isNougat()) HtmlCompat.FROM_HTML_MODE_COMPACT else 0
+    )
+
+    Box(modifier = modifier, contentAlignment = Alignment.TopStart) {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = {
+                MaterialTextView(it).apply {
+                    this.text = spannedText
+                    this.textAlignment = textAlignment
+                    this.setTextColor(textColor)
+
+                    // links
+                    this.autoLinkMask = Linkify.WEB_URLS
+                    this.linksClickable = true
+                    this.movementMethod = LinkMovementMethodCompat.getInstance()
+                    // setting the color to use forr highlihting the links
+                    this.setLinkTextColor(linksTextColor)
+                }
+            },
+            update = {
+                // it.maxLines = currentMaxLines
+                it.setTextColor(textColor)
+                it.text = spannedText
+            }
+        )
+    }
+}
+
+@Composable
+fun LabHtmlText(
+    modifier: Modifier,
+    @StringRes stringResId: Int,
     textAlignment: Int = View.TEXT_ALIGNMENT_TEXT_START,
     onClick: () -> Unit = { }
 ) {
@@ -74,12 +123,14 @@ fun LabHtmlText(
                     this.movementMethod = LinkMovementMethodCompat.getInstance()
                     // setting the color to use forr highlihting the links
                     this.setLinkTextColor(linksTextColor)
+                    this.setOnClickListener { onClick() }
                 }
             },
             update = {
                 // it.maxLines = currentMaxLines
                 it.setTextColor(textColor)
                 it.text = spannedText
+                it.setOnClickListener { onClick() }
             }
         )
     }
