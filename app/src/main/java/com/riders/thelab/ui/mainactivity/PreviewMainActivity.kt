@@ -62,7 +62,6 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
-import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -228,7 +227,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
                             //+ shrinkVertically()
                             + fadeOut()
                 ) {
-                    DynamicIsland(viewModel,viewModel.dynamicIslandState.value)
+                    DynamicIsland(viewModel, viewModel.dynamicIslandState.value)
                 }
             }
         }
@@ -243,13 +242,22 @@ fun MainContent(viewModel: MainActivityViewModel) {
         }
     }
 
-    /*LaunchedEffect(Unit) {
-        delay(750L)
-        isVisible.value = true
+    /*LaunchedEffect(viewModel.dynamicIslandState.value) {
+        isVisible.value = (viewModel.dynamicIslandState.value is IslandState.SearchState ||
+                viewModel.dynamicIslandState.value is IslandState.CallState ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Available ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Lost ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Unavailable
+                ) && viewModel.keyboardVisible.value
     }*/
 
     isVisible.value =
-        (viewModel.dynamicIslandState.value is IslandState.SearchState || viewModel.dynamicIslandState.value is IslandState.CallState) && viewModel.keyboardVisible.value
+        (viewModel.dynamicIslandState.value is IslandState.SearchState ||
+                viewModel.dynamicIslandState.value is IslandState.CallState ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Available ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Lost ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Unavailable
+                ) && viewModel.keyboardVisible.value
 }
 
 

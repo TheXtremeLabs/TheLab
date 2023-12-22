@@ -20,6 +20,10 @@ abstract class BaseViewModel : ViewModel() {
         private set
     var isVibration: Boolean by mutableStateOf(true)
         private set
+    var viewPagerDotExpanded: Boolean by mutableStateOf(true)
+        private set
+    var viewPagerDotVisibility: Boolean by mutableStateOf(true)
+        private set
     var viewPagerCurrentIndex: Int by mutableStateOf(0)
         private set
 
@@ -39,6 +43,16 @@ abstract class BaseViewModel : ViewModel() {
         this.version = appVersion
     }
 
+    fun updateViewPagerExpanded(expanded: Boolean) {
+        this.viewPagerDotExpanded = expanded
+    }
+    fun updateViewPagerDotVisibility(visible: Boolean) {
+        this.viewPagerDotVisibility = visible
+    }
+    fun onCurrentPageChanged(pageChangedIndex: Int) {
+        this.viewPagerCurrentIndex = pageChangedIndex
+    }
+
     //////////////////////////////////////////
     // Class Methods
     //////////////////////////////////////////
@@ -55,9 +69,5 @@ abstract class BaseViewModel : ViewModel() {
         } catch (error: PackageManager.NameNotFoundException) {
             Timber.e(error)
         }
-    }
-
-    fun onCurrentPageChanged(pageChangedIndex: Int) {
-        this.viewPagerCurrentIndex = pageChangedIndex
     }
 }

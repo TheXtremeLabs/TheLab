@@ -23,6 +23,7 @@ dependencies {
 
     // AndroidX
     api(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     api(libs.androidx.appcompat)
     api(libs.androidx.biometric)
 

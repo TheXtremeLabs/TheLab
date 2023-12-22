@@ -11,9 +11,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationUtils
@@ -29,9 +30,11 @@ import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -73,6 +76,12 @@ class MainActivityViewModel @Inject constructor(
     // Dynamic Island
     val dynamicIslandState = mutableStateOf<IslandState>(IslandState.DefaultState())
 
+    // Network
+    lateinit var networkState: StateFlow<NetworkState>
+
+    var hasInternetConnection: Boolean by mutableStateOf(false)
+        private set
+
     // Search
     var searchedAppRequest by mutableStateOf("")
         private set
@@ -95,6 +104,14 @@ class MainActivityViewModel @Inject constructor(
     fun updateDynamicIslandState(newIslandState: IslandState) {
         viewModelScope.launch {
             dynamicIslandState.value = newIslandState
+
+            if (newIslandState is IslandState.NetworkState.Available ||
+                newIslandState is IslandState.NetworkState.Lost ||
+                newIslandState is IslandState.NetworkState.Unavailable
+            ) {
+                delay(5_000L)
+                dynamicIslandState.value = IslandState.DefaultState()
+            }
         }
     }
 
@@ -102,6 +119,11 @@ class MainActivityViewModel @Inject constructor(
         viewModelScope.launch {
             dynamicIslandState.value = IslandState.SearchState()
         }
+    }
+
+    // Network
+    fun updateHasInternetConnection(hasConnection: Boolean) {
+        this.hasInternetConnection = hasConnection
     }
 
     // Search
@@ -123,7 +145,8 @@ class MainActivityViewModel @Inject constructor(
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
-            Timber.e(throwable.message)
+            Timber.e("Coroutine Exception caught with message: ${throwable.message} (${throwable.javaClass})")
+
         }
 
 
@@ -156,6 +179,17 @@ class MainActivityViewModel @Inject constructor(
 
     //////////////////////////////////
     //
+    // OVERRIDE
+    //
+    //////////////////////////////////
+    override fun onCleared() {
+        super.onCleared()
+        Timber.e("onCleared()")
+    }
+
+
+    //////////////////////////////////
+    //
     // CLASS METHODS
     //
     //////////////////////////////////
@@ -163,6 +197,60 @@ class MainActivityViewModel @Inject constructor(
         connectionStatus.value = LabNetworkManagerNewAPI.getInstance(context).isOnline()
     }
 
+    fun observeNetworkState(context: Activity, networkManager: LabNetworkManager) {
+        Timber.d("observeNetworkState()")
+        networkState = networkManager.networkState
+
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            networkManager.getNetworkState().collect { networkState ->
+                when (networkState) {
+                    is NetworkState.Available -> {
+                        Timber.d("network state is Available. All set.")
+
+                        updateHasInternetConnection(true)
+
+                        updateKeyboardVisible(true)
+                        updateDynamicIslandState(IslandState.NetworkState.Available)
+
+                        /*withContext(Dispatchers.Main) {
+                            UIManager.showSnackBar(context, NetworkMessageEnum.AVAILABLE.message)
+                        }*/
+                    }
+
+                    is NetworkState.Losing -> {
+                        Timber.w("network state is Losing. Internet connection about to be lost")
+                        updateKeyboardVisible(true)
+                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Lost -> {
+                        Timber.e("network state is Lost. Should not allow network calls initialization")
+                        updateKeyboardVisible(true)
+                        updateHasInternetConnection(false)
+                        updateDynamicIslandState(IslandState.NetworkState.Lost)
+
+                        /*withContext(Dispatchers.Main) {
+                            UIManager.showSnackBar(context, NetworkMessageEnum.UNAVAILABLE.message)
+                        }*/
+                    }
+
+                    is NetworkState.Unavailable -> {
+                        Timber.e("network state is Unavailable. Should not allow network calls initialization")
+                        updateHasInternetConnection(false)
+                        updateDynamicIslandState(IslandState.NetworkState.Unavailable)
+
+                        /*withContext(Dispatchers.Main) {
+                            UIManager.showSnackBar(context, NetworkMessageEnum.UNAVAILABLE.message)
+                        }*/
+                    }
+
+                    is NetworkState.Undefined -> {
+                        Timber.i("network state is Undefined. Do nothing")
+                    }
+                }
+            }
+        }
+    }
 
     // Suspend functions are only allowed to be called from a coroutine or another suspend function.
     // You can see that the async function which includes the keyword suspend.

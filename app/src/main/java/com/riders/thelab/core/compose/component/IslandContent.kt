@@ -94,6 +94,18 @@ fun IslandContent(viewModel: MainActivityViewModel, state: IslandState) {
                         Search(viewModel, state)
                     }
 
+                    is IslandState.NetworkState.Available -> {
+                        NetworkAvailable()
+                    }
+
+                    is IslandState.NetworkState.Lost -> {
+                        NetworkLost()
+                    }
+
+                    is IslandState.NetworkState.Unavailable -> {
+                        NetworkUnavailable()
+                    }
+
                     else -> {}
                 }
             }

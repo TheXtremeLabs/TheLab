@@ -46,6 +46,7 @@ import com.riders.thelab.R
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.bus.LocationFetchedEvent
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
@@ -55,6 +56,7 @@ import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.interfaces.ConnectivityListener
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.LabGlideUtils
 import com.riders.thelab.core.ui.utils.UIManager
@@ -78,7 +80,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity(),
+class MainActivity : BaseComponentActivity(),
     CoroutineScope,
     View.OnClickListener,
     ConnectivityListener, LocationListener, OnGpsListener, RecognitionListener {
@@ -104,8 +106,9 @@ class MainActivity : ComponentActivity(),
     private var lastKnowLocation: Location? = null
 
     // Network
-    private var mConnectivityManager: ConnectivityManager? = null
-    private lateinit var networkManager: LabNetworkManagerNewAPI
+    private var mLabNetworkManager: LabNetworkManager? = null
+    /*private var mConnectivityManager: ConnectivityManager? = null
+    private lateinit var networkManager: LabNetworkManagerNewAPI*/
 
     // Time
     private var isTimeUpdatedStarted: Boolean = false
@@ -173,13 +176,13 @@ class MainActivity : ComponentActivity(),
 //        EventBus.getDefault().unregister(this)
 
         // Unregister Connectivity Manager
-        try {
+        /*try {
             if (null != mConnectivityManager) {
                 mConnectivityManager?.unregisterNetworkCallback(networkManager)
             }
         } catch (e: Exception) {
             e.printStackTrace()
-        }
+        }*/
 
         // Unregister Location receiver
         try {
@@ -233,10 +236,8 @@ class MainActivity : ComponentActivity(),
         }
     }
 
-    @SuppressLint("MissingSuperCall")
-    override fun onBackPressed() {
-//        super.onBackPressed()
-        // super.onBackPressed()
+    override fun backPressed() {
+        Timber.e("backPressed()")
         ExitDialog(this)
             .apply { window?.setBackgroundDrawableResource(android.R.color.transparent) }
             .show()
@@ -247,7 +248,7 @@ class MainActivity : ComponentActivity(),
         Timber.d("onDestroy()")
         Timber.d("unregister network callback()")
         try {
-            networkManager.let { mConnectivityManager?.unregisterNetworkCallback(it) }
+            // networkManager.let { mConnectivityManager?.unregisterNetworkCallback(it) }
         } catch (exception: RuntimeException) {
             Timber.e("NetworkCallback was already unregistered")
         }
@@ -338,9 +339,16 @@ class MainActivity : ComponentActivity(),
     private fun initActivityVariables() {
         Timber.d("initActivityVariables()")
 
-        mConnectivityManager =
+        /*mConnectivityManager =
             this@MainActivity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        networkManager = LabNetworkManagerNewAPI(this@MainActivity)
+        networkManager = LabNetworkManagerNewAPI(this@MainActivity)*/
+
+
+
+        mLabNetworkManager = LabNetworkManager
+            .getInstance(this@MainActivity, lifecycle)
+            .also { mViewModel.observeNetworkState(this@MainActivity, it) }
+
         locationReceiver = LocationBroadcastReceiver()
         mGpsUtils = GpsUtils(this@MainActivity)
 
@@ -405,11 +413,11 @@ class MainActivity : ComponentActivity(),
             .build()
 
         // Register Network callback events
-        if (null == mConnectivityManager) {
+        /*if (null == mConnectivityManager) {
             Timber.e("Connectivity Manager is null | Cannot register network callback events")
         } else {
             mConnectivityManager?.registerNetworkCallback(request, networkManager)
-        }
+        }*/
     }
 
     private fun registerLabLocationManager() {
