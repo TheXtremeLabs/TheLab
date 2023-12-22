@@ -48,7 +48,6 @@ import com.riders.thelab.core.ui.compose.utils.findActivity
 // COMPOSE
 //
 ///////////////////////////////
-@OptIn( ExperimentalFoundationApi::class)
 @Composable
 fun Header(viewModel: MainActivityViewModel) {
 
@@ -117,14 +116,7 @@ fun Header(viewModel: MainActivityViewModel) {
 
                 Spacer(modifier = Modifier.size(16.dp))
 
-//                WhatsNewList(viewModel = viewModel)
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    val newList by viewModel.whatsNewAppList.collectAsStateWithLifecycle()
-
-                    LabHorizontalViewPager(viewModel = viewModel, items = newList) {
-                        WhatsNew(item = newList[viewModel.viewPagerCurrentIndex])
-                    }
-                }
+                WhatsNewList(viewModel = viewModel)
             }
         }
     }

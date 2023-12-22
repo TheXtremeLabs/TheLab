@@ -8,7 +8,9 @@ import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,8 +28,10 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.round
+import com.riders.thelab.core.ui.compose.component.calculateCurrentOffsetForPage
 import kotlinx.coroutines.launch
 import kotlin.math.PI
+import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.hypot
@@ -159,3 +163,14 @@ fun Modifier.animatePlacement(): Modifier = composed {
             animatable?.let { it.value - targetOffset } ?: IntOffset.Zero
         }
 }
+
+//////////////////////////////////////
+// Pager Trnaasition
+//////////////////////////////////////
+@OptIn(ExperimentalFoundationApi::class)
+fun Modifier.pagerFadeTransition(page: Int, pagerState: PagerState) =
+    graphicsLayer {
+        val pageOffset = pagerState.calculateCurrentOffsetForPage(page)
+        translationX = pageOffset * size.width
+        alpha = 1 - pageOffset.absoluteValue
+    }
