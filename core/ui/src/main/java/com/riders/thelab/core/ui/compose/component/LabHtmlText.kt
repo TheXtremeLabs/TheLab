@@ -1,8 +1,10 @@
 package com.riders.thelab.core.ui.compose.component
 
 import android.text.util.Linkify
+import android.view.View
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,7 +34,11 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 //
 ///////////////////////////////
 @Composable
-fun LabHtmlText(modifier: Modifier, @StringRes stringResId: Int) {
+fun LabHtmlText(
+    modifier: Modifier,
+    @StringRes stringResId: Int,
+    textAlignment: Int = View.TEXT_ALIGNMENT_TEXT_START
+) {
     val context = LocalContext.current
     val textColor = ContextCompat.getColor(
         context,
@@ -55,21 +61,76 @@ fun LabHtmlText(modifier: Modifier, @StringRes stringResId: Int) {
             modifier = Modifier.fillMaxSize(),
             factory = {
                 MaterialTextView(it).apply {
-                    text = spannedText
-                    setTextColor(textColor)
+                    this.text = spannedText
+                    this.textAlignment = textAlignment
+                    this.setTextColor(textColor)
 
                     // links
-                    autoLinkMask = Linkify.WEB_URLS
-                    linksClickable = true
-                    movementMethod = LinkMovementMethodCompat.getInstance()
+                    this.autoLinkMask = Linkify.WEB_URLS
+                    this.linksClickable = true
+                    this.movementMethod = LinkMovementMethodCompat.getInstance()
                     // setting the color to use forr highlihting the links
-                    setLinkTextColor(linksTextColor)
+                    this.setLinkTextColor(linksTextColor)
                 }
             },
             update = {
                 // it.maxLines = currentMaxLines
                 it.setTextColor(textColor)
                 it.text = spannedText
+            }
+        )
+    }
+}
+
+@Composable
+fun LabHtmlText(
+    modifier: Modifier,
+    @StringRes stringResId: Int,
+    textAlignment: Int = View.TEXT_ALIGNMENT_TEXT_START,
+    onClick: () -> Unit = { }
+) {
+    val context = LocalContext.current
+    val textColor = ContextCompat.getColor(
+        context,
+        if (!isSystemInDarkTheme()) R.color.black else R.color.white
+    )
+
+    val linksTextColor = ContextCompat.getColor(
+        context,
+        if (!isSystemInDarkTheme()) R.color.blue_grey_500 else R.color.tabColorAccent
+    )
+
+    // parsing html string using the HtmlCompat class
+    val spannedText = HtmlCompat.fromHtml(
+        stringResource(id = stringResId),
+        if (LabCompatibilityManager.isNougat()) HtmlCompat.FROM_HTML_MODE_COMPACT else 0
+    )
+
+    Box(modifier = modifier, contentAlignment = Alignment.TopStart) {
+        AndroidView(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable { onClick() },
+            factory = {
+                MaterialTextView(it).apply {
+                    this.text = spannedText
+                    this.textAlignment = textAlignment
+                    this.setTextColor(textColor)
+
+                    // links
+                    this.autoLinkMask = Linkify.WEB_URLS
+                    this.linksClickable = true
+                    this.movementMethod = LinkMovementMethodCompat.getInstance()
+                    // setting the color to use forr highlihting the links
+                    this.setLinkTextColor(linksTextColor)
+                    this.setOnClickListener { onClick() }
+                }
+            },
+            update = {
+                // it.maxLines = currentMaxLines
+                it.setTextColor(textColor)
+                it.text = spannedText
+                it.setOnClickListener { onClick() }
             }
         )
     }
@@ -113,6 +174,24 @@ private fun PreviewLabHtmlTextEULA() {
             LabHtmlText(
                 modifier = Modifier.fillMaxSize(),
                 stringResId = R.string.eula_content
+            )
+        }
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewLabHtmlTextSignUp() {
+    TheLabTheme {
+        Box(
+            modifier = Modifier
+                .padding(16.dp)
+                .background(color = if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+            contentAlignment = Alignment.TopStart
+        ) {
+            LabHtmlText(
+                modifier = Modifier,
+                stringResId = R.string.no_account_register
             )
         }
     }

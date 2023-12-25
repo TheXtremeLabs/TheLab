@@ -3,6 +3,8 @@ package com.riders.thelab.core.data.di
 import android.content.Context
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.riders.thelab.core.common.utils.LabParser
+import com.riders.thelab.core.common.utils.decrypt
+import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.bean.TimeOut
 import com.riders.thelab.core.data.local.model.weather.WeatherKey
 import com.riders.thelab.core.data.remote.api.ArtistsAPIService
@@ -70,9 +72,13 @@ internal object ApiModule {
                     try {
                         mWeatherKey?.let {
                             url = originalHttpUrl.newBuilder()
+                                .addQueryParameter("appid", BuildConfig.SERVER_API_KEY_OPEN_WEATHER.decrypt())
+                                .addQueryParameter("units", "metric")
+                                .build()/*
+                            url = originalHttpUrl.newBuilder()
                                 .addQueryParameter("appid", mWeatherKey.appID)
                                 .addQueryParameter("units", "metric")
-                                .build()
+                                .build()*/
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()

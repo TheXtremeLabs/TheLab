@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.signup
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -38,6 +39,7 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_dark_surfaceVariant
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_surfaceVariant
 import kotlinx.coroutines.delay
+import timber.log.Timber
 
 private val lightGradient =
     listOf(
@@ -165,6 +167,10 @@ fun SignUpSuccessScreen(viewModel: SignUpViewModel, onNavigateToSignUpSuccessScr
                 onNavigateToSignUpSuccessScreen = onNavigateToSignUpSuccessScreen
             )
         }
+    }
+
+    BackHandler(enabled = true) {
+        Timber.e("BackHandler() | should do nothing because user has been successfully registered")
     }
 }
 

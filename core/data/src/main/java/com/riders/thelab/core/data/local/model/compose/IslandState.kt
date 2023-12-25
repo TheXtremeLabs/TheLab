@@ -47,6 +47,17 @@ sealed class IslandState(
         hasTrailingContent = true,
     )
 
+    sealed class NetworkState : IslandState(
+        leadingContentSize = 65.dp,
+        trailingContentSize = 55.dp,
+        hasLeadingContent = true,
+        hasTrailingContent = true,
+    ) {
+        data object Available : NetworkState()
+        data object Lost : NetworkState()
+        data object Unavailable : NetworkState()
+    }
+
     class CallTimerState : IslandState(
         leadingContentSize = 50.dp,
         hasLeadingContent = true,

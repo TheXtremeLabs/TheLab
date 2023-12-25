@@ -50,6 +50,8 @@ class DbImpl @Inject constructor(
     override fun getUserByUsername(username: String): User  = mUserDao.getUserByUsername(username)
 
     override fun getUserByEmail(email: String): User = mUserDao.getUserByEmail(email)
+
+    override fun setUserLogged(userId: Int) = mUserDao.setUserLogged(userId)
     override fun logUser(usernameOrMail: String, encodedPassword: String): User? {
         Timber.d("logUser() | username Or Mail: $usernameOrMail, password:$encodedPassword")
         return runCatching {
@@ -65,6 +67,8 @@ class DbImpl @Inject constructor(
             }
             .getOrNull()
     }
+
+    override fun logoutUser(userId: Int) = mUserDao.logoutUser(userId)
 
     override fun deleteUser(userId: Int) = mUserDao.deleteUser(userId)
 

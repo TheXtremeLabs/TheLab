@@ -6,9 +6,13 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
+@Stable
+@Immutable
 @Parcelize
 open class App(
     // Packages

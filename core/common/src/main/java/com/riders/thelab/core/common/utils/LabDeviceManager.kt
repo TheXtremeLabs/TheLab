@@ -3,12 +3,14 @@ package com.riders.thelab.core.common.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.os.BatteryManager
 import android.os.Build
+import android.os.CombinedVibration
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.view.WindowMetrics
-import androidx.biometric.BiometricManager
 import timber.log.Timber
 import java.io.File
 
@@ -73,7 +75,15 @@ object LabDeviceManager {
         null
     }
 
-    fun getModel(): String = Build.MODEL
+    fun getModel(): String = Build.MODEL.run {
+        if (this.contains(MODEL_NAME_GALAXY_NOTE_8, true)) {
+            "$this (Galaxy Note 8)"
+        } else if (this.contains(MODEL_NAME_GALAXY_NOTE_4, true)) {
+            "$this (Galaxy Note 4)"
+        } else {
+            this
+        }
+    }
 
     fun getID(): String? = Build.ID
 
@@ -219,34 +229,25 @@ object LabDeviceManager {
     }
 
 
-    ///////////////////////////////////////////////////////
-    // Biometric
-    ///////////////////////////////////////////////////////
-    /**
-     * This method returns if the device has fingerprint hardware or not
-     *
-     * @return
-     */
-    fun hasFingerPrintHardware(context: Context): Boolean =
-        when (BiometricManager.from(context).canAuthenticate()) {
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> false
-
-            BiometricManager.BIOMETRIC_SUCCESS -> true
-            else -> false
+    /////////////////////////////////////////
+    // Vibration
+    /////////////////////////////////////////
+    @SuppressLint("MissingPermission")
+    @Suppress("DEPRECATION")
+    fun vibrate(context: Context, ms: Int) =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibrator: VibratorManager =
+                context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibrator.vibrate(
+                CombinedVibration.createParallel(
+                    VibrationEffect.createOneShot(
+                        ms.toLong(),
+                        VibrationEffect.EFFECT_DOUBLE_CLICK
+                    )
+                )
+            )
+        } else {
+            val vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(ms.toLong())
         }
-
-
-    ///////////////////////////////////////////////////////
-    // Battery level
-    ///////////////////////////////////////////////////////
-    // Call battery manager service
-    private fun getBatteryManager(context: Context): BatteryManager =
-        context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-
-    // Get the battery percentage and store it in a INT variable
-    fun getBatteryLevel(context: Context): Int =
-        getBatteryManager(context).getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-
 }

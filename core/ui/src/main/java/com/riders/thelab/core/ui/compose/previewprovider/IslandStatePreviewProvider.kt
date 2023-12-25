@@ -10,6 +10,9 @@ class IslandStatePreviewProvider : PreviewParameterProvider<IslandState> {
             IslandState.WelcomeState(),
             IslandState.SearchState(),
             IslandState.CallState(),
+            IslandState.NetworkState.Available,
+            IslandState.NetworkState.Lost,
+            IslandState.NetworkState.Unavailable,
             IslandState.FaceUnlockState(),
             IslandState.CallTimerState(),
         )

@@ -29,7 +29,6 @@ class PaletteActivity : BaseComponentActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-
                 setContent {
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme

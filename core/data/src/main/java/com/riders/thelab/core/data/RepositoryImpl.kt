@@ -171,9 +171,12 @@ class RepositoryImpl @Inject constructor(
     override fun getUserByUsername(username: String): User = mDbImpl.getUserByUsername(username)
 
     override fun getUserByEmail(email: String): User = mDbImpl.getUserByEmail(email)
+
+    override fun setUserLogged(userId: Int) = mDbImpl.setUserLogged(userId)
     override fun logUser(usernameOrMail: String, encodedPassword: String): User? =
         mDbImpl.logUser(usernameOrMail, encodedPassword)
 
+    override fun logoutUser(userId: Int) = mDbImpl.logoutUser(userId)
     override fun deleteUser(userId: Int) = mDbImpl.deleteUser(userId)
 
 
@@ -270,6 +273,10 @@ class RepositoryImpl @Inject constructor(
     override fun isNightMode(): Flow<Boolean> = mPreferencesImpl.isNightMode()
 
     override suspend fun toggleNightMode() = mPreferencesImpl.toggleNightMode()
+
+    override fun isVibration(): Flow<Boolean> = mPreferencesImpl.isVibration()
+
+    override suspend fun toggleVibration() = mPreferencesImpl.toggleVibration()
 
     override fun getEmailPref(): Flow<String> = mPreferencesImpl.getEmailPref()
 

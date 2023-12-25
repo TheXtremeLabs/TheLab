@@ -25,13 +25,21 @@
         android:name="com.riders.thelab.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
-
     <!-- Device -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
+    <!-- Android 13 : Prevent to get error : IOException: Operation not permitted -->
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        android:minSdkVersion="30"
         tools:ignore="ScopedStorage" />
+
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.MODIFY_PHONE_STATE"
@@ -321,13 +329,6 @@
             android:theme="@style/YoutubeTheme" />
 
         <activity
-            android:name=".ui.speechtotext.SpeechToTextActivity"
-            android:label="@string/activity_title_speech_to_text"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
-
-
-        <activity
             android:name=".feature.weather.ui.WeatherActivity"
             android:exported="true"
             android:label="@string/activity_title_weather"
@@ -421,7 +422,7 @@
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".ui.lottie.LottieActivity"
+            android:name=".feature.lottie.LottieActivity"
             android:label="@string/activity_title_lottie"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="fullSensor" />
@@ -492,6 +493,12 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.settings.UserProfileActivity"
+            android:label="@string/activity_settings_title"
+            android:parentActivityName=".feature.settings.SettingsActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
 
         <activity
             android:name=".ui.webview.WebViewActivity"
@@ -530,7 +537,7 @@
         </receiver>
 
         <!-- Connection -->
-        <receiver
+        <!--<receiver
             android:name=".core.broadcast.ConnectivityReceiver"
             android:enabled="true"
             android:exported="true">
@@ -539,7 +546,7 @@
                     android:name="android.net.conn.CONNECTIVITY_CHANGE"
                     tools:ignore="BatteryLife" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
         <!-- Alarm -->
         <receiver

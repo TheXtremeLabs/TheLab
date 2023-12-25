@@ -3,7 +3,6 @@ package com.riders.thelab.core.common.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.Context.LOCATION_SERVICE
 import android.content.DialogInterface
 import android.content.Intent
 import android.location.Location
@@ -14,15 +13,17 @@ import android.provider.Settings
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
-class LabLocationManager(context: Context) : LocationListener {
+class LabLocationManager(val context: Context) : LocationListener {
 
     private var mContext: Context = context
 
     // Declaring a Location Manager
-    private lateinit var locationManager: LocationManager
+    private var locationManager: LocationManager
 
     // flag for GPS status
     private var isGPSEnabled = false
@@ -40,15 +41,30 @@ class LabLocationManager(context: Context) : LocationListener {
 
     private var mWeakReference: WeakReference<Activity>? = null
 
-    constructor(activity: Activity, locationListener: LocationListener) : this(activity) {
-        this.mContext = activity.applicationContext
+    constructor(
+        activity: Activity,
+        locationListener: LocationListener
+    ) : this(activity.applicationContext) {
+        this.mContext = activity
         this.mWeakReference = WeakReference(activity)
         this.mLocationListener = locationListener
     }
 
     init {
         Timber.d("LabLocationManager | init")
-        locationManager = mContext.getSystemService(LOCATION_SERVICE) as LocationManager
+        locationManager = mContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    }
+
+    /////////////////////////////////////
+    //
+    // Composable states
+    //
+    /////////////////////////////////////
+    private var _locationState: MutableStateFlow<Location?> = MutableStateFlow(null)
+    val locationState: StateFlow<Location?> = _locationState
+
+    private fun updateLocationState(location: Location?) {
+        this._locationState.value = location
     }
 
     /////////////////////////////////////
@@ -75,7 +91,7 @@ class LabLocationManager(context: Context) : LocationListener {
                     getLocationViaNetwork()
                 }
 
-//                this.location?.let { postLocation(it) }
+                this.location?.let { updateLocationState(it) }
 
                 // return location object
                 return this.location
@@ -89,7 +105,7 @@ class LabLocationManager(context: Context) : LocationListener {
                     getLocationViaGPS()
                 }
 
-//                this.location?.let { postLocation(it) }
+                this.location?.let { updateLocationState(it) }
 
                 // return location object
                 return this.location
@@ -102,9 +118,9 @@ class LabLocationManager(context: Context) : LocationListener {
 
     @SuppressLint("MissingPermission")
     private fun getLocationViaNetwork() {
-        mContext.let { context ->
+        mContext?.let {
             mLocationListener?.let { listener ->
-                ContextCompat.getMainExecutor(context).execute {
+                ContextCompat.getMainExecutor(it).execute {
                     // This is where your UI code goes.
                     locationManager.requestLocationUpdates(
                         LocationManager.NETWORK_PROVIDER,
@@ -114,18 +130,20 @@ class LabLocationManager(context: Context) : LocationListener {
                     )
                 }
             }
-
         }
 
         Timber.d("Network Enabled")
-        this.location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!
+        locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)?.let {
+            updateLocationState(it)
+            this@LabLocationManager.location = it
+        } ?: run { Timber.e("Unable to get location via network provider") }
     }
 
     @SuppressLint("MissingPermission")
     private fun getLocationViaGPS() {
-        mContext.let { context ->
+        mContext?.let {
             mLocationListener?.let { listener ->
-                ContextCompat.getMainExecutor(context).execute {
+                ContextCompat.getMainExecutor(it).execute {
                     // This is where your UI code goes.
                     locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER,
@@ -138,17 +156,12 @@ class LabLocationManager(context: Context) : LocationListener {
         }
 
         Timber.d("GPS Enabled")
-        this.location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let {
+            updateLocationState(it)
+            this@LabLocationManager.location = it
+        } ?: run { Timber.e("Unable to get location via gps provider") }
     }
 
-    /*private fun postLocation(location: Location, lifecycleScope: CoroutineScope) {
-        Timber.d("postLocation() | location: $location")
-
-        // Post event with cll info object set
-        lifecycleScope.launch(Main) {
-            LocationFetchedEvent(location).triggerEvent()
-        }
-    }*/
 
     /**
      * Stop using GPS listener Calling this function will stop using GPS in your
@@ -175,23 +188,8 @@ class LabLocationManager(context: Context) : LocationListener {
         } catch (ex: Exception) {
             Timber.e(ex)
         }
-        canGetLocation = isGPSEnabled && isNetworkEnabled
 
-        /*mWeakReference?.let { ref ->
-
-            // Get activity from weak reference activity object
-            ref.get()?.let { activity ->
-                when (activity) {
-                    is WeatherActivity -> {
-                        activity.updateLocationIcon(canGetLocation)
-                    }
-
-                    else -> {
-                        Timber.e("Else branch")
-                    }
-                }
-            }
-        }*/
+        canGetLocation = isNetworkEnabled && isGPSEnabled
 
         return canGetLocation
     }
@@ -201,32 +199,32 @@ class LabLocationManager(context: Context) : LocationListener {
      * lauch Settings Options
      */
     fun showSettingsAlert() {
-        mContext.let {
-            val alertDialog = AlertDialog.Builder(it)
+        mContext?.let {
+            AlertDialog.Builder(it).apply {
 
-            // Setting Dialog Title
-            alertDialog.setTitle("GPS is settings")
+                // Setting Dialog Title
+                setTitle("GPS is settings")
 
-            // Setting Dialog Message
-            alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?")
+                // Setting Dialog Message
+                setMessage("GPS is not enabled. Do you want to go to settings menu?")
 
-            // On pressing Settings button
-            alertDialog.setPositiveButton(
-                "Settings"
-            ) { _: DialogInterface?, _: Int ->
-                val intent = Intent(
-                    Settings.ACTION_LOCATION_SOURCE_SETTINGS
-                )
-                it.startActivity(intent)
+                // On pressing Settings button
+                setPositiveButton(
+                    "Settings"
+                ) { _: DialogInterface?, _: Int ->
+                    val intent = Intent(
+                        Settings.ACTION_LOCATION_SOURCE_SETTINGS
+                    )
+                    context.startActivity(intent)
+                }
+
+                // on pressing cancel button
+                setNegativeButton(
+                    "Cancel"
+                ) { dialog: DialogInterface, _: Int -> dialog.cancel() }
             }
-
-            // on pressing cancel button
-            alertDialog.setNegativeButton(
-                "Cancel"
-            ) { dialog: DialogInterface, _: Int -> dialog.cancel() }
-
-            // Showing Alert Message
-            alertDialog.show()
+                // Showing Alert Message
+                .show()
         }
     }
 
@@ -237,6 +235,9 @@ class LabLocationManager(context: Context) : LocationListener {
     /////////////////////////////////////
     override fun onLocationChanged(location: Location) {
         Timber.d("onLocationChanged : $location")
+
+        updateLocationState(location)
+        this.location = location
     }
 
     @Deprecated(
@@ -314,6 +315,8 @@ class LabLocationManager(context: Context) : LocationListener {
 
         // The minimum time between updates in milliseconds
         private const val MIN_TIME_BW_UPDATES = (1000 * 60 * 1).toLong() // 1 minute
+
+        private const val ACTIVITY_NAME_WEATHER = "WeatherActivity"
     }
 }
 

@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.settings
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -42,6 +43,12 @@ class SettingsActivity : BaseComponentActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        mViewModel.fetchDeviceInformation(this@SettingsActivity)
+    }
+
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()
@@ -51,4 +58,7 @@ class SettingsActivity : BaseComponentActivity() {
         super.onDestroy()
         Timber.e("onDestroy()")
     }
+
+    fun launchEditProfileActivity() =
+        Intent(this, UserProfileActivity::class.java).run { startActivity(this) }
 }

@@ -18,7 +18,13 @@ abstract class BaseViewModel : ViewModel() {
         private set
     var isDarkMode: Boolean by mutableStateOf(true)
         private set
-    private var isVibration: Boolean by mutableStateOf(true)
+    var isVibration: Boolean by mutableStateOf(true)
+        private set
+    var viewPagerDotExpanded: Boolean by mutableStateOf(true)
+        private set
+    var viewPagerDotVisibility: Boolean by mutableStateOf(true)
+        private set
+    var viewPagerCurrentIndex: Int by mutableStateOf(0)
         private set
 
     fun toggleDarkMode() {
@@ -29,12 +35,22 @@ abstract class BaseViewModel : ViewModel() {
         this.isDarkMode = darkMode
     }
 
-    fun toggleVibration() {
-        this.isVibration = !this.isVibration
+    fun updateVibration(isVibration: Boolean) {
+        this.isVibration = isVibration
     }
 
     private fun updateVersion(appVersion: String) {
         this.version = appVersion
+    }
+
+    fun updateViewPagerExpanded(expanded: Boolean) {
+        this.viewPagerDotExpanded = expanded
+    }
+    fun updateViewPagerDotVisibility(visible: Boolean) {
+        this.viewPagerDotVisibility = visible
+    }
+    fun onCurrentPageChanged(pageChangedIndex: Int) {
+        this.viewPagerCurrentIndex = pageChangedIndex
     }
 
     //////////////////////////////////////////

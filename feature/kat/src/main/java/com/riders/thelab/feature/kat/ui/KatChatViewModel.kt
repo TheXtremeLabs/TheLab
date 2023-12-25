@@ -14,7 +14,6 @@ import com.riders.thelab.core.data.remote.dto.kat.KatChatRoom
 import com.riders.thelab.core.data.remote.dto.kat.NotificationData
 import com.riders.thelab.core.data.remote.dto.kat.PushNotification
 import com.riders.thelab.core.data.remote.rest.KatRestClient
-import com.riders.thelab.feature.kat.R
 import com.riders.thelab.feature.kat.utils.FirebaseUtils
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -231,7 +230,7 @@ class KatChatViewModel : ViewModel() {
                     // Call REST Client and make call
                     viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
                         val callResponseBody =
-                            KatRestClient(context.getString(R.string.fcm_server_key))
+                            KatRestClient()
                                 .getApiService()
                                 .sendNotification(pushNotification)
 

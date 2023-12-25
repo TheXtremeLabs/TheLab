@@ -131,9 +131,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
             // Defaults to true
             sheetGesturesEnabled = false
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 LazyVerticalGrid(
                     state = lazyState,
                     modifier = Modifier
@@ -229,10 +227,9 @@ fun MainContent(viewModel: MainActivityViewModel) {
                             //+ shrinkVertically()
                             + fadeOut()
                 ) {
-                    DynamicIsland(viewModel, islandState = viewModel.dynamicIslandState.value)
+                    DynamicIsland(viewModel, viewModel.dynamicIslandState.value)
                 }
             }
-
         }
     }
 
@@ -245,13 +242,22 @@ fun MainContent(viewModel: MainActivityViewModel) {
         }
     }
 
-    /*LaunchedEffect(Unit) {
-        delay(750L)
-        isVisible.value = true
+    /*LaunchedEffect(viewModel.dynamicIslandState.value) {
+        isVisible.value = (viewModel.dynamicIslandState.value is IslandState.SearchState ||
+                viewModel.dynamicIslandState.value is IslandState.CallState ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Available ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Lost ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Unavailable
+                ) && viewModel.keyboardVisible.value
     }*/
 
     isVisible.value =
-        (viewModel.dynamicIslandState.value is IslandState.SearchState || viewModel.dynamicIslandState.value is IslandState.CallState) && viewModel.keyboardVisible.value
+        (viewModel.dynamicIslandState.value is IslandState.SearchState ||
+                viewModel.dynamicIslandState.value is IslandState.CallState ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Available ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Lost ||
+                viewModel.dynamicIslandState.value is IslandState.NetworkState.Unavailable
+                ) && viewModel.keyboardVisible.value
 }
 
 

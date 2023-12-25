@@ -17,6 +17,9 @@ import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.provider.Settings
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.activity.ComponentActivity
@@ -34,12 +37,16 @@ import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.DexterError
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.karumi.dexter.listener.single.PermissionListener
 import com.riders.thelab.R
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.bus.LocationFetchedEvent
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
@@ -49,6 +56,7 @@ import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.interfaces.ConnectivityListener
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.LabGlideUtils
 import com.riders.thelab.core.ui.utils.UIManager
@@ -72,10 +80,10 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity(),
+class MainActivity : BaseComponentActivity(),
     CoroutineScope,
     View.OnClickListener,
-    ConnectivityListener, LocationListener, OnGpsListener {
+    ConnectivityListener, LocationListener, OnGpsListener, RecognitionListener {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
@@ -98,12 +106,18 @@ class MainActivity : ComponentActivity(),
     private var lastKnowLocation: Location? = null
 
     // Network
-    private var mConnectivityManager: ConnectivityManager? = null
-    private lateinit var networkManager: LabNetworkManagerNewAPI
+    private var mLabNetworkManager: LabNetworkManager? = null
+    /*private var mConnectivityManager: ConnectivityManager? = null
+    private lateinit var networkManager: LabNetworkManagerNewAPI*/
 
     // Time
     private var isTimeUpdatedStarted: Boolean = false
     private var isConnected: Boolean = true
+
+    // Speech
+    var speech: SpeechRecognizer? = null
+    var recognizerIntent: Intent? = null
+    var message: String? = null
 
 
     /////////////////////////////////////
@@ -162,13 +176,13 @@ class MainActivity : ComponentActivity(),
 //        EventBus.getDefault().unregister(this)
 
         // Unregister Connectivity Manager
-        try {
+        /*try {
             if (null != mConnectivityManager) {
                 mConnectivityManager?.unregisterNetworkCallback(networkManager)
             }
         } catch (e: Exception) {
             e.printStackTrace()
-        }
+        }*/
 
         // Unregister Location receiver
         try {
@@ -222,10 +236,8 @@ class MainActivity : ComponentActivity(),
         }
     }
 
-    @SuppressLint("MissingSuperCall")
-    override fun onBackPressed() {
-//        super.onBackPressed()
-        // super.onBackPressed()
+    override fun backPressed() {
+        Timber.e("backPressed()")
         ExitDialog(this)
             .apply { window?.setBackgroundDrawableResource(android.R.color.transparent) }
             .show()
@@ -236,10 +248,13 @@ class MainActivity : ComponentActivity(),
         Timber.d("onDestroy()")
         Timber.d("unregister network callback()")
         try {
-            networkManager.let { mConnectivityManager?.unregisterNetworkCallback(it) }
+            // networkManager.let { mConnectivityManager?.unregisterNetworkCallback(it) }
         } catch (exception: RuntimeException) {
             Timber.e("NetworkCallback was already unregistered")
         }
+
+        if (speech != null) speech!!.stopListening()
+
         super.onDestroy()
 
         _viewBinding = null
@@ -299,10 +314,10 @@ class MainActivity : ComponentActivity(),
 
                     navigator = Navigator(this@MainActivity)
 
-                    retrieveApplications()
-
                     // Variables
                     initActivityVariables()
+
+                    retrieveApplications()
 
                     registerLocationReceiver()
                 }
@@ -324,9 +339,16 @@ class MainActivity : ComponentActivity(),
     private fun initActivityVariables() {
         Timber.d("initActivityVariables()")
 
-        mConnectivityManager =
-            this@MainActivity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager?
-        networkManager = LabNetworkManagerNewAPI(this@MainActivity)
+        /*mConnectivityManager =
+            this@MainActivity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        networkManager = LabNetworkManagerNewAPI(this@MainActivity)*/
+
+
+
+        mLabNetworkManager = LabNetworkManager
+            .getInstance(this@MainActivity, lifecycle)
+            .also { mViewModel.observeNetworkState(this@MainActivity, it) }
+
         locationReceiver = LocationBroadcastReceiver()
         mGpsUtils = GpsUtils(this@MainActivity)
 
@@ -391,11 +413,11 @@ class MainActivity : ComponentActivity(),
             .build()
 
         // Register Network callback events
-        if (null == mConnectivityManager) {
+        /*if (null == mConnectivityManager) {
             Timber.e("Connectivity Manager is null | Cannot register network callback events")
         } else {
             mConnectivityManager?.registerNetworkCallback(request, networkManager)
-        }
+        }*/
     }
 
     private fun registerLabLocationManager() {
@@ -483,6 +505,73 @@ class MainActivity : ComponentActivity(),
     private fun toggleLocation() {
         Timber.e("toggleLocation()")
         if (!isGPS) mGpsUtils.turnGPSOn(this)
+    }
+
+    fun launchSpeechToText() {
+        // Check permission first
+        Dexter
+            .withContext(this@MainActivity)
+            .withPermission(Manifest.permission.RECORD_AUDIO)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(grantedResponse: PermissionGrantedResponse?) {
+                    // if all the permissions are granted we are displaying
+                    // a simple toast message.
+                    UIManager.showToast(this@MainActivity, "Permissions Granted..")
+
+                    initSpeechToText()
+                    startListening()
+                }
+
+                override fun onPermissionDenied(permissionDenied: PermissionDeniedResponse?) {
+                    // if the permissions are not accepted we are displaying
+                    // a toast message as permissions denied on below line.
+                    UIManager.showToast(this@MainActivity, "Permissions Denied..")
+
+                }
+
+                // on below line we are calling on permission
+                // rational should be shown method.
+                override fun onPermissionRationaleShouldBeShown(
+                    permissionRequest: PermissionRequest?,
+                    token: PermissionToken?
+                ) {
+                    // in this method we are calling continue
+                    // permission request until permissions are not granted.
+                    token?.continuePermissionRequest()
+                }
+            })
+            .withErrorListener {
+
+                // on below line method will be called when dexter
+                // throws any error while requesting permissions.
+                UIManager.showToast(this@MainActivity, it.name)
+            }
+            .check()
+    }
+
+    // Init Speech To Text Variables
+    private fun initSpeechToText() {
+        Timber.i("initSpeechToText()")
+
+
+        speech = SpeechRecognizer.createSpeechRecognizer(this).apply {
+            setRecognitionListener(this@MainActivity)
+        }
+
+        recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this@MainActivity.packageName)
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+        }
+    }
+
+    private fun startListening() {
+        Timber.i("startListening() ... ")
+        speech?.startListening(recognizerIntent)
     }
 
     @SuppressLint("InlinedApi")
@@ -662,7 +751,74 @@ class MainActivity : ComponentActivity(),
     }
 
     override fun onLocationChanged(location: Location) {
-        Timber.d("$location")
+        Timber.d("onLocationChanged | location: $location")
     }
 
+
+    override fun onReadyForSpeech(params: Bundle?) {
+        Timber.e("onReadyForSpeech()")
+    }
+
+    override fun onBeginningOfSpeech() {
+        Timber.i("onBeginningOfSpeech()")
+    }
+
+    override fun onRmsChanged(rmsdB: Float) {
+        // Timber.d("onRmsChanged() : volume $rmsdB")
+    }
+
+    override fun onBufferReceived(buffer: ByteArray?) {
+        Timber.d("onBufferReceived() : %s", buffer)
+    }
+
+    override fun onEndOfSpeech() {
+        Timber.d("onEndOfSpeech()")
+    }
+
+    override fun onError(error: Int) {
+        Timber.e("FAILED %s", error)
+
+        message = when (error) {
+            SpeechRecognizer.ERROR_AUDIO -> getString(R.string.error_audio_error)
+            SpeechRecognizer.ERROR_CLIENT -> getString(R.string.error_client)
+            SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> getString(R.string.error_permission)
+            SpeechRecognizer.ERROR_NETWORK -> getString(R.string.error_network)
+            SpeechRecognizer.ERROR_NETWORK_TIMEOUT, SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> getString(
+                R.string.error_timeout
+            )
+
+            SpeechRecognizer.ERROR_NO_MATCH -> getString(R.string.error_no_match)
+            SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> getString(R.string.error_busy)
+            SpeechRecognizer.ERROR_SERVER -> getString(R.string.error_server)
+            else -> getString(R.string.error_understand)
+        }
+
+        Timber.e("Error message caught: $message")
+
+        mViewModel.updateMicrophoneEnabled(false)
+    }
+
+    override fun onResults(results: Bundle?) {
+        Timber.e("onResults()")
+
+        results
+            ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+            ?.let { matches ->
+                for (element in matches) {
+                    Timber.d("match element found: $element")
+                }
+
+                // Take first result should be the most accurate word
+                mViewModel.updateSearchAppRequest(matches[0])
+                mViewModel.updateMicrophoneEnabled(false)
+            }
+    }
+
+    override fun onPartialResults(partialResults: Bundle?) {
+        Timber.i("onPartialResults()")
+    }
+
+    override fun onEvent(eventType: Int, params: Bundle?) {
+        Timber.i("onEvent()")
+    }
 }

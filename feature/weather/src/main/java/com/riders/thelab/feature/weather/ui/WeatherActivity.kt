@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.location.Location
 import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -46,7 +47,7 @@ class WeatherActivity : ComponentActivity(), LocationListener {
     private val mGpsSwitchStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
 
-            if (intent?.action != null && intent.action?.equals(LOCATION_PROVIDERS_ACTION) == true) {
+            if (intent?.action != null && intent.action?.equals(LocationManager.PROVIDERS_CHANGED_ACTION) == true) {
                 // Make an action or refresh an already managed state.
                 Timber.d("CHANGED")
             }
@@ -78,11 +79,12 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         super.onResume()
         Timber.d("onResume()")
 
-        registerReceiver(mGpsSwitchStateReceiver, IntentFilter(LOCATION_PROVIDERS_ACTION))
+        registerReceiver(
+            mGpsSwitchStateReceiver,
+            IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
+        )
 
         registerLabLocationManager()
-
-        // mWeatherViewModel.fetchCities(this@WeatherActivity)
 
         labLocationManager?.let {
             updateLocationIcon(it.canGetLocation())
@@ -197,15 +199,18 @@ class WeatherActivity : ComponentActivity(), LocationListener {
             )
         }
 
-        if (!labLocationManager!!.canGetLocation()) {
-            Timber.e("Cannot get location please enable position")
+        labLocationManager?.let { locationManager ->
 
-            // TODO : Should show alert with compose dialog
-            // labLocationManager?.showSettingsAlert()
-        } else {
-            labLocationManager?.setLocationListener()
-            labLocationManager?.getCurrentLocation()
-        }
+            if (!locationManager.canGetLocation()) {
+                Timber.e("Cannot get location please enable position")
+
+                // TODO : Should show alert with compose dialog
+                // labLocationManager?.showSettingsAlert()
+            } else {
+                locationManager.setLocationListener()
+                locationManager.getCurrentLocation()
+            }
+        } ?: run { Timber.e("Lab location object is null") }
     }
 
     fun fetchCurrentLocation() {
@@ -265,10 +270,5 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         lifecycleScope.launch {
             LocationProviderChangedEvent().triggerEvent(true)
         }*/
-    }
-
-    companion object {
-        private const val LOCATION_PROVIDERS_ACTION: String =
-            "android.location.LocationManager.PROVIDERS_CHANGED_ACTION"
     }
 }

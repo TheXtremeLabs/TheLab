@@ -39,6 +39,24 @@ fun Lottie(modifier: Modifier, @RawRes rawResId: Int) {
     }
 }
 
+@Composable
+fun Lottie(modifier: Modifier, url: String) {
+    val composition by
+    rememberLottieComposition(spec = LottieCompositionSpec.Url(url))
+    val progress by animateLottieCompositionAsState(
+        composition,
+        iterations = LottieConstants.IterateForever,
+    )
+
+    Box(modifier = Modifier.then(modifier), contentAlignment = Alignment.Center) {
+        LottieAnimation(
+            modifier = Modifier.fillMaxSize(),
+            composition = composition,
+            progress = { progress }
+        )
+    }
+}
+
 ///////////////////////////////////////
 //
 // PREVIEWS

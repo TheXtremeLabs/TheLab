@@ -146,9 +146,10 @@ object LabCompatibilityManager {
         if (fields != null) {
             for (field in fields) {
                 try {
-                    if (field.getInt(VERSION_CODES::class.java) == Build.VERSION.SDK_INT - 1) {
+                    if (field.getInt(VERSION_CODES::class.java) == Build.VERSION.SDK_INT ) {
                         osName = field.name
-                        Timber.e("code name %s", osName)
+                        Timber.e("code name $osName")
+
                         if (isOreo()) {
                             osName = getOsVersionName(osName)
                         }
@@ -161,8 +162,10 @@ object LabCompatibilityManager {
 
         // TEST
         fields = VERSION_CODES::class.java.fields
-        val builder = StringBuilder()
-        builder.append("android : ").append(Build.VERSION.RELEASE)
+        val builder = StringBuilder().apply {
+            append("android : ")
+            append(Build.VERSION.RELEASE)
+        }
 
         for (field in fields) {
             val fieldName = field.name

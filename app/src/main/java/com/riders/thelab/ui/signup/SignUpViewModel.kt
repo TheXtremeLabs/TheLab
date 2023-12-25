@@ -95,7 +95,7 @@ class SignUpViewModel @Inject constructor(
         private set
     var message: String by mutableStateOf("")
         private set
-    private var shouldShowExitDialogConfirmation: Boolean by mutableStateOf(false)
+    var shouldShowExitDialogConfirmation: Boolean by mutableStateOf(false)
         private set
 
     private fun updateUserState(newState: UserState) {
@@ -254,6 +254,8 @@ class SignUpViewModel @Inject constructor(
 
             val longIdResult = repository.insertUser(user)
             Timber.d("user save result: $longIdResult")
+
+            repository.setUserLogged(longIdResult.toInt())
 
             withContext(Dispatchers.Main) {
                 if (-1L == longIdResult) {

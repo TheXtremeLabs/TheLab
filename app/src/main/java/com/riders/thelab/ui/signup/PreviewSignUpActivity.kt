@@ -1,8 +1,10 @@
 package com.riders.thelab.ui.signup
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +12,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -75,32 +79,54 @@ fun SignUpNavHost(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SignUpContent(viewModel: SignUpViewModel) {
+    val context = LocalContext.current
 
     val navController: NavHostController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     TheLabTheme(darkTheme = viewModel.isDarkMode) {
         Scaffold(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background)
-            ) {
-                // Header
-                viewModel.currentDestination?.let {
-                    SignUpHeader(
+            // Main Container
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                // NavHost
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background)
+                ) {
+                    // Header
+                    viewModel.currentDestination?.let {
+                        SignUpHeader(
+                            viewModel = viewModel,
+                            currentDestination = it
+                        )
+                    }
+
+                    // Content
+                    SignUpNavHost(
+                        modifier = Modifier.fillMaxWidth(),
                         viewModel = viewModel,
-                        currentDestination = it
+                        navController = navController,
+                        startDestination = SignUpScreen.EULA.route
                     )
                 }
 
-                // Content
-                SignUpNavHost(
-                    modifier = Modifier.fillMaxWidth(),
-                    viewModel = viewModel,
-                    navController = navController,
-                    startDestination = SignUpScreen.EULA.route
-                )
+                // Exit dialog
+                if (viewModel.shouldShowExitDialogConfirmation) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(color = Color.Black.copy(alpha = .7f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        AnimatedVisibility(visible = viewModel.shouldShowExitDialogConfirmation) {
+                            ExitSignUp(
+                                onConfirmed = { (context.findActivity() as SignUpActivity).finish() },
+                                onDismiss = { viewModel.updateShouldShowExitDialogConfirmation(false) }
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -108,9 +134,9 @@ fun SignUpContent(viewModel: SignUpViewModel) {
     LaunchedEffect(navBackStackEntry) {
         Timber.d("LaunchedEffect | navBackStackEntry")
         navBackStackEntry?.destination?.let { viewModel.updateCurrentNavDestination(it) }
-
     }
 }
+
 
 ///////////////////////////////
 //

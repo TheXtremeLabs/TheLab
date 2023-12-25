@@ -60,7 +60,7 @@
 
     <string name="btn_go_to_main_activity">Go To Home</string>
 
-    <string name="no_account_register"><u>You don\'t have any account ?<br />Sign up</u></string>
+    <string name="no_account_register"><![CDATA[<u>You don\'t have any account ? Sign up</u>]]></string>
 
     <string name="action_logout">Logout</string>
 
@@ -179,7 +179,7 @@
     <string name="error_no_match">no match</string>
     <string name="error_busy">busy</string>
     <string name="error_server">servere side error</string>
-    <string name="error_understand">do\'t understand</string>
+    <string name="error_understand">don\'t understand</string>
     <string name="speech_recording">Recording…</string>
 
     <string name="drawer_open">Open</string>

@@ -8,6 +8,7 @@ import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.AppBuilder
 import com.riders.thelab.feature.biometric.ui.BiometricActivity
 import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
+import com.riders.thelab.feature.lottie.LottieActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.bluetooth.BluetoothActivity
@@ -25,13 +26,11 @@ import com.riders.thelab.ui.googledrive.GoogleDriveActivity
 import com.riders.thelab.ui.googlemlkit.LiveBarcodeScanningActivity
 import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
-import com.riders.thelab.ui.lottie.LottieActivity
 import com.riders.thelab.ui.palette.PaletteActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.schedule.ScheduleActivity
 import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.songplayer.SongPlayerActivity
-import com.riders.thelab.ui.speechtotext.SpeechToTextActivity
 import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.ui.tabs.WorkingTabsActivity
 import com.riders.thelab.ui.theaters.TheatersActivity
@@ -192,23 +191,6 @@ object AppBuilderUtils {
                         .build()
                 this.add(scheduleJob)
 
-                //Devices Information
-                val deviceInformation =
-                    AppBuilder
-                        .withId(9L)
-                        .withActivityTitle("Devices Information")
-                        .withActivityDescription("Display device info...")
-                        .withActivityIcon(
-                            getDrawableFromIntResource(
-                                context,
-                                R.drawable.ic_device_information
-                            )
-                        )
-                        .withActivityClass(com.riders.thelab.feature.deviceinformation.DeviceInformationActivity::class.java)
-                        .withActivityDate("2023/11/15")
-                        .build()
-                this.add(deviceInformation)
-
                 // Palette
                 val palette =
                     AppBuilder
@@ -259,18 +241,6 @@ object AppBuilderUtils {
                         .withActivityDate("2023/06/08")
                         .build()
                 this.add(theaters)
-
-                //Speech to Text
-                val speechToText =
-                    AppBuilder
-                        .withId(13L)
-                        .withActivityTitle("My Speech To Text")
-                        .withActivityDescription("Own speech to text implementation...")
-                        .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_mic))
-                        .withActivityClass(SpeechToTextActivity::class.java)
-                        .withActivityDate("01/20/2015")
-                        .build()
-                this.add(speechToText)
 
                 // Built-In Web View
                 val builtInWebView =
@@ -480,7 +450,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(LottieActivity::class.java)
-                        .withActivityDate("2021/09/21")
+                        .withActivityDate("2023/12/23")
                         .build()
                 this.add(lottie)
 
