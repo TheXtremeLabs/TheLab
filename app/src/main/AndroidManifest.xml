@@ -422,7 +422,7 @@
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".ui.lottie.LottieActivity"
+            android:name=".feature.lottie.LottieActivity"
             android:label="@string/activity_title_lottie"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="fullSensor" />
@@ -537,7 +537,7 @@
         </receiver>
 
         <!-- Connection -->
-        <receiver
+        <!--<receiver
             android:name=".core.broadcast.ConnectivityReceiver"
             android:enabled="true"
             android:exported="true">
@@ -546,7 +546,7 @@
                     android:name="android.net.conn.CONNECTIVITY_CHANGE"
                     tools:ignore="BatteryLife" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
         <!-- Alarm -->
         <receiver
