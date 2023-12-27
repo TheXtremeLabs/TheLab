@@ -61,12 +61,12 @@ class LabNetworkManager(
 
     override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
         super.onCapabilitiesChanged(network, networkCapabilities)
-        Timber.i("onCapabilitiesChanged()")
+        // Timber.i("onCapabilitiesChanged()")
     }
 
     override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
         super.onLinkPropertiesChanged(network, linkProperties)
-        Timber.w("onLinkPropertiesChanged()")
+        // Timber.w("onLinkPropertiesChanged()")
     }
 
     override fun onLosing(network: Network, maxMsToLive: Int) {
@@ -93,7 +93,7 @@ class LabNetworkManager(
     // KOTLIN COROUTINES
     //
     //////////////////////////////////
-    fun updateNetworkState(newState: NetworkState) {
+    private fun updateNetworkState(newState: NetworkState) {
         _networkState.tryEmit(newState)
     }
 

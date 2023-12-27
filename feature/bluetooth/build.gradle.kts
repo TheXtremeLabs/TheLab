@@ -8,7 +8,7 @@ android {
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    namespace = "com.riders.thelab.feature.deviceinformation"
+    namespace = "com.riders.thelab.feature.bluetooth"
 }
 
 dependencies {

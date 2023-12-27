@@ -126,7 +126,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
         network: Network,
         networkCapabilities: NetworkCapabilities
     ) {
-        Timber.e("The default network changed capabilities: $networkCapabilities")
+        // Timber.e("The default network changed capabilities: $networkCapabilities")
 
         currentNetwork = network
         caps = networkCapabilities

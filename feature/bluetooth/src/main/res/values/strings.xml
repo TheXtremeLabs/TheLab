@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Bluetooth -->
+    <string name="activity_bluetooth_title">Bluetooth</string>
+    <string name="bluetooth_on">Bluetooth On</string>
+    <string name="bluetooth_off">Bluetooth Off</string>
+    <string name="bluetooth_start_discovery">Start Discovery</string>
+    <string name="bluetooth_cancel_discovery">Cancel Discovery</string>
+    <string name="bluetooth_unable_to_discover">Unable to discover devices</string>
+</resources>
