@@ -3,6 +3,9 @@ package com.riders.thelab.ui.mainactivity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.VectorDrawable
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -13,7 +16,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
@@ -54,7 +56,7 @@ class MainActivityViewModel @Inject constructor(
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
-    private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
+    private var mNavigator: Navigator? = null
     private val weather: MutableLiveData<ProcessedWeather> = MutableLiveData()
 
     //////////////////////////////////////////
@@ -62,19 +64,23 @@ class MainActivityViewModel @Inject constructor(
     //////////////////////////////////////////
     // App List
     // Backing property to avoid state updates from other classes
-    private val _whatsNewAppList: MutableStateFlow<List<App>> = MutableStateFlow(emptyList())
+    private val _whatsNewAppList: MutableStateFlow<List<LocalApp>> =
+        MutableStateFlow(emptyList())
 
     // The UI collects from this StateFlow to get its state updates
-    val whatsNewAppList: StateFlow<List<App>> = _whatsNewAppList
+    val whatsNewAppList: StateFlow<List<LocalApp>> = _whatsNewAppList
 
-    // Backing property to avoid state updates from other classes
+    // app List
     private val _appList: MutableStateFlow<List<App>> = MutableStateFlow(emptyList())
-
-    // The UI collects from this StateFlow to get its state updates
     val appList: StateFlow<List<App>> = _appList
 
     // Dynamic Island
-    val dynamicIslandState = mutableStateOf<IslandState>(IslandState.DefaultState())
+    private val _dynamicIslandState: MutableStateFlow<IslandState> =
+        MutableStateFlow(IslandState.DefaultState)
+    val dynamicIslandState: StateFlow<IslandState> = _dynamicIslandState
+
+    var isDynamicIslandVisible: Boolean by mutableStateOf(false)
+        private set
 
     // Network
     lateinit var networkState: StateFlow<NetworkState>
@@ -82,17 +88,23 @@ class MainActivityViewModel @Inject constructor(
     var hasInternetConnection: Boolean by mutableStateOf(false)
         private set
 
+    // Time
+    var isTimeUpdatedStarted: Boolean by mutableStateOf(false)
+        private set
+
     // Search
     var searchedAppRequest by mutableStateOf("")
         private set
-    var keyboardVisible = mutableStateOf(false)
+    var keyboardVisible by mutableStateOf(false)
+        private set
     var isMicrophoneEnabled by mutableStateOf(false)
         private set
 
     // Location
 
+
     // App List
-    private fun updateWhatsNewList(whatsNewList: List<App>) {
+    private fun updateWhatsNewList(whatsNewList: List<LocalApp>) {
         this._whatsNewAppList.value = whatsNewList
     }
 
@@ -103,26 +115,22 @@ class MainActivityViewModel @Inject constructor(
     // Dynamic Island
     fun updateDynamicIslandState(newIslandState: IslandState) {
         viewModelScope.launch {
-            dynamicIslandState.value = newIslandState
+            _dynamicIslandState.value = newIslandState
 
             if (newIslandState is IslandState.NetworkState.Available ||
                 newIslandState is IslandState.NetworkState.Lost ||
                 newIslandState is IslandState.NetworkState.Unavailable
             ) {
                 delay(5_000L)
-                dynamicIslandState.value = IslandState.DefaultState()
+                _dynamicIslandState.value = IslandState.DefaultState
+                updateKeyboardVisible(false)
             }
         }
     }
 
-    fun displayDynamicIsland(isDisplayed: Boolean) {
-        viewModelScope.launch {
-            dynamicIslandState.value = IslandState.SearchState()
-        }
-    }
 
     // Network
-    fun updateHasInternetConnection(hasConnection: Boolean) {
+    private fun updateHasInternetConnection(hasConnection: Boolean) {
         this.hasInternetConnection = hasConnection
     }
 
@@ -132,11 +140,19 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun updateKeyboardVisible(isVisible: Boolean) {
-        keyboardVisible.value = isVisible
+        keyboardVisible = isVisible
     }
 
     fun updateMicrophoneEnabled(isMicEnabled: Boolean) {
         this.isMicrophoneEnabled = isMicEnabled
+    }
+
+    fun updateDynamicIslandVisible(visible: Boolean) {
+        this.isDynamicIslandVisible = visible
+    }
+
+    fun updateTimer(started: Boolean) {
+        this.isTimeUpdatedStarted = started
     }
 
     //////////////////////////////////////////
@@ -155,7 +171,6 @@ class MainActivityViewModel @Inject constructor(
     // OBSERVERS
     //
     //////////////////////////////////
-    fun getConnectionStatus(): LiveData<Boolean> = connectionStatus
     fun getLocationData(): LiveData<Boolean> {
         Timber.d("getLocationData()")
 
@@ -193,8 +208,9 @@ class MainActivityViewModel @Inject constructor(
     // CLASS METHODS
     //
     //////////////////////////////////
-    fun checkConnection(context: Context) {
-        connectionStatus.value = LabNetworkManagerNewAPI.getInstance(context).isOnline()
+    fun initNavigator(activity: Activity) {
+        Timber.d("initNavigator()")
+        mNavigator = Navigator(activity)
     }
 
     fun observeNetworkState(context: Activity, networkManager: LabNetworkManager) {
@@ -365,15 +381,35 @@ class MainActivityViewModel @Inject constructor(
         Timber.d("fetchRecentApps()")
 
         // Setup last 3 features added
-        val mWhatsNewApps = Constants
+        val mWhatsNewApps: List<LocalApp> = Constants
             .getActivityList(context)
             .sortedByDescending { (it as LocalApp).appDate }
             .take(3)
+            .map {
+                var bitmap: Bitmap? = if (it.appDrawableIcon is BitmapDrawable) {
+                    (it.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
+                } else if (it.appDrawableIcon is VectorDrawable) {
+                    App.getBitmap(it.appDrawableIcon as VectorDrawable)!!
+                } else {
+                    null
+                }
+
+                LocalApp(
+                    it.id,
+                    it.appTitle!!,
+                    it.appDescription!!,
+                    null,
+                    it.appActivity,
+                    it.appDate!!
+                ).apply {
+                    this.bitmap = bitmap
+                }
+            }
 
         updateWhatsNewList(mWhatsNewApps)
     }
 
-    fun launchActivityOrPackage(navigator: Navigator, item: App) {
+    fun launchActivityOrPackage(item: App) {
         Timber.d("launchActivityOrPackage()")
 
         when (item) {
@@ -383,7 +419,7 @@ class MainActivityViewModel @Inject constructor(
 
                     // Just use these following two lines,
                     // so you can launch any installed application whose package name is known:
-                    launchIntentForPackage(navigator, item.appPackageName!!)
+                    launchIntentForPackage(item.appPackageName!!)
                 } else {
                     Timber.e("Cannot launch activity with this package name : ${item.appPackageName}")
                 }
@@ -392,7 +428,7 @@ class MainActivityViewModel @Inject constructor(
             is LocalApp -> {
                 if (null != item.appActivity) {
                     Timber.d("launchActivity(%s)", item.appActivity!!.simpleName)
-                    launchActivity(navigator, item.appActivity!!)
+                    launchActivity(item.appActivity!!)
                 } else {
                     // Just Log wip item
                     Timber.e("Cannot launch this activity : %s", item.toString())
@@ -405,11 +441,13 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    private fun launchIntentForPackage(navigator: Navigator, packageName: String) {
-        navigator.callIntentForPackageActivity(packageName)
+    fun launchSettings() = mNavigator?.callSettingsActivity()
+
+    private fun launchIntentForPackage(packageName: String) {
+        mNavigator?.callIntentForPackageActivity(packageName)
     }
 
-    private fun launchActivity(navigator: Navigator, activity: Class<out Activity>) {
-        navigator.callIntentActivity(activity)
+    private fun launchActivity(activity: Class<out Activity>) {
+        mNavigator?.callIntentActivity(activity)
     }
 }

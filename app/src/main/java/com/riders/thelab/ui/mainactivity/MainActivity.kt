@@ -11,18 +11,12 @@ import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.provider.Settings
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import android.view.View
-import android.view.animation.AnimationUtils
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,72 +28,41 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.karumi.dexter.listener.single.PermissionListener
 import com.riders.thelab.R
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.bus.LocationFetchedEvent
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
-import com.riders.thelab.core.interfaces.ConnectivityListener
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.utils.LabGlideUtils
 import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.databinding.ActivityMainBinding
-import com.riders.thelab.feature.weather.ui.WeatherUtils
-import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import com.riders.thelab.utils.Constants.GPS_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
-import java.util.concurrent.TimeUnit
-import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
-class MainActivity : BaseComponentActivity(),
-    CoroutineScope,
-    View.OnClickListener,
-    ConnectivityListener, LocationListener, OnGpsListener, RecognitionListener {
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + Job()
-
-    private var _viewBinding: ActivityMainBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _viewBinding!!
+class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, RecognitionListener {
 
     private val mViewModel: MainActivityViewModel by viewModels()
 
-    private lateinit var navigator: Navigator
-
     // Location
-    private var labLocationManager: LabLocationManager? = null
+    private var mLabLocationManager: LabLocationManager? = null
     private var locationReceiver: LocationBroadcastReceiver? = null
     private lateinit var mGpsUtils: GpsUtils
     private var isGPS: Boolean = false
@@ -107,17 +70,12 @@ class MainActivity : BaseComponentActivity(),
 
     // Network
     private var mLabNetworkManager: LabNetworkManager? = null
-    /*private var mConnectivityManager: ConnectivityManager? = null
-    private lateinit var networkManager: LabNetworkManagerNewAPI*/
-
-    // Time
-    private var isTimeUpdatedStarted: Boolean = false
     private var isConnected: Boolean = true
 
     // Speech
-    var speech: SpeechRecognizer? = null
-    var recognizerIntent: Intent? = null
-    var message: String? = null
+    private var speech: SpeechRecognizer? = null
+    private var recognizerIntent: Intent? = null
+    private var message: String? = null
 
 
     /////////////////////////////////////
@@ -143,8 +101,12 @@ class MainActivity : BaseComponentActivity(),
         }
         window.navigationBarColor = ContextCompat.getColor(this, R.color.default_dark)
 
-        _viewBinding = ActivityMainBinding.inflate(layoutInflater)
-        // setContentView(binding.root)
+        // Variables
+        initActivityVariables()
+
+        // Retrieve applications
+        mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
+        mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -161,47 +123,28 @@ class MainActivity : BaseComponentActivity(),
                 }
             }
         }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                checkLocationPermissions()
-            }
-        }
     }
 
     override fun onPause() {
         Timber.e("onPause()")
 
-        // Unregister Event Bus
-//        EventBus.getDefault().unregister(this)
-
-        // Unregister Connectivity Manager
-        /*try {
-            if (null != mConnectivityManager) {
-                mConnectivityManager?.unregisterNetworkCallback(networkManager)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }*/
-
         // Unregister Location receiver
-        try {
-            if (null != locationReceiver) {
+        runCatching {
+            locationReceiver?.let {
                 // View Models implementation
                 // don't forget to remove receiver data source
                 mViewModel.removeDataSource(locationReceiver!!.getLocationStatus())
                 unregisterReceiver(locationReceiver)
             }
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
         }
+            .onFailure { it.printStackTrace() }
 
         // Stop update timer
-        if (isTimeUpdatedStarted) {
-            isTimeUpdatedStarted = false
+        if (mViewModel.isTimeUpdatedStarted) {
+            mViewModel.updateTimer(false)
         }
 
-        labLocationManager?.stopUsingGPS()
+        mLabLocationManager?.stopUsingGPS()
 
         super.onPause()
     }
@@ -210,14 +153,10 @@ class MainActivity : BaseComponentActivity(),
         super.onResume()
         Timber.i("onResume()")
 
-        // Register Network callback events
-        registerConnectivityManager()
-
         // Register Lab Location manager
         registerLabLocationManager()
 
-        updateTime()
-        startViewSwitcher()
+        mViewModel.updateTimer(true)
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
@@ -256,8 +195,6 @@ class MainActivity : BaseComponentActivity(),
         if (speech != null) speech!!.stopListening()
 
         super.onDestroy()
-
-        _viewBinding = null
     }
 
 
@@ -290,73 +227,23 @@ class MainActivity : BaseComponentActivity(),
     // CLASS METHODS
     //
     /////////////////////////////////////
-    private fun checkLocationPermissions() {
-        Timber.d("checkLocationPermissions()")
-        // run dexter permission
-        Dexter
-            .withContext(this@MainActivity)
-            .withPermissions(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-            .withListener(object : MultiplePermissionsListener {
-                @SuppressLint("MissingPermission")
-                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                    // check if all permissions are granted
-                    if (report.areAllPermissionsGranted()) {
-                        // do you work now
-                    }
-
-                    // check for permanent denial of any permission
-                    if (report.isAnyPermissionPermanentlyDenied) {
-                        // permission is denied permanently, navigate user to app settings
-                    }
-
-                    navigator = Navigator(this@MainActivity)
-
-                    // Variables
-                    initActivityVariables()
-
-                    retrieveApplications()
-
-                    registerLocationReceiver()
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permissions: List<PermissionRequest>,
-                    token: PermissionToken
-                ) {
-                    token.continuePermissionRequest()
-                }
-            })
-            .withErrorListener { error: DexterError ->
-                UIManager.showActionInToast(this, "Error occurred! $error")
-            }
-            .onSameThread()
-            .check()
-    }
-
     private fun initActivityVariables() {
         Timber.d("initActivityVariables()")
 
-        /*mConnectivityManager =
-            this@MainActivity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        networkManager = LabNetworkManagerNewAPI(this@MainActivity)*/
-
-
+        mViewModel.initNavigator(this@MainActivity)
 
         mLabNetworkManager = LabNetworkManager
             .getInstance(this@MainActivity, lifecycle)
             .also { mViewModel.observeNetworkState(this@MainActivity, it) }
 
-        locationReceiver = LocationBroadcastReceiver()
+        /*locationReceiver = LocationBroadcastReceiver()
         mGpsUtils = GpsUtils(this@MainActivity)
 
-        labLocationManager =
+        mLabLocationManager =
             LabLocationManager(
                 activity = this@MainActivity,
                 locationListener = this@MainActivity
-            )
+            )*/
     }
 
     private fun registerLocationReceiver() {
@@ -373,133 +260,29 @@ class MainActivity : BaseComponentActivity(),
         }
     }
 
-    private fun startViewSwitcher() = CoroutineScope(Dispatchers.Main).launch {
-        Timber.d("startViewSwitcher()")
-
-        val viewSwitcher = binding.includeContentLayout.vs
-        val welcomeToTheLabContainer = binding.includeContentLayout.llWelcomeToTheLabContainer
-        val timeContainer = binding.includeContentLayout.llTimeContainer
-
-        while (isTimeUpdatedStarted) {
-            delay(TimeUnit.SECONDS.toMillis(10))
-
-            if (viewSwitcher.currentView != welcomeToTheLabContainer) {
-                // Show firstView
-                viewSwitcher.inAnimation =
-                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_in_top)
-                viewSwitcher.outAnimation =
-                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_out_down)
-                viewSwitcher.displayedChild = 0
-//                viewSwitcher.showPrevious()
-            } else if (viewSwitcher.currentView != timeContainer) {
-                // Show secondView
-                viewSwitcher.inAnimation =
-                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_in_down)
-                viewSwitcher.outAnimation =
-                    AnimationUtils.loadAnimation(this@MainActivity, R.anim.slide_out_top)
-                viewSwitcher.displayedChild = 1
-//                viewSwitcher.showNext()
-            }
-        }
-    }
-
-    private fun registerConnectivityManager() {
-        Timber.d("registerConnectivityManager()")
-        // register connection status listener
-        val request = NetworkRequest.Builder()
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
-
-        // Register Network callback events
-        /*if (null == mConnectivityManager) {
-            Timber.e("Connectivity Manager is null | Cannot register network callback events")
-        } else {
-            mConnectivityManager?.registerNetworkCallback(request, networkManager)
-        }*/
-    }
 
     private fun registerLabLocationManager() {
         Timber.d("registerLabLocationManager()")
-        if (null == labLocationManager) {
-            Timber.e("Lab Location Manager is null | Cannot register location callback events")
-        } else {
-            if (!labLocationManager!!.canGetLocation()) {
+
+        mLabLocationManager?.let {
+            if (!it.canGetLocation()) {
                 Timber.e("Cannot get location please enable position")
 
-                binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
+                /*binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
                     R.drawable.ic_location_off
-                )
+                )*/
                 // TODO : Should show alert with compose dialog
                 // labLocationManager?.showSettingsAlert()
             } else {
-                labLocationManager?.setLocationListener()
-                labLocationManager?.getCurrentLocation()
+                it.setLocationListener()
+                it.getCurrentLocation()
 
-                binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
+                /*binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(
                     R.drawable.ic_location_on
-                )
+                )*/
             }
         }
-    }
-
-    private fun updateTime() = CoroutineScope(Dispatchers.Main).launch {
-        Timber.d("updateTime()")
-
-        isTimeUpdatedStarted = true
-
-        while (isTimeUpdatedStarted) {
-            val date = Date(System.currentTimeMillis())
-            val time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
-            binding.includeContentLayout.tvTime.text = time
-
-            delay(1000)
-        }
-    }
-
-    @DelicateCoroutinesApi
-    private fun initViewModelsObservers() {
-
-        mViewModel.getConnectionStatus().observe(this) { connectionStatus ->
-            UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
-            updateToolbarConnectionIcon(connectionStatus)
-        }
-
-        mViewModel.getConnectionStatus().observe(this) { connectionStatus ->
-            UIManager.showConnectionStatusInSnackBar(this, connectionStatus)
-            updateToolbarConnectionIcon(connectionStatus)
-        }
-
-        mViewModel.getLocationData().observe(this) { locationStatus ->
-            Timber.d("getLocationData().observe : $locationStatus")
-
-        }
-
-        mViewModel.getWeather().observe(this) {
-            Timber.d("getWeather().observe : $it")
-
-            LabGlideUtils.getInstance().loadImage(
-                this@MainActivity,
-                WeatherUtils.getWeatherIconFromApi(it.weatherIconUrl),
-                binding.includeContentLayout.ivWeatherIcon
-            )
-
-            val sb: StringBuilder =
-                StringBuilder()
-                    .append(it.temperature)
-                    .append(" °c,")
-                    .append(" ")
-                    .append(it.city)
-
-            // bind data
-            binding.includeContentLayout.tvWeather.text = sb.toString()
-        }
-    }
-
-    private fun retrieveApplications() {
-        mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
-        mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
+            ?: run { Timber.e("Lab Location Manager is null | Cannot register location callback events") }
     }
 
     private fun toggleLocation() {
@@ -519,14 +302,16 @@ class MainActivity : BaseComponentActivity(),
                     UIManager.showToast(this@MainActivity, "Permissions Granted..")
 
                     initSpeechToText()
-                    startListening()
+
+                    // Start listening (TTS)
+                    Timber.i("startListening() ... ")
+                    speech?.startListening(recognizerIntent)
                 }
 
                 override fun onPermissionDenied(permissionDenied: PermissionDeniedResponse?) {
                     // if the permissions are not accepted we are displaying
                     // a toast message as permissions denied on below line.
                     UIManager.showToast(this@MainActivity, "Permissions Denied..")
-
                 }
 
                 // on below line we are calling on permission
@@ -553,7 +338,6 @@ class MainActivity : BaseComponentActivity(),
     private fun initSpeechToText() {
         Timber.i("initSpeechToText()")
 
-
         speech = SpeechRecognizer.createSpeechRecognizer(this).apply {
             setRecognitionListener(this@MainActivity)
         }
@@ -567,11 +351,6 @@ class MainActivity : BaseComponentActivity(),
             putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this@MainActivity.packageName)
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
         }
-    }
-
-    private fun startListening() {
-        Timber.i("startListening() ... ")
-        speech?.startListening(recognizerIntent)
     }
 
     @SuppressLint("InlinedApi")
@@ -607,44 +386,6 @@ class MainActivity : BaseComponentActivity(),
         }
     }
 
-    private fun toggleRecyclerViewLinearLayout() {
-        Timber.d("toggleRecyclerViewLinearLayout()")
-
-        // clear staggered icon
-        UIManager.setBackgroundColor(
-            this,
-            binding.includeContentLayout.ivStaggeredLayout,
-            R.color.transparent
-        )
-
-        //Apply selected background color
-        UIManager.setBackgroundColor(
-            this,
-            binding.includeContentLayout.ivLinearLayout,
-            R.color.teal_700
-        )
-        // applyRecycler()
-    }
-
-    private fun toggleRecyclerViewStaggeredLayout() {
-        Timber.d("toggleRecyclerViewStaggeredLayout()")
-
-        // clear staggered icon
-        UIManager.setBackgroundColor(
-            this,
-            binding.includeContentLayout.ivLinearLayout,
-            R.color.transparent
-        )
-
-        //Apply selected background color
-        UIManager.setBackgroundColor(
-            this,
-            binding.includeContentLayout.ivStaggeredLayout,
-            R.color.teal_700
-        )
-        // applyRecycler()
-    }
-
     fun launchApp(item: App) {
         Timber.d("launchApp : $item")
         when {
@@ -657,11 +398,11 @@ class MainActivity : BaseComponentActivity(),
             }
 
             item is LocalApp && -1L != item.id -> {
-                mViewModel.launchActivityOrPackage(navigator, item)
+                mViewModel.launchActivityOrPackage(item)
             }
 
             item is PackageApp -> {
-                mViewModel.launchActivityOrPackage(navigator, item)
+                mViewModel.launchActivityOrPackage(item)
             }
 
             else -> {
@@ -670,80 +411,12 @@ class MainActivity : BaseComponentActivity(),
         }
     }
 
-    fun launchSettings() {
-        Timber.d("launchSettings()")
-
-        navigator.callSettingsActivity()
-
-//        Intent(this, SettingsActivity::class.java).run { startActivity(this) }
-    }
-
 
     /////////////////////////////////////
     //
     // IMPLEMENTS
     //
     /////////////////////////////////////
-    /*override fun onMenuItemClick(item: MenuItem?): Boolean {
-        Timber.d("onMenuItemClick()")
-        when (item?.itemId) {
-            R.id.action_connection_settings -> networkManager.changeWifiState(
-                this.applicationContext,
-                this@MainActivity
-            )
-            R.id.action_location_settings -> if (!isGPS) mGpsUtils.turnGPSOn(this)
-            R.id.action_settings -> UIManager.showActionInToast(this, "Settings clicked")
-            R.id.action_force_crash -> throw RuntimeException("This is a crash")
-            else -> {
-            }
-        }
-        return true
-    }*/
-
-    /////////// OnClick Listener ///////////
-    override fun onClick(view: View?) {
-        when (view?.id) {
-
-            R.id.iv_internet_status -> {
-                Timber.e("Internet wifi icon status clicked")
-            }
-
-            R.id.iv_location_status -> {
-                Timber.e("Location icon status clicked")
-            }
-
-            R.id.iv_settings -> navigator.callSettingsActivity()
-            R.id.btn_more_info -> navigator.callWeatherActivity()
-            R.id.iv_linear_layout -> toggleRecyclerViewLinearLayout()
-            R.id.iv_staggered_layout -> toggleRecyclerViewStaggeredLayout()
-        }
-    }
-
-    override fun onConnected() {
-        UIManager.showConnectionStatusInSnackBar(this@MainActivity, true)
-        updateToolbarConnectionIcon(true)
-
-    }
-
-    override fun onLostConnection() {
-        UIManager.showConnectionStatusInSnackBar(this@MainActivity, false)
-        updateToolbarConnectionIcon(false)
-
-    }
-
-    private fun updateToolbarConnectionIcon(isConnected: Boolean) {
-        Timber.e("updateToolbarConnectionIcon, is connected : %s", isConnected)
-        if (!LabCompatibilityManager.isTablet(this))
-
-            runOnUiThread {
-                try {
-
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-                }
-            }
-    }
-
     override fun gpsStatus(isGPSEnable: Boolean) {
         Timber.d("gpsStatus()")
         Timber.d("turn on/off GPS - isGPSEnable : $isGPSEnable")

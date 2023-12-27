@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="title_activity_settings">Settings</string>
+
     <string name="title_activity_user_information">User information</string>
+
+    <string name="app_name_device_info">Device Information</string>
+    <string name="placeholder_device_specs">Device Specs</string>
+    <string name="placeholder_android_specs">Android Specs</string>
 </resources>

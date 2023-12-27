@@ -1,9 +1,11 @@
 package com.riders.thelab.core.data.local.model.compose
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 
+@Stable
 sealed class IslandState(
     val contentSize: DpSize = DpSize(150.dp, 50.dp),
     val hasMainContent: Boolean = false,
@@ -19,7 +21,7 @@ sealed class IslandState(
 ) {
     val fullWidth = contentSize.width + leadingContentSize + trailingContentSize
 
-    class DefaultState : IslandState()
+    data object DefaultState : IslandState()
 
     class WelcomeState : IslandState(
         contentSize = DpSize(
@@ -29,7 +31,7 @@ sealed class IslandState(
 
     class SearchState : IslandState(
         contentSize = DpSize(
-            350.dp, 70.dp
+            325.dp, 70.dp
         ),
     )
 
@@ -48,10 +50,12 @@ sealed class IslandState(
     )
 
     sealed class NetworkState : IslandState(
+        contentSize = DpSize(
+            240.dp, 50.dp
+        ),
         leadingContentSize = 65.dp,
         trailingContentSize = 55.dp,
-        hasLeadingContent = true,
-        hasTrailingContent = true,
+        hasLeadingContent = true
     ) {
         data object Available : NetworkState()
         data object Lost : NetworkState()
