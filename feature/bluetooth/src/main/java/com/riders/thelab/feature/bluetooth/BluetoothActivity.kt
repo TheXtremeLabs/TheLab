@@ -4,8 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
@@ -27,6 +25,7 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.permissions.DexterPermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.utils.UIManager
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -41,13 +40,22 @@ class BluetoothActivity : BaseComponentActivity() {
             if (result.resultCode == RESULT_OK) {
                 Timber.d("OK")
                 // There are no request codes
-                val data = result.data
                 mViewModel.fetchBoundedDevices()
+            }
+            if (result.resultCode == RESULT_CANCELED) {
+                val status = "Error Enabling bluetooth"
+                UIManager.showToast(this@BluetoothActivity, status)
             }
         }
 
     private val mLabBluetoothReceiver = LabBluetoothReceiver()
 
+
+    /////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    /////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -105,11 +113,24 @@ class BluetoothActivity : BaseComponentActivity() {
         unregisterReceiver(mLabBluetoothReceiver)
     }
 
+
+    /////////////////////////////////////
+    //
+    // BUS
+    //
+    /////////////////////////////////////
     @Listen
     fun onBluetoothDeviceFoundEvent(device: BluetoothDevice) {
         Timber.d("Listen | onBluetoothDeviceFoundEvent() | $device")
     }
 
+
+    /////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    /////////////////////////////////////
+    @SuppressLint("InlinedApi")
     fun checkPermissions() {
         Timber.d("checkPermissions()")
 
@@ -119,7 +140,11 @@ class BluetoothActivity : BaseComponentActivity() {
         } else {
             val permissionManager = DexterPermissionManager(this@BluetoothActivity)
             if (!LabCompatibilityManager.isS()) {
-                permissionManager.checkPermission(
+                permissionManager.checkPermissions(
+                    // If your app targets Android 11 (API level 30) or lower,
+                    // use ACCESS_FINE_LOCATION this is necessary, in the developer of Android
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.BLUETOOTH,
                     onPermissionDenied = {
                         finish()
@@ -127,10 +152,16 @@ class BluetoothActivity : BaseComponentActivity() {
                     onPermissionGranted = {
                         mViewModel.initBluetoothManager(this@BluetoothActivity)
                         observeBluetoothDeviceFetchedEvents()
+                        mViewModel.fetchBoundedDevices()
                     },
-                    onShouldShowRationale = {})
+                    onShouldShowRationale = {}
+                )
             } else {
                 permissionManager.checkPermissions(
+                    // If your app targets Android 11 (API level 30) or lower,
+                    // use ACCESS_FINE_LOCATION this is necessary, in the developer of Android
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.BLUETOOTH,
                     Manifest.permission.BLUETOOTH_SCAN,
                     Manifest.permission.BLUETOOTH_CONNECT,
@@ -140,6 +171,7 @@ class BluetoothActivity : BaseComponentActivity() {
                     onPermissionGranted = {
                         mViewModel.initBluetoothManager(this@BluetoothActivity)
                         observeBluetoothDeviceFetchedEvents()
+                        mViewModel.fetchBoundedDevices()
                     },
                     onShouldShowRationale = {}
                 )
@@ -153,7 +185,7 @@ class BluetoothActivity : BaseComponentActivity() {
 
         lifecycleScope.launch {
             KotlinBus.subscribe<BluetoothDevice> {
-                Timber.d("KotlinBus | subscribe | $it")
+                Timber.d("observeBluetoothDeviceFetchedEvents | KotlinBus | subscribe | ${it.address}")
                 mViewModel.addNewBluetoothAvailableDevices(it)
             }
         }
@@ -162,6 +194,7 @@ class BluetoothActivity : BaseComponentActivity() {
     fun updateBluetoothEnabled(enable: Boolean) = mViewModel.updateBluetoothEnabled(enable)
     fun updateBluetoothSearchProgress(visible: Boolean) =
         mViewModel.updateBluetoothSearchProgress(visible)
+
     fun updateIsBluetoothSearching(isSearching: Boolean) =
         mViewModel.updateIsBluetoothSearching(isSearching)
 }

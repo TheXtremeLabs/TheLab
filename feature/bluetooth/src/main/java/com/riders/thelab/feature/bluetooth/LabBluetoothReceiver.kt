@@ -13,16 +13,18 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+
+@OptIn(DelicateCoroutinesApi::class)
+@Suppress("DEPRECATION")
+@SuppressLint("NewApi", "MissingPermission")
 class LabBluetoothReceiver : BroadcastReceiver() {
-    @OptIn(DelicateCoroutinesApi::class)
-    @SuppressLint("NewApi", "MissingPermission")
     override fun onReceive(context: Context?, intent: Intent?) {
         Timber.d("onReceive() | context: $context, intent: $intent")
 
         if (null == context) {
             Timber.e("context is null")
         } else {
-            context?.let {
+            context.let {
                 when (intent?.action.toString()) {
                     BluetoothDevice.ACTION_FOUND -> {
                         Timber.e("BluetoothDevice.ACTION_FOUND")
@@ -41,12 +43,13 @@ class LabBluetoothReceiver : BroadcastReceiver() {
                         bluetoothDevice?.let { device ->
                             val deviceName = device.name
                             val deviceHardwareAddress = device.address // MAC address
+                            val type = bluetoothDevice.bluetoothClass.deviceClass
 
-                            Timber.e("name : $deviceName, hardware : $deviceHardwareAddress")
+                            Timber.e("name : $deviceName, hardware : $deviceHardwareAddress, class: $type")
 
                             /*(it.findActivity() as BluetoothActivity).addNewBluetoothAvailableDevices(
-                                device
-                            )*/
+                                        device
+                                    )*/
 
                             GlobalScope.launch {
                                 BluetoothDeviceFoundEvent.triggerEvent(device)

@@ -47,7 +47,7 @@ class BluetoothViewModel : BaseViewModel() {
         this._isBluetoothEnabled.value = enabled
     }
 
-    fun updateBluetoothBoundedDevices(boundedDevices: Set<BluetoothDevice>) {
+    private fun updateBluetoothBoundedDevices(boundedDevices: Set<BluetoothDevice>) {
         this._boundedDevices.value = boundedDevices
     }
 
@@ -56,7 +56,7 @@ class BluetoothViewModel : BaseViewModel() {
     }
 
     fun addNewBluetoothAvailableDevices(newDevice: BluetoothDevice) {
-        Timber.d("addNewBluetoothAvailableDevices()")
+        Timber.d("addNewBluetoothAvailableDevices() | ${newDevice.toString()}")
 
         val mutableSetBluetoothDevices: MutableSet<BluetoothDevice> =
             this._availableDevices.value.toMutableSet()
@@ -133,21 +133,22 @@ class BluetoothViewModel : BaseViewModel() {
     }
 
     fun startDiscovery() {
-        Timber.d("startDiscovery()")
         if (bluetoothManager?.adapter?.isDiscovering == false) {
 
             if (_availableDevices.value.isNotEmpty()) {
                 _availableDevices.value = emptySet()
             }
 
+            Timber.d("startDiscovery()")
             bluetoothManager?.adapter?.startDiscovery()?.let { updateIsBluetoothSearching(it) }
         }
     }
 
     fun stopDiscovery() {
-        Timber.e("stopDiscovery()")
-        if (bluetoothManager?.adapter?.isDiscovering == true)
+        if (bluetoothManager?.adapter?.isDiscovering == true) {
+            Timber.e("stopDiscovery()")
             bluetoothManager?.adapter?.cancelDiscovery()?.let { updateIsBluetoothSearching(it) }
+        }
     }
 
     fun fetchBoundedDevices() {
@@ -172,5 +173,4 @@ class BluetoothViewModel : BaseViewModel() {
             }
         }
     }
-
 }

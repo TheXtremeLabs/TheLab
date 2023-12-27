@@ -27,7 +27,6 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 ///////////////////////////////////////
 @Composable
 fun BluetoothContent(viewModel: BluetoothViewModel) {
-    val context = LocalContext.current
     val bluetoothState by viewModel.isBluetoothEnabled.collectAsStateWithLifecycle()
 
     TheLabTheme {
