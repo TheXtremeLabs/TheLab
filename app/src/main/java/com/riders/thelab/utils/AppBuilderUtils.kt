@@ -7,11 +7,11 @@ import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.AppBuilder
 import com.riders.thelab.feature.biometric.ui.BiometricActivity
+import com.riders.thelab.feature.bluetooth.BluetoothActivity
 import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
 import com.riders.thelab.feature.lottie.LottieActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
-import com.riders.thelab.ui.bluetooth.BluetoothActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.camera.CameraActivity
 import com.riders.thelab.ui.colors.ColorActivity
@@ -462,7 +462,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(BluetoothActivity::class.java)
-                        .withActivityDate("2021/09/29")
+                        .withActivityDate("2023/12/27")
                         .build()
                 this.add(bluetooth)
 

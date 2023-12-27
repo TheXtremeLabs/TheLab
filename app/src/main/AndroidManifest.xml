@@ -428,7 +428,7 @@
             android:screenOrientation="fullSensor" />
 
         <activity
-            android:name=".ui.bluetooth.BluetoothActivity"
+            android:name=".feature.bluetooth.BluetoothActivity"
             android:label="@string/activity_bluetooth_title"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
