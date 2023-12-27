@@ -13,11 +13,8 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -32,7 +29,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,14 +43,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.riders.thelab.R
 import com.riders.thelab.core.compose.component.DynamicIsland
+import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -67,7 +59,6 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun MainContent(viewModel: MainActivityViewModel) {
-
     val context = LocalContext.current
     val density = LocalDensity.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -93,6 +84,8 @@ fun MainContent(viewModel: MainActivityViewModel) {
 
     val dynamicIslandUiState by viewModel.dynamicIslandState.collectAsStateWithLifecycle()
     val appList by viewModel.appList.collectAsStateWithLifecycle()
+    val whatsNewList: List<LocalApp> by viewModel.whatsNewAppList.collectAsStateWithLifecycle()
+
 
     TheLabTheme {
         BottomSheetScaffold(
@@ -133,15 +126,11 @@ fun MainContent(viewModel: MainActivityViewModel) {
                     modifier = Modifier
                         .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background)
                         .fillMaxSize()
-//                        .padding(contentPadding)
-                        .padding(16.dp)
+                        .padding(horizontal = 16.dp)
                         .pointerInput(key1 = "user input") {
                             detectTapGestures(
                                 onPress = {
-                                    UIManager.showToast(
-                                        context,
-                                        "Press Detected"
-                                    )
+                                    UIManager.showToast(context, "Press Detected")
 
                                     if (viewModel.keyboardVisible) {
                                         // 1. Update value
@@ -150,6 +139,11 @@ fun MainContent(viewModel: MainActivityViewModel) {
                                         focusManager.clearFocus(true)
                                         // 3. hide keyboard
                                         keyboardController?.hide()
+
+                                        if (dynamicIslandUiState is IslandState.SearchState) {
+                                            viewModel.updateDynamicIslandState(IslandState.DefaultState)
+                                            viewModel.updateDynamicIslandVisible(false)
+                                        }
                                     }
                                 }
                             )
@@ -164,47 +158,41 @@ fun MainContent(viewModel: MainActivityViewModel) {
                         // Use "maxCurrentLineSpan" if you want to take full width.
                         GridItemSpan(maxCurrentLineSpan)
                     }) {
-
-                        Column {
-
-                            Header(viewModel)
-
-                            Spacer(modifier = Modifier.size(32.dp))
-
-                            Text(
-                                text = stringResource(id = R.string.app_list_placeholder),
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.W600
-                            )
-
-                            Spacer(modifier = Modifier.size(8.dp))
-
-                            Text(
-                                text = stringResource(id = R.string.app_list_detail_placeholder),
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Thin
-                            )
-
-                            Spacer(modifier = Modifier.size(16.dp))
-                        }
+                        Header(
+                            viewModel = viewModel,
+                            whatsNewList = whatsNewList,
+                            isKeyboardVisible = viewModel.keyboardVisible,
+                            pagerAutoScroll = viewModel.isPagerAutoScroll,
+                            onSearchClicked = {
+                                viewModel.updateKeyboardVisible(true)
+                                viewModel.updateDynamicIslandState(IslandState.SearchState())
+                            },
+                            onSettingsClicked = { viewModel.launchSettings() }
+                        )
                     }
 
                     items(
-                        items = appList.filter {
-                            (it.appName != null && it.appName?.contains(
-                                viewModel.searchedAppRequest, ignoreCase = true
-                            )!!) || (it.appTitle != null && it.appTitle?.contains(
-                                viewModel.searchedAppRequest, ignoreCase = true
-                            )!!)
-                        }, key = { it.id }) { appItem ->
+                        items = viewModel.filteredList,
+                        key = { it.id }
+                    ) { appItem ->
                         App(item = appItem)
+                    }
+
+                    if (viewModel.filteredList.isEmpty()) {
+                        item(span = {
+                            // Replace "maxCurrentLineSpan" with the number of spans this item should take.
+                            // Use "maxCurrentLineSpan" if you want to take full width.
+                            GridItemSpan(maxCurrentLineSpan)
+                        }) {
+                            NoItemFound(viewModel.searchedAppRequest)
+                        }
                     }
                 }
 
                 // Dynamic Island
                 AnimatedVisibility(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    visible = viewModel.isDynamicIslandVisible && viewModel.keyboardVisible,
+                    visible = viewModel.isDynamicIslandVisible,
                     enter = slideInVertically {
                         // Slide in from 40 dp from the top.
                         with(density) { -40.dp.roundToPx() }
@@ -258,9 +246,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
 @DevicePreviews
 @Composable
 private fun PreviewMainContent() {
-    val viewModel: MainActivityViewModel = hiltViewModel()
-
     TheLabTheme {
-        MainContent(viewModel = viewModel)
+        MainContent(viewModel = MainActivityViewModel())
     }
 }

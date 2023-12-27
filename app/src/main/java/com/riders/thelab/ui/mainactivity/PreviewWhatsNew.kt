@@ -1,25 +1,35 @@
 package com.riders.thelab.ui.mainactivity
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.VectorDrawable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,11 +42,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.palette.graphics.Palette
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
@@ -46,7 +56,7 @@ import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
-import timber.log.Timber
+import com.riders.thelab.utils.LabAppManager
 
 
 ///////////////////////////////
@@ -54,6 +64,7 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WhatsNew(item: App) {
@@ -136,7 +147,7 @@ fun WhatsNew(item: App) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WhatsNew(item: App, pageOffset: Float) {
 
@@ -225,26 +236,67 @@ fun WhatsNew(item: App, pageOffset: Float) {
                     )
                 }
             }
-
-
         }
     }
+}
 
-    /*LaunchedEffect(pageOffset) {
-        Timber.d("LaunchedEffect | pageOffset: $pageOffset")
-        if (0.0f != pageOffset || 1.0f != pageOffset || 2.0f != pageOffset || -1.0f != pageOffset || -2.0f != pageOffset) {
-            colorMatrix.setToSaturation(0f)
-        } else {
-            colorMatrix.setToSaturation(1f)
+@Composable
+fun ActionsButtons(onSearchClicked: () -> Unit, onSettingsClicked: () -> Unit) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Search
+        IconButton(onClick = onSearchClicked) {
+            Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = null,
+                tint = if (!isSystemInDarkTheme()) Color.Black else Color.White
+            )
         }
-    }*/
+        // Settings
+        IconButton(onClick = onSettingsClicked) {
+            Icon(
+                imageVector = Icons.Filled.Settings,
+                contentDescription = null,
+                tint = if (!isSystemInDarkTheme()) Color.Black else Color.White
+            )
+        }
+    }
+}
+
+@Composable
+fun WhatsNewTopContent(
+    viewModel: MainActivityViewModel,
+    onSearchClicked: () -> Unit,
+    onSettingsClicked: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            "What's new",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Thin
+        )
+
+        ActionsButtons(
+            onSearchClicked = onSearchClicked,
+            onSettingsClicked = onSettingsClicked
+        )
+    }
 }
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WhatsNewList(viewModel: MainActivityViewModel) {
-    val whatsNewList: List<LocalApp> by viewModel.whatsNewAppList.collectAsStateWithLifecycle()
+fun WhatsNewList(
+    viewModel: MainActivityViewModel,
+    whatsNewList: List<LocalApp>,
+    pagerAutoScroll: Boolean
+) {
     val pagerState: PagerState =
         rememberPagerState(initialPageOffsetFraction = .25f) { whatsNewList.size }
 
@@ -254,12 +306,51 @@ fun WhatsNewList(viewModel: MainActivityViewModel) {
                 viewModel = viewModel,
                 pagerState = pagerState,
                 items = whatsNewList,
-                autoScroll = viewModel.isTimeUpdatedStarted
+                autoScroll = pagerAutoScroll
             ) { page, pageOffset ->
                 WhatsNew(
                     item = whatsNewList[page],
                     pageOffset = pageOffset
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun WhatsNewContent(
+    viewModel: MainActivityViewModel,
+    whatsNewList: List<LocalApp>,
+    pagerAutoScroll: Boolean,
+    onSearchClicked: () -> Unit,
+    onSettingsClicked: () -> Unit
+) {
+    val pagerState: PagerState =
+        rememberPagerState(initialPageOffsetFraction = .25f) { whatsNewList.size }
+
+    TheLabTheme {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.size(24.dp))
+
+            // Title and Actions
+            WhatsNewTopContent(viewModel, onSearchClicked, onSettingsClicked)
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            // Whats New ViewPager
+            Row(modifier = Modifier.fillMaxWidth()) {
+                LabHorizontalViewPagerGeneric(
+                    viewModel = viewModel,
+                    pagerState = pagerState,
+                    items = whatsNewList,
+                    autoScroll = pagerAutoScroll
+                ) { page, pageOffset ->
+                    WhatsNew(
+                        item = whatsNewList[page],
+                        pageOffset = pageOffset
+                    )
+                }
             }
         }
     }
@@ -273,29 +364,70 @@ fun WhatsNewList(viewModel: MainActivityViewModel) {
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewWhatsNew(@PreviewParameter(AppPreviewProvider::class) appItem: App) {
+private fun PreviewActionsButtons() {
+    TheLabTheme {
+        ActionsButtons({}, {})
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewWhatsNewTopContent() {
+    TheLabTheme {
+        WhatsNewTopContent(MainActivityViewModel(), {}, {})
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewWhatsNew() {
+    val context = LocalContext.current
+    val appItem = LabAppManager.getActivityList(context)[0]
     TheLabTheme {
         WhatsNew(item = appItem)
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewWhatsNewForPager(@PreviewParameter(AppListPreviewProvider::class) appList: List<App>) {
-    val pagerState: PagerState =
-        rememberPagerState(initialPageOffsetFraction = .25f) { appList.size }
-
+private fun PreviewWhatsNewForPager() {
+    val context = LocalContext.current
+    val appItem = LabAppManager.getActivityList(context)[12]
     TheLabTheme {
-        WhatsNew(appList[2], 2f)
+        WhatsNew(appItem, 2f)
     }
 }
 
 @DevicePreviews
 @Composable
 private fun PreviewWhatsNewList() {
+    val context = LocalContext.current
     val viewModel: MainActivityViewModel = hiltViewModel()
+    val appList = LabAppManager.getActivityList(context).take(3).let {
+        it.map { localApp ->
+
+            val bitmap: Bitmap? = if (localApp.appDrawableIcon is BitmapDrawable) {
+                (localApp.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
+            } else if (localApp.appDrawableIcon is VectorDrawable) {
+                App.getBitmap(localApp.appDrawableIcon as VectorDrawable)!!
+            } else {
+                null
+            }
+
+            LocalApp(
+                localApp.id,
+                localApp.appTitle!!,
+                localApp.appDescription!!,
+                null,
+                localApp.appActivity,
+                localApp.appDate!!
+            ).apply {
+                this.bitmap = bitmap
+            }
+        }
+    }
+
     TheLabTheme {
-        WhatsNewList(viewModel = viewModel)
+        WhatsNewList(viewModel = viewModel, whatsNewList = appList, pagerAutoScroll = true)
     }
 }

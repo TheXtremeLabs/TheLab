@@ -289,7 +289,8 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
         mMap.animateCamera(CameraUpdateFactory.zoomTo(750f), 2000, null)
         mMap.uiSettings.isScrollGesturesEnabled = true
-        binding.tvLocation.text = "Latitude:$latitude\nLongitude:$longitude"
+
+        binding?.let { it.tvLocation.text = "Latitude:$latitude\nLongitude:$longitude" }
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {

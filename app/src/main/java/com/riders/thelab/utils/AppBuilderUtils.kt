@@ -83,12 +83,7 @@ object AppBuilderUtils {
                         .withId(2L)
                         .withActivityTitle("Recycler")
                         .withActivityDescription("Recycler Basics and best practices...")
-                        .withActivityIcon(
-                            getDrawableFromIntResource(
-                                context,
-                                R.drawable.ic_filter_list
-                            )
-                        )
+                        .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_filter_list))
                         .withActivityClass(RecyclerViewActivity::class.java)
                         .withActivityDate("2023/01/19")
                         .build()

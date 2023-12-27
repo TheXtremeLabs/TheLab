@@ -1,8 +1,5 @@
 package com.riders.thelab.utils
 
-import android.content.Context
-import com.riders.thelab.core.data.local.model.app.App
-
 object Constants {
 
     const val DATASTORE_THE_LAB_FILE_NAME = "THE_LAB_DATASTORE"
@@ -73,12 +70,4 @@ object Constants {
 
     // WebView
     const val WEB_URL: String = "WEB_URL"
-
-
-    /**
-     * Return app testing list
-     */
-    fun getActivityList(context: Context): List<App> {
-        return ArrayList(AppBuilderUtils.buildActivities(context))
-    }
 }

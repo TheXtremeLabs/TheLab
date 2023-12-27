@@ -36,7 +36,6 @@ import com.karumi.dexter.listener.single.PermissionListener
 import com.riders.thelab.R
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
-import com.riders.thelab.core.bus.LocationFetchedEvent
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
@@ -50,13 +49,11 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import com.riders.thelab.utils.Constants.GPS_REQUEST
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
 
-@AndroidEntryPoint
+
 class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, RecognitionListener {
 
     private val mViewModel: MainActivityViewModel by viewModels()
@@ -70,7 +67,6 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 
     // Network
     private var mLabNetworkManager: LabNetworkManager? = null
-    private var isConnected: Boolean = true
 
     // Speech
     private var speech: SpeechRecognizer? = null
@@ -133,15 +129,15 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
             locationReceiver?.let {
                 // View Models implementation
                 // don't forget to remove receiver data source
-                mViewModel.removeDataSource(locationReceiver!!.getLocationStatus())
+                //mViewModel.removeDataSource(locationReceiver!!.getLocationStatus())
                 unregisterReceiver(locationReceiver)
             }
         }
             .onFailure { it.printStackTrace() }
 
         // Stop update timer
-        if (mViewModel.isTimeUpdatedStarted) {
-            mViewModel.updateTimer(false)
+        if (mViewModel.isPagerAutoScroll) {
+            mViewModel.updatePagerAutoScroll(false)
         }
 
         mLabLocationManager?.stopUsingGPS()
@@ -156,7 +152,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         // Register Lab Location manager
         registerLabLocationManager()
 
-        mViewModel.updateTimer(true)
+        mViewModel.updatePagerAutoScroll(true)
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
@@ -200,30 +196,6 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 
     /////////////////////////////////////
     //
-    // BUS
-    //
-    /////////////////////////////////////
-    @DelicateCoroutinesApi
-    //@Subscribe(threadMode = ThreadMode.MAIN)
-    fun onLocationFetchedEventResult(event: LocationFetchedEvent) {
-        Timber.e("onLocationFetchedEvent()")
-        val location: Location = event.location
-        val latitude = location.latitude
-        val longitude = location.longitude
-        Timber.e("$latitude, $longitude")
-
-        lastKnowLocation = location
-
-        if (this.isConnected) {
-            mViewModel.fetchWeather(this@MainActivity, latitude, longitude)
-        } else {
-            Timber.e("Not connected to the internet. Cannot perform network action")
-        }
-    }
-
-
-    /////////////////////////////////////
-    //
     // CLASS METHODS
     //
     /////////////////////////////////////
@@ -234,7 +206,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 
         mLabNetworkManager = LabNetworkManager
             .getInstance(this@MainActivity, lifecycle)
-            .also { mViewModel.observeNetworkState(this@MainActivity, it) }
+            .also { mViewModel.observeNetworkState(it) }
 
         /*locationReceiver = LocationBroadcastReceiver()
         mGpsUtils = GpsUtils(this@MainActivity)
@@ -255,7 +227,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         if (null != locationReceiver) {
             // View Models implementation
             // add data source
-            mViewModel.addDataSource(locationReceiver!!.getLocationStatus())
+            //mViewModel.addDataSource(locationReceiver!!.getLocationStatus())
             registerReceiver(locationReceiver, intentFilter)
         }
     }
