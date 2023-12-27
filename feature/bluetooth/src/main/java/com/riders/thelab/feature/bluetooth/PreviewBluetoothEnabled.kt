@@ -70,7 +70,7 @@ fun BluetoothEnabledContent(viewModel: BluetoothViewModel) {
                         }
                     }
 
-                    Text(text = "Paired Devices")
+                    Text(modifier = Modifier.padding(vertical = 16.dp), text = "Paired Devices")
                 }
             }
 
