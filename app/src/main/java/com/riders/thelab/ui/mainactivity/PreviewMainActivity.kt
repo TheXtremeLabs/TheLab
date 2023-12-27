@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.mainactivity
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -37,7 +36,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -62,6 +60,7 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
+import com.riders.thelab.core.ui.utils.UIManager
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -92,8 +91,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
             )
         )
 
-    val isVisible = remember { mutableStateOf(false) }
-
+    val dynamicIslandUiState by viewModel.dynamicIslandState.collectAsStateWithLifecycle()
     val appList by viewModel.appList.collectAsStateWithLifecycle()
 
     TheLabTheme {
@@ -123,9 +121,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
                 }
             },
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            sheetContent = {
-                BottomSheetContent()
-            },
+            sheetContent = { BottomSheetContent() },
             sheetPeekHeight = 0.dp,
             sheetElevation = 8.dp,
             // Defaults to true
@@ -142,15 +138,12 @@ fun MainContent(viewModel: MainActivityViewModel) {
                         .pointerInput(key1 = "user input") {
                             detectTapGestures(
                                 onPress = {
-                                    Toast
-                                        .makeText(
-                                            context,
-                                            "Press Detected",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                        .show()
+                                    UIManager.showToast(
+                                        context,
+                                        "Press Detected"
+                                    )
 
-                                    if (viewModel.keyboardVisible.value) {
+                                    if (viewModel.keyboardVisible) {
                                         // 1. Update value
                                         viewModel.updateKeyboardVisible(false)
                                         // 2. Clear focus
@@ -196,14 +189,14 @@ fun MainContent(viewModel: MainActivityViewModel) {
                         }
                     }
 
-                    items(items = appList.filter {
-                        (it.appName != null && it.appName?.contains(
-                            viewModel.searchedAppRequest, ignoreCase = true
-                        )!!)
-                                || (it.appTitle != null && it.appTitle?.contains(
-                            viewModel.searchedAppRequest, ignoreCase = true
-                        )!!)
-                    }/*, key = { it.id }*/) { appItem ->
+                    items(
+                        items = appList.filter {
+                            (it.appName != null && it.appName?.contains(
+                                viewModel.searchedAppRequest, ignoreCase = true
+                            )!!) || (it.appTitle != null && it.appTitle?.contains(
+                                viewModel.searchedAppRequest, ignoreCase = true
+                            )!!)
+                        }, key = { it.id }) { appItem ->
                         App(item = appItem)
                     }
                 }
@@ -211,23 +204,20 @@ fun MainContent(viewModel: MainActivityViewModel) {
                 // Dynamic Island
                 AnimatedVisibility(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    visible = isVisible.value,
+                    visible = viewModel.isDynamicIslandVisible && viewModel.keyboardVisible,
                     enter = slideInVertically {
                         // Slide in from 40 dp from the top.
                         with(density) { -40.dp.roundToPx() }
-                    }
-                            + fadeIn(
+                    } + fadeIn(
                         // Fade in with the initial alpha of 0.3f.
                         initialAlpha = 0.3f
                     ),
                     exit = slideOutVertically {
                         // Slide in from 40 dp from the top.
                         with(density) { -40.dp.roundToPx() }
-                    }
-                            //+ shrinkVertically()
-                            + fadeOut()
+                    } + fadeOut()
                 ) {
-                    DynamicIsland(viewModel, viewModel.dynamicIslandState.value)
+                    DynamicIsland(viewModel, dynamicIslandUiState)
                 }
             }
         }
@@ -242,22 +232,21 @@ fun MainContent(viewModel: MainActivityViewModel) {
         }
     }
 
-    /*LaunchedEffect(viewModel.dynamicIslandState.value) {
-        isVisible.value = (viewModel.dynamicIslandState.value is IslandState.SearchState ||
-                viewModel.dynamicIslandState.value is IslandState.CallState ||
-                viewModel.dynamicIslandState.value is IslandState.NetworkState.Available ||
-                viewModel.dynamicIslandState.value is IslandState.NetworkState.Lost ||
-                viewModel.dynamicIslandState.value is IslandState.NetworkState.Unavailable
-                ) && viewModel.keyboardVisible.value
-    }*/
+    LaunchedEffect(dynamicIslandUiState) {
+        Timber.d("LaunchedEffect | dynamic island state: ${dynamicIslandUiState.javaClass.simpleName}")
+        if ((dynamicIslandUiState is IslandState.SearchState ||
+                    dynamicIslandUiState is IslandState.CallState ||
+                    dynamicIslandUiState is IslandState.NetworkState.Available ||
+                    dynamicIslandUiState is IslandState.NetworkState.Lost ||
+                    dynamicIslandUiState is IslandState.NetworkState.Unavailable)
+            && viewModel.keyboardVisible
+        ) {
+            viewModel.updateDynamicIslandVisible(true)
+        } else {
+            viewModel.updateDynamicIslandVisible(false)
 
-    isVisible.value =
-        (viewModel.dynamicIslandState.value is IslandState.SearchState ||
-                viewModel.dynamicIslandState.value is IslandState.CallState ||
-                viewModel.dynamicIslandState.value is IslandState.NetworkState.Available ||
-                viewModel.dynamicIslandState.value is IslandState.NetworkState.Lost ||
-                viewModel.dynamicIslandState.value is IslandState.NetworkState.Unavailable
-                ) && viewModel.keyboardVisible.value
+        }
+    }
 }
 
 
@@ -269,7 +258,6 @@ fun MainContent(viewModel: MainActivityViewModel) {
 @DevicePreviews
 @Composable
 private fun PreviewMainContent() {
-
     val viewModel: MainActivityViewModel = hiltViewModel()
 
     TheLabTheme {
