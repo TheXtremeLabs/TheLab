@@ -8,19 +8,16 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.VectorDrawable
 import android.location.Address
 import android.location.Geocoder
-import android.location.Location
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationUtils
-import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
@@ -29,8 +26,7 @@ import com.riders.thelab.core.data.local.model.weather.ProcessedWeather
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.navigator.Navigator
-import com.riders.thelab.utils.Constants
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.riders.thelab.utils.LabAppManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -45,19 +41,14 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.net.UnknownHostException
 import java.util.Locale
-import javax.inject.Inject
 
 
-@HiltViewModel
-class MainActivityViewModel @Inject constructor(
-    private val repository: IRepository
-) : BaseViewModel() {
+class MainActivityViewModel : BaseViewModel() {
 
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
     private var mNavigator: Navigator? = null
-    private val weather: MutableLiveData<ProcessedWeather> = MutableLiveData()
 
     //////////////////////////////////////////
     // Compose states
@@ -74,6 +65,16 @@ class MainActivityViewModel @Inject constructor(
     private val _appList: MutableStateFlow<List<App>> = MutableStateFlow(emptyList())
     val appList: StateFlow<List<App>> = _appList
 
+    val filteredList: List<App> by derivedStateOf {
+        _appList.value.filter {
+            (it.appName != null && it.appName?.contains(
+                searchedAppRequest, ignoreCase = true
+            )!!) || (it.appTitle != null && it.appTitle?.contains(
+                searchedAppRequest, ignoreCase = true
+            )!!)
+        }
+    }
+
     // Dynamic Island
     private val _dynamicIslandState: MutableStateFlow<IslandState> =
         MutableStateFlow(IslandState.DefaultState)
@@ -88,8 +89,8 @@ class MainActivityViewModel @Inject constructor(
     var hasInternetConnection: Boolean by mutableStateOf(false)
         private set
 
-    // Time
-    var isTimeUpdatedStarted: Boolean by mutableStateOf(false)
+    // ViewPager Scroll
+    var isPagerAutoScroll: Boolean by mutableStateOf(false)
         private set
 
     // Search
@@ -99,8 +100,6 @@ class MainActivityViewModel @Inject constructor(
         private set
     var isMicrophoneEnabled by mutableStateOf(false)
         private set
-
-    // Location
 
 
     // App List
@@ -151,8 +150,8 @@ class MainActivityViewModel @Inject constructor(
         this.isDynamicIslandVisible = visible
     }
 
-    fun updateTimer(started: Boolean) {
-        this.isTimeUpdatedStarted = started
+    fun updatePagerAutoScroll(autoScroll: Boolean) {
+        this.isPagerAutoScroll = autoScroll
     }
 
     //////////////////////////////////////////
@@ -164,32 +163,6 @@ class MainActivityViewModel @Inject constructor(
             Timber.e("Coroutine Exception caught with message: ${throwable.message} (${throwable.javaClass})")
 
         }
-
-
-    //////////////////////////////////
-    //
-    // OBSERVERS
-    //
-    //////////////////////////////////
-    fun getLocationData(): LiveData<Boolean> {
-        Timber.d("getLocationData()")
-
-        // for simplicity return data directly to view
-        return repository.getLocationStatusData()
-    }
-
-    fun getWeather(): LiveData<ProcessedWeather> = weather
-
-
-    fun addDataSource(locationStatus: LiveData<Boolean>) {
-        Timber.d("addLocationStatusDataSource()")
-        repository.addLocationStatusDataSource(locationStatus)
-    }
-
-    fun removeDataSource(locationStatus: LiveData<Boolean>) {
-        Timber.e("removeLocationStatusDataSource()")
-        repository.removeLocationStatusDataSource(locationStatus)
-    }
 
 
     //////////////////////////////////
@@ -213,7 +186,7 @@ class MainActivityViewModel @Inject constructor(
         mNavigator = Navigator(activity)
     }
 
-    fun observeNetworkState(context: Activity, networkManager: LabNetworkManager) {
+    fun observeNetworkState(networkManager: LabNetworkManager) {
         Timber.d("observeNetworkState()")
         networkState = networkManager.networkState
 
@@ -227,10 +200,6 @@ class MainActivityViewModel @Inject constructor(
 
                         updateKeyboardVisible(true)
                         updateDynamicIslandState(IslandState.NetworkState.Available)
-
-                        /*withContext(Dispatchers.Main) {
-                            UIManager.showSnackBar(context, NetworkMessageEnum.AVAILABLE.message)
-                        }*/
                     }
 
                     is NetworkState.Losing -> {
@@ -244,20 +213,12 @@ class MainActivityViewModel @Inject constructor(
                         updateKeyboardVisible(true)
                         updateHasInternetConnection(false)
                         updateDynamicIslandState(IslandState.NetworkState.Lost)
-
-                        /*withContext(Dispatchers.Main) {
-                            UIManager.showSnackBar(context, NetworkMessageEnum.UNAVAILABLE.message)
-                        }*/
                     }
 
                     is NetworkState.Unavailable -> {
                         Timber.e("network state is Unavailable. Should not allow network calls initialization")
                         updateHasInternetConnection(false)
                         updateDynamicIslandState(IslandState.NetworkState.Unavailable)
-
-                        /*withContext(Dispatchers.Main) {
-                            UIManager.showSnackBar(context, NetworkMessageEnum.UNAVAILABLE.message)
-                        }*/
                     }
 
                     is NetworkState.Undefined -> {
@@ -278,11 +239,12 @@ class MainActivityViewModel @Inject constructor(
             try {
                 supervisorScope {
 
-                    val fetchWeather: OneCallWeatherResponse? =
-                        repository.getWeatherOneCallAPI(Location("").apply {
-                            this.latitude = latitude
-                            this.longitude = longitude
-                        }) // fetch on IO thread
+                    val fetchWeather: OneCallWeatherResponse? = null
+                    /*repository.getWeatherOneCallAPI(Location("").apply {
+                        this.latitude = latitude
+                        this.longitude = longitude
+                    }) */
+                    // fetch on IO thread
 
                     if (null == fetchWeather) {
                         Timber.e("Fetch weather error")
@@ -351,24 +313,18 @@ class MainActivityViewModel @Inject constructor(
                         temp,
                         icon
                     )
-
-                setProcessedWeather(mProcessedWeather)
             } ?: run { Timber.e("Weather icon object is null") }
         } ?: run { Timber.e("Temperature object is null") }
     }
 
-    private fun setProcessedWeather(processedWeather: ProcessedWeather) {
-        Timber.d("setProcessedWeather()")
-        weather.value = processedWeather
-    }
 
     fun retrieveApplications(context: Context) {
         Timber.d("retrieveApplications()")
         val appList: MutableList<App> = ArrayList()
 
         // Get constants activities
-        appList.addAll(Constants.getActivityList(context))
-        appList.addAll(repository.getPackageList(context))
+        appList.addAll(LabAppManager.getActivityList(context))
+        appList.addAll(LabAppManager.getPackageList(context))
 
         if (appList.isEmpty()) {
             Timber.e("app list is empty")
@@ -381,7 +337,7 @@ class MainActivityViewModel @Inject constructor(
         Timber.d("fetchRecentApps()")
 
         // Setup last 3 features added
-        val mWhatsNewApps: List<LocalApp> = Constants
+        val mWhatsNewApps: List<LocalApp> = LabAppManager
             .getActivityList(context)
             .sortedByDescending { (it as LocalApp).appDate }
             .take(3)

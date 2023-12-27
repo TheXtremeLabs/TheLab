@@ -3,6 +3,7 @@ package com.riders.thelab.ui.mainactivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,10 +29,42 @@ import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.utils.LabAppManager
+
+
+@Composable
+fun NoItemFound(searchValue: String) {
+    TheLabTheme {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
+        ) {
+            Box(modifier = Modifier.size(112.dp), contentAlignment = Alignment.Center) {
+                Lottie(
+                    modifier = Modifier.fillMaxSize(),
+                    rawResId = if (!isSystemInDarkTheme()) com.riders.thelab.core.ui.R.raw.error_rolling else com.riders.thelab.core.ui.R.raw.error_rolling_dark_theme
+                )
+            }
+
+            Text(
+                text = "Oops! No item found for value \"$searchValue\"",
+                color = if (!isSystemInDarkTheme()) Color.Black else Color.White
+            )
+            Text(
+                text = "Please retry...",
+                color = if (!isSystemInDarkTheme()) Color.Black else Color.White
+            )
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -157,5 +190,29 @@ fun App(item: App) {
                 }
             }
         }
+    }
+}
+
+
+///////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////
+@DevicePreviews
+@Composable
+private fun PreviewNoItemFound() {
+    TheLabTheme {
+        NoItemFound("Cool")
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewApp() {
+    val context = LocalContext.current
+    val appItem = LabAppManager.getActivityList(context)[12]
+    TheLabTheme {
+        App(appItem)
     }
 }
