@@ -1,16 +1,19 @@
 package com.riders.thelab.core.common.network
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import android.net.NetworkRequest
-import android.os.Build
+import android.net.wifi.WifiManager
+import android.provider.Settings
 import androidx.activity.ComponentActivity
-import androidx.annotation.ChecksSdkIntAtLeast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
@@ -92,9 +95,6 @@ class LabNetworkManager(
     //////////////////////////////////
     fun updateNetworkState(newState: NetworkState) {
         _networkState.tryEmit(newState)
-        /*CoroutineScope(Dispatchers.IO).launch {
-            _networkState.tryEmit(newState)
-        }*/
     }
 
     fun getNetworkState(): Flow<NetworkState> = networkState
@@ -145,9 +145,6 @@ class LabNetworkManager(
         }
     }
 
-    @ChecksSdkIntAtLeast(Build.VERSION_CODES.Q)
-    private fun isAndroid10() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-
     @Suppress("DEPRECATION")
     fun isNetworkAvailable(): Boolean = if (LabCompatibilityManager.isAndroid10()) {
         Timber.d("isNetworkAvailable()")
@@ -185,6 +182,33 @@ class LabNetworkManager(
             .onFailure { Timber.e("onFailure() | Error caught with message ${it.message}") }
             .getOrDefault(false)
     }
+
+
+    @SuppressLint("WifiManagerPotentialLeak", "InlinedApi")
+    fun changeWifiState(context: Context, activity: Activity) {
+        Timber.d("changeWifiState()")
+
+        val wifiManager: WifiManager =
+            context.getSystemService(AppCompatActivity.WIFI_SERVICE) as WifiManager
+
+        if (!LabCompatibilityManager.isAndroid10()) {
+            val isWifi = wifiManager.isWifiEnabled
+            @Suppress("DEPRECATION")
+            wifiManager.isWifiEnabled = !isWifi
+        } else {
+            Timber.e("For applications targeting android.os.Build.VERSION_CODES Q or above, this API will always fail and return false")
+
+            /*
+                ACTION_INTERNET_CONNECTIVITY Shows settings related to internet connectivity, such as Airplane mode, Wi-Fi, and Mobile Data.
+                ACTION_WIFI Shows Wi-Fi settings, but not the other connectivity settings. This is useful for apps that need a Wi-Fi connection to perform large uploads or downloads.
+                ACTION_NFC Shows all settings related to near-field communication (NFC).
+                ACTION_VOLUME Shows volume settings for all audio streams.
+             */
+            val panelIntent = Intent(Settings.Panel.ACTION_WIFI)
+            activity.startActivityForResult(panelIntent, 955)
+        }
+    }
+
 
     companion object {
         @SuppressLint("StaticFieldLeak")

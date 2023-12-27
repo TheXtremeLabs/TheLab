@@ -183,9 +183,9 @@ fun Search(viewModel: MainActivityViewModel, dynamicIslandState: IslandState) {
 
     LaunchedEffect(viewModel.searchedAppRequest) {
         Timber.d("LaunchedEffect | ${viewModel.searchedAppRequest}")
-        delay(150L)
+        /*delay(150L)
         focusRequester.freeFocus()
-        focusManager.clearFocus(true)
+        focusManager.clearFocus(true)*/
     }
 }
 

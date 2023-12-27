@@ -40,7 +40,7 @@ const val ShaderSource = """
 fun MetaContainer(
     modifier: Modifier = Modifier,
     cutoff: Float = .5f,
-    content: @Composable BoxScope.() -> Unit,
+    content: @Composable BoxScope.() -> Unit
 ) {
     if (!LabCompatibilityManager.isTiramisu()) {
         Box(

@@ -543,7 +543,7 @@ object AppBuilderUtils {
                 // Google ML Kit - Live Barcode
                 val liveBarcode =
                     AppBuilder
-                        .withId(31L)
+                        .withId(32L)
                         .withActivityTitle(context.getString(R.string.activity_title_google_ml_kit))
                         .withActivityDescription("ML Kit brings Google’s machine learning expertise to mobile developers in a powerful and easy-to-use package...")
                         .withActivityIcon(
@@ -560,7 +560,7 @@ object AppBuilderUtils {
                 // Wip
                 val wip =
                     AppBuilder
-                        .withId(32L)
+                        .withId(40L)
                         .withActivityTitle("WIP")
                         .withActivityDescription("Coming soon...")
                         .withActivityIcon(

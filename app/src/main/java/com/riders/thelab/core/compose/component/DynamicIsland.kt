@@ -37,14 +37,18 @@ import com.riders.thelab.core.ui.compose.component.dynamicisland.bubbleExitTrans
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 @Composable
 fun DynamicIsland(viewModel: MainActivityViewModel, islandState: IslandState) {
     val config = LocalConfiguration.current
 
+    val targetValue = (config.screenWidthDp.dp / 2) - islandState.fullWidth / 2
+    Timber.d("DynamicIsland | target value : $targetValue")
+
     val startPadding by animateDpAsState(
-        targetValue = (config.screenWidthDp.dp / 2) - islandState.fullWidth / 2,
+        targetValue = targetValue,
         animationSpec = spring(
             stiffness = Spring.StiffnessLow,
             dampingRatio = Spring.DampingRatioLowBouncy,
@@ -68,7 +72,11 @@ fun DynamicIsland(viewModel: MainActivityViewModel, islandState: IslandState) {
         }
     }
 
-    MetaContainer(modifier = Modifier.height(200.dp)) {
+    MetaContainer(
+        modifier = Modifier
+            .height(200.dp)
+            .zIndex(3f)
+    ) {
         Row(
             modifier = Modifier
                 .padding(top = 20.dp)

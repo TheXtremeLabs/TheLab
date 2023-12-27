@@ -31,15 +31,17 @@ open class App(
         -1L, "", "", null, ""
     )
 
-    @Suppress("RedundantNullableReturnType")
-    fun getBitmap(vectorDrawable: VectorDrawable): Bitmap? {
-        val bitmap = Bitmap.createBitmap(
-            vectorDrawable.intrinsicWidth,
-            vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
-        vectorDrawable.draw(canvas)
-        return bitmap
+    companion object {
+        @Suppress("RedundantNullableReturnType")
+        fun getBitmap(vectorDrawable: VectorDrawable): Bitmap? {
+            val bitmap = Bitmap.createBitmap(
+                vectorDrawable.intrinsicWidth,
+                vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888
+            )
+            val canvas = Canvas(bitmap)
+            vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+            vectorDrawable.draw(canvas)
+            return bitmap
+        }
     }
 }
