@@ -11,9 +11,7 @@ import com.riders.thelab.ui.signup.SignUpActivity
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
 import timber.log.Timber
 
-class Navigator(
-    private val activity: Activity
-) {
+class Navigator(private val activity: Activity) {
 
     /* Activities */
     fun callSplashActivity() {

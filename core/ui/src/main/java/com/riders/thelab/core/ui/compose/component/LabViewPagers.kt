@@ -26,6 +26,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,12 +35,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.app.App
+import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.math.absoluteValue
 
 // extension method for current page offset
@@ -55,19 +60,21 @@ fun LabHorizontalViewPager(
     pagerState: PagerState,
     items: List<App>,
     pageCount: Int = items.size,
+    autoScroll: Boolean = false,
     content: @Composable (page: Int) -> Unit
 ) {
-    val horizontalPadding: Dp = 16.dp
-    val itemWidth: Dp = 340.dp
+    val scope = rememberCoroutineScope()
     val screenWidth: Int = LocalConfiguration.current.screenWidthDp
-    val contentPadding: PaddingValues = PaddingValues(
+    val horizontalPadding: Dp = 8.dp
+    val itemWidth: Dp = dimensionResource(id = R.dimen.max_card_image_width)
+    val contentPadding = PaddingValues(
         start = horizontalPadding,
         end = (screenWidth - itemWidth.value.toInt() + horizontalPadding.value.toInt()).dp
     )
 
     val fling = PagerDefaults.flingBehavior(
         state = pagerState,
-        pagerSnapDistance = PagerSnapDistance.atMost(2),
+        pagerSnapDistance = PagerSnapDistance.atMost(1),
         lowVelocityAnimationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow
@@ -88,8 +95,8 @@ fun LabHorizontalViewPager(
         ) {
             HorizontalPager(
                 state = pagerState,
-                pageSpacing = 16.dp,
-                contentPadding = contentPadding,
+                //pageSpacing = 8.dp,
+                //contentPadding = contentPadding,
                 beyondBoundsPageCount = 2,
                 flingBehavior = fling
             ) { page: Int ->
@@ -116,7 +123,8 @@ fun LabHorizontalViewPager(
                             // apply the scale equally to both X and Y, to not distort the image
                             scaleX = imageSize.value
                             scaleY = imageSize.value
-                        }
+                        },
+                    contentAlignment = Alignment.Center
                 ) {
                     // page composable
                     content(page)
@@ -147,54 +155,137 @@ fun LabHorizontalViewPager(
 
         delay(500L)
         viewModel.updateViewPagerDotVisibility(true)
+
+        if (autoScroll) {
+            scope.launch {
+                delay(3_000L)
+
+                if (pagerState.currentPage == pageCount) {
+                    pagerState.animateScrollToPage(0)
+                } else {
+                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                }
+            }
+        }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun <T> LabHorizontalViewPagerGeneric(
+fun <T : Any> LabHorizontalViewPagerGeneric(
     viewModel: BaseViewModel,
     pagerState: PagerState,
     items: List<T>,
     pageCount: Int = items.size,
-    content: @Composable (page: Int) -> Unit
+    autoScroll: Boolean = false,
+    content: @Composable (page: Int, pageOffset: Float) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+    val screenWidth: Int = LocalConfiguration.current.screenWidthDp
+    val horizontalPadding: Dp = 8.dp
+    val itemWidth: Dp = dimensionResource(id = R.dimen.max_card_image_width)
+    val contentPadding = PaddingValues(
+        start = horizontalPadding,
+        end = (screenWidth - itemWidth.value.toInt() + horizontalPadding.value.toInt()).dp
+    )
+
+    val fling = PagerDefaults.flingBehavior(
+        state = pagerState,
+        pagerSnapDistance = PagerSnapDistance.atMost(1),
+        lowVelocityAnimationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+
+    val dotsAnimatedAlpha =
+        animateFloatAsState(
+            targetValue = if (!viewModel.viewPagerDotVisibility) 0.0f else 1f,
+            label = ""
+        )
+
     TheLabTheme {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
         ) {
             HorizontalPager(
                 state = pagerState,
-                pageSpacing = 16.dp
+                //pageSpacing = 8.dp,
+                //contentPadding = contentPadding,
+                beyondBoundsPageCount = 2,
+                flingBehavior = fling
             ) { page: Int ->
+
+                val pageOffset = pagerState.calculateCurrentOffsetForPage(page)
+
+                val imageSize = animateFloatAsState(
+                    targetValue = if (0.0f != pageOffset) 0.75f else 1f,
+                    animationSpec = tween(durationMillis = 500),
+                    label = "image size animation"
+                )
+
                 Box(
                     modifier = Modifier
                         .graphicsLayer {
-                            val pageOffset = pagerState.calculateCurrentOffsetForPage(page)
                             // translate the contents by the size of the page, to prevent the pages from sliding in from left or right and stays in the center
-                            translationX = pageOffset * size.width
+//                            translationX = pageOffset * size.width
                             // apply an alpha to fade the current page in and the old page out
                             // alpha = 1 - pageOffset.absoluteValue
-                        }
+
+                            // get a scale value between 1 and 1.75f, 1.75 will be when its resting,
+                            // 1f is the smallest it'll be when not the focused page
+                            //val scale = lerp(.75f, 1f, pageOffset)
+                            // apply the scale equally to both X and Y, to not distort the image
+                            scaleX = imageSize.value
+                            scaleY = imageSize.value
+                        },
+                    contentAlignment = Alignment.Center
                 ) {
                     // page composable
-                    content(page)
+                    content(page, pageOffset)
                 }
             }
 
-            HorizontalPagerIndicator(
-                pageCount = pageCount,
-                currentPage = pagerState.currentPage,
-                targetPage = pagerState.targetPage,
-                currentPageOffsetFraction = pagerState.currentPageOffsetFraction
-            )
+            AnimatedVisibility(visible = viewModel.viewPagerDotExpanded) {
+                HorizontalPagerIndicator(
+                    modifier = Modifier.alpha(dotsAnimatedAlpha.value),
+                    pageCount = pageCount,
+                    currentPage = pagerState.currentPage,
+                    targetPage = pagerState.targetPage,
+                    currentPageOffsetFraction = pagerState.currentPageOffsetFraction
+                )
+            }
         }
     }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             viewModel.onCurrentPageChanged(page)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        delay(750L)
+        viewModel.updateViewPagerExpanded(true)
+
+        delay(500L)
+        viewModel.updateViewPagerDotVisibility(true)
+
+        if (autoScroll) {
+            scope.launch {
+                while (true) {
+                    delay(3_000L)
+
+                    // Timber.d("onCurrentPageChanged | currentPage: ${pagerState.currentPage}, pageCount:$pageCount")
+                    if (pagerState.currentPage == pageCount - 1) {
+                        pagerState.animateScrollToPage(0)
+                    } else {
+                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                    }
+                }
+            }
         }
     }
 }

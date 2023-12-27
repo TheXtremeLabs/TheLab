@@ -40,12 +40,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.palette.graphics.Palette
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
+import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPager
-import com.riders.thelab.core.ui.compose.component.calculateCurrentOffsetForPage
+import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
+import timber.log.Timber
 
 
 ///////////////////////////////
@@ -137,23 +138,20 @@ fun WhatsNew(item: App) {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun WhatsNew(item: App, pagerState: PagerState, page: Int) {
+fun WhatsNew(item: App, pageOffset: Float) {
 
     val context = LocalContext.current
 
+    val localApp: LocalApp = item as LocalApp
+
     /* Convert our Image Resource into a Bitmap */
-    val bitmap = remember {
-        UIManager.drawableToBitmap(item.appDrawableIcon!!)
-    }
+    val bitmap = remember { localApp.bitmap }
     /* Create the Palette, pass the bitmap to it */
-    val palette = remember {
-        bitmap.let { Palette.from(it).generate() }
-    }
+    val palette = remember { bitmap.let { Palette.from(it!!).generate() } }
 
     /* Get the dark vibrant swatch */
     val darkVibrantSwatch = palette.darkVibrantSwatch
 
-    val pageOffset = pagerState.calculateCurrentOffsetForPage(page)
     val colorMatrix = remember { ColorMatrix() }
 
     TheLabTheme {
@@ -205,7 +203,7 @@ fun WhatsNew(item: App, pagerState: PagerState, page: Int) {
                                 scaleX = scale
                                 scaleY = scale
                             },
-                        bitmap = bitmap.asImageBitmap(),
+                        bitmap = bitmap!!.asImageBitmap(),
                         contentDescription = "app_icon",
                         contentScale = ContentScale.FillHeight,
                         colorFilter = ColorFilter.colorMatrix(colorMatrix)
@@ -228,35 +226,39 @@ fun WhatsNew(item: App, pagerState: PagerState, page: Int) {
                 }
             }
 
-            LaunchedEffect(pageOffset) {
-                if (0.0f != pageOffset) {
-                    colorMatrix.setToSaturation(0f)
-                } else {
-                    colorMatrix.setToSaturation(1f)
-                }
-            }
+
         }
     }
+
+    /*LaunchedEffect(pageOffset) {
+        Timber.d("LaunchedEffect | pageOffset: $pageOffset")
+        if (0.0f != pageOffset || 1.0f != pageOffset || 2.0f != pageOffset || -1.0f != pageOffset || -2.0f != pageOffset) {
+            colorMatrix.setToSaturation(0f)
+        } else {
+            colorMatrix.setToSaturation(1f)
+        }
+    }*/
 }
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WhatsNewList(viewModel: MainActivityViewModel) {
-    val whatsNewList by viewModel.whatsNewAppList.collectAsStateWithLifecycle()
+    val whatsNewList: List<LocalApp> by viewModel.whatsNewAppList.collectAsStateWithLifecycle()
     val pagerState: PagerState =
         rememberPagerState(initialPageOffsetFraction = .25f) { whatsNewList.size }
 
     TheLabTheme {
         Row(modifier = Modifier.fillMaxWidth()) {
-            LabHorizontalViewPager(
+            LabHorizontalViewPagerGeneric(
                 viewModel = viewModel,
                 pagerState = pagerState,
-                items = whatsNewList
-            ) {
+                items = whatsNewList,
+                autoScroll = viewModel.isTimeUpdatedStarted
+            ) { page, pageOffset ->
                 WhatsNew(
-                    item = whatsNewList[viewModel.viewPagerCurrentIndex],
-                    pagerState = pagerState,
-                    page = it
+                    item = whatsNewList[page],
+                    pageOffset = pageOffset
                 )
             }
         }
@@ -285,7 +287,7 @@ private fun PreviewWhatsNewForPager(@PreviewParameter(AppListPreviewProvider::cl
         rememberPagerState(initialPageOffsetFraction = .25f) { appList.size }
 
     TheLabTheme {
-        WhatsNew(appList[2], pagerState, 2)
+        WhatsNew(appList[2], 2f)
     }
 }
 
