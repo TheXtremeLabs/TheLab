@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -30,11 +29,8 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.weather.core.component.TheLabTopAppBar
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecyclerViewContent(viewModel: RecyclerViewModel) {
-
-    val scope = rememberCoroutineScope()
     val lazyState = rememberLazyGridState()
 
     val artistUiState by viewModel.artistUiState.collectAsStateWithLifecycle()

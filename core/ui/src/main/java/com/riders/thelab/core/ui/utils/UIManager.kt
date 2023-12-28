@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.request.RequestListener
 import com.google.android.material.imageview.ShapeableImageView
@@ -80,10 +81,13 @@ object UIManager {
 
         // Setting Dialog Message
         alertDialog.setMessage(message)
-        alertDialog.setNegativeButton(negativeMessage) { dialog: DialogInterface, _: Int ->
-            showActionInToast(context, negativeMessage)
-            if (negativeMessage.equals("Réessayer", ignoreCase = true)) {
-                //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
+        alertDialog.setNegativeButton(negativeMessage) { _: DialogInterface, _: Int ->
+            if (negativeMessage != null) {
+                showActionInToast(context, negativeMessage)
+
+                if (negativeMessage.equals("Réessayer", ignoreCase = true)) {
+                    //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
+                }
             }
             /*if (negativeMessage.equals("Réessayer", ignoreCase = true)
                 && LabNetworkManagerNewAPI.getInstance(context).isOnline()
@@ -105,7 +109,15 @@ object UIManager {
     }
 
 
-    fun showActionInToast(context: Context?, textToShow: String?) {
+    fun showToast(context: Context, @StringRes stringResId: Int) {
+        showToast(context, context.getString(stringResId))
+    }
+
+    fun showToast(context: Context, message: String) =
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
+
+    fun showActionInToast(context: Context, textToShow: String) {
         Toast.makeText(context, textToShow, Toast.LENGTH_SHORT).show()
     }
 
@@ -261,26 +273,6 @@ object UIManager {
         }
     }
 
-    //@BindingAdapter("android:src", "error", requireAll = false)
-    fun loadImage(
-        context: Context,
-        targetImageView: ShapeableImageView,
-        iconIntRes: Int,
-        error: Drawable,
-    ) {
-//        LabGlideUtils.getInstance().loadImage(context,iconIntRes, targetImageView,  error)
-    }
-
-    //@BindingAdapter("imageUrl", "error", requireAll = false)
-    fun loadImage(
-        context: Context,
-        targetImageView: ShapeableImageView,
-        iconResDrawable: Drawable,
-        error: Drawable,
-    ) {
-//        LabGlideUtils.getInstance().loadImage(context,  iconResDrawable,targetImageView, error)
-    }
-
     fun loadImage(
         context: Context,
         iconResDrawable: Any,
@@ -310,26 +302,11 @@ object UIManager {
         LabGlideUtils.getInstance().loadImageBlurred(context, imageURL, targetImageView)
     }
 
-    /**
-     * Display menu buttons when collapsing toolbar is collapsed
-     */
-    fun showMenuButtons(menu: Menu) {
-        // Or true to be visible
-        // menu.setGroupVisible(R.id.menu_main_group, true)
-    }
 
     fun getBitmapFromDrawable(context: Context, drawableResId: Int): Bitmap? {
         if (0 == drawableResId)
             return null
         return drawableToBitmap(ContextCompat.getDrawable(context, drawableResId)!!)
-    }
-
-    /**
-     * Hide menu buttons when collapse toolbar is expanded
-     */
-    fun hideMenuButtons(menu: Menu) {
-        // Or true to be visible
-        // menu.setGroupVisible(R.id.menu_main_group, false)
     }
 
     fun getDrawable(context: Context, drawableResId: Int): Drawable? {

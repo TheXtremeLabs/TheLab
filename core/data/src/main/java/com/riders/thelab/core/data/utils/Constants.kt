@@ -25,7 +25,7 @@ object Constants {
 
     private const val PORT = ":8101"
 
-    val BASE_ENDPOINT_THE_LAB_URL: String = "https://the-lab-back.herokuapp.com"
+    const val BASE_ENDPOINT_THE_LAB_URL: String = "https://the-lab-back.herokuapp.com"
     /*HTTP + if (LabDeviceManager.getModel().trim().lowercase()
             .contains("sdk")
     ) EMULATOR_IP_ADDRESS else IP_ADDRESS + PORT*/
@@ -34,6 +34,7 @@ object Constants {
     //REST client Base URL
     const val BASE_ENDPOINT_YOUTUBE = "https://raw.githubusercontent.com"
     const val BASE_ENDPOINT_SEARCH = "https://ajax.googleapis.com"
+    const val BASE_ENDPOINT_FIREBASE_CLOUD_MESSAGING = "https://fcm.googleapis.com/"
     const val BASE_ENDPOINT_GOOGLE_FIREBASE_API = " https://firebasestorage.googleapis.com/"
     const val BASE_ENDPOINT_GOOGLE_MAPS_API = "https://maps.googleapis.com/maps/api/"
     const val BASE_ENDPOINT_GOOGLE_PLACES = "https://maps.googleapis.com/maps/api/place/"

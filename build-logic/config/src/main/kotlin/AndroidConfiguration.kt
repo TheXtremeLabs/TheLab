@@ -3,14 +3,14 @@ object AndroidConfiguration {
     val buildTools: Version = Version(major = 30, minor = 0, patch = 3)
 
     object Sdk {
-        const val compilation: Int = 34
-        const val min: Int = 23
-        const val target: Int = compilation
+        const val COMPILATION: Int = 34
+        const val MIN: Int = 23
+        const val TARGET: Int = COMPILATION
     }
 
     object Application {
         const val code: Int = 1
-        val version: Version = Version(major = 12, minor = 0, patch = 14)
+        val version: Version = Version(major = 12, minor = 9, patch = 0)
     }
 }
 

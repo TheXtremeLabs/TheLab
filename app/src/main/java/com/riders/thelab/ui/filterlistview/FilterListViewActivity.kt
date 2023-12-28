@@ -36,7 +36,7 @@ class FilterListViewActivity : AppCompatActivity(), TextWatcher {
 
         mFilterViewModel
             .getPopulations()
-            .observe(this, { list ->
+            .observe(this) { list ->
 
                 // Pass results to ListViewAdapter Class
                 adapter = FilterListViewAdapter(this, list as MutableList<WorldPopulation>)
@@ -46,7 +46,7 @@ class FilterListViewActivity : AppCompatActivity(), TextWatcher {
 
                 // Capture Text in EditText
                 binding.etFilterListviewSearch.addTextChangedListener(this)
-            })
+            }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

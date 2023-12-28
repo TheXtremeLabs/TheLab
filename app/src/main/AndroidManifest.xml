@@ -17,6 +17,7 @@
     <!--ACCESS_FINE_LOCATION permission need for google play services version.-->
     <!-- For GPS based location, this one -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="com.riders.thelab.permission.MAPS_RECEIVE" />
     <uses-permission android:name="com.google.android.providers.gsf.perssion.READ_GSERVICES" />
 
@@ -24,13 +25,21 @@
         android:name="com.riders.thelab.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
-
     <!-- Device -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
+    <!-- Android 13 : Prevent to get error : IOException: Operation not permitted -->
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        android:minSdkVersion="30"
         tools:ignore="ScopedStorage" />
+
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.MODIFY_PHONE_STATE"
@@ -93,6 +102,12 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
 
+    <!-- from API Level 30 need to add <queries> for android.speech.RecognitionService  to AndroidManifest.xml -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
 
     <!--
         Android:java.lang.OutOfMemoryError: Failed to allocate a 23970828 byte allocation with 2097152 free bytes and 2MB until OOM
@@ -152,10 +167,6 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/google_ads_key" />
 
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
-
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="barcode" />
@@ -193,13 +204,7 @@
             android:exported="true"
             android:label="@string/activity_title_colors"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
+            android:theme="@style/Theme.TheLab" />
 
         <activity
             android:name=".feature.biometric.ui.BiometricActivity"
@@ -275,10 +280,9 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name=".ui.deviceinformation.DeviceInformationActivity"
+            android:name=".feature.deviceinformation.DeviceInformationActivity"
             android:label="@string/activity_title_device_information"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/SwipeDownTheme" />
+            android:parentActivityName=".ui.mainactivity.MainActivity" />
 
         <activity
             android:name=".feature.deviceinformation.DeviceInformationActivity"
@@ -330,13 +334,6 @@
             android:theme="@style/YoutubeTheme" />
 
         <activity
-            android:name=".ui.speechtotext.SpeechToTextActivity"
-            android:label="@string/activity_title_speech_to_text"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/Theme.TheLab" />
-
-
-        <activity
             android:name=".feature.weather.ui.WeatherActivity"
             android:exported="true"
             android:label="@string/activity_title_weather"
@@ -381,12 +378,28 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
+
+        <!-- Kat Activities -->
         <activity
-            android:name=".ui.kat.KatActivity"
+            android:name=".feature.kat.ui.KatSplashscreenActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
+
+        <activity
+            android:name=".feature.kat.ui.KatMainActivity"
             android:label="@string/activity_title_kat"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".feature.kat.ui.KatChatActivity"
+            android:label="@string/activity_title_kat"
+            android:parentActivityName=".feature.kat.ui.KatMainActivity"
+            android:theme="@style/Theme.TheLab"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
 
         <activity
             android:name=".ui.songplayer.SongPlayerActivity"
@@ -414,13 +427,13 @@
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".ui.lottie.LottieActivity"
+            android:name=".feature.lottie.LottieActivity"
             android:label="@string/activity_title_lottie"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="fullSensor" />
 
         <activity
-            android:name=".ui.bluetooth.BluetoothActivity"
+            android:name=".feature.bluetooth.BluetoothActivity"
             android:label="@string/activity_bluetooth_title"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
@@ -480,9 +493,15 @@
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".ui.settings.SettingsActivity"
+            android:name=".feature.settings.SettingsActivity"
             android:label="@string/activity_settings_title"
             android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.settings.UserProfileActivity"
+            android:label="@string/activity_settings_title"
+            android:parentActivityName=".feature.settings.SettingsActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
@@ -523,7 +542,7 @@
         </receiver>
 
         <!-- Connection -->
-        <receiver
+        <!--<receiver
             android:name=".core.broadcast.ConnectivityReceiver"
             android:enabled="true"
             android:exported="true">
@@ -532,7 +551,7 @@
                     android:name="android.net.conn.CONNECTIVITY_CHANGE"
                     tools:ignore="BatteryLife" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
         <!-- Alarm -->
         <receiver
@@ -590,6 +609,31 @@
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".feature.kat.core.FCMMessageService"
+            android:exported="false">
+
+            <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+                     See README(https://goo.gl/l4GJaQ) for more. -->
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ic_the_lab_12_logo_black" />
+            <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+                 notification message. See README(https://goo.gl/6BKBk7) for more. -->
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_color"
+                android:resource="@color/tabColorAccent" />
+
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_channel_id"
+                android:value="@string/fcm_notification_channel_id" />
+
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+
             </intent-filter>
         </service>
         <!-- ////////////// SERVICES ////////////// -->

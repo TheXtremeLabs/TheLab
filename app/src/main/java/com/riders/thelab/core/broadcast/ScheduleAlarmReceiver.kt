@@ -18,7 +18,7 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
         const val REQUEST_CODE = 1889310
     }
 
-    override fun onReceive(context: Context?, intent: Intent?) {
+    override fun onReceive(context: Context, intent: Intent?) {
         Timber.d("MyBroadcastReceiver - onReceive()")
 
         // Post event with cll info object set

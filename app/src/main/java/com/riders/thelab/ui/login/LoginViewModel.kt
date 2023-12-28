@@ -1,19 +1,32 @@
 package com.riders.thelab.ui.login
 
 import android.util.Patterns
-import androidx.compose.runtime.*
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.BuildConfig
+import com.riders.thelab.core.common.utils.encodeToSha256
 import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.compose.LoginFieldsUIState
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
 import com.riders.thelab.core.data.remote.dto.ApiResponse
-import com.riders.thelab.core.data.remote.dto.UserDto
-import com.riders.thelab.ui.base.BaseViewModel
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -33,9 +46,31 @@ class LoginViewModel @Inject constructor(
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    var login by mutableStateOf(if (BuildConfig.DEBUG) "test@test.fr" else "")
+    // Login States
+    // User Login State
+    private var _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.None)
+    val loginUiState: StateFlow<LoginUiState> = _loginUiState
+
+    // Login field state
+    private var _loginFieldUiState =
+        MutableStateFlow<LoginFieldsUIState.Login>(LoginFieldsUIState.Login.Idle)
+    val loginFieldUiState: StateFlow<LoginFieldsUIState.Login> = _loginFieldUiState
+
+    // Password field state
+    private var _passwordFieldUiState =
+        MutableStateFlow<LoginFieldsUIState.Password>(LoginFieldsUIState.Password.Idle)
+    val passwordFieldUiState: StateFlow<LoginFieldsUIState.Password> = _passwordFieldUiState
+
+    // Backing property to avoid state updates from other classes
+    private val _networkState: MutableStateFlow<NetworkState> =
+        MutableStateFlow(NetworkState.Disconnected(true))
+
+    // The UI collects from this StateFlow to get its state updates
+    val networkState: StateFlow<NetworkState> = _networkState
+
+    var login by mutableStateOf(if (BuildConfig.DEBUG) "jane.doe@test.com" else "")
         private set
-    var password by mutableStateOf(if (BuildConfig.DEBUG) "test12356" else "")
+    var password by mutableStateOf(if (BuildConfig.DEBUG) "test1234" else "")
         private set
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -53,28 +88,30 @@ class LoginViewModel @Inject constructor(
 
     val loginHasLocalError by derivedStateOf {
         // synchronous call
-        !Patterns.EMAIL_ADDRESS.matcher(login).matches()
+        // !Patterns.EMAIL_ADDRESS.matcher(login).matches()
+        login.isBlank()
     }
 
-    private var _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.None)
-    val loginUiState: StateFlow<LoginUiState> = _loginUiState
-
-    // Backing property to avoid state updates from other classes
-    private val _networkState: MutableStateFlow<NetworkState> =
-        MutableStateFlow(NetworkState.Disconnected(true))
-
-    // The UI collects from this StateFlow to get its state updates
-    val networkState: StateFlow<NetworkState> = _networkState
+    var isRememberCredentials: Boolean by mutableStateOf(false)
+        private set
 
 
     ////////////////////////////////////////
     // Composable methods
     ////////////////////////////////////////
-    fun updateLoginUiState(newState: LoginUiState) {
+    private fun updateLoginUiState(newState: LoginUiState) {
         _loginUiState.value = newState
     }
 
-    fun updateNetworkState(newState: NetworkState) {
+    fun updateLoginFieldUiState(newLoginFieldState: LoginFieldsUIState.Login) {
+        _loginFieldUiState.value = newLoginFieldState
+    }
+
+    fun updatePasswordFieldUiState(newPasswordFieldState: LoginFieldsUIState.Password) {
+        _passwordFieldUiState.value = newPasswordFieldState
+    }
+
+    private fun updateNetworkState(newState: NetworkState) {
         _networkState.value = newState
     }
 
@@ -86,13 +123,23 @@ class LoginViewModel @Inject constructor(
         password = value
     }
 
+    fun updateIsRememberCredentials(remember: Boolean) {
+        this.isRememberCredentials = remember
+
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            repository.saveRememberCredentialsPref(
+                remember
+            )
+        }
+    }
+
     fun isUsernameAvailable(login: String): Boolean = list.contains(login)
 
     //////////////////////////////////////////
     // Coroutines
     //////////////////////////////////////////
     private val coroutineExceptionHandler =
-        CoroutineExceptionHandler { coroutineContext, throwable ->
+        CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
             Timber.e("coroutineExceptionHandler | ${throwable.message}")
 
@@ -103,18 +150,39 @@ class LoginViewModel @Inject constructor(
             if (throwable.message?.contains(cs404, true) == true
                 || throwable.message?.contains(cs503, true) == true
             ) {
-                //updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
+                updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
+            } else {
+                // Default error
+                updateLoginUiState(
+                    LoginUiState.Error(
+                        ApiResponse(
+                            "Error while logging user. Please verify your credentials",
+                            404,
+                            null
+                        )
+                    )
+                )
             }
         }
 
+
     ///////////////
     //
-    // Observers
+    // OVERRIDE
     //
     ///////////////
-    fun getDataStoreEmail() = dataStoreEmail
-    fun getDataStorePassword() = dataStorePassword
-    fun getDataStoreRememberCredentials() = dataStoreRememberCredentials
+    init {
+        if (true == dataStoreRememberCredentials.value) {
+            dataStoreEmail.value?.let { updateLogin(it) }
+            dataStorePassword.value?.let { updatePassword(it) }
+            dataStoreRememberCredentials.value?.let { updateIsRememberCredentials(it) }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Timber.e("onCleared()")
+    }
 
 
     ///////////////
@@ -149,18 +217,20 @@ class LoginViewModel @Inject constructor(
 
         updateLoginUiState(LoginUiState.Connecting)
 
-        makeCallLogin(login, password)
+        logUser(login, password)
     }
 
 
-    fun isValidLogin() =
-        login.trim().isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(login).matches()
+    private fun isValidLogin(): Boolean =
+        (login.trim().isNotEmpty()
+                && Patterns.EMAIL_ADDRESS.matcher(login).matches()) ||
+                (login.trim().isNotEmpty() && login.length >= 2)
 
-    fun isValidPassword() = password.trim().isNotEmpty() && password.length >= 4
+    private fun isValidPassword(): Boolean = password.trim().isNotEmpty() && password.length >= 4
 
     fun getApi() {
         Timber.d("getApi()")
-        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             Timber.d("getApi()")
             val response = repository.getApi()
             Timber.d("$response")
@@ -169,60 +239,40 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun makeCallLogin(email: String, password: String) {
-        Timber.d("makeCallLogin() - with $email and $password")
+    private fun logUser(usernameOrEmail: String, password: String) {
+        Timber.d("logUser() | username Or Email: $usernameOrEmail, password:$password")
 
-        val encodedPassword: String =
-            LoginUtils.encodedHashedPassword(
-                LoginUtils.convertToSHA1(password)!!
-            )!!
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
 
-        val user = UserDto(email, password, encodedPassword)
+            // Simulate long-time running operation
+            delay(1_500)
 
-        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
-            delay(2500L)
-
-            /*try {
-                supervisorScope {*/
-            /*val response = repository.login(user)
-            Timber.d("$response")
-
-            _loginUiState.value = LoginUiState.Success(response)*/
-
-            //TODO : Due to Heroku back-end free services ending,
-            // Use of the database to store and log users
-
-            // Force response
-            Timber.e("Force response error: Due to Heroku back-end free services ending.")
-            updateLoginUiState(LoginUiState.Error(ApiResponse("", 404, null)))
-
-            // }
-            /*} catch (e: Exception) {
-                e.printStackTrace()
-                Timber.e(e.message)*/
-
-            /*val cs404: CharSequence = "404".subSequence(0, 3)
-            val cs503: CharSequence = "503".subSequence(0, 3)
-            if (e.message?.contains(cs404, true) == true
-                || e.message?.contains(cs503, true) == true
-            ) {
-                _loginUiState.value = LoginUiState.Error(ApiResponse("", 404, null))
-            }*/
-            //}
+            repository.logUser(usernameOrEmail, password.encodeToSha256())?.let {
+                Timber.d("user found: $it")
+                if (isRememberCredentials) {
+                    saveUserDataInDataStore(usernameOrEmail, password)
+                }
+                updateLoginUiState(LoginUiState.UserSuccess(it))
+            } ?: run {
+                Timber.e("user object is null. Unable to get user, please make sure to enter a valid username or email with a valid password.")
+                updateLoginUiState(
+                    LoginUiState.UserError("user object is null. Unable to get user, please make sure to enter a valid username or email with a valid password.")
+                )
+            }
         }
     }
 
-    fun saveUserDataInDataStore(email: String, password: String, isChecked: Boolean) {
-        try {
-            viewModelScope.launch(IO) {
+    private fun saveUserDataInDataStore(email: String, password: String) =
+        runCatching {
+            Timber.d("saveUserDataInDataStore() | runCatching")
+            viewModelScope.launch(Dispatchers.IO) {
                 repository.saveEmailPref(email)
                 repository.savePasswordPref(password)
-                repository.saveRememberCredentialsPref(isChecked)
             }
-        } catch (exception: Exception) {
-            exception.printStackTrace()
         }
-    }
+            .onFailure {
+                Timber.e("runCatching | onFailure | error caught with message: ${it.message}")
+            }
 }
 
 fun String.isLetterOrDigits(): Boolean = this.matches("^[a-zA-Z0-9]*$".toRegex())

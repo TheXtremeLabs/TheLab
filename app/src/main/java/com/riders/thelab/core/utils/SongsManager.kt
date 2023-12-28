@@ -11,7 +11,7 @@ import java.io.FilenameFilter
 class SongsManager {
 
     // SDCard Path
-    private val MEDIA_PATH: String = Environment.getExternalStorageDirectory().toString()
+    private val mediaPath: String = Environment.getExternalStorageDirectory().toString()
 
     //final String MEDIA_PATH = System.getenv("SECONDARY_STORAGE");
     private val songsList: ArrayList<HashMap<String, String>> = ArrayList()
@@ -23,7 +23,7 @@ class SongsManager {
     fun getPlayList(): ArrayList<HashMap<String, String>> {
 
         try {
-            val home = File(MEDIA_PATH)
+            val home = File(mediaPath)
 
             /*
             Map<String, File> externalLocations = ExternalStorage.getAllStorageLocations();

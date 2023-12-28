@@ -39,7 +39,7 @@ import com.riders.thelab.feature.weather.ui.WeatherViewModel
 @Composable
 fun TheLabTopAppBar(
     @PreviewParameter(TextContentPreviewProvider::class) title: String,
-    navigationIcon: @Composable() (() -> Unit)? = null
+    navigationIcon: @Composable (() -> Unit)? = null
 ) {
     val context = LocalContext.current
 
@@ -80,7 +80,7 @@ fun TheLabTopAppBar(
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TheLabTopAppBar(navigationIcon: @Composable() (() -> Unit)) {
+fun TheLabTopAppBar(navigationIcon: @Composable (() -> Unit)) {
     val context = LocalContext.current
 
     TheLabTheme {
@@ -237,8 +237,6 @@ fun TheLabTopAppBarLarge() {
 // PREVIEWS
 //
 ///////////////////////////
-
-@OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
 private fun PreviewTheLabTopAppBar() {

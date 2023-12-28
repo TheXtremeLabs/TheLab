@@ -25,15 +25,15 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
 //    val mListener: ConnectivityListener get() = listener
 
     private var connectivityManager: ConnectivityManager
-    var currentNetwork: Network? = null
+    private var currentNetwork: Network? = null
 
-    var caps: NetworkCapabilities? = null
-    var linkProperties: LinkProperties? = null
+    private var caps: NetworkCapabilities? = null
+    private var linkProperties: LinkProperties? = null
 
-    var mType: Int = 0
+    private var mType: Int = 0
     var isConnected: Boolean = false
-    var isWifiConn: Boolean = false
-    var isMobileConn: Boolean = false
+    private var isWifiConn: Boolean = false
+    private var isMobileConn: Boolean = false
 
     private val connectionLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -126,7 +126,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
         network: Network,
         networkCapabilities: NetworkCapabilities
     ) {
-        Timber.e("The default network changed capabilities: $networkCapabilities")
+        // Timber.e("The default network changed capabilities: $networkCapabilities")
 
         currentNetwork = network
         caps = networkCapabilities
@@ -188,7 +188,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
     fun isOnline(): Boolean {
         Timber.d("isOnline()")
 
-        var connected: Boolean = false
+        var connected = false
 
         connectivityManager.allNetworks.run {
             this.forEach { network ->

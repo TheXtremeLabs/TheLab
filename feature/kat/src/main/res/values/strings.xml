@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_chat">Chat</string>
+    <string name="title_profile">Profile</string>
+    <string name="kat_notification_channel">Kat Notifications Channel</string>
+</resources>

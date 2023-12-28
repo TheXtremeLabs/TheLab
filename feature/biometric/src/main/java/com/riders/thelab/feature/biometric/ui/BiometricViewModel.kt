@@ -404,7 +404,7 @@ class BiometricViewModel @Inject constructor(
         return runBlocking { biometricRepository.createCryptoObject(CryptoPurpose.Decryption) }
     }
 
-    fun logout() {
+    private fun logout() {
         viewModelScope.launch {
             userRepository.logout()
             userRepository.isUserLoggedIn.collect {

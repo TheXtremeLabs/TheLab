@@ -1,10 +1,17 @@
 package com.riders.thelab.core.data.local.model.compose
 
 
+import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.biometric.AuthContext
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 
 sealed class LoginUiState {
+    data class UserSuccess(val user: User) : LoginUiState()
+    data class UserError(
+        val errorMessage: String? = null,
+        val throwable: Throwable? = null
+    ) : LoginUiState()
+
     data class Success(val response: ApiResponse) : LoginUiState()
     data class Error(val errorResponse: ApiResponse? = null) : LoginUiState()
 
@@ -34,7 +41,7 @@ sealed class LoginUiState {
         val authContext: AuthContext? = null
     ) : LoginUiState()
 
-    object Connecting : LoginUiState()
-    object Loading : LoginUiState()
-    object None : LoginUiState()
+    data object Connecting : LoginUiState()
+    data object Loading : LoginUiState()
+    data object None : LoginUiState()
 }

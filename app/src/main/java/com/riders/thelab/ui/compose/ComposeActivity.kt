@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -44,7 +43,6 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.utils.ComposeUtils
 import timber.log.Timber
 
 class ComposeActivity : BaseComponentActivity() {
@@ -221,7 +219,6 @@ fun Conversation(messages: List<Message>) {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationContent() {
     Scaffold(
@@ -233,7 +230,7 @@ fun ConversationContent() {
                 .padding(contentPadding)
                 .padding(16.dp)
         ) {
-            Conversation(ComposeUtils.conversationSample)
+            Conversation(Message.conversationSample)
         }
     }
 }

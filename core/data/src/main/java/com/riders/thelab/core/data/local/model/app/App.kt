@@ -6,9 +6,13 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
+@Stable
+@Immutable
 @Parcelize
 open class App(
     // Packages
@@ -27,14 +31,17 @@ open class App(
         -1L, "", "", null, ""
     )
 
-    fun getBitmap(vectorDrawable: VectorDrawable): Bitmap? {
-        val bitmap = Bitmap.createBitmap(
-            vectorDrawable.intrinsicWidth,
-            vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
-        vectorDrawable.draw(canvas)
-        return bitmap
+    companion object {
+        @Suppress("RedundantNullableReturnType")
+        fun getBitmap(vectorDrawable: VectorDrawable): Bitmap? {
+            val bitmap = Bitmap.createBitmap(
+                vectorDrawable.intrinsicWidth,
+                vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888
+            )
+            val canvas = Canvas(bitmap)
+            vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+            vectorDrawable.draw(canvas)
+            return bitmap
+        }
     }
 }

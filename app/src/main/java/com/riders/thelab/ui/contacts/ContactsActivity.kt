@@ -138,24 +138,24 @@ class ContactsActivity
 
         mContactViewModel
             .getProgressBarVisibility()
-            .observe(this, {})
+            .observe(this) {}
 
         mContactViewModel
             .getNoContactFound()
-            .observe(this, {
+            .observe(this) {
                 binding.noContactFoundLayoutContainer.layoutNoContactsFound.visibility =
                     View.VISIBLE
-            })
+            }
 
         mContactViewModel
             .getContactsFailed()
-            .observe(this, {
+            .observe(this) {
                 Timber.d("onContactsFetchedError()")
-            })
+            }
 
         mContactViewModel
             .getContacts()
-            .observe(this, { contacts ->
+            .observe(this) { contacts ->
 
                 contactList = contacts
 
@@ -178,7 +178,7 @@ class ContactsActivity
                     RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this)
                 ItemTouchHelper(itemTouchHelperCallback)
                     .attachToRecyclerView(binding.contactsLayoutContainer.rvContacts)
-            })
+            }
 
     }
 

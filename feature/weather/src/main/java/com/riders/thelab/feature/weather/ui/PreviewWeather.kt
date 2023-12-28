@@ -4,25 +4,51 @@ import android.location.Address
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -130,14 +156,16 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
                             Modifier.clickable { viewModel.expanded = !viewModel.expanded }
                         )
                     },
+                    singleLine = true,
+                    maxLines = 1
                     //readOnly = true,
                 )
 
                 ExposedDropdownMenu(
-                    expanded = viewModel.expanded,
-                    onDismissRequest = { viewModel.expanded = false },
                     modifier = Modifier
-                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() }),
+                    expanded = viewModel.expanded,
+                    onDismissRequest = { viewModel.expanded = false }
                 ) {
                     viewModel.suggestions.take(10).forEachIndexed { _, city ->
 
@@ -198,15 +226,15 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun WeatherData(viewModel: WeatherViewModel) {
 
     val context = LocalContext.current
-
+    val verticalScroll: ScrollState = rememberScrollState()
     val cityUIState by viewModel.weatherCityUiState.collectAsStateWithLifecycle()
 
     if (cityUIState is WeatherCityUIState.Success) {
+
         val weather = (cityUIState as WeatherCityUIState.Success).weather
 
         val painter = rememberAsyncImagePainter(
@@ -229,16 +257,11 @@ fun WeatherData(viewModel: WeatherViewModel) {
             placeholder = painterResource(R.drawable.logo_colors),
         )
 
-        val address: Address =
-            viewModel.getCityNameWithCoordinates(
-                context.findActivity() as WeatherActivity,
-                weather.latitude,
-                weather.longitude
-            )!!
+        val address: Address? = viewModel.weatherAddress
 
         // Load city name
-        val cityName = address.locality
-        val country = address.countryName
+        val cityName = address?.locality
+        val country = address?.countryName
 
         // Temperatures
         val temperature =
@@ -255,7 +278,7 @@ fun WeatherData(viewModel: WeatherViewModel) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     Card(
                         modifier = Modifier
@@ -332,7 +355,10 @@ fun WeatherData(viewModel: WeatherViewModel) {
                                 }
 
                                 Button(onClick = { viewModel.updateMoreDataVisibility() }) {
-                                    AnimatedContent(targetState = viewModel.isWeatherMoreDataVisible) {
+                                    AnimatedContent(
+                                        targetState = viewModel.isWeatherMoreDataVisible,
+                                        label = "weather_visibility_animation"
+                                    ) { targetState ->
                                         Row(
                                             modifier = Modifier,
                                             horizontalArrangement = Arrangement.spacedBy(
@@ -341,9 +367,9 @@ fun WeatherData(viewModel: WeatherViewModel) {
                                             ),
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            Text(text = if (!viewModel.isWeatherMoreDataVisible) "Show More" else "Close Panel")
+                                            Text(text = if (!targetState) "Show More" else "Close Panel")
                                             Icon(
-                                                imageVector = if (!viewModel.isWeatherMoreDataVisible) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
+                                                imageVector = if (!targetState) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
                                                 contentDescription = "more icon"
                                             )
                                         }
@@ -380,6 +406,14 @@ fun WeatherData(viewModel: WeatherViewModel) {
                 }
             }
         }
+
+        LaunchedEffect(weather) {
+            viewModel.getCityNameWithCoordinates(
+                context.findActivity() as WeatherActivity,
+                weather.latitude,
+                weather.longitude
+            )
+        }
     }
 }
 
@@ -395,11 +429,11 @@ fun WeatherMoreData(weather: OneCallWeatherResponse) {
             )
         }"
 
-    val cloudiness: String = "${weather.currentWeather?.clouds.toString()} ${
+    val cloudiness = "${weather.currentWeather?.clouds.toString()} ${
         (context.findActivity() as WeatherActivity).resources.getString(R.string.percent_placeholder)
     }"
 
-    val humidity: String = "${weather.currentWeather?.humidity.toString()} ${
+    val humidity = "${weather.currentWeather?.humidity.toString()} ${
         (context.findActivity() as WeatherActivity).resources.getString(R.string.percent_placeholder)
     }"
 
@@ -654,7 +688,6 @@ fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherContent(viewModel: WeatherViewModel, labLocationManager: LabLocationManager) {
 

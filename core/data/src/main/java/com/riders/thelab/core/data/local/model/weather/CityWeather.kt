@@ -1,6 +1,6 @@
 package com.riders.thelab.core.data.local.model.weather
 
-data class CityWeather constructor(
+data class CityWeather(
     val cityName: String,
     val cityCountry: String,
     val cityTemperature: Double,

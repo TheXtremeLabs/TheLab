@@ -4,15 +4,21 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import android.os.CombinedVibration
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.view.WindowMetrics
-import androidx.annotation.RequiresApi
-import androidx.biometric.BiometricManager
 import timber.log.Timber
 import java.io.File
 
 object LabDeviceManager {
+
+    const val MODEL_NAME_GALAXY_NOTE_4 = "SM-N910F"
+    const val MODEL_NAME_GALAXY_NOTE_8 = "SM-N950F"
+    const val MODEL_NAME_GALAXY_NOTE_20_ULTRA = "SM-N980B"
 
     // TODO : GoldFinger deprecated
 
@@ -36,12 +42,9 @@ object LabDeviceManager {
         Timber.i("Version Code: %s ", Build.VERSION.RELEASE)
     }
 
-    fun getDevice(): String? {
-        return Build.DEVICE
-    }
+    fun getDevice(): String? = Build.DEVICE
 
-    fun getSerial(): String? {
-        var serial: String? = null
+    fun getSerial(): String? = try {
         /**
          * http://stackoverflow.com/questions/14161282/serial-number-from-samsung-device-running-android
          *
@@ -62,78 +65,58 @@ object LabDeviceManager {
          * These settings appear to be the usual suspects, when looking for the device serial, but shouldn't be taken for granted,
          * and as such, shouldn't be relied on for tracking unique app installations.
          */
-        try {
-            @SuppressLint("PrivateApi") val c = Class.forName("android.os.SystemProperties")
-            val get = c.getMethod("get", String::class.java, String::class.java)
-            serial = get.invoke(c, "ril.serialnumber", "unknown") as String
-            return serial
-        } catch (e: Exception) {
-            Timber.e("Some error occurred : %s", e.message)
+
+        @SuppressLint("PrivateApi") val c = Class.forName("android.os.SystemProperties")
+        val get = c.getMethod("get", String::class.java, String::class.java)
+        val serial = get.invoke(c, "ril.serialnumber", "unknown") as String
+        serial
+    } catch (e: Exception) {
+        Timber.e("Some error occurred : %s", e.message)
+        null
+    }
+
+    fun getModel(): String = Build.MODEL.run {
+        if (this.contains(MODEL_NAME_GALAXY_NOTE_8, true)) {
+            "$this (Galaxy Note 8)"
+        } else if (this.contains(MODEL_NAME_GALAXY_NOTE_4, true)) {
+            "$this (Galaxy Note 4)"
+        } else {
+            this
         }
-        return serial
-//        return Build.SERIAL;
     }
 
-    fun getModel(): String {
-        return Build.MODEL
-    }
+    fun getID(): String? = Build.ID
 
-    fun getID(): String? {
-        return Build.ID
-    }
+    fun getManufacturer(): String? = Build.MANUFACTURER
 
-    fun getManufacturer(): String? {
-        return Build.MANUFACTURER
-    }
+    fun getBrand(): String? = Build.BRAND
 
-    fun getBrand(): String? {
-        return Build.BRAND
-    }
+    fun getType(): String? = Build.TYPE
 
-    fun getType(): String? {
-        return Build.TYPE
-    }
+    fun getUser(): String? = Build.USER
 
-    fun getUser(): String? {
-        return Build.USER
-    }
+    fun getVersionBase(): Int = Build.VERSION_CODES.BASE
 
-    fun getVersionBase(): Int {
-        return Build.VERSION_CODES.BASE
-    }
+    fun getVersionIncremental(): String? = Build.VERSION.INCREMENTAL
 
-    fun getVersionIncremental(): String? {
-        return Build.VERSION.INCREMENTAL
-    }
+    fun getSdkVersion(): Int = Build.VERSION.SDK_INT
 
-    fun getSdkVersion(): Int {
-        return Build.VERSION.SDK_INT
-    }
+    fun getBoard(): String? = Build.BOARD
 
-    fun getBoard(): String? {
-        return Build.BOARD
-    }
+    fun getHost(): String? = Build.HOST
 
-    fun getHost(): String? {
-        return Build.HOST
-    }
+    fun getFingerPrint(): String? = Build.FINGERPRINT
 
-    fun getFingerPrint(): String? {
-        return Build.FINGERPRINT
-    }
+    fun getVersionCode(): String? = Build.VERSION.RELEASE
 
-    fun getVersionCode(): String? {
-        return Build.VERSION.RELEASE
-    }
+    fun getHardware(): String? = Build.HARDWARE
 
-    fun getHardware(): String? {
-        return Build.HARDWARE
-    }
+    fun getRelease(): String? = Build.VERSION.RELEASE
 
-    fun getRelease(): String? {
-        return Build.VERSION.RELEASE
-    }
 
+    ///////////////////////////////////////////////////////
+    // Screen Dimensions
+    ///////////////////////////////////////////////////////
     @SuppressLint("NewApi")
     fun getScreenHeight(activity: Activity): Int {
         val screenHeight: Int = if (LabCompatibilityManager.isAndroid10()
@@ -197,7 +180,9 @@ object LabDeviceManager {
         )
     }
 
-
+    ///////////////////////////////////////////////////////
+    // Rooted
+    ///////////////////////////////////////////////////////
     /**
      * Checks if the device is rooted.
      *
@@ -235,41 +220,34 @@ object LabDeviceManager {
      * @param command
      * @return
      */
-    private fun canExecuteCommand(command: String): Boolean {
-        val executedSuccesfully: Boolean
-        executedSuccesfully = try {
-            // executes a command on the system
-            Runtime.getRuntime().exec(command)
-            true
-        } catch (e: Exception) {
-            false
-        }
-        return executedSuccesfully
+    private fun canExecuteCommand(command: String): Boolean = try {
+        // executes a command on the system
+        Runtime.getRuntime().exec(command)
+        true
+    } catch (e: Exception) {
+        false
     }
 
-    /**
-     * Init the basic GoldFinger variable
-     *
-     * @param context
-     * @param activity
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    fun initFingerPrint(context: Context, activity: Activity) {
 
-    }
-
-    /**
-     * This method returns if the device has fingerprint hardware or not
-     *
-     * @return
-     */
-    fun hasFingerPrintHardware(context: Context): Boolean =
-        when (BiometricManager.from(context).canAuthenticate()) {
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> false
-
-            BiometricManager.BIOMETRIC_SUCCESS -> true
-            else -> false
+    /////////////////////////////////////////
+    // Vibration
+    /////////////////////////////////////////
+    @SuppressLint("MissingPermission")
+    @Suppress("DEPRECATION")
+    fun vibrate(context: Context, ms: Int) =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibrator: VibratorManager =
+                context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibrator.vibrate(
+                CombinedVibration.createParallel(
+                    VibrationEffect.createOneShot(
+                        ms.toLong(),
+                        VibrationEffect.EFFECT_DOUBLE_CLICK
+                    )
+                )
+            )
+        } else {
+            val vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(ms.toLong())
         }
 }

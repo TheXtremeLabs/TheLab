@@ -23,37 +23,26 @@ import timber.log.Timber
  */
 class GpsUtils(private val context: Context) {
 
-    private var mContext: Context? = null
     private var mSettingsClient: SettingsClient? = null
     private var mLocationSettingsRequest: LocationSettingsRequest? = null
     private var locationManager: LocationManager? = null
     private var locationRequest: LocationRequest? = null
 
     init {
-
-        this.mContext = context
         this.locationManager =
-            mContext?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        this.mSettingsClient = LocationServices.getSettingsClient(mContext!!)
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        this.mSettingsClient = LocationServices.getSettingsClient(context)
+
         this.locationRequest =
             LocationRequest
                 .Builder(Priority.PRIORITY_HIGH_ACCURACY, (10 * 1000).toLong())
+                .setMinUpdateIntervalMillis((2 * 1000).toLong())
                 .build()
-                .apply {
-                    locationRequest?.fastestInterval = (2 * 1000).toLong()
-                }
-        /*locationRequest?.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest?.interval = (10 * 1000).toLong()
-        locationRequest?.fastestInterval = (2 * 1000).toLong()*/
-
-        val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest!!)
-        this.mLocationSettingsRequest = builder.build()
-        //**************************
-        //**************************
-        builder.setAlwaysShow(true) //this is the key ingredient
-
-        //**************************
+        this.mLocationSettingsRequest =
+            LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest!!)
+                .setAlwaysShow(true) //this is the key ingredient
+                .build()
     }
 
     // method for turn on GPS

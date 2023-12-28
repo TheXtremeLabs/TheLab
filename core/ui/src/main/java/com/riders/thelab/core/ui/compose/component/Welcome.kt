@@ -17,14 +17,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
-@DevicePreviews
 @Composable
 fun Welcome() {
     Row(
         modifier = Modifier
             .padding(16.dp)
-            .fillMaxSize(), verticalAlignment = Alignment.CenterVertically
+            .fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = "Welcome to ")
         Spacer(modifier = Modifier.size(8.dp))
@@ -48,5 +49,13 @@ fun Welcome() {
             contentDescription = "lab_twelve",
             colorFilter = ColorFilter.tint(Color.White)
         )
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewWelcome() {
+    TheLabTheme {
+        Welcome()
     }
 }

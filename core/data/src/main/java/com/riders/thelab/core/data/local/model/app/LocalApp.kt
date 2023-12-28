@@ -8,6 +8,8 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.core.content.res.ResourcesCompat
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parceler
@@ -15,6 +17,8 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 import kotlin.reflect.KClass
 
+@Stable
+@Immutable
 @Parcelize
 // @kotlinx.serialization.Serializable()
 data class LocalApp(
@@ -35,6 +39,8 @@ data class LocalApp(
     appActivity = localActivity,
     appDate = localDate
 ), Parcelable, java.io.Serializable {
+
+    var bitmap: Bitmap? = null
 
     companion object : Parceler<LocalApp> {
 
@@ -140,7 +146,6 @@ data class LocalApp(
 
     @IgnoredOnParcel
     var date: String? = null
-
 }
 
 fun <T : Any> T.getClass(): KClass<T> {

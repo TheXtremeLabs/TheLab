@@ -1,3 +1,9 @@
+@file:Suppress(
+    "ControlFlowWithEmptyBody", "ControlFlowWithEmptyBody", "ControlFlowWithEmptyBody",
+    "ControlFlowWithEmptyBody", "ControlFlowWithEmptyBody", "ControlFlowWithEmptyBody",
+    "ControlFlowWithEmptyBody", "ControlFlowWithEmptyBody"
+)
+
 package com.riders.thelab.feature.musicrecognition.ui.acrcloud
 
 import android.Manifest
@@ -20,12 +26,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
-import com.riders.thelab.feature.musicrecognition.BuildConfig
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector.ConnectionListener
 import com.spotify.android.appremote.api.SpotifyAppRemote
@@ -48,10 +52,6 @@ class ACRCloudActivity : BaseComponentActivity() {
     private val clientId = "1714852f79e04b24afd8a49d04068558"
     private val redirectUri = "http://com.yourdomain.yourapp/callback"
     private var mSpotifyAppRemote: SpotifyAppRemote? = null
-
-    // Request code will be used to verify if result comes from the login activity. Can be set to any integer.
-    private val REQUEST_CODE = 1_337
-    private val REDIRECT_URI = "yourcustomprotocol://callback"
 
     private val mConnectionParams: ConnectionParams = ConnectionParams.Builder(clientId)
         .apply {
@@ -121,18 +121,11 @@ class ACRCloudActivity : BaseComponentActivity() {
         AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request)*/
     }
 
-    override fun onStart() {
-        super.onStart()
-        // We will start writing our code here.
-        /*SpotifyAppRemote.disconnect(mSpotifyAppRemote)
-        SpotifyAppRemote.connect(this, mConnectionParams, mConnectionListener)*/
-    }
-
-    private fun connected() {
+    /*private fun connected() {
         // Then we will write some more code here.
-    }
+    }*/
 
-    @Deprecated("Deprecated in Java")
+    @Deprecated("DEPRECATED - Use registerActivityForResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
 
@@ -150,12 +143,6 @@ class ACRCloudActivity : BaseComponentActivity() {
     override fun onResume() {
         super.onResume()
         checkPermission()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        // Aaand we will finish off here.
-        // SpotifyAppRemote.disconnect(mSpotifyAppRemote)
     }
 
     override fun backPressed() {
@@ -224,7 +211,7 @@ class ACRCloudActivity : BaseComponentActivity() {
 
     private fun initObservers() {
         Timber.d("initObservers()")
-        mViewModel.mNetworkManager?.getConnectionState()?.observe(this) {
+        mViewModel.mNetworkManager.getConnectionState().observe(this) {
             if (!it) {
                 Timber.e("getConnectionState().observe | NOT connected: $it")
             } else {
@@ -232,5 +219,11 @@ class ACRCloudActivity : BaseComponentActivity() {
                 mViewModel.getSpotifyToken()
             }
         }
+    }
+
+    companion object {
+        // Request code will be used to verify if result comes from the login activity. Can be set to any integer.
+        private const val REQUEST_CODE = 1_337
+        private const val REDIRECT_URI = "yourcustomprotocol://callback"
     }
 }

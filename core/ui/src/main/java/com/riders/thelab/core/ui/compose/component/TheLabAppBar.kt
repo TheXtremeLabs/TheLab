@@ -35,8 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ComponentActivity
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 
 
 ///////////////////////////
@@ -50,7 +52,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 @Composable
 fun TheLabTopAppBar(
     @PreviewParameter(TextContentPreviewProvider::class) title: String,
-    navigationIcon: @Composable() (() -> Unit)? = null
+    navigationIcon: @Composable (() -> Unit)? = null
 ) {
     val context = LocalContext.current
 
@@ -87,11 +89,54 @@ fun TheLabTopAppBar(
         )
     }
 }
+@SuppressLint("RestrictedApi")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TheLabTopAppBar(
+    viewModel:BaseViewModel,
+    @PreviewParameter(TextContentPreviewProvider::class) title: String,
+    navigationIcon: @Composable (() -> Unit)? = null
+) {
+    val context = LocalContext.current
+
+    TheLabTheme(darkTheme = viewModel.isDarkMode) {
+        TopAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color.Black, MaterialTheme.colorScheme.background)
+                    )
+                ),
+            title = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(start = 16.dp, bottom = 16.dp),
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    Text(text = title, color = Color.White)
+                }
+            },
+            navigationIcon = {
+                IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+        )
+    }
+}
 
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TheLabTopAppBar(navigationIcon: @Composable() (() -> Unit)) {
+fun TheLabTopAppBar(navigationIcon: @Composable (() -> Unit)) {
     val context = LocalContext.current
 
     TheLabTheme {
@@ -103,7 +148,7 @@ fun TheLabTopAppBar(navigationIcon: @Composable() (() -> Unit)) {
             title = {
             },
             navigationIcon = {
-                IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
+                IconButton(onClick = { (context.findActivity() as ComponentActivity).onBackPressed() }) {
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",

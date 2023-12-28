@@ -14,7 +14,6 @@ import com.riders.thelab.feature.biometric.data.biometric.BiometricInfo
 import com.riders.thelab.feature.biometric.data.biometric.KeyValueStorage
 import com.riders.thelab.feature.biometric.utils.CryptoEngine
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -23,7 +22,7 @@ import javax.inject.Inject
 
 class BiometricRepositoryImpl @Inject constructor(
     private val biometricManager: BiometricManager,
-    private val requiredAuthenticators: Int = BIOMETRIC_STRONG,
+    @SuppressLint("InlinedApi") private val requiredAuthenticators: Int = BIOMETRIC_STRONG,
     private val keyValueStorage: KeyValueStorage,
     private val cryptoEngine: CryptoEngine,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
@@ -86,7 +85,7 @@ class BiometricRepositoryImpl @Inject constructor(
         storeDataAndIv(encryptedData.data, encryptedData.iv!!)
     }
 
-    private suspend fun getTokenFromBackend(): String {
+    private fun getTokenFromBackend(): String {
         // this is a mock generation
         val token = UUID.randomUUID().toString()
         keyValueStorage.storeValue(MOCK_TOKEN_KEY, token)
@@ -127,7 +126,7 @@ class BiometricRepositoryImpl @Inject constructor(
             cryptoEngine.createCryptoObject(purpose, iv)
         }
 
-    private suspend fun isTokenPresent(): Boolean =
+    private fun isTokenPresent(): Boolean =
         keyValueStorage.contains(key = BIOMETRIC_TOKEN_KEY)
                 && keyValueStorage.contains(BIOMETRIC_IV_KEY)
 

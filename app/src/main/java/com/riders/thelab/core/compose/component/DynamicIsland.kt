@@ -1,14 +1,9 @@
 package com.riders.thelab.core.compose.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -27,29 +22,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.component.IslandBubbleContent
-import com.riders.thelab.core.ui.compose.component.MetaContainer
-import com.riders.thelab.core.ui.compose.component.MetaEntity
+import com.riders.thelab.core.ui.compose.component.dynamicisland.IslandBubbleContent
+import com.riders.thelab.core.ui.compose.component.dynamicisland.MetaContainer
+import com.riders.thelab.core.ui.compose.component.dynamicisland.MetaEntity
+import com.riders.thelab.core.ui.compose.component.dynamicisland.bubbleEnterTransition
+import com.riders.thelab.core.ui.compose.component.dynamicisland.bubbleExitTransition
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 @Composable
-fun DynamicIsland(
-    viewModel: MainActivityViewModel,
-    islandState: IslandState
-) {
+fun DynamicIsland(viewModel: MainActivityViewModel, islandState: IslandState) {
     val config = LocalConfiguration.current
 
+    val targetValue = (config.screenWidthDp.dp / 2) - islandState.fullWidth / 2
+    Timber.d("DynamicIsland | target value : $targetValue")
+
     val startPadding by animateDpAsState(
-        targetValue = (config.screenWidthDp.dp / 2) - islandState.fullWidth / 2,
+        targetValue = targetValue,
         animationSpec = spring(
             stiffness = Spring.StiffnessLow,
             dampingRatio = Spring.DampingRatioLowBouncy,
@@ -74,7 +73,9 @@ fun DynamicIsland(
     }
 
     MetaContainer(
-        modifier = Modifier.height(200.dp)
+        modifier = Modifier
+            .height(200.dp)
+            .zIndex(3f)
     ) {
         Row(
             modifier = Modifier
@@ -127,24 +128,15 @@ fun DynamicIsland(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
-private val bubbleEnterTransition = scaleIn(initialScale = .7f) + slideInHorizontally(
-    animationSpec = spring(
-        stiffness = Spring.StiffnessLow,
-        dampingRatio = Spring.DampingRatioLowBouncy,
-    )
-) { -it }
 
-@OptIn(ExperimentalAnimationApi::class)
-private val bubbleExitTransition = scaleOut(targetScale = .7f) + slideOutHorizontally(
-    animationSpec = spring(
-        stiffness = Spring.StiffnessLow
-    )
-) { (-it * 1.2f).roundToInt() }
-
+///////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewDynamicIsland() {
+fun PreviewDynamicIsland(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
     val viewModel: MainActivityViewModel = hiltViewModel()
-    DynamicIsland(viewModel, IslandStatePreviewProvider().values.first())
+    DynamicIsland(viewModel, state)
 }

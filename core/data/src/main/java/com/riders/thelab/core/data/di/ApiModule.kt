@@ -3,6 +3,8 @@ package com.riders.thelab.core.data.di
 import android.content.Context
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.riders.thelab.core.common.utils.LabParser
+import com.riders.thelab.core.common.utils.decrypt
+import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.bean.TimeOut
 import com.riders.thelab.core.data.local.model.weather.WeatherKey
 import com.riders.thelab.core.data.remote.api.ArtistsAPIService
@@ -13,9 +15,8 @@ import com.riders.thelab.core.data.remote.api.TheLabBackApiService
 import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
-import com.riders.thelab.core.data.remote.dto.artist.ArtistsResponseJsonAdapter
 import com.riders.thelab.core.data.utils.Constants
-import com.squareup.moshi.Moshi
+import com.riders.thelab.core.data.utils.Headers
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,7 +31,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-import org.apache.http.HttpHeaders
 import retrofit2.Retrofit
 import timber.log.Timber
 import java.util.Objects
@@ -41,7 +41,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal object ApiModule {
-
     @Provides
     fun provideOkHttpLogger(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor { message: String -> Timber.tag("OkHttp").d(message) }
@@ -73,9 +72,13 @@ internal object ApiModule {
                     try {
                         mWeatherKey?.let {
                             url = originalHttpUrl.newBuilder()
+                                .addQueryParameter("appid", BuildConfig.SERVER_API_KEY_OPEN_WEATHER.decrypt())
+                                .addQueryParameter("units", "metric")
+                                .build()/*
+                            url = originalHttpUrl.newBuilder()
                                 .addQueryParameter("appid", mWeatherKey.appID)
                                 .addQueryParameter("units", "metric")
-                                .build()
+                                .build()*/
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -88,12 +91,9 @@ internal object ApiModule {
                     url?.let {
                         requestBuilder = original.newBuilder()
                             .url(it)
-                            .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
-                            .header(
-                                HttpHeaders.CONNECTION,
-                                "close"
-                            ) //.header(HttpHeaders.CONTENT_TYPE, "application/json")
-                            .header(HttpHeaders.ACCEPT_ENCODING, "Identity")
+                            .header(Headers.CONTENT_TYPE.value, "application/json; charset=utf-8")
+                            .header(Headers.CONNECTION.value, "close")
+                            .header(Headers.ACCEPT_ENCODING.value, "Identity")
 
                     }
                 } else {
@@ -103,11 +103,11 @@ internal object ApiModule {
                     url?.let {
                         requestBuilder = original.newBuilder()
                             .url(it)
-                            .header(HttpHeaders.CONTENT_TYPE, "text/plain")
-                            .header(HttpHeaders.CONNECTION, "close")
-                            .header(HttpHeaders.CACHE_CONTROL, "max-age=60")
-                            .header(HttpHeaders.ACCEPT_RANGES, "bytes")
-                            .header(HttpHeaders.ACCEPT_ENCODING, "Identity")
+                            .header(Headers.CONTENT_TYPE.value, "text/plain")
+                            .header(Headers.CONNECTION.value, "close")
+                            .header(Headers.CACHE_CONTROL.value, "max-age=60")
+                            .header(Headers.ACCEPT_RANGES.value, "bytes")
+                            .header(Headers.ACCEPT_ENCODING.value, "Identity")
                     }
                 }
                 val request = requestBuilder?.build()
@@ -147,9 +147,9 @@ internal object ApiModule {
                 val original = chain.request()
                 // Customize the request
                 val request = original.newBuilder()
-                    .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
-                    .header(HttpHeaders.CONNECTION, "close")
-                    .header(HttpHeaders.ACCEPT_ENCODING, "Identity")
+                    .header(Headers.CONTENT_TYPE.value, "application/json; charset=utf-8")
+                    .header(Headers.CONNECTION.value, "close")
+                    .header(Headers.ACCEPT_ENCODING.value, "Identity")
                     .build()
                 val response = chain.proceed(request)
                 response.cacheResponse
@@ -180,9 +180,7 @@ internal object ApiModule {
             .baseUrl(url)
             .client(provideOkHttp())
             //.addConverterFactory(MoshiConverterFactory.create())
-            .addConverterFactory(Json{
-                ignoreUnknownKeys = true
-            }.asConverterFactory(contentType))
+            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
 
@@ -190,14 +188,14 @@ internal object ApiModule {
     @Singleton
     fun provideRetrofitArtists(url: String): Retrofit {
         val contentType = "application/json".toMediaType()
-        val moshi = Moshi.Builder()
+        /*val moshi = Moshi.Builder()
             .add(ArtistsResponseJsonAdapter())
-            .build()
+            .build()*/
         return Retrofit.Builder()
             .baseUrl(url)
             .client(provideOkHttpArtists())
 //            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .addConverterFactory(Json.asConverterFactory(contentType))
+            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
 
@@ -210,9 +208,7 @@ internal object ApiModule {
             .baseUrl(url)
             .client(provideWeatherOkHttp(context))
             //.addConverterFactory(MoshiConverterFactory.create())
-            .addConverterFactory(Json {
-                ignoreUnknownKeys = true
-            }.asConverterFactory(contentType))
+            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
 

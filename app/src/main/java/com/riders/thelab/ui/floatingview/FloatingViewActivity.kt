@@ -55,10 +55,10 @@ class FloatingViewActivity : AppCompatActivity() {
                 )
             )
             moveAppInBackground()
-
         }
     }
 
+    @Deprecated("DEPRECATED - Use registerActivityForResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Timber.d("onActivityResult()")
         if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
@@ -75,8 +75,6 @@ class FloatingViewActivity : AppCompatActivity() {
                 finish()
             }
         } else {
-
-            @Suppress("DEPRECATION")
             super.onActivityResult(requestCode, resultCode, data)
         }
     }

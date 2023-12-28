@@ -1,7 +1,6 @@
 package com.riders.thelab.ui.customtoast
 
 import android.animation.Animator
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem

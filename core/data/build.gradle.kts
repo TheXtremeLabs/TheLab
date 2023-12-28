@@ -11,10 +11,22 @@ plugins {
 
 android {
 
-    useLibrary("org.apache.http.legacy")
-
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes.forEach {
+        it.buildConfigField(
+            "String",
+            "SERVER_API_KEY_OPEN_WEATHER",
+            "\"5DqVP9+VVFrVkvP0T/uQg+nMLe0aolqAw1GUhz11K7kuFPM9tV/Uc1+PJnxrsvTj\""
+        )
+
+        it.buildConfigField(
+            "String",
+            "SERVER_API_KEY_FCM",
+            "\"p4VULzqDBI5HWbwOKU3zXZQI7+NU4DdKiTQ+qa8HkmZCwpW/SWK78boLuqaZPJkxUnS8IRoVerujUGXSCnfyRnSut4lKBXF1f6JatwPd+EE40LCqECTduZ6WqgFYlvtpAtjs8usgKUuuBDEo/q8sKdhiLE3smCpJ7K2HUvma49uBK1cY7i1Pu3lOxh/nEVQmOMT/2DqZySHx9/R3KtnXtA==\""
+        )
     }
 
     testOptions {
@@ -33,6 +45,7 @@ dependencies {
     // Project
     ///////////////////////////////////
     implementation(project(":core:common"))
+    implementation(project(":core:testing"))
 
     ///////////////////////////////////
     // General Dependencies
@@ -43,24 +56,31 @@ dependencies {
     api(libs.kotlinx.serialization.json)
 
     // Compose
-    api(platform(libs.androidx.compose.bom))
-    api(libs.androidx.compose.ui.tooling)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui.tooling)
 
     // Room
     api(libs.room.ktx)
     api(libs.room.runtime)
+    api(libs.room.paging)
     ksp(libs.room.compiler)
+    androidTestImplementation(libs.room.testing)
+
+    // Worker & concurrent
+    androidTestImplementation(libs.androidx.work.testing)
+
+    // Datastore and Preferences
+    api(libs.androidx.datastore.core)
+    api(libs.androidx.datastore.preferences)
+    api(libs.androidx.preferences)
 
     // Firebase
-    api(platform(libs.firebase.bom))
-    api(libs.firebase.analytics)
-    api(libs.firebase.auth)
-    api(libs.firebase.crashlytics)
-    api(libs.firebase.database)
-    api(libs.firebase.messaging)
-    api(libs.firebase.storage)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
-    /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
+    /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi, Serialization  */
     api(libs.retrofit.core)
     api(libs.retrofit.moshi)
     api(libs.retrofit.kotlin.serialization)
@@ -72,7 +92,7 @@ dependencies {
     api(libs.okhttp)
     api(libs.okhttp.logging)
 
-    api("org.apache.httpcomponents:httpcore:4.4.15")
+    // api("org.apache.httpcomponents:httpcore:4.4.15")
 
     // Moshi
     api(libs.moshi)
@@ -81,5 +101,11 @@ dependencies {
 
     api(libs.kotools.types)
 
+    /////////////////////////////
+    // Tests Dependencies
+    /////////////////////////////
+    //tesImplementation(project(":core:testing"))
     androidTestImplementation(project(":core:testing"))
+
+    androidTestImplementation(libs.androidx.test.truth)
 }

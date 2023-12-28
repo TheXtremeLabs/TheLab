@@ -15,9 +15,9 @@ import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.databinding.RowYoutubeLikeItemBinding
 import timber.log.Timber
 
-class YoutubeLikeViewHolder constructor(
+class YoutubeLikeViewHolder(
     private val context: Context,
-    val itemBinding: RowYoutubeLikeItemBinding,
+    private val itemBinding: RowYoutubeLikeItemBinding,
     private val listener: YoutubeListClickListener
 ) : RecyclerView.ViewHolder(itemBinding.root) {
 
@@ -46,29 +46,30 @@ class YoutubeLikeViewHolder constructor(
 
         Glide.with(context)
             .load(itemYoutubeVideo.imageUrl)
-            .addListener(object : RequestListener<Drawable?> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    Timber.e(e)
-                    viewBinding.loaderItem.visibility = View.GONE
-                    return false
-                }
+            .addListener(
+                object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Timber.e(e)
+                        viewBinding.loaderItem.visibility = View.GONE
+                        return false
+                    }
 
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    viewBinding.loaderItem.visibility = View.GONE
-                    return false
-                }
-            })
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        viewBinding.loaderItem.visibility = View.GONE
+                        return false
+                    }
+                })
             .into(viewBinding.imageItem)
     }
 }

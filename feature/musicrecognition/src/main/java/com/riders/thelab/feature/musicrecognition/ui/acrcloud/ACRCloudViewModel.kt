@@ -80,30 +80,30 @@ class ACRCloudViewModel @Inject constructor(
 
     var result by mutableStateOf("")
         private set
-    var spotifyToken by mutableStateOf("")
+    private var spotifyToken by mutableStateOf("")
         private set
 
-    var showToastWithMessage: Pair<Boolean, String> by mutableStateOf(Pair(false, ""))
+    private var showToastWithMessage: Pair<Boolean, String> by mutableStateOf(Pair(false, ""))
         private set
 
-    fun updateUiState(newState: ACRUiState) {
+    private fun updateUiState(newState: ACRUiState) {
         this._uiState.value = newState
     }
 
 
-    fun updateCanLaunchAudioRecognition(canLaunch: Boolean) {
+    private fun updateCanLaunchAudioRecognition(canLaunch: Boolean) {
         this.canLaunchAudioRecognition = canLaunch
     }
 
-    fun updateIsRecognizing(isRecognizing: Boolean) {
+    private fun updateIsRecognizing(isRecognizing: Boolean) {
         this.isRecognizing = isRecognizing
     }
 
-    fun updateResult(newValue: String) {
+    private fun updateResult(newValue: String) {
         this.result = newValue
     }
 
-    fun updateSpotifyToken(newValue: String) {
+    private fun updateSpotifyToken(newValue: String) {
         this.spotifyToken = newValue
     }
 
@@ -212,69 +212,68 @@ class ACRCloudViewModel @Inject constructor(
             val code = status.getInt("code")
             when (code) {
                 0 -> {
+                    val metadata: JSONObject = json.getJSONObject("metadata")
+                    if (metadata.has("music")) {
+                        val musics = metadata.getJSONArray("music")
+                        val tt = musics[0] as JSONObject
+                        val genres =
+                            runCatching { tt.getJSONArray("genres") }.getOrElse { JSONArray() }
+                        // val genre = genres[0] as JSONObject
+                        val title = tt.getString("title")
+                        val label = tt.getString("label")
+                        val releaseDate = tt.getString("release_date")
+                        val artists = tt.getJSONArray("artists")
+                        val art = artists[0] as JSONObject
+                        val artist = art.getString("name")
+                        val externalMetadata = tt.getJSONObject("external_metadata")
+                        val spotify = externalMetadata.getJSONObject("spotify")
+                        val track = spotify.getJSONObject("track")
+                        val trackName = track.getString("name")
+                        val trackID = track.getString("id")
+                        val album = spotify.getJSONObject("album")
+                        val albumName = album.getString("name")
+                        val albumID = album.getString("id")
 
+                        // build song object
+                        val song = Song.toModel(
+                            genres,
+                            title,
+                            artists,
+                            label,
+                            releaseDate,
+                            album,
+                            externalMetadata
+                        )
+
+                        Timber.d("Song created: $song")
+
+                        if (null != song.externalMetadata && null != song.externalMetadata["trackID"]) {
+                            getInfoFromSpotify(song, song.externalMetadata["trackID"].toString())
+                        } else {
+                            Timber.e("trackID key not found. Make sure that the key is correctly typed.")
+                            updateUiState(ACRUiState.RecognitionSuccessful(song))
+                        }
+
+                        "$title ($artist)"
+                    } else {
+                        Timber.e("acrResult JSONObject has no metadata")
+                        updateUiState(ACRUiState.Error("Error while parsing data"))
+                        acrResult
+                    }
+                }
+
+                1001 -> {
+                    Timber.e("code == 1001 | result: $status")
+                        updateUiState(ACRUiState.RecognitionError("Else branch | Error while parsing data"))
+                        acrResult
                 }
 
                 else -> {
-                    Timber.e("Else branch")
-
-                    acrResult
+                        // TODO: Handle error
+                        updateUiState(ACRUiState.Error("Else branch | Error while parsing data"))
+                        acrResult
                 }
-            }
-            if (code == 0) {
-                val metadata: JSONObject = json.getJSONObject("metadata")
-                if (metadata.has("music")) {
-                    val musics = metadata.getJSONArray("music")
-                    val tt = musics[0] as JSONObject
-                    val genres = runCatching { tt.getJSONArray("genres") }.getOrElse { JSONArray() }
-                    // val genre = genres[0] as JSONObject
-                    val title = tt.getString("title")
-                    val label = tt.getString("label")
-                    val releaseDate = tt.getString("release_date")
-                    val artists = tt.getJSONArray("artists")
-                    val art = artists[0] as JSONObject
-                    val artist = art.getString("name")
-                    val externalMetadata = tt.getJSONObject("external_metadata")
-                    val spotify = externalMetadata.getJSONObject("spotify")
-                    val track = spotify.getJSONObject("track")
-                    val trackName = track.getString("name")
-                    val trackID = track.getString("id")
-                    val album = spotify.getJSONObject("album")
-                    val albumName = album.getString("name")
-                    val albumID = album.getString("id")
-
-                    // build song object
-                    val song = Song.toModel(
-                        genres,
-                        title,
-                        artists,
-                        label,
-                        releaseDate,
-                        album,
-                        externalMetadata
-                    )
-
-                    Timber.d("Song created: ${song.toString()}")
-
-                    if (null != song.externalMetadata && null != song.externalMetadata["trackID"]) {
-                        getInfoFromSpotify(song, song.externalMetadata["trackID"].toString())
-                    } else {
-                        Timber.e("trackID key not found. Make sure that the key is correctly typed.")
-                        updateUiState(ACRUiState.RecognitionSuccessful(song))
-                    }
-
-                    "$title ($artist)"
-                } else {
-                    Timber.e("acrResult JSONObject has no metadata")
-                    updateUiState(ACRUiState.Error("Error while parsing data"))
-                    acrResult
-                }
-            } else {
-                // TODO: Handle error
-                updateUiState(ACRUiState.Error("Error while parsing data"))
-                acrResult
-            }
-        }
+            }}
             .onFailure {
                 Timber.e("runCatching | onFailure | error caught class: ${it.javaClass.simpleName}, with message: ${it.message}")
             }
@@ -387,11 +386,11 @@ class ACRCloudViewModel @Inject constructor(
                         trackId = trackID
                     )
 
-                    Timber.d("info: ${trackInfo.album.images[0].toString()}")
+                    Timber.d("info: ${trackInfo.album.images[0]}")
                     val albumThumbnail = trackInfo.album.images[0].url
 
                     song.albumThumbUrl = albumThumbnail
-                    Timber.d("song: ${song.toString()}")
+                    Timber.d("song: $song")
 
                     updateUiState(ACRUiState.RecognitionSuccessful(song))
                 }

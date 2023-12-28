@@ -16,10 +16,14 @@ import com.bumptech.glide.request.transition.Transition
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.feature.weather.R
 import com.riders.thelab.feature.weather.ui.WeatherActivity
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class TheLabAppWidgetProvider : AppWidgetProvider() {
 
@@ -73,7 +77,7 @@ class TheLabAppWidgetProvider : AppWidgetProvider() {
                         val remoteViews =
                             RemoteViews(
                                 context?.packageName,
-                                com.riders.thelab.feature.weather.R.layout.widget_the_lab_preview
+                                R.layout.widget_the_lab_preview
                             ).also {
 
                                 Timber.d("setup widget's views")
@@ -153,7 +157,6 @@ class TheLabAppWidgetProvider : AppWidgetProvider() {
         Timber.e("onDisabled()")
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun onUpdate(
         context: Context?,

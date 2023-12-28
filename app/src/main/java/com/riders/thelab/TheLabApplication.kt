@@ -5,6 +5,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -19,6 +23,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.feature.weather.core.worker.WeatherWorker
 import com.riders.thelab.feature.weather.ui.WeatherDownloadWorker
 import dagger.hilt.android.HiltAndroidApp
@@ -30,8 +35,9 @@ import java.time.Duration
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+
 @HiltAndroidApp
-class TheLabApplication : MultiDexApplication(), Configuration.Provider {
+class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configuration.Provider {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
@@ -48,11 +54,18 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
         super.onCreate()
 
         mInstance = this
-        LAB_PACKAGE_NAME = packageName
 
         initTimberAndThreeten()
         initAdsAndFirebase()
         // delayedInit()
+
+//        val appLifecycleObserver = TheLabAppLifecycleObserver()
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+
+        if (BuildConfig.DEBUG) {
+            LabDeviceManager.logDeviceInfo()
+            Timber.i("${TheLabApplication::class.java.simpleName} successfully initialized")
+        }
     }
 
     override fun onTrimMemory(level: Int) {
@@ -74,8 +87,9 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
         Timber.e("onTerminate() | ${this@TheLabApplication::class.java.simpleName} was killed")
     }
 
-    override fun getWorkManagerConfiguration() =
-        Configuration.Builder()
+    // New Worker configuration since version 2.9.0
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .setMinimumLoggingLevel(Log.DEBUG)
             .build()
@@ -88,8 +102,11 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
     ////////////////////////////////////////
     private fun initTimberAndThreeten() {
         Timber.d("initTimberAndThreeten()")
-        // Timber : logging
-        Timber.plant(Timber.DebugTree())
+
+        if (BuildConfig.DEBUG) {
+            // Timber : logging
+            Timber.plant(Timber.DebugTree())
+        }
 
         // ThreeTen Date Time Library
         AndroidThreeTen.init(this)
@@ -154,9 +171,7 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
         return super.getApplicationContext()
     }
 
-    fun getLabPackageName(): String? {
-        return LAB_PACKAGE_NAME
-    }
+    fun getLabPackageName(): String = packageName
 
     private fun notifyAppInBackground() {
         Timber.e("App went in background")
@@ -174,7 +189,6 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
     }
 
     companion object {
-        private var LAB_PACKAGE_NAME: String? = null
         private var mInstance: TheLabApplication? = null
 
         @Synchronized
@@ -209,6 +223,30 @@ class TheLabApplication : MultiDexApplication(), Configuration.Provider {
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
                 null
+            }
+        }
+    }
+
+
+    ////////////////////////////////////////
+    //
+    // LIFECYCLE
+    //
+    ////////////////////////////////////////
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when (event) {
+            Lifecycle.Event.ON_CREATE -> {}
+
+            Lifecycle.Event.ON_PAUSE -> {
+                Timber.e("App in background")
+            }
+
+            Lifecycle.Event.ON_RESUME -> {
+                Timber.d("App in foreground")
+            }
+
+            else -> {
+                // Do nothing
             }
         }
     }

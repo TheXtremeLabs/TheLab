@@ -17,6 +17,7 @@ import com.riders.thelab.core.data.local.DbImpl
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
+import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.PackageApp
@@ -43,108 +44,9 @@ class RepositoryImpl @Inject constructor(
     preferencesImpl: PreferencesImpl
 ) : IRepository {
 
-    companion object {
-        private val TARGET_PACKAGES = arrayOf(
-            "com.riders",
-            "com.reepling",
-            "com.praeter"
-        )
-    }
-
     private var mDbImpl: DbImpl = dbImpl
     private var mApiImpl: ApiImpl = apiImpl
     private var mPreferencesImpl: PreferencesImpl = preferencesImpl
-
-    override fun getAppListFromAssets(context: Context): List<App> =
-        LabParser.parseJsonFile<List<App>>(
-            context = context,
-            filename = "app_list.json"
-        )!!
-
-    override fun getPackageList(context: Context): List<App> {
-
-        val installedAppList: List<ApplicationInfo> = ArrayList()
-
-        val appList: MutableList<App> = ArrayList()
-
-        if (isPackageExists(
-                context,
-                installedAppList as MutableList<ApplicationInfo>,
-                TARGET_PACKAGES
-            )
-        ) {
-            for (appInfo in installedAppList) {
-                Timber.e("package found : %s", appInfo.packageName)
-                try {
-
-                    val icon: Drawable =
-                        context.packageManager.getApplicationIcon(appInfo.packageName)
-                    val pInfo: PackageInfo =
-                        context.packageManager.getPackageInfo(appInfo.packageName, 0)
-                    val version = pInfo.versionName
-                    val packageName = appInfo.packageName
-                    appList.add(
-                        PackageApp(
-                            context.packageManager.getApplicationLabel(appInfo).toString(),
-                            icon,
-                            version,
-                            packageName
-                        )
-                    )
-                } catch (e: PackageManager.NameNotFoundException) {
-                    e.printStackTrace()
-                }
-            }
-        } else {
-            Timber.e("package %s not found.", TARGET_PACKAGES.contentToString())
-            //installPackage(directory, targetApkFile);
-        }
-
-        return appList
-    }
-
-    @SuppressLint("QueryPermissionsNeeded")
-    fun isPackageExists(
-        context: Context,
-        installedAppList: MutableList<ApplicationInfo>,
-        targetPackages: Array<String>
-    ): Boolean {
-        var isPackageFound = false
-
-        // First Method
-        val packages: List<ApplicationInfo>
-        val packageManager: PackageManager = context.packageManager
-        packages = packageManager.getInstalledApplications(0)
-
-        for (packageInfo in packages) {
-            for (packageItem in targetPackages) {
-                if (packageInfo.packageName.contains(packageItem)) {
-
-                    // Store found app package name
-                    val appToAdd = packageInfo.packageName
-
-                    // Check if it does equal to The Lab package name
-                    // because we don't don't want to display it
-                    // TODO: Refactor
-                    /*if (appToAdd != TheLabApplication.getInstance().getLabPackageName())
-                        installedAppList.add(packageInfo)*/
-                    isPackageFound = true
-                }
-            }
-        }
-        return isPackageFound
-
-        // Second method
-        /*try {
-            PackageInfo info = packageManager
-                    .getPackageInfo(targetPackage, PackageManager.GET_META_DATA);
-        } catch (PackageManager.NameNotFoundException e){
-            e.printStackTrace();
-            return false
-        }
-        return true;
-        */
-    }
 
 
     private val mLocationData: MediatorLiveData<Boolean>
@@ -161,6 +63,28 @@ class RepositoryImpl @Inject constructor(
     override fun removeLocationStatusDataSource(data: LiveData<Boolean>) {
         mLocationData.removeSource(data)
     }
+
+    override fun insertUser(user: User): Long = mDbImpl.insertUser(user)
+
+    override fun insertAllUsers(users: List<User>) = mDbImpl.insertAllUsers(users)
+
+    override fun getUsers(): Flow<List<User>> = mDbImpl.getUsers()
+
+    override fun getUsersSync(): List<User> = mDbImpl.getUsersSync()
+
+    override fun getUserByID(userId: Int): User = mDbImpl.getUserByID(userId)
+
+    override fun getUserByName(lastname: String): User = mDbImpl.getUserByName(lastname)
+    override fun getUserByUsername(username: String): User = mDbImpl.getUserByUsername(username)
+
+    override fun getUserByEmail(email: String): User = mDbImpl.getUserByEmail(email)
+
+    override fun setUserLogged(userId: Int) = mDbImpl.setUserLogged(userId)
+    override fun logUser(usernameOrMail: String, encodedPassword: String): User? =
+        mDbImpl.logUser(usernameOrMail, encodedPassword)
+
+    override fun logoutUser(userId: Int) = mDbImpl.logoutUser(userId)
+    override fun deleteUser(userId: Int) = mDbImpl.deleteUser(userId)
 
 
     override fun insertContact(contact: Contact) {
@@ -256,6 +180,10 @@ class RepositoryImpl @Inject constructor(
     override fun isNightMode(): Flow<Boolean> = mPreferencesImpl.isNightMode()
 
     override suspend fun toggleNightMode() = mPreferencesImpl.toggleNightMode()
+
+    override fun isVibration(): Flow<Boolean> = mPreferencesImpl.isVibration()
+
+    override suspend fun toggleVibration() = mPreferencesImpl.toggleVibration()
 
     override fun getEmailPref(): Flow<String> = mPreferencesImpl.getEmailPref()
 

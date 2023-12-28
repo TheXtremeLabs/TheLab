@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -47,7 +46,7 @@ import com.riders.thelab.core.ui.views.toast.ToastTypeEnum
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ScheduleContent(viewModel: ScheduleViewModel) {
     val scope = rememberCoroutineScope()
@@ -141,7 +140,7 @@ fun ScheduleContent(viewModel: ScheduleViewModel) {
             focusManager.clearFocus(true)
             keyboardController?.hide()
 
-            val millsFuture = (viewModel.uiCountDown * 1000).toLong()
+            val millsFuture: Long = (viewModel.uiCountDown * 1000)
 
             scope.launch {
                 object : CountDownTimer(millsFuture, 1000) {

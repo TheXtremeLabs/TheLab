@@ -41,7 +41,7 @@ object LoginUtils {
             val sb = StringBuilder()
             for (b in sha1hash) {
                 var halfByte: Int = b.toInt() ushr 4 and 0x0F
-                var twoHalfs: Int = 0
+                var twoHalfs = 0
 
                 do {
                     sb.append(

@@ -6,6 +6,8 @@ interface IPreferences {
 
     fun isNightMode(): Flow<Boolean>
     suspend fun toggleNightMode()
+    fun isVibration(): Flow<Boolean>
+    suspend fun toggleVibration()
 
     fun getEmailPref(): Flow<String>
     suspend fun saveEmailPref(email: String)

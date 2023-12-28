@@ -34,7 +34,7 @@ data class PackageApp(
 
         override fun create(parcel: Parcel): PackageApp {
             /* Source : https://stackoverflow.com/questions/9033764/how-to-add-a-drawable-object-to-a-parcel-object-in-android*/
-            var drawable: BitmapDrawable? = null
+            val drawable: BitmapDrawable? = null
 
             val bitmap = parcel.readValue(Bitmap::class.java.classLoader)!! as Bitmap
             /*if (null != bitmap) {

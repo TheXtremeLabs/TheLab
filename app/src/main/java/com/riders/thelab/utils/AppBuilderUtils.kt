@@ -7,16 +7,17 @@ import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.AppBuilder
 import com.riders.thelab.feature.biometric.ui.BiometricActivity
+import com.riders.thelab.feature.bluetooth.BluetoothActivity
+import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
+import com.riders.thelab.feature.lottie.LottieActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
-import com.riders.thelab.ui.bluetooth.BluetoothActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.camera.CameraActivity
 import com.riders.thelab.ui.colors.ColorActivity
 import com.riders.thelab.ui.compose.ComposeActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
-import com.riders.thelab.ui.deviceinformation.DeviceInformationActivity
 import com.riders.thelab.ui.download.DownloadActivity
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity
@@ -24,15 +25,12 @@ import com.riders.thelab.ui.floatingview.FloatingViewActivity
 import com.riders.thelab.ui.googledrive.GoogleDriveActivity
 import com.riders.thelab.ui.googlemlkit.LiveBarcodeScanningActivity
 import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
-import com.riders.thelab.ui.kat.KatActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
-import com.riders.thelab.ui.lottie.LottieActivity
 import com.riders.thelab.ui.palette.PaletteActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.schedule.ScheduleActivity
 import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.songplayer.SongPlayerActivity
-import com.riders.thelab.ui.speechtotext.SpeechToTextActivity
 import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.ui.tabs.WorkingTabsActivity
 import com.riders.thelab.ui.theaters.TheatersActivity
@@ -85,12 +83,7 @@ object AppBuilderUtils {
                         .withId(2L)
                         .withActivityTitle("Recycler")
                         .withActivityDescription("Recycler Basics and best practices...")
-                        .withActivityIcon(
-                            getDrawableFromIntResource(
-                                context,
-                                R.drawable.ic_filter_list
-                            )
-                        )
+                        .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_filter_list))
                         .withActivityClass(RecyclerViewActivity::class.java)
                         .withActivityDate("2023/01/19")
                         .build()
@@ -193,23 +186,6 @@ object AppBuilderUtils {
                         .build()
                 this.add(scheduleJob)
 
-                //Devices Information
-                val deviceInformation =
-                    AppBuilder
-                        .withId(9L)
-                        .withActivityTitle("Devices Information")
-                        .withActivityDescription("Display device info...")
-                        .withActivityIcon(
-                            getDrawableFromIntResource(
-                                context,
-                                R.drawable.ic_device_information
-                            )
-                        )
-                        .withActivityClass(com.riders.thelab.feature.deviceinformation.DeviceInformationActivity::class.java)
-                        .withActivityDate("2023/11/15")
-                        .build()
-                this.add(deviceInformation)
-
                 // Palette
                 val palette =
                     AppBuilder
@@ -260,18 +236,6 @@ object AppBuilderUtils {
                         .withActivityDate("2023/06/08")
                         .build()
                 this.add(theaters)
-
-                //Speech to Text
-                val speechToText =
-                    AppBuilder
-                        .withId(13L)
-                        .withActivityTitle("My Speech To Text")
-                        .withActivityDescription("Own speech to text implementation...")
-                        .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_mic))
-                        .withActivityClass(SpeechToTextActivity::class.java)
-                        .withActivityDate("01/20/2015")
-                        .build()
-                this.add(speechToText)
 
                 // Built-In Web View
                 val builtInWebView =
@@ -400,8 +364,8 @@ object AppBuilderUtils {
                         .withActivityTitle("Chat")
                         .withActivityDescription("Realtime chat using firebase realtime database features")
                         .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_k_at))
-                        .withActivityClass(KatActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityClass(KatSplashscreenActivity::class.java)
+                        .withActivityDate("2023/12/10")
                         .build()
                 this.add(kat)
 
@@ -481,7 +445,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(LottieActivity::class.java)
-                        .withActivityDate("2021/09/21")
+                        .withActivityDate("2023/12/23")
                         .build()
                 this.add(lottie)
 
@@ -498,7 +462,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(BluetoothActivity::class.java)
-                        .withActivityDate("2021/09/29")
+                        .withActivityDate("2023/12/27")
                         .build()
                 this.add(bluetooth)
 
@@ -574,7 +538,7 @@ object AppBuilderUtils {
                 // Google ML Kit - Live Barcode
                 val liveBarcode =
                     AppBuilder
-                        .withId(31L)
+                        .withId(32L)
                         .withActivityTitle(context.getString(R.string.activity_title_google_ml_kit))
                         .withActivityDescription("ML Kit brings Google’s machine learning expertise to mobile developers in a powerful and easy-to-use package...")
                         .withActivityIcon(
@@ -591,7 +555,7 @@ object AppBuilderUtils {
                 // Wip
                 val wip =
                     AppBuilder
-                        .withId(32L)
+                        .withId(40L)
                         .withActivityTitle("WIP")
                         .withActivityDescription("Coming soon...")
                         .withActivityIcon(
@@ -607,7 +571,7 @@ object AppBuilderUtils {
             }
             .toList()
 
-    fun getDrawableFromIntResource(context: Context, redId: Int): Drawable {
+    private fun getDrawableFromIntResource(context: Context, redId: Int): Drawable {
         return ContextCompat.getDrawable(context, redId)!!
     }
 }

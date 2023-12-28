@@ -1,8 +1,6 @@
 package com.riders.thelab.ui.palette
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,35 +11,24 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
-class PaletteActivity : ComponentActivity() {
+class PaletteActivity : BaseComponentActivity() {
 
     private val viewModel: PaletteViewModel by viewModels()
 
-    private val onBackPressedCallback: OnBackPressedCallback =
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                showAppClosingDialog()
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (LabCompatibilityManager.isTiramisu()) {
-            onBackPressedDispatcher.addCallback(this@PaletteActivity, onBackPressedCallback)
-        }
 
         viewModel.getWallpaperImages(this@PaletteActivity)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-
                 setContent {
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
@@ -55,6 +42,11 @@ class PaletteActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun backPressed() {
+        Timber.e("backPressed")
+        showAppClosingDialog()
     }
 
     private fun showAppClosingDialog() {

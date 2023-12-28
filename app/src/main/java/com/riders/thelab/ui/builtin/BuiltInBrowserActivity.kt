@@ -56,6 +56,7 @@ class BuiltInBrowserActivity : AppCompatActivity() {
                 invalidateOptionsMenu()
             }
 
+            @Deprecated("Deprecated in Java")
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 viewBinding.contentBuiltInBrowser.browserWebView.loadUrl(url)
                 return true

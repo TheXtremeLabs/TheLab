@@ -12,9 +12,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.*
-import com.riders.thelab.core.common.utils.LabAddressesUtils
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.WeatherCityUIState
@@ -27,12 +34,19 @@ import com.riders.thelab.core.ui.data.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.weather.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -66,6 +80,8 @@ class WeatherViewModel @Inject constructor(
     var suggestions by mutableStateOf(emptyList<CityModel>())
         private set
 
+    var weatherAddress: Address? by mutableStateOf(null)
+        private set
     var cityMaxTemp by mutableStateOf("")
         private set
     var cityMinTemp by mutableStateOf("")
@@ -82,12 +98,16 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    fun updateCityMaxTemp(newTemperature: Double) {
+    private fun updateCityMaxTemp(newTemperature: Double) {
         this.cityMaxTemp = "${newTemperature.toInt()}"
     }
 
-    fun updateCityMinTemp(newTemperature: Double) {
+    private fun updateCityMinTemp(newTemperature: Double) {
         this.cityMinTemp = "${newTemperature.toInt()}"
+    }
+
+    private fun updateWeatherAddress(newAddress: Address) {
+        this.weatherAddress = newAddress
     }
 
     fun updateMoreDataVisibility() {
@@ -124,7 +144,7 @@ class WeatherViewModel @Inject constructor(
     // Class methods
     //
     ///////////////////////////
-    fun getCitiesFromDb(query: String) {
+    private fun getCitiesFromDb(query: String) {
         Timber.d("getCitiesFromDb() | query: $query")
 
         if (null != searchDbJob && searchDbJob?.isActive == true) {
@@ -147,7 +167,7 @@ class WeatherViewModel @Inject constructor(
     }
 
     private fun handleResults(cursor: Cursor) {
-        Timber.d("handleResults() | available cursor's column: ${cursor.columnNames.toString()}")
+        Timber.d("handleResults() | available cursor's column: ${cursor.columnNames}")
 
         if (suggestions.isNotEmpty()) suggestions = mutableListOf()
 
@@ -192,16 +212,40 @@ class WeatherViewModel @Inject constructor(
         updateUIState(WeatherUIState.Loading)
     }
 
-    fun getCityNameWithCoordinates(
+    /*fun GetCityNameWithCoordinates(
         activity: WeatherActivity,
         latitude: Double,
         longitude: Double
     ): Address? {
-        Timber.d("getCityNameWithCoordinates()")
+        Timber.d("GetCityNameWithCoordinates()")
         return LabAddressesUtils.getDeviceAddress(
             Geocoder(activity, Locale.getDefault()),
             (latitude to longitude).toLocation()
         )
+    }*/
+
+    @SuppressLint("NewApi")
+    fun getCityNameWithCoordinates(
+        activity: WeatherActivity,
+        latitude: Double,
+        longitude: Double
+    ) {
+        Timber.d("GetCityNameWithCoordinates()")
+
+        if (!LabCompatibilityManager.isTiramisu()) {
+            LabAddressesUtils.getDeviceAddressLegacy(
+                Geocoder(activity, Locale.getDefault()),
+                (latitude to longitude).toLocation()
+            )?.let { updateWeatherAddress(it) }
+
+        } else {
+            LabAddressesUtils.getDeviceAddressAndroid13(
+                Geocoder(activity, Locale.getDefault()),
+                (latitude to longitude).toLocation()
+            ) { address ->
+                address?.let { updateWeatherAddress(it) }
+            }
+        }
     }
 
     fun fetchCities(activity: WeatherActivity) {

@@ -20,6 +20,7 @@ dependencies {
     implementation(project(":core:analytics"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
+    implementation(project(":core:permissions"))
     implementation(project(":core:ui"))
 
 
@@ -27,7 +28,7 @@ dependencies {
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
-    implementation(platform(libs.kotlin.bom))
+    // implementation(platform(libs.kotlin.bom))
 
     // AndroidX
     implementation(libs.androidx.core.ktx)
