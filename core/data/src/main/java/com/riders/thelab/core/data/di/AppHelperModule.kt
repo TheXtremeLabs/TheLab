@@ -22,6 +22,7 @@ object AppHelperModule {
     @Provides
     fun provideDbHelper(appDatabase: LabDatabase) =
         DbImpl(
+            appDatabase.getUserDao(),
             appDatabase.getContactDao(),
             appDatabase.getWeatherDao()
         )

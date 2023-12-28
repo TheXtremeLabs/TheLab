@@ -7,6 +7,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.Video
@@ -19,10 +20,10 @@ import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
 import com.riders.thelab.core.data.remote.dto.ApiResponse
-import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
+import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -74,7 +75,11 @@ class ApiImpl @Inject constructor(
         if (null != mAuth.currentUser) {
             // Sign in success, update UI with the signed-in user's information
             Timber.d("signInAnonymously:success")
-            val user = mAuth.currentUser
+
+            if (BuildConfig.DEBUG) {
+                Timber.d("auth user: ${mAuth.currentUser}")
+            }
+
             val bucketName = "gs://the-lab-3920e.appspot.com"
             storage[0] = FirebaseStorage.getInstance(bucketName)
             // Create a storage reference from our app
@@ -113,7 +118,7 @@ class ApiImpl @Inject constructor(
     override suspend fun getBulkDownload(context: Context): Flow<Download> =
         mWeatherBulkApiService.getCitiesGZipFile()
             .downloadCitiesFile(
-                context.externalCacheDir!!,
+                context.filesDir!!,
                 "my_file"
             )
 
@@ -150,6 +155,8 @@ class ApiImpl @Inject constructor(
                         outputStream.write(data, 0, bytes)
                         progressBytes += bytes
 
+                        val progress = ((progressBytes * 100) / totalBytes).toInt()
+                        Timber.d("downloadToFileWithProgress() | progress: $progress")
                         emit(Download.Progress(percent = ((progressBytes * 100) / totalBytes).toInt()))
                     }
 
@@ -198,7 +205,9 @@ class ApiImpl @Inject constructor(
     override suspend fun getToken(
         clientId: String,
         clientSecret: String
-    ): SpotifyToken = mSpotifyAccountApiService.getToken(clientId = clientId, clientSecret = clientSecret)
+    ): SpotifyToken =
+        mSpotifyAccountApiService.getToken(clientId = clientId, clientSecret = clientSecret)
 
-    override suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse = mSpotifyApiService.getTrackInfo(bearerToken, trackId)
+    override suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse =
+        mSpotifyApiService.getTrackInfo(bearerToken, trackId)
 }

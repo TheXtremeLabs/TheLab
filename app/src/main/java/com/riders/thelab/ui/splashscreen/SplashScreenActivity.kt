@@ -90,7 +90,7 @@ class SplashScreenActivity : ComponentActivity(), CoroutineScope {
     // CLASSES METHODS
     //
     /////////////////////////////////////
-    fun requestPermissionForAndroid13() {
+    private fun requestPermissionForAndroid13() {
         Timber.d("requestPermissionForAndroid13()")
 
         if (ContextCompat.checkSelfPermission(

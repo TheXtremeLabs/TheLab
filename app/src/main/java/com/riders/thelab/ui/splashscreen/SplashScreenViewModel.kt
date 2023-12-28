@@ -29,7 +29,7 @@ class SplashScreenViewModel : ViewModel() {
         startCountDown.value = started
     }
 
-    fun updateVideoPath(path: String) {
+    private fun updateVideoPath(path: String) {
         this.videoPath = path
     }
 

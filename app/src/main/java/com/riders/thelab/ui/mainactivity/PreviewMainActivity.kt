@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.mainactivity
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -14,11 +13,8 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -33,11 +29,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -49,50 +43,49 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.riders.thelab.R
 import com.riders.thelab.core.compose.component.DynamicIsland
+import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
-import com.riders.thelab.core.ui.compose.utils.keyboardAsState
+import com.riders.thelab.core.ui.utils.UIManager
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun MainContent(viewModel: MainActivityViewModel) {
-
     val context = LocalContext.current
+    val density = LocalDensity.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    // Declaring Coroutine scope
+    val scope = rememberCoroutineScope()
+    val lazyState = rememberLazyGridState()
 
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isFocus by interactionSource.collectIsFocusedAsState()
     val focusManager: FocusManager = LocalFocusManager.current
 
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val isKeyboardOpen by keyboardAsState()
-
-    // Declaring Coroutine scope
-    val scope = rememberCoroutineScope()
-    val lazyState = rememberLazyGridState()
-
     // Declaring a Boolean value to
     // store bottom sheet collapsed state
     val scaffoldState =
-        rememberBottomSheetScaffoldState(bottomSheetState = BottomSheetState(initialValue = BottomSheetValue.Collapsed))
+        rememberBottomSheetScaffoldState(
+            bottomSheetState = BottomSheetState(
+                initialValue = BottomSheetValue.Collapsed,
+                density = density
+            )
+        )
 
-    val density = LocalDensity.current
-    val isVisible = remember { mutableStateOf(false) }
-
+    val dynamicIslandUiState by viewModel.dynamicIslandState.collectAsStateWithLifecycle()
     val appList by viewModel.appList.collectAsStateWithLifecycle()
+    val whatsNewList: List<LocalApp> by viewModel.whatsNewAppList.collectAsStateWithLifecycle()
+
 
     TheLabTheme {
         BottomSheetScaffold(
@@ -121,42 +114,36 @@ fun MainContent(viewModel: MainActivityViewModel) {
                 }
             },
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            sheetContent = {
-                BottomSheetContent()
-            },
+            sheetContent = { BottomSheetContent() },
             sheetPeekHeight = 0.dp,
             sheetElevation = 8.dp,
             // Defaults to true
             sheetGesturesEnabled = false
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 LazyVerticalGrid(
                     state = lazyState,
                     modifier = Modifier
                         .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background)
                         .fillMaxSize()
-//                        .padding(contentPadding)
-                        .padding(16.dp)
+                        .padding(horizontal = 16.dp)
                         .pointerInput(key1 = "user input") {
                             detectTapGestures(
                                 onPress = {
-                                    Toast
-                                        .makeText(
-                                            context,
-                                            "Press Detected",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                        .show()
+                                    UIManager.showToast(context, "Press Detected")
 
-                                    if (viewModel.keyboardVisible.value) {
+                                    if (viewModel.keyboardVisible) {
                                         // 1. Update value
                                         viewModel.updateKeyboardVisible(false)
                                         // 2. Clear focus
                                         focusManager.clearFocus(true)
                                         // 3. hide keyboard
                                         keyboardController?.hide()
+
+                                        if (dynamicIslandUiState is IslandState.SearchState) {
+                                            viewModel.updateDynamicIslandState(IslandState.DefaultState)
+                                            viewModel.updateDynamicIslandVisible(false)
+                                        }
                                     }
                                 }
                             )
@@ -171,66 +158,56 @@ fun MainContent(viewModel: MainActivityViewModel) {
                         // Use "maxCurrentLineSpan" if you want to take full width.
                         GridItemSpan(maxCurrentLineSpan)
                     }) {
-
-                        Column {
-
-                            Header(viewModel)
-
-                            Spacer(modifier = Modifier.size(32.dp))
-
-                            Text(
-                                text = stringResource(id = R.string.app_list_placeholder),
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.W600
-                            )
-
-                            Spacer(modifier = Modifier.size(8.dp))
-
-                            Text(
-                                text = stringResource(id = R.string.app_list_detail_placeholder),
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Thin
-                            )
-
-                            Spacer(modifier = Modifier.size(16.dp))
-                        }
+                        Header(
+                            viewModel = viewModel,
+                            whatsNewList = whatsNewList,
+                            isKeyboardVisible = viewModel.keyboardVisible,
+                            pagerAutoScroll = viewModel.isPagerAutoScroll,
+                            onSearchClicked = {
+                                viewModel.updateKeyboardVisible(true)
+                                viewModel.updateDynamicIslandState(IslandState.SearchState())
+                            },
+                            onSettingsClicked = { viewModel.launchSettings() }
+                        )
                     }
 
-                    items(items = appList.filter {
-                        (it.appName != null && it.appName?.contains(
-                            viewModel.searchedAppRequest.value, ignoreCase = true
-                        )!!)
-                                || (it.appTitle != null && it.appTitle?.contains(
-                            viewModel.searchedAppRequest.value, ignoreCase = true
-                        )!!)
-                    }/*, key = { it.id }*/) { appItem ->
+                    items(
+                        items = viewModel.filteredList,
+                        key = { it.id }
+                    ) { appItem ->
                         App(item = appItem)
+                    }
+
+                    if (viewModel.filteredList.isEmpty()) {
+                        item(span = {
+                            // Replace "maxCurrentLineSpan" with the number of spans this item should take.
+                            // Use "maxCurrentLineSpan" if you want to take full width.
+                            GridItemSpan(maxCurrentLineSpan)
+                        }) {
+                            NoItemFound(viewModel.searchedAppRequest)
+                        }
                     }
                 }
 
                 // Dynamic Island
                 AnimatedVisibility(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    visible = isVisible.value,
-                    enter = slideInVertically() {
+                    visible = viewModel.isDynamicIslandVisible,
+                    enter = slideInVertically {
                         // Slide in from 40 dp from the top.
                         with(density) { -40.dp.roundToPx() }
-                    }
-                            + fadeIn(
+                    } + fadeIn(
                         // Fade in with the initial alpha of 0.3f.
                         initialAlpha = 0.3f
                     ),
-                    exit = slideOutVertically() {
+                    exit = slideOutVertically {
                         // Slide in from 40 dp from the top.
                         with(density) { -40.dp.roundToPx() }
-                    }
-                            //+ shrinkVertically()
-                            + fadeOut()
+                    } + fadeOut()
                 ) {
-                    DynamicIsland(viewModel, islandState = viewModel.dynamicIslandState.value)
+                    DynamicIsland(viewModel, dynamicIslandUiState)
                 }
             }
-
         }
     }
 
@@ -243,13 +220,21 @@ fun MainContent(viewModel: MainActivityViewModel) {
         }
     }
 
-    /*LaunchedEffect(Unit) {
-        delay(750L)
-        isVisible.value = true
-    }*/
+    LaunchedEffect(dynamicIslandUiState) {
+        Timber.d("LaunchedEffect | dynamic island state: ${dynamicIslandUiState.javaClass.simpleName}")
+        if ((dynamicIslandUiState is IslandState.SearchState ||
+                    dynamicIslandUiState is IslandState.CallState ||
+                    dynamicIslandUiState is IslandState.NetworkState.Available ||
+                    dynamicIslandUiState is IslandState.NetworkState.Lost ||
+                    dynamicIslandUiState is IslandState.NetworkState.Unavailable)
+            && viewModel.keyboardVisible
+        ) {
+            viewModel.updateDynamicIslandVisible(true)
+        } else {
+            viewModel.updateDynamicIslandVisible(false)
 
-    isVisible.value =
-        viewModel.dynamicIslandState.value is IslandState.SearchState && viewModel.keyboardVisible.value
+        }
+    }
 }
 
 
@@ -261,10 +246,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
 @DevicePreviews
 @Composable
 private fun PreviewMainContent() {
-
-    val viewModel: MainActivityViewModel = hiltViewModel()
-
     TheLabTheme {
-        MainContent(viewModel = viewModel)
+        MainContent(viewModel = MainActivityViewModel())
     }
 }

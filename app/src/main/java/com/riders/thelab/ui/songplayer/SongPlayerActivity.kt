@@ -5,7 +5,11 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.NotificationManager
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -36,10 +40,15 @@ import com.riders.thelab.core.utils.SongsManager
 import com.riders.thelab.databinding.ActivitySongPlayerBinding
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.IOException
-import java.util.*
+import java.util.Random
 import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
@@ -151,8 +160,8 @@ class SongPlayerActivity : AppCompatActivity(),
         }
     }
 
+    @Deprecated("DEPRECATED - Use registerActivityForResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == 100) {

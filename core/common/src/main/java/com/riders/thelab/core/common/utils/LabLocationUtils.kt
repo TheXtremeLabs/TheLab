@@ -76,7 +76,7 @@ object LabLocationUtils {
         return finalAddress
     }
 
-    suspend fun getDeviceLocationWithRX(location: Location, context: Context): String? {
+    fun getDeviceLocationWithRX(location: Location, context: Context): String? {
         val latitude = location.latitude
         val longitude = location.longitude
         val finalCity = arrayOfNulls<String>(1) //This is the complete address.
@@ -119,7 +119,7 @@ object LabLocationUtils {
         return null
     }
 
-    private suspend fun getRXAddress(
+    private fun getRXAddress(
         geoCoder: Geocoder,
         latitude: Double,
         longitude: Double

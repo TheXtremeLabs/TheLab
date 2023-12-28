@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentSender.SendIntentException
 import android.content.res.Configuration
 import android.graphics.Color
+import android.location.Address
 import android.location.Criteria
 import android.location.Geocoder
 import android.location.Location
@@ -23,7 +24,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsResponse
+import com.google.android.gms.location.LocationSettingsStatusCodes
+import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -38,6 +47,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.LabLocationUtils
 import com.riders.thelab.core.data.local.bean.MapsEnum
@@ -48,9 +58,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.IOException
 import java.text.DateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     android.location.LocationListener {
@@ -71,7 +81,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private val binding get() = _viewBinding!!
 
     private lateinit var mapFragment: SupportMapFragment
-    private var geocoder: Geocoder? = null
+    private var mGeocoder: Geocoder? = null
     private lateinit var mMap: GoogleMap
     private lateinit var mLocation: Location
     private lateinit var mLocationManager: LocationManager
@@ -142,6 +152,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             .check()
     }
 
+    @Deprecated("DEPRECATED - Use registerActivityForResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Timber.e("onActivityResult()")
         // Check for the integer request code originally supplied to startResolutionForResult().
@@ -157,7 +168,6 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             }
         }
 
-        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -267,7 +277,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             MarkerOptions()
                 .position(latLng)
                 .title(
-                    geocoder?.let {
+                    mGeocoder?.let {
                         LabLocationUtils.getDeviceLocationToString(
                             it,
                             location
@@ -279,7 +289,8 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
         mMap.animateCamera(CameraUpdateFactory.zoomTo(750f), 2000, null)
         mMap.uiSettings.isScrollGesturesEnabled = true
-        binding.tvLocation.text = "Latitude:$latitude\nLongitude:$longitude"
+
+        binding?.let { it.tvLocation.text = "Latitude:$latitude\nLongitude:$longitude" }
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -325,7 +336,7 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
         builder.addLocationRequest(mLocationRequest!!)
         mLocationSettingsRequest = builder.build()
-        geocoder = Geocoder(this, Locale.getDefault())
+        mGeocoder = Geocoder(this, Locale.getDefault())
     }
 
     private fun setupMap() {
@@ -456,27 +467,34 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
      * Update the UI displaying the location data
      * and toggling the buttons
      */
+    @SuppressLint("NewApi")
     private fun updateLocationUI() {
-        if (mCurrentLocation != null) {
+        Timber.d("updateLocationUI()")
+
+        mCurrentLocation?.let { location ->
             Timber.e("Lat: ${mCurrentLocation!!.latitude} , ${mCurrentLocation!!.longitude}")
-            geocoder = Geocoder(this, Locale.getDefault())
+            mGeocoder = Geocoder(this, Locale.getDefault())
 
-            try {
-                val address = LabAddressesUtils.getDeviceAddress(geocoder!!, mCurrentLocation!!)
-                Timber.e("Address : %S", address?.countryName.orEmpty())
+            mGeocoder?.let { geocoder ->
 
-            } catch (ioException: IOException) {
-                // Catch network or other I/O problems.
-//            errorMessage = getString(R.string.service_not_available);
-                Timber.e(ioException, "errorMessage")
-            } catch (illegalArgumentException: IllegalArgumentException) {
-                // Catch invalid latitude or longitude values.
-//            errorMessage = getString(R.string.invalid_lat_long_used);
-                Timber.e(
-                    illegalArgumentException,
-                    "errorMessage : Latitude = ${mCurrentLocation!!.latitude}, Longitude : ${mCurrentLocation!!.longitude}"
-                )
-            }
-        }
+                var address: Address? = null
+
+                if (!LabCompatibilityManager.isTiramisu()) {
+                    address = LabAddressesUtils.getDeviceAddressLegacy(geocoder, location)
+                    address?.let {
+                        Timber.d("updateLocationUI | getDeviceAddressLegacy | Address: ${address.countryName}")
+                    } ?: run { Timber.e("updateLocationUI | address object is null") }
+                } else {
+                    LabAddressesUtils.getDeviceAddressAndroid13(geocoder, location) {
+                        if (null == address) {
+                            Timber.e("updateLocationUI | address object is null")
+                            return@getDeviceAddressAndroid13
+                        }
+
+                        Timber.d("updateLocationUI | getDeviceAddressAndroid13 | Address: $address")
+                    }
+                }
+            } ?: run { Timber.e("Geocoder object is null") }
+        } ?: run { Timber.e("Current location object is null") }
     }
 }

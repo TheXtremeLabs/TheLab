@@ -2,7 +2,7 @@ package com.riders.thelab.core.common.storage
 
 import android.os.Environment
 import java.io.File
-import java.util.*
+import java.util.Scanner
 
 /**
  * Created by Michaël on 01/03/2018.
@@ -29,30 +29,20 @@ object ExternalStorage {
     }
 
 
-    @Suppress("DEPRECATION")
-    fun getSdCardPath(): String {
-        return Environment.getExternalStorageDirectory().path + "/"
-    }
+    fun getSdCardPath(): String = Environment.getExternalStorageDirectory().path + "/"
 
 
     /**
      * @return True if the external storage is writable. False otherwise.
      */
-    fun isWritable(): Boolean {
-        val state = Environment.getExternalStorageState()
-        if (Environment.MEDIA_MOUNTED == state) {
-            return true
-        }
-        return false
-
-    }
-
+    fun isWritable(): Boolean =
+        Environment.getExternalStorageState().run { Environment.MEDIA_MOUNTED == this }
 
     /**
      * @return A map of all storage locations available
      */
     fun getAllStorageLocations(): Map<String, File> {
-        var map: MutableMap<String, File> = mutableMapOf()
+        val map: MutableMap<String, File> = mutableMapOf()
 
         val mMounts: ArrayList<String> = mutableListOf<String>() as ArrayList<String>
         val mVold: ArrayList<String> = mutableListOf<String>() as ArrayList<String>
@@ -139,7 +129,6 @@ object ExternalStorage {
         mMounts.clear()
 
         if (map.isEmpty()) {
-            @Suppress("DEPRECATION")
             map[SD_CARD] = Environment.getExternalStorageDirectory()
         }
         return map

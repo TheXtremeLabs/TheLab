@@ -110,9 +110,8 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         ) { updateUI(null) }
     }
 
-    @Deprecated("")
+    @Deprecated("DEPRECATED - Use registerActivityForResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_GET_TOKEN) {
             // [START get_id_token]

@@ -12,6 +12,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.LabLocationUtils
 import com.riders.thelab.core.data.IRepository
@@ -25,7 +26,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -50,6 +51,7 @@ class WeatherWorker @AssistedInject constructor(
     @Inject
     lateinit var mRepository: IRepository
 
+    @SuppressLint("NewApi")
     override suspend fun doWork(): Result {
         Timber.d("doWork()")
 
@@ -58,10 +60,7 @@ class WeatherWorker @AssistedInject constructor(
 
         if (!labLocationManager.canGetLocation()) {
             // Unable to fetch user location
-            outputData = createOutputData(
-                WORK_RESULT,
-                WORK_LOCATION_FAILED
-            )
+            outputData = createOutputData(WORK_LOCATION_FAILED)
             return Result.failure(outputData!!)
         } else {
             try {
@@ -69,7 +68,6 @@ class WeatherWorker @AssistedInject constructor(
             } catch (e: Exception) {
                 // Unable to fetch user location
                 outputData = createOutputData(
-                    WORK_RESULT,
                     "$WORK_LOCATION_FAILED | You may check if required permissions are granted"
                 )
                 return Result.failure(outputData!!)
@@ -81,49 +79,72 @@ class WeatherWorker @AssistedInject constructor(
         return try {
             suspendCancellableCoroutine {
 
-                val job = runBlocking {
+                val oneCallWeatherResponse: OneCallWeatherResponse? = runBlocking {
                     mRepository.getWeatherOneCallAPI(location)
                 }
 
                 // Check if response is null
-                if (null == job) {
+                if (null == oneCallWeatherResponse) {
                     Result.failure()
                 } else {
-
                     Timber.d("observer.onSuccess(responseFile)")
 
-                    val address = LabAddressesUtils
-                        .getDeviceAddress(
+
+                    if (!LabCompatibilityManager.isTiramisu()) {
+                        LabAddressesUtils.getDeviceAddressAndroid13(
                             Geocoder(context, Locale.getDefault()),
                             LabLocationUtils.buildTargetLocationObject(
-                                job.latitude,
-                                job.longitude
+                                oneCallWeatherResponse.latitude,
+                                oneCallWeatherResponse.longitude
                             )
-                        )
+                        ) {
 
-                    // Load city name
-                    val cityName = address?.locality
-                    val country = address?.countryName
+                            it?.let {
+                                // Load city name
+                                val cityName = it.locality
+                                val country = it.countryName
 
-                    val weatherBundle = buildWeatherBundle(job, cityName!!, country!!)
-                    updateWidgetViaBroadcast(weatherBundle)
+                                val weatherBundle = buildWeatherBundle(
+                                    oneCallWeatherResponse,
+                                    cityName!!,
+                                    country!!
+                                )
+                                updateWidgetViaBroadcast(weatherBundle)
 
-                    // Create and send outputData
-                    outputData = createOutputData(
-                        WORK_RESULT,
-                        WORK_SUCCESS
-                    )
-                    Result.success(outputData!!)
+                                // Create and send outputData
+                                outputData = createOutputData(WORK_SUCCESS)
+                                Result.success(outputData!!)
+                            }
+                        }
+                    } else {
+                        val address = LabAddressesUtils
+                            .getDeviceAddressLegacy(
+                                Geocoder(context, Locale.getDefault()),
+                                LabLocationUtils.buildTargetLocationObject(
+                                    oneCallWeatherResponse.latitude,
+                                    oneCallWeatherResponse.longitude
+                                )
+                            )
+
+                        // Load city name
+                        val cityName = address?.locality
+                        val country = address?.countryName
+
+                        val weatherBundle =
+                            buildWeatherBundle(oneCallWeatherResponse, cityName!!, country!!)
+                        updateWidgetViaBroadcast(weatherBundle)
+
+                        // Create and send outputData
+                        outputData = createOutputData(WORK_SUCCESS)
+                        Result.success(outputData!!)
+                    }
                 }
             }
         } catch (throwable: Exception) {
 
             Timber.e(WeatherDownloadWorker.WORK_DOWNLOAD_FAILED)
             Timber.e(throwable)
-            outputData = createOutputData(
-                WORK_RESULT,
-                WORK_DOWNLOAD_FAILED
-            )
+            outputData = createOutputData(WORK_DOWNLOAD_FAILED)
             Result.failure(outputData!!)
         }
     }
@@ -131,15 +152,15 @@ class WeatherWorker @AssistedInject constructor(
     /**
      * Creates ouput data to send back to the activity / presenter which is listening to it
      *
-     * @param outputDataKey
      * @param message
      * @return
      */
+
     @SuppressLint("RestrictedApi")
-    private fun createOutputData(outputDataKey: String, message: String): Data {
+    private fun createOutputData(message: String): Data {
         Timber.d("createOutputData()")
         return Data.Builder()
-            .put(outputDataKey, message)
+            .put("work_result", message)
             .build()
     }
 

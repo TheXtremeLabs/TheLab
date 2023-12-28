@@ -11,7 +11,6 @@ import com.riders.thelab.core.common.utils.LabParser
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.remote.dto.weather.City
-import com.riders.thelab.feature.weather.utils.Validator
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.runBlocking
@@ -25,18 +24,9 @@ class WeatherDownloadWorker @AssistedInject constructor(
     private val mRepository: IRepository
 ) : CoroutineWorker(context, workerParams) {
 
-    companion object {
-        const val MESSAGE_STATUS = "message_status"
-        const val URL_REQUEST = "url_request"
-
-        const val WORK_SUCCESS = "Loading finished"
-        const val WORK_DOWNLOAD_FAILED = "Error while downloading zip file"
-        const val WORK_RESULT = "work_result"
-    }
-
     private var taskData: Data? = null
-    var taskDataString: String? = null
-    var outputData: Data? = null
+    private var taskDataString: String? = null
+    private var outputData: Data? = null
 
     // @Inject
     // lateinit var mRepository: IRepository
@@ -64,7 +54,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
 
                 // Step 1 : Unzip
                 val unzippedGZipResult = LabFileManager.unzipGzip(responseFile)
-                if (Validator.isEmpty(unzippedGZipResult)) {
+                if (unzippedGZipResult?.isEmpty() == true) {
                     Timber.e("String unzippedGZipResult is empty")
                     return Result.failure()
                 }
@@ -84,7 +74,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
                 // Step 3 save in database
                 saveCities(dtoCities)
 
-                outputData = createOutputData(WORK_RESULT, WORK_SUCCESS)
+                outputData = createOutputData(WORK_SUCCESS)
                 return Result.success(outputData!!)
 
             } catch (e: Exception) {
@@ -94,10 +84,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
         } catch (throwable: Exception) {
             Timber.e(WORK_DOWNLOAD_FAILED)
             Timber.e(throwable)
-            outputData = createOutputData(
-                WORK_RESULT,
-                WORK_DOWNLOAD_FAILED
-            )
+            outputData = createOutputData(WORK_DOWNLOAD_FAILED)
             return Result.failure(outputData!!)
         }
     }
@@ -105,14 +92,13 @@ class WeatherDownloadWorker @AssistedInject constructor(
     /**
      * Creates ouput data to send back to the activity / presenter which is listening to it
      *
-     * @param outputDataKey
      * @param message
      * @return
      */
-    private fun createOutputData(outputDataKey: String, message: String): Data {
+    private fun createOutputData(message: String): Data {
         Timber.d("createOutputData()")
         return Data.Builder()
-            .put(outputDataKey, message)
+            .put("work_result", message)
             .build()
     }
 
@@ -129,5 +115,14 @@ class WeatherDownloadWorker @AssistedInject constructor(
         } catch (throwable: Exception) {
             Timber.e(throwable)
         }
+    }
+
+    companion object {
+        const val MESSAGE_STATUS = "message_status"
+        const val URL_REQUEST = "url_request"
+
+        const val WORK_SUCCESS = "Loading finished"
+        const val WORK_DOWNLOAD_FAILED = "Error while downloading zip file"
+        const val WORK_RESULT = "work_result"
     }
 }

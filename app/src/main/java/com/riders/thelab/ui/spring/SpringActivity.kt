@@ -42,14 +42,10 @@ class SpringActivity : AppCompatActivity(), View.OnClickListener {
     private var dY = 0f
 
     private val globalLayoutListener = OnGlobalLayoutListener {
-        xAnimation = createSpringAnimation(
-            binding.imageView, DynamicAnimation.X, binding.imageView.x,
-            SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-        )
-        yAnimation = createSpringAnimation(
-            binding.imageView, DynamicAnimation.Y, binding.imageView.y,
-            SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-        )
+        xAnimation =
+            createSpringAnimation(binding.imageView, DynamicAnimation.X, binding.imageView.x)
+        yAnimation =
+            createSpringAnimation(binding.imageView, DynamicAnimation.Y, binding.imageView.y)
     }
 
 
@@ -147,8 +143,8 @@ class SpringActivity : AppCompatActivity(), View.OnClickListener {
         view: View?,
         property: ViewProperty?,
         finalPosition: Float,
-        stiffness: Float,
-        dampingRatio: Float
+        stiffness: Float = SpringForce.STIFFNESS_MEDIUM,
+        dampingRatio: Float = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
     ): SpringAnimation {
         val animation = SpringAnimation(view, property)
         val springForce = SpringForce(finalPosition)
@@ -162,38 +158,22 @@ class SpringActivity : AppCompatActivity(), View.OnClickListener {
     @SuppressLint("ClickableViewAccessibility")
     private fun chainedSpringAnimation() {
         Timber.d("chainedSpringAnimation()")
-        val xAnimation2 = createSpringAnimation(
-            binding.imageView2, DynamicAnimation.X, binding.imageView2.x,
-            SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-        )
-        val yAnimation2 = createSpringAnimation(
-            binding.imageView2, DynamicAnimation.Y, binding.imageView2.y,
-            SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-        )
-        val xAnimation3 = createSpringAnimation(
-            binding.imageView3, DynamicAnimation.X, binding.imageView3.x,
-            SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-        )
-        val yAnimation3 = createSpringAnimation(
-            binding.imageView3, DynamicAnimation.Y, binding.imageView3.y,
-            SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-        )
-        val xAnimation4 = createSpringAnimation(
-            binding.imageView4, DynamicAnimation.X, binding.imageView4.x,
-            SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-        )
-        val yAnimation4 = createSpringAnimation(
-            binding.imageView4, DynamicAnimation.Y, binding.imageView4.y,
-            SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-        )
-        val xAnimation5 = createSpringAnimation(
-            binding.imageView5, DynamicAnimation.X, binding.imageView5.x,
-            SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-        )
-        val yAnimation5 = createSpringAnimation(
-            binding.imageView5, DynamicAnimation.Y, binding.imageView5.y,
-            SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_HIGH_BOUNCY
-        )
+        val xAnimation2 =
+            createSpringAnimation(binding.imageView2, DynamicAnimation.X, binding.imageView2.x)
+        val yAnimation2 =
+            createSpringAnimation(binding.imageView2, DynamicAnimation.Y, binding.imageView2.y)
+        val xAnimation3 =
+            createSpringAnimation(binding.imageView3, DynamicAnimation.X, binding.imageView3.x)
+        val yAnimation3 =
+            createSpringAnimation(binding.imageView3, DynamicAnimation.Y, binding.imageView3.y)
+        val xAnimation4 =
+            createSpringAnimation(binding.imageView4, DynamicAnimation.X, binding.imageView4.x)
+        val yAnimation4 =
+            createSpringAnimation(binding.imageView4, DynamicAnimation.Y, binding.imageView4.y)
+        val xAnimation5 =
+            createSpringAnimation(binding.imageView5, DynamicAnimation.X, binding.imageView5.x)
+        val yAnimation5 =
+            createSpringAnimation(binding.imageView5, DynamicAnimation.Y, binding.imageView5.y)
 
         val imageView2Params = binding.imageView2.layoutParams as MarginLayoutParams
         val imageView3Params = binding.imageView3.layoutParams as MarginLayoutParams

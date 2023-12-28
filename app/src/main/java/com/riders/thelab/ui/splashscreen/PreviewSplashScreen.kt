@@ -2,13 +2,10 @@ package com.riders.thelab.ui.splashscreen
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +34,6 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -217,7 +213,6 @@ fun LoadingContent(viewModel: SplashScreenViewModel) {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SplashScreenContent(viewModel: SplashScreenViewModel) {
     val context = LocalContext.current
@@ -255,6 +250,8 @@ fun SplashScreenContent(viewModel: SplashScreenViewModel) {
             }
         }
     }
+
+    // TODO: if user chose to set dark mode using system update dark mode value. if set to light or dark use datastore value
 }
 
 

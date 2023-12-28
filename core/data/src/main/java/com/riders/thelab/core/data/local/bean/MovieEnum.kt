@@ -212,6 +212,6 @@ enum class MovieEnum(
     fun toMovie(): Movie = Movie(this)
 
     companion object {
-        fun getMovies(): List<Movie> = values().map { Movie(it) }
+        fun getMovies(): List<Movie> = entries.map { Movie(it) }
     }
 }

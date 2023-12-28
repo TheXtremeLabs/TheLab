@@ -152,7 +152,8 @@ object LabFileManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val storageManager =
                 context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
-            val storageVolumes = storageManager.storageVolumes
+            val storageVolumes: List<StorageVolume>? = storageManager.storageVolumes
+
             if (!storageVolumes.isNullOrEmpty()) {
                 val primaryVolume = storageManager.primaryStorageVolume
                 val result = ArrayList<String>(storageVolumes.size)
@@ -192,7 +193,7 @@ object LabFileManager {
         return if (result.isEmpty()) null else result
     }
 
-    fun getRootOfInnerSdCardFolder(context: Context, inputFile: File): String {
+    private fun getRootOfInnerSdCardFolder(context: Context, inputFile: File): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val storageManager =
                 context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
@@ -259,7 +260,7 @@ object LabFileManager {
         coverart.setLayoutParams(LinearLayout.LayoutParams(500, 500))
     }*/
 
-    fun getFileFromAssets(context: Context, filename: String): InputStream? = context
+    private fun getFileFromAssets(context: Context, filename: String): InputStream? = context
         .assets
         .runCatching {
             open(filename)

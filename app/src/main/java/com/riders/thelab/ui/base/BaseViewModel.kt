@@ -16,7 +16,7 @@ open class BaseViewModel : ViewModel() {
     var version by mutableStateOf("")
         private set
 
-    fun updateVersion(appVersion: String) {
+    private fun updateVersion(appVersion: String) {
         version = appVersion
     }
 

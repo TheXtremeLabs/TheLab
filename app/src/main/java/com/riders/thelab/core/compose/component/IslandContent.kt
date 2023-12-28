@@ -6,7 +6,12 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -15,25 +20,29 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.component.FaceUnlock
-import com.riders.thelab.core.ui.compose.component.LeadingContent
-import com.riders.thelab.core.ui.compose.component.TrailingContent
 import com.riders.thelab.core.ui.compose.component.Welcome
+import com.riders.thelab.core.ui.compose.component.dynamicisland.FaceUnlock
+import com.riders.thelab.core.ui.compose.component.dynamicisland.LeadingContent
+import com.riders.thelab.core.ui.compose.component.dynamicisland.TrailingContent
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 
+
+///////////////////////////////////////
+//
+// COMPOSE
+//
+///////////////////////////////////////
 @Composable
-fun IslandContent(
-    viewModel: MainActivityViewModel,
-    @PreviewParameter(IslandStatePreviewProvider::class) state: IslandState
-) {
+fun IslandContent(viewModel: MainActivityViewModel, state: IslandState) {
 
     val width by animateDpAsState(
         targetValue = state.fullWidth,
         animationSpec = spring(
             stiffness = Spring.StiffnessLow,
             dampingRatio = .6f,
-        )
+        ),
+        label = "width animation"
     )
 
     val height by animateDpAsState(
@@ -41,7 +50,8 @@ fun IslandContent(
         animationSpec = spring(
             stiffness = Spring.StiffnessLow,
             dampingRatio = .6f,
-        )
+        ),
+        label = "height animation"
     )
 
     Box(
@@ -81,7 +91,19 @@ fun IslandContent(
                     }
 
                     is IslandState.SearchState -> {
-                        Search(viewModel)
+                        Search(viewModel, state)
+                    }
+
+                    is IslandState.NetworkState.Available -> {
+                        NetworkAvailable()
+                    }
+
+                    is IslandState.NetworkState.Lost -> {
+                        NetworkLost()
+                    }
+
+                    is IslandState.NetworkState.Unavailable -> {
+                        NetworkUnavailable()
                     }
 
                     else -> {}
@@ -93,9 +115,14 @@ fun IslandContent(
 }
 
 
+///////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewIslandContent() {
+fun PreviewIslandContent(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
     val viewModel: MainActivityViewModel = hiltViewModel()
-    IslandContent(viewModel, IslandStatePreviewProvider().values.first())
+    IslandContent(viewModel, state)
 }

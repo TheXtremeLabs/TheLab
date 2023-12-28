@@ -2,13 +2,22 @@ package com.riders.thelab.ui.mainactivity
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -20,10 +29,42 @@ import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.utils.LabAppManager
+
+
+@Composable
+fun NoItemFound(searchValue: String) {
+    TheLabTheme {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
+        ) {
+            Box(modifier = Modifier.size(112.dp), contentAlignment = Alignment.Center) {
+                Lottie(
+                    modifier = Modifier.fillMaxSize(),
+                    rawResId = if (!isSystemInDarkTheme()) com.riders.thelab.core.ui.R.raw.error_rolling else com.riders.thelab.core.ui.R.raw.error_rolling_dark_theme
+                )
+            }
+
+            Text(
+                text = "Oops! No item found for value \"$searchValue\"",
+                color = if (!isSystemInDarkTheme()) Color.Black else Color.White
+            )
+            Text(
+                text = "Please retry...",
+                color = if (!isSystemInDarkTheme()) Color.Black else Color.White
+            )
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -107,7 +148,7 @@ fun App(item: App) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize(),
-                        horizontalAlignment = CenterHorizontally,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
                         Image(
@@ -149,5 +190,29 @@ fun App(item: App) {
                 }
             }
         }
+    }
+}
+
+
+///////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////
+@DevicePreviews
+@Composable
+private fun PreviewNoItemFound() {
+    TheLabTheme {
+        NoItemFound("Cool")
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewApp() {
+    val context = LocalContext.current
+    val appItem = LabAppManager.getActivityList(context)[12]
+    TheLabTheme {
+        App(appItem)
     }
 }

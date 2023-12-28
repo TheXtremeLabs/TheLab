@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
@@ -28,8 +27,8 @@ import com.riders.thelab.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.utils.loadImage
 import com.riders.thelab.feature.weather.core.component.TheLabTopAppBar
-import com.riders.thelab.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -70,11 +69,8 @@ fun PaletteItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaletteContent(viewModel: PaletteViewModel) {
-
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val lazyState = rememberLazyGridState()
 
@@ -147,7 +143,7 @@ fun PaletteContent(viewModel: PaletteViewModel) {
                                             color = MaterialTheme.colorScheme.primary,
                                             modifier = Modifier
                                                 .scale(0.5f)
-                                                .align(CenterHorizontally)
+                                                .align(Alignment.CenterHorizontally)
                                         )
                                     }
 

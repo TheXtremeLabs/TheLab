@@ -92,6 +92,8 @@ class GoogleDriveActivity
         //mGoogleApiClient.connect()
     }
 
+
+    @Deprecated("DEPRECATED - Use registerActivityForResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Timber.i("onActivityResult() - $requestCode")
 
@@ -331,11 +333,11 @@ class GoogleDriveActivity
     private fun init() {
 
         // Build a new authorized API client service.
-        val HTTP_TRANSPORT = NetHttpTransport()
+        val httpTransport = NetHttpTransport()
         val service: Drive = Drive.Builder(
-            HTTP_TRANSPORT,
+            httpTransport,
             JSON_FACTORY,
-            getCredentials(HTTP_TRANSPORT)
+            getCredentials(httpTransport)
         )
             .setApplicationName(APPLICATION_NAME)
             .build()
@@ -346,7 +348,7 @@ class GoogleDriveActivity
             .setFields("nextPageToken, files(id, name)")
             .execute()
         val files: MutableList<com.google.api.services.drive.model.File>? = result.files
-        if (files == null || files.isEmpty()) {
+        if (files.isNullOrEmpty()) {
             println("No files found.")
         } else {
             println("Files:")
@@ -358,12 +360,12 @@ class GoogleDriveActivity
 
     /**
      * Creates an authorized Credential object.
-     * @param HTTP_TRANSPORT The network HTTP Transport.
+     * @param netHttpTransport The network HTTP Transport.
      * @return An authorized Credential object.
      * @throws IOException If the credentials.json file cannot be found.
      */
     @Throws(IOException::class)
-    fun getCredentials(HTTP_TRANSPORT: NetHttpTransport): HttpRequestInitializer {
+    fun getCredentials(netHttpTransport: NetHttpTransport): HttpRequestInitializer {
         // Load client secrets.
         val mInputStream: InputStream =
             this@GoogleDriveActivity.javaClass.getResourceAsStream(CREDENTIALS_FILE_PATH)
@@ -373,7 +375,7 @@ class GoogleDriveActivity
 
         // Build flow and trigger user authorization request.
         val flow: GoogleAuthorizationCodeFlow = GoogleAuthorizationCodeFlow.Builder(
-            HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES
+            netHttpTransport, JSON_FACTORY, clientSecrets, SCOPES
         )
             .setDataStoreFactory(FileDataStoreFactory(File(TOKENS_DIRECTORY_PATH)))
             .setAccessType("offline")

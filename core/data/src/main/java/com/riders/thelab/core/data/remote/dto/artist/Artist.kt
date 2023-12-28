@@ -1,10 +1,14 @@
 package com.riders.thelab.core.data.remote.dto.artist
 
+import androidx.compose.runtime.Stable
 import kotlinx.serialization.SerialName
 import java.io.Serializable
+import javax.annotation.concurrent.Immutable
 
+@Stable
+@Immutable
 @kotlinx.serialization.Serializable
-data class Artist constructor(
+data class Artist(
     @SerialName("artistName")
     var artistName: String,
 

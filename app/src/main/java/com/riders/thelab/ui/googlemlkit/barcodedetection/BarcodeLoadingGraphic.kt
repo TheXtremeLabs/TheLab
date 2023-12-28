@@ -22,6 +22,7 @@ import android.graphics.Path
 import android.graphics.Point
 import android.graphics.PointF
 import com.riders.thelab.ui.googlemlkit.camera.GraphicOverlay
+import kotlin.math.abs
 
 /** Draws the graphic to indicate the barcode result is in loading.  */
 internal class BarcodeLoadingGraphic(
@@ -73,8 +74,8 @@ internal class BarcodeLoadingGraphic(
             val index = (i + j) % 4
             val nextIndex = (i + j + 1) % 4
             // The length between path's current end point and reticle box's next coordinate point.
-            val lineLen = Math.abs(boxClockwiseCoordinates[nextIndex].x - lastPathPoint.x) +
-                    Math.abs(boxClockwiseCoordinates[nextIndex].y - lastPathPoint.y)
+            val lineLen = abs(boxClockwiseCoordinates[nextIndex].x - lastPathPoint.x) +
+                    abs(boxClockwiseCoordinates[nextIndex].y - lastPathPoint.y)
             if (lineLen >= pathLen) {
                 path.lineTo(
                     lastPathPoint.x + pathLen * coordinateOffsetBits[index].x,

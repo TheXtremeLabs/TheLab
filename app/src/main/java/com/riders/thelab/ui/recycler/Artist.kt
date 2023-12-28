@@ -29,7 +29,7 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.previewprovider.ArtistPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
-import com.riders.thelab.utils.loadImage
+import com.riders.thelab.core.ui.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -76,8 +76,7 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
                 .selectable(
                     selected = artist.id == selectedIndex,
                     onClick = {
-                        if (selectedIndex != artist.id)
-                            selectedIndex = artist.id else selectedIndex = -1
+                        selectedIndex = if (selectedIndex != artist.id) artist.id else -1
 
                         (context.findActivity() as RecyclerViewActivity).onDetailClick(artist)
                     }),

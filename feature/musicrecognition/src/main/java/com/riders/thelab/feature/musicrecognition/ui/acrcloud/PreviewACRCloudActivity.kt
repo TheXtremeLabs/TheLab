@@ -66,10 +66,10 @@ import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
-import com.riders.thelab.core.ui.compose.component.NoConnection
-import com.riders.thelab.core.ui.compose.component.PulsarFab
+import com.riders.thelab.core.ui.compose.component.network.NoConnection
+import com.riders.thelab.core.ui.compose.component.fab.PulsarFab
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
-import com.riders.thelab.core.ui.compose.component.Toast
+import com.riders.thelab.core.ui.compose.component.toast.Toast
 import com.riders.thelab.core.ui.compose.theme.Orange
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
@@ -170,7 +170,20 @@ fun Searching(viewModel: ACRCloudViewModel) {
 }
 
 @Composable
-fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.RecognitionSuccessful) {
+fun RecognitionError() {
+    TheLabTheme {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(text = "An error occurred while processing audio data. Please retry.")
+        }
+    }
+}
+
+@Composable
+fun RecognitionResult(state: ACRUiState.RecognitionSuccessful) {
     val expanded = remember { mutableStateOf(false) }
 
     val painter: AsyncImagePainter = getCoilAsyncImagePainter(
@@ -288,8 +301,6 @@ fun RecognitionResult(viewModel: ACRCloudViewModel, state: ACRUiState.Recognitio
 @Composable
 fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
 
-    val context = LocalContext.current
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val connectionState by viewModel.mNetworkManager.networkConnectionState.collectAsStateWithLifecycle()
     val isConnected by viewModel.mNetworkManager.getConnectionState().observeAsState()
@@ -370,7 +381,7 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
             }
         ) { contentPadding ->
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                if (!isConnected!!) {
+                if (null == isConnected || isConnected?.equals(false) == true) {
                     NoConnection()
                 } else {
                     Column(
@@ -411,10 +422,14 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                                 }
 
                                 is ACRUiState.RecognitionSuccessful -> {
-                                    RecognitionResult(viewModel = viewModel, state = targetState)
+                                    RecognitionResult(state = targetState)
                                 }
 
-                                else -> {
+                                is ACRUiState.RecognitionError -> {
+                                    RecognitionError()
+                                }
+
+                                is ACRUiState.Error -> {
                                     ACRError(viewModel = viewModel)
                                 }
                             }
@@ -510,13 +525,17 @@ fun PreviewSearching() {
 @DevicePreviews
 @Composable
 fun PreviewRecognitionResult() {
-    val viewModel: ACRCloudViewModel = hiltViewModel()
     TheLabTheme {
         RecognitionResult(
-            viewModel = viewModel,
             state = ACRUiState.RecognitionSuccessful(songFetched = Song.mock)
         )
     }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewRecognitionError() {
+    TheLabTheme { RecognitionError() }
 }
 
 @DevicePreviews

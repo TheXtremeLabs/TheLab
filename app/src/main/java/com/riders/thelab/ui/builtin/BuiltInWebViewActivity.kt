@@ -26,7 +26,7 @@ class BuiltInWebViewActivity : AppCompatActivity() {
 
     lateinit var viewBinding: ActivityBuiltInWebviewBinding
 
-    private var m_downX = 0f
+    private var mDownX = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +50,7 @@ class BuiltInWebViewActivity : AppCompatActivity() {
     private fun initWebView() {
         viewBinding.contentBuiltInWebview.builtInWebView.webChromeClient = MyWebChromeClient(this)
         viewBinding.contentBuiltInWebview.builtInWebView.webViewClient = object : WebViewClient() {
+            @Deprecated("Deprecated in Java")
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 /**
                  * Check for the url, if the url is from same domain
@@ -86,9 +87,9 @@ class BuiltInWebViewActivity : AppCompatActivity() {
                 true
             }
             when (event.action) {
-                MotionEvent.ACTION_DOWN -> m_downX = event.x // save the x
+                MotionEvent.ACTION_DOWN -> mDownX = event.x // save the x
                 MotionEvent.ACTION_MOVE, MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP ->                     // set x so that it doesn't move
-                    event.setLocation(m_downX, event.y)
+                    event.setLocation(mDownX, event.y)
             }
             false
         }

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.riders.thelab.R
 
-class SimpleDividerItemDecoration constructor() : ItemDecoration() {
+class SimpleDividerItemDecoration() : ItemDecoration() {
 
     private var mDivider: Drawable? = null
 

@@ -34,9 +34,25 @@ dependencies {
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////
-    testImplementation(libs.junit4)
-    androidTestImplementation(libs.androidx.test.ext)
-    androidTestImplementation(libs.androidx.test.espresso.core)
+    testApi(libs.junit4)
+    // Assertions
+    testApi(libs.androidx.test.truth)
+
+    // Core library
+    androidTestApi(libs.androidx.test.core)
+
+    // AndroidJUnitRunner and JUnit Rules
+    androidTestApi(libs.androidx.test.rules)
+    androidTestApi(libs.androidx.test.runner)
+
+    // Assertions
+    androidTestApi(libs.androidx.test.ext)
+    androidTestApi(libs.androidx.test.truth)
+
+    androidTestApi(libs.androidx.test.uiautomator)
+
+    androidTestApi(libs.androidx.test.ext)
+    androidTestApi(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.mockito)
     androidTestImplementation(libs.mockito.android)
 
@@ -44,7 +60,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.testManifest)
 
-    androidTestImplementation(libs.hilt.android.testing)
+    /*androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.compiler)
-    kaptAndroidTest(libs.hilt.ext.compiler)
+    kaptAndroidTest(libs.hilt.ext.compiler)*/
 }

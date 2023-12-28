@@ -12,13 +12,6 @@ dependencies {
     /////////////////////////////
     // General Dependencies
     /////////////////////////////
-    //Kotlin
-    api(libs.kotlinx.coroutines.android)
-
-    // AndroidX
-    api(libs.androidx.core.ktx)
-    api(libs.androidx.compose.runtime)
-
     // Firebase
     api(platform(libs.firebase.bom))
     api(libs.firebase.ads)
@@ -26,6 +19,7 @@ dependencies {
     api(libs.firebase.auth)
     api(libs.firebase.crashlytics)
     api(libs.firebase.database)
+    api(libs.firebase.firestore)
     api(libs.firebase.messaging)
     api(libs.firebase.perf)
     api(libs.firebase.storage)

@@ -4,40 +4,20 @@ import android.content.Context
 import android.content.SharedPreferences
 
 class LabPreferenceManager(context: Context) {
-    companion object {
-
-        // Sharedpref file name
-        private const val PREF_NAME = "lab_pref"
-
-        // All Shared Preferences Keys
-        private const val KEY_USER_ID = "user_id"
-        private const val KEY_USER_NAME = "user_name"
-        private const val KEY_USER_EMAIL = "user_email"
-        private const val KEY_NOTIFICATIONS = "notifications"
-    }
-
 
     // Shared Preferences
-    var pref: SharedPreferences
+    private var pref: SharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     // Editor for Shared preferences
-    var editor: SharedPreferences.Editor? = null
-
-    // Context
-    var mContext: Context? = context
-
-    // Shared pref mode
-    var PRIVATE_MODE = 0
+    private var editor: SharedPreferences.Editor? = null
 
 
     init {
-        pref = mContext!!.getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         editor = pref.edit()
     }
 
-    fun isUserAlreadyLogged(): Boolean {
-        return !pref.getString(KEY_USER_EMAIL, "")!!.isEmpty()
-    }
+    fun isUserAlreadyLogged(): Boolean = pref.getString(KEY_USER_EMAIL, "")!!.isNotEmpty()
+
 
     /*
     public void storeUser(User user) {
@@ -75,7 +55,7 @@ class LabPreferenceManager(context: Context) {
         editor!!.commit()
     }
 
-    fun getNotifications(): String? {
+    private fun getNotifications(): String? {
         return pref.getString(KEY_NOTIFICATIONS, null)
     }
 
@@ -83,4 +63,18 @@ class LabPreferenceManager(context: Context) {
         editor!!.clear()
         editor!!.commit()
     }
+
+
+    companion object {
+
+        // Sharedpref file name
+        private const val PREF_NAME: String = "lab_pref"
+
+        // All Shared Preferences Keys
+        private const val KEY_USER_ID = "user_id"
+        private const val KEY_USER_NAME = "user_name"
+        private const val KEY_USER_EMAIL = "user_email"
+        private const val KEY_NOTIFICATIONS = "notifications"
+    }
+
 }

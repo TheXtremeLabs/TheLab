@@ -154,7 +154,6 @@ class TheLabAppWidgetProvider : AppWidgetProvider() {
         Timber.e("onDisabled()")
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun onUpdate(
         context: Context?,

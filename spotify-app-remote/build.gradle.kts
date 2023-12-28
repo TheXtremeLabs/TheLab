@@ -27,11 +27,6 @@ android {
      * https://stackoverflow.com/questions/60878599/error-building-android-library-direct-local-aar-file-dependencies-are-not-supp
      */
     configurations.maybeCreate("default")
-    artifacts.add("default", file("spotify-app-remote-release-0.8.0.aar"))
-}
-
-dependencies {
-//    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     // To fix build with CI we must use library as we can't implement aar directly in project
-//    implementation(files("libs/spotify-app-remote-release-0.8.0.aar"))
+    artifacts.add("default", file("spotify-app-remote-release-0.8.0.aar"))
 }

@@ -38,12 +38,12 @@ class AddContactActivity : AppCompatActivity() {
     }
 
     private fun initViewModelObservers() {
-        mAddContactViewModel.getAddedContact().observe(this, { added ->
+        mAddContactViewModel.getAddedContact().observe(this) { added ->
             if (added)
                 finish()
             else
                 Timber.e("onAddContactError()")
-        })
+        }
     }
 
     private fun setListeners() {
@@ -143,7 +143,7 @@ class AddContactActivity : AppCompatActivity() {
         }
     }
 
-    open class MyTextWatcher constructor(
+    open class MyTextWatcher(
         private val activity: AddContactActivity,
         private val view: View
     ) : TextWatcher {

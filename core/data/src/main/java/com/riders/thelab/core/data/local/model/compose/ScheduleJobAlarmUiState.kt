@@ -7,6 +7,6 @@ sealed class ScheduleJobAlarmUiState {
         var millisUntilFinished: Long = countDownTime
     ) : ScheduleJobAlarmUiState()
 
-    object Done : ScheduleJobAlarmUiState()
-    object None : ScheduleJobAlarmUiState()
+    data object Done : ScheduleJobAlarmUiState()
+    data object None : ScheduleJobAlarmUiState()
 }

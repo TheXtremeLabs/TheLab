@@ -1,14 +1,10 @@
 package com.riders.thelab.core.data.remote.api
 
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
-import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SpotifyAccountAPIService {

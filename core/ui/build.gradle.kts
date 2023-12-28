@@ -20,7 +20,6 @@ dependencies {
     implementation(project(":core:analytics"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
-    //api(project(":feature:weather"))
 
 
     ///////////////////////////////////
@@ -37,6 +36,16 @@ dependencies {
     api(libs.material)
     api(libs.androidx.browser)
 
+    // Accompanist
+    api(libs.accompanist.adaptive)
+    api(libs.accompanist.drawablepainter)
+    api(libs.accompanist.flowlayout)
+    api(libs.accompanist.navigation.material)
+    api(libs.accompanist.pager)
+    api(libs.accompanist.permissions)
+    api(libs.accompanist.systemuicontroller)
+    api(libs.accompanist.testharness)
+
     // Compose
     api(libs.androidx.compose.compiler)
     api(libs.androidx.compose.runtime)
@@ -51,6 +60,7 @@ dependencies {
     api(libs.androidx.compose.material3.windowSizeClass)
     api(libs.androidx.compose.material)
     api(libs.androidx.compose.material3)
+    api(libs.androidx.navigation.compose)
     api(libs.androidx.compose.runtime)
     api(libs.androidx.compose.runtime.livedata)
     debugApi(libs.androidx.compose.ui.tooling)

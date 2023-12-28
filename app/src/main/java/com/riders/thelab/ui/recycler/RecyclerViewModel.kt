@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.runtime.*
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
@@ -22,9 +21,13 @@ import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.ui.data.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import timber.log.Timber
@@ -37,8 +40,8 @@ class RecyclerViewModel @Inject constructor(
 
     val artistThumbnails = mutableListOf<String>()
 
-    private val JSONURLFetched: MutableLiveData<String> = MutableLiveData()
-    private val JSONURLError: MutableLiveData<Boolean> = MutableLiveData()
+    private val jsonURLFetched: MutableLiveData<String> = MutableLiveData()
+    private val jsonURLError: MutableLiveData<Boolean> = MutableLiveData()
     private val artistsThumbnails: MutableLiveData<List<String>> = MutableLiveData()
     private val artistsThumbnailsError: MutableLiveData<Boolean> = MutableLiveData()
     private val artists: MutableLiveData<List<Artist>> = MutableLiveData()
@@ -60,11 +63,11 @@ class RecyclerViewModel @Inject constructor(
         }
 
     fun getJSONURLFetched(): LiveData<String> {
-        return JSONURLFetched
+        return jsonURLFetched
     }
 
     fun getJSONURLError(): LiveData<Boolean> {
-        return JSONURLError
+        return jsonURLError
     }
 
     fun getArtistsThumbnailsSuccessful(): LiveData<List<String>> {
@@ -84,7 +87,7 @@ class RecyclerViewModel @Inject constructor(
     }
 
     fun getFirebaseJSONURL(activity: Activity) {
-        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             try {
 
                 val storageReference: StorageReference? = repository.getStorageReference(activity)
@@ -107,7 +110,7 @@ class RecyclerViewModel @Inject constructor(
                                     ex.printStackTrace()
                                 }
 
-                                JSONURLFetched.value = url
+                                jsonURLFetched.value = url
                             }
                     }
                 }
@@ -115,7 +118,7 @@ class RecyclerViewModel @Inject constructor(
             } catch (throwable: Exception) {
                 Timber.e(throwable)
                 withContext(Dispatchers.Main) {
-                    JSONURLError.value = true
+                    jsonURLError.value = true
                 }
             }
         }
@@ -126,7 +129,7 @@ class RecyclerViewModel @Inject constructor(
      */
     fun getFirebaseFiles(activity: Activity) {
         Timber.d("getFirebaseFiles()")
-        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
 
             try {
                 val storageReference: StorageReference? = repository.getStorageReference(activity)
@@ -220,7 +223,7 @@ class RecyclerViewModel @Inject constructor(
                         }
                 }
         }
-        delay(4000)
+        delay(4_000)
         return thumbnailsLinks
     }
 
@@ -282,7 +285,7 @@ class RecyclerViewModel @Inject constructor(
         Timber.d("onDeleteClick() item %s at position : %s", item.artistName, position)
 
         // get the removed item name to display it in snack bar
-        val name: String = "${item.artistName}"
+        val name = item.artistName
 
         // backup of removed item for undo purpose
 

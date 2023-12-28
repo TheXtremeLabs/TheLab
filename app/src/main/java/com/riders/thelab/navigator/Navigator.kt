@@ -7,14 +7,11 @@ import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.contacts.addcontact.AddContactActivity
 import com.riders.thelab.ui.login.LoginActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
-import com.riders.thelab.ui.settings.SettingsActivity
 import com.riders.thelab.ui.signup.SignUpActivity
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
 import timber.log.Timber
 
-class Navigator constructor(
-    private val activity: Activity
-) {
+class Navigator(private val activity: Activity) {
 
     /* Activities */
     fun callSplashActivity() {
@@ -44,7 +41,7 @@ class Navigator constructor(
     }
 
     fun callSettingsActivity() {
-        activity.startActivity(Intent(activity, SettingsActivity::class.java))
+        activity.startActivity(Intent(activity, com.riders.thelab.feature.settings.SettingsActivity::class.java))
     }
 
     /* Detail Activities */

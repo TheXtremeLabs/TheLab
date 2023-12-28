@@ -1,8 +1,5 @@
 package com.riders.thelab.utils
 
-import android.content.Context
-import com.riders.thelab.core.data.local.model.app.App
-
 object Constants {
 
     const val DATASTORE_THE_LAB_FILE_NAME = "THE_LAB_DATASTORE"
@@ -28,7 +25,7 @@ object Constants {
 
     private const val PORT = ":8101"
 
-    val BASE_ENDPOINT_THE_LAB_URL: String = "https://the-lab-back.herokuapp.com"
+    const val BASE_ENDPOINT_THE_LAB_URL: String = "https://the-lab-back.herokuapp.com"
     /*HTTP + if (LabDeviceManager.getModel().trim().lowercase()
             .contains("sdk")
     ) EMULATOR_IP_ADDRESS else IP_ADDRESS + PORT*/
@@ -73,12 +70,4 @@ object Constants {
 
     // WebView
     const val WEB_URL: String = "WEB_URL"
-
-
-    /**
-     * Return app testing list
-     */
-    fun getActivityList(context: Context): List<App> {
-        return ArrayList(AppBuilderUtils.buildActivities(context))
-    }
 }
