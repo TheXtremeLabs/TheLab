@@ -16,7 +16,6 @@ data class DeviceInformation(
     val id: String,
     val screenWidth: Int = 0,
     val screenHeight: Int = 0,
-
     val androidVersionName: String,
     val sdkVersion: Int = 0,
     val androidRelease: String,
