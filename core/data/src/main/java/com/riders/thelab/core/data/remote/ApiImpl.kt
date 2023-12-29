@@ -1,12 +1,17 @@
 package com.riders.thelab.core.data.remote
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.Context
 import android.location.Location
+import android.os.Environment
 import android.widget.Toast
+import androidx.core.net.toUri
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
@@ -35,6 +40,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import timber.log.Timber
 import java.io.File
+import java.util.Locale
 import javax.inject.Inject
 
 class ApiImpl @Inject constructor(
@@ -57,6 +63,7 @@ class ApiImpl @Inject constructor(
     private var mSpotifyAccountApiService: SpotifyAccountAPIService = spotifyAccountApiService
     private var mSpotifyApiService: SpotifyAPIService = spotifyApiService
 
+    private val downloadManager: DownloadManager? = null
 
     override suspend fun getStorageReference(activity: Activity): StorageReference? = try {
         Timber.e("getStorageReference()")
@@ -210,4 +217,44 @@ class ApiImpl @Inject constructor(
 
     override suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse =
         mSpotifyApiService.getTrackInfo(bearerToken, trackId)
+
+    override fun getDownloadManager(context: Context): DownloadManager =
+        downloadManager ?: context.getSystemService(DownloadManager::class.java) as DownloadManager
+
+    @SuppressLint("NewApi")
+    override fun downloadFile(url: String): Long {
+        Timber.d("downloadFile() | url: $url")
+
+        val fileName = url.substring(url.lastIndexOf('/') + 1).run {
+            this.substring(0, 1).uppercase(Locale.getDefault()) + this.substring(1)
+        }
+
+        val request = DownloadManager.Request(url.toUri()).apply {
+            setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            // Title of the Download Notification
+            setTitle(fileName)
+            // Description of the Download Notification
+            setDescription("Downloading")
+
+            if (LabCompatibilityManager.isNougat()) {
+                // Set if charging is required to begin the download
+                setRequiresCharging(false)
+            }
+
+            // Uri of the destination file
+            setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+        }
+
+
+        return downloadManager?.enqueue(request) ?: -1L
+    }
+
+    override fun cancelDownload(downloadId: Long): Int = downloadManager?.remove(downloadId) ?: -1
+
+    override fun cancelDownloads(downloadIds: List<Long>): Int {
+        var totalDownloadStooped: Int = 0
+        downloadIds.forEach { totalDownloadStooped += downloadManager?.remove(it) ?: -1 }
+        return totalDownloadStooped
+    }
 }

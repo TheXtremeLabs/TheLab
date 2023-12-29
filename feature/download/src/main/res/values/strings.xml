@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="placeholder_launch_download">Launch Download</string>
+    <string name="placeholder_stop_download">Stop Download</string>
+    <string name="placeholder_downloaded_files">Downloaded Files</string>
+    <string name="success_downloading_file">%s file downloaded successfully</string>
+    <string name="error_downloading_file">An error occurred while downloading %s file</string>
+</resources>
