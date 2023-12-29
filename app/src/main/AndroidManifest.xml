@@ -40,6 +40,11 @@
         android:minSdkVersion="30"
         tools:ignore="ScopedStorage" />
 
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.MODIFY_PHONE_STATE"
@@ -229,13 +234,6 @@
             android:theme="@style/TabTheme" />
 
         <activity
-            android:name=".ui.floatinglabels.FloatingLabelsActivity"
-            android:label="@string/activity_title_floating_labels"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/SwipeDownTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
-        <activity
             android:name=".ui.contacts.ContactsActivity"
             android:exported="true"
             android:label="@string/activity_title_database_contacts"
@@ -280,27 +278,10 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name=".feature.deviceinformation.DeviceInformationActivity"
-            android:label="@string/activity_title_device_information"
-            android:parentActivityName=".ui.mainactivity.MainActivity" />
-
-        <activity
-            android:name=".feature.deviceinformation.DeviceInformationActivity"
-            android:label="@string/activity_title_device_information"
-            android:parentActivityName=".ui.mainactivity.MainActivity" />
-
-        <activity
             android:name=".ui.palette.PaletteActivity"
             android:label="@string/activity_title_palette"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/PaletteTheme" />
-
-        <activity
-            android:name=".ui.filterlistview.FilterListViewActivity"
-            android:label="@string/activity_title_filter_list_view"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/FilterListViewTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".ui.theaters.TheatersActivity"
@@ -420,7 +401,7 @@
             android:theme="@style/Theme.TheLab" />
 
         <activity
-            android:name=".ui.download.DownloadActivity"
+            android:name=".feature.download.DownloadActivity"
             android:label="@string/activity_title_download"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"

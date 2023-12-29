@@ -2,13 +2,14 @@ plugins {
     id("thelab.android.feature")
     id("thelab.android.library.compose")
     alias(libs.plugins.kotlin.serialization)
+    id("thelab.android.hilt")
 }
 
 android {
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    namespace = "com.riders.thelab.feature.deviceinformation"
+    namespace = "com.riders.thelab.feature.download"
 }
 
 dependencies {
@@ -24,9 +25,5 @@ dependencies {
     ///////////////////////////////////
     // General Dependencies
     ///////////////////////////////////
-    // AndroidX
-    api(libs.androidx.core.ktx)
-    api(libs.androidx.browser)
-
     androidTestImplementation(project(":core:testing"))
 }

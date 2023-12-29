@@ -1,4 +1,4 @@
-package fr.chronopost.sam.chronoprint.data.local.model.compose
+package com.riders.thelab.core.data.local.model.compose
 
 import androidx.compose.runtime.Stable
 
