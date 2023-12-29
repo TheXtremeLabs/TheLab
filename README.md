@@ -46,7 +46,7 @@ Repository created and maintained by Saint-Honoré Michaël ([
 *@MichaelStH*](https://github.com/MichaelStH/) on *Github*).
 
 [sem-ver]: https://semver.org/
-[kotools-types-badge]: https://img.shields.io/static/v1?label=version&message=12.9.1&color=blue
+[kotools-types-badge]: https://img.shields.io/static/v1?label=version&message=12.10.3.1&color=blue
 [kotools-types-project]: https://github.com/kotools/types
 [kotlin]: https://kotlinlang.org
 [kotlin-badge]: https://img.shields.io/badge/kotlin-1.9.21-blue?logo=kotlin
