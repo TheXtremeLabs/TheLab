@@ -17,14 +17,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.riders.thelab.core.data.local.model.compose.Download
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -35,12 +34,50 @@ import com.riders.thelab.core.ui.compose.theme.Typography
 // COMPOSE
 //
 ////////////////////////////////////////
+@Composable
+fun Header(text: String, isButtonEnabled: Boolean, onButtonClicked: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(22.dp)
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.placeholder_welcome_to_download),
+            style = Typography.bodyLarge
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.weight(2f),
+                text = stringResource(id = R.string.placeholder_download_message),
+            )
+
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = onButtonClicked,
+                enabled = isButtonEnabled
+            ) {
+                Text(text = text, fontSize = 12.sp)
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DownloaderContent(viewModel: DownloadViewModel) {
+fun DownloaderContent(
+    downloadListState: List<Download>,
+    buttonText: String,
+    isButtonEnabled: Boolean,
+    onButtonClicked: () -> Unit
+) {
 
     val lazyListState = rememberLazyListState()
-    val downloadList by viewModel.downloadList.collectAsStateWithLifecycle()
 
     TheLabTheme {
         Scaffold(
@@ -56,39 +93,11 @@ fun DownloaderContent(viewModel: DownloadViewModel) {
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(22.dp)
             ) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Welcome to ChronoDownloader",
-                    style = Typography.bodyLarge
+                Header(
+                    text = buttonText,
+                    isButtonEnabled = isButtonEnabled,
+                    onButtonClicked = onButtonClicked
                 )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier.weight(2f),
-                        text = "Click on start button to start downloading files"
-                    )
-
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            if (!viewModel.isDownloadStarted) {
-                                viewModel.updateIsDownloadStarted(true)
-                            } else {
-                                viewModel.updateIsDownloadStarted(false)
-                            }
-                        },
-                        enabled = viewModel.canDownload
-                    ) {
-                        Text(
-                            text = if (!viewModel.isDownloadStarted) "Launch Download" else "Stop download",
-                            fontSize = 12.sp
-                        )
-                    }
-                }
 
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
@@ -97,40 +106,21 @@ fun DownloaderContent(viewModel: DownloadViewModel) {
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     itemsIndexed(
-                        items = downloadList,
+                        items = downloadListState,
                         key = { _, item -> item.id }
                     ) { index, item ->
-
-                        val isSamDB = item.filename.contains("bases_sam", true)
-                        val isAdrDb = item.filename.contains("base_adr", true)
-
-                        if (isSamDB || isAdrDb) {
-                            DownloadItem(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .animateItemPlacement(
-                                        animationSpec = tween(
-                                            durationMillis = 500,
-                                            easing = LinearOutSlowInEasing,
-                                        )
-                                    ),
-                                item = item,
-                                isDbDownload = isSamDB || isAdrDb
-                            )
-                        } else {
-                            DownloadItem(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(48.dp)
-                                    .animateItemPlacement(
-                                        animationSpec = tween(
-                                            durationMillis = 500,
-                                            easing = LinearOutSlowInEasing,
-                                        )
-                                    ),
-                                item = item
-                            )
-                        }
+                        DownloadItem(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                                .animateItemPlacement(
+                                    animationSpec = tween(
+                                        durationMillis = 500,
+                                        easing = LinearOutSlowInEasing,
+                                    )
+                                ),
+                            item = item
+                        )
                     }
                 }
             }
@@ -156,10 +146,16 @@ fun DownloaderContent(viewModel: DownloadViewModel) {
 ////////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewDownloaderContent() {
-    val viewModel: DownloadViewModel = hiltViewModel<DownloadViewModel>()
-
+private fun PreviewHeader() {
     TheLabTheme {
-        DownloaderContent(viewModel = viewModel)
+        Header("Launch Download", true) {}
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewDownloaderContent(@PreviewParameter(PreviewListProvider::class) itemList: List<Download>) {
+    TheLabTheme {
+        DownloaderContent(itemList, "Launch Download", true) {}
     }
 }

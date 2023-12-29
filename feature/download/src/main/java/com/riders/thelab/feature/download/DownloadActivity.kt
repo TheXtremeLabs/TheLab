@@ -4,12 +4,15 @@ import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.IntentFilter
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -18,11 +21,13 @@ import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class DownloadActivity : BaseComponentActivity() {
 
+@AndroidEntryPoint
+class DownloadActivity : BaseComponentActivity() {
 
     private val viewModel: DownloadViewModel by viewModels<DownloadViewModel>()
 
@@ -38,6 +43,13 @@ class DownloadActivity : BaseComponentActivity() {
     //
     /////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
+        StrictMode.setVmPolicy(
+            VmPolicy.Builder()
+                .detectLeakedClosableObjects()
+                .penaltyLog()
+                .build()
+        )
+
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
@@ -51,7 +63,20 @@ class DownloadActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            DownloaderContent(viewModel)
+                            DownloaderContent(
+                                downloadListState = viewModel.downloadList,
+                                buttonText = if (!viewModel.isDownloadStarted) "Launch Download" else "Stop download",
+                                isButtonEnabled = viewModel.canDownload,
+                                onButtonClicked = {
+                                    if (!viewModel.isDownloadStarted) {
+                                        viewModel.updateIsDownloadStarted(true)
+                                        viewModel.getSpeedTest()
+                                    } else {
+                                        viewModel.updateIsDownloadStarted(false)
+                                        viewModel.cancelDownloads()
+                                    }
+                                }
+                            )
                         }
                     }
                 }
@@ -74,37 +99,71 @@ class DownloadActivity : BaseComponentActivity() {
     @SuppressLint("UnspecifiedRegisterReceiverFlag", "NewApi")
     override fun onResume() {
         super.onResume()
+        Timber.d("onResume() | registerReceiver()")
 
         // Init Broadcast receiver
         if (null == mDownloadReceiver) {
             mDownloadReceiver = DownloadReceiver()
         }
 
-        // The receiver only will be triggered if was registered from your application using
-        if (!LabCompatibilityManager.isTiramisu()) {
+        runCatching { /*
+         * Safer exporting of context-registered receivers
+         * To help make runtime receivers safer, Android 13 introduces the ability for your app to specify whether a registered broadcast receiver should be exported and visible to other apps on the device. On previous versions of Android, any app on the device could send an unprotected broadcast to a dynamically-registered receiver unless that receiver was guarded by a signature permission.
+         * This exporting configuration is available on apps that do at least one of the following:
+         *
+         * Use the ContextCompat class from version 1.9.0 or higher of the AndroidX Core library.
+         *
+         * Target Android 13 or higher.
+         */
+            val listenToBroadcastsFromOtherApps = false
+            val receiverFlags = if (listenToBroadcastsFromOtherApps) {
+                ContextCompat.RECEIVER_EXPORTED
+            } else {
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            }
 
-            registerReceiver(
-                mDownloadReceiver,
-                IntentFilter().apply {
-                    addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-                    addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED)
-                    addAction(DownloadManager.ACTION_VIEW_DOWNLOADS)
-                })
-        } else {
-            registerReceiver(
-                mDownloadReceiver,
-                IntentFilter().apply {
-                    addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-                    addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED)
-                    addAction(DownloadManager.ACTION_VIEW_DOWNLOADS)
-                },
-                RECEIVER_EXPORTED
-            )
+            // The receiver only will be triggered if was registered from your application using
+            if (!LabCompatibilityManager.isTiramisu()) {
+                registerReceiver(
+                    mDownloadReceiver,
+                    IntentFilter().apply {
+                        addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+                        addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED)
+                        addAction(DownloadManager.ACTION_VIEW_DOWNLOADS)
+                    })
+            } else {
+                /*
+                 * Safer exporting of context-registered receivers
+                 * To help make runtime receivers safer, Android 13 introduces the ability for your app to specify whether a registered broadcast receiver should be exported and visible to other apps on the device. On previous versions of Android, any app on the device could send an unprotected broadcast to a dynamically-registered receiver unless that receiver was guarded by a signature permission.
+                 * This exporting configuration is available on apps that do at least one of the following:
+                 *
+                 * Use the ContextCompat class from version 1.9.0 or higher of the AndroidX Core library.
+                 *
+                 * Target Android 13 or higher.
+                 */
+                ContextCompat.registerReceiver(
+                    this@DownloadActivity,
+                    mDownloadReceiver,
+                    IntentFilter().apply {
+                        addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+                        addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED)
+                        addAction(DownloadManager.ACTION_VIEW_DOWNLOADS)
+                    },
+                    receiverFlags
+                )
+            }
         }
+            .onFailure { exception: Throwable ->
+                exception.printStackTrace()
+                Timber.e("error caught with message: ${exception.message}")
+            }
+            .onSuccess { Timber.d("Success") }
+
     }
 
     override fun backPressed() {
         Timber.e("backPressed()")
+        finish()
     }
 
 
@@ -119,14 +178,16 @@ class DownloadActivity : BaseComponentActivity() {
     // CLASS METHODS
     //
     /////////////////////////////////////
+    @SuppressLint("NewApi")
     private fun checkPermissions() = PermissionManager
         .from(this@DownloadActivity)
-        .request(Permission.Storage)
+        .request(if (!LabCompatibilityManager.isAndroid10()) Permission.Storage else if (LabCompatibilityManager.isTiramisu()) Permission.MediaLocationAndroid13 else Permission.MediaLocation)
         .checkPermission {
-            Timber.d("checkPermissions() | granted: $it")
             if (!it) {
+                Timber.e("checkPermissions() | not granted")
                 viewModel.updateCanDownload(false)
             } else {
+                Timber.d("checkPermissions() | granted")
                 viewModel.updateCanDownload(true)
             }
         }

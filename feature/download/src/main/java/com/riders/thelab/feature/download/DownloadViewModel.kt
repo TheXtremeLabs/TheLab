@@ -12,6 +12,7 @@ import com.riders.thelab.core.common.storage.FileManager
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.Download
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -26,9 +27,11 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 import java.net.UnknownHostException
+import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
-class DownloadViewModel(
+@HiltViewModel
+class DownloadViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val repository: IRepository
 ) : BaseViewModel() {
@@ -38,9 +41,12 @@ class DownloadViewModel(
     /////////////////////////////////////////
     // Composable states
     /////////////////////////////////////////
-    private var _downloadList: MutableStateFlow<List<Download>> = MutableStateFlow(emptyList())
-    val downloadList: StateFlow<List<Download>> = _downloadList.asStateFlow()
+    private var _downloadListState: MutableStateFlow<MutableList<Download>> =
+        MutableStateFlow(mutableListOf())
+    val downloadListState: StateFlow<List<Download>> = _downloadListState.asStateFlow()
 
+    var downloadList by mutableStateOf(emptyList<Download>())
+        private set
     var canDownload: Boolean by mutableStateOf(false)
         private set
     var isDownloadStarted: Boolean by mutableStateOf(false)
@@ -65,80 +71,70 @@ class DownloadViewModel(
         this.eventsList += newEvent
     }
 
-    private fun updateDownloadList(filename: String) {
-        Timber.d("updateDownloadList() | filename: $filename")
+    private fun addToDownloadList(filename: String) {
+        Timber.d("addToDownloadList() | filename: $filename")
 
-        val list = listOf(
+        this.downloadList = downloadList
+            .toMutableList()
+            .apply {
+                add(
+                    Download(
+                        id = if (downloadList.isEmpty()) 0 else downloadList.size,
+                        filename = filename
+                    )
+                )
+            }
+            .run { toList() }
+
+        this._downloadListState.value.add(
             Download(
-                id = if (_downloadList.value.isEmpty()) 0 else _downloadList.value.size,
+                id = if (this._downloadListState.value.isEmpty()) 0 else this._downloadListState.value.size,
                 filename = filename
             )
         )
-
-        this._downloadList.value += list
-    }
-
-    private fun updateListWithElementAtIndex(newElement: Download) {
-        Timber.d("updateListWithElementAtIndex() | newElement: $newElement")
-        val list: MutableList<Download> = _downloadList.value.toMutableList()
-        val index = list.indexOf(list.find { it.downloadRefId == newElement.downloadRefId })
-        list.removeAt(index)
-        list.add(index, newElement)
-
-        this._downloadList.value += list
-    }
-
-    private fun updateListWithElementAtIndex(index: Int, newElement: Download) {
-        Timber.d("updateListWithElementAtIndex() | index: $index, newElement: $newElement")
-        val list: MutableList<Download> = _downloadList.value.toMutableList()
-        list.apply {
-            removeAt(index)
-            add(index, newElement)
-        }
-
-        this._downloadList.value += list
     }
 
     fun updateCanDownload(canDownload: Boolean) {
-        Timber.d("updateCanDownload() | canDownload: $canDownload")
+        // Timber.d("updateCanDownload() | canDownload: $canDownload")
         this.canDownload = canDownload
     }
 
     private fun appendDownloadID(downloadId: Long) {
-        Timber.d("appendDownloadID() | id: $downloadId")
+        // Timber.d("appendDownloadID() | id: $downloadId")
         this.downloadIds += downloadId
     }
 
-    private fun updateProgressAtIndex(index: Int, progress: Int) {
-        Timber.e("updateProgressAtIndex() | index: $index, progress: $progress")
-        updateListWithElementAtIndex(this._downloadList.value[index].copy(progress = progress))
-    }
+    private fun updateDownloadRefId(reference: Long) {
+        if (downloadList.isEmpty()) {
+            Timber.e("updateDownloadRefId() | list is empty")
+        } else {
+            Timber.d("updateDownloadRefId() | reference: $reference")
 
+            downloadList.last().apply {
+                this.downloadRefId = reference
+            }
 
-    private fun updateDownloadRefId(reference: Long) = if (_downloadList.value.isEmpty()) {
-        Timber.e("updateDownloadRefId() | list is empty")
-    } else {
-        val index = _downloadList.value.indexOf(_downloadList.value.last())
-
-        updateListWithElementAtIndex(
-            index,
-            this._downloadList.value[index].copy(downloadRefId = reference)
-        )
-        Timber.e("updateDownloadRefId() | item updated: ${_downloadList.value[index]}")
+            this._downloadListState.value.last().downloadRefId = reference
+        }
     }
 
     fun updateFinishedDownloadItem(reference: Long) {
         Timber.d("updateFinishedDownloadItem() | reference: $reference")
 
-        if (_downloadList.value.isEmpty()) {
+        if (downloadList.isEmpty()) {
             Timber.e("updateFinishedDownloadItem() | list is empty")
         } else {
-            _downloadList.value.find { reference == it.downloadRefId }?.let {
-                val index = _downloadList.value.indexOf(it)
-                updateListWithElementAtIndex(
-                    index,
-                    this._downloadList.value[index].copy(progress = 100, isComplete = true)
-                )
+            downloadList.find { reference == it.downloadRefId }?.let {
+                it.progress = 100
+                it.isComplete = true
+
+                Timber.d("updateFinishedDownloadItem() | matched reference: ${it.downloadRefId}")
+            }
+
+            this._downloadListState.value.find { reference == it.downloadRefId }?.let {
+                it.progress = 100
+                it.isComplete = true
+
                 Timber.d("updateFinishedDownloadItem() | matched reference: ${it.downloadRefId}")
             }
         }
@@ -155,15 +151,16 @@ class DownloadViewModel(
             if (throwable is UnknownHostException
                 && (throwable.message?.contains("c11.it-local", true) == true ||
                         throwable.message?.contains("bad gateway", true) == true)
-                && _downloadList.value.isNotEmpty()
+                && downloadList.isNotEmpty()
             ) {
-                updateListWithElementAtIndex(
-                    0,
-                    this._downloadList.value[0].copy(
-                        isComplete = true,
-                        isError = true to "${throwable.message}"
-                    )
-                )
+                downloadList[0].apply {
+                    this.isComplete = true
+                    this.isError = true to "${throwable.message}"
+                }
+                _downloadListState.value[0].apply {
+                    this.isComplete = true
+                    this.isError = true to "${throwable.message}"
+                }
             }
 
             errorCount += 1
@@ -181,6 +178,17 @@ class DownloadViewModel(
     // OVERRIDE
     //
     ///////////////////////////////
+    init {
+
+        // Disable log W/System: A resource failed to call release
+        try {
+            Class.forName("dalvik.system.CloseGuard")
+                .getMethod("setEnabled", Boolean::class.javaPrimitiveType)
+                .invoke(null, true)
+        } catch (e: ReflectiveOperationException) {
+            throw RuntimeException(e)
+        }
+    }
     override fun onCleared() {
         super.onCleared()
 
@@ -188,7 +196,7 @@ class DownloadViewModel(
         updateCanDownload(false)
         updateIsDownloadStarted(false)
 
-        repository.cancelDownloads(downloadIds)
+        cancelDownloads()
     }
 
     ///////////////////////////////
@@ -196,7 +204,7 @@ class DownloadViewModel(
     // CLASS METHODS
     //
     ///////////////////////////////
-    private fun getSpeedTest() {
+    fun getSpeedTest() {
         Timber.d("getSpeedTest()")
 
         val speedTestUrl = Constants.URL_SPEED_TEST
@@ -206,7 +214,7 @@ class DownloadViewModel(
         viewModelScope.launch {
             if (isActive && isDownloadStarted) {
                 withContext(Dispatchers.Main) {
-                    updateDownloadList(filename = filename)
+                    addToDownloadList(filename = filename)
                 }
 
                 delay(1_500)
@@ -217,7 +225,7 @@ class DownloadViewModel(
         }
     }
 
-    private fun getIsoFile() {
+    fun getIsoFile() {
         Timber.d("getIsoFile()")
 
         val isoUrl = Constants.URL_ISO_TEST
@@ -227,11 +235,13 @@ class DownloadViewModel(
         viewModelScope.launch {
             if (isActive && isDownloadStarted) {
                 withContext(Dispatchers.Main) {
-                    updateDownloadList(filename = filename)
+                    addToDownloadList(filename = filename)
                 }
 
                 delay(1_500)
-                launchDownload(isoUrl) {}
+                launchDownload(isoUrl) {
+                    updateIsDownloadStarted(false)
+                }
             }
         }
     }
@@ -240,14 +250,15 @@ class DownloadViewModel(
     fun launchDownload(url: String, filename: String? = null, onFinishedDownload: () -> Unit) {
         Timber.d("launchDownload() | url: $url")
 
+        val fileName = filename ?: url.getFilenameFromUrl()
+        Timber.d("fileName: $fileName")
+
+        val file: File = FileManager.getInstance(context).createFileInDownloads(fileName)
+
+        // enqueue puts the download request in the queue.
+        val reference: Long = repository.downloadFile(context, url)
+
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            val fileName = filename ?: url.getFilenameFromUrl()
-            Timber.d("fileName: $fileName")
-
-            val file: File = FileManager.getInstance(context).createFileInDownloads(fileName)
-
-            // enqueue puts the download request in the queue.
-            val reference: Long = repository.downloadFile(url)
 
             appendDownloadID(reference)
             updateDownloadRefId(reference)
@@ -268,15 +279,15 @@ class DownloadViewModel(
                         DownloadManager.STATUS_FAILED -> {
                             Timber.e("DownloadManager.STATUS_FAILED")
 
-                            _downloadList.value.find { reference == it.downloadRefId }?.let {
-                                val index = _downloadList.value.indexOf(it)
+                            downloadList.find { reference == it.downloadRefId }?.let {
+                                it.isComplete = true
+                                it.isError = true to "Download failed"
 
-                                updateListWithElementAtIndex(
-                                    index, _downloadList.value[index].copy(
-                                        isComplete = true,
-                                        isError = true to "Download failed"
-                                    )
-                                )
+                                Timber.e("item: $this")
+                            }
+                            _downloadListState.value.find { reference == it.downloadRefId }?.let {
+                                it.isComplete = true
+                                it.isError = true to "Download failed"
 
                                 Timber.e("item: $this")
                             }
@@ -304,10 +315,23 @@ class DownloadViewModel(
 
                                 val progressFloat = (progress / 100).toFloat()
 
-                                _downloadList.value.find { reference == it.downloadRefId }?.let {
-                                    val index = _downloadList.value.indexOf(it)
-                                    updateProgressAtIndex(index, progress)
+                                downloadList.find { reference == it.downloadRefId }?.let {
+                                    // val index = downloadList.indexOf(it)
+                                    // updateProgressAtIndex(index, progress)
+                                    withContext(Dispatchers.Main) {
+                                        it.progress = progress
+                                    }
                                 } ?: run { Timber.e("download item not found with id: $reference") }
+
+                                _downloadListState.value.find { reference == it.downloadRefId }
+                                    ?.let {
+                                        // val index = downloadList.indexOf(it)
+                                        // updateProgressAtIndex(index, progress)
+                                        withContext(Dispatchers.Main) {
+                                            it.progress = progress
+                                        }
+                                    }
+                                    ?: run { Timber.e("download item not found with id: $reference") }
 
                                 // if you use downloadmanger in async task, here you can use like this to display progress.
                                 // Don't forget to do the division in long to get more digits rather than double.
@@ -323,16 +347,16 @@ class DownloadViewModel(
                             // publishProgress(100);
                             finishDownload = true
 
-                            _downloadList.value.find { reference == it.downloadRefId }?.let {
-                                val index = _downloadList.value.indexOf(it)
+                            downloadList.find { reference == it.downloadRefId }?.let {
+                                it.progress = progress
+                                it.isComplete = true
 
-                                updateListWithElementAtIndex(
-                                    index,
-                                    _downloadList.value[index].copy(
-                                        progress = progress,
-                                        isComplete = true
-                                    )
-                                )
+                                Timber.d("item: $this")
+                            }
+
+                            _downloadListState.value.find { reference == it.downloadRefId }?.let {
+                                it.progress = progress
+                                it.isComplete = true
 
                                 Timber.d("item: $this")
                             }
@@ -344,5 +368,10 @@ class DownloadViewModel(
                 }
             }
         }
+    }
+
+    fun cancelDownloads() {
+        val canceled = repository.cancelDownloads(downloadIds)
+        Timber.e("cancelDownloads() | canceled: $canceled")
     }
 }

@@ -8,6 +8,7 @@ import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.AppBuilder
 import com.riders.thelab.feature.biometric.ui.BiometricActivity
 import com.riders.thelab.feature.bluetooth.BluetoothActivity
+import com.riders.thelab.feature.download.DownloadActivity
 import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
 import com.riders.thelab.feature.lottie.LottieActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
@@ -18,7 +19,6 @@ import com.riders.thelab.ui.colors.ColorActivity
 import com.riders.thelab.ui.compose.ComposeActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
-import com.riders.thelab.ui.download.DownloadActivity
 import com.riders.thelab.ui.filterlistview.FilterListViewActivity
 import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity
 import com.riders.thelab.ui.floatingview.FloatingViewActivity
@@ -420,7 +420,7 @@ object AppBuilderUtils {
                     AppBuilder
                         .withId(25L)
                         .withActivityTitle("Download")
-                        .withActivityDescription("Download file using Kotlin Flow...")
+                        .withActivityDescription("Download file using Android DownloadManager, Kotlin Flow and Retrofit...")
                         .withActivityIcon(
                             getDrawableFromIntResource(
                                 context,
@@ -428,7 +428,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(DownloadActivity::class.java)
-                        .withActivityDate("2021/09/21")
+                        .withActivityDate("2023/12/29")
                         .build()
                 this.add(download)
 
