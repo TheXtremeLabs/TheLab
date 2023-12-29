@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+
+        <!-- ////////////// BROADCAST RECEIVER ////////////// -->
+        <!-- Bluetooth -->
+        <receiver
+            android:name=".DownloadReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
+                <action android:name="android.intent.action.ACTION_DOWNLOAD_COMPLETE" />
+                <action android:name="android.intent.action.VIEW_DOWNLOADS" />
+            </intent-filter>
+        </receiver>
+        <!-- ////////////// BROADCAST RECEIVER ////////////// -->
+
+    </application>
+</manifest>
