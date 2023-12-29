@@ -246,7 +246,6 @@ class ApiImpl @Inject constructor(
             setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
         }
 
-
         return downloadManager?.enqueue(request) ?: -1L
     }
 
