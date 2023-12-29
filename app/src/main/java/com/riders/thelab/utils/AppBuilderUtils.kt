@@ -19,8 +19,6 @@ import com.riders.thelab.ui.colors.ColorActivity
 import com.riders.thelab.ui.compose.ComposeActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
-import com.riders.thelab.ui.filterlistview.FilterListViewActivity
-import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity
 import com.riders.thelab.ui.floatingview.FloatingViewActivity
 import com.riders.thelab.ui.googledrive.GoogleDriveActivity
 import com.riders.thelab.ui.googlemlkit.LiveBarcodeScanningActivity
@@ -83,7 +81,12 @@ object AppBuilderUtils {
                         .withId(2L)
                         .withActivityTitle("Recycler")
                         .withActivityDescription("Recycler Basics and best practices...")
-                        .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_filter_list))
+                        .withActivityIcon(
+                            getDrawableFromIntResource(
+                                context,
+                                R.drawable.ic_filter_list
+                            )
+                        )
                         .withActivityClass(RecyclerViewActivity::class.java)
                         .withActivityDate("2023/01/19")
                         .build()
@@ -117,23 +120,6 @@ object AppBuilderUtils {
                         .withActivityDate("01/20/2015")
                         .build()
                 this.add(transitions)
-
-                //Floating Labels
-                val floatingsLabels =
-                    AppBuilder
-                        .withId(5L)
-                        .withActivityTitle("Floating Labels")
-                        .withActivityDescription("Floating Labels Form...")
-                        .withActivityIcon(
-                            getDrawableFromIntResource(
-                                context,
-                                R.drawable.ic_outline_label
-                            )
-                        )
-                        .withActivityClass(FloatingLabelsActivity::class.java)
-                        .withActivityDate("01/20/2015")
-                        .build()
-                this.add(floatingsLabels)
 
                 //Contact List
                 val contactList =

@@ -234,13 +234,6 @@
             android:theme="@style/TabTheme" />
 
         <activity
-            android:name=".ui.floatinglabels.FloatingLabelsActivity"
-            android:label="@string/activity_title_floating_labels"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/SwipeDownTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
-        <activity
             android:name=".ui.contacts.ContactsActivity"
             android:exported="true"
             android:label="@string/activity_title_database_contacts"
