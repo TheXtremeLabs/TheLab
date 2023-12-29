@@ -203,23 +203,6 @@ object AppBuilderUtils {
                         .build()
                 this.add(palette)
 
-                // Filter ListView
-                val filterListView =
-                    AppBuilder
-                        .withId(11L)
-                        .withActivityTitle("Filter ListView")
-                        .withActivityDescription("ListView with filter...")
-                        .withActivityIcon(
-                            getDrawableFromIntResource(
-                                context,
-                                R.drawable.ic_filter_list
-                            )
-                        )
-                        .withActivityClass(FilterListViewActivity::class.java)
-                        .withActivityDate("01/20/2015")
-                        .build()
-                this.add(filterListView)
-
                 // Theaters
                 val theaters =
                     AppBuilder
