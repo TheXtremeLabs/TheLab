@@ -291,13 +291,6 @@
             android:theme="@style/PaletteTheme" />
 
         <activity
-            android:name=".ui.filterlistview.FilterListViewActivity"
-            android:label="@string/activity_title_filter_list_view"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/FilterListViewTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
-        <activity
             android:name=".ui.theaters.TheatersActivity"
             android:label="@string/activity_title_theaters"
             android:parentActivityName=".ui.mainactivity.MainActivity"
