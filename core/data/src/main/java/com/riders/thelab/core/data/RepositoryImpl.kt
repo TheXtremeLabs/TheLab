@@ -1,26 +1,19 @@
 package com.riders.thelab.core.data
 
-import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.drawable.Drawable
 import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.google.firebase.storage.StorageReference
-import com.riders.thelab.core.common.utils.LabParser
 import com.riders.thelab.core.data.local.DbImpl
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.Video
-import com.riders.thelab.core.data.local.model.app.App
-import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.preferences.PreferencesImpl
@@ -35,7 +28,6 @@ import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
 import retrofit2.Call
-import timber.log.Timber
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
@@ -64,6 +56,11 @@ class RepositoryImpl @Inject constructor(
         mLocationData.removeSource(data)
     }
 
+    /////////////////////////
+    //
+    // DB
+    //
+    /////////////////////////
     override fun insertUser(user: User): Long = mDbImpl.insertUser(user)
 
     override fun insertAllUsers(users: List<User>) = mDbImpl.insertAllUsers(users)
@@ -139,6 +136,11 @@ class RepositoryImpl @Inject constructor(
         mDbImpl.deleteAll()
     }
 
+    /////////////////////////
+    //
+    // API
+    //
+    /////////////////////////
     override suspend fun getStorageReference(activity: Activity): StorageReference? {
         return mApiImpl.getStorageReference(activity)
     }
@@ -163,6 +165,14 @@ class RepositoryImpl @Inject constructor(
         return mApiImpl.getBulkDownload(context)
     }
 
+    override fun getDownloadManager(context: Context): DownloadManager =
+        mApiImpl.getDownloadManager(context)
+
+    override fun downloadFile(context: Context, url: String): Long = mApiImpl.downloadFile(context, url)
+    override fun cancelDownload(downloadId: Long): Int = mApiImpl.cancelDownload(downloadId)
+    override fun cancelDownloads(downloadIds: List<Long>): Int =
+        mApiImpl.cancelDownloads(downloadIds)
+
     override suspend fun getApi(): ApiResponse = mApiImpl.getApi()
 
     override suspend fun login(user: UserDto) = mApiImpl.login(user)
@@ -177,6 +187,12 @@ class RepositoryImpl @Inject constructor(
     override suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse =
         mApiImpl.getTrackInfo(bearerToken, trackId)
 
+
+    /////////////////////////
+    //
+    // PREFERENCES
+    //
+    /////////////////////////
     override fun isNightMode(): Flow<Boolean> = mPreferencesImpl.isNightMode()
 
     override suspend fun toggleNightMode() = mPreferencesImpl.toggleNightMode()

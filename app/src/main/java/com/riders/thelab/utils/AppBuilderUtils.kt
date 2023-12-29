@@ -8,6 +8,7 @@ import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.AppBuilder
 import com.riders.thelab.feature.biometric.ui.BiometricActivity
 import com.riders.thelab.feature.bluetooth.BluetoothActivity
+import com.riders.thelab.feature.download.DownloadActivity
 import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
 import com.riders.thelab.feature.lottie.LottieActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
@@ -18,9 +19,6 @@ import com.riders.thelab.ui.colors.ColorActivity
 import com.riders.thelab.ui.compose.ComposeActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
-import com.riders.thelab.ui.download.DownloadActivity
-import com.riders.thelab.ui.filterlistview.FilterListViewActivity
-import com.riders.thelab.ui.floatinglabels.FloatingLabelsActivity
 import com.riders.thelab.ui.floatingview.FloatingViewActivity
 import com.riders.thelab.ui.googledrive.GoogleDriveActivity
 import com.riders.thelab.ui.googlemlkit.LiveBarcodeScanningActivity
@@ -83,7 +81,12 @@ object AppBuilderUtils {
                         .withId(2L)
                         .withActivityTitle("Recycler")
                         .withActivityDescription("Recycler Basics and best practices...")
-                        .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_filter_list))
+                        .withActivityIcon(
+                            getDrawableFromIntResource(
+                                context,
+                                R.drawable.ic_filter_list
+                            )
+                        )
                         .withActivityClass(RecyclerViewActivity::class.java)
                         .withActivityDate("2023/01/19")
                         .build()
@@ -117,23 +120,6 @@ object AppBuilderUtils {
                         .withActivityDate("01/20/2015")
                         .build()
                 this.add(transitions)
-
-                //Floating Labels
-                val floatingsLabels =
-                    AppBuilder
-                        .withId(5L)
-                        .withActivityTitle("Floating Labels")
-                        .withActivityDescription("Floating Labels Form...")
-                        .withActivityIcon(
-                            getDrawableFromIntResource(
-                                context,
-                                R.drawable.ic_outline_label
-                            )
-                        )
-                        .withActivityClass(FloatingLabelsActivity::class.java)
-                        .withActivityDate("01/20/2015")
-                        .build()
-                this.add(floatingsLabels)
 
                 //Contact List
                 val contactList =
@@ -202,23 +188,6 @@ object AppBuilderUtils {
                         .withActivityDate("2023/01/16")
                         .build()
                 this.add(palette)
-
-                // Filter ListView
-                val filterListView =
-                    AppBuilder
-                        .withId(11L)
-                        .withActivityTitle("Filter ListView")
-                        .withActivityDescription("ListView with filter...")
-                        .withActivityIcon(
-                            getDrawableFromIntResource(
-                                context,
-                                R.drawable.ic_filter_list
-                            )
-                        )
-                        .withActivityClass(FilterListViewActivity::class.java)
-                        .withActivityDate("01/20/2015")
-                        .build()
-                this.add(filterListView)
 
                 // Theaters
                 val theaters =
@@ -420,7 +389,7 @@ object AppBuilderUtils {
                     AppBuilder
                         .withId(25L)
                         .withActivityTitle("Download")
-                        .withActivityDescription("Download file using Kotlin Flow...")
+                        .withActivityDescription("Download file using Android DownloadManager, Kotlin Flow and Retrofit...")
                         .withActivityIcon(
                             getDrawableFromIntResource(
                                 context,
@@ -428,7 +397,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(DownloadActivity::class.java)
-                        .withActivityDate("2021/09/21")
+                        .withActivityDate("2023/12/29")
                         .build()
                 this.add(download)
 

@@ -1,6 +1,7 @@
 package com.riders.thelab.core.data.remote
 
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.Context
 import android.location.Location
 import com.google.firebase.storage.StorageReference
@@ -44,4 +45,11 @@ interface IApi {
     ): SpotifyToken
 
     suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse
+
+
+    // Download
+    fun getDownloadManager(context:Context): DownloadManager
+    fun downloadFile(context: Context, url: String): Long
+    fun cancelDownload(downloadId: Long): Int
+    fun cancelDownloads(downloadIds: List<Long>): Int
 }
