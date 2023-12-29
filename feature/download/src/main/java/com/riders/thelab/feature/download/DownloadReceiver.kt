@@ -26,7 +26,6 @@ class DownloadReceiver : BroadcastReceiver() {
             return
         }
 
-
         Timber.d("onReceive() | intent: ${intent?.action}")
 
         // mDownloadManager = context.getSystemService(DownloadManager::class.java)
