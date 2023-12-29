@@ -1,6 +1,6 @@
 package com.riders.thelab.utils
 
-import fr.chronopost.sam.chronoprint.data.local.model.compose.TimerState
+import com.riders.thelab.core.data.local.model.compose.TimerState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
