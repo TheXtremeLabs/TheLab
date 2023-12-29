@@ -99,7 +99,7 @@ object LabCompatibilityManager {
      * Red Velvet Cake
      */
     fun isR(): Boolean {
-        return getSdkVersion() == VERSION_CODES.R
+        return getSdkVersion() >= VERSION_CODES.R
     }
 
 
@@ -108,7 +108,7 @@ object LabCompatibilityManager {
      * Snow Cone
      */
     fun isS(): Boolean {
-        return getSdkVersion() == VERSION_CODES.S
+        return getSdkVersion() >= VERSION_CODES.S
     }
 
 
@@ -117,7 +117,7 @@ object LabCompatibilityManager {
      * Tiramisu
      */
     fun isTiramisu(): Boolean {
-        return getSdkVersion() == VERSION_CODES.TIRAMISU
+        return getSdkVersion() >= VERSION_CODES.TIRAMISU
     }
 
 
@@ -146,7 +146,7 @@ object LabCompatibilityManager {
         if (fields != null) {
             for (field in fields) {
                 try {
-                    if (field.getInt(VERSION_CODES::class.java) == Build.VERSION.SDK_INT ) {
+                    if (field.getInt(VERSION_CODES::class.java) == Build.VERSION.SDK_INT) {
                         osName = field.name
                         Timber.e("code name $osName")
 

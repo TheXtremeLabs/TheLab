@@ -40,6 +40,11 @@
         android:minSdkVersion="30"
         tools:ignore="ScopedStorage" />
 
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.MODIFY_PHONE_STATE"
@@ -410,7 +415,7 @@
             android:theme="@style/Theme.TheLab" />
 
         <activity
-            android:name=".ui.download.DownloadActivity"
+            android:name=".feature.download.DownloadActivity"
             android:label="@string/activity_title_download"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
