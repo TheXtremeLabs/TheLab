@@ -49,7 +49,7 @@ interface IApi {
 
     // Download
     fun getDownloadManager(context:Context): DownloadManager
-    fun downloadFile(url: String): Long
+    fun downloadFile(context: Context, url: String): Long
     fun cancelDownload(downloadId: Long): Int
     fun cancelDownloads(downloadIds: List<Long>): Int
 }

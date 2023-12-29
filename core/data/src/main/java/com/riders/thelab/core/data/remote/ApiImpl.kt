@@ -63,7 +63,7 @@ class ApiImpl @Inject constructor(
     private var mSpotifyAccountApiService: SpotifyAccountAPIService = spotifyAccountApiService
     private var mSpotifyApiService: SpotifyAPIService = spotifyApiService
 
-    private val downloadManager: DownloadManager? = null
+    private var downloadManager: DownloadManager? = null
 
     override suspend fun getStorageReference(activity: Activity): StorageReference? = try {
         Timber.e("getStorageReference()")
@@ -218,42 +218,56 @@ class ApiImpl @Inject constructor(
     override suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse =
         mSpotifyApiService.getTrackInfo(bearerToken, trackId)
 
-    override fun getDownloadManager(context: Context): DownloadManager =
-        downloadManager ?: context.getSystemService(DownloadManager::class.java) as DownloadManager
+    override fun getDownloadManager(context: Context): DownloadManager {
+        if (null == downloadManager) {
+            Timber.e("Download Manager object is null")
+            this.downloadManager =
+                context.getSystemService(DownloadManager::class.java) as DownloadManager
+        }
+
+        return downloadManager as DownloadManager
+    }
+
 
     @SuppressLint("NewApi")
-    override fun downloadFile(url: String): Long {
+    override fun downloadFile(context: Context, url: String): Long {
         Timber.d("downloadFile() | url: $url")
+
+        if (null == downloadManager) {
+            Timber.e("Download Manager object is null")
+            this.downloadManager = getDownloadManager(context)
+        }
 
         val fileName = url.substring(url.lastIndexOf('/') + 1).run {
             this.substring(0, 1).uppercase(Locale.getDefault()) + this.substring(1)
         }
 
-        val request = DownloadManager.Request(url.toUri()).apply {
-            setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            // Title of the Download Notification
-            setTitle(fileName)
-            // Description of the Download Notification
-            setDescription("Downloading")
+        val request = DownloadManager.Request(url.toUri())
+            .apply {
+                setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                // Title of the Download Notification
+                setTitle(fileName)
+                // Description of the Download Notification
+                setDescription("Downloading")
 
-            if (LabCompatibilityManager.isNougat()) {
-                // Set if charging is required to begin the download
-                setRequiresCharging(false)
+                if (LabCompatibilityManager.isNougat()) {
+                    // Set if charging is required to begin the download
+                    setRequiresCharging(false)
+                }
+
+                // Uri of the destination file
+                setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
             }
 
-            // Uri of the destination file
-            setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-        }
-
-        return downloadManager?.enqueue(request) ?: -1L
+        return downloadManager!!.enqueue(request)
     }
 
-    override fun cancelDownload(downloadId: Long): Int = downloadManager?.remove(downloadId) ?: -1
+    override fun cancelDownload(downloadId: Long): Int = downloadManager!!.remove(downloadId)
 
     override fun cancelDownloads(downloadIds: List<Long>): Int {
         var totalDownloadStooped: Int = 0
-        downloadIds.forEach { totalDownloadStooped += downloadManager?.remove(it) ?: -1 }
+        downloadIds.forEach { totalDownloadStooped += downloadManager!!.remove(it) }
         return totalDownloadStooped
     }
 }

@@ -168,7 +168,7 @@ class RepositoryImpl @Inject constructor(
     override fun getDownloadManager(context: Context): DownloadManager =
         mApiImpl.getDownloadManager(context)
 
-    override fun downloadFile(url: String): Long = mApiImpl.downloadFile(url)
+    override fun downloadFile(context: Context, url: String): Long = mApiImpl.downloadFile(context, url)
     override fun cancelDownload(downloadId: Long): Int = mApiImpl.cancelDownload(downloadId)
     override fun cancelDownloads(downloadIds: List<Long>): Int =
         mApiImpl.cancelDownloads(downloadIds)
