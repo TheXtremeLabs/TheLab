@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="dialog_permission_title" tools:ignore="ExtraTranslation">Permission required</string>
+    <string name="dialog_permission_default_message" tools:ignore="ExtraTranslation">Default message</string>
+    <string name="dialog_permission_button_positive" tools:ignore="ExtraTranslation">OK</string>
+</resources>
