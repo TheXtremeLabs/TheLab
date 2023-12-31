@@ -136,7 +136,7 @@ fun AppThemeCardRowItem(
                     .width(with(LocalDensity.current) {
                         textFieldSize.width.toDp()
                     }
-                ),
+                    ),
                 expanded = expanded.value,
                 onDismissRequest = { expanded.value = false }
             ) {
@@ -230,6 +230,19 @@ fun AppSettingsSection(viewModel: SettingsViewModel) {
                     .padding(horizontal = 8.dp)
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(40.dp)
+                            .padding(horizontal = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "App version")
+                        Text(text = viewModel.version)
+                    }
+
                     AppThemeCardRowItem(
                         preselectedThemeOptions = if (viewModel.isDarkMode) viewModel.themeOptions.first {
                             it.contains(
