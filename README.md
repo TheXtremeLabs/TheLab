@@ -1,4 +1,6 @@
-![WelcomeToTheLab](docs/images/the_lab_banner.png)
+<p>
+  <img src="docs/images/the_lab_banner.png" alt="WelcomeToTheLab" height="640"/>
+</p>
 
 [![Kotools Types][kotools-types-badge]][kotools-types-project]
 [![Kotlin][kotlin-badge]][kotlin]
@@ -13,8 +15,7 @@ this app (biometric section, speech-to-text, floating widgets, file downloading,
 
 ## Libraries
 
-TheLab uses multiple libraries for UI as much as for network, image loading, dependency injection,
-serialization and so on
+TheLab uses multiple libraries for UI as much as for network, image loading, dependency injection, serialization and so on
 
 - [AndroidX Jetpack Compose][jetpack-compose]
 - [Coil][coil]
@@ -31,29 +32,26 @@ serialization and so on
 
 TheLab was originally developed in Java and XML layouts and view bindings for UI Layouts. Now it's in full Kotlin and, currently, we are migrating all the layouts to Jetpack Compose. Here's a few examples
 
+***Home***
 <p>
   <img src="docs/images/Screenshot_home_1.png" alt="home_1" width="300"/>
 </p>
 
-***Home***
-
+***Home with dark mode***
 <p>
   <img src="docs/images/Screenshot_home_3_dark.png" alt="home_3_dark" width="300"/>
 </p>
 
-***Home with dark mode***
-
+***Palette***
 <p>
   <img src="docs/images/Screenshot_palette_1_dark.png" alt="palette_1" width="300"/>
 </p>
 
-***Palette***
-
+***Settings***
 <p>
   <img src="docs/images/Screenshot_settings_1_light.png" alt="settings_1" width="300"/>
 </p>
 
-***Settings***
 
 ## Versioning
 
