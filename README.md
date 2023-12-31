@@ -1,5 +1,3 @@
-# TheLab
-
 ![WelcomeToTheLab](docs/images/the_lab_banner.png)
 
 [![Kotools Types][kotools-types-badge]][kotools-types-project]
@@ -8,7 +6,7 @@
 
 TheLab is the third version of ***Material Design***, an *Android* application originally developed
 to show several use-cases of Google's Android Material Design components such as (CardView,
-RecyclerView, so on and so forth), it's implementing now the new Jetpack Compose.
+RecyclerView, so on and so forth), it's implementing the new Jetpack Compose.
 
 It turns out to a "Lab App", where multiples libraries and use-cases are developed and tested in
 this app (biometric section, speech-to-text, floating widgets, file downloading, notifications and more)
@@ -22,16 +20,29 @@ serialization and so on
 - [Coil][coil]
 - [Lottie][lottie]
 - [Media and Exoplayer][exoplayer]
-- [Google APIs][jetpack-compose]
+- [Google APIs][google-apis]
 - [Hilt][dagger-hilt]
 - [Kotlin Serialization][kotlinx-serialization]
 - [Retrofit][retrofit]
 - [OkHttp][okhttp]
 - [Timber][timber]
 
+## Migrations
+
+TheLab was originally using XML layouts and view bindings. Currently we are migrating all the layouts to Jetpack Compose. Here's a few examples
+
+![home_1](docs/images/Screenshot_home_1.png)
+***Home***
+![home_3_dark](docs/images/Screenshot_home_3_dark.png)
+***Home with dark mode***
+![palette_1](docs/images/Screenshot_palette_1_dark.png)
+***Palette***
+![settings_1](docs/images/Screenshot_settings_1_light.png)
+***Settings***
+
 ## Versioning
 
-This repository use *Git* as the main versioning tool and follows [*Semantic Versioning*][sem-ver]principles.
+This repository use *Git* as the main versioning tool and follows [*Semantic Versioning*][sem-ver] principles.
 
 ## Related Apps
 
@@ -55,6 +66,7 @@ Repository created and maintained by Saint-Honoré Michaël([*@MichaelStH*](http
 [kotlinx.serialization-badge]: https://img.shields.io/badge/kotlinx.serialization-1.6.0-blue?logo=kotlin
 [total-functions]: https://xlinux.nist.gov/dads/HTML/totalfunc.html
 [jetpack-compose]: https://developer.android.com/jetpack/compose?hl=fr
+[google-apis]: https://console.cloud.google.com/apis/library?hl=fr
 [coil]: https://coil-kt.github.io/coil/
 [lottie]: https://airbnb.io/lottie/#/
 [exoplayer]: https://developer.android.com/guide/topics/media/exoplayer/hello-world
