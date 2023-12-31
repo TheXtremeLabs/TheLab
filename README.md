@@ -29,18 +29,30 @@ serialization and so on
 
 ## Migrations
 
-TheLab was originally using XML layouts and view bindings. Currently we are migrating all the layouts to Jetpack Compose. Here's a few examples
+TheLab was originally developed in Java and XML layouts and view bindings for UI Layouts. Now it's in full Kotlin and, currently, we are migrating all the layouts to Jetpack Compose. Here's a few examples
 
-<img src="docs/images/Screenshot_home_1.png" alt="home_1" width="300"/>
+<p>
+  <img src="docs/images/Screenshot_home_1.png" alt="home_1" width="300"/>
+</p>
+
 ***Home***
 
-<img src="docs/images/Screenshot_home_3_dark.png" alt="home_3_dark" width="300"/>
+<p>
+  <img src="docs/images/Screenshot_home_3_dark.png" alt="home_3_dark" width="300"/>
+</p>
+
 ***Home with dark mode***
 
-<img src="docs/images/Screenshot_palette_1_dark.png" alt="palette_1" width="300"/>
+<p>
+  <img src="docs/images/Screenshot_palette_1_dark.png" alt="palette_1" width="300"/>
+</p>
+
 ***Palette***
 
-<img src="docs/images/Screenshot_settings_1_light.png" alt="settings_1" width="300"/>
+<p>
+  <img src="docs/images/Screenshot_settings_1_light.png" alt="settings_1" width="300"/>
+</p>
+
 ***Settings***
 
 ## Versioning
