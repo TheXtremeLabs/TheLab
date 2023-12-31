@@ -1,6 +1,4 @@
-<p>
-  <img src="docs/images/the_lab_banner.png" alt="WelcomeToTheLab" height="640"/>
-</p>
+![WelcomeToTheLab](docs/images/the_lab_banner.png)
 
 [![Kotools Types][kotools-types-badge]][kotools-types-project]
 [![Kotlin][kotlin-badge]][kotlin]
@@ -70,7 +68,7 @@ Repository created and maintained by Saint-Honoré Michaël([*@MichaelStH*](http
 ![HotCoffeeLoading](docs/gif/lottie_hot_coffee.gif)
 
 [sem-ver]: https://semver.org/
-[kotools-types-badge]: https://img.shields.io/static/v1?label=version&message=12.10.3&color=blue
+[kotools-types-badge]: https://img.shields.io/static/v1?label=version&message=12.10.4&color=blue
 [kotools-types-project]: https://github.com/kotools/types
 [kotlin]: https://kotlinlang.org
 [kotlin-badge]: https://img.shields.io/badge/kotlin-1.9.21-blue?logo=kotlin
