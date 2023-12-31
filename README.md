@@ -31,13 +31,16 @@ serialization and so on
 
 TheLab was originally using XML layouts and view bindings. Currently we are migrating all the layouts to Jetpack Compose. Here's a few examples
 
-![home_1](docs/images/Screenshot_home_1.png)
+<img src="docs/images/Screenshot_home_1.png" alt="home_1" width="300"/>
 ***Home***
-![home_3_dark](docs/images/Screenshot_home_3_dark.png)
+
+<img src="docs/images/Screenshot_home_3_dark.png" alt="home_3_dark" width="300"/>
 ***Home with dark mode***
-![palette_1](docs/images/Screenshot_palette_1_dark.png)
+
+<img src="docs/images/Screenshot_palette_1_dark.png" alt="palette_1" width="300"/>
 ***Palette***
-![settings_1](docs/images/Screenshot_settings_1_light.png)
+
+<img src="docs/images/Screenshot_settings_1_light.png" alt="settings_1" width="300"/>
 ***Settings***
 
 ## Versioning
