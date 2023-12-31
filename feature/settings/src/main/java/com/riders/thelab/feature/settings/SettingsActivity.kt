@@ -46,6 +46,7 @@ class SettingsActivity : BaseComponentActivity() {
     override fun onStart() {
         super.onStart()
 
+        mViewModel.retrieveAppVersion(this@SettingsActivity)
         mViewModel.fetchDeviceInformation(this@SettingsActivity)
     }
 
