@@ -1,5 +1,7 @@
 # TheLab
 
+![WelcomeToTheLab](docs/images/the_lab_banner.png)
+
 [![Kotools Types][kotools-types-badge]][kotools-types-project]
 [![Kotlin][kotlin-badge]][kotlin]
 [![kotlinx.serialization][kotlinx.serialization-badge]][kotlinx.serialization]
@@ -29,21 +31,19 @@ serialization and so on
 
 ## Versioning
 
-This repository use *Git* as the main versioning tool and follows [*Semantic Versioning*][sem-ver]
-principles.
+This repository use *Git* as the main versioning tool and follows [*Semantic Versioning*][sem-ver]principles.
 
 ## Related Apps
 
 * [***Material Design***](https://github.com/MichaelStH/MaterialDesignFeatures)
 * [***Testing***](https://github.com/MichaelStH/Testing/tree/develop)
-* [***TheKoLab***](https://github.com/TheXtremeLabs/TheKoLab) (
-  Repository created and maintained by LAMARQUE Loïc ([*@LVMVRQUXL*](https://github.com/LVMVRQUXL)
-  on *Github*))
+* [***TheKoLab***](https://github.com/TheXtremeLabs/TheKoLab) (Repository created and maintained by LAMARQUE Loïc ([*@LVMVRQUXL*](https://github.com/LVMVRQUXL) on *Github*))
 
 ## Authors
 
-Repository created and maintained by Saint-Honoré Michaël ([
-*@MichaelStH*](https://github.com/MichaelStH/) on *Github*).
+Repository created and maintained by Saint-Honoré Michaël([*@MichaelStH*](https://github.com/MichaelStH/) on *Github*).
+
+![HotCoffeeLoading](docs/gif/lottie_hot_coffee.gif)
 
 [sem-ver]: https://semver.org/
 [kotools-types-badge]: https://img.shields.io/static/v1?label=version&message=12.10.3&color=blue
