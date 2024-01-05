@@ -2,13 +2,17 @@ package com.riders.thelab.feature.weather.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +31,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.local.model.compose.WeatherUIState
@@ -152,6 +157,10 @@ class WeatherActivity : ComponentActivity(), LocationListener {
                             }
                         }
                     }
+
+                    /*if (LabCompatibilityManager.isOreo()) {
+                        registerWeatherWidget()
+                    }*/
                 }
 
                 override fun onPermissionRationaleShouldBeShown(
@@ -242,6 +251,36 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         }
     }
 
+    /**
+     * On devices running Android 8.0 (API level 26) and higher,
+     * launchers that let users create pinned shortcuts also let them pin widgets onto their home screen. Similar to pinned shortcuts, these pinned widgets give users access to specific tasks in your app and can be added to the home screen directly from the app.
+     */
+    /*@SuppressLint("NewApi")
+    fun registerWeatherWidget() {
+        Timber.d("registerWeatherWidget()")
+        val appWidgetManager = AppWidgetManager.getInstance(this@WeatherActivity)
+        val myProvider = ComponentName(this@WeatherActivity, ExampleAppWidgetProvider::class.java)
+
+        if (appWidgetManager.isRequestPinAppWidgetSupported) {
+            Timber.d("appWidgetManager.isRequestPinAppWidgetSupported true")
+            // Create the PendingIntent object only if your app needs to be notified
+            // that the user allowed the widget to be pinned. Note that, if the pinning
+            // operation fails, your app isn't notified. This callback receives the ID
+            // of the newly-pinned widget (EXTRA_APPWIDGET_ID).
+            val successCallback = PendingIntent.getBroadcast(
+                *//* context = *//* this,
+                *//* requestCode = *//*
+                0,
+                *//* intent = *//*
+                Intent(this, Uri.parse()MainActivity::class.java),
+                *//* flags = *//*
+                if (LabCompatibilityManager.isMarshmallow()) PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT else PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            appWidgetManager.requestPinAppWidget(myProvider, null, successCallback)
+        }
+        }*/
+
     /////////////////////////////////////
     //
     // IMPLEMENTS
@@ -270,5 +309,9 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         lifecycleScope.launch {
             LocationProviderChangedEvent().triggerEvent(true)
         }*/
+    }
+
+    companion object {
+        const val KEY_DESTINATION: String = "destination"
     }
 }
