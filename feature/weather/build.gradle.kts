@@ -31,6 +31,8 @@ dependencies {
     ///////////////////////////////////
     // AndroidX
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
 
     // Worker & concurrent
     api(libs.androidx.work.ktx)
