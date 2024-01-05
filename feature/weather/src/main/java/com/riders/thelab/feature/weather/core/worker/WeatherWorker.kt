@@ -19,7 +19,6 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.feature.weather.core.widget.TheLabAppWidgetProvider
-import com.riders.thelab.feature.weather.ui.WeatherDownloadWorker
 import com.riders.thelab.feature.weather.ui.WeatherUtils
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject

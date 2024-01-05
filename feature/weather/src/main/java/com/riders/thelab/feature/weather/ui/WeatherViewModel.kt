@@ -32,6 +32,7 @@ import com.riders.thelab.core.data.remote.dto.weather.CurrentWeather
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.ui.data.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
 import com.riders.thelab.feature.weather.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler

@@ -1,6 +1,5 @@
 package com.riders.thelab
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
@@ -11,8 +10,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
+import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
@@ -22,16 +23,14 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.feature.weather.core.worker.WeatherWorker
-import com.riders.thelab.feature.weather.ui.WeatherDownloadWorker
+import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.time.Duration
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -43,6 +42,16 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
+
+
+    private val mWorkerConstraints: Constraints = Constraints.Builder()
+        .apply {
+            setRequiredNetworkType(NetworkType.CONNECTED)
+            setRequiresBatteryNotLow(true)
+            setRequiresCharging(false)
+            setRequiresStorageNotLow(true)
+        }
+        .build()
 
 
     ////////////////////////////////////////
@@ -57,10 +66,11 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
 
         initTimberAndThreeten()
         initAdsAndFirebase()
-        // delayedInit()
 
 //        val appLifecycleObserver = TheLabAppLifecycleObserver()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+
+        delayedInit()
 
         if (BuildConfig.DEBUG) {
             LabDeviceManager.logDeviceInfo()
@@ -132,15 +142,23 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
 
     private fun delayedInit() {
         applicationScope.launch {
-            setupWork()
+            Timber.i("delayedInit() | applicationScope.launch")
+            createWeatherCityDownloadWorker()
+            createPeriodicWeatherFetchWorker()
         }
     }
 
-    @SuppressLint("NewApi")
-    private fun setupWork() {
-        Timber.d("setupWork()")
-        val workRequest: OneTimeWorkRequest =
-            OneTimeWorkRequestBuilder<WeatherDownloadWorker>().build()
+    /**
+     * Setup one time worker to fetch cities in json
+     */
+    private fun createWeatherCityDownloadWorker() {
+        Timber.d("createWeatherCityDownloadWorker()")
+
+        val workRequest: OneTimeWorkRequest = OneTimeWorkRequestBuilder<WeatherDownloadWorker>()
+            .apply {
+                setConstraints(mWorkerConstraints)
+            }
+            .build()
 
         WorkManager
             .getInstance(applicationContext)
@@ -149,14 +167,21 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
                 ExistingWorkPolicy.KEEP,
                 workRequest
             )
+    }
 
+    /**
+     * Setup periodic worker to update widget
+     */
+    private fun createPeriodicWeatherFetchWorker() {
+        Timber.d("createPeriodicWeatherFetchWorker()")
 
         // Setup periodic worker to update widget
         val periodicWeatherWorkRequest: PeriodicWorkRequest =
-            if (LabCompatibilityManager.isNougat()) PeriodicWorkRequestBuilder<WeatherWorker>(
-                Duration.ofMinutes(15L)
-            ).build()
-            else PeriodicWorkRequestBuilder<WeatherWorker>(15, TimeUnit.MINUTES).build()
+            PeriodicWorkRequestBuilder<WeatherWorker>(15, TimeUnit.MINUTES)
+                .apply {
+                    setConstraints(mWorkerConstraints)
+                }
+                .build()
 
         WorkManager
             .getInstance(applicationContext)
