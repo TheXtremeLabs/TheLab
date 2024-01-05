@@ -230,7 +230,6 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
 fun WeatherData(viewModel: WeatherViewModel) {
 
     val context = LocalContext.current
-    val verticalScroll: ScrollState = rememberScrollState()
     val cityUIState by viewModel.weatherCityUiState.collectAsStateWithLifecycle()
 
     if (cityUIState is WeatherCityUIState.Success) {
