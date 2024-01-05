@@ -33,8 +33,10 @@ androidxDataStore = "1.0.0"
 androidxDataStorePreference = "1.2.1"
 androidxDynamicAnimation = "1.0.0"
 # espresso version {strictly 3.5.0}
+#noinspection GradleDependency
 androidxEspresso = "3.5.0"
 androidxFragment = "1.6.2"
+androidxGlance = "1.0.0"
 androidxHiltNavigationCompose = "1.1.0"
 androidxLifecycle = "2.6.2"
 androidxMacroBenchmark = "1.2.2"
@@ -49,6 +51,8 @@ androidxStartup = "1.1.1"
 androidxTestCore = "1.5.0"
 androidxTestExt = "1.1.5"
 androidxTestRules = "1.5.0"
+# test runner version {strictly 1.5.0}
+#noinspection GradleDependency
 androidxTestRunner = "1.5.0"
 androidxTestTruth = "1.5.0"
 androidxTracing = "1.2.0"
@@ -74,6 +78,7 @@ googleApiClientJackson2 = "2.1.2"
 googleHttpClient = "1.42.3"
 # Google ML Kit
 googleBarcodeScanning = "17.2.0"
+#noinspection GradleDependency
 googleObjectDetection = "17.0.0"
 # Google Play Services
 googlePlayServicesBase = "18.3.0"
@@ -178,6 +183,10 @@ androidx-datastore-preferences = { group = "androidx.datastore", name = "datasto
 androidx-preferences = { group = "androidx.preference", name = "preference-ktx", version.ref = "androidxDataStorePreference" }
 androidx-dynamicanimation = { group = "androidx.dynamicanimation", name = "dynamicanimation", version.ref = "androidxDynamicAnimation" }
 androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragment" }
+androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "androidxGlance" }
+androidx-glance-material = { group = "androidx.glance", name = "glance-material", version.ref = "androidxGlance" }
+androidx-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "androidxGlance" }
+androidx-glance = { group = "androidx.glance", name = "glance-appwidget", version.ref = "androidxGlance" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
 androidx-lifecycle-compiler = { group = "androidx.lifecycle", name = "lifecycle-compiler", version.ref = "androidxLifecycle" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "androidxLifecycle" }
