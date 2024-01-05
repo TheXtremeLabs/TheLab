@@ -26,17 +26,6 @@ object Validator {
     }
 
     /**
-     * Verify if List is null or empty
-     *
-     * @param list List to verify
-     * @param <T>  Generic list Object
-     * @return The result of test
-    </T> */
-    fun <T> isNullOrEmpty(list: Collection<T>): Boolean {
-        return list == null || list.isEmpty()
-    }
-
-    /**
      * Verify if String is full numeric
      *
      * @param s String to verify

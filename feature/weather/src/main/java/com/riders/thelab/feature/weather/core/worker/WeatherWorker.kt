@@ -18,7 +18,7 @@ import com.riders.thelab.core.common.utils.LabLocationUtils
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.feature.weather.core.widget.TheLabAppWidgetProvider
+import com.riders.thelab.feature.weather.core.widget.WeatherWidgetReceiver
 import com.riders.thelab.feature.weather.ui.WeatherUtils
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -32,18 +32,10 @@ import kotlin.math.roundToInt
 @HiltWorker
 class WeatherWorker @AssistedInject constructor(
     @Assisted val context: Context,
-    @Assisted val workerParams: WorkerParameters
+    @Assisted val workerParams: WorkerParameters,
+    private val repository: IRepository
 ) : CoroutineWorker(context, workerParams) {
 
-    companion object {
-        const val MESSAGE_STATUS = "message_status"
-        const val URL_REQUEST = "url_request"
-
-        const val WORK_SUCCESS = "Loading finished"
-        const val WORK_DOWNLOAD_FAILED: String = "Error while downloading zip file"
-        const val WORK_LOCATION_FAILED: String = "Unable to fetch user location"
-        const val WORK_RESULT = "work_result"
-    }
 
     private var outputData: Data? = null
 
@@ -88,34 +80,7 @@ class WeatherWorker @AssistedInject constructor(
                 } else {
                     Timber.d("observer.onSuccess(responseFile)")
 
-
                     if (!LabCompatibilityManager.isTiramisu()) {
-                        LabAddressesUtils.getDeviceAddressAndroid13(
-                            Geocoder(context, Locale.getDefault()),
-                            LabLocationUtils.buildTargetLocationObject(
-                                oneCallWeatherResponse.latitude,
-                                oneCallWeatherResponse.longitude
-                            )
-                        ) {
-
-                            it?.let {
-                                // Load city name
-                                val cityName = it.locality
-                                val country = it.countryName
-
-                                val weatherBundle = buildWeatherBundle(
-                                    oneCallWeatherResponse,
-                                    cityName!!,
-                                    country!!
-                                )
-                                updateWidgetViaBroadcast(weatherBundle)
-
-                                // Create and send outputData
-                                outputData = createOutputData(WORK_SUCCESS)
-                                Result.success(outputData!!)
-                            }
-                        }
-                    } else {
                         val address = LabAddressesUtils
                             .getDeviceAddressLegacy(
                                 Geocoder(context, Locale.getDefault()),
@@ -136,11 +101,36 @@ class WeatherWorker @AssistedInject constructor(
                         // Create and send outputData
                         outputData = createOutputData(WORK_SUCCESS)
                         Result.success(outputData!!)
+
+                    } else {
+                        LabAddressesUtils.getDeviceAddressAndroid13(
+                            Geocoder(context, Locale.getDefault()),
+                            LabLocationUtils.buildTargetLocationObject(
+                                oneCallWeatherResponse.latitude,
+                                oneCallWeatherResponse.longitude
+                            )
+                        ) {
+                            it?.let {
+                                // Load city name
+                                val cityName = it.locality
+                                val country = it.countryName
+
+                                val weatherBundle = buildWeatherBundle(
+                                    oneCallWeatherResponse,
+                                    cityName!!,
+                                    country!!
+                                )
+                                updateWidgetViaBroadcast(weatherBundle)
+
+                                // Create and send outputData
+                                outputData = createOutputData(WORK_SUCCESS)
+                                Result.success(outputData!!)
+                            }
+                        }
                     }
                 }
             }
         } catch (throwable: Exception) {
-
             Timber.e(WeatherDownloadWorker.WORK_DOWNLOAD_FAILED)
             Timber.e(throwable)
             outputData = createOutputData(WORK_DOWNLOAD_FAILED)
@@ -191,12 +181,12 @@ class WeatherWorker @AssistedInject constructor(
             }
 
         return Bundle().apply {
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_CITY, city)
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_COUNTRY, country)
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_DESCRIPTION, description)
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_TEMPERATURE, temperature)
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_REAL_FEELS, realFeels)
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_ICON, icon)
+            putString(EXTRA_WEATHER_CITY, city)
+            putString(EXTRA_WEATHER_COUNTRY, country)
+            putString(EXTRA_WEATHER_DESCRIPTION, description)
+            putString(EXTRA_WEATHER_TEMPERATURE, temperature)
+            putString(EXTRA_WEATHER_REAL_FEELS, realFeels)
+            putString(EXTRA_WEATHER_ICON, icon)
         }
     }
 
@@ -204,11 +194,28 @@ class WeatherWorker @AssistedInject constructor(
         Timber.d("updateWidgetViaBroadcast()")
 
         val broadcastIntent: Intent =
-            Intent(context, TheLabAppWidgetProvider::class.java).apply {
+            Intent(context, WeatherWidgetReceiver::class.java).apply {
                 action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
                 putExtras(bundle)
             }
 
         context.sendBroadcast(broadcastIntent)
+    }
+
+    companion object {
+        const val MESSAGE_STATUS = "message_status"
+        const val URL_REQUEST = "url_request"
+
+        const val WORK_SUCCESS = "Loading finished"
+        const val WORK_DOWNLOAD_FAILED: String = "Error while downloading zip file"
+        const val WORK_LOCATION_FAILED: String = "Unable to fetch user location"
+        const val WORK_RESULT = "work_result"
+
+        const val EXTRA_WEATHER_CITY = "EXTRA_WEATHER_CITY"
+        const val EXTRA_WEATHER_COUNTRY = "EXTRA_WEATHER_COUNTRY"
+        const val EXTRA_WEATHER_DESCRIPTION = "EXTRA_WEATHER_DESCRIPTION"
+        const val EXTRA_WEATHER_TEMPERATURE = "EXTRA_WEATHER_TEMPERATURE"
+        const val EXTRA_WEATHER_REAL_FEELS = "EXTRA_WEATHER_REAL_FEELS"
+        const val EXTRA_WEATHER_ICON = "EXTRA_WEATHER_ICON"
     }
 }

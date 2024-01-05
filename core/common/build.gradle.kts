@@ -41,4 +41,10 @@ dependencies {
     api(libs.moshi)
     api(libs.moshi.kotlin)
     kapt(libs.moshi.kotlin.codegen)
+
+
+    ///////////////////////////////////
+    // Tests Dependencies
+    ///////////////////////////////////
+    androidTestImplementation(project(":core:testing"))
 }

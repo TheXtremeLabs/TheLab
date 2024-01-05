@@ -67,7 +67,6 @@ object LabAddressesUtils {
         ) {
             val address = it[0]
             Timber.e("addresses : %s", address)
-
             callback(address)
         }
     }

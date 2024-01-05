@@ -213,18 +213,6 @@ class WeatherViewModel @Inject constructor(
         updateUIState(WeatherUIState.Loading)
     }
 
-    /*fun GetCityNameWithCoordinates(
-        activity: WeatherActivity,
-        latitude: Double,
-        longitude: Double
-    ): Address? {
-        Timber.d("GetCityNameWithCoordinates()")
-        return LabAddressesUtils.getDeviceAddress(
-            Geocoder(activity, Locale.getDefault()),
-            (latitude to longitude).toLocation()
-        )
-    }*/
-
     @SuppressLint("NewApi")
     fun getCityNameWithCoordinates(
         activity: WeatherActivity,
@@ -233,15 +221,17 @@ class WeatherViewModel @Inject constructor(
     ) {
         Timber.d("GetCityNameWithCoordinates()")
 
+        val geocoder = Geocoder(activity, Locale.getDefault())
+
         if (!LabCompatibilityManager.isTiramisu()) {
             LabAddressesUtils.getDeviceAddressLegacy(
-                Geocoder(activity, Locale.getDefault()),
+                geocoder,
                 (latitude to longitude).toLocation()
             )?.let { updateWeatherAddress(it) }
 
         } else {
             LabAddressesUtils.getDeviceAddressAndroid13(
-                Geocoder(activity, Locale.getDefault()),
+                geocoder,
                 (latitude to longitude).toLocation()
             ) { address ->
                 address?.let { updateWeatherAddress(it) }
