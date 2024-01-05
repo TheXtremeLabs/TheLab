@@ -17,6 +17,11 @@ dependencies {
     ///////////////////////////////////
     implementation(project(":core:ui"))
 
+    implementation(libs.androidx.media.common)
+    implementation(libs.androidx.media.exoplayer)
+    implementation(libs.androidx.media.ui)
+    implementation(libs.youtube.player)
+
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////
