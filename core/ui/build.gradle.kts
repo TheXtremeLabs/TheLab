@@ -35,6 +35,8 @@ dependencies {
     api(libs.androidx.appcompat)
     api(libs.material)
     api(libs.androidx.browser)
+    api(libs.androidx.glance.appwidget)
+    api(libs.androidx.glance.material3)
 
     // Accompanist
     api(libs.accompanist.adaptive)
