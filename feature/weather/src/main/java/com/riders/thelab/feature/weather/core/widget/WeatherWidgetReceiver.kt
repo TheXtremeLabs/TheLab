@@ -51,7 +51,7 @@ class WeatherWidgetReceiver : GlanceAppWidgetReceiver() {
             intent.extras?.getSerializable(EXTRA_WEATHER_WIDGET) as? WeatherWidgetModel
         }
 
-        mWeatherWidgetModel?.let { mWeatherWidget.updateAll(context, it) }
+        //mWeatherWidgetModel?.let { mWeatherWidget.updateAll(context) }
     }
 
     companion object {

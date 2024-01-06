@@ -688,7 +688,7 @@ fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
 }
 
 @Composable
-fun WeatherContent(viewModel: WeatherViewModel, labLocationManager: LabLocationManager) {
+fun WeatherContent(viewModel: WeatherViewModel) {
 
     val context = LocalContext.current
     val weatherUIState by viewModel.weatherUiState.collectAsStateWithLifecycle()
@@ -759,7 +759,7 @@ fun PreviewWeatherContent() {
     val viewModel: WeatherViewModel = hiltViewModel()
     val labLocationManager = LabLocationManager(context)
     TheLabTheme {
-        WeatherContent(viewModel = viewModel, labLocationManager = labLocationManager)
+        WeatherContent(viewModel = viewModel)
     }
 }
 

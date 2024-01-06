@@ -2,17 +2,14 @@ package com.riders.thelab.feature.weather.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.PendingIntent
-import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -31,7 +29,6 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.local.model.compose.WeatherUIState
@@ -75,31 +72,35 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         Timber.d("onPause()")
         super.onPause()
 
-        unregisterReceiver(mGpsSwitchStateReceiver)
+        if (hasLocationPermissions()) {
+            unregisterReceiver(mGpsSwitchStateReceiver)
 
-        labLocationManager?.stopUsingGPS()
+            labLocationManager?.stopUsingGPS()
+        }
     }
 
     public override fun onResume() {
         super.onResume()
         Timber.d("onResume()")
 
-        registerReceiver(
-            mGpsSwitchStateReceiver,
-            IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
-        )
+        if (hasLocationPermissions()) {
+            registerReceiver(
+                mGpsSwitchStateReceiver,
+                IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
+            )
 
-        registerLabLocationManager()
+            registerLabLocationManager()
 
-        labLocationManager?.let {
-            updateLocationIcon(it.canGetLocation())
+            labLocationManager?.let {
+                updateLocationIcon(it.canGetLocation())
 
-            if (!it.canGetLocation()) {
-                Timber.e("!it.canGetLocation() | WeatherUIState.Error()")
-                mWeatherViewModel.updateUIState(WeatherUIState.Error())
-                return
-            } else {
-                mWeatherViewModel.fetchCities(this@WeatherActivity)
+                if (!it.canGetLocation()) {
+                    Timber.e("!it.canGetLocation() | WeatherUIState.Error()")
+                    mWeatherViewModel.updateUIState(WeatherUIState.Error())
+                    return
+                } else {
+                    mWeatherViewModel.fetchCities(this@WeatherActivity)
+                }
             }
         }
     }
@@ -119,7 +120,7 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         Timber.d("checkLocationPermissions()")
         // run dexter permission
         Dexter
-            .withContext(this)
+            .withContext(this@WeatherActivity)
             .withPermissions(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -151,7 +152,7 @@ class WeatherActivity : ComponentActivity(), LocationListener {
                                         modifier = Modifier.fillMaxSize(),
                                         color = MaterialTheme.colorScheme.background
                                     ) {
-                                        WeatherContent(mWeatherViewModel, labLocationManager!!)
+                                        WeatherContent(mWeatherViewModel)
                                     }
                                 }
                             }
@@ -176,6 +177,14 @@ class WeatherActivity : ComponentActivity(), LocationListener {
             .onSameThread()
             .check()
     }
+
+    private fun hasLocationPermissions(): Boolean = ContextCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
 
     @SuppressLint("NewApi")
     fun initViewModelObservers() {

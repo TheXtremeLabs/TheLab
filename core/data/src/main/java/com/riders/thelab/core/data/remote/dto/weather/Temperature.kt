@@ -26,4 +26,11 @@ data class Temperature(
 ) : Serializable
 
 fun Temperature.toModel(): TemperatureModel =
-    TemperatureModel(day, min, max, night, evening, morning)
+    TemperatureModel(
+        day = day,
+        min = min,
+        max = max,
+        night = night,
+        evening = evening,
+        morning = morning
+    )

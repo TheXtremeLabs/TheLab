@@ -4,6 +4,7 @@ plugins {
     id("thelab.android.hilt")
     id("thelab.android.library.jacoco")
     kotlin("kapt")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
