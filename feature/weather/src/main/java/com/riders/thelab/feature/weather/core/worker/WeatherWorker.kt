@@ -7,6 +7,7 @@ import android.content.Intent
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import androidx.glance.GlanceId
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -16,10 +17,13 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.LabLocationUtils
 import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.weather.ForecastWeatherWidgetModel
+import com.riders.thelab.core.data.local.model.weather.TemperatureModel
+import com.riders.thelab.core.data.local.model.weather.WeatherWidgetModel
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.data.remote.dto.weather.toModel
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.feature.weather.core.widget.TheLabAppWidgetProvider
-import com.riders.thelab.feature.weather.ui.WeatherDownloadWorker
+import com.riders.thelab.feature.weather.core.widget.WeatherWidgetReceiver
 import com.riders.thelab.feature.weather.ui.WeatherUtils
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -27,29 +31,17 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import java.util.Locale
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @HiltWorker
 class WeatherWorker @AssistedInject constructor(
     @Assisted val context: Context,
-    @Assisted val workerParams: WorkerParameters
+    @Assisted val workerParams: WorkerParameters,
+    private val mRepository: IRepository
 ) : CoroutineWorker(context, workerParams) {
 
-    companion object {
-        const val MESSAGE_STATUS = "message_status"
-        const val URL_REQUEST = "url_request"
-
-        const val WORK_SUCCESS = "Loading finished"
-        const val WORK_DOWNLOAD_FAILED: String = "Error while downloading zip file"
-        const val WORK_LOCATION_FAILED: String = "Unable to fetch user location"
-        const val WORK_RESULT = "work_result"
-    }
 
     private var outputData: Data? = null
-
-    @Inject
-    lateinit var mRepository: IRepository
 
     @SuppressLint("NewApi")
     override suspend fun doWork(): Result {
@@ -59,13 +51,17 @@ class WeatherWorker @AssistedInject constructor(
         val labLocationManager = LabLocationManager(context)
 
         if (!labLocationManager.canGetLocation()) {
+            Timber.e("Unable to get user's location (provider error)")
             // Unable to fetch user location
             outputData = createOutputData(WORK_LOCATION_FAILED)
             return Result.failure(outputData!!)
         } else {
+            Timber.e("Unable to get user's location")
             try {
                 location = labLocationManager.getCurrentLocation()
             } catch (e: Exception) {
+                Timber.e("Error caught: $${e.message}")
+
                 // Unable to fetch user location
                 outputData = createOutputData(
                     "$WORK_LOCATION_FAILED | You may check if required permissions are granted"
@@ -74,49 +70,26 @@ class WeatherWorker @AssistedInject constructor(
             }
         }
 
-        if (null == location) return Result.failure()
+        if (null == location) {
+            Timber.e("Unable to get user's location")
+            return Result.failure()
+        }
 
-        return try {
-            suspendCancellableCoroutine {
-
-                val oneCallWeatherResponse: OneCallWeatherResponse? = runBlocking {
-                    mRepository.getWeatherOneCallAPI(location)
-                }
+        return runCatching {
+            suspendCancellableCoroutine<Result> {
+                val oneCallWeatherResponse: OneCallWeatherResponse? =
+                    runBlocking { mRepository.getWeatherOneCallAPI(location) }
 
                 // Check if response is null
                 if (null == oneCallWeatherResponse) {
-                    Result.failure()
+                    Timber.e("null == oneCallWeatherResponse | weather call failed, response value is null")
+
+                    outputData = createOutputData(WORK_WEATHER_CALL_FAILED)
+                    Result.failure(outputData!!)
                 } else {
                     Timber.d("observer.onSuccess(responseFile)")
 
-
                     if (!LabCompatibilityManager.isTiramisu()) {
-                        LabAddressesUtils.getDeviceAddressAndroid13(
-                            Geocoder(context, Locale.getDefault()),
-                            LabLocationUtils.buildTargetLocationObject(
-                                oneCallWeatherResponse.latitude,
-                                oneCallWeatherResponse.longitude
-                            )
-                        ) {
-
-                            it?.let {
-                                // Load city name
-                                val cityName = it.locality
-                                val country = it.countryName
-
-                                val weatherBundle = buildWeatherBundle(
-                                    oneCallWeatherResponse,
-                                    cityName!!,
-                                    country!!
-                                )
-                                updateWidgetViaBroadcast(weatherBundle)
-
-                                // Create and send outputData
-                                outputData = createOutputData(WORK_SUCCESS)
-                                Result.success(outputData!!)
-                            }
-                        }
-                    } else {
                         val address = LabAddressesUtils
                             .getDeviceAddressLegacy(
                                 Geocoder(context, Locale.getDefault()),
@@ -130,23 +103,80 @@ class WeatherWorker @AssistedInject constructor(
                         val cityName = address?.locality
                         val country = address?.countryName
 
-                        val weatherBundle =
-                            buildWeatherBundle(oneCallWeatherResponse, cityName!!, country!!)
-                        updateWidgetViaBroadcast(weatherBundle)
+                        // val weatherBundle = buildWeatherBundle(oneCallWeatherResponse, cityName!!, country!!)
+                        // updateWidgetViaBroadcast(weatherWidgetBundle)
 
-                        // Create and send outputData
-                        outputData = createOutputData(WORK_SUCCESS)
-                        Result.success(outputData!!)
+                        val weatherWidgetBundle =
+                            runBlocking {
+                                buildWeatherWidget(
+                                    oneCallWeatherResponse,
+                                    cityName!!,
+                                    country!!
+                                )
+                            }
+
+                        if (null == weatherWidgetBundle) {
+                            Timber.e("Failed to build weather widget object because fields may be null")
+                        } else {
+                            // Create and send outputData
+                            outputData = createOutputData(WORK_SUCCESS)
+                            Result.success(outputData!!)
+                        }
+
+
+                    } else {
+                        LabAddressesUtils.getDeviceAddressAndroid13(
+                            Geocoder(context, Locale.getDefault()),
+                            LabLocationUtils.buildTargetLocationObject(
+                                oneCallWeatherResponse.latitude,
+                                oneCallWeatherResponse.longitude
+                            )
+                        ) {
+                            it?.let {
+                                // Load city name
+                                val cityName = it.locality
+                                val country = it.countryName
+
+                                /*val weatherBundle = buildWeatherBundle(
+                                    oneCallWeatherResponse,
+                                    cityName!!,
+                                    country!!
+                                )*/
+
+                                // updateWidgetViaBroadcast(weatherBundle)
+
+                                val weatherWidgetBundle =
+                                    runBlocking {
+                                        buildWeatherWidget(
+                                            oneCallWeatherResponse,
+                                            cityName!!,
+                                            country!!
+                                        )
+                                    }
+                                weatherWidgetBundle?.let {
+                                    // updateWidgetViaBroadcast(weatherWidgetBundle)
+                                    // Create and send outputData
+                                    outputData = createOutputData(WORK_SUCCESS)
+                                    Result.success(outputData!!)
+                                }
+                                    ?: run { Timber.e("Failed to build weather widget object because fields may be null") }
+                            }
+                        }
                     }
+
+                    Result.success()
                 }
             }
-        } catch (throwable: Exception) {
-
-            Timber.e(WeatherDownloadWorker.WORK_DOWNLOAD_FAILED)
-            Timber.e(throwable)
-            outputData = createOutputData(WORK_DOWNLOAD_FAILED)
-            Result.failure(outputData!!)
         }
+            .onFailure {
+                it.printStackTrace()
+                Timber.e("runCatching | onFailure | error caught with message: ${it.message}")
+            }
+            .getOrElse {
+                Timber.e("runCatching | getOrElse | error caught with message: ${it.message}")
+                outputData = createOutputData(WORK_ERROR_FAILED)
+                Result.failure(outputData!!)
+            }
     }
 
     /**
@@ -158,7 +188,7 @@ class WeatherWorker @AssistedInject constructor(
 
     @SuppressLint("RestrictedApi")
     private fun createOutputData(message: String): Data {
-        Timber.d("createOutputData()")
+        Timber.d("createOutputData() | message: $message")
         return Data.Builder()
             .put("work_result", message)
             .build()
@@ -192,12 +222,65 @@ class WeatherWorker @AssistedInject constructor(
             }
 
         return Bundle().apply {
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_CITY, city)
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_COUNTRY, country)
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_DESCRIPTION, description)
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_TEMPERATURE, temperature)
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_REAL_FEELS, realFeels)
-            putString(TheLabAppWidgetProvider.EXTRA_WEATHER_ICON, icon)
+            putString(EXTRA_WEATHER_CITY, city)
+            putString(EXTRA_WEATHER_COUNTRY, country)
+            putString(EXTRA_WEATHER_DESCRIPTION, description)
+            putString(EXTRA_WEATHER_TEMPERATURE, temperature)
+            putString(EXTRA_WEATHER_REAL_FEELS, realFeels)
+            putString(EXTRA_WEATHER_ICON, icon)
+        }
+    }
+
+    /**
+     * Build bundle to send to widget provider
+     *
+     */
+    private suspend fun buildWeatherWidget(
+        response: OneCallWeatherResponse,
+        city: String,
+        country: String
+    ): WeatherWidgetModel? {
+        Timber.d("buildWeatherWidget()")
+
+        response.currentWeather?.run {
+            val temperature =
+                TemperatureModel(temperature = this.temperature, realFeels = this.feelsLike)
+
+            val description: String? = this.weather?.get(0)?.description
+            val icon: String? =
+                this.weather?.get(0)?.let {
+                    WeatherUtils.getWeatherIconFromApi(
+                        it.icon
+                    )
+                }
+
+
+            val dailyWeather: List<ForecastWeatherWidgetModel>? = response.dailyWeather?.run {
+                this.map {
+                    ForecastWeatherWidgetModel(
+                        it.temperature.toModel(),
+                        it.weather[0].icon
+                    )
+                }.toList()
+            }
+
+            val currentTemperature =
+                "${this.temperature.roundToInt()} ${context.getString(R.string.degree_placeholder)}"
+            val realFeels =
+                "${this.feelsLike.roundToInt()} ${context.getString(R.string.degree_placeholder)}"
+
+            temperature.let { temp ->
+                icon?.let { ic ->
+                    description?.let { desc ->
+                        dailyWeather?.let { daily ->
+                            return WeatherWidgetModel(temp, ic, desc, daily)
+                        }
+                    }
+                }
+            }
+        } ?: run {
+            Timber.e("current weather object is null")
+            return null
         }
     }
 
@@ -205,11 +288,40 @@ class WeatherWorker @AssistedInject constructor(
         Timber.d("updateWidgetViaBroadcast()")
 
         val broadcastIntent: Intent =
-            Intent(context, TheLabAppWidgetProvider::class.java).apply {
+            Intent(context, WeatherWidgetReceiver::class.java).apply {
                 action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
                 putExtras(bundle)
             }
 
         context.sendBroadcast(broadcastIntent)
+    }
+
+    private fun updateWidgetViaBroadcast(weatherWidgetModel: WeatherWidgetModel) {
+        Timber.d("updateWidgetViaBroadcast()")
+
+        val broadcastIntent: Intent =
+            Intent(context, WeatherWidgetReceiver::class.java).apply {
+                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                putExtra(EXTRA_WEATHER_WIDGET, weatherWidgetModel)
+            }
+
+        context.sendBroadcast(broadcastIntent)
+    }
+
+
+    companion object {
+        const val WORK_SUCCESS = "Loading finished"
+        const val WORK_ERROR_FAILED: String =
+            "Some errors occurred while processing data check log to see more details"
+        const val WORK_WEATHER_CALL_FAILED: String = "Weather call failed, response value is null"
+        const val WORK_LOCATION_FAILED: String = "Unable to fetch user's location"
+
+        const val EXTRA_WEATHER_WIDGET = "EXTRA_WEATHER_WIDGET"
+        const val EXTRA_WEATHER_CITY = "EXTRA_WEATHER_CITY"
+        const val EXTRA_WEATHER_COUNTRY = "EXTRA_WEATHER_COUNTRY"
+        const val EXTRA_WEATHER_DESCRIPTION = "EXTRA_WEATHER_DESCRIPTION"
+        const val EXTRA_WEATHER_TEMPERATURE = "EXTRA_WEATHER_TEMPERATURE"
+        const val EXTRA_WEATHER_REAL_FEELS = "EXTRA_WEATHER_REAL_FEELS"
+        const val EXTRA_WEATHER_ICON = "EXTRA_WEATHER_ICON"
     }
 }

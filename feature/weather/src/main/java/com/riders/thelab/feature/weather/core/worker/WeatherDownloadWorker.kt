@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.weather.ui
+package com.riders.thelab.feature.weather.core.worker
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -28,9 +28,6 @@ class WeatherDownloadWorker @AssistedInject constructor(
     private var taskDataString: String? = null
     private var outputData: Data? = null
 
-    // @Inject
-    // lateinit var mRepository: IRepository
-
     override suspend fun doWork(): Result {
         Timber.d("startWork()")
 
@@ -41,7 +38,6 @@ class WeatherDownloadWorker @AssistedInject constructor(
         taskDataString = taskData!!.getString(MESSAGE_STATUS)
 
         try {
-
             val responseFile = mRepository.getBulkWeatherCitiesFile().execute().body()
             Timber.d("observer.onSuccess(responseFile)")
 

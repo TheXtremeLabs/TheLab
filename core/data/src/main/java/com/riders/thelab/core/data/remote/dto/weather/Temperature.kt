@@ -1,5 +1,6 @@
 package com.riders.thelab.core.data.remote.dto.weather
 
+import com.riders.thelab.core.data.local.model.weather.TemperatureModel
 import kotlinx.serialization.SerialName
 import java.io.Serializable
 
@@ -23,3 +24,13 @@ data class Temperature(
     @SerialName("morn")
     val morning: Double = 0.0
 ) : Serializable
+
+fun Temperature.toModel(): TemperatureModel =
+    TemperatureModel(
+        day = day,
+        min = min,
+        max = max,
+        night = night,
+        evening = evening,
+        morning = morning
+    )

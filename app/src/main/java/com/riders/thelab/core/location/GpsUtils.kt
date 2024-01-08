@@ -50,8 +50,10 @@ class GpsUtils(private val context: Context) {
         Timber.d("turnGPSOn()")
 
         if (locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true) {
+            Timber.d("turnGPSOn() | check locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER)")
             onGpsListener.gpsStatus(true)
         } else {
+
             mSettingsClient
                 ?.checkLocationSettings(mLocationSettingsRequest!!)
                 ?.addOnSuccessListener((context as Activity)) {
@@ -71,12 +73,11 @@ class GpsUtils(private val context: Context) {
                                 rae.startResolutionForResult(context, GPS_REQUEST)
 
                             } catch (sie: IntentSender.SendIntentException) {
-                                Timber.i("PendingIntent unable to execute request.")
+                                Timber.e("PendingIntent unable to execute request.")
                             }
                         }
 
                         LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-
                             val errorMessage =
                                 "Location settings are inadequate, and cannot be " +
                                         "fixed here. Fix in Settings."

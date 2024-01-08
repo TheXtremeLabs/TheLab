@@ -531,6 +531,8 @@
     <!-- Widget -->
     <string name="the_lab_appwidget_description">TheLab Widget Description</string>
     <string name="logo">logo</string>
+    <string name="the_lab_weather_widget_description">Weather Widget Description</string>
+    <string name="weather_logo">logo</string>
 
 
     <!-- Google ML Kit -->

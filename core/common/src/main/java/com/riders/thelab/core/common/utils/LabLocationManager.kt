@@ -181,15 +181,17 @@ class LabLocationManager(val context: Context) : LocationListener {
         try {
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         } catch (ex: Exception) {
-            Timber.e(ex)
+            ex.printStackTrace()
+            Timber.e("isGPSEnabled | exception message: ${ex.message}")
         }
         try {
             isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         } catch (ex: Exception) {
-            Timber.e(ex)
+            ex.printStackTrace()
+            Timber.e("isNetworkEnabled | exception message: ${ex.message}")
         }
 
-        canGetLocation = isNetworkEnabled && isGPSEnabled
+        canGetLocation = isNetworkEnabled || isGPSEnabled
 
         return canGetLocation
     }
