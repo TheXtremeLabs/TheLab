@@ -21,7 +21,7 @@ class BluetoothViewModel : BaseViewModel() {
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
-    private var bluetoothManager: BluetoothManager? = null
+    private var mBluetoothManager: BluetoothManager? = null
     private lateinit var bluetoothDevicesSearchList: ArrayList<String>
 
     //////////////////////////////////////////
@@ -89,7 +89,7 @@ class BluetoothViewModel : BaseViewModel() {
     /////////////////////////////////////
     init {
         Timber.d("init method")
-        bluetoothManager?.let {
+        mBluetoothManager?.let {
             updateBluetoothEnabled(it.adapter.isEnabled)
         } ?: run { Timber.e("Bluetooth Manager is null") }
     }
@@ -108,10 +108,10 @@ class BluetoothViewModel : BaseViewModel() {
     fun initBluetoothManager(bluetoothActivity: BluetoothActivity) {
         Timber.d("initBluetoothManager()")
         /* Source : https://stackoverflow.com/questions/69122978/what-do-i-use-now-that-bluetoothadapter-getdefaultadapter-is-deprecated*/
-        bluetoothManager =
+        mBluetoothManager =
             bluetoothActivity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
 
-        bluetoothManager?.let {
+        mBluetoothManager?.let {
             updateBluetoothEnabled(it.adapter.isEnabled)
         } ?: run { Timber.e("Bluetooth Manager is null") }
     }
@@ -120,7 +120,7 @@ class BluetoothViewModel : BaseViewModel() {
     @SuppressLint("MissingPermission")
     fun setBluetooth(enable: Boolean) {
 
-        bluetoothManager?.let {
+        mBluetoothManager?.let {
             val isEnabled = it.adapter.isEnabled
             if (enable && !isEnabled) {
                 updateBluetoothEnabled(it.adapter.enable())
@@ -133,27 +133,27 @@ class BluetoothViewModel : BaseViewModel() {
     }
 
     fun startDiscovery() {
-        if (bluetoothManager?.adapter?.isDiscovering == false) {
+        if (mBluetoothManager?.adapter?.isDiscovering == false) {
 
             if (_availableDevices.value.isNotEmpty()) {
                 _availableDevices.value = emptySet()
             }
 
             Timber.d("startDiscovery()")
-            bluetoothManager?.adapter?.startDiscovery()?.let { updateIsBluetoothSearching(it) }
+            mBluetoothManager?.adapter?.startDiscovery()?.let { updateIsBluetoothSearching(it) }
         }
     }
 
     fun stopDiscovery() {
-        if (bluetoothManager?.adapter?.isDiscovering == true) {
+        if (mBluetoothManager?.adapter?.isDiscovering == true) {
             Timber.e("stopDiscovery()")
-            bluetoothManager?.adapter?.cancelDiscovery()?.let { updateIsBluetoothSearching(it) }
+            mBluetoothManager?.adapter?.cancelDiscovery()?.let { updateIsBluetoothSearching(it) }
         }
     }
 
     fun fetchBoundedDevices() {
         Timber.d("fetchBoundedDevices()")
-        bluetoothManager?.let {
+        mBluetoothManager?.let {
             val pairedDevices: Set<BluetoothDevice> = it.adapter.bondedDevices
 
             if (pairedDevices.isNotEmpty()) {

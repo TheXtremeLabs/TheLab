@@ -24,8 +24,8 @@ import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.riders.thelab.core.common.utils.LabDeviceManager
-import com.riders.thelab.feature.weather.core.worker.WeatherWorker
 import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
+import com.riders.thelab.feature.weather.core.worker.WeatherWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -177,7 +177,10 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
 
         // Setup periodic worker to update widget
         val periodicWeatherWorkRequest: PeriodicWorkRequest =
-            PeriodicWorkRequestBuilder<WeatherWorker>(15, TimeUnit.MINUTES)
+            PeriodicWorkRequestBuilder<WeatherWorker>(
+                if (BuildConfig.DEBUG) 15 else 60,
+                TimeUnit.MINUTES
+            )
                 .apply {
                     setConstraints(mWorkerConstraints)
                 }

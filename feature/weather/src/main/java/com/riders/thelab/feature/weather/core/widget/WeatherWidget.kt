@@ -57,7 +57,7 @@ class WeatherWidget : GlanceAppWidget() {
     }
 
     fun updateAll(context: Context) {
-        Timber.d("updateAll()")
+        Timber.i("updateAll()")
     }
 
     companion object {

@@ -12,9 +12,7 @@ import androidx.glance.text.Text
 */
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.BitmapFactory
-import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
@@ -43,12 +41,14 @@ import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
+import androidx.glance.layout.size
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.utils.appWidgetBackgroundCornerRadius
+import com.riders.thelab.feature.weather.core.worker.WeatherWidgetWorker
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -112,25 +112,22 @@ fun WeatherWidgetContent() {
                     contentAlignment = Alignment.TopEnd
                 ) {
                     Column(
-                        modifier = GlanceModifier.fillMaxSize(),
+                        modifier = GlanceModifier.fillMaxSize()
+                            .background(md_theme_dark_background.copy(alpha = .7f)),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
-                        /*var image: Drawable? by remember { mutableStateOf(null) }
-                        val painter: AsyncImagePainter =
-                            getCoilAsyncImagePainter(context, weatherWidgetModel.icon)*/
-
                         // Top header info current weather
                         Row(
                             modifier = GlanceModifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.Horizontal.Start,
                             verticalAlignment = Alignment.Vertical.CenterVertically
                         ) {
-                                Image(
-                                    provider = getImageProvider(weatherInfo.currentData.icon),
-                                    contentDescription = null
-                                )
+                            Image(
+                                modifier = GlanceModifier.size(48.dp),
+                                provider = getImageProvider(weatherInfo.currentData.icon),
+                                contentDescription = null
+                            )
 
                             Text(
                                 modifier = GlanceModifier.padding(8.dp),
@@ -164,7 +161,7 @@ fun WeatherWidgetContent() {
                                     Text(
                                         modifier = GlanceModifier.padding(12.dp),
                                         text = "${weatherWidgetModel.forecast[index].temperature.min.roundToInt()} / ${weatherWidgetModel.forecast[index].temperature.max.roundToInt()}",
-                                        style = TextStyle(color = ColorProvider(Color.White))
+                                         style = TextStyle(color = ColorProvider(Color.White))
                                     )
 
                                     Text(
@@ -175,10 +172,6 @@ fun WeatherWidgetContent() {
                                 }
                             }
                         }
-
-                        /*LaunchedEffect(Unit) {
-                            scope.launch { image = painter.loadImage() }
-                        }*/
                     }
 
                     Image(
@@ -216,6 +209,6 @@ class UpdateWeatherAction : ActionCallback {
     ) {
         Timber.d("onAction() | Force the worker to refresh")
         // Force the worker to refresh
-        // WeatherWorker.enqueue(context = context, force = true)
+        WeatherWidgetWorker.enqueue(context = context, force = true)
     }
 }
