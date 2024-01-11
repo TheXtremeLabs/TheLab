@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -24,9 +23,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
@@ -92,6 +89,7 @@ import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.data.WindDirection
 import com.riders.thelab.feature.weather.core.component.TheLabTopAppBar
 import com.riders.thelab.feature.weather.utils.Constants
+import com.riders.thelab.feature.weather.utils.WeatherUtils
 import timber.log.Timber
 import kotlin.math.roundToInt
 

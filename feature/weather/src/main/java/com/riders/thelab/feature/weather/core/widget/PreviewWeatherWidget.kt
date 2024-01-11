@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.glance.Button
 import androidx.glance.GlanceId
@@ -31,17 +32,18 @@ import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.ImageProvider
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
-import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
+import androidx.glance.layout.ContentScale
 import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
@@ -88,109 +90,165 @@ fun WeatherWidgetContent() {
     val size = LocalSize.current
 
     GlanceTheme {
-        when (weatherInfo) {
-            WeatherInfo.Loading -> {
-                Box(
-                    modifier = GlanceModifier.fillMaxSize()
-                        .background(md_theme_dark_background.copy(alpha = .7f)),
-                    contentAlignment = Alignment.Center
-                ) {
+        Box(
+            modifier = GlanceModifier
+                .fillMaxSize()
+                //.appWidgetBackground()
+                .background(md_theme_dark_background.copy(alpha = .87f))
+                .appWidgetBackgroundCornerRadius(),
+            contentAlignment = Alignment.Center
+        ) {
+            when (weatherInfo) {
+                is WeatherInfo.Loading -> {
                     CircularProgressIndicator()
                 }
-            }
 
-            is WeatherInfo.Available -> {
-                val weatherWidgetModel = weatherInfo.currentData
+                is WeatherInfo.Available -> {
+                    val weatherWidgetModel = weatherInfo.currentData
 
-                Box(
-                    modifier = GlanceModifier
-                        .fillMaxSize()
-                        .background(md_theme_dark_background.copy(alpha = .7f))
-                        .appWidgetBackground()
-                        .background(GlanceTheme.colors.background)
-                        .appWidgetBackgroundCornerRadius(),
-                    contentAlignment = Alignment.TopEnd
-                ) {
-                    Column(
-                        modifier = GlanceModifier.fillMaxSize()
-                            .background(md_theme_dark_background.copy(alpha = .7f)),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    Box(
+                        modifier = GlanceModifier.fillMaxSize(),
+                        contentAlignment = Alignment.TopEnd
                     ) {
-                        // Top header info current weather
-                        Row(
-                            modifier = GlanceModifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.Horizontal.Start,
-                            verticalAlignment = Alignment.Vertical.CenterVertically
+                        Column(
+                            modifier = GlanceModifier.fillMaxSize().padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Image(
-                                modifier = GlanceModifier.size(48.dp),
-                                provider = getImageProvider(weatherInfo.currentData.icon),
-                                contentDescription = null
-                            )
+                            // Top header info current weather
+                            Row(
+                                modifier = GlanceModifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.Horizontal.Start,
+                                verticalAlignment = Alignment.Vertical.CenterVertically
+                            ) {
 
-                            Text(
-                                modifier = GlanceModifier.padding(8.dp),
-                                text = "${weatherWidgetModel.temperature.temperature.roundToInt()} ${
-                                    context.getString(
-                                        R.string.degree_placeholder
-                                    )
-                                }",
-                                style = TextStyle(color = ColorProvider(Color.White))
-                            )
-                            Text(
-                                modifier = GlanceModifier.padding(8.dp),
-                                text = "${weatherWidgetModel.temperature.realFeels.roundToInt()} ${
-                                    context.getString(
-                                        R.string.degree_placeholder
-                                    )
-                                }",
-                                style = TextStyle(color = ColorProvider(Color.White))
-                            )
-                        }
-
-
-                        // Forecast row weather info
-                        Row(horizontalAlignment = Alignment.CenterHorizontally) {
-                            repeat(3) { index ->
+                                // Location and temperature
                                 Column(
-                                    horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
+                                    modifier = GlanceModifier.defaultWeight(),
+                                    horizontalAlignment = Alignment.Horizontal.Start,
                                     verticalAlignment = Alignment.Vertical.CenterVertically
                                 ) {
 
+                                    // Location
                                     Text(
-                                        modifier = GlanceModifier.padding(12.dp),
-                                        text = "${weatherWidgetModel.forecast[index].temperature.min.roundToInt()} / ${weatherWidgetModel.forecast[index].temperature.max.roundToInt()}",
-                                         style = TextStyle(color = ColorProvider(Color.White))
+                                        modifier = GlanceModifier.padding(8.dp),
+                                        text = weatherInfo.placeName,
+                                        style = TextStyle(
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = ColorProvider(Color.White)
+                                        )
                                     )
 
+                                    // Temperature
                                     Text(
-                                        modifier = GlanceModifier.padding(12.dp),
-                                        text = "Day $index",
-                                        style = TextStyle(color = ColorProvider(Color.White))
+                                        modifier = GlanceModifier.padding(8.dp),
+                                        text = "${weatherWidgetModel.temperature.realFeels.roundToInt()} ${
+                                            context.getString(
+                                                R.string.degree_placeholder
+                                            )
+                                        }",
+                                        style = TextStyle(
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = ColorProvider(Color.White)
+                                        )
                                     )
+                                }
+
+
+                                // Icon description and min/max
+                                Column(
+                                    modifier = GlanceModifier.defaultWeight(),
+                                    horizontalAlignment = Alignment.Horizontal.End,
+                                    verticalAlignment = Alignment.Vertical.CenterVertically
+                                ) {
+
+                                    // Icon
+                                    Image(
+                                        modifier = GlanceModifier.size(64.dp),
+                                        provider = getImageProvider(weatherInfo.currentData.icon),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.FillBounds
+                                    )
+
+                                    // Description
+                                    Text(
+                                        modifier = GlanceModifier.padding(8.dp),
+                                        text = weatherWidgetModel.description,
+                                        style = TextStyle(
+                                            fontSize = 18.sp, color = ColorProvider(Color.White)
+                                        )
+                                    )
+
+                                    Row(
+                                        horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
+                                        verticalAlignment = Alignment.Vertical.CenterVertically
+                                    ) {
+                                        Text(
+                                            modifier = GlanceModifier.padding(8.dp),
+                                            text = "${weatherWidgetModel.temperature.min.roundToInt()} ${
+                                                context.getString(
+                                                    R.string.degree_placeholder
+                                                )
+                                            }",
+                                            style = TextStyle(color = ColorProvider(Color.LightGray))
+                                        )
+                                        Text(
+                                            modifier = GlanceModifier.padding(8.dp),
+                                            text = "${weatherWidgetModel.temperature.max.roundToInt()} ${
+                                                context.getString(
+                                                    R.string.degree_placeholder
+                                                )
+                                            }",
+                                            style = TextStyle(color = ColorProvider(Color.White))
+                                        )
+                                    }
+                                }
+                            }
+
+
+                            // Forecast row weather info
+                            Row(horizontalAlignment = Alignment.CenterHorizontally) {
+                                repeat(weatherWidgetModel.forecast.take(5).size) { index ->
+                                    Column(
+                                        horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
+                                        verticalAlignment = Alignment.Vertical.CenterVertically
+                                    ) {
+
+                                        Text(
+                                            modifier = GlanceModifier.padding(12.dp),
+                                            text = "${weatherWidgetModel.forecast[index].temperature.min.roundToInt()} / ${weatherWidgetModel.forecast[index].temperature.max.roundToInt()}",
+                                            style = TextStyle(color = ColorProvider(Color.White))
+                                        )
+
+                                        Text(
+                                            modifier = GlanceModifier.padding(12.dp),
+                                            text = "Day $index",
+                                            style = TextStyle(color = ColorProvider(Color.White))
+                                        )
+                                    }
                                 }
                             }
                         }
+
+                        Image(
+                            modifier = GlanceModifier.padding(16.dp),
+                            provider = ImageProvider(R.drawable.ic_open_in_new),
+                            contentDescription = null
+                        )
                     }
-
-                    Image(
-                        modifier = GlanceModifier.padding(16.dp),
-                        provider = ImageProvider(R.drawable.ic_open_in_new),
-                        contentDescription = null
-                    )
                 }
-            }
 
-            is WeatherInfo.Unavailable -> {
-                Column(
-                    modifier = GlanceModifier.fillMaxSize()
-                        .background(md_theme_dark_background.copy(alpha = .7f)),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text("Data not available")
-                    Button("Refresh", actionRunCallback<UpdateWeatherAction>())
+                is WeatherInfo.Unavailable -> {
+                    Column(
+                        modifier = GlanceModifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("Data not available")
+                        Button("Refresh", actionRunCallback<UpdateWeatherAction>())
+                    }
                 }
             }
         }
