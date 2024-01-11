@@ -44,7 +44,6 @@ import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.math.absoluteValue
 
 // extension method for current page offset
@@ -282,7 +281,8 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
                     if (pagerState.currentPage == pageCount - 1) {
                         pagerState.animateScrollToPage(0)
                     } else {
-                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        if (items.size > 1)
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     }
                 }
             }

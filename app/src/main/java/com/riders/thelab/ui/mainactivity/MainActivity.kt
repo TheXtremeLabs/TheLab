@@ -199,7 +199,6 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
             .checkPermissions(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                 onPermissionDenied = {
                     Timber.e("Permissions are denied. User may access to app with limited location related features")
                 },
@@ -212,8 +211,8 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                     // Retrieve applications
                     mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
                     mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
-
-                })
+                }
+            )
     }
 
 
