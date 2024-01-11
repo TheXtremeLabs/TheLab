@@ -22,7 +22,7 @@ class WeatherWidgetReceiver : GlanceAppWidgetReceiver() {
      */
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
-        Timber.d("onEnabled()")
+        Timber.i("onEnabled() | enqueue worker")
         WeatherWidgetWorker.enqueue(context)
     }
 
@@ -32,7 +32,7 @@ class WeatherWidgetReceiver : GlanceAppWidgetReceiver() {
      */
     override fun onDisabled(context: Context) {
         super.onDisabled(context)
-        Timber.e("onDisabled()")
+        Timber.e("onDisabled() | cancel worker")
         WeatherWidgetWorker.cancel(context)
     }
 }
