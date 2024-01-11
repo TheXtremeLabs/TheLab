@@ -24,65 +24,77 @@ class WeatherDownloadWorker @AssistedInject constructor(
     private val mRepository: IRepository
 ) : CoroutineWorker(context, workerParams) {
 
-    private var taskData: Data? = null
     private var taskDataString: String? = null
     private var outputData: Data? = null
 
     override suspend fun doWork(): Result {
-        Timber.d("startWork()")
+        Timber.d("doWork()")
 
-        taskData = inputData
-        if (null == taskData) {
-            Timber.e("Input Data is null")
+        inputData.getString(MESSAGE_STATUS)?.let {
+            taskDataString = it
+
+            Timber.d("doWork() | taskDataString: $taskDataString")
         }
-        taskDataString = taskData!!.getString(MESSAGE_STATUS)
 
-        try {
-            val responseFile = mRepository.getBulkWeatherCitiesFile().execute().body()
-            Timber.d("observer.onSuccess(responseFile)")
+        return runCatching {
+            // First step
+            // Call repository to check if there is data in database
+            val weatherData = mRepository.getWeatherData()
 
-            if (null == responseFile) {
-                return Result.failure()
-            }
+            if (null == weatherData || !weatherData.isWeatherData) {
+                // In this case record's return is null
+                // then we have to call our Worker to perform
+                // the web service call to retrieve data from api
+                Timber.e("List is empty. No Record found in database")
 
-            try {
-                Timber.d("Unzipped downloaded file...")
+                val responseFile = mRepository.getBulkWeatherCitiesFile().execute().body()
+                Timber.d("observer.onSuccess(responseFile)")
 
-                // Step 1 : Unzip
-                val unzippedGZipResult = LabFileManager.unzipGzip(responseFile)
-                if (unzippedGZipResult?.isEmpty() == true) {
-                    Timber.e("String unzippedGZipResult is empty")
-                    return Result.failure()
+                if (null == responseFile) {
+                    Result.failure()
+                } else {
+                    Timber.d("Unzipped downloaded file...")
+
+                    // Step 1 : Unzip
+                    val unzippedGZipResult = LabFileManager.unzipGzip(responseFile)
+                    if (unzippedGZipResult?.isEmpty() == true) {
+                        Timber.e("String unzippedGZipResult is empty")
+                        return Result.failure()
+                    }
+
+                    // Step 2 : Parse JSON File
+                    val dtoCities: List<City>? = unzippedGZipResult?.let {
+                        LabParser.parseJsonFile<List<City>>(it)
+                    }
+
+                    if (dtoCities.isNullOrEmpty()) {
+                        Timber.e("List<City> dtoCities is empty")
+                        return Result.failure()
+                    }
+
+                    Timber.d("Save in database...")
+
+                    // Step 3 save in database
+                    saveCities(dtoCities)
+
+                    outputData = createOutputData(WORK_SUCCESS)
+                    Result.success(outputData!!)
                 }
-
-                // Step 2 : Parse JSON File
-                val dtoCities: List<City>? = unzippedGZipResult?.let {
-                    LabParser.parseJsonFile<List<City>>(it)
-                }
-
-                if (dtoCities.isNullOrEmpty()) {
-                    Timber.e("List<City> dtoCities is empty")
-                    return Result.failure()
-                }
-
-                Timber.d("Save in database...")
-
-                // Step 3 save in database
-                saveCities(dtoCities)
-
+            } else {
+                // In this case data already exists in database
+                // Load data then let the the user perform his request
+                Timber.d("Record found in database. Continue...")
                 outputData = createOutputData(WORK_SUCCESS)
-                return Result.success(outputData!!)
-
-            } catch (e: Exception) {
-                Timber.e(e)
-                return Result.failure()
+                Result.success(outputData!!)
             }
-        } catch (throwable: Exception) {
-            Timber.e(WORK_DOWNLOAD_FAILED)
-            Timber.e(throwable)
-            outputData = createOutputData(WORK_DOWNLOAD_FAILED)
-            return Result.failure(outputData!!)
         }
+            .onFailure { Timber.e("onFailure | ${it.message}") }
+            .onSuccess { }
+            .getOrElse {
+                Timber.e("getOrElse | $WORK_DOWNLOAD_FAILED | ${it.message}")
+                outputData = createOutputData(WORK_DOWNLOAD_FAILED)
+                Result.failure(outputData!!)
+            }
     }
 
     /**

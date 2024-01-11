@@ -1,17 +1,14 @@
-package com.riders.thelab.feature.weather.ui
+package com.riders.thelab.feature.weather.utils
 
 import com.github.mikephil.charting.charts.LineChart
 import com.riders.thelab.core.common.utils.DateTimeUtils
 import com.riders.thelab.core.data.local.bean.Hours
 import com.riders.thelab.core.data.remote.dto.weather.CurrentWeather
-import com.riders.thelab.feature.weather.utils.Constants
 import timber.log.Timber
 
 object WeatherUtils {
 
-    fun getWeatherIconFromApi(weatherIconId: String): String {
-        return Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX
-    }
+    fun getWeatherIconFromApi(weatherIconId: String): String =Constants.BASE_ENDPOINT_WEATHER_ICON + weatherIconId + Constants.WEATHER_ICON_SUFFIX
 
     /*
      * https://stackoverflow.com/questions/31263097/mpandroidchart-hide-background-grid

@@ -78,7 +78,7 @@ class LabLocationManager(val context: Context) : LocationListener {
 
     @WorkerThread
     fun getCurrentLocation(): Location? {
-        Timber.d("getLocation1()")
+        Timber.d("getCurrentLocation()")
 
         return if (!canGetLocation()) {
             // no network provider is enabled
@@ -177,14 +177,15 @@ class LabLocationManager(val context: Context) : LocationListener {
      * @return boolean
      */
     fun canGetLocation(): Boolean {
-        Timber.d("canGetLocation()")
         try {
+            Timber.d("canGetLocation() | isProviderEnabled(LocationManager.GPS_PROVIDER")
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         } catch (ex: Exception) {
             ex.printStackTrace()
             Timber.e("isGPSEnabled | exception message: ${ex.message}")
         }
         try {
+            Timber.d("canGetLocation() | isProviderEnabled(LocationManager.NETWORK_PROVIDER")
             isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -319,6 +320,26 @@ class LabLocationManager(val context: Context) : LocationListener {
         private const val MIN_TIME_BW_UPDATES = (1000 * 60 * 1).toLong() // 1 minute
 
         private const val ACTIVITY_NAME_WEATHER = "WeatherActivity"
+
+        @SuppressLint("StaticFieldLeak")
+        private var mInstance: LabLocationManager? = null
+
+        fun getInstance(activity: Activity): LabLocationManager {
+            if (null == mInstance) {
+                mInstance = LabLocationManager(activity)
+            }
+            return mInstance as LabLocationManager
+        }
+
+        fun getInstance(
+            activity: Activity,
+            locationListener: LocationListener
+        ): LabLocationManager {
+            if (null == mInstance) {
+                mInstance = LabLocationManager(activity, locationListener)
+            }
+            return mInstance as LabLocationManager
+        }
     }
 }
 

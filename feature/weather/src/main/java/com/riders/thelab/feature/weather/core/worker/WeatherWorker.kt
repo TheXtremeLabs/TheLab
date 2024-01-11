@@ -7,7 +7,6 @@ import android.content.Intent
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import androidx.glance.GlanceId
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -24,7 +23,7 @@ import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.data.remote.dto.weather.toModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.feature.weather.core.widget.WeatherWidgetReceiver
-import com.riders.thelab.feature.weather.ui.WeatherUtils
+import com.riders.thelab.feature.weather.utils.WeatherUtils
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.runBlocking
@@ -40,40 +39,26 @@ class WeatherWorker @AssistedInject constructor(
     private val mRepository: IRepository
 ) : CoroutineWorker(context, workerParams) {
 
-
     private var outputData: Data? = null
 
     @SuppressLint("NewApi")
     override suspend fun doWork(): Result {
         Timber.d("doWork()")
 
-        val location: Location?
         val labLocationManager = LabLocationManager(context)
+        val location: Location? = labLocationManager.getCurrentLocation()
 
-        if (!labLocationManager.canGetLocation()) {
-            Timber.e("Unable to get user's location (provider error)")
+        if (null == location) {
+            Timber.e("Location object is null. Unable to get user's location")
             // Unable to fetch user location
             outputData = createOutputData(WORK_LOCATION_FAILED)
             return Result.failure(outputData!!)
-        } else {
-            Timber.e("Unable to get user's location")
-            try {
-                location = labLocationManager.getCurrentLocation()
-            } catch (e: Exception) {
-                Timber.e("Error caught: $${e.message}")
-
-                // Unable to fetch user location
-                outputData = createOutputData(
-                    "$WORK_LOCATION_FAILED | You may check if required permissions are granted"
-                )
-                return Result.failure(outputData!!)
-            }
         }
 
-        if (null == location) {
-            Timber.e("Unable to get user's location")
-            return Result.failure()
-        }
+        val geocoder: Geocoder = if (LabCompatibilityManager.isTiramisu()) Geocoder(
+            context,
+            Locale.getDefault()
+        ) else Geocoder(context)
 
         return runCatching {
             suspendCancellableCoroutine<Result> {
@@ -92,7 +77,7 @@ class WeatherWorker @AssistedInject constructor(
                     if (!LabCompatibilityManager.isTiramisu()) {
                         val address = LabAddressesUtils
                             .getDeviceAddressLegacy(
-                                Geocoder(context, Locale.getDefault()),
+                                geocoder,
                                 LabLocationUtils.buildTargetLocationObject(
                                     oneCallWeatherResponse.latitude,
                                     oneCallWeatherResponse.longitude
@@ -126,7 +111,7 @@ class WeatherWorker @AssistedInject constructor(
 
                     } else {
                         LabAddressesUtils.getDeviceAddressAndroid13(
-                            Geocoder(context, Locale.getDefault()),
+                            geocoder,
                             LabLocationUtils.buildTargetLocationObject(
                                 oneCallWeatherResponse.latitude,
                                 oneCallWeatherResponse.longitude
