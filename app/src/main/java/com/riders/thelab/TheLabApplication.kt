@@ -25,6 +25,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
+import com.riders.thelab.feature.weather.core.worker.WeatherWidgetWorker
 import com.riders.thelab.feature.weather.core.worker.WeatherWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -144,7 +145,8 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
         applicationScope.launch {
             Timber.i("delayedInit() | applicationScope.launch")
             createWeatherCityDownloadWorker()
-            createPeriodicWeatherFetchWorker()
+            // createPeriodicWeatherFetchWorker()
+            createPeriodicWeatherWidgetWorker()
         }
     }
 
@@ -172,12 +174,12 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
     /**
      * Setup periodic worker to update widget
      */
-    private fun createPeriodicWeatherFetchWorker() {
+    private fun createPeriodicWeatherWidgetWorker() {
         Timber.d("createPeriodicWeatherFetchWorker()")
 
         // Setup periodic worker to update widget
         val periodicWeatherWorkRequest: PeriodicWorkRequest =
-            PeriodicWorkRequestBuilder<WeatherWorker>(
+            PeriodicWorkRequestBuilder<WeatherWidgetWorker>(
                 if (BuildConfig.DEBUG) 15 else 60,
                 TimeUnit.MINUTES
             )
@@ -189,7 +191,7 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
         WorkManager
             .getInstance(applicationContext)
             .enqueueUniquePeriodicWork(
-                WeatherWorker::class.java.simpleName,
+                WeatherWidgetWorker::class.java.simpleName,
                 ExistingPeriodicWorkPolicy.KEEP,
                 periodicWeatherWorkRequest
             )
@@ -204,7 +206,7 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
     private fun notifyAppInBackground() {
         Timber.e("App went in background")
 
-        val workRequest: OneTimeWorkRequest =
+        /*val workRequest: OneTimeWorkRequest =
             OneTimeWorkRequestBuilder<WeatherWorker>().build()
 
         WorkManager
@@ -213,7 +215,7 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
                 "WeatherWorker_when_app_in_background_${workRequest.id}",
                 ExistingWorkPolicy.REPLACE,
                 workRequest
-            )
+            )*/
     }
 
     companion object {

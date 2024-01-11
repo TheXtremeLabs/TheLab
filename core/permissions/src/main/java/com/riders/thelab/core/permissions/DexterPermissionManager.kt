@@ -77,12 +77,16 @@ class DexterPermissionManager(private val activity: Activity) {
                         if (!it.areAllPermissionsGranted()) {
                             // if the permissions are not accepted we are displaying
                             // a toast message as permissions denied on below line.
-                            Timber.e("Permissions are Denied..")
+                            Timber.e("Permissions are Denied... | list of denied permissions:")
+                            it.deniedPermissionResponses.forEach {
+                                Timber.e(it.permissionName.toString())
+                            }
+
                             onPermissionDenied(true)
                         } else {
                             // if all the permissions are granted we are displaying
                             // a simple toast message.
-                            Timber.e("Permissions are Granted..")
+                            Timber.e("Permissions are Granted...")
                             onPermissionGranted(true)
                         }
                     } ?: run { Timber.e("permission report is null") }
