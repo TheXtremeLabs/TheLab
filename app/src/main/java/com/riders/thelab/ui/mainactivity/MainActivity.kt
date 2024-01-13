@@ -195,10 +195,21 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
     //
     /////////////////////////////////////
     private fun checkPermissions() {
+
+        val setOfPermissions: Set<String> = buildSet {
+            if (!LabCompatibilityManager.isR()) {
+                add(Manifest.permission.ACCESS_COARSE_LOCATION)
+                add(Manifest.permission.ACCESS_FINE_LOCATION)
+            } else {
+                add(Manifest.permission.ACCESS_COARSE_LOCATION)
+                add(Manifest.permission.ACCESS_FINE_LOCATION)
+                add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            }
+        }
+
         DexterPermissionManager(this)
             .checkPermissions(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
+                setOfPermissions,
                 onPermissionDenied = {
                     Timber.e("Permissions are denied. User may access to app with limited location related features")
                 },
