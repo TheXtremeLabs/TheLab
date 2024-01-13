@@ -222,9 +222,17 @@ fun WeatherWidgetContent() {
                                             style = TextStyle(color = ColorProvider(Color.White))
                                         )
 
+                                        // Icon
+                                        Image(
+                                            modifier = GlanceModifier.size(40.dp),
+                                            provider = getImageProvider(weatherWidgetModel.forecast[index].icon),
+                                            contentDescription = null,
+                                            contentScale = ContentScale.FillBounds
+                                        )
+
                                         Text(
                                             modifier = GlanceModifier.padding(12.dp),
-                                            text = "Day $index",
+                                            text = weatherWidgetModel.forecast[index].day.take(3),
                                             style = TextStyle(color = ColorProvider(Color.White))
                                         )
                                     }

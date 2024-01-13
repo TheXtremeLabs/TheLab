@@ -1,8 +1,13 @@
 package com.riders.thelab.core.data.local.model.weather
 
+import com.riders.thelab.core.common.utils.DateTimeUtils
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.data.remote.dto.weather.toModel
+import timber.log.Timber
 import java.io.Serializable
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @kotlinx.serialization.Serializable
 data class WeatherWidgetModel(
@@ -51,14 +56,16 @@ fun OneCallWeatherResponse.toWidgetModel(): WeatherWidgetModel? = this.currentWe
     val description: String? = this.weather?.get(0)?.description
     val icon: String? = this.weather?.get(0)?.icon
 
-    val dailyWeather: List<ForecastWeatherWidgetModel>? = this@toWidgetModel.dailyWeather?.run {
-        this.map {
-            ForecastWeatherWidgetModel(
-                it.temperature.toModel(),
-                it.weather[0].icon
-            )
-        }.toList()
-    }
+    val dailyWeather: List<ForecastWeatherWidgetModel>? = this@toWidgetModel.dailyWeather
+        ?.run {
+            this.map {
+                ForecastWeatherWidgetModel(
+                    day = DateTimeUtils.getDayFromTime(it.dateTimeUTC),
+                    temperature = it.temperature.toModel(),
+                    icon = it.weather[0].icon
+                )
+            }.toList()
+        }
 
     if (null == description || null == icon || null == dailyWeather) {
         return null

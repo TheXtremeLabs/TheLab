@@ -334,20 +334,6 @@ class WeatherViewModel @Inject constructor(
     }
 
 
-    fun getDayFromTime(dateTimeUTC: Long): String {
-        Timber.d("getDayFromTime() | $dateTimeUTC")
-
-        val calendar = Calendar.getInstance(Locale.getDefault()).apply {
-            /*
-             * source : https://stackoverflow.com/questions/64125378/why-does-calendar-getdisplayname-always-return-the-same-day-of-week-when-given-m
-             */
-            time = Date(dateTimeUTC * 1000)
-        }
-
-        val day = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
-        return day!!
-    }
-
     /////////////////////////////////////
     //
     // WORKER
