@@ -9,7 +9,6 @@ import java.io.Serializable
  * It’s also used by the Moshi code gen annotation processor to indicate
  * which classes should have an adapter generated for them.
  */
-
 @kotlinx.serialization.Serializable
 data class OneCallWeatherResponse(
 

@@ -8,21 +8,6 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.Locale
 
-fun main() {
-    try {
-        val latitude = 150.0
-        val longitude = 210.0
-        val location1: Location = (latitude to longitude).toLocation()
-        val location2: Location = LabLocationUtils.buildTargetLocationObject(latitude, longitude)
-
-        println(location1)
-        println(location2)
-
-    } catch (exception: Exception) {
-        exception.printStackTrace()
-    }
-}
-
 fun Pair<Double, Double>.toLocation(): Location = Location("").apply {
     latitude = first
     longitude = second

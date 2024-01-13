@@ -44,6 +44,7 @@ import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
+import com.riders.thelab.core.permissions.DexterPermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
@@ -97,13 +98,6 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         }
         window.navigationBarColor = ContextCompat.getColor(this, R.color.default_dark)
 
-        // Variables
-        initActivityVariables()
-
-        // Retrieve applications
-        mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
-        mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
@@ -119,6 +113,8 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                 }
             }
         }
+
+        checkPermissions()
     }
 
     override fun onPause() {
@@ -150,12 +146,12 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         Timber.i("onResume()")
 
         // Register Lab Location manager
-        registerLabLocationManager()
+        // registerLabLocationManager()
 
         mViewModel.updatePagerAutoScroll(true)
 
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
+        /*val intentFilter = IntentFilter()
+        intentFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)*/
 
         // View Models implementation
         // add data source
@@ -178,7 +174,6 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
             .show()
     }
 
-
     override fun onDestroy() {
         Timber.d("onDestroy()")
         Timber.d("unregister network callback()")
@@ -199,6 +194,28 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
     // CLASS METHODS
     //
     /////////////////////////////////////
+    private fun checkPermissions() {
+        DexterPermissionManager(this)
+            .checkPermissions(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                onPermissionDenied = {
+                    Timber.e("Permissions are denied. User may access to app with limited location related features")
+                },
+                onShouldShowRationale = { Timber.w("Permissions are denied. User may access to app with limited location related features") },
+                onPermissionGranted = {
+
+                    // Variables
+                    initActivityVariables()
+
+                    // Retrieve applications
+                    mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
+                    mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
+                }
+            )
+    }
+
+
     private fun initActivityVariables() {
         Timber.d("initActivityVariables()")
 

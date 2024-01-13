@@ -12,12 +12,10 @@
     The widget’s size will be 3x2 by default. The widget can be resized down to 2x1 or resized up to take up the full screen.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.riders.thelab.feature.weather.core.widget.TheLabAppWidgetConfigurationActivity"
-    android:description="@string/the_lab_appwidget_description"
-    android:initialLayout="@layout/widget_the_lab_loading"
-    android:minWidth="250dp"
-    android:minHeight="180dp"
+    android:description="@string/the_lab_weather_widget_description"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:minWidth="400dp"
+    android:minHeight="100dp"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"
-    android:widgetCategory="home_screen"
-    android:widgetFeatures="reconfigurable|configuration_optional" />
+    android:widgetCategory="home_screen" />

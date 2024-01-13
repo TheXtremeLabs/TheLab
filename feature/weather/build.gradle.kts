@@ -4,6 +4,7 @@ plugins {
     id("thelab.android.hilt")
     id("thelab.android.library.jacoco")
     kotlin("kapt")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -31,6 +32,8 @@ dependencies {
     ///////////////////////////////////
     // AndroidX
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
 
     // Worker & concurrent
     api(libs.androidx.work.ktx)

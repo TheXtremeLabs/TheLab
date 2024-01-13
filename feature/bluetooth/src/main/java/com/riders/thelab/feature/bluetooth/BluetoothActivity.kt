@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
@@ -134,48 +135,62 @@ class BluetoothActivity : BaseComponentActivity() {
     fun checkPermissions() {
         Timber.d("checkPermissions()")
 
-        if (LabCompatibilityManager.isTiramisu()) {
-            val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            activityResultLauncher.launch(intent)
+        val permissionManager = DexterPermissionManager(this@BluetoothActivity)
+        if (!LabCompatibilityManager.isS()) {
+            permissionManager.checkPermissions(
+                // If your app targets Android 11 (API level 30) or lower,
+                // use ACCESS_FINE_LOCATION this is necessary, in the developer of Android
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.BLUETOOTH,
+                onPermissionDenied = {
+                    finish()
+                },
+                onPermissionGranted = {
+                    mViewModel.initBluetoothManager(this@BluetoothActivity)
+                    observeBluetoothDeviceFetchedEvents()
+                    mViewModel.fetchBoundedDevices()
+                },
+                onShouldShowRationale = {}
+            )
         } else {
-            val permissionManager = DexterPermissionManager(this@BluetoothActivity)
-            if (!LabCompatibilityManager.isS()) {
-                permissionManager.checkPermissions(
-                    // If your app targets Android 11 (API level 30) or lower,
-                    // use ACCESS_FINE_LOCATION this is necessary, in the developer of Android
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.BLUETOOTH,
-                    onPermissionDenied = {
-                        finish()
-                    },
-                    onPermissionGranted = {
-                        mViewModel.initBluetoothManager(this@BluetoothActivity)
-                        observeBluetoothDeviceFetchedEvents()
-                        mViewModel.fetchBoundedDevices()
-                    },
-                    onShouldShowRationale = {}
-                )
-            } else {
-                permissionManager.checkPermissions(
-                    // If your app targets Android 11 (API level 30) or lower,
-                    // use ACCESS_FINE_LOCATION this is necessary, in the developer of Android
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.BLUETOOTH,
-                    Manifest.permission.BLUETOOTH_SCAN,
-                    Manifest.permission.BLUETOOTH_CONNECT,
-                    onPermissionDenied = {
-                        finish()
-                    },
-                    onPermissionGranted = {
-                        mViewModel.initBluetoothManager(this@BluetoothActivity)
-                        observeBluetoothDeviceFetchedEvents()
-                        mViewModel.fetchBoundedDevices()
-                    },
-                    onShouldShowRationale = {}
-                )
-            }
+            permissionManager.checkPermissions(
+                // If your app targets Android 11 (API level 30) or lower,
+                // use ACCESS_FINE_LOCATION this is necessary, in the developer of Android
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.BLUETOOTH_CONNECT,
+                onPermissionDenied = {
+                    finish()
+                },
+                onPermissionGranted = {
+                    if (LabCompatibilityManager.isTiramisu()) {
+                        val bluetoothManager: BluetoothManager =
+                            getSystemService(BluetoothManager::class.java) as BluetoothManager
+                        val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+                        if (null == bluetoothAdapter) {
+                            // Device doesn't support Bluetooth
+                            Timber.e("Device doesn't support Bluetooth")
+                            UIManager.showToast(
+                                this@BluetoothActivity,
+                                "Device doesn't support Bluetooth"
+                            )
+                        }
+
+                        if (false == bluetoothAdapter?.isEnabled) {
+                            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                            activityResultLauncher.launch(enableBtIntent)
+                        }
+                    }
+
+                    mViewModel.initBluetoothManager(this@BluetoothActivity)
+                    observeBluetoothDeviceFetchedEvents()
+                    mViewModel.fetchBoundedDevices()
+                },
+                onShouldShowRationale = {}
+            )
         }
     }
 

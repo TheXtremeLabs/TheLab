@@ -6,7 +6,6 @@ import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
 import timber.log.Timber
-import java.io.IOException
 
 object LabAddressesUtils {
 
@@ -23,23 +22,23 @@ object LabAddressesUtils {
     @Suppress("DEPRECATION")
     fun getDeviceAddressLegacy(geocoder: Geocoder, location: Location): Address? {
         Timber.i("getDeviceAddress() legacy")
-        return try {
+
+        return runCatching {
             val addresses = geocoder.getFromLocation(
                 location.latitude,
                 location.longitude,
                 1
             )
-            Timber.e("addresses : %s", addresses)
+            Timber.e("You are located to: ${addresses?.get(0)?.getAddressLine(0)}")
 
             //get the address
             addresses?.get(0)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
-        } catch (e: NullPointerException) {
-            e.printStackTrace()
-            null
         }
+            .onFailure { exception ->
+                exception.printStackTrace()
+                Timber.e("Error caught: ${exception.message}")
+            }
+            .getOrNull()
     }
 
     /**
@@ -66,8 +65,7 @@ object LabAddressesUtils {
             1
         ) {
             val address = it[0]
-            Timber.e("addresses : %s", address)
-
+            Timber.e("You are located to: ${address.getAddressLine(0)}")
             callback(address)
         }
     }

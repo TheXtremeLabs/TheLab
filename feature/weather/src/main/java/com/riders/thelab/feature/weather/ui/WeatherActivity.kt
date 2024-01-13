@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -70,31 +72,35 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         Timber.d("onPause()")
         super.onPause()
 
-        unregisterReceiver(mGpsSwitchStateReceiver)
+        if (hasLocationPermissions()) {
+            unregisterReceiver(mGpsSwitchStateReceiver)
 
-        labLocationManager?.stopUsingGPS()
+            labLocationManager?.stopUsingGPS()
+        }
     }
 
     public override fun onResume() {
         super.onResume()
         Timber.d("onResume()")
 
-        registerReceiver(
-            mGpsSwitchStateReceiver,
-            IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
-        )
+        if (hasLocationPermissions()) {
+            registerReceiver(
+                mGpsSwitchStateReceiver,
+                IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
+            )
 
-        registerLabLocationManager()
+            registerLabLocationManager()
 
-        labLocationManager?.let {
-            updateLocationIcon(it.canGetLocation())
+            labLocationManager?.let {
+                updateLocationIcon(it.canGetLocation())
 
-            if (!it.canGetLocation()) {
-                Timber.e("!it.canGetLocation() | WeatherUIState.Error()")
-                mWeatherViewModel.updateUIState(WeatherUIState.Error())
-                return
-            } else {
-                mWeatherViewModel.fetchCities(this@WeatherActivity)
+                if (!it.canGetLocation()) {
+                    Timber.e("!it.canGetLocation() | WeatherUIState.Error()")
+                    mWeatherViewModel.updateUIState(WeatherUIState.Error())
+                    return
+                } else {
+                    mWeatherViewModel.fetchCities(this@WeatherActivity)
+                }
             }
         }
     }
@@ -114,7 +120,7 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         Timber.d("checkLocationPermissions()")
         // run dexter permission
         Dexter
-            .withContext(this)
+            .withContext(this@WeatherActivity)
             .withPermissions(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -146,12 +152,16 @@ class WeatherActivity : ComponentActivity(), LocationListener {
                                         modifier = Modifier.fillMaxSize(),
                                         color = MaterialTheme.colorScheme.background
                                     ) {
-                                        WeatherContent(mWeatherViewModel, labLocationManager!!)
+                                        WeatherContent(mWeatherViewModel)
                                     }
                                 }
                             }
                         }
                     }
+
+                    /*if (LabCompatibilityManager.isOreo()) {
+                        registerWeatherWidget()
+                    }*/
                 }
 
                 override fun onPermissionRationaleShouldBeShown(
@@ -167,6 +177,14 @@ class WeatherActivity : ComponentActivity(), LocationListener {
             .onSameThread()
             .check()
     }
+
+    private fun hasLocationPermissions(): Boolean = ContextCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
 
     @SuppressLint("NewApi")
     fun initViewModelObservers() {
@@ -242,6 +260,36 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         }
     }
 
+    /**
+     * On devices running Android 8.0 (API level 26) and higher,
+     * launchers that let users create pinned shortcuts also let them pin widgets onto their home screen. Similar to pinned shortcuts, these pinned widgets give users access to specific tasks in your app and can be added to the home screen directly from the app.
+     */
+    /*@SuppressLint("NewApi")
+    fun registerWeatherWidget() {
+        Timber.d("registerWeatherWidget()")
+        val appWidgetManager = AppWidgetManager.getInstance(this@WeatherActivity)
+        val myProvider = ComponentName(this@WeatherActivity, ExampleAppWidgetProvider::class.java)
+
+        if (appWidgetManager.isRequestPinAppWidgetSupported) {
+            Timber.d("appWidgetManager.isRequestPinAppWidgetSupported true")
+            // Create the PendingIntent object only if your app needs to be notified
+            // that the user allowed the widget to be pinned. Note that, if the pinning
+            // operation fails, your app isn't notified. This callback receives the ID
+            // of the newly-pinned widget (EXTRA_APPWIDGET_ID).
+            val successCallback = PendingIntent.getBroadcast(
+                *//* context = *//* this,
+                *//* requestCode = *//*
+                0,
+                *//* intent = *//*
+                Intent(this, Uri.parse()MainActivity::class.java),
+                *//* flags = *//*
+                if (LabCompatibilityManager.isMarshmallow()) PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT else PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            appWidgetManager.requestPinAppWidget(myProvider, null, successCallback)
+        }
+        }*/
+
     /////////////////////////////////////
     //
     // IMPLEMENTS
@@ -270,5 +318,9 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         lifecycleScope.launch {
             LocationProviderChangedEvent().triggerEvent(true)
         }*/
+    }
+
+    companion object {
+        const val KEY_DESTINATION: String = "destination"
     }
 }

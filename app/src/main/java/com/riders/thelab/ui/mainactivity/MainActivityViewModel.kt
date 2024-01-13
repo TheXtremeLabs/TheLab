@@ -66,12 +66,16 @@ class MainActivityViewModel : BaseViewModel() {
     val appList: StateFlow<List<App>> = _appList
 
     val filteredList: List<App> by derivedStateOf {
-        _appList.value.filter {
-            (it.appName != null && it.appName?.contains(
-                searchedAppRequest, ignoreCase = true
-            )!!) || (it.appTitle != null && it.appTitle?.contains(
-                searchedAppRequest, ignoreCase = true
-            )!!)
+        if(searchedAppRequest.trim().isBlank()){
+            _appList.value
+        } else {
+            _appList.value.filter {
+                (it.appName != null && it.appName?.contains(
+                    searchedAppRequest, ignoreCase = true
+                )!!) || (it.appTitle != null && it.appTitle?.contains(
+                    searchedAppRequest, ignoreCase = true
+                )!!)
+            }
         }
     }
 
