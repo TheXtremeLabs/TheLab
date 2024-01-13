@@ -4,9 +4,10 @@ import java.io.Serializable
 
 @kotlinx.serialization.Serializable
 data class ForecastWeatherWidgetModel(
+    val day:String,
     val temperature: TemperatureModel,
-    val icon: String
+    var icon: String
 ) : Serializable {
 
-    constructor() : this(TemperatureModel(), "")
+    constructor() : this("", TemperatureModel(), "")
 }

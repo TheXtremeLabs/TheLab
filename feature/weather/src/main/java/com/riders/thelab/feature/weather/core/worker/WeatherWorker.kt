@@ -11,6 +11,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
+import com.riders.thelab.core.common.utils.DateTimeUtils
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
@@ -243,8 +244,9 @@ class WeatherWorker @AssistedInject constructor(
             val dailyWeather: List<ForecastWeatherWidgetModel>? = response.dailyWeather?.run {
                 this.map {
                     ForecastWeatherWidgetModel(
-                        it.temperature.toModel(),
-                        it.weather[0].icon
+                        day = DateTimeUtils.getDayFromTime(it.dateTimeUTC),
+                        temperature = it.temperature.toModel(),
+                        icon = it.weather[0].icon
                     )
                 }.toList()
             }

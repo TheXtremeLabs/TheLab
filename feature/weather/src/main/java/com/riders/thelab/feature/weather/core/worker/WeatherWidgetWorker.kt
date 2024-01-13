@@ -27,9 +27,7 @@ import com.riders.thelab.feature.weather.core.widget.WeatherWidget
 import com.riders.thelab.feature.weather.utils.toWeatherIconFullUrl
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.time.Duration
 import java.util.Locale
@@ -91,6 +89,12 @@ class WeatherWidgetWorker @AssistedInject constructor(
                                 oneCallWeatherResponse.toWidgetModel().apply {
                                     this?.let {
                                         icon = it.icon.toWeatherIconFullUrl().getIconUri(context)
+
+                                        it.forecast.forEach { forecastElement ->
+                                            forecastElement.icon =
+                                                forecastElement.icon.toWeatherIconFullUrl()
+                                                    .getIconUri(context)
+                                        }
                                     }
                                 }
                             }
@@ -243,7 +247,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
 
             val manager = WorkManager.getInstance(context)
             val requestBuilder = PeriodicWorkRequestBuilder<WeatherWidgetWorker>(
-                Duration.ofMinutes(30)
+                Duration.ofMinutes(15)
             )
             var workPolicy = ExistingPeriodicWorkPolicy.KEEP
 

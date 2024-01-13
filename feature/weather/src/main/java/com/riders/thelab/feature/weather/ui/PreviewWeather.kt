@@ -616,7 +616,7 @@ fun WeatherDailyForecast(viewModel: WeatherViewModel, dailyWeatherList: List<Dai
                     ) {
                         // Day of the week
                         Text(
-                            text = viewModel.getDayFromTime(dailyWeather.dateTimeUTC),
+                            text = DateTimeUtils.getDayFromTime(dailyWeather.dateTimeUTC),
                             fontWeight = FontWeight.Bold
                         )
 
