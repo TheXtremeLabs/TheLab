@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
 import androidx.activity.ComponentActivity
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
@@ -34,7 +35,6 @@ fun Context.findActivity(): Activity? = when (this) {
 @Composable
 @ReadOnlyComposable
 private fun resourcesAsComposable(): Resources = LocalContext.current.resources
-
 
 @Composable
 fun isKeyboardVisible(): Boolean = WindowInsets.ime.getBottom(LocalDensity.current) > 0

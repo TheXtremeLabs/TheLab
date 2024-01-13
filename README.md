@@ -15,6 +15,7 @@ this app (biometric section, speech-to-text, floating widgets, file downloading,
 
 TheLab uses multiple libraries for UI as much as for network, image loading, dependency injection, serialization and so on
 
+- [AndroidX Packages][androidx] (Room, Worker, Material, Palette, Lifecycle, Biometric, Datastore...)
 - [AndroidX Jetpack Compose][jetpack-compose]
 - [Coil][coil]
 - [Lottie][lottie]
@@ -76,6 +77,7 @@ Repository created and maintained by Saint-Honoré Michaël([*@MichaelStH*](http
 [kotlinx.serialization]: https://github.com/Kotlin/kotlinx.serialization
 [kotlinx.serialization-badge]: https://img.shields.io/badge/kotlinx.serialization-1.6.0-blue?logo=kotlin
 [total-functions]: https://xlinux.nist.gov/dads/HTML/totalfunc.html
+[androidx]: https://developer.android.com/jetpack/androidx?hl=fr
 [jetpack-compose]: https://developer.android.com/jetpack/compose?hl=fr
 [google-apis]: https://console.cloud.google.com/apis/library?hl=fr
 [coil]: https://coil-kt.github.io/coil/

@@ -77,6 +77,7 @@ class WebViewActivity : AppCompatActivity() {
                 invalidateOptionsMenu()
             }
 
+            @Deprecated("Deprecated in Java")
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 binding.webView.loadUrl(url)
                 return true

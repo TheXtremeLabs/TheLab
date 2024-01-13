@@ -450,13 +450,13 @@
 
 
         <!-- Widget -->
-        <activity
+        <!--<activity
             android:name=".feature.weather.core.widget.TheLabAppWidgetConfigurationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
-        </activity>
+        </activity>-->
 
         <!-- Google ML Kit -->
         <activity
@@ -522,18 +522,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- Connection -->
-        <!--<receiver
-            android:name=".core.broadcast.ConnectivityReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action
-                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
-                    tools:ignore="BatteryLife" />
-            </intent-filter>
-        </receiver>-->
-
         <!-- Alarm -->
         <receiver
             android:name=".core.broadcast.ScheduleAlarmReceiver"
@@ -550,7 +538,7 @@
         </receiver>
 
         <!-- Widget -->
-        <receiver
+        <!--<receiver
             android:name=".feature.weather.core.widget.TheLabAppWidgetProvider"
             android:exported="true">
             <intent-filter>
@@ -559,6 +547,17 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/the_lab_app_widget" />
+        </receiver>-->
+        <receiver
+            android:name=".feature.weather.core.widget.WeatherWidgetReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_info" />
         </receiver>
         <!-- ////////////// BROADCAST RECEIVER ////////////// -->
 
@@ -619,6 +618,16 @@
         </service>
         <!-- ////////////// SERVICES ////////////// -->
 
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
         <!--
             Disable the default initialization

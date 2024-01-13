@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.feature.weather.core.widget.TheLabAppWidgetProvider
 import com.riders.thelab.ui.mainactivity.MainActivity
 import timber.log.Timber
 

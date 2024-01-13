@@ -27,7 +27,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
+import androidx.glance.GlanceModifier
+import androidx.glance.appwidget.cornerRadius
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.ui.compose.component.calculateCurrentOffsetForPage
 import kotlinx.coroutines.launch
 import kotlin.math.PI
@@ -174,3 +178,27 @@ fun Modifier.pagerFadeTransition(page: Int, pagerState: PagerState) =
         translationX = pageOffset * size.width
         alpha = 1 - pageOffset.absoluteValue
     }
+
+
+//////////////////////////////////////
+// Widgets
+//////////////////////////////////////
+@SuppressLint("InlinedApi")
+fun GlanceModifier.appWidgetBackgroundCornerRadius(): GlanceModifier {
+    if (LabCompatibilityManager.isS()) {
+        cornerRadius(android.R.dimen.system_app_widget_background_radius)
+    } else {
+        cornerRadius(16.dp)
+    }
+    return this
+}
+
+@SuppressLint("InlinedApi")
+fun GlanceModifier.appWidgetInnerCornerRadius(): GlanceModifier {
+    if (LabCompatibilityManager.isS()) {
+        cornerRadius(android.R.dimen.system_app_widget_inner_radius)
+    } else {
+        cornerRadius(8.dp)
+    }
+    return this
+}
