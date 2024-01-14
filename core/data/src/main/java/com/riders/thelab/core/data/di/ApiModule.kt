@@ -1,12 +1,9 @@
 package com.riders.thelab.core.data.di
 
-import android.content.Context
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.riders.thelab.core.common.utils.LabParser
 import com.riders.thelab.core.common.utils.decrypt
 import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.bean.TimeOut
-import com.riders.thelab.core.data.local.model.weather.WeatherKey
 import com.riders.thelab.core.data.remote.api.ArtistsAPIService
 import com.riders.thelab.core.data.remote.api.GoogleAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAPIService
@@ -20,7 +17,6 @@ import com.riders.thelab.core.data.utils.Headers
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.ConnectionSpec
@@ -42,27 +38,23 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal object ApiModule {
     @Provides
-    fun provideOkHttpLogger(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor { message: String -> Timber.tag("OkHttp").d(message) }
+    fun provideOkHttpLogger(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor { message: String -> Timber.tag("OkHttp").d(message) }
             .setLevel(HttpLoggingInterceptor.Level.BODY)
-    }
 
-    /* WEATHER */ /* Provide OkHttp for the app */
+    /* WEATHER */
+    /* Provide OkHttp for the app */
     @Provides
     @Singleton
-    fun provideWeatherOkHttp(context: Context): OkHttpClient {
-        return OkHttpClient.Builder()
-            .readTimeout(TimeOut.TIME_OUT_READ.value.toLong(), TimeUnit.SECONDS)
-            .connectTimeout(TimeOut.TIME_OUT_CONNECTION.value.toLong(), TimeUnit.SECONDS)
-            .addInterceptor(Interceptor { chain: Interceptor.Chain ->
+    fun provideWeatherOkHttp(): OkHttpClient = OkHttpClient.Builder()
+        .readTimeout(TimeOut.TIME_OUT_READ.value.toLong(), TimeUnit.SECONDS)
+        .connectTimeout(TimeOut.TIME_OUT_CONNECTION.value.toLong(), TimeUnit.SECONDS)
+        .addInterceptor(
+            Interceptor { chain: Interceptor.Chain ->
 
                 val original = chain.request()
                 val originalHttpUrl = original.url
                 var url: HttpUrl? = null
-                val mWeatherKey: WeatherKey? = LabParser.parseJsonFile<WeatherKey>(
-                    context = context,
-                    filename = "weather_api.json"
-                )
 
                 // Request customization: add request headers
                 var requestBuilder: Request.Builder? = null
@@ -70,16 +62,13 @@ internal object ApiModule {
                 // Avoid key and metrics when requesting for bulk download
                 if (!originalHttpUrl.toString().contains("sample")) {
                     try {
-                        mWeatherKey?.let {
-                            url = originalHttpUrl.newBuilder()
-                                .addQueryParameter("appid", BuildConfig.SERVER_API_KEY_OPEN_WEATHER.decrypt())
-                                .addQueryParameter("units", "metric")
-                                .build()/*
-                            url = originalHttpUrl.newBuilder()
-                                .addQueryParameter("appid", mWeatherKey.appID)
-                                .addQueryParameter("units", "metric")
-                                .build()*/
-                        }
+                        url = originalHttpUrl.newBuilder()
+                            .addQueryParameter(
+                                "appid",
+                                BuildConfig.SERVER_API_KEY_OPEN_WEATHER.decrypt()
+                            )
+                            .addQueryParameter("units", "metric")
+                            .build()
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Timber.e(Objects.requireNonNull(e.message))
@@ -91,7 +80,10 @@ internal object ApiModule {
                     url?.let {
                         requestBuilder = original.newBuilder()
                             .url(it)
-                            .header(Headers.CONTENT_TYPE.value, "application/json; charset=utf-8")
+                            .header(
+                                Headers.CONTENT_TYPE.value,
+                                "application/json; charset=utf-8"
+                            )
                             .header(Headers.CONNECTION.value, "close")
                             .header(Headers.ACCEPT_ENCODING.value, "Identity")
 
@@ -100,22 +92,64 @@ internal object ApiModule {
                     url = originalHttpUrl.newBuilder().build()
 
                     // Request customization: add request headers
-                    url?.let {
-                        requestBuilder = original.newBuilder()
-                            .url(it)
-                            .header(Headers.CONTENT_TYPE.value, "text/plain")
-                            .header(Headers.CONNECTION.value, "close")
-                            .header(Headers.CACHE_CONTROL.value, "max-age=60")
-                            .header(Headers.ACCEPT_RANGES.value, "bytes")
-                            .header(Headers.ACCEPT_ENCODING.value, "Identity")
-                    }
+                    requestBuilder = original.newBuilder()
+                        .url(url)
+                        .header(Headers.CONTENT_TYPE.value, "text/plain")
+                        .header(Headers.CONNECTION.value, "close")
+                        .header(Headers.CACHE_CONTROL.value, "max-age=60")
+                        .header(Headers.ACCEPT_RANGES.value, "bytes")
+                        .header(Headers.ACCEPT_ENCODING.value, "Identity")
                 }
+
                 val request = requestBuilder?.build()
                 chain.proceed(request!!)
             })
-            .addInterceptor(provideOkHttpLogger())
-            .build()
-    }
+        .addInterceptor(provideOkHttpLogger())
+        .build()
+
+
+    @Provides
+    @Singleton
+    fun provideTMDBOkHttp(): OkHttpClient = OkHttpClient.Builder()
+        .readTimeout(TimeOut.TIME_OUT_READ.value.toLong(), TimeUnit.SECONDS)
+        .connectTimeout(TimeOut.TIME_OUT_CONNECTION.value.toLong(), TimeUnit.SECONDS)
+        .addInterceptor(Interceptor { chain: Interceptor.Chain ->
+
+            val original = chain.request()
+            val originalHttpUrl = original.url
+            // Request customization: add request headers
+            var requestBuilder: Request.Builder? = null
+            val url: HttpUrl? = try {
+                originalHttpUrl
+                    .newBuilder()
+                    .addQueryParameter(
+                        "apiKey",
+                        BuildConfig.SERVER_API_KEY_OPEN_WEATHER.decrypt()
+                    )
+                    .build()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Timber.e(Objects.requireNonNull(e.message))
+                null
+            }
+
+            assert(url != null)
+
+            // Request customization: add request headers
+            url?.let {
+                requestBuilder = original.newBuilder()
+                    .url(it)
+                    .header(Headers.CONTENT_TYPE.value, "application/json; charset=utf-8")
+                    .header(Headers.CONNECTION.value, "close")
+                    .header(Headers.ACCEPT_ENCODING.value, "Identity")
+            }
+
+            val request = requestBuilder?.build()
+            chain.proceed(request!!)
+        })
+        .addInterceptor(provideOkHttpLogger())
+        .build()
+
 
     @Provides
     @Singleton
@@ -171,46 +205,34 @@ internal object ApiModule {
         ignoreUnknownKeys = true
     }
 
+    private const val CONTENT_TYPE_JSON = ""
+
     /* Provide Retrofit for the app */
     @Provides
-    fun provideRetrofit(url: String): Retrofit {
-        val contentType = "application/json".toMediaType()
-
-        return Retrofit.Builder()
-            .baseUrl(url)
-            .client(provideOkHttp())
-            //.addConverterFactory(MoshiConverterFactory.create())
-            .addConverterFactory(json.asConverterFactory(contentType))
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofitArtists(url: String): Retrofit {
-        val contentType = "application/json".toMediaType()
-        /*val moshi = Moshi.Builder()
-            .add(ArtistsResponseJsonAdapter())
-            .build()*/
-        return Retrofit.Builder()
-            .baseUrl(url)
-            .client(provideOkHttpArtists())
-//            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .addConverterFactory(json.asConverterFactory(contentType))
-            .build()
-    }
+    fun provideRetrofit(url: String): Retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        .client(provideOkHttp())
+        .addConverterFactory(json.asConverterFactory(CONTENT_TYPE_JSON.toMediaType()))
+        .build()
 
 
     @Provides
     @Singleton
-    fun provideWeatherRetrofit(context: Context, url: String): Retrofit {
-        val contentType = "application/json".toMediaType()
-        return Retrofit.Builder()
-            .baseUrl(url)
-            .client(provideWeatherOkHttp(context))
-            //.addConverterFactory(MoshiConverterFactory.create())
-            .addConverterFactory(json.asConverterFactory(contentType))
-            .build()
-    }
+    fun provideRetrofitArtists(url: String): Retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        .client(provideOkHttpArtists())
+        .addConverterFactory(json.asConverterFactory(CONTENT_TYPE_JSON.toMediaType()))
+        .build()
+
+
+    @Provides
+    @Singleton
+    fun provideWeatherRetrofit(url: String): Retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        .client(provideWeatherOkHttp())
+        .addConverterFactory(json.asConverterFactory(CONTENT_TYPE_JSON.toMediaType()))
+        .build()
+
 
     @Provides
     @Singleton
@@ -239,15 +261,15 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    fun provideWeatherApiService(@ApplicationContext context: Context): WeatherApiService {
-        return provideWeatherRetrofit(context, Constants.BASE_ENDPOINT_WEATHER)
+    fun provideWeatherApiService(): WeatherApiService {
+        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER)
             .create(WeatherApiService::class.java)
     }
 
     @Provides
     @Singleton
-    fun proWeatherBulkApiService(@ApplicationContext context: Context): WeatherBulkApiService {
-        return provideWeatherRetrofit(context, Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
+    fun proWeatherBulkApiService(): WeatherBulkApiService {
+        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
             .create(WeatherBulkApiService::class.java)
     }
 

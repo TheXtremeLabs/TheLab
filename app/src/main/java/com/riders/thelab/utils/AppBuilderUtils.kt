@@ -31,7 +31,7 @@ import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.songplayer.SongPlayerActivity
 import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.ui.tabs.WorkingTabsActivity
-import com.riders.thelab.ui.theaters.TheatersActivity
+import com.riders.thelab.feature.theaters.TheatersActivity
 import com.riders.thelab.ui.transition.TransitionActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity
