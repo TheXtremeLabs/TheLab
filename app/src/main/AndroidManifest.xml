@@ -284,13 +284,13 @@
             android:theme="@style/PaletteTheme" />
 
         <activity
-            android:name=".ui.theaters.TheatersActivity"
+            android:name=".feature.theaters.TheatersActivity"
             android:label="@string/activity_title_theaters"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/MultiPaneTheme" />
         <activity
-            android:name=".ui.theaters.TheatersDetailActivity"
-            android:parentActivityName=".ui.theaters.TheatersActivity"
+            android:name=".feature.theaters.TheatersDetailActivity"
+            android:parentActivityName=".feature.theaters.TheatersActivity"
             android:theme="@style/MultiPaneTheme" />
 
         <activity

@@ -1,9 +1,8 @@
-package com.riders.thelab.ui.theaters
+package com.riders.thelab.feature.theaters
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -45,7 +44,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.riders.thelab.R
 import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
 import com.riders.thelab.core.data.local.bean.MovieEnum
 import com.riders.thelab.core.data.local.model.Movie
@@ -123,14 +121,14 @@ fun TheatersSplash() {
                     Spacer(modifier = Modifier.size(8.dp))
                     Image(
                         modifier = Modifier.height(12.dp),
-                        painter = painterResource(id = R.drawable.ic_lab_6_the),
+                        painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_lab_6_the),
                         contentDescription = "the_icon",
                         colorFilter = ColorFilter.tint(Color.White)
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Image(
                         modifier = Modifier.height(12.dp),
-                        painter = painterResource(id = R.drawable.ic_lab_6_lab),
+                        painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_lab_6_lab),
                         contentDescription = "lab_icon",
                         colorFilter = ColorFilter.tint(Color.White)
                     )

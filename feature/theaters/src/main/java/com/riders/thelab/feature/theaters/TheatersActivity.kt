@@ -1,8 +1,6 @@
-package com.riders.thelab.ui.theaters
+package com.riders.thelab.feature.theaters
 
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -19,7 +18,7 @@ import timber.log.Timber
 
 
 @AndroidEntryPoint
-class TheatersActivity : ComponentActivity() {
+class TheatersActivity : BaseComponentActivity() {
 
     private val mTheatersViewModel: TheatersViewModel by viewModels()
 
@@ -53,12 +52,7 @@ class TheatersActivity : ComponentActivity() {
 //        mTheatersViewModel.fetchMovies()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-            }
-        }
-        return true
+    override fun backPressed() {
+        finish()
     }
 }

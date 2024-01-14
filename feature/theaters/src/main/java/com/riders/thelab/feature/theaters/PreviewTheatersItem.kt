@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.theaters
+package com.riders.thelab.feature.theaters
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,14 +39,12 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
 import coil.size.Size
-import com.riders.thelab.R
 import com.riders.thelab.core.data.local.bean.MovieEnum
 import com.riders.thelab.core.data.local.model.Movie
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.core.ui.compose.utils.findActivity
-import com.riders.thelab.navigator.Navigator
 
 ///////////////////////////////////////
 //
@@ -57,7 +55,6 @@ import com.riders.thelab.navigator.Navigator
 fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
     val context = LocalContext.current
     val activity = context.findActivity() as TheatersActivity
-    val navigator = Navigator(activity)
 
     val painter = rememberAsyncImagePainter(
         model = ImageRequest
@@ -71,7 +68,7 @@ fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
                 scale(Scale.FIT)
             }
             .build(),
-        placeholder = painterResource(R.drawable.logo_colors),
+        placeholder = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors),
     )
 
     TheLabTheme(darkTheme = true) {
@@ -143,7 +140,7 @@ fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
                     )
                     IconButton(
                         modifier = Modifier.weight(1f),
-                        onClick = { viewModel.getMovieDetail(activity, navigator, movie) }) {
+                        onClick = { viewModel.getMovieDetail(activity, movie) }) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -165,7 +162,6 @@ fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
 fun MovieItem(viewModel: TheatersViewModel, movie: Movie) {
     val context = LocalContext.current
     val activity = context.findActivity() as TheatersActivity
-    val navigator = Navigator(activity)
     val painter = rememberAsyncImagePainter(
         model = ImageRequest
             .Builder(LocalContext.current)
@@ -178,18 +174,18 @@ fun MovieItem(viewModel: TheatersViewModel, movie: Movie) {
                 scale(Scale.FIT)
             }
             .build(),
-        placeholder = painterResource(R.drawable.logo_colors),
+        placeholder = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors),
     )
 
     TheLabTheme(darkTheme = true) {
 
         Card(
             modifier = Modifier.size(
-                width = dimensionResource(id = R.dimen.max_card_image_height),
-                height = dimensionResource(id = R.dimen.max_card_image_width)
+                width = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height),
+                height = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width)
             ),
             onClick = {
-                viewModel.getMovieDetail(activity, navigator, movie)
+                viewModel.getMovieDetail(activity, movie)
             }
         ) {
             Column(

@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.theaters
+package com.riders.thelab.feature.theaters
 
 import android.content.Context
 import android.content.Intent
@@ -10,7 +10,6 @@ import com.riders.thelab.core.common.storage.LabFileManager
 import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
 import com.riders.thelab.core.data.local.bean.MovieEnum
 import com.riders.thelab.core.data.local.model.Movie
-import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -95,7 +94,7 @@ class TheatersViewModel @Inject constructor() : ViewModel() {
         )
     }
 
-    fun getMovieDetail(activity: Context, navigator: Navigator, movie: Movie) {
+    fun getMovieDetail(activity: Context, movie: Movie) {
         Timber.d("getMovieDetail() | movie: $movie")
 
         Intent(activity, TheatersDetailActivity::class.java)
@@ -103,7 +102,7 @@ class TheatersViewModel @Inject constructor() : ViewModel() {
                 putExtra(TheatersDetailActivity.EXTRA_MOVIE, Json.encodeToString(movie))
             }
             .runCatching {
-                navigator.callMultipaneDetailActivity(this)
+                activity.startActivity(this)
             }
             .onFailure {
                 Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
