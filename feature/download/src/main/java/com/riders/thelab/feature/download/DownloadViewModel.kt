@@ -189,6 +189,7 @@ class DownloadViewModel @Inject constructor(
             throw RuntimeException(e)
         }
     }
+
     override fun onCleared() {
         super.onCleared()
 

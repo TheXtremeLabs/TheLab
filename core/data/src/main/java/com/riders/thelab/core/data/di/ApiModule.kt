@@ -205,7 +205,7 @@ internal object ApiModule {
         ignoreUnknownKeys = true
     }
 
-    private const val CONTENT_TYPE_JSON = ""
+    private const val CONTENT_TYPE_JSON = "application/json"
 
     /* Provide Retrofit for the app */
     @Provides

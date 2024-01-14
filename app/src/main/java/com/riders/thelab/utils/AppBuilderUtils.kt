@@ -44,7 +44,7 @@ object AppBuilderUtils {
                 // Colors
                 val colors =
                     AppBuilder
-                        .withId(0L)
+                        .withId(0)
                         .withActivityTitle(context.getString(R.string.activity_title_colors))
                         .withActivityDescription("Change color programmatically...")
                         .withActivityIcon(
@@ -61,7 +61,7 @@ object AppBuilderUtils {
                 //Biometric
                 val biometric =
                     AppBuilder
-                        .withId(1L)
+                        .withId(1)
                         .withActivityTitle("Biometric")
                         .withActivityDescription("Check biometric hardware and test it...")
                         .withActivityIcon(
@@ -78,7 +78,7 @@ object AppBuilderUtils {
                 //Recycler
                 val recycler =
                     AppBuilder
-                        .withId(2L)
+                        .withId(2)
                         .withActivityTitle("Recycler")
                         .withActivityDescription("Recycler Basics and best practices...")
                         .withActivityIcon(
@@ -95,7 +95,7 @@ object AppBuilderUtils {
                 //Tabs
                 val tabs =
                     AppBuilder
-                        .withId(3L)
+                        .withId(3)
                         .withActivityTitle("Tabs")
                         .withActivityDescription("ViewPager Fragments Tabs...")
                         .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_tab))
@@ -107,7 +107,7 @@ object AppBuilderUtils {
                 //Transitions
                 val transitions =
                     AppBuilder
-                        .withId(4L)
+                        .withId(4)
                         .withActivityTitle("Transitions")
                         .withActivityDescription("Start a new activity with awesome animations...")
                         .withActivityIcon(
@@ -124,7 +124,7 @@ object AppBuilderUtils {
                 //Contact List
                 val contactList =
                     AppBuilder
-                        .withId(6L)
+                        .withId(6)
                         .withActivityTitle("Contact List")
                         .withActivityDescription("Fetch contacts from database, add one and more...")
                         .withActivityIcon(
@@ -141,7 +141,7 @@ object AppBuilderUtils {
                 //Location On Maps
                 val locationOnMaps =
                     AppBuilder
-                        .withId(7L)
+                        .withId(7)
                         .withActivityTitle("Location On Maps")
                         .withActivityDescription("Display User location on map...")
                         .withActivityIcon(
@@ -158,7 +158,7 @@ object AppBuilderUtils {
                 //Schedule Job
                 val scheduleJob =
                     AppBuilder
-                        .withId(8L)
+                        .withId(8)
                         .withActivityTitle("Schedule Job")
                         .withActivityDescription("Own alarm to remind user...")
                         .withActivityIcon(
@@ -175,7 +175,7 @@ object AppBuilderUtils {
                 // Palette
                 val palette =
                     AppBuilder
-                        .withId(10L)
+                        .withId(10)
                         .withActivityTitle(context.getString(R.string.activity_title_palette))
                         .withActivityDescription("Get different color from an image...")
                         .withActivityIcon(
@@ -192,7 +192,7 @@ object AppBuilderUtils {
                 // Theaters
                 val theaters =
                     AppBuilder
-                        .withId(12L)
+                        .withId(12)
                         .withActivityTitle(context.getString(R.string.activity_title_theaters))
                         .withActivityDescription("Netflix like but not Netflix...")
                         .withActivityIcon(
@@ -209,7 +209,7 @@ object AppBuilderUtils {
                 // Built-In Web View
                 val builtInWebView =
                     AppBuilder
-                        .withId(14L)
+                        .withId(14)
                         .withActivityTitle("Built-in Web View")
                         .withActivityDescription("Display web view in activity directly...")
                         .withActivityIcon(
@@ -226,7 +226,7 @@ object AppBuilderUtils {
                 // Youtube
                 val youtubeLike =
                     AppBuilder
-                        .withId(15L)
+                        .withId(15)
                         .withActivityTitle(context.getString(R.string.activity_title_youtube_like))
                         .withActivityDescription("Youtube look like...")
                         .withActivityIcon(
@@ -244,7 +244,7 @@ object AppBuilderUtils {
                 // Weather
                 val weather =
                     AppBuilder
-                        .withId(16L)
+                        .withId(16)
                         .withActivityTitle(context.getString(R.string.activity_title_weather))
                         .withActivityDescription("Current weather forecast in your city...")
                         .withActivityIcon(
@@ -261,7 +261,7 @@ object AppBuilderUtils {
                 // Floating Widgets
                 val floatingWidgets =
                     AppBuilder
-                        .withId(17L)
+                        .withId(17)
                         .withActivityTitle("Floating Widget")
                         .withActivityDescription("Create a floating widget that you can move around on the screen...")
                         .withActivityIcon(
@@ -278,7 +278,7 @@ object AppBuilderUtils {
                 // Custom Toast
                 val customToast =
                     AppBuilder
-                        .withId(18L)
+                        .withId(18)
                         .withActivityTitle("Custom Toast")
                         .withActivityDescription("Custom Toast Layout...")
                         .withActivityIcon(
@@ -295,7 +295,7 @@ object AppBuilderUtils {
                 // Vector Drawables
                 val vectorDrawables =
                     AppBuilder
-                        .withId(19L)
+                        .withId(19)
                         .withActivityTitle("Vector Drawables")
                         .withActivityDescription("Animated, scale, transform vector drawables...")
                         .withActivityIcon(
@@ -312,7 +312,7 @@ object AppBuilderUtils {
                 // Spring
                 val spring =
                     AppBuilder
-                        .withId(20L)
+                        .withId(20)
                         .withActivityTitle("Spring")
                         .withActivityDescription("Physics-based motion is driven by force. Spring force is one such force that guides interactivity and motion....")
                         .withActivityIcon(
@@ -329,7 +329,7 @@ object AppBuilderUtils {
                 // Kat
                 val kat =
                     AppBuilder
-                        .withId(21L)
+                        .withId(21)
                         .withActivityTitle("Chat")
                         .withActivityDescription("Realtime chat using firebase realtime database features")
                         .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_k_at))
@@ -342,7 +342,7 @@ object AppBuilderUtils {
                 // SongPlayer
                 val songPlayer =
                     AppBuilder
-                        .withId(22L)
+                        .withId(22)
                         .withActivityTitle("Music Player")
                         .withActivityDescription("Play music that is stored on your phone (Live Streaming wip)...")
                         .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_music))
@@ -354,7 +354,7 @@ object AppBuilderUtils {
                 // Google
                 val googleSignIn =
                     AppBuilder
-                        .withId(23L)
+                        .withId(23)
                         .withActivityTitle("Google Sign In")
                         .withActivityDescription("Exploring Google Sign In Api...")
                         .withActivityIcon(
@@ -370,7 +370,7 @@ object AppBuilderUtils {
 
                 val googleDrive =
                     AppBuilder
-                        .withId(24L)
+                        .withId(24)
                         .withActivityTitle("Google Drive API")
                         .withActivityDescription("Exploring Google Drive Api...")
                         .withActivityIcon(
@@ -387,7 +387,7 @@ object AppBuilderUtils {
                 // download
                 val download =
                     AppBuilder
-                        .withId(25L)
+                        .withId(25)
                         .withActivityTitle("Download")
                         .withActivityDescription("Download file using Android DownloadManager, Kotlin Flow and Retrofit...")
                         .withActivityIcon(
@@ -404,7 +404,7 @@ object AppBuilderUtils {
                 // lottie
                 val lottie =
                     AppBuilder
-                        .withId(26L)
+                        .withId(26)
                         .withActivityTitle(context.getString(R.string.activity_title_lottie))
                         .withActivityDescription("Lottie is a mobile library for Android and iOS that parses Adobe After Effects animations and renders them natively on mobile!...")
                         .withActivityIcon(
@@ -421,7 +421,7 @@ object AppBuilderUtils {
                 // Bluetooth
                 val bluetooth =
                     AppBuilder
-                        .withId(27L)
+                        .withId(27)
                         .withActivityTitle("Bluetooth")
                         .withActivityDescription("Bluetooth feature, retrieve bounded devices and scan available bluetooth connections...")
                         .withActivityIcon(
@@ -438,7 +438,7 @@ object AppBuilderUtils {
                 // Jetpack Compose
                 val jetpackCompose =
                     AppBuilder
-                        .withId(28L)
+                        .withId(28)
                         .withActivityTitle(context.getString(R.string.activity_title_compose))
                         .withActivityDescription("Jetpack Compose is Android’s modern toolkit for building native UI with less code, powerful tools, and intuitive Kotlin APIs...")
                         .withActivityIcon(
@@ -456,7 +456,7 @@ object AppBuilderUtils {
                 // Camera
                 val camera =
                     AppBuilder
-                        .withId(29L)
+                        .withId(29)
                         .withActivityTitle("Camera")
                         .withActivityDescription("CameraX is a Jetpack support library, built to help you make camera app development easier....")
                         .withActivityIcon(
@@ -473,7 +473,7 @@ object AppBuilderUtils {
                 // Screen Shot
                 val screenShot =
                     AppBuilder
-                        .withId(30L)
+                        .withId(30)
                         .withActivityTitle("Screen Shot")
                         .withActivityDescription("Screen Shot the device display programmatically...")
                         .withActivityIcon(
@@ -490,7 +490,7 @@ object AppBuilderUtils {
                 // Music Recognition
                 val musicRecognition =
                     AppBuilder
-                        .withId(31L)
+                        .withId(31)
                         .withActivityTitle("Music Recognition")
                         .withActivityDescription("Choose ACRCLoud Or Shazam and see...")
                         .withActivityIcon(
@@ -507,7 +507,7 @@ object AppBuilderUtils {
                 // Google ML Kit - Live Barcode
                 val liveBarcode =
                     AppBuilder
-                        .withId(32L)
+                        .withId(32)
                         .withActivityTitle(context.getString(R.string.activity_title_google_ml_kit))
                         .withActivityDescription("ML Kit brings Google’s machine learning expertise to mobile developers in a powerful and easy-to-use package...")
                         .withActivityIcon(
@@ -524,7 +524,7 @@ object AppBuilderUtils {
                 // Wip
                 val wip =
                     AppBuilder
-                        .withId(40L)
+                        .withId(40)
                         .withActivityTitle("WIP")
                         .withActivityDescription("Coming soon...")
                         .withActivityIcon(

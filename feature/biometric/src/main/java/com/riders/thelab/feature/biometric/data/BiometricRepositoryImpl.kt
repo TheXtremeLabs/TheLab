@@ -58,6 +58,7 @@ class BiometricRepositoryImpl @Inject constructor(
                 ValidationResult.OK -> KeyStatus.READY
                 ValidationResult.KEY_INIT_FAIL,
                 ValidationResult.VALIDATION_FAILED -> KeyStatus.NOT_READY
+
                 ValidationResult.KEY_PERMANENTLY_INVALIDATED -> KeyStatus.INVALIDATED
             }
         )

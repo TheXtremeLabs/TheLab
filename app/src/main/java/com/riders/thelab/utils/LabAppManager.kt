@@ -132,7 +132,7 @@ object LabAppManager {
                 if (packageInfo.packageName.contains(packageItem)) {
 
                     // Store found app package name
-                    val appToAdd = packageInfo.packageName
+                    // val appToAdd = packageInfo.packageName
 
                     // Check if it does equal to The Lab package name
                     // because we don't don't want to display it

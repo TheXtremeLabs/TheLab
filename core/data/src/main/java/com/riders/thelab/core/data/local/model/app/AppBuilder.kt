@@ -6,7 +6,7 @@ import com.riders.thelab.core.common.exception.LabApplicationInitializedExceptio
 
 object AppBuilder {
 
-    private var id: Long = -1L
+    private var id: Byte = -1
 
     // From Packages
     private var name: String? = null
@@ -46,7 +46,7 @@ object AppBuilder {
 
 
     // From activities
-    fun withId(activityID: Long): AppBuilder {
+    fun withId(activityID: Byte): AppBuilder {
         id = activityID
         return this
     }

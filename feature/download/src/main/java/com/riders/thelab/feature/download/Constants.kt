@@ -2,6 +2,7 @@ package com.riders.thelab.feature.download
 
 object Constants {
     const val URL_SPEED_TEST: String = "http://speedtest.ftp.otenet.gr/files/test10Mb.db"
+
     /*const val URL_ISO_TEST: String =
         "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.2.0-amd64-netinst.iso"*/
     const val URL_ISO_TEST: String =
