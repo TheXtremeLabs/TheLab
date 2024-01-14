@@ -86,8 +86,8 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.any" />
-    <!--<uses-feature android:name="android.hardware.camera.autofocus"/>
-    <uses-feature android:name="android.hardware.camera.external"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <!--<uses-feature android:name="android.hardware.camera.external"/>
     <uses-feature android:name="android.hardware.camera.flash"/>-->
 
     <!-- Android 13+ permission dialog -->
@@ -271,7 +271,7 @@
 
 
         <activity
-            android:name=".ui.schedule.ScheduleActivity"
+            android:name=".feature.schedule.ui.ScheduleActivity"
             android:label="@string/activity_title_schedule_jobs"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab"
@@ -524,7 +524,7 @@
 
         <!-- Alarm -->
         <receiver
-            android:name=".core.broadcast.ScheduleAlarmReceiver"
+            android:name=".feature.schedule.core.ScheduleAlarmReceiver"
             android:exported="true" />
 
         <!-- Media Receiver -->
@@ -576,7 +576,7 @@
             android:name=".core.service.TheLabBootService"
             android:exported="true" />
 
-        <service android:name=".core.service.ScheduleAlarmService" />
+        <service android:name=".feature.schedule.core.ScheduleAlarmService" />
 
         <service
             android:name=".core.service.FloatingViewService"

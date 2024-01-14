@@ -1,5 +1,6 @@
-package com.riders.thelab.core.bus
+package com.riders.thelab.feature.schedule.bus
 
+import com.riders.thelab.core.common.bus.KotlinBus
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 class AlarmEvent {
