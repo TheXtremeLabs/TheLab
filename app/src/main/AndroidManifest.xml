@@ -205,7 +205,7 @@
             android:theme="@style/Theme.TheLab.NoActionBar" />
 
         <activity
-            android:name=".ui.colors.ColorActivity"
+            android:name=".feature.colors.ColorActivity"
             android:exported="true"
             android:label="@string/activity_title_colors"
             android:parentActivityName=".ui.mainactivity.MainActivity"
