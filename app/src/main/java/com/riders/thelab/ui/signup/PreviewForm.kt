@@ -40,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -62,7 +61,7 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
 
@@ -93,8 +92,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.firstname,
             onValueChange = { viewModel.updateFirstname(it) },
-            label = { Text(text = "First Name") },
-            placeholder = { Text(text = "First Name") },
+            label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_first_name)) },
+            placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_first_name)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Person,
@@ -125,8 +124,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.lastname,
             onValueChange = { viewModel.updateLastname(it) },
-            label = { Text(text = "Last Name") },
-            placeholder = { Text(text = "Last Name") },
+            label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_last_name)) },
+            placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_last_name)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Person,
@@ -157,8 +156,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.username,
             onValueChange = { viewModel.updateUsername(it) },
-            label = { Text(text = "Username") },
-            placeholder = { Text(text = "Username") },
+            label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_username)) },
+            placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_username)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Person,
@@ -189,8 +188,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.email,
             onValueChange = { viewModel.updateEmail(it) },
-            label = { Text(text = "Email") },
-            placeholder = { Text(text = "Email") },
+            label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_email)) },
+            placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_email)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.AlternateEmail,
@@ -228,8 +227,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.password,
             onValueChange = { viewModel.updatePassword(it) },
-            label = { Text(text = "Password (6+ characters") },
-            placeholder = { Text(text = "Password (6+ characters") },
+            label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_password)) },
+            placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_password_min_characters)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Lock,
@@ -283,8 +282,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.passwordConfirmation,
             onValueChange = { viewModel.updatePasswordConfirmation(it) },
-            label = { Text(text = "Password (6+ characters") },
-            placeholder = { Text(text = "Password (6+ characters") },
+            label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_confirm_password)) },
+            placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_confirm_your_password)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Lock,

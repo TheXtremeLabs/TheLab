@@ -194,7 +194,13 @@ fun AndroidSpecs(viewModel: SettingsViewModel) {
         // Version
         Row {
             Text(modifier = Modifier.weight(1f), text = "Version")
-            Text(modifier = Modifier.weight(1f), text = "${deviceInfo.sdkVersion}")
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(
+                    id = R.string.placeholder_android_version,
+                    deviceInfo.sdkVersion
+                )
+            )
         }
 
         AnimatedVisibility(
@@ -232,7 +238,7 @@ fun DeviceInfoSection(viewModel: SettingsViewModel) {
         ) {
             Text(
                 modifier = Modifier.padding(start = 24.dp),
-                text = "Device Info",
+                text = stringResource(id = R.string.placeholder_device_information),
                 style = Typography.titleMedium
             )
 
