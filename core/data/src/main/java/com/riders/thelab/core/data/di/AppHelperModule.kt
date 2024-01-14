@@ -28,13 +28,13 @@ object AppHelperModule {
         )
 
     @Provides
-    fun provideApiHelper(@ApplicationContext context: Context) =
+    fun provideApiHelper() =
         ApiImpl(
             ApiModule.provideArtistsAPIService(),
             ApiModule.provideGoogleAPIService(),
             ApiModule.provideYoutubeApiService(),
-            ApiModule.provideWeatherApiService(context),
-            ApiModule.proWeatherBulkApiService(context),
+            ApiModule.provideWeatherApiService(),
+            ApiModule.proWeatherBulkApiService(),
             ApiModule.provideUserAPIService(),
             ApiModule.provideSpotifyAccountAPIService(),
             ApiModule.provideSpotifyAPIService()
