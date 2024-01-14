@@ -116,7 +116,11 @@
     <string name="hint_gender">Gender</string>
     <string name="hint_first_name">First Name</string>
     <string name="hint_last_name">Last Name</string>
-    <string name="hint_confirm_password">Confirm your password</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_password_min_characters">Password (6+ characters)</string>
+    <string name="hint_confirm_password">Confirm password</string>
+    <string name="hint_confirm_your_password">Confirm your password</string>
     <string name="hint_phone_number">Phone Number</string>
     <string name="hint_date_of_birth">Date Of Birth (optional)</string>
     <string name="err_msg_form_last_name">Enter your last name</string>
@@ -267,7 +271,6 @@
     <string name="activity_title_floating_labels">Floating Labels</string>
     <string name="hint_name">Full Name</string>
     <string name="hint_email">Email</string>
-    <string name="hint_password">Password</string>
     <string name="btn_sign_up">Sign Up</string>
     <string name="err_msg_name">Enter your full name</string>
     <string name="err_msg_email">Enter valid email address</string>

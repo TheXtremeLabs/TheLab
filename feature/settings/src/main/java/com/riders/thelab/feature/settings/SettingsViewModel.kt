@@ -120,9 +120,6 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
             //Retrieve Screen's height and width
             val metrics = DisplayMetrics()
 
-            @Suppress("DEPRECATION")
-            activity.windowManager.defaultDisplay.getMetrics(metrics)
-
             val mDeviceInfo = DeviceInformation(
                 LabDeviceManager.getDevice().toString(),
                 LabDeviceManager.getBrand().toString(),
