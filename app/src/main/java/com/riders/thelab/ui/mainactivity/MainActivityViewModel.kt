@@ -309,8 +309,6 @@ class MainActivityViewModel : BaseViewModel() {
 
         temperature?.let { temp ->
             weatherIconUrl?.let { icon ->
-
-                val mProcessedWeather =
                     ProcessedWeather(
                         cityName,
                         cityCountry,

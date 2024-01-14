@@ -72,7 +72,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.riders.thelab.core.common.utils.DateTimeUtils
-import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.local.model.compose.WeatherCityUIState
 import com.riders.thelab.core.data.local.model.compose.WeatherUIState

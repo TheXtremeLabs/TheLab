@@ -25,6 +25,7 @@ object BiometricModule {
     @Singleton
     fun provideRequiredAuthenticators(): Int =
         BiometricManager.Authenticators.BIOMETRIC_STRONG
+
     @Provides
     @Singleton
     fun provideKeyValueStorage(@ApplicationContext context: Context): KeyValueStorage {

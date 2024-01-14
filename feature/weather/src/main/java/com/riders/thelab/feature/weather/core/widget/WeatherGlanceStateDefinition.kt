@@ -5,8 +5,6 @@ import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.state.GlanceStateDefinition
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json

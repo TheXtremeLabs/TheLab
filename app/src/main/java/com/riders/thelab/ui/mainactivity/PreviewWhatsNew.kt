@@ -267,7 +267,6 @@ fun ActionsButtons(onSearchClicked: () -> Unit, onSettingsClicked: () -> Unit) {
 
 @Composable
 fun WhatsNewTopContent(
-    viewModel: MainActivityViewModel,
     onSearchClicked: () -> Unit,
     onSettingsClicked: () -> Unit
 ) {
@@ -334,7 +333,7 @@ fun WhatsNewContent(
             Spacer(modifier = Modifier.size(24.dp))
 
             // Title and Actions
-            WhatsNewTopContent(viewModel, onSearchClicked, onSettingsClicked)
+            WhatsNewTopContent(onSearchClicked, onSettingsClicked)
 
             Spacer(modifier = Modifier.size(16.dp))
 
@@ -374,7 +373,7 @@ private fun PreviewActionsButtons() {
 @Composable
 private fun PreviewWhatsNewTopContent() {
     TheLabTheme {
-        WhatsNewTopContent(MainActivityViewModel(), {}, {})
+        WhatsNewTopContent({}) {}
     }
 }
 
