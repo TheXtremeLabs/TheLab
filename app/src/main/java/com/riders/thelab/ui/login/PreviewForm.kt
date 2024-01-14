@@ -105,7 +105,7 @@ fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
                 ),
                 shape = RoundedCornerShape(topStart = 35.dp, topEnd = 35.dp),
                 // Change different colors of the text field view
-                colors = TextFieldDefaults.textFieldColors(
+                colors = TextFieldDefaults.colors(
                     // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                     // textColor = if (!focus.value) Color.Gray else Color.White,
                     cursorColor = Color.Blue,
@@ -113,7 +113,6 @@ fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
                     unfocusedIndicatorColor = Color.Transparent
                 )
             )
-
 
             AnimatedVisibility(visible = loginHasError) {
                 Text(
@@ -173,7 +172,7 @@ fun Password(viewModel: LoginViewModel, focusRequester: FocusRequester) {
             ),
             shape = RoundedCornerShape(bottomStart = 35.dp, bottomEnd = 35.dp),
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                 // textColor = if (!focus.value) Color.Gray else Color.White,
                 cursorColor = Color.Blue,

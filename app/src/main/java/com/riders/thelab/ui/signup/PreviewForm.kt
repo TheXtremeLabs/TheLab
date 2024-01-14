@@ -71,7 +71,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val shape = RoundedCornerShape(12.dp)
 
-    val focusManager = LocalFocusManager.current
+    //val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
     val emailHasError by viewModel.emailHasError.collectAsStateWithLifecycle()
@@ -93,6 +93,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.firstname,
             onValueChange = { viewModel.updateFirstname(it) },
+            label = { Text(text = "First Name") },
             placeholder = { Text(text = "First Name") },
             leadingIcon = {
                 Icon(
@@ -108,7 +109,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                 // textColor = if (!focus.value) Color.Gray else Color.White,
                 cursorColor = Color.Blue,
@@ -124,6 +125,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.lastname,
             onValueChange = { viewModel.updateLastname(it) },
+            label = { Text(text = "Last Name") },
             placeholder = { Text(text = "Last Name") },
             leadingIcon = {
                 Icon(
@@ -139,7 +141,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                 // textColor = if (!focus.value) Color.Gray else Color.White,
                 cursorColor = Color.Blue,
@@ -155,6 +157,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.username,
             onValueChange = { viewModel.updateUsername(it) },
+            label = { Text(text = "Username") },
             placeholder = { Text(text = "Username") },
             leadingIcon = {
                 Icon(
@@ -170,7 +173,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                 // textColor = if (!focus.value) Color.Gray else Color.White,
                 cursorColor = Color.Blue,
@@ -186,6 +189,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.email,
             onValueChange = { viewModel.updateEmail(it) },
+            label = { Text(text = "Email") },
             placeholder = { Text(text = "Email") },
             leadingIcon = {
                 Icon(
@@ -201,7 +205,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                 // textColor = if (!focus.value) Color.Gray else Color.White,
                 cursorColor = Color.Blue,
@@ -224,6 +228,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.password,
             onValueChange = { viewModel.updatePassword(it) },
+            label = { Text(text = "Password (6+ characters") },
             placeholder = { Text(text = "Password (6+ characters") },
             leadingIcon = {
                 Icon(
@@ -255,7 +260,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                 // textColor = if (!focus.value) Color.Gray else Color.White,
                 cursorColor = Color.Blue,
@@ -278,6 +283,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.passwordConfirmation,
             onValueChange = { viewModel.updatePasswordConfirmation(it) },
+            label = { Text(text = "Password (6+ characters") },
             placeholder = { Text(text = "Password (6+ characters") },
             leadingIcon = {
                 Icon(
@@ -310,7 +316,7 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                 // textColor = if (!focus.value) Color.Gray else Color.White,
                 cursorColor = Color.Blue,

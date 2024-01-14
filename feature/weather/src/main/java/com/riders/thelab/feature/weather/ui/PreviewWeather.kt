@@ -753,9 +753,8 @@ fun WeatherContent(viewModel: WeatherViewModel) {
 @DevicePreviews
 @Composable
 fun PreviewWeatherContent() {
-    val context = LocalContext.current
     val viewModel: WeatherViewModel = hiltViewModel()
-    val labLocationManager = LabLocationManager(context)
+
     TheLabTheme {
         WeatherContent(viewModel = viewModel)
     }

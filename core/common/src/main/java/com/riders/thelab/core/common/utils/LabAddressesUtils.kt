@@ -5,6 +5,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.riders.thelab.core.common.BuildConfig
 import timber.log.Timber
 
 object LabAddressesUtils {
@@ -29,7 +30,11 @@ object LabAddressesUtils {
                 location.longitude,
                 1
             )
-            Timber.e("You are located to: ${addresses?.get(0)?.getAddressLine(0)}")
+            //Timber.e("You are located to: ${addresses?.get(0)?.getAddressLine(0)}")
+
+            if (BuildConfig.DEBUG) {
+                addresses?.get(0)?.let { buildAndLogAddress(it) }
+            }
 
             //get the address
             addresses?.get(0)
@@ -65,12 +70,17 @@ object LabAddressesUtils {
             1
         ) {
             val address = it[0]
-            Timber.e("You are located to: ${address.getAddressLine(0)}")
+
+            if (BuildConfig.DEBUG) {
+                buildAndLogAddress(address)
+            }
+
+            // Timber.e("You are located to: ${address.getAddressLine(0)}")
             callback(address)
         }
     }
 
-    fun buildAddress(address: Address): String? {
+    private fun buildAndLogAddress(address: Address) {
         val addressStringBuilder = StringBuilder()
         val street = address.featureName + ", " + address.thoroughfare
         val locality = address.locality
@@ -78,6 +88,7 @@ object LabAddressesUtils {
         val departmentName = address.subAdminArea
         val regionName = address.adminArea
         val countryName = address.countryName
+
         addressStringBuilder
             .append(street).append(" - ")
             .append(locality).append(" - ")
@@ -85,8 +96,8 @@ object LabAddressesUtils {
             .append(departmentName).append(" - ")
             .append(regionName).append(" - ")
             .append(countryName)
+
         val finalAddress = addressStringBuilder.toString()
-        Timber.d(finalAddress)
-        return locality
+        Timber.i("buildAndLogAddress() | You are located to: $finalAddress")
     }
 }
