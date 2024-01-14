@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.colors
+package com.riders.thelab.feature.colors
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -34,10 +34,5 @@ class ColorActivity : BaseComponentActivity() {
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.e("onDestroy()")
     }
 }

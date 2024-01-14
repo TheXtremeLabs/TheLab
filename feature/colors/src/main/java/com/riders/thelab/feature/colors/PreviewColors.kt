@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.colors
+package com.riders.thelab.feature.colors
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.LocalIndication
@@ -45,7 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.riders.thelab.R
+import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.delay
@@ -74,11 +74,11 @@ fun ColorsButton(currentColor: Int, onButtonClicked: () -> Unit) {
     val isPressed by interactionSource.collectIsPressedAsState()
 
     // Use the state to change our UI
-    val (text, color) = when {
+    /*val (text, color) = when {
         isPressed -> "Pressed" to Color.Blue
         // Default / baseline state
         else -> "Log In" to Color.Black
-    }
+    }*/
 
     var clickNumber = 0
 
@@ -152,7 +152,7 @@ fun Color(viewModel: ColorViewModel) {
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { (colorActivity as ColorActivity).onBackPressed() }) {
+                        IconButton(onClick = { (colorActivity as ColorActivity).backPressed() }) {
                             Icon(
                                 imageVector = Icons.Filled.KeyboardArrowLeft,
                                 contentDescription = "Back",

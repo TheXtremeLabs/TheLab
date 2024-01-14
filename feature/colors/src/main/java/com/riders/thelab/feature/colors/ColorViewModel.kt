@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.colors
+package com.riders.thelab.feature.colors
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
