@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.theaters
+package com.riders.thelab.feature.theaters
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.theaters
+package com.riders.thelab.feature.theaters
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -24,7 +24,6 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
 import coil.size.Size
-import com.riders.thelab.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -54,7 +53,7 @@ fun TheatersDetailContent(viewModel: TheatersDetailViewModel) {
                 scale(Scale.FIT)
             }
             .build(),
-        placeholder = painterResource(R.drawable.logo_colors),
+        placeholder = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors),
     )
 
 

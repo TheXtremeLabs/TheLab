@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.theaters
+package com.riders.thelab.feature.theaters
 
 import android.app.Activity
 import android.content.Intent
