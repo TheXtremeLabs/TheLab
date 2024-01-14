@@ -2,6 +2,7 @@ package com.riders.thelab.feature.schedule.ui
 
 import android.os.CountDownTimer
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.PlainTooltipState
@@ -40,6 +42,8 @@ import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_surfaceTint
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_surfaceTint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -109,10 +113,23 @@ fun ScheduleContent(
                                     tooltip = { Text(text = "Field can't be empty. Please enter a valid number") },
                                     tooltipState = tooltipState
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.QuestionMark,
-                                        contentDescription = null
-                                    )
+                                    IconButton(
+                                        onClick = {
+                                            scope.launch {
+                                                if (!tooltipState.isVisible) {
+                                                    tooltipState.show()
+                                                } else {
+                                                    tooltipState.dismiss()
+                                                }
+                                            }
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.QuestionMark,
+                                            contentDescription = null,
+                                            tint = if (countDownQuery.isEmpty()) com.riders.thelab.core.ui.compose.theme.error else if (!isSystemInDarkTheme()) md_theme_light_surfaceTint else md_theme_dark_surfaceTint
+                                        )
+                                    }
                                 }
                             }
                         }
