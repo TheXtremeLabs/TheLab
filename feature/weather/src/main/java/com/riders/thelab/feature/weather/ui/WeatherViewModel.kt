@@ -44,15 +44,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val repositoryImpl: IRepository
+    private val repository: IRepository
 ) : ViewModel() {
     //////////////////////////////////////////
     // Compose states
@@ -155,7 +153,7 @@ class WeatherViewModel @Inject constructor(
         searchDbJob = viewModelScope.launch(IO /*+ SupervisorJob() + coroutineExceptionHandler*/) {
 
             try {
-                val cursor = repositoryImpl.getCitiesCursor(searchText)
+                val cursor = repository.getCitiesCursor(searchText)
 
                 withContext(Main) {
                     handleResults(cursor)
@@ -251,7 +249,7 @@ class WeatherViewModel @Inject constructor(
                 try {
                     // First step
                     // Call repository to check if there is data in database
-                    val weatherData = repositoryImpl.getWeatherData()
+                    val weatherData = repository.getWeatherData()
 
                     if (null == weatherData || !weatherData.isWeatherData) {
 
@@ -297,7 +295,7 @@ class WeatherViewModel @Inject constructor(
         Timber.d("fetchWeather()")
         viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
             try {
-                val weatherResponse = repositoryImpl.getWeatherOneCallAPI(location)
+                val weatherResponse = repository.getWeatherOneCallAPI(location)
 
                 withContext(Main) {
                     weatherResponse?.let {
@@ -395,7 +393,7 @@ class WeatherViewModel @Inject constructor(
 
                         // Save data in database
                         viewModelScope.launch(IO) {
-                            repositoryImpl.insertWeatherData(WeatherData(true))
+                            repository.insertWeatherData(WeatherData(true))
                         }
 
                         updateUIState(WeatherUIState.Success(OneCallWeatherResponse()))

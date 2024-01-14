@@ -134,7 +134,7 @@ fun FormFields(viewModel: UserProfileViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                 // textColor = if (!focus.value) Color.Gray else Color.White,
                 cursorColor = Color.Blue,
@@ -166,7 +166,7 @@ fun FormFields(viewModel: UserProfileViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                 // textColor = if (!focus.value) Color.Gray else Color.White,
                 cursorColor = Color.Blue,
@@ -214,7 +214,7 @@ fun FormFields(viewModel: UserProfileViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                 // textColor = if (!focus.value) Color.Gray else Color.White,
                 cursorColor = Color.Blue,
@@ -270,7 +270,7 @@ fun FormFields(viewModel: UserProfileViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
                 // textColor = if (!focus.value) Color.Gray else Color.White,
                 cursorColor = Color.Blue,

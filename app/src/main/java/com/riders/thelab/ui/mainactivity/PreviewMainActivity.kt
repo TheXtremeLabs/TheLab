@@ -83,7 +83,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
         )
 
     val dynamicIslandUiState by viewModel.dynamicIslandState.collectAsStateWithLifecycle()
-    val appList by viewModel.appList.collectAsStateWithLifecycle()
+    // val appList by viewModel.appList.collectAsStateWithLifecycle()
     val whatsNewList: List<LocalApp> by viewModel.whatsNewAppList.collectAsStateWithLifecycle()
 
 
