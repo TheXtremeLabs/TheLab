@@ -118,6 +118,7 @@ dependencies {
     implementation(project(":core:testing"))
     implementation(project(":feature:biometric"))
     implementation(project(":feature:bluetooth"))
+    implementation(project(":feature:colors"))
     implementation(project(":feature:download"))
     implementation(project(":feature:kat"))
     implementation(project(":feature:lottie"))
