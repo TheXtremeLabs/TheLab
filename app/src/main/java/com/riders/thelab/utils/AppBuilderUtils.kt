@@ -202,7 +202,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(TheatersActivity::class.java)
-                        .withActivityDate("2023/06/08")
+                        .withActivityDate("2024/01/14")
                         .build()
                 this.add(theaters)
 
