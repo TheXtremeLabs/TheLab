@@ -15,7 +15,7 @@ import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActi
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.camera.CameraActivity
-import com.riders.thelab.ui.colors.ColorActivity
+import com.riders.thelab.feature.colors.ColorActivity
 import com.riders.thelab.ui.compose.ComposeActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
@@ -54,7 +54,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(ColorActivity::class.java)
-                        .withActivityDate("2015/01/20")
+                        .withActivityDate("2024/01/14")
                         .build()
                 this.add(colors)
 
