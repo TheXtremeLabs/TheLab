@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.schedule
+package com.riders.thelab.feature.schedule.ui
 
 import android.os.CountDownTimer
 import androidx.compose.animation.AnimatedVisibility
@@ -10,16 +10,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.QuestionMark
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.PlainTooltipBox
+import androidx.compose.material3.PlainTooltipState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -28,41 +31,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.utils.findActivity
-import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.core.ui.views.toast.ToastTypeEnum
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleContent(viewModel: ScheduleViewModel) {
+fun ScheduleContent(
+    scheduleState: ScheduleJobAlarmUiState,
+    onUpdateUIState: (ScheduleJobAlarmUiState) -> Unit,
+    tooltipState: PlainTooltipState,
+    onStartButtonClicked: () -> Unit,
+    countDownQuery: String,
+    onUpdateCountDownQuery: (String) -> Unit,
+    uiCountDown: Long,
+    isCountDownStarted: Boolean,
+    onUpdateCountDownStarted: (Boolean) -> Unit,
+    onUpdateLoadingViewVisible: (Boolean) -> Unit,
+    onUpdateUiCountDown: (Long) -> Unit,
+    isCountDownDone: Boolean,
+    onUpdateCountDownDone: (Boolean) -> Unit
+) {
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val activity = context.findActivity() as ScheduleActivity
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val focusRequester = remember { FocusRequester() }
     val focusManager: FocusManager = LocalFocusManager.current
 
-    val scheduleState by viewModel.scheduleJobUiState.collectAsStateWithLifecycle()
-
     TheLabTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = { TheLabTopAppBar(stringResource(id = R.string.activity_title_schedule_jobs)) }
+            topBar = { TheLabTopAppBar(stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_schedule_jobs)) }
         ) { contentPadding ->
 
             Box(
@@ -90,26 +97,29 @@ fun ScheduleContent(viewModel: ScheduleViewModel) {
                         modifier = Modifier
                             .fillMaxWidth(.7f)
                             .focusRequester(focusRequester),
-                        value = viewModel.countDownQuery,
-                        onValueChange = { viewModel.updateCountDownQuery(it) },
+                        value = countDownQuery,
+                        onValueChange = { onUpdateCountDownQuery(it) },
                         placeholder = { Text(text = "Enter a value to start the count down") },
                         label = { Text(text = "Count Down") },
                         singleLine = true,
                         maxLines = 1,
+                        trailingIcon = {
+                            if (countDownQuery.isBlank()) {
+                                PlainTooltipBox(
+                                    tooltip = { Text(text = "Field can't be empty. Please enter a valid number") },
+                                    tooltipState = tooltipState
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.QuestionMark,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        }
                     )
 
                     Button(
-                        onClick = {
-                            Timber.d("Start Count Down clicked")
-
-                            viewModel.countDownQuery.takeIf { it.isNotBlank() } // peut être convertit en référence
-                                ?.let { viewModel.startAlert(activity, it) }
-                                ?: UIManager.showCustomToast(
-                                    activity,
-                                    ToastTypeEnum.WARNING,
-                                    "Field can't be empty. Please enter a valid number"
-                                )
-                        },
+                        onClick = onStartButtonClicked,
                         enabled = scheduleState !is ScheduleJobAlarmUiState.Started,
                     ) {
                         Text(modifier = Modifier.padding(end = 8.dp), text = "Start count Down")
@@ -122,7 +132,7 @@ fun ScheduleContent(viewModel: ScheduleViewModel) {
 
                     AnimatedVisibility(visible = scheduleState is ScheduleJobAlarmUiState.Started) {
                         Row {
-                            Text(text = "Time remaining ${viewModel.uiCountDown} s")
+                            Text(text = "Time remaining $uiCountDown s")
                         }
                     }
                 }
@@ -130,41 +140,41 @@ fun ScheduleContent(viewModel: ScheduleViewModel) {
         }
     }
 
-    LaunchedEffect(viewModel.isCountDownStarted) {
-        Timber.d("LaunchedEffect(viewModel.isCountDownStarted) with: ${viewModel.isCountDownStarted}")
+    LaunchedEffect(isCountDownStarted) {
+        Timber.d("LaunchedEffect(viewModel.isCountDownStarted) with: ${isCountDownStarted}")
 
         // Should update loading view
-        viewModel.updateLoadingViewVisible(viewModel.isCountDownStarted)
+        onUpdateLoadingViewVisible(isCountDownStarted)
 
-        if (viewModel.isCountDownStarted) {
+        if (isCountDownStarted) {
             focusManager.clearFocus(true)
             keyboardController?.hide()
 
-            val millsFuture: Long = (viewModel.uiCountDown * 1000)
+            val millsFuture: Long = (uiCountDown * 1000)
 
             scope.launch {
                 object : CountDownTimer(millsFuture, 1000) {
                     override fun onTick(millisUntilFinished: Long) {
-                        viewModel.updateUiContDown(millisUntilFinished / 1000)
+                        onUpdateUiCountDown(millisUntilFinished / 1000)
                     }
 
                     override fun onFinish() {
                         Timber.e("Count down finished")
-                        viewModel.updateCountDownDone(true)
-                        viewModel.updateUIState(ScheduleJobAlarmUiState.Done)
+                        onUpdateCountDownDone(true)
+                        onUpdateUIState(ScheduleJobAlarmUiState.Done)
                     }
                 }.start()
             }
         }
     }
 
-    LaunchedEffect(viewModel.isCountDownDone) {
-        Timber.d("LaunchedEffect(viewModel.isCountDownDone) with: ${viewModel.isCountDownDone}")
+    LaunchedEffect(isCountDownDone) {
+        Timber.d("LaunchedEffect(viewModel.isCountDownDone) with: ${isCountDownDone}")
 
-        viewModel.updateLoadingViewVisible(viewModel.isCountDownDone)
+        onUpdateLoadingViewVisible(isCountDownDone)
 
-        if (viewModel.isCountDownDone) {
-            viewModel.updateCountDownStarted(false)
+        if (isCountDownDone) {
+            onUpdateCountDownStarted(false)
             // viewModel.updateUIState(ScheduleJobAlarmUiState.Done)
             focusManager.clearFocus(true)
             keyboardController?.hide()
@@ -172,12 +182,27 @@ fun ScheduleContent(viewModel: ScheduleViewModel) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
-private fun PreviewScheduleContent() {
-    val viewModel: ScheduleViewModel = hiltViewModel()
+private fun PreviewScheduleContent(@PreviewParameter(PreviewProvider::class) scheduleState: ScheduleJobAlarmUiState) {
+    val tooltipState = PlainTooltipState()
 
     TheLabTheme {
-        ScheduleContent(viewModel = viewModel)
+        ScheduleContent(
+            scheduleState,
+            {},
+            tooltipState,
+            {},
+            "2",
+            {},
+            1000L,
+            true,
+            {},
+            {},
+            {},
+            false,
+            {}
+        )
     }
 }

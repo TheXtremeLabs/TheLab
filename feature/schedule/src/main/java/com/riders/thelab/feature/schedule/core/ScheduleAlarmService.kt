@@ -1,4 +1,4 @@
-package com.riders.thelab.core.service
+package com.riders.thelab.feature.schedule.core
 
 import android.app.Service
 import android.content.Intent

@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.schedule
+package com.riders.thelab.feature.schedule.ui
 
 import android.app.Activity
 import android.app.AlarmManager
@@ -10,15 +10,15 @@ import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.riders.thelab.TheLabApplication
-import com.riders.thelab.core.broadcast.ScheduleAlarmReceiver
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
-import com.riders.thelab.core.service.ScheduleAlarmService
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.feature.schedule.core.ScheduleAlarmReceiver
+import com.riders.thelab.feature.schedule.core.ScheduleAlarmService
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
 
@@ -48,9 +48,9 @@ class ScheduleViewModel : ViewModel() {
         private set
     var isCountDownDone by mutableStateOf(false)
         private set
-    private var isLoadingViewVisible by mutableStateOf(false)
+     var isLoadingViewVisible by mutableStateOf(false)
         private set
-    var uiCountDown by mutableStateOf(0L)
+    var uiCountDown by mutableLongStateOf(0L)
         private set
 
     fun updateCountDownQuery(countDown: String) {
@@ -69,7 +69,7 @@ class ScheduleViewModel : ViewModel() {
         isLoadingViewVisible = visible
     }
 
-    fun updateUiContDown(millisUntilFinished: Long) {
+    fun updateUiCountDown(millisUntilFinished: Long) {
         uiCountDown = millisUntilFinished
     }
 
@@ -95,7 +95,7 @@ class ScheduleViewModel : ViewModel() {
         mPendingIntent =
             PendingIntent
                 .getBroadcast(
-                    TheLabApplication.getInstance().getContext(),
+                    activity.applicationContext,
                     ScheduleAlarmReceiver.REQUEST_CODE,
                     mBroadcastIntent,
                     if (LabCompatibilityManager.isMarshmallow()) PendingIntent.FLAG_IMMUTABLE else 0
@@ -115,7 +115,7 @@ class ScheduleViewModel : ViewModel() {
 
         UIManager.showActionInToast(activity, "Alarm set in $i seconds")
 
-        updateUiContDown(i)
+        updateUiCountDown(i)
 
         mServiceConnection = object : ServiceConnection {
             override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
