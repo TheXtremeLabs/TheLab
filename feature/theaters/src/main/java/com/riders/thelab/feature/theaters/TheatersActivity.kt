@@ -50,6 +50,7 @@ class TheatersActivity : BaseComponentActivity() {
         super.onResume()
         Timber.d("onResume()")
 //        mTheatersViewModel.fetchMovies()
+        mTheatersViewModel.fetchTMDBData()
     }
 
     override fun backPressed() {

@@ -233,6 +233,13 @@ internal object ApiModule {
         .client(provideWeatherOkHttp())
         .addConverterFactory(json.asConverterFactory(CONTENT_TYPE_JSON.toMediaType()))
         .build()
+    @Provides
+    @Singleton
+    fun provideTMDBRetrofit(url: String): Retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        .client(provideTMDBOkHttp())
+        .addConverterFactory(json.asConverterFactory(CONTENT_TYPE_JSON.toMediaType()))
+        .build()
 
 
     @Provides
@@ -297,5 +304,5 @@ internal object ApiModule {
     @Provides
     @Singleton
     fun provideTMDBAPIService(): TMDBApiService =
-        provideRetrofit(Constants.BASE_ENDPOINT_TMDB_API).create(TMDBApiService::class.java)
+        provideTMDBRetrofit(Constants.BASE_ENDPOINT_TMDB_API).create(TMDBApiService::class.java)
 }

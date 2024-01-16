@@ -7,27 +7,25 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface TMDBApiService {
-    @GET("/movie/now_playing")
+
+    @GET("movie/now_playing")
     suspend fun getTrendingMovies(): TMDBMovieResponse
 
-    @GET("/movie/popular")
+    @GET("movie/popular")
     suspend fun getPopularMovies(): TMDBMovieResponse
 
-    @GET("/movie/upcoming")
+    @GET("movie/upcoming")
     suspend fun getUpcomingMovies(): TMDBMovieResponse
 
-    @GET("/tv/airing_today")
+    @GET("tv/airing_today")
     suspend fun getTrendingTvShows(): TMDBTvShowsResponse
 
-    @GET("/tv/popular")
+    @GET("tv/popular")
     suspend fun getPopularTvShows(): TMDBTvShowsResponse
 
-    @GET("/movie/now_playing")
-    suspend fun getMovies(): TMDBMovieResponse
-
-    @GET("/movie/{movieID}/videos")
+    @GET("movie/{movieID}/videos")
     suspend fun getMovieVideos(@Path("movieID") movieID: Int): TMDBVideoResponse?
 
-    @GET("/tv/{tvShowID}/videos")
+    @GET("tv/{tvShowID}/videos")
     suspend fun getTvShowVideos(@Path("tvShowID") tvShowID: Int): TMDBVideoResponse?
 }

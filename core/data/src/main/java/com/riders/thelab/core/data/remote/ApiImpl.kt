@@ -287,8 +287,6 @@ class ApiImpl @Inject constructor(
 
     override suspend fun getPopularTvShows(): TMDBTvShowsResponse = mTmdbApiService.getPopularTvShows()
 
-    override suspend fun getMovies(): TMDBMovieResponse = mTmdbApiService.getMovies()
-
     override suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse? = mTmdbApiService.getMovieVideos(movieID)
 
     override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? = mTmdbApiService.getTvShowVideos(thShowID)

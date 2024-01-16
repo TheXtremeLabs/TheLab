@@ -188,8 +188,6 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun getPopularTvShows(): TMDBTvShowsResponse = mApiImpl.getPopularTvShows()
 
-    override suspend fun getMovies(): TMDBMovieResponse = mApiImpl.getMovies()
-
     override suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse? =
         mApiImpl.getMovieVideos(movieID)
 
