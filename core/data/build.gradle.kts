@@ -27,6 +27,18 @@ android {
             "SERVER_API_KEY_FCM",
             "\"p4VULzqDBI5HWbwOKU3zXZQI7+NU4DdKiTQ+qa8HkmZCwpW/SWK78boLuqaZPJkxUnS8IRoVerujUGXSCnfyRnSut4lKBXF1f6JatwPd+EE40LCqECTduZ6WqgFYlvtpAtjs8usgKUuuBDEo/q8sKdhiLE3smCpJ7K2HUvma49uBK1cY7i1Pu3lOxh/nEVQmOMT/2DqZySHx9/R3KtnXtA==\""
         )
+
+        it.buildConfigField(
+            "String",
+            "SERVER_API_KEY_TMDB",
+            "\"K4+f0Ethj2eHySkBTYzGi9DB8QbH4hn2tC6M3ikbnNAhlXXzwmN+H6IpOoAQa+vt\""
+        )
+
+        it.buildConfigField(
+            "String",
+            "SERVER_API_KEY_FLIGHT_AWARE_AERO",
+            "\"npbZVG8Yp0vOgxGwNQRuk2f+uG2tLiNPEuWiVgJIEi/NpLZiqdSnlHkf6nHd9i9M\""
+        )
     }
 
     testOptions {

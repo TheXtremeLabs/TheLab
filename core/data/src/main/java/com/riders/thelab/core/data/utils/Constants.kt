@@ -53,6 +53,10 @@ object Constants {
     const val FIREBASE_DATABASE_NAME = "kat"
     const val BASE_ENDPOINT_SPOTIFY_ACCOUNT = "https://accounts.spotify.com/api/"
     const val BASE_ENDPOINT_SPOTIFY_API = "https://api.spotify.com/"
+    const val BASE_ENDPOINT_TMDB_API = "https://api.themoviedb.org/3/"
+    const val BASE_ENDPOINT_TMDB_IMAGE_W_ORIGINAL_ENDPOINT = "https://image.tmdb.org/t/p/original"
+    const val BASE_ENDPOINT_TMDB_IMAGE_W_500_ENDPOINT = "https://image.tmdb.org/t/p/w500"
+    const val URL_TMDB_WEBSITE: String = "https://www.themoviedb.org/?language=fr"
 
     // Palette
     const val PALETTE_URL = "http://i.ytimg.com/vi/aNHOfJCphwk/maxresdefault.jpg"

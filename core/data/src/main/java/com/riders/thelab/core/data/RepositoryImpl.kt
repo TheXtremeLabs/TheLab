@@ -23,6 +23,9 @@ import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.City
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.flow.Flow
@@ -168,10 +171,30 @@ class RepositoryImpl @Inject constructor(
     override fun getDownloadManager(context: Context): DownloadManager =
         mApiImpl.getDownloadManager(context)
 
-    override fun downloadFile(context: Context, url: String): Long = mApiImpl.downloadFile(context, url)
+    override fun downloadFile(context: Context, url: String): Long =
+        mApiImpl.downloadFile(context, url)
+
     override fun cancelDownload(downloadId: Long): Int = mApiImpl.cancelDownload(downloadId)
     override fun cancelDownloads(downloadIds: List<Long>): Int =
         mApiImpl.cancelDownloads(downloadIds)
+
+    override suspend fun getTrendingMovies(): TMDBMovieResponse = mApiImpl.getTrendingMovies()
+
+    override suspend fun getPopularMovies(): TMDBMovieResponse = mApiImpl.getPopularMovies()
+
+    override suspend fun getUpcomingMovies(): TMDBMovieResponse = mApiImpl.getUpcomingMovies()
+
+    override suspend fun getTrendingTvShows(): TMDBTvShowsResponse = mApiImpl.getTrendingTvShows()
+
+    override suspend fun getPopularTvShows(): TMDBTvShowsResponse = mApiImpl.getPopularTvShows()
+
+    override suspend fun getMovies(): TMDBMovieResponse = mApiImpl.getMovies()
+
+    override suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse? =
+        mApiImpl.getMovieVideos(movieID)
+
+    override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? =
+        mApiImpl.getTvShowVideos(thShowID)
 
     override suspend fun getApi(): ApiResponse = mApiImpl.getApi()
 

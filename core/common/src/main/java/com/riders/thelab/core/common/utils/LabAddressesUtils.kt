@@ -30,10 +30,9 @@ object LabAddressesUtils {
                 location.longitude,
                 1
             )
-            //Timber.e("You are located to: ${addresses?.get(0)?.getAddressLine(0)}")
 
             if (BuildConfig.DEBUG) {
-                addresses?.get(0)?.let { buildAndLogAddress(it) }
+                addresses?.get(0)?.getAddressToString()
             }
 
             //get the address
@@ -72,7 +71,7 @@ object LabAddressesUtils {
             val address = it[0]
 
             if (BuildConfig.DEBUG) {
-                buildAndLogAddress(address)
+                address.getAddressToString()
             }
 
             // Timber.e("You are located to: ${address.getAddressLine(0)}")
@@ -80,24 +79,24 @@ object LabAddressesUtils {
         }
     }
 
-    private fun buildAndLogAddress(address: Address) {
+    fun Address.getAddressToString(): String {
         val addressStringBuilder = StringBuilder()
-        val street = address.featureName + ", " + address.thoroughfare
-        val locality = address.locality
-        val postalCode = address.postalCode
-        val departmentName = address.subAdminArea
-        val regionName = address.adminArea
-        val countryName = address.countryName
+        val street = this.featureName + ", " + this.thoroughfare
+        val locality = this.locality
+        val postalCode = this.postalCode
+        val departmentName = this.subAdminArea
+        val regionName = this.adminArea
+        val countryName = this.countryName
 
         addressStringBuilder
-            .append(street).append(" - ")
-            .append(locality).append(" - ")
-            .append(postalCode).append(" - ")
-            .append(departmentName).append(" - ")
-            .append(regionName).append(" - ")
+            .append("\n")
+            .append(street).append("\n")
+            .append(postalCode).append(" - ").append(locality).append("\n")
+            .append(departmentName).append(" - ").append(regionName).append("\n")
             .append(countryName)
 
         val finalAddress = addressStringBuilder.toString()
         Timber.i("buildAndLogAddress() | You are located to: $finalAddress")
+        return finalAddress
     }
 }

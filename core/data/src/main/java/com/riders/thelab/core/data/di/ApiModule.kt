@@ -8,6 +8,7 @@ import com.riders.thelab.core.data.remote.api.ArtistsAPIService
 import com.riders.thelab.core.data.remote.api.GoogleAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAccountAPIService
+import com.riders.thelab.core.data.remote.api.TMDBApiService
 import com.riders.thelab.core.data.remote.api.TheLabBackApiService
 import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
@@ -123,8 +124,8 @@ internal object ApiModule {
                 originalHttpUrl
                     .newBuilder()
                     .addQueryParameter(
-                        "apiKey",
-                        BuildConfig.SERVER_API_KEY_OPEN_WEATHER.decrypt()
+                        "api_key",
+                        BuildConfig.SERVER_API_KEY_TMDB.decrypt()
                     )
                     .build()
             } catch (e: Exception) {
@@ -293,4 +294,8 @@ internal object ApiModule {
         return provideRetrofit(Constants.BASE_ENDPOINT_SPOTIFY_API)
             .create(SpotifyAPIService::class.java)
     }
+    @Provides
+    @Singleton
+    fun provideTMDBAPIService(): TMDBApiService =
+        provideRetrofit(Constants.BASE_ENDPOINT_TMDB_API).create(TMDBApiService::class.java)
 }
