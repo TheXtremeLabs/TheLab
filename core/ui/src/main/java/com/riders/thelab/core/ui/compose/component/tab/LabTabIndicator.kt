@@ -35,14 +35,14 @@ fun LabTabIndicator(
             .clip(shape = shape)
             .background(color = backgroundColor)
     ) {
-        Box(
+        /*Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxHeight(.2f)
                 .width(width = indicatorWidth)
                 .clip(shape = shape)
                 .background(color = indicatorColor)
-        )
+        )*/
     }
 }
 

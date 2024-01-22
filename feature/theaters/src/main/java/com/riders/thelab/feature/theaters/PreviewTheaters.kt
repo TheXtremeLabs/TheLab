@@ -13,6 +13,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,16 +27,17 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -44,12 +46,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
 import com.riders.thelab.core.data.local.bean.MovieEnum
 import com.riders.thelab.core.data.local.model.Movie
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -195,59 +198,96 @@ fun TheatersContent(viewModel: TheatersViewModel) {
     val lazyRowUpcomingListState = rememberLazyListState()
     val lazyRowPopularListState = rememberLazyListState()
 
+    val trendingMovieItem by viewModel.tmdbTrendingMovieItemUiState.collectAsStateWithLifecycle()
+    val movies by viewModel.tmdbMoviesUiState.collectAsStateWithLifecycle()
+    val upcomingMovies by viewModel.tmdbUpcomingMoviesUiState.collectAsStateWithLifecycle()
+    val trendingTvShowItem by viewModel.tmdbTrendingTvShowItemUiState.collectAsStateWithLifecycle()
+    val trendingTvShows by viewModel.tmdbTrendingTvShowsUiState.collectAsStateWithLifecycle()
+
     TheLabTheme(darkTheme = true) {
         Scaffold(
             topBar = {
                 TheLabTopAppBar {}
             }
         ) {
-
-            // Screen content
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+            BoxWithConstraints(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
             ) {
-
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                    state = lazyListState
+                // Screen content
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .zIndex(1f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    item {
-                        TrendingMovie(viewModel = viewModel, movie = MovieEnum.getMovies().random())
-                    }
 
-                    // TRENDING
-                    item {
-                        TheaterCategoryList(
-                            viewModel = viewModel,
-                            rowListState = lazyRowTrendingListState,
-                            categoryTitle = MovieCategoryEnum.TRENDING.value,
-                            movieList = viewModel.mTrendingMovies
-                        )
-                    }
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.spacedBy(24.dp),
+                        state = lazyListState
+                    ) {
+                        item {
+                            TrendingMovie(
+                                viewModel = viewModel,
+                                movie = MovieEnum.getMovies().random()
+                            )
+                        }
 
-                    // UPCOMING
-                    item {
-                        TheaterCategoryList(
-                            viewModel = viewModel,
-                            rowListState = lazyRowUpcomingListState,
-                            categoryTitle = MovieCategoryEnum.UPCOMING.value,
-                            movieList = viewModel.mUpcomingMovies
-                        )
-                    }
+                        // TRENDING
+                        item {
+                            TheaterCategoryList(
+                                viewModel = viewModel,
+                                rowListState = lazyRowTrendingListState,
+                                categoryTitle = MovieCategoryEnum.TRENDING.value,
+                                movieList = viewModel.mTrendingMovies
+                            )
+                        }
 
-                    // POPULAR
-                    item {
-                        TheaterCategoryList(
-                            viewModel = viewModel,
-                            rowListState = lazyRowPopularListState,
-                            categoryTitle = MovieCategoryEnum.POPULAR.value,
-                            movieList = viewModel.mPopularMovies
+                        // UPCOMING
+                        item {
+                            TheaterCategoryList(
+                                viewModel = viewModel,
+                                rowListState = lazyRowUpcomingListState,
+                                categoryTitle = MovieCategoryEnum.UPCOMING.value,
+                                movieList = viewModel.mUpcomingMovies
+                            )
+                        }
+
+                        // POPULAR
+                        item {
+                            TheaterCategoryList(
+                                viewModel = viewModel,
+                                rowListState = lazyRowPopularListState,
+                                categoryTitle = MovieCategoryEnum.POPULAR.value,
+                                movieList = viewModel.mPopularMovies
+                            )
+                        }
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(
+                                    Color.Black,
+                                    Color.Transparent
+                                )
+                            )
                         )
+                        .zIndex(3f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LabTabRow(
+                        modifier = Modifier.padding(top = 72.dp),
+                        selectedItemIndex = viewModel.tabRowSelected,
+                        items = viewModel.categories
+                    ) {
+                        viewModel.updateTabRowSelected(it)
                     }
                 }
             }

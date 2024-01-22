@@ -3,6 +3,7 @@ package com.riders.thelab.feature.theaters
 import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -39,6 +40,7 @@ class TheatersViewModel @Inject constructor(
     ////////////////////////////////////////
     // Compose states
     ////////////////////////////////////////
+    val categories = listOf("MOVIES", "TV SHOWS")
     var once by mutableStateOf(false)
         private set
 
@@ -55,38 +57,46 @@ class TheatersViewModel @Inject constructor(
         MutableStateFlow(
             TMDBTrendingMovieItemUiState.Loading
         )
-    private var tmdbTrendingMovieItemUiState: StateFlow<TMDBTrendingMovieItemUiState> =
+    var tmdbTrendingMovieItemUiState: StateFlow<TMDBTrendingMovieItemUiState> =
         _mTMDBTrendingMovieItemUiState
 
     private var _mTMDBMoviesUiState: MutableStateFlow<TMDBMoviesUiState> = MutableStateFlow(
         TMDBMoviesUiState.Loading
     )
-    private var tmdbMoviesUiState: StateFlow<TMDBMoviesUiState> = _mTMDBMoviesUiState
+    var tmdbMoviesUiState: StateFlow<TMDBMoviesUiState> = _mTMDBMoviesUiState
 
     private var _mTMDBUpcomingMoviesUiState: MutableStateFlow<TMDBUiState.TMDBUpcomingMoviesUiState> =
         MutableStateFlow(
             TMDBUpcomingMoviesUiState.Loading
         )
-    private var tmdbUpcomingMoviesUiState: StateFlow<TMDBUpcomingMoviesUiState> =
+    var tmdbUpcomingMoviesUiState: StateFlow<TMDBUpcomingMoviesUiState> =
         _mTMDBUpcomingMoviesUiState
 
     private var _mTMDBTrendingTvShowItemUiState: MutableStateFlow<TMDBTrendingTvShowItemUiState> =
         MutableStateFlow(
             TMDBTrendingTvShowItemUiState.Loading
         )
-    private var tmdbTrendingTvShowItemUiState: StateFlow<TMDBTrendingTvShowItemUiState> =
+    var tmdbTrendingTvShowItemUiState: StateFlow<TMDBTrendingTvShowItemUiState> =
         _mTMDBTrendingTvShowItemUiState
 
     private var _mTMDBTrendingTvShowsUiState: MutableStateFlow<TMDBTvShowsUiState> =
         MutableStateFlow(
             TMDBTvShowsUiState.Loading
         )
-    private var tmdbTrendingTvShowsUiState: StateFlow<TMDBTvShowsUiState> =
+    var tmdbTrendingTvShowsUiState: StateFlow<TMDBTvShowsUiState> =
         _mTMDBTrendingTvShowsUiState
+
+
+    var tabRowSelected by mutableIntStateOf(0)
+        private set
 
 
     fun updateOnce() {
         once = true
+    }
+
+    fun updateTabRowSelected(selected: Int) {
+        this.tabRowSelected = selected
     }
 
     private fun updateTMDBTrendingMovieItemUiState(newState: TMDBTrendingMovieItemUiState) {

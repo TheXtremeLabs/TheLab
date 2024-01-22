@@ -22,10 +22,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_primaryContainer
+import timber.log.Timber
 import java.util.Locale
 
 @Composable
@@ -34,7 +33,7 @@ fun LabTabRow(
     items: List<String>,
     modifier: Modifier = Modifier,
     tabWidth: Dp = 150.dp,
-    onClick: (index: Int) -> Unit,
+    onClick: (index: Int) -> Unit
 ) {
 
     val shape = RoundedCornerShape(16.dp)
@@ -67,7 +66,10 @@ fun LabTabRow(
                     val isSelected = index == selectedItemIndex
                     LabTabItem(
                         isSelected = isSelected,
-                        onClick = { onClick(index) },
+                        onClick = {
+                            Timber.d("LabTabRow | clicked index: $index")
+                            onClick(index)
+                        },
                         tabWidth = tabWidth,
                         text = text,
                         shape = shape

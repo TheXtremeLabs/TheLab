@@ -43,7 +43,7 @@ fun LabTabItem(
     Text(
         modifier = Modifier
             .clip(shape)
-            .clickable { onClick() }
+            .clickable(enabled = true, onClick = onClick)
             .width(tabWidth)
             .padding(vertical = 8.dp, horizontal = 12.dp),
         text = text,
