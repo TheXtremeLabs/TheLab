@@ -16,6 +16,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.kapt")
                 apply("kotlin-parcelize")
                 apply("kotlinx-serialization")
+                apply("com.google.devtools.ksp")
             }
 
             extensions.configure<ApplicationExtension> {
