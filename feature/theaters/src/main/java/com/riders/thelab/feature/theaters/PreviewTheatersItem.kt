@@ -36,8 +36,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.size.Scale
 import coil.size.Size
-import com.riders.thelab.core.data.local.bean.MovieEnum
-import com.riders.thelab.core.data.local.model.Movie
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.utils.Constants
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
@@ -51,13 +49,13 @@ import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 //
 ///////////////////////////////////////
 @Composable
-fun TrendingMovie(
-    movie: Movie,
-    onGetMovieDetailClicked: (movie: Movie) -> Unit
+fun TrendingTMDBItem(
+    trendingItem: TMDBItemModel,
+    onTrendingItemDetailClicked: (trendingItem: TMDBItemModel) -> Unit
 ) {
     val painter = getCoilAsyncImagePainter(
         context = LocalContext.current,
-        dataUrl = movie.urlThumbnail,
+        dataUrl = trendingItem.getPosterImageUrl(),
         size = Size.ORIGINAL,
         scale = Scale.FIT
     )
@@ -125,13 +123,13 @@ fun TrendingMovie(
                         modifier = Modifier
                             .weight(2f)
                             .padding(24.dp),
-                        text = movie.title,
+                        text = trendingItem.title,
                         textAlign = TextAlign.Center,
                         color = Color.White
                     )
                     IconButton(
                         modifier = Modifier.weight(1f),
-                        onClick = { onGetMovieDetailClicked(movie) }
+                        onClick = { onTrendingItemDetailClicked(trendingItem) }
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -148,6 +146,7 @@ fun TrendingMovie(
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -203,11 +202,10 @@ fun TMDBItem(tmdbItem: TMDBItemModel, onItemClicked: (item: TMDBItemModel) -> Un
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewTrendingMovie() {
-    val movie = MovieEnum.getMovies().random()
+private fun PreviewTrendingTMDBItem(@PreviewParameter(PreviewProvider::class) item: TMDBItemModel) {
 
     TheLabTheme {
-        TrendingMovie(movie) { }
+        TrendingTMDBItem(item) { }
     }
 }
 
