@@ -51,11 +51,6 @@ class TheatersDetailActivity : BaseComponentActivity() {
                             }
                         }
                     }
-
-                    LaunchedEffect(key1 = tmdbItem) {
-                        Timber.d("LaunchedEffect | tmdbItem: $tmdbItem | with: ${this.coroutineContext}")
-
-                    }
                 }
             }
         }
