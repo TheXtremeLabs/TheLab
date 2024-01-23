@@ -112,9 +112,7 @@ fun TheLabSwitch(
 }
 
 @Composable
-private fun animateAlignmentAsState(
-    targetBiasValue: Float
-): State<BiasAlignment> {
+private fun animateAlignmentAsState(targetBiasValue: Float): State<BiasAlignment> {
     val bias by animateFloatAsState(targetBiasValue, label = "")
     return remember {
         derivedStateOf { BiasAlignment(horizontalBias = bias, verticalBias = 0f) }
