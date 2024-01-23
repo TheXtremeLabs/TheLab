@@ -5,8 +5,6 @@ plugins {
     id("thelab.android.library.jacoco")
     id("kotlin-parcelize")
     id("kotlinx-serialization")
-    kotlin("kapt")
-    id("com.google.devtools.ksp")
 }
 
 android {

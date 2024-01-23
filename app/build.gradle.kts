@@ -15,7 +15,6 @@ plugins {
     id("thelab.android.application.jacoco")
     id("thelab.android.hilt")
     id("jacoco")
-    id("androidx.navigation.safeargs.kotlin")
     id("thelab.firebase")
 }
 
@@ -147,6 +146,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.cardview)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.fragment)
     implementation(libs.androidx.palette)
     implementation(libs.androidx.recyclerView)
     implementation(libs.androidx.material)
@@ -158,10 +158,9 @@ dependencies {
     // Compose: provided by ui module
     // The others dependencies has been added into the AndroidCompose plugin convention class
 
-
     // Navigation
-    implementation(libs.androidx.navigation.ktx)
-    implementation(libs.androidx.navigation.fragment)
+    /*implementation(libs.androidx.navigation.ktx)
+    implementation(libs.androidx.navigation.fragment)*/
 
     // CameraX
     implementation(libs.androidx.camera)
@@ -199,7 +198,7 @@ dependencies {
     // Hilt
     // The others dependencies has been added into the Hilt plugin convention class
     implementation(libs.hilt.ext.work)
-    kapt(libs.hilt.ext.compiler)
+    ksp(libs.hilt.ext.compiler)
 
     // Google Location (Maps / Places)
     implementation(libs.maps)
