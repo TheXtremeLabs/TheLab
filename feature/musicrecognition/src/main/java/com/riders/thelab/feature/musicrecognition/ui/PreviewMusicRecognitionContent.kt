@@ -34,7 +34,7 @@ fun MusicRecognitionContent() {
     val context = LocalContext.current
 
     TheLabTheme {
-        Scaffold(topBar = { TheLabTopAppBar {} }
+        Scaffold(topBar = { TheLabTopAppBar(navigationIcon = {}) }
         ) { contentPadding ->
             Column(
                 modifier = Modifier

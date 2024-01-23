@@ -7,10 +7,14 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -18,6 +22,7 @@ import timber.log.Timber
 class TheatersDetailActivity : ComponentActivity() {
 
     private val mViewModel: TheatersDetailViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -25,17 +30,24 @@ class TheatersDetailActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
 
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
+                    val tmdbItem: TMDBItemModel by mViewModel.tmdbItemUiState.collectAsStateWithLifecycle()
+
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            TheatersDetailContent(viewModel = mViewModel)
+                            TheatersDetailContent(tmdbItem = tmdbItem)
                         }
+                    }
+
+                    LaunchedEffect(key1 = tmdbItem) {
+                        Timber.d("LaunchedEffect | tmdbItem: $tmdbItem | with: ${this.coroutineContext}")
+
                     }
                 }
             }
@@ -44,5 +56,6 @@ class TheatersDetailActivity : ComponentActivity() {
 
     companion object {
         const val EXTRA_MOVIE = "MOVIE"
+        const val EXTRA_TMDB_ITEM = "MOVIE"
     }
 }

@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.riders.thelab.core.data.local.model.Movie
+import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
@@ -24,14 +24,15 @@ class TheatersDetailViewModel : ViewModel() {
     var title by mutableStateOf("")
         private set
 
-    private val _movieUiState: MutableStateFlow<Movie> = MutableStateFlow(Movie())
-    val movieUiState: StateFlow<Movie> = _movieUiState
+    private val _tmdbItemUiState: MutableStateFlow<TMDBItemModel> = MutableStateFlow(TMDBItemModel())
+    val tmdbItemUiState: StateFlow<TMDBItemModel> = _tmdbItemUiState
 
     ////////////////////////////////////////
     // Composable methods
     ////////////////////////////////////////
-    private fun updateMovieUiState(newMovie: Movie) {
-        this._movieUiState.value = newMovie
+    private fun updateTMDBItemUiState(newItem: TMDBItemModel) {
+        this._tmdbItemUiState.value = newItem
+        Timber.e("updateTMDBItemUiState() | _tmdbItemUiState: ${_tmdbItemUiState.value.toString()}")
     }
 
     fun updateTitle(newTitle: String) {
@@ -52,17 +53,17 @@ class TheatersDetailViewModel : ViewModel() {
         }
 
         mBundle?.let { bundle ->
-            bundle.getString(TheatersDetailActivity.EXTRA_MOVIE)?.let { extraMovieJsonString ->
+            bundle.getString(TheatersDetailActivity.EXTRA_TMDB_ITEM)?.let { extraMovieJsonString ->
                 Json
-                    .decodeFromString<Movie>(extraMovieJsonString)
+                    .decodeFromString<TMDBItemModel>(extraMovieJsonString)
                     .runCatching {
-                        updateMovieUiState(this)
+                        updateTMDBItemUiState(this)
                     }
                     .onFailure {
                         Timber.e("runCatching - onFailure() | error caught: ${it.message}")
                     }
                     .onSuccess {
-                        Timber.d("runCatching - onSuccess() |  Bundle is not null. movie: ${_movieUiState.value}")
+                        Timber.d("runCatching - onSuccess() |  Bundle is not null. movie: ${_tmdbItemUiState.value}")
                     }
             }
         }

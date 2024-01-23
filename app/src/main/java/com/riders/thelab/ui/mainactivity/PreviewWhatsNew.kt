@@ -326,7 +326,7 @@ fun WhatsNewContent(
     onSettingsClicked: () -> Unit
 ) {
     val pagerState: PagerState =
-        rememberPagerState(initialPageOffsetFraction = .25f) { whatsNewList.size }
+        rememberPagerState { whatsNewList.size }
 
     TheLabTheme {
         Column(modifier = Modifier.fillMaxWidth()) {

@@ -31,20 +31,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import coil.size.Scale
 import coil.size.Size
 import com.riders.thelab.core.data.local.bean.MovieEnum
 import com.riders.thelab.core.data.local.model.Movie
+import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
+import com.riders.thelab.core.data.utils.Constants
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
-import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 
 ///////////////////////////////////////
 //
@@ -52,35 +51,27 @@ import com.riders.thelab.core.ui.compose.utils.findActivity
 //
 ///////////////////////////////////////
 @Composable
-fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
-    val context = LocalContext.current
-    val activity = context.findActivity() as TheatersActivity
-
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest
-            .Builder(LocalContext.current)
-            .data(movie.urlThumbnail)
-            .apply {
-                crossfade(true)
-                allowHardware(false)
-                //transformations(RoundedCornersTransformation(32.dp.value))
-                size(Size.ORIGINAL)
-                scale(Scale.FIT)
-            }
-            .build(),
-        placeholder = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors),
+fun TrendingMovie(
+    movie: Movie,
+    onGetMovieDetailClicked: (movie: Movie) -> Unit
+) {
+    val painter = getCoilAsyncImagePainter(
+        context = LocalContext.current,
+        dataUrl = movie.urlThumbnail,
+        size = Size.ORIGINAL,
+        scale = Scale.FIT
     )
 
     TheLabTheme(darkTheme = true) {
         Box(
             modifier = Modifier
                 .defaultMinSize(1.dp)
-                .height(650.dp)
+                .height(trendingItemImageHeight)
         ) {
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(650.dp)
+                    .height(trendingItemImageHeight)
                     .clip(RoundedCornerShape(bottomStart = 35.dp, bottomEnd = 35.dp))
                     .align(Alignment.Center),
                 painter = painter,
@@ -140,7 +131,8 @@ fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
                     )
                     IconButton(
                         modifier = Modifier.weight(1f),
-                        onClick = { viewModel.getMovieDetail(activity, movie) }) {
+                        onClick = { onGetMovieDetailClicked(movie) }
+                    ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -159,34 +151,20 @@ fun TrendingMovie(viewModel: TheatersViewModel, movie: Movie) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieItem(viewModel: TheatersViewModel, movie: Movie) {
-    val context = LocalContext.current
-    val activity = context.findActivity() as TheatersActivity
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest
-            .Builder(LocalContext.current)
-            .data(movie.urlThumbnail)
-            .apply {
-                crossfade(true)
-                allowHardware(false)
-                //transformations(RoundedCornersTransformation(32.dp.value))
-                size(Size.ORIGINAL)
-                scale(Scale.FIT)
-            }
-            .build(),
-        placeholder = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors),
-    )
+fun TMDBItem(tmdbItem: TMDBItemModel, onItemClicked: (item: TMDBItemModel) -> Unit) {
+    val painter =
+        getCoilAsyncImagePainter(
+            context = LocalContext.current,
+            dataUrl = "${Constants.BASE_ENDPOINT_TMDB_IMAGE_W_500}${tmdbItem.poster}"
+        )
 
     TheLabTheme(darkTheme = true) {
-
         Card(
             modifier = Modifier.size(
                 width = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height),
                 height = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width)
             ),
-            onClick = {
-                viewModel.getMovieDetail(activity, movie)
-            }
+            onClick = { onItemClicked(tmdbItem) }
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -195,7 +173,8 @@ fun MovieItem(viewModel: TheatersViewModel, movie: Movie) {
             ) {
                 Image(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
+                        .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width))
                         .weight(2.5f)
                         .clip(RoundedCornerShape(12.dp)),
                     painter = painter,
@@ -208,7 +187,7 @@ fun MovieItem(viewModel: TheatersViewModel, movie: Movie) {
                         .weight(.5f)
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),
-                    text = movie.title,
+                    text = tmdbItem.title,
                     textAlign = TextAlign.Center
                 )
             }
@@ -225,21 +204,17 @@ fun MovieItem(viewModel: TheatersViewModel, movie: Movie) {
 @DevicePreviews
 @Composable
 private fun PreviewTrendingMovie() {
-    val viewModel: TheatersViewModel = hiltViewModel()
     val movie = MovieEnum.getMovies().random()
 
     TheLabTheme {
-        TrendingMovie(viewModel, movie)
+        TrendingMovie(movie) { }
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewMovieItem() {
-    val viewModel: TheatersViewModel = hiltViewModel()
-    val movie = MovieEnum.getMovies().random()
-
+private fun PreviewTMDBItem(@PreviewParameter(PreviewProvider::class) item: TMDBItemModel) {
     TheLabTheme {
-        MovieItem(viewModel, movie)
+        TMDBItem(item) { }
     }
 }

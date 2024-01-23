@@ -2,64 +2,47 @@ package com.riders.thelab.feature.theaters
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
-import com.riders.thelab.core.data.local.bean.MovieEnum
-import com.riders.thelab.core.data.local.model.Movie
+import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
-import com.riders.thelab.core.ui.compose.theme.samsungSangFamily
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import timber.log.Timber
+
+val trendingItemImageHeight: Dp = 500.dp
 
 
 ///////////////////////////////////////
@@ -67,136 +50,15 @@ import kotlinx.coroutines.delay
 // COMPOSE
 //
 ///////////////////////////////////////
-@Composable
-fun TheatersSplash() {
-    val scale = remember { Animatable(initialValue = 2f) }
-    val theaterAdditionalTextVisibility = remember { mutableStateOf(false) }
-    val visible = remember { mutableStateOf(false) }
-
-    TheLabTheme(darkTheme = true) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(.7f)
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.padding(8.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(
-                    modifier = Modifier.scale(scale.value),
-                    text = "T",
-                    style = TextStyle(
-                        fontFamily = samsungSangFamily,
-                        fontWeight = FontWeight.Black,
-                        fontSize = 32.sp,
-                        color = md_theme_dark_primaryContainer
-                    ),
-                    maxLines = 1
-                )
-                AnimatedVisibility(visible = if (LocalInspectionMode.current) true else theaterAdditionalTextVisibility.value) {
-                    Text(
-                        modifier = Modifier.scale(scale.value),
-                        text = "heaters",
-                        style = TextStyle(
-                            fontFamily = samsungSangFamily,
-                            fontWeight = FontWeight.Black,
-                            fontSize = 32.sp,
-                            color = md_theme_dark_primaryContainer
-                        ),
-                        maxLines = 1
-                    )
-                }
-            }
-
-            AnimatedVisibility(visible = if (LocalInspectionMode.current) true else visible.value) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Powered By",
-                        fontSize = 12.sp,
-                        color = Color.White
-                    )
-                    Spacer(modifier = Modifier.size(8.dp))
-                    Image(
-                        modifier = Modifier.height(12.dp),
-                        painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_lab_6_the),
-                        contentDescription = "the_icon",
-                        colorFilter = ColorFilter.tint(Color.White)
-                    )
-                    Spacer(modifier = Modifier.size(8.dp))
-                    Image(
-                        modifier = Modifier.height(12.dp),
-                        painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_lab_6_lab),
-                        contentDescription = "lab_icon",
-                        colorFilter = ColorFilter.tint(Color.White)
-                    )
-                }
-            }
-        }
-    }
-
-    LaunchedEffect(scale) {
-        delay(750L)
-        scale.animateTo(targetValue = 1f, initialVelocity = 0.3f)
-    }
-
-    LaunchedEffect(theaterAdditionalTextVisibility) {
-        delay(1000L)
-        theaterAdditionalTextVisibility.value = true
-    }
-
-    LaunchedEffect(visible) {
-        delay(1300L)
-        visible.value = true
-    }
-}
-
-@Composable
-fun TheaterCategoryList(
-    viewModel: TheatersViewModel,
-    rowListState: LazyListState,
-    categoryTitle: String,
-    movieList: List<Movie>
-) {
-    TheLabTheme {
-        Text(
-            modifier = Modifier.padding(start = 16.dp),
-            text = categoryTitle,
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontWeight = FontWeight.ExtraBold
-            )
-        )
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            state = rowListState,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            items(items = movieList.toList()) {
-                MovieItem(viewModel = viewModel, movie = it)
-            }
-        }
-    }
-}
-
+@OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TheatersContent(viewModel: TheatersViewModel) {
-    val lazyListState = rememberLazyListState()
-    val lazyRowTrendingListState = rememberLazyListState()
-    val lazyRowUpcomingListState = rememberLazyListState()
-    val lazyRowPopularListState = rememberLazyListState()
+
+    val activity: TheatersActivity = LocalContext.current as TheatersActivity
+    val scope = rememberCoroutineScope()
+
+    val pagerState: PagerState = rememberPagerState { viewModel.categories.size }
 
     val trendingMovieItem by viewModel.tmdbTrendingMovieItemUiState.collectAsStateWithLifecycle()
     val movies by viewModel.tmdbMoviesUiState.collectAsStateWithLifecycle()
@@ -207,90 +69,70 @@ fun TheatersContent(viewModel: TheatersViewModel) {
     TheLabTheme(darkTheme = true) {
         Scaffold(
             topBar = {
-                TheLabTopAppBar {}
+                TheLabTopAppBar(
+                    mainCustomContent = {
+                        LabTabRow(
+                            selectedItemIndex = viewModel.tabRowSelected,
+                            items = viewModel.categories
+                        ) {
+                            viewModel.updateTabRowSelected(it)
+                        }
+                    },
+                    withGradientBackground = true,
+                    navigationIconColor = Color.White
+                ) {}
             }
         ) {
-            BoxWithConstraints(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                // Screen content
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .zIndex(1f),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+            LabHorizontalViewPagerGeneric(
+                viewModel = viewModel,
+                pagerState = pagerState,
+                items = viewModel.categories,
+                autoScroll = false,
+                userScrollEnabled = false
+            ) { page, _ ->
 
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.spacedBy(24.dp),
-                        state = lazyListState
-                    ) {
-                        item {
-                            TrendingMovie(
-                                viewModel = viewModel,
-                                movie = MovieEnum.getMovies().random()
-                            )
-                        }
+                // viewModel.updateTabRowSelected(page)
 
-                        // TRENDING
-                        item {
-                            TheaterCategoryList(
-                                viewModel = viewModel,
-                                rowListState = lazyRowTrendingListState,
-                                categoryTitle = MovieCategoryEnum.TRENDING.value,
-                                movieList = viewModel.mTrendingMovies
-                            )
-                        }
+                when (page) {
+                    0 -> {
+                        ScreenMovieContent(
+                            trendingMovieItem,
+                            movies,
+                            upcomingMovies,
+                            onTMDBItemDetailClicked = { itemModel ->
+                                val json = Json {
+                                    prettyPrint = true
+                                    ignoreUnknownKeys = true
+                                }
 
-                        // UPCOMING
-                        item {
-                            TheaterCategoryList(
-                                viewModel = viewModel,
-                                rowListState = lazyRowUpcomingListState,
-                                categoryTitle = MovieCategoryEnum.UPCOMING.value,
-                                movieList = viewModel.mUpcomingMovies
-                            )
-                        }
+                                var jsonItem: String
 
-                        // POPULAR
-                        item {
-                            TheaterCategoryList(
-                                viewModel = viewModel,
-                                rowListState = lazyRowPopularListState,
-                                categoryTitle = MovieCategoryEnum.POPULAR.value,
-                                movieList = viewModel.mPopularMovies
-                            )
-                        }
+                                runCatching {
+                                    jsonItem = json.encodeToString<TMDBItemModel>(itemModel)
+                                }
+                                    .onFailure { Timber.e("runCatching | onFailure | error caught with message: ${it.message}") }
+                                    .onSuccess {
+                                        viewModel.getTMDBItemDetail(
+                                            activity = activity,
+                                            item = itemModel
+                                        )
+                                    }
+                            })
                     }
-                }
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    Color.Black,
-                                    Color.Transparent
-                                )
-                            )
-                        )
-                        .zIndex(3f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    LabTabRow(
-                        modifier = Modifier.padding(top = 72.dp),
-                        selectedItemIndex = viewModel.tabRowSelected,
-                        items = viewModel.categories
-                    ) {
-                        viewModel.updateTabRowSelected(it)
+                    1 -> {
+                        ScreenTvShowsContent(trendingTvShowItem, trendingTvShows)
                     }
                 }
             }
+        }
+    }
+
+    LaunchedEffect(key1 = viewModel.tabRowSelected) {
+        Timber.d("LaunchedEffect | tabRowSelected : ${viewModel.tabRowSelected} | with: ${this.coroutineContext}")
+
+        scope.launch {
+            pagerState.animateScrollToPage(viewModel.tabRowSelected)
         }
     }
 }
@@ -341,13 +183,6 @@ fun TheatersContainer(viewModel: TheatersViewModel) {
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
-@Composable
-private fun PreviewTheatersSplash() {
-    TheLabTheme(darkTheme = true) {
-        TheatersSplash()
-    }
-}
 
 @DevicePreviews
 @Composable

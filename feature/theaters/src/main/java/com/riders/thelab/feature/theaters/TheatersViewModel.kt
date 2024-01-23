@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.storage.LabFileManager
 import com.riders.thelab.core.data.IRepository
@@ -19,6 +18,8 @@ import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingM
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingTvShowItemUiState
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTvShowsUiState
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBUpcomingMoviesUiState
+import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -35,12 +36,17 @@ import javax.inject.Inject
 @HiltViewModel
 class TheatersViewModel @Inject constructor(
     private val repository: IRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
     ////////////////////////////////////////
     // Compose states
     ////////////////////////////////////////
     val categories = listOf("MOVIES", "TV SHOWS")
+
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+    }
     var once by mutableStateOf(false)
         private set
 
@@ -262,10 +268,7 @@ class TheatersViewModel @Inject constructor(
         LabFileManager
             .getJsonFileContentFromAssets(context, "theaters_movie_list.json")
             ?.runCatching {
-                assetsMovies = Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                }.decodeFromString<List<Movie>>(this)
+                assetsMovies = json.decodeFromString<List<Movie>>(this)
             }
             ?.onFailure {
                 it.printStackTrace()
@@ -297,7 +300,25 @@ class TheatersViewModel @Inject constructor(
 
         Intent(activity, TheatersDetailActivity::class.java)
             .apply {
-                putExtra(TheatersDetailActivity.EXTRA_MOVIE, Json.encodeToString(movie))
+                putExtra(TheatersDetailActivity.EXTRA_MOVIE, json.encodeToString(movie))
+            }
+            .runCatching {
+                activity.startActivity(this)
+            }
+            .onFailure {
+                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+            }
+            .onSuccess {
+                Timber.d("runCatching - onSuccess() | Activity launched successfully")
+            }
+    }
+
+    fun getTMDBItemDetail(activity: Context, item: TMDBItemModel) {
+        Timber.d("getTMDBItemDetail() | movie: $item")
+
+        Intent(activity, TheatersDetailActivity::class.java)
+            .apply {
+                putExtra(TheatersDetailActivity.EXTRA_TMDB_ITEM, json.encodeToString(item))
             }
             .runCatching {
                 activity.startActivity(this)
