@@ -7,16 +7,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
-import com.riders.thelab.core.data.local.bean.MovieEnum
-import com.riders.thelab.core.data.local.model.Movie
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState
+import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBMoviesUiState
+import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingMovieItemUiState
+import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBUpcomingMoviesUiState
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.toModel
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
@@ -32,9 +29,9 @@ import timber.log.Timber
 ///////////////////////////////////////
 @Composable
 fun ScreenMovieContent(
-    trendingMovieItem: TMDBUiState.TMDBTrendingMovieItemUiState,
-    movies: TMDBUiState.TMDBMoviesUiState,
-    upcomingMovies: TMDBUiState.TMDBUpcomingMoviesUiState,
+    trendingMovieItem: TMDBTrendingMovieItemUiState,
+    movies: TMDBMoviesUiState,
+    upcomingMovies: TMDBUpcomingMoviesUiState,
     onTMDBItemDetailClicked: (tmdbItemModel: TMDBItemModel) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
@@ -57,13 +54,14 @@ fun ScreenMovieContent(
                 item {
                     AnimatedContent(targetState = trendingMovieItem, label = "") { targetState ->
 
-                        if (targetState is TMDBUiState.TMDBTrendingMovieItemUiState.Success) {
-                            val movie by remember { mutableStateOf(MovieEnum.getMovies().random()) }
+                        if (targetState is TMDBTrendingMovieItemUiState.Success) {
 
-                            TrendingMovie(
-                                movie = movie,
-                                onGetMovieDetailClicked = {  }
-                            )
+                            val item: TMDBItemModel =
+                                targetState.response.results.map { it.toModel() }[0]
+
+                            TrendingTMDBItem(trendingItem = item) {
+                                onTMDBItemDetailClicked(it)
+                            }
                         }
                     }
                 }
@@ -71,7 +69,7 @@ fun ScreenMovieContent(
                 // TRENDING
                 item {
                     AnimatedContent(targetState = trendingMovieItem, label = "") { targetState ->
-                        if (targetState is TMDBUiState.TMDBTrendingMovieItemUiState.Success) {
+                        if (targetState is TMDBTrendingMovieItemUiState.Success) {
 
                             val tmdbList: List<TMDBItemModel> =
                                 targetState.response.results.map { it.toModel() }
@@ -92,7 +90,7 @@ fun ScreenMovieContent(
                 item {
                     AnimatedContent(targetState = upcomingMovies, label = "") { targetState ->
 
-                        if (targetState is TMDBUiState.TMDBUpcomingMoviesUiState.Success) {
+                        if (targetState is TMDBUpcomingMoviesUiState.Success) {
 
                             val tmdbList: List<TMDBItemModel> =
                                 targetState.response.results.map { it.toModel() }
@@ -113,7 +111,7 @@ fun ScreenMovieContent(
                 item {
                     AnimatedContent(targetState = movies, label = "") { targetState ->
 
-                        if (targetState is TMDBUiState.TMDBMoviesUiState.Success) {
+                        if (targetState is TMDBMoviesUiState.Success) {
                             val tmdbList: List<TMDBItemModel> =
                                 targetState.response.results.map { it.toModel() }
 
@@ -144,11 +142,11 @@ fun ScreenMovieContent(
 private fun PreviewScreenMoviesContent() {
     TheLabTheme {
         ScreenMovieContent(
-            trendingMovieItem = TMDBUiState.TMDBTrendingMovieItemUiState.Success(
+            trendingMovieItem = TMDBTrendingMovieItemUiState.Success(
                 TMDBMovieResponse.mockTMDBMovieResponse
             ),
-            movies = TMDBUiState.TMDBMoviesUiState.Loading,
-            upcomingMovies = TMDBUiState.TMDBUpcomingMoviesUiState.Error("Error message"),
+            movies = TMDBMoviesUiState.Loading,
+            upcomingMovies = TMDBUpcomingMoviesUiState.Error("Error message"),
             onTMDBItemDetailClicked = {}
         )
     }

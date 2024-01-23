@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
@@ -38,11 +37,9 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import timber.log.Timber
 
-val trendingItemImageHeight: Dp = 500.dp
+val trendingItemImageHeight: Dp = 550.dp
 
 
 ///////////////////////////////////////
@@ -99,29 +96,16 @@ fun TheatersContent(viewModel: TheatersViewModel) {
                             trendingMovieItem,
                             movies,
                             upcomingMovies,
-                            onTMDBItemDetailClicked = { itemModel ->
-                                val json = Json {
-                                    prettyPrint = true
-                                    ignoreUnknownKeys = true
-                                }
-
-                                var jsonItem: String
-
-                                runCatching {
-                                    jsonItem = json.encodeToString<TMDBItemModel>(itemModel)
-                                }
-                                    .onFailure { Timber.e("runCatching | onFailure | error caught with message: ${it.message}") }
-                                    .onSuccess {
-                                        viewModel.getTMDBItemDetail(
-                                            activity = activity,
-                                            item = itemModel
-                                        )
-                                    }
-                            })
+                            onTMDBItemDetailClicked = { viewModel.getTMDBItemDetail(activity, it) }
+                        )
                     }
 
                     1 -> {
-                        ScreenTvShowsContent(trendingTvShowItem, trendingTvShows)
+                        ScreenTvShowsContent(
+                            trendingTvShowItem,
+                            trendingTvShows,
+                            onTMDBItemDetailClicked = { viewModel.getTMDBItemDetail(activity, it) }
+                        )
                     }
                 }
             }
