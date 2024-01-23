@@ -295,23 +295,6 @@ class TheatersViewModel @Inject constructor(
         )
     }
 
-    fun getMovieDetail(activity: Context, movie: Movie) {
-        Timber.d("getMovieDetail() | movie: $movie")
-
-        Intent(activity, TheatersDetailActivity::class.java)
-            .apply {
-                putExtra(TheatersDetailActivity.EXTRA_MOVIE, json.encodeToString(movie))
-            }
-            .runCatching {
-                activity.startActivity(this)
-            }
-            .onFailure {
-                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
-            }
-            .onSuccess {
-                Timber.d("runCatching - onSuccess() | Activity launched successfully")
-            }
-    }
 
     fun getTMDBItemDetail(activity: Context, item: TMDBItemModel) {
         Timber.d("getTMDBItemDetail() | movie: $item")

@@ -24,9 +24,10 @@ data class TMDBItemModel(
     var type: String? = null,
     var duration: Int? = 0,
     val originalLanguage: String,
-    var directors: List<Director>? = null,
-    var scenarists: List<Scenarist>? = null,
-    var cast: List<Actors>? = null,
+    var cast: List<TDMBCastModel>? = null,
+    var directors: List<TDMBCastModel>? = null,
+    var scenarists: List<TDMBCastModel>? = null,
+    var videos: List<TMDBVideoModel>? = null,
     val releaseDate: String? = null,
     val firstAirDate: String? = null,
     var popularity: Int,
@@ -49,6 +50,7 @@ data class TMDBItemModel(
         null,
         null,
         null,
+        null,
         "",
         "",
         0,
@@ -57,15 +59,13 @@ data class TMDBItemModel(
 
     fun getBackdropImageUrl(): String =
         "${Constants.BASE_ENDPOINT_TMDB_IMAGE_W_500}${this.backdropPath}"
+
     fun getPosterImageUrl(): String =
         "${Constants.BASE_ENDPOINT_TMDB_IMAGE_W_500}${this.poster}"
-
-    companion object {
-        val mockItem = MovieDto.mockMovie.toModel()
-    }
 }
 
 fun MovieDto.toModel(): TMDBItemModel = TMDBItemModel(
+    type = "Movie",
     id = this.id,
     isMovie = true,
     title = this.title,
@@ -81,6 +81,7 @@ fun MovieDto.toModel(): TMDBItemModel = TMDBItemModel(
 )
 
 fun TvShowsDto.toModel(): TMDBItemModel = TMDBItemModel(
+    type = "Tv Show",
     id = this.id,
     isMovie = true,
     title = this.name,

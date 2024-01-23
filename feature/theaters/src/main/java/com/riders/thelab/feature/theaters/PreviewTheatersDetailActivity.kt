@@ -2,7 +2,11 @@ package com.riders.thelab.feature.theaters
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.defaultMinSize
@@ -22,14 +26,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import coil.compose.AsyncImagePainter
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
+import com.riders.thelab.core.data.local.model.tmdb.TMDBVideoModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -46,12 +52,11 @@ import timber.log.Timber
 ///////////////////////////////////////
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun TheatersDetailContent(tmdbItem: TMDBItemModel) {
-
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
-    val screenWidth = configuration.screenWidthDp.dp
-
+fun TheatersDetailContent(
+    tmdbItem: TMDBItemModel,
+    isTrailerVisible: Boolean,
+    onTrailerVisible: (Boolean) -> Unit
+) {
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
@@ -77,106 +82,150 @@ fun TheatersDetailContent(tmdbItem: TMDBItemModel) {
             modifier = Modifier.fillMaxSize(),
             topBar = { TheLabTopAppBar(navigationIcon = {}) }
         ) {
-            LazyColumn(
+            BoxWithConstraints(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                state = lazyListState
+                contentAlignment = Alignment.Center
             ) {
-                // Image
-                item {
-                    BoxWithConstraints(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .defaultMinSize(1.dp)
-                            .height(trendingItemImageHeight),
-                        contentAlignment = Alignment.Center
-                    ) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    state = lazyListState
+                ) {
+                    // Image
+                    item {
+                        BoxWithConstraints(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .defaultMinSize(1.dp)
+                                .height(trendingItemImageHeight),
+                            contentAlignment = Alignment.Center
+                        ) {
 
-                        AnimatedContent(
-                            targetState = state,
-                            label = "animated content state"
-                        ) { targetState: AsyncImagePainter.State ->
+                            AnimatedContent(
+                                targetState = state,
+                                label = "animated content state"
+                            ) { targetState: AsyncImagePainter.State ->
 
-                            when (targetState) {
-                                is AsyncImagePainter.State.Loading -> {
-                                    Timber.i("state is AsyncImagePainter.State.Loading")
-                                    CircularProgressIndicator(
-                                        color = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier
-                                            .scale(0.5f)
-                                    )
-                                }
+                                when (targetState) {
+                                    is AsyncImagePainter.State.Loading -> {
+                                        Timber.i("state is AsyncImagePainter.State.Loading")
+                                        CircularProgressIndicator(
+                                            color = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier
+                                                .scale(0.5f)
+                                        )
+                                    }
 
-                                is AsyncImagePainter.State.Success -> {
-                                    Timber.d("state is AsyncImagePainter.State.Success")
+                                    is AsyncImagePainter.State.Success -> {
+                                        Timber.d("state is AsyncImagePainter.State.Success")
 
-                                    Image(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .defaultMinSize(1.dp)
-                                            .height(trendingItemImageHeight),
-                                        painter = painter,
-                                        contentDescription = "movie image",
-                                        contentScale = ContentScale.Crop,
-                                    )
+                                        Image(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .defaultMinSize(1.dp)
+                                                .height(trendingItemImageHeight),
+                                            painter = painter,
+                                            contentDescription = "movie image",
+                                            contentScale = ContentScale.Crop,
+                                        )
 
-                                    LaunchedEffect(key1 = painter) {
-                                        scope.launch {
-                                            val image = painter.loadImage()
+                                        LaunchedEffect(key1 = painter) {
+                                            scope.launch {
+                                                val image = painter.loadImage()
 
-                                            palette = Palette.from(
-                                                image.toBitmap(
-                                                    image.intrinsicWidth,
-                                                    image.intrinsicHeight
-                                                )
-                                            ).generate()
+                                                palette = Palette.from(
+                                                    image.toBitmap(
+                                                        image.intrinsicWidth,
+                                                        image.intrinsicHeight
+                                                    )
+                                                ).generate()
 
-                                            ////////////////
+                                                ////////////////
 
-                                            darkVibrantSwatch.intValue =
-                                                palette.darkVibrantSwatch?.rgb ?: 0
-                                            //paletteColorList.value = generatePalette(palette)
+                                                darkVibrantSwatch.intValue =
+                                                    palette.darkVibrantSwatch?.rgb ?: 0
+                                                //paletteColorList.value = generatePalette(palette)
+                                            }
                                         }
                                     }
-                                }
 
-                                is AsyncImagePainter.State.Error -> {
-                                    Timber.e("state is AsyncImagePainter.State.Error | ${targetState.result}")
-                                }
+                                    is AsyncImagePainter.State.Error -> {
+                                        Timber.e("state is AsyncImagePainter.State.Error | ${targetState.result}")
+                                    }
 
-                                else -> {
-                                    Timber.e("state | else branch")
+                                    else -> {
+                                        Timber.e("state | else branch")
+                                    }
                                 }
                             }
                         }
                     }
+
+                    // Titles
+                    item {
+                        Titles(tmdbItem.title, tmdbItem.originalTitle)
+                    }
+
+                    // Popularity and Rating
+                    item {
+                        PopularityAndRating(tmdbItem)
+                    }
+
+                    // Trailer
+                    item {
+                        Trailer {
+                            onTrailerVisible(true)
+                        }
+                    }
+
+                    // Overview
+                    item {
+                        Overview(tmdbItem)
+                    }
+
+                    // Director
+                    /*item {
+                        Director(movie)
+                    }*/
+
+                    // Scenarists
+                    /*item {
+                        Scenarists(movie)
+                    }*/
+
+                    // Casting
+                    /*item {
+                        Casting(movie)
+                    }*/
                 }
 
-                // Popularity and Rating
-                item {
-                    PopularityAndRating(tmdbItem)
+                AnimatedVisibility(
+                    visible = isTrailerVisible && null != tmdbItem.videos,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    BoxWithConstraints(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                if (!isTrailerVisible) Color.Transparent else Color.Black.copy(
+                                    alpha = .83f
+                                )
+                            ), contentAlignment = Alignment.Center
+                    ) {
+                        PopUpTrailer(
+                            itemName = tmdbItem.title,
+                            tmdbVideoModel = tmdbItem.videos?.first {
+                                it.type.equals("Trailer", true) ||
+                                        it.type.equals("teaser", true) ||
+                                        it.site.equals("youtube", true)
+                            } ?: TMDBVideoModel()
+                        ) {
+                            onTrailerVisible(it)
+                        }
+                    }
                 }
-
-                // Overview
-                item {
-                    Overview(tmdbItem)
-                }
-
-                // Director
-                /*item {
-                    Director(movie)
-                }*/
-
-                // Scenarists
-                /*item {
-                    Scenarists(movie)
-                }*/
-
-                // Casting
-                /*item {
-                    Casting(movie)
-                }*/
             }
         }
     }
@@ -190,8 +239,8 @@ fun TheatersDetailContent(tmdbItem: TMDBItemModel) {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewTheatersDetailContent() {
+private fun PreviewTheatersDetailContent(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabTheme(darkTheme = true) {
-        TheatersDetailContent(tmdbItem = TMDBItemModel.mockItem)
+        TheatersDetailContent(tmdbItem = item, isTrailerVisible = true) {}
     }
 }

@@ -12,13 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.riders.thelab.core.data.local.model.Movie
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.toModel
 import com.riders.thelab.core.data.remote.dto.tmdb.MovieDto
@@ -75,7 +73,7 @@ fun TheaterTMDBList(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewTheaterTMDBList(@PreviewParameter(PreviewProvider::class) item: TMDBItemModel) {
+private fun PreviewTheaterTMDBList(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
 
     val list = MovieDto.mockMovie.run { listOf(this.toModel()) }
 

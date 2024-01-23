@@ -202,7 +202,7 @@ fun TMDBItem(tmdbItem: TMDBItemModel, onItemClicked: (item: TMDBItemModel) -> Un
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewTrendingTMDBItem(@PreviewParameter(PreviewProvider::class) item: TMDBItemModel) {
+private fun PreviewTrendingTMDBItem(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
 
     TheLabTheme {
         TrendingTMDBItem(item) { }
@@ -211,7 +211,7 @@ private fun PreviewTrendingTMDBItem(@PreviewParameter(PreviewProvider::class) it
 
 @DevicePreviews
 @Composable
-private fun PreviewTMDBItem(@PreviewParameter(PreviewProvider::class) item: TMDBItemModel) {
+private fun PreviewTMDBItem(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabTheme {
         TMDBItem(item) { }
     }

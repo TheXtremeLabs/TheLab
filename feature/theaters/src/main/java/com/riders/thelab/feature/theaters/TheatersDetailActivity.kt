@@ -1,7 +1,6 @@
 package com.riders.thelab.feature.theaters
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,11 +14,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class TheatersDetailActivity : ComponentActivity() {
+@AndroidEntryPoint
+class TheatersDetailActivity : BaseComponentActivity() {
 
     private val mViewModel: TheatersDetailViewModel by viewModels()
 
@@ -41,7 +43,12 @@ class TheatersDetailActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            TheatersDetailContent(tmdbItem = tmdbItem)
+                            TheatersDetailContent(
+                                tmdbItem = tmdbItem,
+                                isTrailerVisible = mViewModel.isTrailerVisible
+                            ) {
+                                mViewModel.updateIsTrailerVisible(it)
+                            }
                         }
                     }
 
@@ -51,6 +58,16 @@ class TheatersDetailActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun backPressed() {
+        Timber.e("backPressed()")
+
+        if (mViewModel.isTrailerVisible) {
+            mViewModel.updateIsTrailerVisible(false)
+        } else {
+            finish()
         }
     }
 

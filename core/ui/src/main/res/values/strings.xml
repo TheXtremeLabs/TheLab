@@ -366,6 +366,8 @@
     <string name="theaters_row_genre_placeholder">Movie\'s genre</string>
     <string name="theaters_row_year_placeholder">Movie\'s Year</string>
 
+    <string name="watch_trailer">Watch Trailer</string>
+
     <!-- Speech To Text -->
     <string name="activity_title_speech_to_text">Speech To Text</string>
 
