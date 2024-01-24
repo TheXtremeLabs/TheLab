@@ -34,14 +34,13 @@ dependencies {
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
-    api(libs.kotlinx.coroutines.android)
-    api(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.android)
 
     // AndroidX
-    api(libs.androidx.core.ktx)
-    api(libs.androidx.browser)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.browser)
 
-    api(libs.spotify.auth)
+    implementation(libs.spotify.auth)
 
     androidTestImplementation(project(":core:testing"))
 }
