@@ -75,7 +75,9 @@ fun TheatersDetailContent(
     var palette: Palette
 
     /* Get the dark vibrant swatch */
+    val lightVibrantSwatch = remember { mutableIntStateOf(0) }
     val darkVibrantSwatch = remember { mutableIntStateOf(0) }
+    val dominantSwatch = remember { mutableIntStateOf(0) }
 
     TheLabTheme(darkTheme = true) {
         Scaffold(
@@ -143,8 +145,12 @@ fun TheatersDetailContent(
 
                                                 ////////////////
 
+                                                lightVibrantSwatch.intValue =
+                                                    palette.lightVibrantSwatch?.rgb ?: 0
                                                 darkVibrantSwatch.intValue =
                                                     palette.darkVibrantSwatch?.rgb ?: 0
+                                                dominantSwatch.intValue =
+                                                    palette.dominantSwatch?.rgb ?: 0
                                                 //paletteColorList.value = generatePalette(palette)
                                             }
                                         }
@@ -164,7 +170,11 @@ fun TheatersDetailContent(
 
                     // Titles
                     item {
-                        Titles(tmdbItem.title, tmdbItem.originalTitle)
+                        Titles(
+                            tmdbItem.title,
+                            tmdbItem.originalTitle,
+                            Color(lightVibrantSwatch.intValue)
+                        )
                     }
 
                     // Popularity and Rating

@@ -23,13 +23,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-enum class ConnectionType(val type: Byte) {
-    VPN(0),
-    WIFI(1),
-    MOBILE(2),
-    ETHERNET(3),
-    NONE(-1)
-}
 
 @SuppressLint("MissingPermission")
 class LabNetworkManager(
@@ -223,12 +216,12 @@ class LabNetworkManager(
 
 
     @Suppress("DEPRECATION")
-    fun getNetworkType(): ConnectionType =
+    fun getNetworkType(): NetworkType =
         when (connectivityManager.activeNetworkInfo!!.type) {
-            ConnectivityManager.TYPE_WIFI -> ConnectionType.WIFI
-            ConnectivityManager.TYPE_MOBILE -> ConnectionType.MOBILE
-            ConnectivityManager.TYPE_ETHERNET -> ConnectionType.ETHERNET
-            else -> ConnectionType.NONE
+            ConnectivityManager.TYPE_WIFI -> NetworkType.WIFI
+            ConnectivityManager.TYPE_MOBILE -> NetworkType.MOBILE
+            ConnectivityManager.TYPE_ETHERNET -> NetworkType.ETHERNET
+            else -> NetworkType.NONE
         }
 
 

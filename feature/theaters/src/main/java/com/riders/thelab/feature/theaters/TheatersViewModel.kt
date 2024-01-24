@@ -7,6 +7,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import com.riders.thelab.core.common.network.LabNetworkManager
+import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.storage.LabFileManager
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
@@ -41,14 +43,12 @@ class TheatersViewModel @Inject constructor(
     ////////////////////////////////////////
     // Compose states
     ////////////////////////////////////////
-    val categories = listOf("MOVIES", "TV SHOWS")
+    val categories : List<String> = listOf("MOVIES", "TV SHOWS")
 
     private val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
     }
-    var once by mutableStateOf(false)
-        private set
 
     var mJosnAssetsMovies: MutableList<Movie> = mutableListOf()
     var mEnumMovies: MutableList<Movie> = mutableListOf()
@@ -92,9 +92,17 @@ class TheatersViewModel @Inject constructor(
     var tmdbTrendingTvShowsUiState: StateFlow<TMDBTvShowsUiState> =
         _mTMDBTrendingTvShowsUiState
 
+    var once by mutableStateOf(false)
+        private set
 
     var tabRowSelected by mutableIntStateOf(0)
         private set
+
+    var hasConnection by mutableStateOf(false)
+        private set
+
+    var isRefreshing by mutableStateOf(false)
+    private set
 
 
     fun updateOnce() {
@@ -137,6 +145,14 @@ class TheatersViewModel @Inject constructor(
         this.mPopularMovies.addAll(popularMovies)
     }
 
+    private fun updateHasInternetConnection(hasConnection: Boolean) {
+        this.hasConnection = hasConnection
+    }
+
+     fun updateIsRefreshing(isRefreshing: Boolean) {
+        this.isRefreshing = isRefreshing
+    }
+
     //////////////////////////////////////////
     // Coroutines
     //////////////////////////////////////////
@@ -146,12 +162,50 @@ class TheatersViewModel @Inject constructor(
             Timber.e(throwable.message)
         }
 
+
     ////////////////////////////////////////
     //
     // CLASS METHODS
     //
     ////////////////////////////////////////
-    fun fetchTMDBData() {
+    fun observeNetworkState(networkManager: LabNetworkManager) {
+        Timber.d("observeNetworkState()")
+
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            networkManager.getNetworkState().collect { networkState ->
+                when (networkState) {
+                    is NetworkState.Available -> {
+                        Timber.d("network state is Available. All set.")
+                        updateHasInternetConnection(true)
+
+                        fetchTMDBData()
+                    }
+
+                    is NetworkState.Losing -> {
+                        Timber.w("network state is Losing. Internet connection about to be lost")
+                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Lost -> {
+                        Timber.e("network state is Lost. Should not allow network calls initialization")
+                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Unavailable -> {
+                        Timber.e("network state is Unavailable. Should not allow network calls initialization")
+                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Undefined -> {
+                        Timber.i("network state is Undefined. Do nothing")
+                        updateHasInternetConnection(false)
+                    }
+                }
+            }
+        }
+    }
+
+     fun fetchTMDBData() {
         Timber.d("fetchTMDBData()")
 
         // Trending Movie

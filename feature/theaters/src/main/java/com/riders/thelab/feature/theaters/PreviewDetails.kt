@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.PlayCircleOutline
 import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,7 +39,7 @@ import kotlin.math.roundToInt
 //
 ///////////////////////////////
 @Composable
-fun Titles(title: String, originalTitle: String) {
+fun Titles(title: String, originalTitle: String, textColor: Color) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,21 +49,23 @@ fun Titles(title: String, originalTitle: String) {
         Text(
             text = title,
             style = TextStyle(
-                color = Color.White,
+                color = textColor,
                 fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
+                fontSize = 16.sp
             )
         )
-        Text(
-            text = originalTitle,
-            style = TextStyle(
-                color = Color.LightGray,
-                fontWeight = FontWeight.Normal,
-                fontSize = 20.sp
-            )
-        )
-    }
 
+        if (!title.equals(originalTitle, true)) {
+            Text(
+                text = originalTitle,
+                style = TextStyle(
+                    color = Color.LightGray,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp
+                )
+            )
+        }
+    }
 }
 
 @Composable
@@ -164,7 +167,7 @@ fun Overview(tmdbItem: TMDBItemModel) {
 @Composable
 private fun PreviewTMDBTitles(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabTheme(true) {
-        Titles(item.title, item.originalTitle)
+        Titles(item.title, item.originalTitle, MaterialTheme.colorScheme.primary)
     }
 }
 

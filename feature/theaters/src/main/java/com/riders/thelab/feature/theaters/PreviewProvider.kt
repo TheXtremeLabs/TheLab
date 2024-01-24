@@ -1,11 +1,13 @@
 package com.riders.thelab.feature.theaters
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBVideoModel
 import com.riders.thelab.core.data.local.model.tmdb.toModel
 import com.riders.thelab.core.data.remote.dto.tmdb.MovieDto
 import com.riders.thelab.core.data.remote.dto.tmdb.VideoDto
+
 
 class PreviewProviderTMDBVideoModel : PreviewParameterProvider<TMDBVideoModel> {
     override val values: Sequence<TMDBVideoModel>
@@ -41,7 +43,7 @@ class PreviewProviderTMDBItemModel : PreviewParameterProvider<TMDBItemModel> {
                 "/fv45onsdvdv.jpg",
                 "2023-10-25",
                 false,
-                50.56,
+                7.6,
                 3455
             ).toModel()
         )

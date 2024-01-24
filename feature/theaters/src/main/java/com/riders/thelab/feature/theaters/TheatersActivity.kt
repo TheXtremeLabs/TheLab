@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,10 +23,14 @@ class TheatersActivity : BaseComponentActivity() {
 
     private val mTheatersViewModel: TheatersViewModel by viewModels()
 
+    private val mNetworkManager: LabNetworkManager by lazy {
+        LabNetworkManager(context = this@TheatersActivity, lifecycle = this.lifecycle)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mTheatersViewModel.fetchMovies(this@TheatersActivity)
+        mTheatersViewModel.observeNetworkState(mNetworkManager)
 
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
@@ -38,19 +43,15 @@ class TheatersActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            TheatersContainer(viewModel = mTheatersViewModel)
+                            TheatersContainer(
+                                viewModel = mTheatersViewModel,
+                                networkManager = mNetworkManager
+                            )
                         }
                     }
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Timber.d("onResume()")
-//        mTheatersViewModel.fetchMovies()
-        mTheatersViewModel.fetchTMDBData()
     }
 
     override fun backPressed() {
