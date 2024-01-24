@@ -57,11 +57,12 @@ import timber.log.Timber
 @Composable
 fun TheLabTopAppBar(
     @PreviewParameter(TextContentPreviewProvider::class) title: String,
+    isDarkThemeForced: Boolean = false,
     navigationIcon: @Composable (() -> Unit)? = null
 ) {
     val context = LocalContext.current
 
-    TheLabTheme {
+    TheLabTheme(if (isDarkThemeForced) true else isSystemInDarkTheme()) {
         TopAppBar(
             modifier = Modifier
                 .fillMaxWidth()

@@ -11,8 +11,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -21,11 +23,27 @@ import androidx.media3.ui.PlayerView
 import timber.log.Timber
 import java.net.UnknownHostException
 
-
+/**
+ * Create an ExoPlayer composable that plays media from a URL.
+ *
+ * @param url The URL of the media to be played.
+ * @param modifier A [Modifier] for the root of the player.
+ * @param isSourceM3u8 boolean value to specify is the content is streaming or not
+ */
 @SuppressLint("OpaqueUnitKey")
 @OptIn(UnstableApi::class)
 @Composable
-fun ExoPlayer(modifier: Modifier = Modifier, url: String) {
+fun ExoPlayer(
+    modifier: Modifier = Modifier,
+    url: String,
+    hasControls: Boolean = true,
+    repeatMode: Int = Player.REPEAT_MODE_OFF,
+    isSourceM3u8: Boolean = false,
+    onPlayerErrorExceptionCaught: (Exception) -> Unit
+) {
+
+    Timber.d("ExoPlayer() | url: $url | isSourceM3u8: $isSourceM3u8")
+
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var handler: Handler? = Handler(Looper.getMainLooper())
@@ -35,15 +53,27 @@ fun ExoPlayer(modifier: Modifier = Modifier, url: String) {
         .build()
         .also { exoPlayer ->
             // Build the media item.
-            val mediaItem = MediaItem.Builder()
-                .setUri(url)
-                .build()
+            val mediaItem = MediaItem.Builder().apply {
+                setUri(url)
+
+                if (isSourceM3u8) {
+                    //m3u8 is the extension used with HLS sources
+                    setMimeType(MimeTypes.APPLICATION_M3U8)
+                }
+            }.build()
 
             // Set the media item to be played.
             exoPlayer.setMediaItem(mediaItem)
 
-            exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
+            exoPlayer.repeatMode = repeatMode
             exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+
+            //set up audio attributes
+            val audioAttributes = AudioAttributes.Builder()
+                .setUsage(C.USAGE_MEDIA)
+                .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+                .build()
+            exoPlayer.setAudioAttributes(audioAttributes, false)
 
             // Add Listener
             exoPlayer.addListener(object : Player.Listener {
@@ -86,6 +116,7 @@ fun ExoPlayer(modifier: Modifier = Modifier, url: String) {
                 override fun onPlayerError(error: PlaybackException) {
                     val cause = error.cause
                     Timber.e("onPlayerError() | message: $cause")
+                    onPlayerErrorExceptionCaught(error)
 
                     if (cause is HttpDataSource.HttpDataSourceException) {
                         // An HTTP error occurred.
@@ -115,8 +146,13 @@ fun ExoPlayer(modifier: Modifier = Modifier, url: String) {
                 PlayerView(factoryContext).apply {
                     // Bind the player to the view.
                     this.player = exoPlayer
-                    this.controllerAutoShow = true
-                    this.controllerHideOnTouch = true
+
+                    //hiding all the ui StyledPlayerView comes with
+                    this.setShowNextButton(hasControls)
+                    this.setShowPreviousButton(hasControls)
+
+                    this.controllerAutoShow = hasControls
+                    this.controllerHideOnTouch = hasControls
                 }
             }
         ) { playerView ->

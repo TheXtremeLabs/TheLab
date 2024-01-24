@@ -16,6 +16,7 @@ plugins {
     id("thelab.android.hilt")
     id("jacoco")
     id("thelab.firebase")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -124,6 +125,7 @@ dependencies {
     implementation(project(":feature:musicrecognition"))
     implementation(project(":feature:schedule"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:streaming"))
     implementation(project(":feature:theaters"))
     implementation(project(":feature:weather"))
 
@@ -141,6 +143,7 @@ dependencies {
     implementation(libs.kotlinx.play.services)
 
     // AndroidX
+    implementation(libs.androidx.startup)
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
@@ -157,10 +160,6 @@ dependencies {
 
     // Compose: provided by ui module
     // The others dependencies has been added into the AndroidCompose plugin convention class
-
-    // Navigation
-    /*implementation(libs.androidx.navigation.ktx)
-    implementation(libs.androidx.navigation.fragment)*/
 
     // CameraX
     implementation(libs.androidx.camera)
