@@ -256,7 +256,7 @@
             android:layout_gravity="center_horizontal"
             android:nestedScrollingEnabled="false"
             android:orientation="vertical"
-            android:scrollbarFadeDuration="@integer/config_navAnimTime"
+            android:scrollbarFadeDuration="300"
             android:scrollbarStyle="insideOverlay"
             android:scrollbars="vertical"
             android:transitionGroup="true"

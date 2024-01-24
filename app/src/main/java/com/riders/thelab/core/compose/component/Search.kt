@@ -72,7 +72,6 @@ fun Search(viewModel: MainActivityViewModel, dynamicIslandState: IslandState) {
 
     val focus = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier

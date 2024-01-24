@@ -1,10 +1,10 @@
 package com.riders.thelab.ui.youtubelike
 
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.WindowManager
@@ -16,6 +16,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.databinding.ActivityYoutubeDetailBinding
 import jp.wasabeef.glide.transformations.BlurTransformation
@@ -54,10 +55,12 @@ class YoutubeLikeDetailActivity : AppCompatActivity() {
         loadContent()
     }
 
+    @Suppress("DEPRECATION")
+    @SuppressLint("NewApi")
     private fun getBundle() {
         try {
             Timber.e("get the data one by one")
-            item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            item = if (LabCompatibilityManager.isTiramisu()) {
                 intent?.getParcelableExtra(VIDEO_OBJECT_ARG, Video::class.java)!!
             } else {
                 intent.extras?.getParcelable(VIDEO_OBJECT_ARG)!!
@@ -89,37 +92,37 @@ class YoutubeLikeDetailActivity : AppCompatActivity() {
             .load(item.imageUrl)
             .listener(
                 object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    supportStartPostponedEnterTransition()
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable,
-                    model: Any,
-                    target: Target<Drawable>,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    supportStartPostponedEnterTransition()
-
-                    //retrouver le bitmap téléchargé par Picasso
-                    val bitmap = (resource as BitmapDrawable).bitmap
-
-                    //demande à la palette de générer ses coleurs, de façon asynchrone
-                    //afin de ne pas bloquer l'interface graphique
-                    Palette.Builder(bitmap).generate { palette: Palette? ->
-                        assert(palette != null)
-                        generatePalette(palette)
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        supportStartPostponedEnterTransition()
+                        return false
                     }
-                    return false
-                }
-            })
+
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        supportStartPostponedEnterTransition()
+
+                        //retrouver le bitmap téléchargé par Picasso
+                        val bitmap = (resource as BitmapDrawable).bitmap
+
+                        //demande à la palette de générer ses coleurs, de façon asynchrone
+                        //afin de ne pas bloquer l'interface graphique
+                        Palette.Builder(bitmap).generate { palette: Palette? ->
+                            assert(palette != null)
+                            generatePalette(palette)
+                        }
+                        return false
+                    }
+                })
             .into(viewBinding.contentImageThumb)
         viewBinding.contentTextName.text = item.name
         viewBinding.contentTextDescription.text = item.description

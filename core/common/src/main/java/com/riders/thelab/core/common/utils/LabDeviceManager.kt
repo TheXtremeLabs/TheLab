@@ -166,19 +166,14 @@ object LabDeviceManager {
     }
 
     /**
-     * Get WindowMetrics for above and equal Android 10 devices
+     * Get WindowMetrics for Android 10+ devices
      *
      * @param activity
-     * @return
+     * @return the [WindowMetrics] according to the current system state.
      */
     @SuppressLint("NewApi")
-    fun getDisplayMetricsAndroid10(activity: Activity): WindowMetrics {
-        val manager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        return WindowMetrics(
-            manager.currentWindowMetrics.bounds,
-            manager.currentWindowMetrics.windowInsets
-        )
-    }
+    fun getDisplayMetricsAndroid10(activity: Activity): WindowMetrics =
+        (activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager).currentWindowMetrics
 
     ///////////////////////////////////////////////////////
     // Rooted

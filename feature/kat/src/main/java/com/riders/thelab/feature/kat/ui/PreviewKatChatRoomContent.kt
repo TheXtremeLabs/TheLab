@@ -148,7 +148,7 @@ fun KatChatRoomContent(viewModel: KatChatViewModel) {
                     state = lazyListState
                 ) {
                     itemsIndexed(items = viewModel.chatMessages.reversed()) { _, item ->
-                        KatItem(isValid = null != viewModel.currentUserDocument,chatItem = item)
+                        KatItem(isValid = null != viewModel.currentUserDocument, chatItem = item)
                     }
                 }
 

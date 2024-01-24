@@ -14,7 +14,7 @@ object LabTypefaceManager {
      * @param defaultFontNameToOverride  for example "monospace"
      * @param customFontFileNameInAssets file name of the font from assets
      */
-    @SuppressLint("BinaryOperationInTimber")
+    @SuppressLint("BinaryOperationInTimber", "DiscouragedPrivateApi")
     fun overrideFont(
         context: Context,
         defaultFontNameToOverride: String,
@@ -24,12 +24,12 @@ object LabTypefaceManager {
         val customFontTypeface =
             Typeface.createFromAsset(context.assets, customFontFileNameInAssets)
 
-        val newMap: MutableMap<String, Typeface> = HashMap()
-        newMap["serif"] = customFontTypeface
+        val newMap: MutableMap<String, Typeface> = HashMap<String, Typeface>().apply {
+            this["serif"] = customFontTypeface
+        }
 
         try {
-            val staticField = Typeface::class.java
-                .getDeclaredField("sSystemFontMap")
+            val staticField = Typeface::class.java.getDeclaredField("sSystemFontMap")
             staticField.isAccessible = true
             staticField[null] = newMap
         } catch (e: NoSuchFieldException) {

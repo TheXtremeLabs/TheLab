@@ -108,7 +108,7 @@ fun DownloaderContent(
                     itemsIndexed(
                         items = downloadListState,
                         key = { _, item -> item.id }
-                    ) { index, item ->
+                    ) { _, item ->
                         DownloadItem(
                             modifier = Modifier
                                 .fillMaxWidth()

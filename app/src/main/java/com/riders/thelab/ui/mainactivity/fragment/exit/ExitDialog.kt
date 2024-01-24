@@ -36,7 +36,7 @@ class ExitDialog(private val mContext: Context) : Dialog(mContext), View.OnClick
 
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.btn_quit -> (mContext.findActivity() as MainActivity).finish()
+            R.id.btn_quit -> (mContext.findActivity() as MainActivity).finishAffinity()
             R.id.btn_cancel -> dismiss()
             else -> {
                 Timber.e("else branch")

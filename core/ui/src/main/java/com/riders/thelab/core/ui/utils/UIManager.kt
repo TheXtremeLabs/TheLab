@@ -114,9 +114,10 @@ object UIManager {
     }
 
     fun showToast(context: Context, message: String) =
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 
 
+    // TODO : Remove this method
     fun showActionInToast(context: Context, textToShow: String) {
         Toast.makeText(context, textToShow, Toast.LENGTH_SHORT).show()
     }

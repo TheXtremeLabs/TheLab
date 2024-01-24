@@ -72,7 +72,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.riders.thelab.core.common.utils.DateTimeUtils
-import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.local.model.compose.WeatherCityUIState
 import com.riders.thelab.core.data.local.model.compose.WeatherUIState
@@ -753,9 +752,8 @@ fun WeatherContent(viewModel: WeatherViewModel) {
 @DevicePreviews
 @Composable
 fun PreviewWeatherContent() {
-    val context = LocalContext.current
     val viewModel: WeatherViewModel = hiltViewModel()
-    val labLocationManager = LabLocationManager(context)
+
     TheLabTheme {
         WeatherContent(viewModel = viewModel)
     }

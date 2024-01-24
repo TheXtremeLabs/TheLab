@@ -177,6 +177,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
     items: List<T>,
     pageCount: Int = items.size,
     autoScroll: Boolean = false,
+    userScrollEnabled: Boolean = true,
     content: @Composable (page: Int, pageOffset: Float) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -214,7 +215,8 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
                 //pageSpacing = 8.dp,
                 //contentPadding = contentPadding,
                 beyondBoundsPageCount = 2,
-                flingBehavior = fling
+                flingBehavior = fling,
+                userScrollEnabled= userScrollEnabled
             ) { page: Int ->
 
                 val pageOffset = pagerState.calculateCurrentOffsetForPage(page)

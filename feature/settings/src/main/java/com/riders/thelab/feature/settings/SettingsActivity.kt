@@ -35,7 +35,7 @@ class SettingsActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            SettingsContent(viewModel = mViewModel)
+                            SettingsContent(mViewModel)
                         }
                     }
                 }
@@ -53,11 +53,6 @@ class SettingsActivity : BaseComponentActivity() {
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.e("onDestroy()")
     }
 
     fun launchEditProfileActivity() =

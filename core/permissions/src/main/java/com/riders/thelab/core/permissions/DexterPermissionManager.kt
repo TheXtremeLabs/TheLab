@@ -110,4 +110,52 @@ class DexterPermissionManager(private val activity: Activity) {
             .check()
     }
 
+    fun checkPermissions(
+        permissions: Set<String>,
+        onPermissionGranted: (Boolean) -> Unit,
+        onPermissionDenied: (Boolean) -> Unit,
+        onShouldShowRationale: (Boolean) -> Unit
+    ) {
+        Dexter
+            .withContext(activity)
+            .withPermissions(permissions)
+            .withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(checked: MultiplePermissionsReport?) {
+                    checked?.let {
+                        if (!it.areAllPermissionsGranted()) {
+                            // if the permissions are not accepted we are displaying
+                            // a toast message as permissions denied on below line.
+                            Timber.e("Permissions are Denied... | list of denied permissions:")
+                            it.deniedPermissionResponses.forEach {
+                                Timber.e(it.permissionName.toString())
+                            }
+
+                            onPermissionDenied(true)
+                        } else {
+                            // if all the permissions are granted we are displaying
+                            // a simple toast message.
+                            Timber.e("Permissions are Granted...")
+                            onPermissionGranted(true)
+                        }
+                    } ?: run { Timber.e("permission report is null") }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissionsRequest: MutableList<PermissionRequest>?,
+                    token: PermissionToken?
+                ) {
+                    // in this method we are calling continue
+                    // permission request until permissions are not granted.
+                    token?.continuePermissionRequest()
+                    onShouldShowRationale(true)
+                }
+            })
+            .withErrorListener {
+                // on below line method will be called when dexter
+                // throws any error while requesting permissions.
+                Timber.e("withErrorListener | ${it.name}")
+            }
+            .check()
+    }
+
 }

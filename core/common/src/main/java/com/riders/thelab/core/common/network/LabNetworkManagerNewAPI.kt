@@ -22,8 +22,6 @@ import timber.log.Timber
 @SuppressLint("NewApi", "MissingPermission")
 class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
 
-//    val mListener: ConnectivityListener get() = listener
-
     private var connectivityManager: ConnectivityManager
     private var currentNetwork: Network? = null
 
