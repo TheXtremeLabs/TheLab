@@ -3,8 +3,8 @@ plugins {
     id("thelab.android.library.compose")
     id("thelab.android.hilt")
     id("thelab.android.library.jacoco")
-    kotlin("kapt")
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -47,7 +47,7 @@ dependencies {
     // Hilt
     // The others dependencies has been added into the Hilt plugin convention class
     implementation(libs.hilt.ext.work)
-    kapt(libs.hilt.ext.compiler)
+    ksp(libs.hilt.ext.compiler)
 
     // OkHttp: provided by data module
 

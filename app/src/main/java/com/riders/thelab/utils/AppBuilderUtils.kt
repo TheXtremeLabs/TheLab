@@ -8,15 +8,17 @@ import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.AppBuilder
 import com.riders.thelab.feature.biometric.ui.BiometricActivity
 import com.riders.thelab.feature.bluetooth.BluetoothActivity
+import com.riders.thelab.feature.colors.ColorActivity
 import com.riders.thelab.feature.download.DownloadActivity
 import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
 import com.riders.thelab.feature.lottie.LottieActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
+import com.riders.thelab.feature.schedule.ui.ScheduleActivity
+import com.riders.thelab.feature.streaming.StreamingActivity
+import com.riders.thelab.feature.theaters.TheatersActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.camera.CameraActivity
-import com.riders.thelab.feature.colors.ColorActivity
-import com.riders.thelab.feature.schedule.ui.ScheduleActivity
 import com.riders.thelab.ui.compose.ComposeActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
@@ -31,7 +33,6 @@ import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.songplayer.SongPlayerActivity
 import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.ui.tabs.WorkingTabsActivity
-import com.riders.thelab.feature.theaters.TheatersActivity
 import com.riders.thelab.ui.transition.TransitionActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity
@@ -202,7 +203,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(TheatersActivity::class.java)
-                        .withActivityDate("2024/01/14")
+                        .withActivityDate("2024/01/24")
                         .build()
                 this.add(theaters)
 
@@ -520,6 +521,23 @@ object AppBuilderUtils {
                         .withActivityDate("2022/01/28")
                         .build()
                 this.add(liveBarcode)
+
+                // Streaming
+                val streaming =
+                    AppBuilder
+                        .withId(33)
+                        .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_streaming))
+                        .withActivityDescription("Use ExoPlayer to stream media from YouTube, Vimeo, Dailymotion, Twitch, and more...")
+                        .withActivityIcon(
+                            getDrawableFromIntResource(
+                                context,
+                                com.riders.thelab.core.ui.R.drawable.ic_streaming
+                            )
+                        )
+                        .withActivityClass(StreamingActivity::class.java)
+                        .withActivityDate("2024/01/24")
+                        .build()
+                this.add(streaming)
 
                 // Wip
                 val wip =

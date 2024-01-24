@@ -4,7 +4,7 @@ plugins {
     id("thelab.android.room")
     id("thelab.android.library.jacoco")
     id("kotlin-parcelize")
-    id("kotlinx-serialization")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
