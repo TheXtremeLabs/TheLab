@@ -20,6 +20,7 @@ import com.riders.thelab.core.data.remote.api.ArtistsAPIService
 import com.riders.thelab.core.data.remote.api.GoogleAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAccountAPIService
+import com.riders.thelab.core.data.remote.api.TMDBApiService
 import com.riders.thelab.core.data.remote.api.TheLabBackApiService
 import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
@@ -29,6 +30,9 @@ import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -52,6 +56,7 @@ class ApiImpl @Inject constructor(
     theLabBackApiService: TheLabBackApiService,
     spotifyAccountApiService: SpotifyAccountAPIService,
     spotifyApiService: SpotifyAPIService,
+    tmdbApiService: TMDBApiService
 ) : IApi {
 
     private var mArtistsAPIService: ArtistsAPIService = artistsAPIService
@@ -62,6 +67,7 @@ class ApiImpl @Inject constructor(
     private var mTheLabBackApiService: TheLabBackApiService = theLabBackApiService
     private var mSpotifyAccountApiService: SpotifyAccountAPIService = spotifyAccountApiService
     private var mSpotifyApiService: SpotifyAPIService = spotifyApiService
+    private var mTmdbApiService: TMDBApiService = tmdbApiService
 
     private var downloadManager: DownloadManager? = null
 
@@ -270,4 +276,18 @@ class ApiImpl @Inject constructor(
         downloadIds.forEach { totalDownloadStooped += downloadManager!!.remove(it) }
         return totalDownloadStooped
     }
+
+    override suspend fun getTrendingMovies(): TMDBMovieResponse = mTmdbApiService.getTrendingMovies()
+
+    override suspend fun getPopularMovies(): TMDBMovieResponse = mTmdbApiService.getPopularMovies()
+
+    override suspend fun getUpcomingMovies(): TMDBMovieResponse = mTmdbApiService.getUpcomingMovies()
+
+    override suspend fun getTrendingTvShows(): TMDBTvShowsResponse = mTmdbApiService.getTrendingTvShows()
+
+    override suspend fun getPopularTvShows(): TMDBTvShowsResponse = mTmdbApiService.getPopularTvShows()
+
+    override suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse? = mTmdbApiService.getMovieVideos(movieID)
+
+    override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? = mTmdbApiService.getTvShowVideos(thShowID)
 }

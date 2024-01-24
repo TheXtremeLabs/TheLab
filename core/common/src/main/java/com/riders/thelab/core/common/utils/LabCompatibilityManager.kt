@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
+import com.riders.thelab.core.common.bean.AndroidReleases
 import timber.log.Timber
 import java.lang.reflect.Field
 
@@ -120,6 +121,14 @@ object LabCompatibilityManager {
         return getSdkVersion() >= VERSION_CODES.TIRAMISU
     }
 
+    /**
+     * Determine if the device is running API level 34 or higher.
+     * Upside Down Cake
+     */
+    fun isUpsideDownCake(): Boolean {
+        return getSdkVersion() >= VERSION_CODES.UPSIDE_DOWN_CAKE
+    }
+
 
     /**
      * Determine if the device is a tablet (i.e. it has a large screen).
@@ -151,7 +160,7 @@ object LabCompatibilityManager {
                         Timber.e("code name $osName")
 
                         if (isOreo()) {
-                            osName = getOsVersionName(osName)
+                            osName = AndroidReleases.getOsVersionName(osName)
                         }
                     }
                 } catch (e: IllegalAccessException) {
@@ -189,29 +198,6 @@ object LabCompatibilityManager {
         Timber.e("OS: %s", builder.toString())
         // TEST
         return osName
-    }
-
-
-    /**
-     * Gets the version name from version code. Note! Needs to be updated
-     * when new versions arrive, or will return a single letter. Like Android 8.0 - Oreo
-     * yields "O" as a version name.
-     *
-     * @return version name of device's OS
-     */
-    @RequiresApi(api = VERSION_CODES.O)
-    fun getOsVersionName(name: String): String {
-        if (name == "U") return "Android 14"
-        if (name == "T") return "Tiramisu"
-        if (name == "S") return "Snow Cone"
-        if (name == "R") return "Red Velvet"
-        if (name == "Q") return "Android 10"
-        if (name == "P") return "Pie"
-        if (name == "O") return "Oreo"
-        if (name == "N") return "Nougat"
-        if (name == "M") return "Marshmallow"
-        if (name.startsWith("O_")) return "Oreo++"
-        return if (name.startsWith("N_")) "Nougat++" else "UNKNOWN"
     }
 }
 
@@ -251,7 +237,8 @@ object LabCompatibilityManager {
  * 29                  Q                         Android 10
  * 30                  R                         Android 11
  * 31                  S                         Android 12 Snow cone
- * 32                  T                         Android 13 Tiramisu
- * 33                  U                         Android 14 Upside Down Cake
+ * 32                  Sv2                         Android 12 Snow cone v2
+ * 33                  T                         Android 13 Tiramisu
+ * 34                  U                         Android 14 Upside Down Cake
  * 10000                CUR_DEVELOPMENT           Current Development Version
  */

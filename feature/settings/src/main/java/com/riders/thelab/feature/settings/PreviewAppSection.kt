@@ -140,7 +140,7 @@ fun AppThemeCardRowItem(
                 expanded = expanded.value,
                 onDismissRequest = { expanded.value = false }
             ) {
-                themeOptions.forEachIndexed { index, option ->
+                themeOptions.forEachIndexed { _, option ->
                     DropdownMenuItem(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {

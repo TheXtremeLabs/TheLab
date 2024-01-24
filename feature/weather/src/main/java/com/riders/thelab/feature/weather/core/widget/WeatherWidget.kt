@@ -1,21 +1,14 @@
 package com.riders.thelab.feature.weather.core.widget
 
 import android.content.Context
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
-import androidx.glance.currentState
 import androidx.glance.state.GlanceStateDefinition
-import com.riders.thelab.core.data.local.model.weather.WeatherWidgetModel
 import com.riders.thelab.core.ui.utils.toPx
 import timber.log.Timber
 

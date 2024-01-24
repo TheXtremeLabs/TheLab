@@ -56,7 +56,7 @@ class KatChatViewModel : ViewModel() {
     var message: String by mutableStateOf("")
         private set
 
-    private var otherUserId: String by mutableStateOf("")
+    private var otherUserId: String? by mutableStateOf(null)
         private set
     var otherUsername: String by mutableStateOf("")
         private set

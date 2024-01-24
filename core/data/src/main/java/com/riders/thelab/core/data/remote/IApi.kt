@@ -13,6 +13,9 @@ import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
@@ -52,4 +55,13 @@ interface IApi {
     fun downloadFile(context: Context, url: String): Long
     fun cancelDownload(downloadId: Long): Int
     fun cancelDownloads(downloadIds: List<Long>): Int
+
+    // TMDB
+    suspend fun getTrendingMovies(): TMDBMovieResponse
+    suspend fun getPopularMovies(): TMDBMovieResponse
+    suspend fun getUpcomingMovies(): TMDBMovieResponse
+    suspend fun getTrendingTvShows(): TMDBTvShowsResponse
+    suspend fun getPopularTvShows(): TMDBTvShowsResponse
+    suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse?
+    suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse?
 }

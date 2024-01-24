@@ -15,13 +15,12 @@ fun Pair<Double, Double>.toLocation(): Location = Location("").apply {
 
 object LabLocationUtils {
 
-    fun buildTargetLocationObject(latitude: Double, longitude: Double): Location {
-        val location = Location("")
-        location.latitude = latitude
-        location.longitude = longitude
-        return location
-    }
-
+    fun buildTargetLocationObject(latitude: Double, longitude: Double): Location =
+        Location("").run {
+            this.latitude = latitude
+            this.longitude = longitude
+            this
+        }
 
     fun getDeviceLocationToString(
         geocoder: Geocoder,

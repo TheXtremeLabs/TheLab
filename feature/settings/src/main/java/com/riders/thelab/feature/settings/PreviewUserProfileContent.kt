@@ -3,7 +3,6 @@ package com.riders.thelab.feature.settings
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +25,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -45,7 +43,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -90,17 +87,15 @@ private val darkGradient =
 // COMPOSE
 //
 ///////////////////////////////
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun FormFields(viewModel: UserProfileViewModel) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val shape = RoundedCornerShape(12.dp)
 
-    val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
-    val emailHasError by viewModel.emailHasError.collectAsStateWithLifecycle()
     val passwordVisibility = remember { mutableStateOf(false) }
     val passwordConfirmationVisibility = remember { mutableStateOf(false) }
     val passwordsHasError by viewModel.passwordsHasError.collectAsStateWithLifecycle()
@@ -118,8 +113,8 @@ fun FormFields(viewModel: UserProfileViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.firstname,
             onValueChange = { viewModel.updateFirstname(it) },
-            placeholder = { Text(text = "First Name") },
-            label = { Text(text = "First Name") },
+            label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_first_name)) },
+            placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_first_name)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Person,
@@ -134,9 +129,7 @@ fun FormFields(viewModel: UserProfileViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
-                // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
-                // textColor = if (!focus.value) Color.Gray else Color.White,
+            colors = TextFieldDefaults.colors(
                 cursorColor = Color.Blue,
                 focusedIndicatorColor = Color.Transparent, //hide the indicator
                 unfocusedIndicatorColor = Color.Transparent
@@ -150,8 +143,8 @@ fun FormFields(viewModel: UserProfileViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.lastname,
             onValueChange = { viewModel.updateLastname(it) },
-            placeholder = { Text(text = "Last Name") },
-            label = { Text(text = "Last Name") },
+            label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_last_name)) },
+            placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_last_name)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Person,
@@ -166,9 +159,7 @@ fun FormFields(viewModel: UserProfileViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
-                // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
-                // textColor = if (!focus.value) Color.Gray else Color.White,
+            colors = TextFieldDefaults.colors(
                 cursorColor = Color.Blue,
                 focusedIndicatorColor = Color.Transparent, //hide the indicator
                 unfocusedIndicatorColor = Color.Transparent
@@ -182,8 +173,8 @@ fun FormFields(viewModel: UserProfileViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.password,
             onValueChange = { viewModel.updatePassword(it) },
-            placeholder = { Text(text = "New Password (6+ characters") },
-            label = { Text(text = "New Password (6+ characters") },
+            label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_password)) },
+            placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_password_min_characters)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Lock,
@@ -214,9 +205,7 @@ fun FormFields(viewModel: UserProfileViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
-                // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
-                // textColor = if (!focus.value) Color.Gray else Color.White,
+            colors = TextFieldDefaults.colors(
                 cursorColor = Color.Blue,
                 focusedIndicatorColor = Color.Transparent, //hide the indicator
                 unfocusedIndicatorColor = Color.Transparent
@@ -237,8 +226,8 @@ fun FormFields(viewModel: UserProfileViewModel) {
                 .focusRequester(focusRequester),
             value = viewModel.passwordConfirmation,
             onValueChange = { viewModel.updatePasswordConfirmation(it) },
-            placeholder = { Text(text = "New Confirm Password (6+ characters") },
-            label = { Text(text = "New Confirm Password (6+ characters") },
+            label = { Text(text = "New " + stringResource(id = com.riders.thelab.core.ui.R.string.hint_confirm_password)) },
+            placeholder = { Text(text = "New " + stringResource(id = com.riders.thelab.core.ui.R.string.hint_confirm_your_password)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Lock,
@@ -270,9 +259,7 @@ fun FormFields(viewModel: UserProfileViewModel) {
             ),
             shape = shape,
             // Change different colors of the text field view
-            colors = TextFieldDefaults.textFieldColors(
-                // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
-                // textColor = if (!focus.value) Color.Gray else Color.White,
+            colors = TextFieldDefaults.colors(
                 cursorColor = Color.Blue,
                 focusedIndicatorColor = Color.Transparent, //hide the indicator
                 unfocusedIndicatorColor = Color.Transparent

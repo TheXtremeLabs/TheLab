@@ -264,16 +264,17 @@ class ACRCloudViewModel @Inject constructor(
 
                 1001 -> {
                     Timber.e("code == 1001 | result: $status")
-                        updateUiState(ACRUiState.RecognitionError("Else branch | Error while parsing data"))
-                        acrResult
+                    updateUiState(ACRUiState.RecognitionError("Else branch | Error while parsing data"))
+                    acrResult
                 }
 
                 else -> {
-                        // TODO: Handle error
-                        updateUiState(ACRUiState.Error("Else branch | Error while parsing data"))
-                        acrResult
+                    // TODO: Handle error
+                    updateUiState(ACRUiState.Error("Else branch | Error while parsing data"))
+                    acrResult
                 }
-            }}
+            }
+        }
             .onFailure {
                 Timber.e("runCatching | onFailure | error caught class: ${it.javaClass.simpleName}, with message: ${it.message}")
             }

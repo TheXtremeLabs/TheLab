@@ -19,9 +19,6 @@ class LocationTest {
             val location2: Location =
                 LabLocationUtils.buildTargetLocationObject(latitude, longitude)
 
-            assert(location1 != null)
-            assert(location2 != null)
-
             println(location1.toString())
             println(location2.toString())
 

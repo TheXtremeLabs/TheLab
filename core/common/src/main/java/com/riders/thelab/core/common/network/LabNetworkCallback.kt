@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+
 @SuppressLint("MissingPermission")
 class LabNetworkManager(
     private val context: Context,
@@ -33,8 +34,9 @@ class LabNetworkManager(
     private val connectivityManager: ConnectivityManager =
         context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
 
-    private val currentNetwork = connectivityManager.activeNetwork
-    val caps = connectivityManager.getNetworkCapabilities(currentNetwork)
+    private val currentNetwork: Network? = connectivityManager.activeNetwork
+    private val capabilities: NetworkCapabilities? =
+        connectivityManager.getNetworkCapabilities(currentNetwork)
     val linkProperties = connectivityManager.getLinkProperties(currentNetwork)
 
     // State flow
@@ -145,24 +147,12 @@ class LabNetworkManager(
         }
     }
 
+    @SuppressLint("NewApi")
     @Suppress("DEPRECATION")
     fun isNetworkAvailable(): Boolean = if (LabCompatibilityManager.isAndroid10()) {
         Timber.d("isNetworkAvailable()")
 
-        val capabilities: NetworkCapabilities? =
-            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-
-        capabilities?.run {
-            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                true
-            } else {
-                false
-            }
-        } ?: run {
+        capabilities?.isNetworkCapabilitiesValid() ?: run {
             Timber.e("Capabilities is null")
             false
         }
@@ -208,6 +198,31 @@ class LabNetworkManager(
             activity.startActivityForResult(panelIntent, 955)
         }
     }
+
+    private fun NetworkCapabilities?.isNetworkCapabilitiesValid(): Boolean = when {
+        this == null -> false
+        hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) &&
+                (hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                        hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
+                        hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                        //for check internet over Bluetooth
+                        hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) ||
+                        //for other device how are able to connect with Ethernet
+                        hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) -> true
+
+        else -> false
+    }
+
+
+    @Suppress("DEPRECATION")
+    fun getNetworkType(): NetworkType =
+        when (connectivityManager.activeNetworkInfo!!.type) {
+            ConnectivityManager.TYPE_WIFI -> NetworkType.WIFI
+            ConnectivityManager.TYPE_MOBILE -> NetworkType.MOBILE
+            ConnectivityManager.TYPE_ETHERNET -> NetworkType.ETHERNET
+            else -> NetworkType.NONE
+        }
 
 
     companion object {

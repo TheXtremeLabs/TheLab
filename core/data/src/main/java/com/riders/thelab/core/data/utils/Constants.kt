@@ -53,9 +53,19 @@ object Constants {
     const val FIREBASE_DATABASE_NAME = "kat"
     const val BASE_ENDPOINT_SPOTIFY_ACCOUNT = "https://accounts.spotify.com/api/"
     const val BASE_ENDPOINT_SPOTIFY_API = "https://api.spotify.com/"
+    const val BASE_ENDPOINT_TMDB_API = "https://api.themoviedb.org/3/"
+    const val BASE_ENDPOINT_TMDB_IMAGE_W_ORIGINAL = "https://image.tmdb.org/t/p/original"
+    const val BASE_ENDPOINT_TMDB_IMAGE_W_500 = "https://image.tmdb.org/t/p/w500"
+    const val URL_TMDB_WEBSITE: String = "https://www.themoviedb.org/?language=fr"
 
     // Palette
     const val PALETTE_URL = "http://i.ytimg.com/vi/aNHOfJCphwk/maxresdefault.jpg"
+
+    // Video
+    const val VIDEO_BUNNY_URL = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    const val BASE_ENDPOINT_YOUTUBE_BASE_URL = "http://www.youtube.com/v/"
+    const val BASE_ENDPOINT_YOUTUBE_WATCH_BASE_URL = "https://www.youtube.com/watch?v="
+    const val BASE_ENDPOINT_YOUTUBE_SHORT_BASE_URL = "https://youtu.be/"
 
     // Activity Recognition
     const val BROADCAST_DETECTED_ACTIVITY = "activity_intent"

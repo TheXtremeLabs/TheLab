@@ -5,10 +5,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,10 +38,12 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ComponentActivity
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
+import timber.log.Timber
 
 
 ///////////////////////////
@@ -89,11 +94,12 @@ fun TheLabTopAppBar(
         )
     }
 }
+
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheLabTopAppBar(
-    viewModel:BaseViewModel,
+    viewModel: BaseViewModel,
     @PreviewParameter(TextContentPreviewProvider::class) title: String,
     navigationIcon: @Composable (() -> Unit)? = null
 ) {
@@ -145,8 +151,7 @@ fun TheLabTopAppBar(navigationIcon: @Composable (() -> Unit)) {
                 .fillMaxWidth()
                 .height(96.dp)
                 .background(Color.Transparent),
-            title = {
-            },
+            title = {},
             navigationIcon = {
                 IconButton(onClick = { (context.findActivity() as ComponentActivity).onBackPressed() }) {
                     Icon(
@@ -154,6 +159,67 @@ fun TheLabTopAppBar(navigationIcon: @Composable (() -> Unit)) {
                         contentDescription = "Back",
                         tint = if (!isSystemInDarkTheme()) Color.Black else Color.White
                     )
+                }
+            },
+            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+        )
+    }
+}
+
+@SuppressLint("RestrictedApi")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TheLabTopAppBar(
+    @PreviewParameter(TextContentPreviewProvider::class) title: String? = null,
+    mainCustomContent: @Composable (() -> Unit)? = null,
+    withGradientBackground: Boolean = false,
+    viewModel: BaseViewModel? = null,
+    navigationIcon: @Composable (() -> Unit)? = null,
+    navigationIconColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
+    actions: @Composable (RowScope.() -> Unit)? = null
+) {
+    val context = LocalContext.current
+
+    TheLabTheme {
+        TopAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            if (!withGradientBackground) Color.Transparent else Color.Black,
+                            Color.Transparent
+                        )
+                    )
+                ),
+            title = {
+                if (null != title && null == mainCustomContent) {
+                    Text(text = title)
+                } else if (null != mainCustomContent && null == title) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        mainCustomContent()
+                    }
+                } else {
+                    Timber.e("Both title and mainCustomContent cannot be null or Not null. You have to define one them only")
+                }
+            },
+            navigationIcon = {
+                if (null == navigationIcon) {
+                    IconButton(onClick = { (context.findActivity() as BaseComponentActivity).backPressed() }) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowLeft,
+                            contentDescription = "Back_icon",
+                            tint = navigationIconColor
+                        )
+                    }
+                } else {
+                    navigationIcon()
+                }
+            },
+            actions = {
+                if (null != actions) {
+                    actions()
                 }
             },
             colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)

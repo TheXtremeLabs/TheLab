@@ -46,9 +46,4 @@ class UserProfileActivity : BaseComponentActivity() {
         Timber.e("backPressed()")
         finish()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.e("onDestroy()")
-    }
 }

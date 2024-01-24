@@ -17,9 +17,11 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.WorkInfo
@@ -146,6 +148,10 @@ class WeatherActivity : ComponentActivity(), LocationListener {
                         // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
                         repeatOnLifecycle(Lifecycle.State.STARTED) {
                             setContent {
+
+                                val weatherUiState by mWeatherViewModel.weatherUiState.collectAsStateWithLifecycle()
+                                val weatherCityUiState by mWeatherViewModel.weatherUiState.collectAsStateWithLifecycle()
+
                                 TheLabTheme {
                                     // A surface container using the 'background' color from the theme
                                     Surface(

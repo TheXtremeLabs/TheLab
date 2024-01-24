@@ -5,9 +5,6 @@ import com.riders.thelab.core.common.utils.DateTimeUtils
 import com.riders.thelab.core.data.local.bean.Hours
 import com.riders.thelab.core.data.remote.dto.weather.CurrentWeather
 import timber.log.Timber
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 object WeatherUtils {
 

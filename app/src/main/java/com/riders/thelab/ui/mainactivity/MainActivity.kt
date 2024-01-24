@@ -386,7 +386,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                 return
             }
 
-            item is LocalApp && -1L != item.id -> {
+            item is LocalApp && (-1).toByte() != item.id -> {
                 mViewModel.launchActivityOrPackage(item)
             }
 

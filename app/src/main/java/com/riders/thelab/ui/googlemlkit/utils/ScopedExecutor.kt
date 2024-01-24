@@ -30,10 +30,11 @@ class ScopedExecutor(private val executor: Executor) : Executor {
         if (shutdown.get()) {
             return
         }
-        executor.execute {
 
+        executor.execute {
             // Check again in case it has been shut down in the mean time.
             if (shutdown.get()) {
+                @Suppress("LABEL_NAME_CLASH")
                 return@execute
             }
             command.run()

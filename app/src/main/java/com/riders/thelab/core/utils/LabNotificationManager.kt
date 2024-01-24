@@ -52,10 +52,10 @@ object LabNotificationManager {
     fun buildMainNotification(
         context: Context,
         mPendingIntent: PendingIntent
-    ): NotificationCompat.Builder {
-        Timber.d("buildMainNotification()")
-        return NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
+    ): NotificationCompat.Builder =
+        NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
             .apply {
+                Timber.d("buildMainNotification()")
                 setSmallIcon(R.mipmap.ic_lab_six_round)
                 setContentTitle(context.getString(R.string.notification_title))
                 setContentText(context.getString(R.string.notification_content_text))
@@ -71,7 +71,7 @@ object LabNotificationManager {
                 setAutoCancel(false)
                 setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             }
-    }
+
 
     @SuppressLint("MissingPermission", "ForegroundServiceType")
     fun displayMusicNotification(
