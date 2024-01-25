@@ -5,13 +5,15 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.feature.tabs.databinding.ActivityTabsBinding
 import com.riders.thelab.feature.tabs.fragment.OneFragment
 import com.riders.thelab.feature.tabs.fragment.ThreeFragment
 import com.riders.thelab.feature.tabs.fragment.TwoFragment
 import timber.log.Timber
 
-class WorkingTabsActivity : AppCompatActivity() {
+class WorkingTabsActivity : BaseAppCompatActivity() {
 
     private var _viewBinding: ActivityTabsBinding? = null
 
@@ -38,10 +40,14 @@ class WorkingTabsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                backPressed()
             }
         }
         return true
+    }
+
+    override fun backPressed() {
+        finish()
     }
 
     override fun onDestroy() {

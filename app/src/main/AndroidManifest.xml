@@ -383,7 +383,7 @@
 
 
         <activity
-            android:name=".ui.songplayer.SongPlayerActivity"
+            android:name=".feature.songplayer.SongPlayerActivity"
             android:label="@string/activity_title_music"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
@@ -590,7 +590,7 @@
             android:exported="false" />
 
         <service
-            android:name=".core.service.MusicMediaPlaybackService"
+            android:name=".feature.songplayer.core.service.MusicMediaPlaybackService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
