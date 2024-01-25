@@ -101,7 +101,7 @@ object AppBuilderUtils {
                         .withActivityDescription("ViewPager Fragments Tabs...")
                         .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_tab))
                         .withActivityClass(WorkingTabsActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityDate("2015/01/20")
                         .build()
                 this.add(tabs)
 
