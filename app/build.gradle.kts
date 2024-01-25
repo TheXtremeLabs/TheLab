@@ -126,6 +126,7 @@ dependencies {
     implementation(project(":feature:schedule"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:streaming"))
+    implementation(project(":feature:tabs"))
     implementation(project(":feature:theaters"))
     implementation(project(":feature:weather"))
 

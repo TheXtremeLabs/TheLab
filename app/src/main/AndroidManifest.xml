@@ -228,7 +228,7 @@
             android:theme="@style/Theme.TheLab.NoActionBar" />
 
         <activity
-            android:name=".ui.tabs.WorkingTabsActivity"
+            android:name=".feature.tabs.WorkingTabsActivity"
             android:label="@string/activity_title_working_tabs"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/TabTheme" />

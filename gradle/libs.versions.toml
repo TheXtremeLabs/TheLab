@@ -75,14 +75,14 @@ googleApiClientAndroid = "2.1.2"
 googleApiClientOAuth = "1.34.1"
 googleApiDriveV3 = "v3-rev20221219-2.0.0"
 googleApiClientJackson2 = "2.1.2"
-googleHttpClient = "1.42.3"
+googleHttpClient = "1.43.3"
 # Google ML Kit
 googleBarcodeScanning = "17.2.0"
 #noinspection GradleDependency
 googleObjectDetection = "17.0.0"
 # Google Play Services
 googlePlayServicesBase = "18.3.0"
-googlePlayServices = "16.0.0"
+#googlePlayServices = "16.0.0"
 googlePlayServicesAuth = "20.7.0"
 glide = "4.16.0"
 glideTransformation = "4.3.0"
@@ -112,7 +112,7 @@ media = "1.7.0"
 mediaRouter = "1.6.0"
 media3 = "1.2.1"
 mockito = "5.9.0"
-moshi = "1.14.0"
+moshi = "1.15.0"
 mpAndroidChart = "3.1.0"
 okhttp = "4.12.0"
 places = "3.3.0"
@@ -339,7 +339,6 @@ ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devto
 play-services-gradlePlugin = { group = "com.google.gms", name = "google-services", version.ref = "playServicesGradlePlugin" }
 firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "crashlyticsGradlePlugin" }
 firebase-performances-gradlePlugin = { group = "com.google.firebase", name = "perf-plugin", version.ref = "performancesGradlePlugin" }
-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

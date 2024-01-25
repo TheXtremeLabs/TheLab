@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.tabs
+package com.riders.thelab.feature.tabs
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

@@ -1,14 +1,14 @@
-package com.riders.thelab.ui.tabs
+package com.riders.thelab.feature.tabs
 
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
-import com.riders.thelab.databinding.ActivityTabsBinding
-import com.riders.thelab.ui.tabs.fragment.OneFragment
-import com.riders.thelab.ui.tabs.fragment.ThreeFragment
-import com.riders.thelab.ui.tabs.fragment.TwoFragment
+import com.riders.thelab.feature.tabs.databinding.ActivityTabsBinding
+import com.riders.thelab.feature.tabs.fragment.OneFragment
+import com.riders.thelab.feature.tabs.fragment.ThreeFragment
+import com.riders.thelab.feature.tabs.fragment.TwoFragment
 import timber.log.Timber
 
 class WorkingTabsActivity : AppCompatActivity() {

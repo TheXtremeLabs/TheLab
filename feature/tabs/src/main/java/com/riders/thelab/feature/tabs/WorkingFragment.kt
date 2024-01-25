@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.tabs
+package com.riders.thelab.feature.tabs
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.riders.thelab.databinding.FragmentOneBinding
+import com.riders.thelab.feature.tabs.databinding.FragmentOneBinding
 
 // Instances of this class are fragments representing a single
 // object in our collection.
