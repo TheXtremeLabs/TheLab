@@ -1,17 +1,17 @@
-package com.riders.thelab.ui.tabs.fragment
+package com.riders.thelab.feature.tabs.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.riders.thelab.databinding.FragmentThreeBinding
+import com.riders.thelab.feature.tabs.databinding.FragmentOneBinding
 
-class ThreeFragment : Fragment() {
+class OneFragment : Fragment() {
     companion object {
-        fun newInstance(): ThreeFragment {
+        fun newInstance(): OneFragment {
             val args = Bundle()
-            val fragment = ThreeFragment()
+            val fragment = OneFragment()
             fragment.arguments = args
             return fragment
         }
@@ -22,7 +22,7 @@ class ThreeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewBinding = FragmentThreeBinding.inflate(inflater, container, false)
+        val viewBinding = FragmentOneBinding.inflate(inflater, container, false)
         return viewBinding.root
     }
 }

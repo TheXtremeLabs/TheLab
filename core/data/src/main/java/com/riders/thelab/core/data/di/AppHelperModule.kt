@@ -37,7 +37,8 @@ object AppHelperModule {
             ApiModule.proWeatherBulkApiService(),
             ApiModule.provideUserAPIService(),
             ApiModule.provideSpotifyAccountAPIService(),
-            ApiModule.provideSpotifyAPIService()
+            ApiModule.provideSpotifyAPIService(),
+            ApiModule.provideTMDBAPIService()
         )
 
     @Provides

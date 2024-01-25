@@ -27,6 +27,9 @@ dependencies {
     api(libs.androidx.appcompat)
     api(libs.androidx.biometric)
 
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.runtime)
+
     // Media
     api(libs.androidx.media)
     api(libs.androidx.media.router)

@@ -329,7 +329,9 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
         androidx.compose.material.Scaffold(
             modifier = Modifier.background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
             topBar = {
-                TheLabTopAppBar(title = stringResource(id = R.string.acr_cloud_app_name)) { }
+                TheLabTopAppBar(
+                    title = stringResource(id = R.string.acr_cloud_app_name),
+                    navigationIcon = {})
             },
             floatingActionButton = {
 

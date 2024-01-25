@@ -1,6 +1,7 @@
 package com.riders.thelab.core.ui.compose.utils
 
 import android.content.Context
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImagePainter
@@ -16,43 +17,56 @@ import timber.log.Timber
  * https://www.sinasamaki.com/loading-images-using-coil-in-jetpack-compose/
  */
 @Composable
-fun getCoilImageRequest(context: Context, dataUrl: String): ImageRequest = ImageRequest
+fun getCoilImageRequest(
+    context: Context,
+    dataUrl: String,
+    size: Size? = null,
+    scale: Scale? = null,
+    isCaching: Boolean = true
+): ImageRequest = ImageRequest
     .Builder(context)
     .data(dataUrl)
     .apply {
+        Timber.d("getCoilImageRequest() | dataUrl : $dataUrl")
+
         crossfade(true)
         allowHardware(false)
         //transformations(RoundedCornersTransformation(32.dp.value))
-        size(Size.ORIGINAL)
-        scale(Scale.FIT)
+
+        size(size ?: Size.ORIGINAL)
+        scale(scale ?: Scale.FIT)
+
+        if (isCaching) {
+            networkCachePolicy(CachePolicy.ENABLED)
+            diskCachePolicy(CachePolicy.DISABLED)
+            memoryCachePolicy(CachePolicy.ENABLED)
+        }
     }
     .build()
 
 @Composable
-fun getCoilAsyncImagePainter(context: Context, dataUrl: String): AsyncImagePainter =
+fun getCoilAsyncImagePainter(
+    context: Context,
+    dataUrl: String,
+    size: Size? = null,
+    scale: Scale? = null,
+    @DrawableRes placeholderResId: Int = R.drawable.logo_colors
+): AsyncImagePainter =
     rememberAsyncImagePainter(
-        model = ImageRequest
-            .Builder(context)
-            .data(dataUrl)
-            .apply {
-                crossfade(true)
-                allowHardware(false)
-                //transformations(RoundedCornersTransformation(32.dp.value))
-                size(Size.ORIGINAL)
-                scale(Scale.FIT)
-                networkCachePolicy(CachePolicy.ENABLED)
-                diskCachePolicy(CachePolicy.DISABLED)
-                memoryCachePolicy(CachePolicy.ENABLED)
-            }
-            .build(),
-        placeholder = painterResource(R.drawable.logo_colors),
+        model = getCoilImageRequest(
+            context = context,
+            dataUrl = dataUrl,
+            size = size,
+            scale = scale
+        ),
+        placeholder = painterResource(placeholderResId),
         onLoading = {
-            Timber.i("rememberAsyncImagePainter | Loading Image... | url: $dataUrl")
+            Timber.i("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Loading Image... | url: $dataUrl")
         },
         onSuccess = {
-            Timber.d("rememberAsyncImagePainter | Image successfully loaded")
+            Timber.d("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Image successfully loaded")
         },
         onError = {
-            Timber.e("rememberAsyncImagePainter | Error while loading Image")
+            Timber.e("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Error while loading Image")
         }
     )

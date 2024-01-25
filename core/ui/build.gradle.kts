@@ -33,6 +33,7 @@ dependencies {
     api(libs.androidx.activity.ktx)
     api(libs.androidx.fragment)
     api(libs.androidx.appcompat)
+    api(libs.androidx.palette)
     api(libs.material)
     api(libs.androidx.browser)
     api(libs.androidx.glance.appwidget)

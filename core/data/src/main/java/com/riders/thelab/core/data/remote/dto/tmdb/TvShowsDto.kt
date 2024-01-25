@@ -22,7 +22,7 @@ data class TvShowsDto(
     @SerialName(value = "popularity")
     val popularity: Double,
     @SerialName(value = "poster_path")
-    val poster: String,
+    val poster: String?,
     @SerialName(value = "first_air_date")
     val firstAirDate: String,
     @SerialName(value = "vote_average")

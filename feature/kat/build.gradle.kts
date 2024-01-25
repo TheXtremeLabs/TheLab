@@ -2,7 +2,6 @@ plugins {
     id("thelab.android.feature")
     id("thelab.android.library.compose")
     id("thelab.android.hilt")
-    kotlin("kapt")
 }
 
 android {
@@ -47,7 +46,7 @@ dependencies {
     //implementation(Dependencies.hilt)
     //kapt(Dependencies.hiltCompiler)
     implementation(libs.hilt.ext.work)
-    kapt(libs.hilt.ext.compiler)
+    ksp(libs.hilt.ext.compiler)
 
     // OkHttp
     // define a BOM and its version

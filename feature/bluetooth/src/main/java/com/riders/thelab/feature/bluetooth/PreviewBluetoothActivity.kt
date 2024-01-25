@@ -30,7 +30,11 @@ fun BluetoothContent(viewModel: BluetoothViewModel) {
 
     TheLabTheme {
         Scaffold(
-            topBar = { TheLabTopAppBar(title = stringResource(id = R.string.activity_bluetooth_title)) {} }
+            topBar = {
+                TheLabTopAppBar(
+                    title = stringResource(id = R.string.activity_bluetooth_title),
+                    navigationIcon = {})
+            }
         ) { contentPadding ->
             AnimatedContent(
                 modifier = Modifier
