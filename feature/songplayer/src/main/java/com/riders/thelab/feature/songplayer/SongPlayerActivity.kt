@@ -1,10 +1,7 @@
-package com.riders.thelab.ui.songplayer
+package com.riders.thelab.feature.songplayer
 
-import android.Manifest
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.NotificationManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -15,55 +12,33 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.support.v4.media.session.MediaControllerCompat
-import android.view.MenuItem
 import android.view.View
-import android.widget.SeekBar
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.core.animation.addListener
-import androidx.core.view.marginTop
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.media.session.MediaButtonReceiver
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.DexterError
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.riders.thelab.R
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.data.local.model.music.SongModel
-import com.riders.thelab.core.service.MusicMediaPlaybackService
-import com.riders.thelab.core.utils.LabNotificationManager
-import com.riders.thelab.core.utils.SongsManager
-import com.riders.thelab.databinding.ActivitySongPlayerBinding
-import com.riders.thelab.utils.Constants
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.riders.thelab.core.permissions.PermissionManager
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.songplayer.core.SongsManager
+import com.riders.thelab.feature.songplayer.core.service.MusicMediaPlaybackService
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.IOException
-import java.util.Random
-import kotlin.coroutines.CoroutineContext
 
-@AndroidEntryPoint
-class SongPlayerActivity : AppCompatActivity(),
-    CoroutineScope, SongClickedListener, View.OnClickListener, MediaPlayer.OnCompletionListener,
-    SeekBar.OnSeekBarChangeListener, MotionLayout.TransitionListener {
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + Job()
-
-    private var _viewBinding: ActivitySongPlayerBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _viewBinding!!
+class SongPlayerActivity : BaseComponentActivity() {
 
     private val viewModel: SongPlayerViewModel by viewModels()
 
@@ -88,8 +63,6 @@ class SongPlayerActivity : AppCompatActivity(),
     private var isCardViewPlayerShown: Boolean = false
     private var isToggle: Boolean = false
 
-    private lateinit var mAdapter: SongPlayerAdapter
-
     /**
      * Background Runnable thread
      */
@@ -106,7 +79,7 @@ class SongPlayerActivity : AppCompatActivity(),
             // Updating progress bar
             val progress = SongPlayerUtils.getProgressPercentage(currentDuration, totalDuration)
             //Log.d("Progress", ""+progress);
-            if (_viewBinding != null) binding.songProgressBar.progress = progress
+            //if (_viewBinding != null) binding.songProgressBar.progress = progress
 
             @Suppress("DEPRECATION")
             mHandler = Handler()
@@ -137,17 +110,22 @@ class SongPlayerActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _viewBinding = ActivitySongPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        // Media Player
-        mp = MediaPlayer()
-        songManager = SongsManager()
-
-        // Listeners
-        setListeners()
-        initViewModelsObservers()
-
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                setContent {
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            SongPlayerContent()
+                        }
+                    }
+                }
+            }
+        }
         checkPermissions()
     }
 
@@ -167,7 +145,7 @@ class SongPlayerActivity : AppCompatActivity(),
         if (resultCode == 100) {
             currentSongIndex = data?.extras?.getInt("songIndex")!!
             // play selected song
-            playSong(songsList[currentSongIndex])
+            //  playSong(songsList[currentSongIndex])
         }
     }
 
@@ -205,28 +183,17 @@ class SongPlayerActivity : AppCompatActivity(),
         mBound = false
     }
 
+    override fun backPressed() {
+        if (viewModel.isViewToggle) {
+            viewModel.toggleViewToggle(!isToggle)
+        } else {
+            finish()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         Timber.e("onDestroy()")
-
-        _viewBinding = null
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-            }
-        }
-        return true
-    }
-
-    override fun onBackPressed() {
-        if (isToggle) {
-            toggleAnimation(binding.btnArrowDown)
-        } else {
-            super.onBackPressed()
-        }
     }
 
 
@@ -235,81 +202,51 @@ class SongPlayerActivity : AppCompatActivity(),
     // CLASS METHODS
     //
     ///////////////////////////////
-    private fun setListeners() {
+    /*private fun setListeners() {
         binding.tvSongPath.setOnClickListener(this)
         binding.btnArrowDown.setOnClickListener(this)
         binding.btnPlayPause.setOnClickListener(this)
         binding.btnPrevious.setOnClickListener(this)
         binding.btnNext.setOnClickListener(this)
         binding.songProgressBar.setOnSeekBarChangeListener(this) // Important
-        mp.setOnCompletionListener(this) // Important
+        // mp.setOnCompletionListener(this) // Important
         binding.motionLayout.addTransitionListener(this)
-    }
+    }*/
 
+    @SuppressLint("NewApi")
     private fun checkPermissions() {
-        Dexter.withContext(this)
-            .withPermissions(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-            .withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(multiplePermissionsReport: MultiplePermissionsReport) {
-                    if (multiplePermissionsReport.areAllPermissionsGranted()) {
-                        Timber.i("All permissions are granted")
-
-                        viewModel.retrieveSongFiles(this@SongPlayerActivity)
-                    } else {
-                        Timber.e("All permissions are not granted")
-                    }
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    list: List<PermissionRequest>,
-                    permissionToken: PermissionToken
-                ) {
-                    permissionToken.continuePermissionRequest()
-                }
-            })
-            .withErrorListener { dexterError: DexterError -> Timber.e(dexterError.toString()) }
-            .onSameThread()
-            .check()
-    }
-
-    private fun initViewModelsObservers() {
-        Timber.i("initViewModelsObservers()")
-        viewModel.getFiles().observe(this) { fileList ->
-            Timber.e("getFiles().observe")
-            if (null == fileList) {
-                Timber.e("File list is null")
-            } else {
-                if (fileList.isEmpty()) {
-                    Timber.e("File list is empty")
+        PermissionManager
+            .from(this@SongPlayerActivity)
+            .request(
+                if (LabCompatibilityManager.isTiramisu()) {
+                    Permission.MediaLocationAndroid13
                 } else {
-                    songsList = fileList as ArrayList<SongModel>
+                    Permission.Storage
+                }
+            )
+            .rationale("Theses permissions are mandatory to fetch data")
+            .checkPermission { granted: Boolean ->
+                if (!granted) {
+                    Timber.e("All permissions are not granted")
+                } else {
+                    Timber.i("All permissions are granted")
 
-                    bindData(songsList)
+
+                    // Media Player
+                    mp = MediaPlayer()
+                    songManager = SongsManager()
+
+                    viewModel.retrieveSongFiles(this@SongPlayerActivity)
                 }
             }
-        }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun bindData(list: List<SongModel>) {
-        Timber.i("bindData()")
-
-        mAdapter = SongPlayerAdapter(this, list as ArrayList<SongModel>, this)
-
-        val layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        binding.rvFileList.layoutManager = layoutManager
-        binding.rvFileList.adapter = mAdapter
-    }
 
     /**
      * Function to play a song
      * @param item - index of song
      */
-    @SuppressLint("InlinedApi")
+    /*@SuppressLint("InlinedApi")
     private fun playSong(item: SongModel) {
         Timber.d("playSong()")
 
@@ -355,13 +292,13 @@ class SongPlayerActivity : AppCompatActivity(),
             val mediaSession = SongPlayerUtils.createMediaSession(this, mp)
             val mediaController = SongPlayerUtils.createMediaController(mediaSession)
 
-            /*LabNotificationManager.displayMusicNotification(
+            *//*LabNotificationManager.displayMusicNotification(
                 this@SongPlayerActivity,
                 mediaSession,
                 mediaController,
                 mServiceMusic,
                 item
-            )*/
+            )*//*
 
             //displaySessionNotification(item)
 
@@ -381,9 +318,9 @@ class SongPlayerActivity : AppCompatActivity(),
         } catch (e: IOException) {
             e.printStackTrace()
         }
-    }
+    }*/
 
-    private fun changeViews() {
+    /*private fun changeViews() {
         CoroutineScope(coroutineContext).launch {
             makeViewVisible(binding.cvSongPlayer)
             makeViewVisible(binding.clSongPlayer)
@@ -413,7 +350,7 @@ class SongPlayerActivity : AppCompatActivity(),
             fadeView(binding.btnClose)
 
         }
-    }
+    }*/
 
     private suspend fun makeViewVisible(targetViewToVisible: View) {
         delay(200)
@@ -440,7 +377,7 @@ class SongPlayerActivity : AppCompatActivity(),
         targetViewToFade.visibility = View.VISIBLE
     }
 
-    private fun toggleAnimation(view: View) {
+    /*private fun toggleAnimation(view: View) {
         if (!isToggle) {
             binding.motionLayout.transitionToEnd()
             // Disable card view click listener
@@ -452,7 +389,7 @@ class SongPlayerActivity : AppCompatActivity(),
             binding.cvSongPlayer.isClickable = true
             mAdapter.setClickable(true)
         }
-    }
+    }*/
 
     /**
      * Update timer on seekbar
@@ -462,7 +399,7 @@ class SongPlayerActivity : AppCompatActivity(),
     }
 
 
-    override fun onSongClick(view: View, item: SongModel) {
+    /*override fun onSongClick(view: View, item: SongModel) {
         Timber.d("onFileClick() - $item")
 
         playSong(item)
@@ -581,5 +518,5 @@ class SongPlayerActivity : AppCompatActivity(),
 
     override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
         Timber.i("onTransitionTrigger()")
-    }
+    }*/
 }

@@ -8,11 +8,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.core.utils.LabNotificationManager
+import com.riders.thelab.core.common.utils.LabNotificationManager
 import com.riders.thelab.ui.splashscreen.SplashScreenActivity
 import com.riders.thelab.utils.Constants
 import timber.log.Timber
@@ -29,10 +29,9 @@ class TheLabBootService : Service() {
 
     override fun onBind(intent: Intent?): IBinder {
         Timber.i("TheLabBootService - onBind()")
-        UIManager.showActionInToast(
-            this@TheLabBootService,
-            "TheLabBootService - onBind()"
-        )
+        Toast
+            .makeText(this@TheLabBootService, "TheLabBootService - onBind()", Toast.LENGTH_LONG)
+            .show()
         return mBinder
     }
 
@@ -57,10 +56,14 @@ class TheLabBootService : Service() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
+    @SuppressLint("UnspecifiedImmutableFlag", "ForegroundServiceType")
     private fun displaySessionNotification() {
         if (!LabCompatibilityManager.isOreo()) {
-            UIManager.showActionInToast(this@TheLabBootService, "onReceive notification builder()")
+            Toast.makeText(
+                this@TheLabBootService,
+                "onReceive notification builder()",
+                Toast.LENGTH_LONG
+            ).show()
             Timber.e("onReceive notification builder()")
 
             val notificationIntent =
@@ -115,7 +118,14 @@ class TheLabBootService : Service() {
                 )
 
             val notification: NotificationCompat.Builder =
-                LabNotificationManager.buildMainNotification(this, mPendingIntent)
+                LabNotificationManager.buildMainNotification(
+                    context = this,
+                    pendingIntent = mPendingIntent,
+                    smallIcon = R.mipmap.ic_lab_six_round,
+                    contentTitle = R.string.notification_title,
+                    contentText = R.string.notification_content_text,
+                    bigText = R.string.notification_big_text
+                )
 
             // notificationId is a unique int for each notification that you must define
             startForeground(Constants.NOTIFICATION_ID, notification.build())

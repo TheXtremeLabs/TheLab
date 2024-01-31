@@ -107,7 +107,7 @@ dependencies {
     // Moshi
     api(libs.moshi)
     api(libs.moshi.kotlin)
-    kapt(libs.moshi.kotlin.codegen)
+    ksp(libs.moshi.kotlin.codegen)
 
     api(libs.kotools.types)
 

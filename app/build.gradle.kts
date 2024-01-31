@@ -125,6 +125,7 @@ dependencies {
     implementation(project(":feature:musicrecognition"))
     implementation(project(":feature:schedule"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:songplayer"))
     implementation(project(":feature:streaming"))
     implementation(project(":feature:tabs"))
     implementation(project(":feature:theaters"))
