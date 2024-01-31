@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.songplayer
+package com.riders.thelab.feature.songplayer
 
 import android.content.ComponentName
 import android.content.Context
@@ -10,7 +10,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
-import com.riders.thelab.R
 import com.riders.thelab.core.common.storage.LabFileManager
 import timber.log.Timber
 
@@ -129,7 +128,10 @@ class SongPlayerUtils {
                     // The URI scheme needs to be "content", "file", or "android.resource".
                     .putString(
                         MediaMetadata.METADATA_KEY_ALBUM_ART_URI,
-                        LabFileManager.getDrawableURI(context, R.drawable.logo_colors)
+                        LabFileManager.getDrawableURI(
+                            context,
+                            com.riders.thelab.core.ui.R.drawable.logo_colors
+                        )
                     )
 
                     // Duration.

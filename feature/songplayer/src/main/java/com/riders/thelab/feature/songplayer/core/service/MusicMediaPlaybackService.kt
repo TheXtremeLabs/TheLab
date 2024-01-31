@@ -1,4 +1,4 @@
-package com.riders.thelab.core.service
+package com.riders.thelab.feature.songplayer.core.service
 
 import android.app.Service
 import android.content.Intent

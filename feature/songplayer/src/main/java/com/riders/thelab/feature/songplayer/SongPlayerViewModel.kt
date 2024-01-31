@@ -1,25 +1,37 @@
-package com.riders.thelab.ui.songplayer
+package com.riders.thelab.feature.songplayer
 
 import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.riders.thelab.core.common.storage.LabFileManager
 import com.riders.thelab.core.data.local.model.music.SongModel
-import com.riders.thelab.utils.Constants.SZ_SEPARATOR
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.riders.thelab.core.data.utils.Constants
 import timber.log.Timber
 import java.io.File
-import javax.inject.Inject
 
-@HiltViewModel
-class SongPlayerViewModel @Inject constructor() : ViewModel() {
-    companion object {
-        const val MUSIC_PLACEHOLDER = "Music"
-        const val PROD_PLACEHOLDER = "Prod"
-    }
+class SongPlayerViewModel : ViewModel() {
 
     private val fileList: MutableLiveData<List<SongModel>> = MutableLiveData()
+
+    val songList:SnapshotStateList<SongModel> = mutableStateListOf()
+
+    var isViewToggle: Boolean by mutableStateOf(false)
+        private set
+
+
+    fun updateSongList(newSongList: List<SongModel>) {
+        songList.addAll(newSongList)
+    }
+
+    fun toggleViewToggle(isViewToggle: Boolean) {
+        this.isViewToggle = isViewToggle
+    }
 
     fun getFiles(): LiveData<List<SongModel>> {
         return fileList
@@ -27,18 +39,23 @@ class SongPlayerViewModel @Inject constructor() : ViewModel() {
 
     fun retrieveSongFiles(context: Context) {
         Timber.d("retrieveSongFiles()")
-        try {
+
+        runCatching {
             LabFileManager.getSdCardPaths(context, true)?.forEach { volumePath ->
                 Timber.e("volumePath:$volumePath")
 
                 if (volumePath.contains("0000")) {
-                    fileList.value = getFilesWithPath(volumePath)
+                    getFilesWithPath(volumePath)?.let { updateSongList(it) }
                 }
-
             }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
         }
+            .onFailure {
+                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+            }
+            .onSuccess {
+                Timber.d("runCatching - onSuccess() | app list fetched successfully")
+            }
+
     }
 
 
@@ -56,9 +73,12 @@ class SongPlayerViewModel @Inject constructor() : ViewModel() {
 
             // Root Music directory path
             val musicPath =
-                files.find { inFile -> inFile.isDirectory && inFile.name == MUSIC_PLACEHOLDER }
+                files
+                    .find { inFile -> inFile.isDirectory && inFile.name == MUSIC_PLACEHOLDER }
                     .toString()
+
             Timber.e("musicPathname : $musicPath")
+
             if (musicPath.isBlank())
                 return null
 
@@ -67,23 +87,29 @@ class SongPlayerViewModel @Inject constructor() : ViewModel() {
 
             // Root Prod directory path
             val prodPath =
-                musicFiles.find { musicFile -> musicFile.isDirectory && musicFile.name == PROD_PLACEHOLDER }
+                musicFiles
+                    .find { musicFile -> musicFile.isDirectory && musicFile.name == PROD_PLACEHOLDER }
                     .toString()
+
             Timber.e("prodPathname : $prodPath")
+
             if (prodPath.isBlank())
                 return null
 
             val prodDirectory = File(prodPath)
             val prodFiles = prodDirectory.listFiles() ?: return null
 
-            fileList.addAll(prodFiles.map { prodFile ->
-                SongModel(
-                    parseSongName(prodFile.name),
-                    prodPath + SZ_SEPARATOR + prodFile.name,
-                    "",
-                    false
-                )
-            })
+            fileList.addAll(
+                prodFiles.mapIndexed { index, prodFile ->
+                    SongModel(
+                        index,
+                        parseSongName(prodFile.name),
+                        prodPath + Constants.SZ_SEPARATOR + prodFile.name,
+                        "",
+                        false
+                    )
+                }
+            )
         } catch (exception: Exception) {
             exception.printStackTrace()
         }
@@ -105,5 +131,10 @@ class SongPlayerViewModel @Inject constructor() : ViewModel() {
                 ""
             }
         }
+    }
+
+    companion object {
+        const val MUSIC_PLACEHOLDER = "Music"
+        const val PROD_PLACEHOLDER = "Prod"
     }
 }

@@ -14,6 +14,7 @@ import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
 import com.riders.thelab.feature.lottie.LottieActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
 import com.riders.thelab.feature.schedule.ui.ScheduleActivity
+import com.riders.thelab.feature.songplayer.SongPlayerActivity
 import com.riders.thelab.feature.streaming.StreamingActivity
 import com.riders.thelab.feature.theaters.TheatersActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
@@ -30,7 +31,6 @@ import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
 import com.riders.thelab.ui.palette.PaletteActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.screenshot.ScreenShotActivity
-import com.riders.thelab.ui.songplayer.SongPlayerActivity
 import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.feature.tabs.WorkingTabsActivity
 import com.riders.thelab.ui.transition.TransitionActivity
@@ -348,7 +348,7 @@ object AppBuilderUtils {
                         .withActivityDescription("Play music that is stored on your phone (Live Streaming wip)...")
                         .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_music))
                         .withActivityClass(SongPlayerActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityDate("2024/01/31")
                         .build()
                 this.add(songPlayer)
 

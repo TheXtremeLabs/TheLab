@@ -1,22 +1,21 @@
-package com.riders.thelab.core.utils
+package com.riders.thelab.core.common.utils
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.session.MediaButtonReceiver
-import com.riders.thelab.R
-import com.riders.thelab.core.common.utils.Constants
-import com.riders.thelab.core.data.local.model.music.SongModel
-import com.riders.thelab.core.service.MusicMediaPlaybackService
-import com.riders.thelab.core.ui.utils.UIManager
+
 import timber.log.Timber
 
 object LabNotificationManager {
@@ -51,22 +50,26 @@ object LabNotificationManager {
 
     fun buildMainNotification(
         context: Context,
-        mPendingIntent: PendingIntent
+        pendingIntent: PendingIntent,
+        @DrawableRes smallIcon: Int,
+        @StringRes contentTitle: Int,
+        @StringRes contentText: Int,
+        @StringRes bigText: Int,
     ): NotificationCompat.Builder =
         NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
             .apply {
                 Timber.d("buildMainNotification()")
-                setSmallIcon(R.mipmap.ic_lab_six_round)
-                setContentTitle(context.getString(R.string.notification_title))
-                setContentText(context.getString(R.string.notification_content_text))
+                setSmallIcon(smallIcon)
+                setContentTitle(context.getString(contentTitle))
+                setContentText(context.getString(contentText))
                 priority = NotificationCompat.PRIORITY_HIGH
                 // Set the intent that will fire when the user taps the notification
-                setContentIntent(mPendingIntent)
+                setContentIntent(pendingIntent)
                 setChannelId(Constants.NOTIFICATION_CHANNEL_ID)
                 setStyle(
                     NotificationCompat
                         .BigTextStyle()
-                        .bigText(context.getString(R.string.notification_big_text))
+                        .bigText(context.getString(bigText))
                 )
                 setAutoCancel(false)
                 setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -74,12 +77,18 @@ object LabNotificationManager {
 
 
     @SuppressLint("MissingPermission", "ForegroundServiceType")
-    fun displayMusicNotification(
+    fun <T : Service> displayMusicNotification(
         context: Context,
         mediaSession: MediaSessionCompat,
         controller: MediaControllerCompat,
-        mServiceMusic: MusicMediaPlaybackService,
-        songModel: SongModel
+        mServiceMusic: T,
+        @DrawableRes smallIcon: Int,
+        contentTitle: String,
+        contentText: String,
+        @StringRes bigText: Int,
+        @DrawableRes largeIcon: Int,
+        @DrawableRes actionIcon: Int,
+        @StringRes actionTitle: Int
     ) {
         Timber.d("displayMusicNotification()")
 
@@ -111,13 +120,13 @@ object LabNotificationManager {
 
                 // Add an app icon and set its accent color
                 // Be careful about the color
-                setSmallIcon(R.drawable.ic_music)
+                setSmallIcon(smallIcon)
 
                 // Add a pause button
                 addAction(
                     NotificationCompat.Action(
-                        R.drawable.ic_pause,
-                        context.getString(R.string.action_pause),
+                        actionIcon,
+                        context.getString(actionTitle),
                         MediaButtonReceiver.buildMediaButtonPendingIntent(
                             context,
                             PlaybackStateCompat.ACTION_PLAY_PAUSE
@@ -147,14 +156,9 @@ object LabNotificationManager {
                             )
                         )
                 )
-                setContentTitle(songModel.name)
-                setContentText(songModel.path)
-                setLargeIcon(
-                    UIManager.getDrawableAsBitmap(
-                        context,
-                        R.drawable.logo_colors
-                    )!!
-                )
+                setContentTitle(contentTitle)
+                setContentText(contentText)
+                setLargeIcon(largeIcon.toBitmap(context))
             }
 
         with(NotificationManagerCompat.from(context)) {
