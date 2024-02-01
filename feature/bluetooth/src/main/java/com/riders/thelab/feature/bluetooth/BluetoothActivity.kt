@@ -23,7 +23,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.bus.KotlinBus
 import com.riders.thelab.core.common.bus.Listen
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.permissions.DexterPermissionManager
+import com.riders.thelab.core.data.local.model.Permission
+import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
@@ -135,37 +136,24 @@ class BluetoothActivity : BaseComponentActivity() {
     fun checkPermissions() {
         Timber.d("checkPermissions()")
 
-        val permissionManager = DexterPermissionManager(this@BluetoothActivity)
+        val permissionManager = PermissionManager.from(this@BluetoothActivity)
         if (!LabCompatibilityManager.isS()) {
-            permissionManager.checkPermissions(
-                // If your app targets Android 11 (API level 30) or lower,
-                // use ACCESS_FINE_LOCATION this is necessary, in the developer of Android
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.BLUETOOTH,
-                onPermissionDenied = {
-                    finish()
-                },
-                onPermissionGranted = {
+            permissionManager.request(Permission.Bluetooth, Permission.Bluetooth).checkPermission { granted: Boolean ->
+                if (!granted) {
+                    this@BluetoothActivity.finish()
+                } else {
                     mViewModel.initBluetoothManager(this@BluetoothActivity)
                     observeBluetoothDeviceFetchedEvents()
                     mViewModel.fetchBoundedDevices()
-                },
-                onShouldShowRationale = {}
-            )
+                }
+            }
+
         } else {
-            permissionManager.checkPermissions(
-                // If your app targets Android 11 (API level 30) or lower,
-                // use ACCESS_FINE_LOCATION this is necessary, in the developer of Android
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.BLUETOOTH_SCAN,
-                Manifest.permission.BLUETOOTH_CONNECT,
-                onPermissionDenied = {
-                    finish()
-                },
-                onPermissionGranted = {
+
+            permissionManager.request(Permission.Location, Permission.BluetoothAndroid12).checkPermission { granted: Boolean ->
+                if (!granted) {
+                    this@BluetoothActivity.finish()
+                } else {
                     if (LabCompatibilityManager.isTiramisu()) {
                         val bluetoothManager: BluetoothManager =
                             getSystemService(BluetoothManager::class.java) as BluetoothManager
@@ -188,9 +176,8 @@ class BluetoothActivity : BaseComponentActivity() {
                     mViewModel.initBluetoothManager(this@BluetoothActivity)
                     observeBluetoothDeviceFetchedEvents()
                     mViewModel.fetchBoundedDevices()
-                },
-                onShouldShowRationale = {}
-            )
+                }
+            }
         }
     }
 

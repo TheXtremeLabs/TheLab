@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.locationonmaps
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.IntentSender.SendIntentException
@@ -39,18 +38,14 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.DexterError
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.LabLocationUtils
 import com.riders.thelab.core.data.local.bean.MapsEnum
+import com.riders.thelab.core.data.local.model.Permission
+import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityLocationOnMapsBinding
 import kotlinx.coroutines.CoroutineScope
@@ -62,8 +57,8 @@ import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
 
-class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
-    android.location.LocationListener {
+class LocationOnMapsActivity
+    : AppCompatActivity(), OnMapReadyCallback, android.location.LocationListener {
 
     companion object {
         // location updates interval - 10sec
@@ -123,33 +118,21 @@ class LocationOnMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         _viewBinding = ActivityLocationOnMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        Dexter.withContext(this)
-            .withPermissions(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            .withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(multiplePermissionsReport: MultiplePermissionsReport) {
-                    if (multiplePermissionsReport.areAllPermissionsGranted()) {
-                        Timber.i("All permissions are granted")
-                        mRequestingLocationUpdates = true
-                        initLocationSettings()
-                        setupMap()
-                    } else {
-                        Timber.e("All permissions are not granted")
-                    }
-                }
+        PermissionManager
+            .from(this@LocationOnMapsActivity)
+            .request(Permission.Location)
+            .rationale("Location is needed to discover some features")
+            .checkPermission { granted: Boolean ->
+                if (!granted) {
+                    Timber.e("Permissions are denied. User may access to app with limited location related features")
 
-                override fun onPermissionRationaleShouldBeShown(
-                    list: List<PermissionRequest>,
-                    permissionToken: PermissionToken
-                ) {
-                    permissionToken.continuePermissionRequest()
+                } else {
+                    Timber.i("All permissions are granted")
+                    mRequestingLocationUpdates = true
+                    initLocationSettings()
+                    setupMap()
                 }
-            })
-            .withErrorListener { dexterError: DexterError -> Timber.e(dexterError.toString()) }
-            .onSameThread()
-            .check()
+            }
     }
 
     @Deprecated("DEPRECATED - Use registerActivityForResult")

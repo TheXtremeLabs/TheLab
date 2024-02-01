@@ -231,12 +231,10 @@ dependencies {
     // OkHttp: provided by data module
 
     // Moshi: provided by data module
-    kapt(libs.moshi.kotlin.codegen)
+    ksp(libs.moshi.kotlin.codegen)
 
     // MPAndroidChart
     implementation(libs.mpandroidchart)
-
-    // Dexter: provided by permissions module
 
     // Glide
     implementation(libs.glide)
