@@ -55,6 +55,13 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
+    <uses-permission
+        android:name="android.permission.NEARBY_DEVICES"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission
+        android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation" />
+
 
     <!-- User Data -->
     <!-- Permissions required by GoogleAuthUtil -->
@@ -95,6 +102,9 @@
 
     <!-- Media Notification Foreground Service -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    
+    <!-- Required only if your app targets Android 13 or higher. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
     <!-- Location -->
     <uses-feature
