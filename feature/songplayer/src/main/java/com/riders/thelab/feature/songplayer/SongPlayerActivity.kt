@@ -77,7 +77,7 @@ class SongPlayerActivity : BaseComponentActivity() {
             //songCurrentDurationLabel.setText("" + utils.milliSecondsToTimer(currentDuration))
 
             // Updating progress bar
-            val progress = SongPlayerUtils.getProgressPercentage(currentDuration, totalDuration)
+            //val progress = SongPlayerUtils.getProgressPercentage(currentDuration, totalDuration)
             //Log.d("Progress", ""+progress);
             //if (_viewBinding != null) binding.songProgressBar.progress = progress
 
@@ -120,12 +120,13 @@ class SongPlayerActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            SongPlayerContent()
+                            SongPlayerContent(viewModel.songList)
                         }
                     }
                 }
             }
         }
+
         checkPermissions()
     }
 
@@ -156,6 +157,7 @@ class SongPlayerActivity : BaseComponentActivity() {
         super.onPause()
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()")

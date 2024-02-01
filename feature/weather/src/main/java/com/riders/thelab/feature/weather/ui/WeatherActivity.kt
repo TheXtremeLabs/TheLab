@@ -25,15 +25,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.WorkInfo
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.DexterError
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
+import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.data.local.model.compose.WeatherUIState
+import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.data.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
@@ -120,25 +116,21 @@ class WeatherActivity : ComponentActivity(), LocationListener {
     /////////////////////////////////////
     private fun checkLocationPermissions() {
         Timber.d("checkLocationPermissions()")
-        // run dexter permission
-        Dexter
-            .withContext(this@WeatherActivity)
-            .withPermissions(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-            .withListener(object : MultiplePermissionsListener {
-                @SuppressLint("MissingPermission")
-                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                    // check if all permissions are granted
-                    if (report.areAllPermissionsGranted()) {
-                        // do you work now
-                    }
 
-                    // check for permanent denial of any permission
-                    if (report.isAnyPermissionPermanentlyDenied) {
-                        // permission is denied permanently, navigate user to app settings
-                    }
+        PermissionManager
+            .from(this@WeatherActivity)
+            .request(Permission.Location)
+            .rationale("Location is needed to discover some features")
+            .checkPermission { granted: Boolean ->
+
+                if (!granted) {
+                    Timber.e("Permissions are denied. User may access to app with limited location related features")
+                    UIManager.showActionInToast(
+                        this,
+                        "Permissions are denied. User may access to app with limited location related features"
+                    )
+
+                } else {
 
                     initViewModelObservers()
 
@@ -164,24 +156,8 @@ class WeatherActivity : ComponentActivity(), LocationListener {
                             }
                         }
                     }
-
-                    /*if (LabCompatibilityManager.isOreo()) {
-                        registerWeatherWidget()
-                    }*/
                 }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permissions: List<PermissionRequest>,
-                    token: PermissionToken
-                ) {
-                    token.continuePermissionRequest()
-                }
-            })
-            .withErrorListener { error: DexterError ->
-                UIManager.showActionInToast(this, "Error occurred! $error")
             }
-            .onSameThread()
-            .check()
     }
 
     private fun hasLocationPermissions(): Boolean = ContextCompat.checkSelfPermission(

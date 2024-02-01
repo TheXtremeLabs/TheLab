@@ -75,9 +75,6 @@ dependencies {
     api(libs.androidx.metrics)
     api(libs.androidx.tracing.ktx)
 
-    // Dexter
-    api(libs.dexter)
-
     // Glide
     api(libs.glide)
     kapt(libs.glide.compiler)

@@ -1,11 +1,11 @@
 package com.riders.thelab.ui.mainactivity
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.location.Location
@@ -27,24 +27,19 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 import com.riders.thelab.R
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
+import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
-import com.riders.thelab.core.permissions.DexterPermissionManager
+import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
@@ -195,15 +190,29 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
     //
     /////////////////////////////////////
     private fun checkPermissions() {
-        DexterPermissionManager(this)
-            .checkPermissions(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                onPermissionDenied = {
+        val setOfPermissions: Set<String> = buildSet {
+            Permission.Location.permissions.forEach { add(it) }
+        }
+        val arrayOfPermissions: Array<String> = setOfPermissions.toTypedArray()
+
+        val hasPermission = arrayOfPermissions.all {
+            val granted = checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+            Timber.d("checkPermissions() | granted?: $granted")
+            checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+        }
+
+        Timber.d("checkPermissions() | hasPermission?: $hasPermission")
+
+        PermissionManager
+            .from(this@MainActivity)
+            .request(Permission.Location)
+            .rationale("Location is needed to discover some features")
+            .checkPermission { granted: Boolean ->
+
+                if (!granted) {
                     Timber.e("Permissions are denied. User may access to app with limited location related features")
-                },
-                onShouldShowRationale = { Timber.w("Permissions are denied. User may access to app with limited location related features") },
-                onPermissionGranted = {
+
+                } else {
 
                     // Variables
                     initActivityVariables()
@@ -212,7 +221,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                     mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
                     mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
                 }
-            )
+            }
     }
 
 
@@ -281,11 +290,17 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 
     fun launchSpeechToText() {
         // Check permission first
-        Dexter
-            .withContext(this@MainActivity)
-            .withPermission(Manifest.permission.RECORD_AUDIO)
-            .withListener(object : PermissionListener {
-                override fun onPermissionGranted(grantedResponse: PermissionGrantedResponse?) {
+        PermissionManager
+            .from(this@MainActivity)
+            .request(Permission.AudioRecord)
+            .rationale("Microphone permission is mandatory in order to use the vocal searchiing fatures.")
+            .checkPermission { granted: Boolean ->
+
+                if (!granted) {
+                    // if the permissions are not accepted we are displaying
+                    // a toast message as permissions denied on below line.
+                    UIManager.showToast(this@MainActivity, "Permissions Denied..")
+                } else {
                     // if all the permissions are granted we are displaying
                     // a simple toast message.
                     UIManager.showToast(this@MainActivity, "Permissions Granted..")
@@ -296,31 +311,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                     Timber.i("startListening() ... ")
                     speech?.startListening(recognizerIntent)
                 }
-
-                override fun onPermissionDenied(permissionDenied: PermissionDeniedResponse?) {
-                    // if the permissions are not accepted we are displaying
-                    // a toast message as permissions denied on below line.
-                    UIManager.showToast(this@MainActivity, "Permissions Denied..")
-                }
-
-                // on below line we are calling on permission
-                // rational should be shown method.
-                override fun onPermissionRationaleShouldBeShown(
-                    permissionRequest: PermissionRequest?,
-                    token: PermissionToken?
-                ) {
-                    // in this method we are calling continue
-                    // permission request until permissions are not granted.
-                    token?.continuePermissionRequest()
-                }
-            })
-            .withErrorListener {
-
-                // on below line method will be called when dexter
-                // throws any error while requesting permissions.
-                UIManager.showToast(this@MainActivity, it.name)
             }
-            .check()
     }
 
     // Init Speech To Text Variables

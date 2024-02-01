@@ -2,6 +2,7 @@ plugins {
     id("thelab.android.library")
     kotlin("android")
     kotlin("kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -43,7 +44,7 @@ dependencies {
     // Moshi
     api(libs.moshi)
     api(libs.moshi.kotlin)
-    kapt(libs.moshi.kotlin.codegen)
+    ksp(libs.moshi.kotlin.codegen)
 
 
     ///////////////////////////////////

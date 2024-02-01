@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.googlemlkit
 
-import android.Manifest
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
@@ -14,13 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.chip.Chip
 import com.google.common.base.Objects
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.DexterError
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.riders.thelab.R
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.data.local.model.Permission
+import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityLiveBarcodeBinding
 import com.riders.thelab.ui.googlemlkit.barcodedetection.BarcodeField
@@ -51,48 +47,34 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
     private val workflowModel: WorkflowModel by viewModels()
     private var currentWorkflowState: WorkflowState? = null
 
+    @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _viewBinding = ActivityLiveBarcodeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // run dexter permission
-        Dexter
-            .withContext(this)
-            .withPermissions(
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        PermissionManager
+            .from(this@LiveBarcodeScanningActivity)
+            .request(
+                Permission.Camera,
+                if (!LabCompatibilityManager.isTiramisu()) Permission.MediaLocationAndroid13 else Permission.Storage
             )
-            .withListener(object : MultiplePermissionsListener {
-                @SuppressLint("MissingPermission")
-                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                    // check if all permissions are granted
-                    if (report.areAllPermissionsGranted()) {
-                        // do you work now
+            .rationale("Camera and Media Storage permissions are mandatory to discover some features")
+            .checkPermission { granted: Boolean ->
 
-                        initViews()
-                        setUpWorkflowModel()
-                    }
+                if (!granted) {
+                    Timber.e("Permissions are denied. User may access to app with limited location related features")
+                    UIManager.showActionInToast(
+                        this,
+                        "Permissions are denied. User may access to app with limited location related features"
+                    )
 
-                    // check for permanent denial of any permission
-                    if (report.isAnyPermissionPermanentlyDenied) {
-                        // permission is denied permanently, navigate user to app settings
-                    }
+                } else {
+
+                    initViews()
+                    setUpWorkflowModel()
                 }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permissions: List<PermissionRequest>,
-                    token: PermissionToken
-                ) {
-                    token.continuePermissionRequest()
-                }
-            })
-            .withErrorListener { error: DexterError ->
-                UIManager.showActionInToast(this, "Error occurred! $error")
             }
-            .onSameThread()
-            .check()
     }
 
     override fun onResume() {

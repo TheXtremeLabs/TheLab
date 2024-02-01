@@ -28,8 +28,8 @@ sealed class Permission(vararg val permissions: String) {
 
     data object Location :
         Permission(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
         )
 
     data object Storage : Permission(
