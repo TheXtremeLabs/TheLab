@@ -39,7 +39,7 @@ androidxFragment = "1.6.2"
 androidxGlance = "1.0.0"
 androidxHiltNavigationCompose = "1.1.0"
 androidxLifecycle = "2.7.0"
-androidxMacroBenchmark = "1.2.2"
+androidxMacroBenchmark = "1.2.3"
 androidxMetrics = "1.0.0-beta01"
 androidxMultiDex = "2.0.1"
 androidxNavigation = "2.7.6"
@@ -63,7 +63,8 @@ androidxWindowExtensions = "1.0.0-alpha01"
 androidxWork = "2.9.0"
 blurry = "4.0.1"
 coil = "2.5.0"
-dexter = "6.2.3"
+# This repository has been archived by the owner on Jul 2, 2021. It is now read-only. Dexter is not under active maintenance anymore
+# dexter = "6.2.3"
 eventbus = "3.3.1"
 # Firebase
 firebaseBom = "32.7.1"
@@ -248,7 +249,8 @@ androidx-work-testing = { group = "androidx.work", name = "work-testing", versio
 coil-kt = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-kt-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
-dexter = { group = "com.karumi", name = "dexter", version.ref = "dexter" }
+# This repository has been archived by the owner on Jul 2, 2021. It is now read-only. Dexter is not under active maintenance anymore
+# dexter = { group = "com.karumi", name = "dexter", version.ref = "dexter" }
 eventbus = { group = "org.greenrobot", name = "eventbus", version.ref = "eventbus" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
