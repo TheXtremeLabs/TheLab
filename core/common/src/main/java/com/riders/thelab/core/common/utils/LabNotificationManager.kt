@@ -85,7 +85,6 @@ object LabNotificationManager {
         @DrawableRes smallIcon: Int,
         contentTitle: String,
         contentText: String,
-        @StringRes bigText: Int,
         @DrawableRes largeIcon: Int,
         @DrawableRes actionIcon: Int,
         @StringRes actionTitle: Int

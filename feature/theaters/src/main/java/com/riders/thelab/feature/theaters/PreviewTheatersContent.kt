@@ -31,7 +31,7 @@ import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
-import com.riders.thelab.core.ui.compose.component.network.NoConnection
+import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
 import com.riders.thelab.core.ui.compose.component.network.PreviewProviderNetworkState
 import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -173,7 +173,7 @@ fun TheatersContent(
                     }
 
                     else -> {
-                        NoConnection()
+                        NoNetworkConnection()
                     }
                 }
             }

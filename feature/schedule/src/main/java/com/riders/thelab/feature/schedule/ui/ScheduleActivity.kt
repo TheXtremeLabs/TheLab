@@ -7,8 +7,8 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PlainTooltipState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TooltipState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -38,7 +38,7 @@ class ScheduleActivity : BaseComponentActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
                     val scope = rememberCoroutineScope()
-                    val tooltipState = PlainTooltipState()
+                    val tooltipState = TooltipState()
                     val scheduleState by mViewModel.scheduleJobUiState.collectAsStateWithLifecycle()
 
                     TheLabTheme {
