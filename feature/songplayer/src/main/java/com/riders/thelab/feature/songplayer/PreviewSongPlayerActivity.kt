@@ -2,6 +2,7 @@ package com.riders.thelab.feature.songplayer
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -68,10 +69,10 @@ fun SongPlayerContent(
                 if (!targetState) {
                     NoItemFound("No song item found")
                 } else {
-                    val animatedBottomPadding by animateIntAsState(
-                        targetValue = if (isSongPlaying) 32 else 0,
-                        label = ""
-                    )
+                    val animatedBottomPadding = animateDpAsState(
+                        targetValue = if (!isSongPlaying) 0.dp else 120.dp,
+                        label = "bottom animation"
+                    ).value
 
                     Box(
                         modifier = Modifier
@@ -85,7 +86,7 @@ fun SongPlayerContent(
                                 .padding(
                                     start = 16.dp,
                                     end = 16.dp,
-                                    bottom = animatedBottomPadding.dp
+                                    bottom = animatedBottomPadding
                                 )
                                 .zIndex(1f),
                             state = lazyListState,
