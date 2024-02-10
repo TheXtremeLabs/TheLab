@@ -275,29 +275,4 @@ class RecyclerViewModel @Inject constructor(
         // navigator: Navigator
         activity.startActivity(intent, options.toBundle())
     }
-
-    fun onDeleteClick(
-        activity: Activity,
-        item: Artist,
-        adapter: RecyclerViewAdapter,
-        position: Int
-    ) {
-        Timber.d("onDeleteClick() item %s at position : %s", item.artistName, position)
-
-        // get the removed item name to display it in snack bar
-        val name = item.artistName
-
-        // backup of removed item for undo purpose
-
-        // remove the item from recycler view
-        adapter.removeItem(position)
-
-        // showing snack bar with Undo option
-        UIManager.showActionInSnackBar(
-            activity, "$name removed from cart!", SnackBarType.WARNING, "UNDO"
-        ) {
-            // undo is selected, restore the deleted item
-            adapter.restoreItem(item, position)
-        }
-    }
 }
