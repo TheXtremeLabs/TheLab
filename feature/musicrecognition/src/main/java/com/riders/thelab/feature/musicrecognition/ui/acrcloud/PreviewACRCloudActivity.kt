@@ -68,7 +68,7 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.fab.PulsarFab
-import com.riders.thelab.core.ui.compose.component.network.NoConnection
+import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
 import com.riders.thelab.core.ui.compose.component.toast.Toast
 import com.riders.thelab.core.ui.compose.theme.Orange
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -384,7 +384,7 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
         ) { contentPadding ->
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
                 if (null == isConnected || isConnected?.equals(false) == true) {
-                    NoConnection()
+                    NoNetworkConnection()
                 } else {
                     Column(
                         modifier = Modifier

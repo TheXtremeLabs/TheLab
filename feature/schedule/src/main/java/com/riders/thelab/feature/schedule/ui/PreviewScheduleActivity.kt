@@ -18,11 +18,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.PlainTooltipBox
-import androidx.compose.material3.PlainTooltipState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -38,6 +39,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
 import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
@@ -52,7 +55,7 @@ import timber.log.Timber
 fun ScheduleContent(
     scheduleState: ScheduleJobAlarmUiState,
     onUpdateUIState: (ScheduleJobAlarmUiState) -> Unit,
-    tooltipState: PlainTooltipState,
+    tooltipState: TooltipState,
     onStartButtonClicked: () -> Unit,
     countDownQuery: String,
     onUpdateCountDownQuery: (String) -> Unit,
@@ -109,9 +112,10 @@ fun ScheduleContent(
                         maxLines = 1,
                         trailingIcon = {
                             if (countDownQuery.isBlank()) {
-                                PlainTooltipBox(
+                                TooltipBox(
                                     tooltip = { Text(text = "Field can't be empty. Please enter a valid number") },
-                                    tooltipState = tooltipState
+                                    state = tooltipState,
+                                    positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()
                                 ) {
                                     IconButton(
                                         onClick = {
@@ -203,7 +207,7 @@ fun ScheduleContent(
 @DevicePreviews
 @Composable
 private fun PreviewScheduleContent(@PreviewParameter(PreviewProvider::class) scheduleState: ScheduleJobAlarmUiState) {
-    val tooltipState = PlainTooltipState()
+    val tooltipState = TooltipState()
 
     TheLabTheme {
         ScheduleContent(
