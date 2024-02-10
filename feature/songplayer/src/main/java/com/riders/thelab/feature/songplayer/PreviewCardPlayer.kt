@@ -7,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +22,6 @@ import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -33,11 +31,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import coil.compose.AsyncImagePainter
 import com.riders.thelab.core.data.local.model.music.SongModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -62,21 +64,37 @@ fun CardPlayerActions(
         IconButton(modifier = Modifier.weight(1f), onClick = { onPreviousClicked(true) }) {
             Icon(
                 imageVector = Icons.Rounded.SkipPrevious,
-                contentDescription = "previous icon"
+                contentDescription = "previous icon",
+                tint = MaterialTheme.colorScheme.background
             )
         }
 
-        IconButton(modifier = Modifier.weight(1f), onClick = { onPlayPauseClicked(true) }) {
-            Icon(
-                imageVector = if (!isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                contentDescription = "previous icon"
-            )
+        IconButton(modifier = Modifier.weight(1f), onClick = { onPlayPauseClicked(!isPlaying) }) {
+            AnimatedContent(
+                targetState = isPlaying,
+                label = "Play pause animation"
+            ) { targetState ->
+                if (!targetState) {
+                    Icon(
+                        imageVector = Icons.Rounded.PlayArrow,
+                        contentDescription = "previous icon",
+                        tint = MaterialTheme.colorScheme.background
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Rounded.Pause,
+                        contentDescription = "previous icon",
+                        tint = MaterialTheme.colorScheme.background
+                    )
+                }
+            }
         }
 
         IconButton(modifier = Modifier.weight(1f), onClick = { onNextClicked(true) }) {
             Icon(
                 imageVector = Icons.Rounded.SkipNext,
-                contentDescription = "previous icon"
+                contentDescription = "previous icon",
+                tint = MaterialTheme.colorScheme.background
             )
         }
     }
@@ -97,17 +115,21 @@ fun CardPlayer(
     val orientation = LocalConfiguration.current.orientation
 
     Card(
-        modifier = if (!isCardExpanded) Modifier
-            .fillMaxWidth()
-            .heightIn(50.dp, 120.dp)
-            .padding(16.dp) else Modifier
-            .fillMaxSize()
-            .padding(top = 24.dp, start = 0.dp, end = 0.dp, bottom = 0.dp)
-            .zIndex(5f)
-            .shadow(
-                elevation = if (song.isPlaying) 4.dp else 0.dp,
-                shape = RoundedCornerShape(12.dp)
-            ),
+        modifier = if (!isCardExpanded) {
+            Modifier
+                .fillMaxWidth()
+                .heightIn(50.dp, 120.dp)
+                .padding(16.dp)
+        } else {
+            Modifier
+                .fillMaxSize()
+                .padding(top = 24.dp, start = 0.dp, end = 0.dp, bottom = 0.dp)
+                .zIndex(5f)
+                .shadow(
+                    elevation = if (song.isPlaying) 4.dp else 0.dp,
+                    shape = RoundedCornerShape(12.dp)
+                )
+        },
         onClick = { onCardViewClicked(!isCardExpanded) },
         shape = if (!isCardExpanded) RoundedCornerShape(12.dp) else RoundedCornerShape(
             topStartPercent = 10,
@@ -139,8 +161,18 @@ fun CardPlayer(
                                 Alignment.CenterVertically
                             )
                         ) {
-                            Text(modifier = Modifier.basicMarquee(), text = song.name, maxLines = 1)
-                            Text(modifier = Modifier.basicMarquee(), text = song.path, maxLines = 1)
+                            Text(
+                                modifier = Modifier.basicMarquee(),
+                                text = song.name,
+                                maxLines = 1,
+                                color = Color.Black
+                            )
+                            Text(
+                                modifier = Modifier.basicMarquee(),
+                                text = song.path,
+                                maxLines = 1,
+                                color = Color.DarkGray
+                            )
                         }
 
                         // Actions
@@ -162,7 +194,10 @@ fun CardPlayer(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp),
-                            progress = songProgress
+                            progress = { songProgress },
+                            color = Color.DarkGray,
+                            strokeCap = StrokeCap.Round,
+                            trackColor = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
@@ -180,7 +215,14 @@ fun CardPlayer(
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     Box(modifier = Modifier.weight(1.5f), contentAlignment = Alignment.Center) {
-                        Image(painter = imagePainter, contentDescription = null)
+                        Image(
+                            painter = if (imagePainter.state !is AsyncImagePainter.State.Success) {
+                                painterResource(id = com.riders.thelab.core.ui.R.drawable.logo_colors)
+                            } else {
+                                imagePainter
+                            },
+                            contentDescription = null
+                        )
                     }
 
                     // Song Info
@@ -192,8 +234,35 @@ fun CardPlayer(
                             Alignment.CenterVertically
                         )
                     ) {
-                        Text(modifier = Modifier.basicMarquee(), text = song.name, maxLines = 1)
-                        Text(modifier = Modifier.basicMarquee(), text = song.path, maxLines = 2)
+                        Text(
+                            modifier = Modifier.basicMarquee(), text = song.name,
+                            color = Color.Black, maxLines = 1
+                        )
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth(.85f)
+                                .basicMarquee(),
+                            text = song.path,
+                            color = Color.DarkGray,
+                            maxLines = 2
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .height(8.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LinearProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp),
+                            progress = { songProgress },
+                            color = Color.DarkGray,
+                            strokeCap = StrokeCap.Round,
+                            trackColor = MaterialTheme.colorScheme.primary
+                        )
                     }
 
                     // Actions

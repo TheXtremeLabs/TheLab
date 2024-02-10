@@ -142,11 +142,14 @@ class SongPlayerViewModel @Inject constructor(
         songList.addAll(newSongList)
     }
 
-    fun updateSongIsPlaying(songId: Int) {
+    fun updateSongIsPlaying(songId: Int, isForced: Boolean = false, isPlaying: Boolean = false) {
         Timber.d("updateSongIsPlaying() | songId: $songId")
 
         if (currentSongIndex == songId) {
             Timber.e("updateSongIsPlaying() | Song is already selected")
+            if (isForced) {
+                songList.first { it.id == currentSongIndex }.isPlaying = isPlaying
+            }
             return
         }
 
@@ -370,8 +373,7 @@ class SongPlayerViewModel @Inject constructor(
                     smallIcon = com.riders.thelab.core.ui.R.drawable.ic_music,
                     contentTitle = it.name,
                     contentText = it.path,
-                    largeIcon =
-                    com.riders.thelab.core.ui.R.drawable.logo_colors,
+                    largeIcon = com.riders.thelab.core.ui.R.drawable.logo_colors,
                     actionIcon = com.riders.thelab.core.ui.R.drawable.ic_pause,
                     actionTitle = com.riders.thelab.core.ui.R.string.action_pause
                 )
@@ -439,11 +441,23 @@ class SongPlayerViewModel @Inject constructor(
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
         Timber.e("onStop()")
-        if (mp.isPlaying) {
-            mp.stop()
-            mp.reset()
-            mp.release()
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onStop(owner)
+        Timber.e("onDestroy()")
+
+        runCatching {
+            if (mp.isPlaying) {
+                mp.stop()
+                mp.reset()
+                mp.release()
+            }
         }
+            .onFailure {
+                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+            }
+
         mHandler = null
 
         context.unregisterReceiver(mMediaButtonReceiver)
@@ -488,9 +502,13 @@ class SongPlayerViewModel @Inject constructor(
     fun togglePlayPauseSong() {
         Timber.d("togglePlayPauseSong()")
 
-        mp?.let {
-            if (it.isPlaying) {
+        mp.let {
+            if (!it.isPlaying) {
+                updateSongIsPlaying(songId = currentSongIndex, isForced = true, isPlaying = true)
+                it.start()
+            } else {
                 it.pause()
+                updateSongIsPlaying(songId = currentSongIndex, isForced = true, isPlaying = false)
             }
         }
     }

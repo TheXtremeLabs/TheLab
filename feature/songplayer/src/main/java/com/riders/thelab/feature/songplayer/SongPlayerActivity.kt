@@ -241,20 +241,5 @@ class SongPlayerActivity : BaseComponentActivity() {
         updateProgressBar()
     }
 
-    override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
-        Timber.i("onTransitionStarted()")
-    }
-
-    override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
-        // Ignored
-    }
-
-    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-        Timber.e("onTransitionCompleted()")
-        isToggle = !isToggle
-    }
-
-    override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
-        Timber.i("onTransitionTrigger()")
-    }*/
+    */
 }
