@@ -89,12 +89,6 @@ class SongPlayerActivity : BaseComponentActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.e("onDestroy()")
-    }
-
-
     ///////////////////////////////
     //
     // CLASS METHODS
@@ -122,80 +116,4 @@ class SongPlayerActivity : BaseComponentActivity() {
                 }
             }
     }
-
-
-    /*
-       override fun onClick(view: View?) {
-           when (view?.id) {
-               R.id.btn_arrow_down -> {
-                   // make iv clickable only if view is toggled
-                   if (isToggle)
-                       toggleAnimation(view)
-               }
-
-               R.id.tv_song_path -> {
-                   if (!isToggle)
-                       toggleAnimation(view)
-               }
-
-               R.id.btn_play_pause -> {
-                   // check for already playing
-                   if (mp.isPlaying) {
-                       mp.pause()
-                       // Changing button image to play button
-                       binding.btnPlayPause.setImageResource(R.drawable.ic_play)
-                   } else {
-                       // Resume song
-                       mp.start()
-                       // Changing button image to pause button
-                       binding.btnPlayPause.setImageResource(R.drawable.ic_pause)
-                   }
-               }
-
-               R.id.btn_previous -> {
-                   if (currentSongIndex > 0) {
-                       playSong(songsList[currentSongIndex - 1])
-                       currentSongIndex -= 1
-                   } else {
-                       // play last song
-                       playSong(songsList[songsList.size - 1])
-                       currentSongIndex = songsList.size - 1
-                   }
-
-               }
-
-               R.id.btn_next -> {
-                   // check if next song is there or not
-                   if (currentSongIndex < (songsList.size - 1)) {
-                       playSong(songsList[currentSongIndex + 1])
-                       currentSongIndex += 1
-                   } else {
-                       // play first song
-                       playSong(songsList[0])
-                       currentSongIndex = 0
-                   }
-               }
-           }
-       }
-
-
-       override fun onStartTrackingTouch(seekBar: SeekBar?) {
-           // remove message Handler from updating progress bar
-           mHandler?.removeCallbacks(mUpdateTimeTask)
-       }
-
-       override fun onStopTrackingTouch(seekBar: SeekBar?) {
-           mHandler?.removeCallbacks(mUpdateTimeTask)
-           val totalDuration = mp.duration
-           val currentPosition: Int =
-               SongPlayerUtils.progressToTimer(seekBar!!.progress, totalDuration)
-
-           // forward or backward to certain seconds
-           mp.seekTo(currentPosition)
-
-           // update timer progress again
-           updateProgressBar()
-       }
-
-       */
 }
