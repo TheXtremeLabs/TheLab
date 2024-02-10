@@ -3,7 +3,6 @@ package com.riders.thelab.ui.recycler
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.material.imageview.ShapeableImageView
 import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,9 +22,7 @@ import kotlinx.serialization.json.Json
 import timber.log.Timber
 
 @AndroidEntryPoint
-class RecyclerViewActivity : ComponentActivity(), RecyclerClickListener {
-
-    private lateinit var adapter: RecyclerViewAdapter
+class RecyclerViewActivity : BaseComponentActivity() {
 
     private val mRecyclerViewModel: RecyclerViewModel by viewModels()
 
@@ -65,6 +62,9 @@ class RecyclerViewActivity : ComponentActivity(), RecyclerClickListener {
         return true
     }
 
+    override fun backPressed() {
+        Timber.e("onBackPressed()")
+    }
 
     private fun initViewModelObservers() {
         mRecyclerViewModel.getJSONURLFetched().observe(this) {
@@ -89,15 +89,6 @@ class RecyclerViewActivity : ComponentActivity(), RecyclerClickListener {
         }
     }
 
-    override fun onRecyclerClick(artist: Artist) {
-        Timber.d("onRecyclerClick()")
-        Timber.d(artist.toString())
-    }
-
-    override fun onDetailClick(artist: Artist, sharedImageView: ShapeableImageView, position: Int) {
-        mRecyclerViewModel.onDetailClick(this, artist, sharedImageView)
-    }
-
     fun onDetailClick(artist: Artist) {
         Intent(this, RecyclerViewDetailActivity::class.java)
             .apply {
@@ -108,9 +99,5 @@ class RecyclerViewActivity : ComponentActivity(), RecyclerClickListener {
             }.run {
                 startActivity(this)
             }
-    }
-
-    override fun onDeleteClick(artist: Artist, position: Int) {
-        mRecyclerViewModel.onDeleteClick(this, artist, adapter, position)
     }
 }
