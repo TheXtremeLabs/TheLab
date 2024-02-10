@@ -3,7 +3,6 @@ package com.riders.thelab.feature.songplayer
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -17,9 +16,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -49,6 +48,7 @@ fun SongPlayerContent(
     onPlayPauseClicked: (Boolean) -> Unit,
     onNextClicked: (Boolean) -> Unit
 ) {
+    val density = LocalDensity.current
     val darkModeForced = true
     val lazyListState = rememberLazyListState()
 
@@ -70,7 +70,7 @@ fun SongPlayerContent(
                     NoItemFound("No song item found")
                 } else {
                     val animatedBottomPadding = animateDpAsState(
-                        targetValue = if (!isSongPlaying) 0.dp else 120.dp,
+                        targetValue = if (currentSongIndex == -1) 0.dp else 120.dp,
                         label = "bottom animation"
                     ).value
 
@@ -99,34 +99,35 @@ fun SongPlayerContent(
                                     selectedIndex = currentSongIndex,
                                     index = index,
                                     song = item
-                                ) {
-                                    //selectedIndex = if (selectedIndex != it) it else -1
-//                                    onItemClicked(selectedIndex)
-                                    onItemClicked(it)
-                                }
+                                ) { onItemClicked(it) }
                             }
                         }
 
                         AnimatedVisibility(
                             modifier = Modifier.zIndex(5f),
                             visible = currentSongIndex != -1,
-                            enter = slideInVertically() + fadeIn(),
-                            exit = fadeOut() + slideOutVertically()
+                            enter = slideInVertically {
+                                // Slide in from 40 dp from the top.
+                                with(density) { 40.dp.roundToPx() }
+                            } + fadeIn(
+                                // Fade in with the initial alpha of 0.3f.
+                                initialAlpha = 0.3f
+                            ),
+                            exit = slideOutVertically {
+                                // Slide in from 40 dp from the top.
+                                with(density) { -40.dp.roundToPx() }
+                            } + fadeOut()
                         ) {
                             CardPlayer(
-                                song = songList.first { it.id == currentSongIndex },
+                                song = songList[currentSongIndex],
                                 songProgress = songProgress,
                                 isCardExpanded = isCardExpanded,
                                 onCardViewClicked = { expanded -> onCardViewClicked(expanded) },
                                 onPreviousClicked = { previousClicked ->
-                                    onPreviousClicked(
-                                        previousClicked
-                                    )
+                                    onPreviousClicked(previousClicked)
                                 },
                                 onPlayPauseClicked = { playPauseClicked ->
-                                    onPlayPauseClicked(
-                                        playPauseClicked
-                                    )
+                                    onPlayPauseClicked(playPauseClicked)
                                 },
                                 onNextClicked = { nextClicked -> onNextClicked(nextClicked) }
                             )
@@ -153,7 +154,8 @@ private fun PreviewSongPlayerContentEmpty() {
             currentSongIndex = -1,
             isSongPlaying = false,
             isCardExpanded = false,
-            songProgress = .4f, onItemClicked = {},
+            songProgress = .4f,
+            onItemClicked = {},
             onCardViewClicked = { },
             onPreviousClicked = { },
             onPlayPauseClicked = { },
@@ -171,7 +173,8 @@ private fun PreviewSongPlayerContentIdle(@PreviewParameter(PreviewProviderSongLi
             currentSongIndex = -1,
             isSongPlaying = false,
             isCardExpanded = false,
-            songProgress = .4f, onItemClicked = {},
+            songProgress = .4f,
+            onItemClicked = {},
             onCardViewClicked = { },
             onPreviousClicked = { },
             onPlayPauseClicked = { },

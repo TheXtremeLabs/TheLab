@@ -2,6 +2,9 @@ package com.riders.thelab.feature.songplayer
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
@@ -28,6 +31,11 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -114,6 +122,14 @@ fun CardPlayer(
     val context = LocalContext.current
     val orientation = LocalConfiguration.current.orientation
 
+    var progress by remember { mutableFloatStateOf(0f) }
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress,
+        label = "",
+        animationSpec = tween(easing = LinearEasing, durationMillis = 300)
+    )
+
+
     Card(
         modifier = if (!isCardExpanded) {
             Modifier
@@ -194,7 +210,7 @@ fun CardPlayer(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp),
-                            progress = { songProgress },
+                            progress = { animatedProgress },
                             color = Color.DarkGray,
                             strokeCap = StrokeCap.Round,
                             trackColor = MaterialTheme.colorScheme.primary
@@ -258,7 +274,7 @@ fun CardPlayer(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp),
-                            progress = { songProgress },
+                            progress = { animatedProgress },
                             color = Color.DarkGray,
                             strokeCap = StrokeCap.Round,
                             trackColor = MaterialTheme.colorScheme.primary
@@ -292,6 +308,10 @@ fun CardPlayer(
                 }
             }
         }
+    }
+
+    LaunchedEffect(songProgress) {
+        progress = songProgress
     }
 }
 
