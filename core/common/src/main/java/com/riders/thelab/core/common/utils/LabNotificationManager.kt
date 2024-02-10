@@ -94,71 +94,75 @@ object LabNotificationManager {
         val mediaMetadata = controller.metadata
         val description = mediaMetadata?.description
 
-        val notification =
-            NotificationCompat.Builder(context, Constants.NOTIFICATION_MUSIC_CHANNEL_ID).apply {
+        val notification = NotificationCompat.Builder(
+            context,
+            Constants.NOTIFICATION_MUSIC_CHANNEL_ID
+        ).apply {
 
-                // Add the metadata for the currently playing track
-                setContentTitle(description?.title)
-                setContentText(description?.subtitle)
-                setSubText(description?.description)
-                setLargeIcon(description?.iconBitmap)
+            // Add the metadata for the currently playing track
+            setContentTitle(description?.title)
+            setContentText(description?.subtitle)
+            setSubText(description?.description)
+            setLargeIcon(description?.iconBitmap)
 
-                // Enable launching the player by clicking the notification
-                setContentIntent(controller.sessionActivity)
+            // Enable launching the player by clicking the notification
+            setContentIntent(controller.sessionActivity)
 
-                // Stop the service when the notification is swiped away
-                setDeleteIntent(
+            // Stop the service when the notification is swiped away
+            setDeleteIntent(
+                MediaButtonReceiver.buildMediaButtonPendingIntent(
+                    context,
+                    PlaybackStateCompat.ACTION_STOP
+                )
+            )
+
+            // Show controls on lock screen even when user hides sensitive content.
+            setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+
+            // Add an app icon and set its accent color
+            // Be careful about the color
+            setSmallIcon(smallIcon)
+
+            // Add a pause button
+            addAction(
+                NotificationCompat.Action(
+                    actionIcon,
+                    context.getString(actionTitle),
                     MediaButtonReceiver.buildMediaButtonPendingIntent(
                         context,
-                        PlaybackStateCompat.ACTION_STOP
+                        PlaybackStateCompat.ACTION_PLAY_PAUSE
                     )
                 )
+            )
 
-                // Show controls on lock screen even when user hides sensitive content.
-                setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
-                // Add an app icon and set its accent color
-                // Be careful about the color
-                setSmallIcon(smallIcon)
+            // Add media control buttons that invoke intents in your media service
+            //.addAction(R.drawable.ic_previous, "Previous", prevPendingIntent) // #0
+            //.addAction(R.drawable.ic_pause, "Pause", pausePendingIntent) // #1
+            //.addAction(R.drawable.ic_next, "Next", nextPendingIntent) // #2
+            // Apply the media style template
+            setStyle(
+                // Take advantage of MediaStyle features
+                androidx.media.app.NotificationCompat.MediaStyle()
+                    //  #1: pause button
+                    .setShowActionsInCompactView(0)
+                    .setMediaSession(mediaSession.sessionToken)
 
-                // Add a pause button
-                addAction(
-                    NotificationCompat.Action(
-                        actionIcon,
-                        context.getString(actionTitle),
+                    // Add a cancel button
+                    .setShowCancelButton(true)
+                    .setCancelButtonIntent(
                         MediaButtonReceiver.buildMediaButtonPendingIntent(
                             context,
-                            PlaybackStateCompat.ACTION_PLAY_PAUSE
+                            PlaybackStateCompat.ACTION_STOP
                         )
                     )
-                )
+            )
+            setContentTitle(contentTitle)
+            setContentText(contentText)
+            setLargeIcon(largeIcon.toBitmap(context))
 
-
-                // Add media control buttons that invoke intents in your media service
-                //.addAction(R.drawable.ic_previous, "Previous", prevPendingIntent) // #0
-                //.addAction(R.drawable.ic_pause, "Pause", pausePendingIntent) // #1
-                //.addAction(R.drawable.ic_next, "Next", nextPendingIntent) // #2
-                // Apply the media style template
-                setStyle(
-                    // Take advantage of MediaStyle features
-                    androidx.media.app.NotificationCompat.MediaStyle()
-                        //  #1: pause button
-                        .setShowActionsInCompactView(0)
-                        .setMediaSession(mediaSession.sessionToken)
-
-                        // Add a cancel button
-                        .setShowCancelButton(true)
-                        .setCancelButtonIntent(
-                            MediaButtonReceiver.buildMediaButtonPendingIntent(
-                                context,
-                                PlaybackStateCompat.ACTION_STOP
-                            )
-                        )
-                )
-                setContentTitle(contentTitle)
-                setContentText(contentText)
-                setLargeIcon(largeIcon.toBitmap(context))
-            }
+            setSilent(true)
+        }
 
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
