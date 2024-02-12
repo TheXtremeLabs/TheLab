@@ -196,7 +196,14 @@ fun TheLabTopAppBar(
                 ),
             title = {
                 if (null != title && null == mainCustomContent) {
-                    Text(text = title)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(start = 16.dp, bottom = 16.dp),
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        Text(text = title, color = Color.White)
+                    }
                 } else if (null != mainCustomContent && null == title) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         mainCustomContent()

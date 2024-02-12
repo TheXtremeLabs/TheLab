@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.palette
+package com.riders.thelab.feature.palette
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -6,8 +6,10 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -30,13 +32,24 @@ class PaletteActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-                    TheLabTheme {
+
+                    val paletteState by viewModel.paletteUiState.collectAsStateWithLifecycle()
+
+                    TheLabTheme(viewModel.isDarkMode) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            PaletteContent(viewModel)
+                            PaletteContent(
+                                paletteUiState = paletteState,
+                                paletteNameList = viewModel.paletteNameList,
+                                onRefreshedClicked = {
+                                    viewModel.updateIsRefreshing(true)
+                                    viewModel.getWallpaperImages(this@PaletteActivity)
+                                },
+                                isRefreshing = viewModel.isRefreshing
+                            )
                         }
                     }
                 }
