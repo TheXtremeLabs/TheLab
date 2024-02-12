@@ -288,7 +288,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name=".ui.palette.PaletteActivity"
+            android:name=".feature.palette.PaletteActivity"
             android:label="@string/activity_title_palette"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/PaletteTheme" />
