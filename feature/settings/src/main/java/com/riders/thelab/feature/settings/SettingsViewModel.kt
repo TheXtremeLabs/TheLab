@@ -113,7 +113,7 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
         }
     }
 
-    fun fetchDeviceInformation(activity: SettingsActivity) {
+    fun fetchDeviceInformation() {
         Timber.d("getDeviceInfo()")
 
         viewModelScope.launch(Dispatchers.IO) {

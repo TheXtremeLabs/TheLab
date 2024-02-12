@@ -209,14 +209,14 @@ class SongPlayerViewModel @Inject constructor(
             fullList.forEach { volumePath ->
                 Timber.e("volumePath: $volumePath")
                 if (volumePath.contains("download", true)) {
-                    getFilesWithPath(volumePath)?.let { updateSongList(it) }
+                    updateSongList(getFilesWithPath(volumePath))
                 }
                 if (volumePath.contains("music", true)) {
-                    getFilesWithPath(volumePath)?.let { updateSongList(it) }
+                    updateSongList(getFilesWithPath(volumePath))
                 }
 
                 if (volumePath.contains("0000")) {
-                    getFilesWithPath(volumePath)?.let { updateSongList(it) }
+                    updateSongList(getFilesWithPath(volumePath))
                 }
             }
 

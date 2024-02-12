@@ -309,6 +309,7 @@ fun generatePalette(palette: Palette): List<Int?> {
 // PREVIEWS
 //
 ///////////////////////////////////////
+/*
 @DevicePreviews
 @Composable
 private fun PreviewPaletteContent(@PreviewParameter(PreviewProvider::class) palette: PaletteUiState) {
@@ -325,4 +326,4 @@ private fun PreviewPaletteContent(@PreviewParameter(PreviewProvider::class) pale
     TheLabTheme {
         PaletteContent(palette, paletteNameList, {}, true)
     }
-}
+}*/

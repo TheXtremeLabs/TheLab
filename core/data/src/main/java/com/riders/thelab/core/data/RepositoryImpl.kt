@@ -23,6 +23,7 @@ import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBCreditsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
@@ -193,6 +194,9 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? =
         mApiImpl.getTvShowVideos(thShowID)
+
+    override suspend fun getMovieCredits(movieID: Int): TMDBCreditsResponse? =
+        mApiImpl.getMovieCredits(movieID)
 
     override suspend fun getApi(): ApiResponse = mApiImpl.getApi()
 

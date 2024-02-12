@@ -67,6 +67,7 @@ fun PaletteItem(
 // PREVIEWS
 //
 ///////////////////////////////////////
+/*
 @DevicePreviews
 @Composable
 private fun PreviewPaletteItem(@PreviewParameter(TextContentPreviewProvider::class) text: String) {
@@ -76,4 +77,4 @@ private fun PreviewPaletteItem(@PreviewParameter(TextContentPreviewProvider::cla
     TheLabTheme {
         PaletteItem(text = text, index = index, color = color)
     }
-}
+}*/

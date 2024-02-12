@@ -2,17 +2,18 @@ package com.riders.thelab.ui.recycler
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,36 +35,31 @@ class RecyclerViewActivity : BaseComponentActivity() {
 
         initViewModelObservers()
 
-        mRecyclerViewModel.getFirebaseJSONURL(this)
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
+
+                    val artistUiState by mRecyclerViewModel.artistUiState.collectAsStateWithLifecycle()
+
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            RecyclerViewContent(viewModel = mRecyclerViewModel)
+                            RecyclerViewContent(artistUiState)
                         }
                     }
                 }
             }
         }
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-            }
-        }
-        return true
+        mRecyclerViewModel.getFirebaseJSONURL(this)
     }
 
     override fun backPressed() {
-        Timber.e("onBackPressed()")
+        Timber.e("backPressed()")
+        finish()
     }
 
     private fun initViewModelObservers() {
@@ -89,7 +85,7 @@ class RecyclerViewActivity : BaseComponentActivity() {
         }
     }
 
-    fun onDetailClick(artist: Artist) {
+    fun onDetailClick(artist: ArtistModel) {
         Intent(this, RecyclerViewDetailActivity::class.java)
             .apply {
                 this.putExtra(

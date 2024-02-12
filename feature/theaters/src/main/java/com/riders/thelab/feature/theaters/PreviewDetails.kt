@@ -1,23 +1,38 @@
 package com.riders.thelab.feature.theaters
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.outlined.PlayCircleOutline
 import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -25,10 +40,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.riders.thelab.core.data.local.model.tmdb.TDMBCastModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -141,7 +158,6 @@ fun Trailer(onTrailerButtonClicked: () -> Unit) {
 
 @Composable
 fun Overview(tmdbItem: TMDBItemModel) {
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -154,6 +170,78 @@ fun Overview(tmdbItem: TMDBItemModel) {
             style = TextStyle(fontWeight = FontWeight.W700)
         )
         Text(modifier = Modifier.fillMaxWidth(), text = tmdbItem.overview)
+    }
+}
+
+@Composable
+fun Casting(castList: List<TDMBCastModel>) {
+    val context = LocalContext.current
+    val lazyListState = rememberLazyListState()
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            modifier = Modifier,
+            text = "Casting".uppercase(Locale.getDefault()),
+            style = TextStyle(fontWeight = FontWeight.W700)
+        )
+
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(90.dp,160.dp),
+            state = lazyListState,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            itemsIndexed(items = castList) { _, item ->
+
+                val painter = getCoilAsyncImagePainter(
+                    context = context,
+                    dataUrl = item.getProfileImageUrl()
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(72.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Box(modifier = Modifier.weight(2f), contentAlignment = Alignment.Center) {
+                            Card(
+                                modifier = Modifier.size(72.dp),
+                                shape = CircleShape
+                            ) {
+                                Image(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(shape = CircleShape),
+                                    painter = painter,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.FillWidth
+                                )
+                            }
+                        }
+
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            text = item.name,
+                            maxLines = 2
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -192,5 +280,13 @@ private fun PreviewTMDBTrailer() {
 private fun PreviewTMDBOverview(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabTheme {
         Overview(tmdbItem = item)
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewTMDBCasting(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
+    TheLabTheme {
+        Casting(castList = item.cast)
     }
 }
