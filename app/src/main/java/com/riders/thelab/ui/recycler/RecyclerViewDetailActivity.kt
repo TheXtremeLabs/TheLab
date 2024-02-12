@@ -9,7 +9,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityRecyclerViewDetailBinding
 import kotlinx.serialization.json.Json
@@ -26,7 +26,7 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
     private var _viewDetailBinding: ActivityRecyclerViewDetailBinding? = null
     private val binding get() = _viewDetailBinding!!
 
-    private var item: Artist? = null
+    private var item: ArtistModel? = null
 
     private var scrollRange = -1
 
@@ -87,7 +87,7 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
      * Display artist value
      */
     private fun bindData() {
-        item?.let { artist: Artist ->
+        item?.let { artist: ArtistModel ->
 
             binding.artist = artist
 
@@ -106,14 +106,18 @@ class RecyclerViewDetailActivity : AppCompatActivity(), OnOffsetChangedListener 
 
             // Display image
             UIManager.loadImage(this, artist.urlThumb, binding.transitionImageView)
+
+            val sb = StringBuilder()
+            sb.append(artist.firstName)
+
+            if (true == artist.secondName?.isNotBlank()) {
+                sb.append(", ").append(artist.secondName)
+            }
+
+            sb.append(" ").append(artist.lastName)
+
+            binding.tvFullNameDetail.text = sb.toString()
         }
-
-        /*val sb = StringBuilder()
-        sb.append(item.firstName)
-        if (item.secondName.isNotBlank()) sb.append(", ").append(item.secondName)
-        sb.append(" ").append(item.lastName)
-
-        viewDetailBinding.tvFullNameDetail.text = sb.toString()*/
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

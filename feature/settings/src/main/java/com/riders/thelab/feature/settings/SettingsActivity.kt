@@ -47,7 +47,7 @@ class SettingsActivity : BaseComponentActivity() {
         super.onStart()
 
         mViewModel.retrieveAppVersion(this@SettingsActivity)
-        mViewModel.fetchDeviceInformation(this@SettingsActivity)
+        mViewModel.fetchDeviceInformation()
     }
 
     override fun backPressed() {

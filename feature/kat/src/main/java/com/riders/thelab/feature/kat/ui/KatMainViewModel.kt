@@ -209,17 +209,15 @@ class KatMainViewModel @Inject constructor(
         }
 
         if (null == mFirebaseCloudDatastoreUser) {
-            if (null != mKatUserAuth) {
-                val newKatUser = KatUserModel(
-                    userId = FirebaseUtils.getCurrentUserID(),
-                    phone = "0614589309".isValidPhone(),
-                    username = mKatUserAuth!!.email,
-                    createdTimestamp = Timestamp.now(),
-                    fcmToken = deviceFCMToken!!
-                )
+            val newKatUser = KatUserModel(
+                userId = FirebaseUtils.getCurrentUserID(),
+                phone = "0614589309".isValidPhone(),
+                username = mKatUserAuth!!.email,
+                createdTimestamp = Timestamp.now(),
+                fcmToken = deviceFCMToken!!
+            )
 
-                mFirebaseCloudDatastoreUser = newKatUser.toDto()
-            }
+            mFirebaseCloudDatastoreUser = newKatUser.toDto()
         } else {
             Timber.d("Already logged in")
         }

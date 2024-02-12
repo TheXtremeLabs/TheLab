@@ -7,8 +7,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,9 +33,8 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.util.DebugLogger
 import com.riders.thelab.R
-import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.previewprovider.ArtistPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.loadImage
@@ -36,7 +44,7 @@ import timber.log.Timber
 
 @DevicePreviews
 @Composable
-fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
+fun Artist(@PreviewParameter(PreviewProviderArtistModel::class) artist: ArtistModel) {
 
     ////////////////////////////////
     // Compose
@@ -44,7 +52,7 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    var selectedIndex by remember { mutableStateOf(-1) }
+    var selectedIndex by remember { mutableStateOf((-1).toByte()) }
 
     ////////////////////////////////
     // Coil
@@ -76,7 +84,8 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
                 .selectable(
                     selected = artist.id == selectedIndex,
                     onClick = {
-                        selectedIndex = if (selectedIndex != artist.id) artist.id else -1
+                        selectedIndex =
+                            if (selectedIndex != artist.id) artist.id else -1
 
                         (context.findActivity() as RecyclerViewActivity).onDetailClick(artist)
                     }),
@@ -129,7 +138,7 @@ fun Artist(@PreviewParameter(ArtistPreviewProvider::class) artist: Artist) {
                         .fillMaxWidth()
                         .weight(1f)
                         .padding(8.dp),
-                    text = artist.artistName
+                    text = artist.sceneName
                 )
             }
         }
