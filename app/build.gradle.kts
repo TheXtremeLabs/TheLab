@@ -123,6 +123,7 @@ dependencies {
     implementation(project(":feature:kat"))
     implementation(project(":feature:lottie"))
     implementation(project(":feature:musicrecognition"))
+    implementation(project(":feature:palette"))
     implementation(project(":feature:schedule"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:songplayer"))
