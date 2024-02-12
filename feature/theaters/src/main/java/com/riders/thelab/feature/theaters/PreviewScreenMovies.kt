@@ -4,6 +4,9 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -17,7 +20,9 @@ import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBUpcomingM
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.toModel
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
+import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.ProvidedBy
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import timber.log.Timber
 
@@ -46,7 +51,7 @@ fun ScreenMovieContent(
             contentAlignment = Alignment.TopCenter
         ) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.size(width = this.maxWidth, height = this.maxHeight),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 state = lazyListState
@@ -125,6 +130,15 @@ fun ScreenMovieContent(
                             }
                         }
                     }
+                }
+
+                item {
+                    ProvidedBy(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        providerIcon = R.drawable.tmdb_logo
+                    )
                 }
             }
         }

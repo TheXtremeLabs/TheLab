@@ -13,6 +13,7 @@ import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBCreditsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
@@ -51,12 +52,12 @@ interface IApi {
 
 
     // Download
-    fun getDownloadManager(context:Context): DownloadManager
+    fun getDownloadManager(context: Context): DownloadManager
     fun downloadFile(context: Context, url: String): Long
     fun cancelDownload(downloadId: Long): Int
     fun cancelDownloads(downloadIds: List<Long>): Int
 
-    // TMDB
+    // TMDBModel
     suspend fun getTrendingMovies(): TMDBMovieResponse
     suspend fun getPopularMovies(): TMDBMovieResponse
     suspend fun getUpcomingMovies(): TMDBMovieResponse
@@ -64,4 +65,5 @@ interface IApi {
     suspend fun getPopularTvShows(): TMDBTvShowsResponse
     suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse?
     suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse?
+    suspend fun getMovieCredits(movieID: Int): TMDBCreditsResponse?
 }

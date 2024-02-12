@@ -35,7 +35,7 @@ class TheatersDetailActivity : BaseComponentActivity() {
 
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
-                    val tmdbItem: TMDBItemModel by mViewModel.tmdbItemUiState.collectAsStateWithLifecycle()
+                    val tmdbUIState by mViewModel.tmdbItemUiState.collectAsStateWithLifecycle()
 
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
@@ -44,7 +44,7 @@ class TheatersDetailActivity : BaseComponentActivity() {
                             color = MaterialTheme.colorScheme.background
                         ) {
                             TheatersDetailContent(
-                                tmdbItem = tmdbItem,
+                                tmdbState = tmdbUIState,
                                 isTrailerVisible = mViewModel.isTrailerVisible
                             ) {
                                 mViewModel.updateIsTrailerVisible(it)

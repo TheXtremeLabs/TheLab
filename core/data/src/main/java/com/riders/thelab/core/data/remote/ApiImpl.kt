@@ -30,6 +30,7 @@ import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBCreditsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
@@ -104,11 +105,13 @@ class ApiImpl @Inject constructor(
 
         // If sign in fails, display a message to the user.
         Timber.w("signInAnonymously:failure %s", exception.toString())
-        Toast.makeText(
-            activity,
-            "Authentication failed.",
-            Toast.LENGTH_SHORT
-        ).show()
+        activity.runOnUiThread {
+            Toast.makeText(
+                activity,
+                "Authentication failed.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
         null
     }
@@ -277,17 +280,25 @@ class ApiImpl @Inject constructor(
         return totalDownloadStooped
     }
 
-    override suspend fun getTrendingMovies(): TMDBMovieResponse = mTmdbApiService.getTrendingMovies()
+    override suspend fun getTrendingMovies(): TMDBMovieResponse =
+        mTmdbApiService.getTrendingMovies()
 
     override suspend fun getPopularMovies(): TMDBMovieResponse = mTmdbApiService.getPopularMovies()
 
-    override suspend fun getUpcomingMovies(): TMDBMovieResponse = mTmdbApiService.getUpcomingMovies()
+    override suspend fun getUpcomingMovies(): TMDBMovieResponse =
+        mTmdbApiService.getUpcomingMovies()
 
-    override suspend fun getTrendingTvShows(): TMDBTvShowsResponse = mTmdbApiService.getTrendingTvShows()
+    override suspend fun getTrendingTvShows(): TMDBTvShowsResponse =
+        mTmdbApiService.getTrendingTvShows()
 
-    override suspend fun getPopularTvShows(): TMDBTvShowsResponse = mTmdbApiService.getPopularTvShows()
+    override suspend fun getPopularTvShows(): TMDBTvShowsResponse =
+        mTmdbApiService.getPopularTvShows()
 
-    override suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse? = mTmdbApiService.getMovieVideos(movieID)
+    override suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse? =
+        mTmdbApiService.getMovieVideos(movieID)
 
-    override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? = mTmdbApiService.getTvShowVideos(thShowID)
+    override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? =
+        mTmdbApiService.getTvShowVideos(thShowID)
+
+    override suspend fun getMovieCredits(movieID: Int): TMDBCreditsResponse? = mTmdbApiService.getMovieCredits(movieID)
 }

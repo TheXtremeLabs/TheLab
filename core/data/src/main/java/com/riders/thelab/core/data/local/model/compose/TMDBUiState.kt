@@ -1,6 +1,7 @@
 package com.riders.thelab.core.data.local.model.compose
 
 import androidx.compose.runtime.Stable
+import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 
@@ -38,5 +39,10 @@ sealed class TMDBUiState {
         data class Success(val response: TMDBTvShowsResponse) : TMDBTvShowsUiState()
         data class Error(val message: String) : TMDBTvShowsUiState()
         data object Loading : TMDBTvShowsUiState()
+    }
+    sealed class TMDBDetailUiState : TMDBUiState() {
+        data class Success(val item: TMDBItemModel) : TMDBDetailUiState()
+        data class Error(val message: String) : TMDBDetailUiState()
+        data object Loading : TMDBDetailUiState()
     }
 }

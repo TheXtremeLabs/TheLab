@@ -1,9 +1,6 @@
 package com.riders.thelab.core.data.local.model.tmdb
 
 import androidx.compose.runtime.Stable
-import com.riders.thelab.core.data.local.model.Actors
-import com.riders.thelab.core.data.local.model.Director
-import com.riders.thelab.core.data.local.model.Scenarist
 import com.riders.thelab.core.data.remote.dto.tmdb.MovieDto
 import com.riders.thelab.core.data.remote.dto.tmdb.TvShowsDto
 import com.riders.thelab.core.data.utils.Constants
@@ -24,10 +21,10 @@ data class TMDBItemModel(
     var type: String? = null,
     var duration: Int? = 0,
     val originalLanguage: String,
-    var cast: List<TDMBCastModel>? = null,
-    var directors: List<TDMBCastModel>? = null,
-    var scenarists: List<TDMBCastModel>? = null,
-    var videos: List<TMDBVideoModel>? = null,
+    var cast: List<TDMBCastModel>,
+    var directors: List<TDMBCastModel>,
+    var scenarists: List<TDMBCastModel>,
+    var videos: List<TMDBVideoModel>,
     val releaseDate: String? = null,
     val firstAirDate: String? = null,
     var popularity: Int,
@@ -47,10 +44,10 @@ data class TMDBItemModel(
         null,
         null,
         "",
-        null,
-        null,
-        null,
-        null,
+        emptyList(),
+        emptyList(),
+        emptyList(),
+        emptyList(),
         "",
         "",
         0,
@@ -71,6 +68,10 @@ fun MovieDto.toModel(): TMDBItemModel = TMDBItemModel(
     title = this.title,
     originalTitle = this.originalTitle,
     originalLanguage = this.originalLanguage,
+    cast = emptyList(),
+    directors = emptyList(),
+    scenarists = emptyList(),
+    videos = emptyList(),
     overview = this.overview,
     genresID = this.genresID,
     year = this.releaseDate,
@@ -87,6 +88,10 @@ fun TvShowsDto.toModel(): TMDBItemModel = TMDBItemModel(
     title = this.name,
     originalTitle = this.originalName,
     originalLanguage = this.originalLanguage,
+    cast = emptyList(),
+    directors = emptyList(),
+    scenarists = emptyList(),
+    videos = emptyList(),
     overview = this.overview,
     genresID = this.genresID,
     year = this.firstAirDate,

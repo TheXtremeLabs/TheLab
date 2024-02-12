@@ -204,6 +204,8 @@ internal object ApiModule {
 
     private val json = Json {
         ignoreUnknownKeys = true
+        isLenient = true
+        prettyPrint = true
     }
 
     private const val CONTENT_TYPE_JSON = "application/json"
