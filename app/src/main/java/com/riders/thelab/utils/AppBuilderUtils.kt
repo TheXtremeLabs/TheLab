@@ -28,7 +28,6 @@ import com.riders.thelab.ui.googledrive.GoogleDriveActivity
 import com.riders.thelab.ui.googlemlkit.LiveBarcodeScanningActivity
 import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
-import com.riders.thelab.ui.palette.PaletteActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.spring.SpringActivity
@@ -185,8 +184,8 @@ object AppBuilderUtils {
                                 R.drawable.ic_palette
                             )
                         )
-                        .withActivityClass(PaletteActivity::class.java)
-                        .withActivityDate("2023/01/16")
+                        .withActivityClass(com.riders.thelab.feature.palette.PaletteActivity::class.java)
+                        .withActivityDate("2024/02/12")
                         .build()
                 this.add(palette)
 
