@@ -8,6 +8,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBDetailUiState
+import com.riders.thelab.core.data.local.model.tmdb.TDMBCastModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.toModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +31,8 @@ class TheatersDetailViewModel @Inject constructor(
     ////////////////////////////////////////
     // Variables
     ////////////////////////////////////////
-    private var tmdbItemModel: TMDBItemModel? = null
+    private var mTMDBItemModel: TMDBItemModel? by mutableStateOf(null)
+        private set
 
     ////////////////////////////////////////
     // Compose states
@@ -39,16 +42,16 @@ class TheatersDetailViewModel @Inject constructor(
     var isTrailerVisible by mutableStateOf(false)
         private set
 
-    private val _tmdbItemUiState: MutableStateFlow<TMDBItemModel> =
-        MutableStateFlow(TMDBItemModel())
-    val tmdbItemUiState: StateFlow<TMDBItemModel> = _tmdbItemUiState
+    private val _tmdbItemUiState: MutableStateFlow<TMDBDetailUiState> =
+        MutableStateFlow(TMDBDetailUiState.Loading)
+    val tmdbItemUiState: StateFlow<TMDBDetailUiState> = _tmdbItemUiState
 
     ////////////////////////////////////////
     // Composable methods
     ////////////////////////////////////////
-    private fun updateTMDBItemUiState(newItem: TMDBItemModel) {
-        this._tmdbItemUiState.value = newItem
-        Timber.e("updateTMDBItemUiState() | _tmdbItemUiState: ${_tmdbItemUiState.value.toString()}")
+    private fun updateTMDBItemUiState(newState: TMDBDetailUiState) {
+        this._tmdbItemUiState.value = newState
+        Timber.e("updateTMDBItemUiState() | TMDBModel Item value: ${_tmdbItemUiState.value.toString()}")
     }
 
     fun updateTitle(newTitle: String) {
@@ -87,7 +90,7 @@ class TheatersDetailViewModel @Inject constructor(
                 Json
                     .decodeFromString<TMDBItemModel>(extraMovieJsonString)
                     .runCatching {
-                        tmdbItemModel = this
+                        mTMDBItemModel = this
                         //updateTMDBItemUiState(this)
                         getVideos()
                     }
@@ -102,37 +105,73 @@ class TheatersDetailViewModel @Inject constructor(
     }
 
     fun getVideos() {
-        Timber.d("getVideos() | tmdbItemModel: ${tmdbItemModel.toString()}")
-        tmdbItemModel?.let { tmdbItem ->
-            viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-                val movieVideoResponse =
-                    repository.getMovieVideos(tmdbItem.id)
 
-                movieVideoResponse?.let { movieVideo ->
+        if (null == mTMDBItemModel) {
+            Timber.e("getVideos() | tmdbItemModel is null")
+            return
+        }
 
-                    if (movieVideo.results.isEmpty()) {
+        Timber.d("getVideos() | tmdbItemModel: ${mTMDBItemModel.toString()}")
 
-                        val tvShowVideoResponse = repository.getTvShowVideos(tmdbItem.id)
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+            val movieVideoResponse = repository.getMovieVideos(mTMDBItemModel!!.id)
 
-                        tvShowVideoResponse?.let { tvShowVideo ->
-                            if (tvShowVideo.results.isEmpty()) {
-                                Timber.e("getVideos() | No videos found.")
-                            } else {
+            movieVideoResponse?.let { movieVideo ->
 
-                                tmdbItemModel =
-                                    tmdbItem.copy(videos = tvShowVideo.results.map { it.toModel() })
-                                updateTMDBItemUiState(tmdbItemModel!!)
-                            }
-                        } ?: run { Timber.e("tvShowVideoResponse is null") }
-                    } else {
+                if (movieVideo.results.isEmpty()) {
+                    val tvShowVideoResponse = repository.getTvShowVideos(mTMDBItemModel!!.id)
 
-                        tmdbItemModel =
-                            tmdbItem.copy(videos = movieVideo.results.map { it.toModel() })
-                        updateTMDBItemUiState(tmdbItemModel!!)
+                    tvShowVideoResponse?.let { tvShowVideo ->
+                        if (tvShowVideo.results.isEmpty()) {
+                            Timber.e("getVideos() | No videos found.")
+                        } else {
+
+                            mTMDBItemModel!!.videos = tvShowVideo.results.map { it.toModel() }
+                            // updateTMDBItemUiState(TMDBDetailUiState.Success(mTMDBItemModel!!))
+                        }
+                    } ?: run { Timber.e("tvShowVideoResponse is null") }
+                } else {
+
+                    mTMDBItemModel!!.videos = movieVideo.results.map { it.toModel() }
+                    // updateTMDBItemUiState(TMDBDetailUiState.Success(mTMDBItemModel!!))
+                }
+
+                getCast()
+
+            } ?: run { Timber.e("videoResponse is null") }
+        }
+    }
+
+    fun getCast() {
+        if (null == mTMDBItemModel) {
+            Timber.e("getCast() | tmdbItemModel is null")
+            return
+        }
+
+        Timber.d("getCast() | tmdbItemModel: ${mTMDBItemModel.toString()}")
+
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+            val castResponse = repository.getMovieCredits(mTMDBItemModel!!.id)
+
+            castResponse?.let { response ->
+                val castList: MutableList<TDMBCastModel> = mutableListOf()
+                response.cast.forEach {
+                    if (it.knownForDepartment.contains("acting", true)) {
+                        castList.add(it.toModel())
                     }
+                }
+                mTMDBItemModel!!.cast = castList
 
-                } ?: run { Timber.e("videoResponse is null") }
-            }
-        } ?: run { Timber.e("tmdbItemModel is null") }
+                val crewList: MutableList<TDMBCastModel> = mutableListOf()
+                response.crew.forEach {
+                    if (it.department.contains("production", true)) {
+                        crewList.add(it.toModel())
+                    }
+                }
+
+                mTMDBItemModel!!.directors = crewList
+                updateTMDBItemUiState(TMDBDetailUiState.Success(mTMDBItemModel!!))
+            } ?: run { Timber.e("castResponse is null") }
+        }
     }
 }

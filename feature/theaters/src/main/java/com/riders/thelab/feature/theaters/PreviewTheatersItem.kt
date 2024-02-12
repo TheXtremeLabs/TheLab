@@ -174,10 +174,11 @@ fun TMDBItem(tmdbItem: TMDBItemModel, onItemClicked: (item: TMDBItemModel) -> Un
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width))
+                        .padding(horizontal = 0.dp)
                         .weight(2.5f)
                         .clip(RoundedCornerShape(12.dp)),
                     painter = painter,
-                    contentDescription = "weather icon wth coil",
+                    contentDescription = "icon wth coil",
                     contentScale = ContentScale.Crop,
                 )
 

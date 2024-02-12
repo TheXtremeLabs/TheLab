@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -98,7 +99,7 @@ fun TheatersSplash() {
                         color = Color.White
                     )
                     Spacer(modifier = Modifier.size(8.dp))
-                    Image(
+                    /*Image(
                         modifier = Modifier.height(12.dp),
                         painter = painterResource(id = R.drawable.ic_lab_6_the),
                         contentDescription = "the_icon",
@@ -110,6 +111,12 @@ fun TheatersSplash() {
                         painter = painterResource(id = R.drawable.ic_lab_6_lab),
                         contentDescription = "lab_icon",
                         colorFilter = ColorFilter.tint(Color.White)
+                    )*/
+                    Image(
+                        modifier = Modifier.height(20.dp),
+                        painter = painterResource(id = R.drawable.tmdb_logo),
+                        contentDescription = "tmdb_icon",
+                        contentScale = ContentScale.Crop
                     )
                 }
             }

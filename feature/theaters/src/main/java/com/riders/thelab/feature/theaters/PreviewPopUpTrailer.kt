@@ -69,12 +69,14 @@ fun PopUpTrailer(
         }
     }
 
+    Timber.d("PopUpTrailer() | Recomposition | ")
+
     TheLabTheme {
         Card(
             modifier = mModifier,
             colors = CardDefaults.cardColors(containerColor = Color.DarkGray)
         ) {
-            AnimatedContent(targetState = tmdbVideoModel.key.isNotBlank()) { targetState ->
+            AnimatedContent(targetState = tmdbVideoModel.key.isNotBlank(), label = "") { targetState ->
                 if (!targetState) {
                     Column {
 
