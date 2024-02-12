@@ -66,7 +66,7 @@ class MainActivityViewModel : BaseViewModel() {
     val appList: StateFlow<List<App>> = _appList
 
     val filteredList: List<App> by derivedStateOf {
-        if(searchedAppRequest.trim().isBlank()){
+        if(searchedAppRequest.trim().isBlank() || searchedAppRequest.trim() == ""){
             _appList.value
         } else {
             _appList.value.filter {
@@ -344,12 +344,18 @@ class MainActivityViewModel : BaseViewModel() {
             .sortedByDescending { (it as LocalApp).appDate }
             .take(3)
             .map {
-                var bitmap: Bitmap? = if (it.appDrawableIcon is BitmapDrawable) {
-                    (it.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
-                } else if (it.appDrawableIcon is VectorDrawable) {
-                    App.getBitmap(it.appDrawableIcon as VectorDrawable)!!
-                } else {
-                    null
+                val bitmap: Bitmap? = when (it.appDrawableIcon) {
+                    is BitmapDrawable -> {
+                        (it.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
+                    }
+
+                    is VectorDrawable -> {
+                        App.getBitmap(it.appDrawableIcon as VectorDrawable)!!
+                    }
+
+                    else -> {
+                        null
+                    }
                 }
 
                 LocalApp(

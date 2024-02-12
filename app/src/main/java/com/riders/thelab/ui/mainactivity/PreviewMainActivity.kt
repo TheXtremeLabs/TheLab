@@ -178,7 +178,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
                         App(item = appItem)
                     }
 
-                    if (viewModel.filteredList.isEmpty()) {
+                    if (viewModel.searchedAppRequest.trim() != "" && viewModel.filteredList.isEmpty()) {
                         item(span = {
                             // Replace "maxCurrentLineSpan" with the number of spans this item should take.
                             // Use "maxCurrentLineSpan" if you want to take full width.
