@@ -40,6 +40,7 @@ sealed class TMDBUiState {
         data class Error(val message: String) : TMDBTvShowsUiState()
         data object Loading : TMDBTvShowsUiState()
     }
+
     sealed class TMDBDetailUiState : TMDBUiState() {
         data class Success(val item: TMDBItemModel) : TMDBDetailUiState()
         data class Error(val message: String) : TMDBDetailUiState()

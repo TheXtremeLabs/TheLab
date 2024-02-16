@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+@Suppress("EmptyMethod")
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val repository: IRepository

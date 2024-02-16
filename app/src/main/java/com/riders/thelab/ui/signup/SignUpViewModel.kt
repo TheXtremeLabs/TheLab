@@ -33,6 +33,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
+@Suppress("EmptyMethod")
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     @ApplicationContext context: Context,

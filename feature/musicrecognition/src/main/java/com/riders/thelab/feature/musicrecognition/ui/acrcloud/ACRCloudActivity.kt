@@ -1,9 +1,3 @@
-@file:Suppress(
-    "ControlFlowWithEmptyBody", "ControlFlowWithEmptyBody", "ControlFlowWithEmptyBody",
-    "ControlFlowWithEmptyBody", "ControlFlowWithEmptyBody", "ControlFlowWithEmptyBody",
-    "ControlFlowWithEmptyBody", "ControlFlowWithEmptyBody"
-)
-
 package com.riders.thelab.feature.musicrecognition.ui.acrcloud
 
 import android.Manifest
@@ -42,6 +36,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@Suppress("ControlFlowWithEmptyBody")
 @AndroidEntryPoint
 class ACRCloudActivity : BaseComponentActivity() {
 

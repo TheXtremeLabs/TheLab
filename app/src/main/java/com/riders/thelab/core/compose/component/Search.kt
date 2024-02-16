@@ -28,14 +28,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -56,7 +54,6 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
 import com.riders.thelab.ui.mainactivity.MainActivityViewModel
-import kotlinx.coroutines.delay
 import timber.log.Timber
 
 ///////////////////////////////////////
@@ -64,7 +61,6 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Search(viewModel: MainActivityViewModel, dynamicIslandState: IslandState) {
     val context = LocalContext.current

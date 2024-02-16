@@ -66,7 +66,6 @@ fun NoItemFound(searchValue: String) {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(item: App) {
 

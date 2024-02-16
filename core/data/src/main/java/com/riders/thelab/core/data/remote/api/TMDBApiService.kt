@@ -32,6 +32,7 @@ interface TMDBApiService {
 
     @GET("movie/{movieID}/credits")
     suspend fun getMovieCredits(@Path("movieID") movieID: Int): TMDBCreditsResponse?
+
     @GET("person/{personID}/images")
     suspend fun getProfileImage(@Path("personID") personID: Int): TMDBCreditsResponse?
 }

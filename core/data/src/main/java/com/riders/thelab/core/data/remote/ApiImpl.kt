@@ -275,7 +275,7 @@ class ApiImpl @Inject constructor(
     override fun cancelDownload(downloadId: Long): Int = downloadManager!!.remove(downloadId)
 
     override fun cancelDownloads(downloadIds: List<Long>): Int {
-        var totalDownloadStooped: Int = 0
+        var totalDownloadStooped = 0
         downloadIds.forEach { totalDownloadStooped += downloadManager!!.remove(it) }
         return totalDownloadStooped
     }
@@ -300,5 +300,6 @@ class ApiImpl @Inject constructor(
     override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? =
         mTmdbApiService.getTvShowVideos(thShowID)
 
-    override suspend fun getMovieCredits(movieID: Int): TMDBCreditsResponse? = mTmdbApiService.getMovieCredits(movieID)
+    override suspend fun getMovieCredits(movieID: Int): TMDBCreditsResponse? =
+        mTmdbApiService.getMovieCredits(movieID)
 }

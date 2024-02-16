@@ -14,7 +14,6 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
 import com.riders.thelab.core.data.local.bean.MovieEnum
 import com.riders.thelab.core.data.local.model.Movie
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBMoviesUiState
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingMovieItemUiState
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingTvShowItemUiState
@@ -35,6 +34,7 @@ import kotlinx.serialization.json.Json
 import timber.log.Timber
 import javax.inject.Inject
 
+@Suppress("EmptyMethod")
 @HiltViewModel
 class TheatersViewModel @Inject constructor(
     private val repository: IRepository
@@ -43,7 +43,7 @@ class TheatersViewModel @Inject constructor(
     ////////////////////////////////////////
     // Compose states
     ////////////////////////////////////////
-    val categories : List<String> = listOf("MOVIES", "TV SHOWS")
+    val categories: List<String> = listOf("MOVIES", "TV SHOWS")
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -60,9 +60,7 @@ class TheatersViewModel @Inject constructor(
     // Composable methods
     ////////////////////////////////////////
     private var _mTMDBTrendingMovieItemUiState: MutableStateFlow<TMDBTrendingMovieItemUiState> =
-        MutableStateFlow(
-            TMDBTrendingMovieItemUiState.Loading
-        )
+        MutableStateFlow(TMDBTrendingMovieItemUiState.Loading)
     var tmdbTrendingMovieItemUiState: StateFlow<TMDBTrendingMovieItemUiState> =
         _mTMDBTrendingMovieItemUiState
 
@@ -71,7 +69,7 @@ class TheatersViewModel @Inject constructor(
     )
     var tmdbMoviesUiState: StateFlow<TMDBMoviesUiState> = _mTMDBMoviesUiState
 
-    private var _mTMDBUpcomingMoviesUiState: MutableStateFlow<TMDBUiState.TMDBUpcomingMoviesUiState> =
+    private var _mTMDBUpcomingMoviesUiState: MutableStateFlow<TMDBUpcomingMoviesUiState> =
         MutableStateFlow(
             TMDBUpcomingMoviesUiState.Loading
         )
@@ -102,7 +100,7 @@ class TheatersViewModel @Inject constructor(
         private set
 
     var isRefreshing by mutableStateOf(false)
-    private set
+        private set
 
 
     fun updateOnce() {
@@ -121,7 +119,7 @@ class TheatersViewModel @Inject constructor(
         this._mTMDBMoviesUiState.value = newState
     }
 
-    private fun updateTMDBUpcomingMoviesUiState(newState: TMDBUiState.TMDBUpcomingMoviesUiState) {
+    private fun updateTMDBUpcomingMoviesUiState(newState: TMDBUpcomingMoviesUiState) {
         this._mTMDBUpcomingMoviesUiState.value = newState
     }
 
@@ -149,7 +147,7 @@ class TheatersViewModel @Inject constructor(
         this.hasConnection = hasConnection
     }
 
-     fun updateIsRefreshing(isRefreshing: Boolean) {
+    fun updateIsRefreshing(isRefreshing: Boolean) {
         this.isRefreshing = isRefreshing
     }
 
@@ -205,7 +203,7 @@ class TheatersViewModel @Inject constructor(
         }
     }
 
-     fun fetchTMDBData() {
+    fun fetchTMDBData() {
         Timber.d("fetchTMDBData()")
 
         // Trending Movie

@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@Suppress("EmptyMethod")
 @HiltViewModel
 class ColorViewModel @Inject constructor(private val repository: IRepository) : BaseViewModel() {
 

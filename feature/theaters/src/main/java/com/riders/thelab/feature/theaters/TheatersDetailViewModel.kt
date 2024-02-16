@@ -1,3 +1,5 @@
+@file:Suppress("RedundantSetter")
+
 package com.riders.thelab.feature.theaters
 
 import android.app.Activity
@@ -23,6 +25,7 @@ import kotlinx.serialization.json.Json
 import timber.log.Timber
 import javax.inject.Inject
 
+@Suppress("EmptyMethod")
 @HiltViewModel
 class TheatersDetailViewModel @Inject constructor(
     private val repository: IRepository
@@ -51,7 +54,7 @@ class TheatersDetailViewModel @Inject constructor(
     ////////////////////////////////////////
     private fun updateTMDBItemUiState(newState: TMDBDetailUiState) {
         this._tmdbItemUiState.value = newState
-        Timber.e("updateTMDBItemUiState() | TMDBModel Item value: ${_tmdbItemUiState.value.toString()}")
+        Timber.e("updateTMDBItemUiState() | TMDBModel Item value: ${_tmdbItemUiState.value}")
     }
 
     fun updateTitle(newTitle: String) {

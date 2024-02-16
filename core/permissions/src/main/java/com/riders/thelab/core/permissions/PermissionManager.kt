@@ -127,7 +127,7 @@ class PermissionManager {
     }
 
     private fun sendPositiveResult() {
-        sendResultAndCleanUp(getPermissionList().associate { it to true })
+        sendResultAndCleanUp(getPermissionList().associateWith { true })
     }
 
     private fun sendResultAndCleanUp(grantResults: Map<String, Boolean>) {

@@ -18,8 +18,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -99,7 +99,6 @@ fun KatTopAppBar(title: String, onNavigationBackClicked: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KatSendButton(onSendClicked: () -> Unit) {
     Card(modifier = Modifier.size(56.dp), onClick = onSendClicked, shape = CircleShape) {
@@ -107,7 +106,7 @@ fun KatSendButton(onSendClicked: () -> Unit) {
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Icon(imageVector = Icons.Filled.Send, contentDescription = "send_icon")
+            Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "send_icon")
         }
     }
 }

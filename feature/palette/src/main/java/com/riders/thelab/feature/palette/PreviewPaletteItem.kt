@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 
 ///////////////////////////////////////
 //
@@ -67,14 +68,13 @@ fun PaletteItem(
 // PREVIEWS
 //
 ///////////////////////////////////////
-/*
 @DevicePreviews
 @Composable
 private fun PreviewPaletteItem(@PreviewParameter(TextContentPreviewProvider::class) text: String) {
-    val index: Int = 0
-    val color: Color = MaterialTheme.colorScheme.background
+    val index = 0
+    val color: Color = md_theme_dark_primary
 
     TheLabTheme {
         PaletteItem(text = text, index = index, color = color)
     }
-}*/
+}

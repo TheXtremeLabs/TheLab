@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Build.VERSION_CODES
-import androidx.annotation.RequiresApi
 import com.riders.thelab.core.common.bean.AndroidReleases
 import timber.log.Timber
 import java.lang.reflect.Field

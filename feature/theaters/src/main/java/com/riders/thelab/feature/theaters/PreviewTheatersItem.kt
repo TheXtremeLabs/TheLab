@@ -148,7 +148,6 @@ fun TrendingTMDBItem(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TMDBItem(tmdbItem: TMDBItemModel, onItemClicked: (item: TMDBItemModel) -> Unit) {
     val painter =

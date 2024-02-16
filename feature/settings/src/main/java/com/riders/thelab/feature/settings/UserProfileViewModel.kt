@@ -23,6 +23,7 @@ import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
+@Suppress("EmptyMethod")
 @HiltViewModel
 class UserProfileViewModel @Inject constructor(
     private val repository: IRepository

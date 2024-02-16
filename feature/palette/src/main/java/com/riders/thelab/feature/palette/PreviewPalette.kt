@@ -30,7 +30,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -43,7 +42,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -52,6 +50,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import coil.compose.AsyncImagePainter
@@ -73,6 +72,19 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////////////
+@DevicePreviews
+@Composable
+fun PaletteLoader() {
+    Box(modifier = Modifier
+        .size(72.dp)
+        .zIndex(5f), contentAlignment = Alignment.Center) {
+        Lottie(
+            modifier = Modifier.fillMaxSize(),
+            url = "https://assets2.lottiefiles.com/packages/lf20_kk62um5v.json"
+        )
+    }
+}
+
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun PaletteContent(
@@ -155,12 +167,7 @@ fun PaletteContent(
         ) {
             when (paletteUiState) {
                 is PaletteUiState.Loading -> {
-                    Box(modifier = Modifier.size(72.dp), contentAlignment = Alignment.Center) {
-                        Lottie(
-                            modifier = Modifier.fillMaxSize(),
-                            url = "https://assets2.lottiefiles.com/packages/lf20_kk62um5v.json"
-                        )
-                    }
+                    PaletteLoader()
                 }
 
                 else -> {
@@ -209,28 +216,25 @@ fun PaletteContent(
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.Center
                                     ) {
-                                        Image(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height))
-                                                .clip(RoundedCornerShape(12.dp)),
-                                            painter = painter,
-                                            contentDescription = "palette image wth coil",
-                                            contentScale = ContentScale.Crop,
-                                        )
                                         when (state) {
                                             is AsyncImagePainter.State.Loading -> {
                                                 Timber.i("state is AsyncImagePainter.State.Loading")
-                                                CircularProgressIndicator(
-                                                    color = MaterialTheme.colorScheme.primary,
-                                                    modifier = Modifier
-                                                        .scale(0.5f)
-                                                        .align(Alignment.CenterHorizontally)
-                                                )
+                                                PaletteLoader()
                                             }
 
                                             is AsyncImagePainter.State.Success -> {
                                                 Timber.d("state is AsyncImagePainter.State.Success")
+
+                                                Image(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height))
+                                                        .clip(RoundedCornerShape(12.dp)),
+                                                    painter = painter,
+                                                    contentDescription = "palette image wth coil",
+                                                    contentScale = ContentScale.Crop,
+                                                )
+
                                                 LaunchedEffect(key1 = painter) {
                                                     scope.launch {
                                                         val image = painter.loadImage()
@@ -309,7 +313,6 @@ fun generatePalette(palette: Palette): List<Int?> {
 // PREVIEWS
 //
 ///////////////////////////////////////
-/*
 @DevicePreviews
 @Composable
 private fun PreviewPaletteContent(@PreviewParameter(PreviewProvider::class) palette: PaletteUiState) {
@@ -326,4 +329,4 @@ private fun PreviewPaletteContent(@PreviewParameter(PreviewProvider::class) pale
     TheLabTheme {
         PaletteContent(palette, paletteNameList, {}, true)
     }
-}*/
+}

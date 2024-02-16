@@ -59,6 +59,7 @@ fun <viewModel : LifecycleObserver> viewModel.observeLifecycleEvents(lifecycle: 
     }
 }
 
+@Suppress("EmptyMethod")
 @HiltViewModel
 class ACRCloudViewModel @Inject constructor(
     private val repository: IRepository

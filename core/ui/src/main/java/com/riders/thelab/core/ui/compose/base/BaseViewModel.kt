@@ -37,6 +37,7 @@ fun <viewModel : LifecycleObserver> viewModel.observeLifecycleEvents(lifecycle: 
     }
 }
 
+@Suppress("EmptyMethod")
 abstract class BaseViewModel : ViewModel() {
 
     //////////////////////////////////////////

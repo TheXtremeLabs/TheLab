@@ -7,7 +7,7 @@ android {
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
     namespace = "com.riders.thelab.feature.tabs"

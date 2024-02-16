@@ -51,7 +51,7 @@ android {
         getByName("debug") {
             isDebuggable = true
 
-            // Enables code shrinking, obfuscation, and optimization for only
+            // Enables CODE shrinking, obfuscation, and optimization for only
             // your project's release build type.
             isMinifyEnabled = false
 
@@ -61,18 +61,18 @@ android {
         getByName("release") {
             isDebuggable = false
 
-            // Enables code shrinking, obfuscation, and optimization for only
+            // Enables CODE shrinking, obfuscation, and optimization for only
             // your project's release build type.
             isMinifyEnabled = true
 
             // Enables resource shrinking, which is performed by the
             // Android Gradle plugin.
-            isShrinkResources = true  // Enables code shrinking for the release build type.
+            isShrinkResources = true  // Enables CODE shrinking for the release build type.
 
             // Disables PNG crunching for the "release" build type.
             isCrunchPngs = false
 
-            // Enables code shrinking, obfuscation, and optimization for only
+            // Enables CODE shrinking, obfuscation, and optimization for only
             // your project's release build type.
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

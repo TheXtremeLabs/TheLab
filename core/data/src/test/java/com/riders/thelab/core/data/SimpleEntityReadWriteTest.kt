@@ -3,7 +3,6 @@ package com.riders.thelab.core.data
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.riders.thelab.core.data.local.LabDatabase
 import com.riders.thelab.core.data.local.dao.UserDao
 import com.riders.thelab.core.data.local.model.User
@@ -12,7 +11,6 @@ import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.io.IOException
 import java.util.Locale
 

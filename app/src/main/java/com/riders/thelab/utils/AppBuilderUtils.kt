@@ -16,6 +16,7 @@ import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActi
 import com.riders.thelab.feature.schedule.ui.ScheduleActivity
 import com.riders.thelab.feature.songplayer.SongPlayerActivity
 import com.riders.thelab.feature.streaming.StreamingActivity
+import com.riders.thelab.feature.tabs.WorkingTabsActivity
 import com.riders.thelab.feature.theaters.TheatersActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
@@ -31,7 +32,6 @@ import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.spring.SpringActivity
-import com.riders.thelab.feature.tabs.WorkingTabsActivity
 import com.riders.thelab.ui.transition.TransitionActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
 import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity

@@ -47,7 +47,7 @@ class DbImpl @Inject constructor(
 
     override fun getUserByName(lastname: String): User = mUserDao.getUserByName(lastname)
 
-    override fun getUserByUsername(username: String): User  = mUserDao.getUserByUsername(username)
+    override fun getUserByUsername(username: String): User = mUserDao.getUserByUsername(username)
 
     override fun getUserByEmail(email: String): User = mUserDao.getUserByEmail(email)
 

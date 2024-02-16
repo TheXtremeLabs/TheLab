@@ -241,7 +241,9 @@ fun TheatersDetailContent(
 
                             item {
                                 ProvidedBy(
-                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
                                     providerIcon = R.drawable.tmdb_logo
                                 )
                             }
@@ -271,7 +273,7 @@ fun TheatersDetailContent(
                                                 (it.type.equals("Trailer", true) ||
                                                         it.type.equals("teaser", true)) &&
                                                 it.site.equals("youtube", true)
-                                    } ?: TMDBVideoModel()
+                                    }
                                 ) {
                                     onTrailerVisible(it)
                                 }
@@ -289,7 +291,7 @@ fun TheatersDetailContent(
 
     LaunchedEffect(tmdbState) {
         if (tmdbState is TMDBDetailUiState.Success) {
-            Timber.d("LaunchedEffect | state: ${tmdbState.item.cast?.size} | coroutineContext: ${this.coroutineContext}")
+            Timber.d("LaunchedEffect | state: ${tmdbState.item.cast.size} | coroutineContext: ${this.coroutineContext}")
         }
     }
 }

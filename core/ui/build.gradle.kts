@@ -69,6 +69,7 @@ dependencies {
     api(libs.androidx.compose.runtime.livedata)
     debugApi(libs.androidx.compose.ui.tooling)
     api(libs.androidx.compose.ui.tooling.preview)
+    api(libs.androidx.compose.ui)
     api(libs.androidx.compose.ui.util)
     api(libs.androidx.hilt.navigation.compose)
     api(libs.androidx.lifecycle.runtimeCompose)

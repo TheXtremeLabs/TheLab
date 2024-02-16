@@ -9,8 +9,6 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.google.android.material.imageview.ShapeableImageView
-import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.databinding.RowYoutubeLikeItemBinding
 import timber.log.Timber
@@ -27,18 +25,6 @@ class YoutubeLikeViewHolder(
         viewBinding.run {
             this.mListener = listener
         }
-    }
-
-    fun getImageView(): ShapeableImageView {
-        return viewBinding.imageItem
-    }
-
-    fun getNameTextView(): MaterialTextView {
-        return viewBinding.nameItem
-    }
-
-    fun getDescriptionView(): MaterialTextView {
-        return viewBinding.descriptionItem
     }
 
     fun bind(itemYoutubeVideo: Video) {

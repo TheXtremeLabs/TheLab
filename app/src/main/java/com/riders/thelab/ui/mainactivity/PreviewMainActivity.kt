@@ -56,7 +56,7 @@ import com.riders.thelab.core.ui.utils.UIManager
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainContent(viewModel: MainActivityViewModel) {
     val context = LocalContext.current

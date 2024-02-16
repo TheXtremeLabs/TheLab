@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
 import androidx.activity.ComponentActivity
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
@@ -21,7 +20,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.riders.thelab.core.data.local.model.Message
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 
 fun Context.findActivity(): Activity? = when (this) {

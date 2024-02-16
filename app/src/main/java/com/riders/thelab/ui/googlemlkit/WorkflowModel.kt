@@ -27,6 +27,7 @@ import com.riders.thelab.ui.googlemlkit.productsearch.Product
 import com.riders.thelab.ui.googlemlkit.productsearch.SearchedObject
 import com.riders.thelab.ui.googlemlkit.settings.PreferenceUtils
 
+@Suppress("EmptyMethod")
 /** View model for handling application workflow based on camera preview.  */
 class WorkflowModel(application: Application) : AndroidViewModel(application) {
 

@@ -29,8 +29,6 @@ import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.LabAppManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,7 +64,7 @@ class MainActivityViewModel : BaseViewModel() {
     val appList: StateFlow<List<App>> = _appList
 
     val filteredList: List<App> by derivedStateOf {
-        if(searchedAppRequest.trim().isBlank() || searchedAppRequest.trim() == ""){
+        if (searchedAppRequest.trim().isBlank() || searchedAppRequest.trim() == "") {
             _appList.value
         } else {
             _appList.value.filter {
@@ -239,7 +237,7 @@ class MainActivityViewModel : BaseViewModel() {
     @SuppressLint("NewApi")
     fun fetchWeather(context: Context, latitude: Double, longitude: Double) {
         Timber.d("suspend fetchWeather()")
-        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             try {
                 supervisorScope {
 
@@ -270,7 +268,7 @@ class MainActivityViewModel : BaseViewModel() {
                             }
                         } else {
                             // back on UI thread
-                            withContext(Main) {
+                            withContext(Dispatchers.Main) {
                                 LabAddressesUtils.getDeviceAddressAndroid13(
                                     Geocoder(context, Locale.getDefault()),
                                     LabLocationUtils.buildTargetLocationObject(
@@ -309,12 +307,12 @@ class MainActivityViewModel : BaseViewModel() {
 
         temperature?.let { temp ->
             weatherIconUrl?.let { icon ->
-                    ProcessedWeather(
-                        cityName,
-                        cityCountry,
-                        temp,
-                        icon
-                    )
+                ProcessedWeather(
+                    cityName,
+                    cityCountry,
+                    temp,
+                    icon
+                )
             } ?: run { Timber.e("Weather icon object is null") }
         } ?: run { Timber.e("Temperature object is null") }
     }

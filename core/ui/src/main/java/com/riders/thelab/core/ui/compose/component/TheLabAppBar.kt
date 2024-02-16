@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -85,7 +85,7 @@ fun TheLabTopAppBar(
             navigationIcon = {
                 IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = Color.White
                     )
@@ -129,7 +129,7 @@ fun TheLabTopAppBar(
             navigationIcon = {
                 IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = Color.White
                     )
@@ -156,7 +156,7 @@ fun TheLabTopAppBar(navigationIcon: @Composable (() -> Unit)) {
             navigationIcon = {
                 IconButton(onClick = { (context.findActivity() as ComponentActivity).onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = if (!isSystemInDarkTheme()) Color.Black else Color.White
                     )
@@ -216,7 +216,7 @@ fun TheLabTopAppBar(
                 if (null == navigationIcon) {
                     IconButton(onClick = { (context.findActivity() as BaseComponentActivity).backPressed() }) {
                         Icon(
-                            imageVector = Icons.Filled.KeyboardArrowLeft,
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = "Back_icon",
                             tint = navigationIconColor
                         )
@@ -291,7 +291,7 @@ fun TheLabTopAppBarLarge() {
             navigationIcon = {
                 IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = Color.White
                     )
