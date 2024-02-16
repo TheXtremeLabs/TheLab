@@ -31,6 +31,7 @@ internal object AppModule {
     fun provideUserDao(appDatabase: LabDatabase): UserDao {
         return appDatabase.getUserDao()
     }
+
     @Provides
     fun provideContactDao(appDatabase: LabDatabase): ContactDao {
         return appDatabase.getContactDao()

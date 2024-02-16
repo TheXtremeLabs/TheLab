@@ -3,11 +3,7 @@ package com.riders.thelab.core.data.local.model.weather
 import com.riders.thelab.core.common.utils.DateTimeUtils
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.data.remote.dto.weather.toModel
-import timber.log.Timber
 import java.io.Serializable
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 @kotlinx.serialization.Serializable
 data class WeatherWidgetModel(
@@ -16,10 +12,9 @@ data class WeatherWidgetModel(
     val description: String,
     val forecast: List<ForecastWeatherWidgetModel>
 ) : Serializable {
-    constructor() : this(TemperatureModel(), "", "", emptyList())
 
     override fun toString(): String {
-        return "temperature: $temperature, icon: $icon, description: $description, forecast: size:${forecast.size}, content: ${forecast.toString()}"
+        return "temperature: $temperature, icon: $icon, description: $description, forecast: size:${forecast.size}, content: $forecast"
     }
 }
 

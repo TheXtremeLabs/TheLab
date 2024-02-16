@@ -433,12 +433,12 @@ fun WeatherMoreData(weather: OneCallWeatherResponse) {
         (context.findActivity() as WeatherActivity).resources.getString(R.string.percent_placeholder)
     }"
 
-    val pressure: String = "${weather.currentWeather?.pressure.toString()} ${
+    val pressure = "${weather.currentWeather?.pressure.toString()} ${
         (context.findActivity() as WeatherActivity).resources.getString(R.string.pressure_unit_placeholder)
     }"
 
     // Wind
-    val wind: String = "${weather.currentWeather?.windSpeed.toString()} ${
+    val wind = "${weather.currentWeather?.windSpeed.toString()} ${
         (context.findActivity() as WeatherActivity).resources.getString(R.string.meter_unit_placeholder)
     }"
 

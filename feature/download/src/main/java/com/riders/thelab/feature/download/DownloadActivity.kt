@@ -199,7 +199,7 @@ class DownloadActivity : BaseComponentActivity() {
         once = true
     }
 
-    fun resetOnce(): Unit {
+    fun resetOnce() {
         Timber.e("resetOnce()")
         this.once = false
     }

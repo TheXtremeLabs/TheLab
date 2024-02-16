@@ -24,6 +24,7 @@ import kotools.types.text.toNotBlankString
 import timber.log.Timber
 
 
+@Suppress("EmptyMethod")
 class KatChatViewModel : ViewModel() {
 
     /////////////////////////
@@ -196,7 +197,7 @@ class KatChatViewModel : ViewModel() {
                 message = message,
                 chatroomId = mChatRoomId!!,
                 chatRoomModel = mChatRoom!!,
-                onFailure = { Timber.e("runCatching | onFailure() | Error caught: ${it}") },
+                onFailure = { Timber.e("runCatching | onFailure() | Error caught: $it") },
                 onSuccess = {
                     if (it) {
                         // clear Message TextField

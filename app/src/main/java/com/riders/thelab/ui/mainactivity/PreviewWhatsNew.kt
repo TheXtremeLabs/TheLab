@@ -65,7 +65,6 @@ import com.riders.thelab.utils.LabAppManager
 //
 ///////////////////////////////
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WhatsNew(item: App) {
 
@@ -147,7 +146,6 @@ fun WhatsNew(item: App) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WhatsNew(item: App, pageOffset: Float) {
 

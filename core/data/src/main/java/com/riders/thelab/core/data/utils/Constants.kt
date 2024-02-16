@@ -62,7 +62,8 @@ object Constants {
     const val PALETTE_URL = "http://i.ytimg.com/vi/aNHOfJCphwk/maxresdefault.jpg"
 
     // Video
-    const val VIDEO_BUNNY_URL = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    const val VIDEO_BUNNY_URL =
+        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
     const val BASE_ENDPOINT_YOUTUBE_BASE_URL = "http://www.youtube.com/v/"
     const val BASE_ENDPOINT_YOUTUBE_WATCH_BASE_URL = "https://www.youtube.com/watch?v="
     const val BASE_ENDPOINT_YOUTUBE_SHORT_BASE_URL = "https://youtu.be/"

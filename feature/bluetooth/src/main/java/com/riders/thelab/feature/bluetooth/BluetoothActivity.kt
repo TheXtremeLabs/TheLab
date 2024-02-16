@@ -1,6 +1,5 @@
 package com.riders.thelab.feature.bluetooth
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -138,46 +137,48 @@ class BluetoothActivity : BaseComponentActivity() {
 
         val permissionManager = PermissionManager.from(this@BluetoothActivity)
         if (!LabCompatibilityManager.isS()) {
-            permissionManager.request(Permission.Bluetooth, Permission.Bluetooth).checkPermission { granted: Boolean ->
-                if (!granted) {
-                    this@BluetoothActivity.finish()
-                } else {
-                    mViewModel.initBluetoothManager(this@BluetoothActivity)
-                    observeBluetoothDeviceFetchedEvents()
-                    mViewModel.fetchBoundedDevices()
+            permissionManager.request(Permission.Bluetooth, Permission.Bluetooth)
+                .checkPermission { granted: Boolean ->
+                    if (!granted) {
+                        this@BluetoothActivity.finish()
+                    } else {
+                        mViewModel.initBluetoothManager(this@BluetoothActivity)
+                        observeBluetoothDeviceFetchedEvents()
+                        mViewModel.fetchBoundedDevices()
+                    }
                 }
-            }
 
         } else {
 
-            permissionManager.request(Permission.Location, Permission.BluetoothAndroid12).checkPermission { granted: Boolean ->
-                if (!granted) {
-                    this@BluetoothActivity.finish()
-                } else {
-                    if (LabCompatibilityManager.isTiramisu()) {
-                        val bluetoothManager: BluetoothManager =
-                            getSystemService(BluetoothManager::class.java) as BluetoothManager
-                        val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
-                        if (null == bluetoothAdapter) {
-                            // Device doesn't support Bluetooth
-                            Timber.e("Device doesn't support Bluetooth")
-                            UIManager.showToast(
-                                this@BluetoothActivity,
-                                "Device doesn't support Bluetooth"
-                            )
+            permissionManager.request(Permission.Location, Permission.BluetoothAndroid12)
+                .checkPermission { granted: Boolean ->
+                    if (!granted) {
+                        this@BluetoothActivity.finish()
+                    } else {
+                        if (LabCompatibilityManager.isTiramisu()) {
+                            val bluetoothManager: BluetoothManager =
+                                getSystemService(BluetoothManager::class.java) as BluetoothManager
+                            val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+                            if (null == bluetoothAdapter) {
+                                // Device doesn't support Bluetooth
+                                Timber.e("Device doesn't support Bluetooth")
+                                UIManager.showToast(
+                                    this@BluetoothActivity,
+                                    "Device doesn't support Bluetooth"
+                                )
+                            }
+
+                            if (false == bluetoothAdapter?.isEnabled) {
+                                val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                                activityResultLauncher.launch(enableBtIntent)
+                            }
                         }
 
-                        if (false == bluetoothAdapter?.isEnabled) {
-                            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                            activityResultLauncher.launch(enableBtIntent)
-                        }
+                        mViewModel.initBluetoothManager(this@BluetoothActivity)
+                        observeBluetoothDeviceFetchedEvents()
+                        mViewModel.fetchBoundedDevices()
                     }
-
-                    mViewModel.initBluetoothManager(this@BluetoothActivity)
-                    observeBluetoothDeviceFetchedEvents()
-                    mViewModel.fetchBoundedDevices()
                 }
-            }
         }
     }
 

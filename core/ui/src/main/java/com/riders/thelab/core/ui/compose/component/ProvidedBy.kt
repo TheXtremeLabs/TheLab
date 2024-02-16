@@ -19,7 +19,11 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 @Composable
-fun ProvidedBy(modifier: Modifier = Modifier, @StringRes placeholderProvidedBy: Int? = null, @DrawableRes providerIcon: Int) {
+fun ProvidedBy(
+    modifier: Modifier = Modifier,
+    @StringRes placeholderProvidedBy: Int? = null,
+    @DrawableRes providerIcon: Int
+) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End),

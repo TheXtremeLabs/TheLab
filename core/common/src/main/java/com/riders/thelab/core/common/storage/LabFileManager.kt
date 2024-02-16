@@ -2,7 +2,6 @@ package com.riders.thelab.core.common.storage
 
 import android.content.ContentResolver
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -14,7 +13,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.os.EnvironmentCompat
 import com.riders.thelab.core.common.R
-import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import okhttp3.ResponseBody
 import okhttp3.internal.io.FileSystem
 import okio.buffer
@@ -23,10 +21,8 @@ import org.xml.sax.InputSource
 import timber.log.Timber
 import java.io.BufferedInputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 import java.util.zip.GZIPInputStream
 
 /**

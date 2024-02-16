@@ -2,7 +2,6 @@ package com.riders.thelab.core.data.local.model.kat
 
 import com.google.firebase.Timestamp
 import com.riders.thelab.core.data.remote.dto.kat.FCDKatUser
-import com.riders.thelab.core.data.serializer.FirebaseTimestampSerializer
 import java.io.Serializable
 
 /**

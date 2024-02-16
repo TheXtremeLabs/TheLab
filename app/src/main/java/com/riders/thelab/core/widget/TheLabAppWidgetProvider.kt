@@ -16,10 +16,14 @@ import com.bumptech.glide.request.transition.Transition
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.ui.mainactivity.MainActivity
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class TheLabAppWidgetProvider : AppWidgetProvider() {
 

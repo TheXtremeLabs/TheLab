@@ -11,7 +11,7 @@ import androidx.compose.animation.fadeOut
 
 
 /**
- * Creates a transitionSpec for configuring [AnimatedContent] to the fade through pattern.
+ * Creates a transitionSpec for configuring [AnimatedContentTransitionScope] to the fade through pattern.
  * See [Fade through](https://material.io/design/motion/the-motion-system.html#fade-through) for
  * the motion spec.
  */

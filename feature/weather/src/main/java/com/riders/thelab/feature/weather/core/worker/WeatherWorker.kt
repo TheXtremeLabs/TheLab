@@ -221,7 +221,7 @@ class WeatherWorker @AssistedInject constructor(
      * Build bundle to send to widget provider
      *
      */
-    private suspend fun buildWeatherWidget(
+    private fun buildWeatherWidget(
         response: OneCallWeatherResponse,
         city: String,
         country: String

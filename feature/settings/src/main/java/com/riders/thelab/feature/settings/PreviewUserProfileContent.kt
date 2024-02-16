@@ -87,7 +87,6 @@ private val darkGradient =
 // COMPOSE
 //
 ///////////////////////////////
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun FormFields(viewModel: UserProfileViewModel) {
 

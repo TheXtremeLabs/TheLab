@@ -9,9 +9,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -28,14 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.common.network.NetworkState
-import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
-import com.riders.thelab.core.ui.compose.component.ProvidedBy
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
 import com.riders.thelab.core.ui.compose.component.network.PreviewProviderNetworkState
@@ -168,18 +162,18 @@ fun TheatersContent(
                                 }
                             }
 
-                        PullRefreshIndicator(
-                            modifier = Modifier.align(Alignment.TopCenter),
-                            refreshing = isRefreshing,
-                            state = pullRefreshState
-                        )
+                            PullRefreshIndicator(
+                                modifier = Modifier.align(Alignment.TopCenter),
+                                refreshing = isRefreshing,
+                                state = pullRefreshState
+                            )
+                        }
+                    }
+
+                    else -> {
+                        NoNetworkConnection()
                     }
                 }
-
-                else -> {
-                NoNetworkConnection()
-            }
-            }
 
             }
         }

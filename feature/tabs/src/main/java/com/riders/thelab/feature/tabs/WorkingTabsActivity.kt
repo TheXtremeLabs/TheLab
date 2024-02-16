@@ -2,11 +2,9 @@ package com.riders.thelab.feature.tabs
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
-import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.feature.tabs.databinding.ActivityTabsBinding
 import com.riders.thelab.feature.tabs.fragment.OneFragment
 import com.riders.thelab.feature.tabs.fragment.ThreeFragment

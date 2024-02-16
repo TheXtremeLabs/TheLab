@@ -235,6 +235,7 @@ internal object ApiModule {
         .client(provideWeatherOkHttp())
         .addConverterFactory(json.asConverterFactory(CONTENT_TYPE_JSON.toMediaType()))
         .build()
+
     @Provides
     @Singleton
     fun provideTMDBRetrofit(url: String): Retrofit = Retrofit.Builder()
@@ -303,6 +304,7 @@ internal object ApiModule {
         return provideRetrofit(Constants.BASE_ENDPOINT_SPOTIFY_API)
             .create(SpotifyAPIService::class.java)
     }
+
     @Provides
     @Singleton
     fun provideTMDBAPIService(): TMDBApiService =

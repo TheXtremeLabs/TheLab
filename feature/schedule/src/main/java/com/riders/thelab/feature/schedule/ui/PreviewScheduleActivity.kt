@@ -39,8 +39,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupPositionProvider
-import androidx.compose.ui.window.PopupProperties
 import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
@@ -50,7 +48,7 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_light_surfaceTint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleContent(
     scheduleState: ScheduleJobAlarmUiState,
@@ -162,7 +160,7 @@ fun ScheduleContent(
     }
 
     LaunchedEffect(isCountDownStarted) {
-        Timber.d("LaunchedEffect(viewModel.isCountDownStarted) with: ${isCountDownStarted}")
+        Timber.d("LaunchedEffect(viewModel.isCountDownStarted) with: $isCountDownStarted")
 
         // Should update loading view
         onUpdateLoadingViewVisible(isCountDownStarted)
@@ -190,7 +188,7 @@ fun ScheduleContent(
     }
 
     LaunchedEffect(isCountDownDone) {
-        Timber.d("LaunchedEffect(viewModel.isCountDownDone) with: ${isCountDownDone}")
+        Timber.d("LaunchedEffect(viewModel.isCountDownDone) with: $isCountDownDone")
 
         onUpdateLoadingViewVisible(isCountDownDone)
 

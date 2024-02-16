@@ -5,9 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.GpsFixed
 import androidx.compose.material.icons.filled.GpsOff
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -66,7 +66,7 @@ fun TheLabTopAppBar(
             navigationIcon = {
                 IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = Color.White
                     )
@@ -94,7 +94,7 @@ fun TheLabTopAppBar(navigationIcon: @Composable (() -> Unit)) {
             navigationIcon = {
                 IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = Color.White
                     )
@@ -138,7 +138,7 @@ fun TheLabTopAppBar(
             navigationIcon = {
                 IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = Color.White
                     )
@@ -221,7 +221,7 @@ fun TheLabTopAppBarLarge() {
             navigationIcon = {
                 IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = Color.White
                     )

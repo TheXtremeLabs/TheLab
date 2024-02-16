@@ -31,7 +31,7 @@ enum class AndroidReleases(val osVersionName: String) {
         @RequiresApi(api = Build.VERSION_CODES.O)
         fun getOsVersionName(name: String): String = entries.run {
             Timber.d("getOsVersionName() | name: $name")
-            this.first { it.name == name }.osVersionName ?: "UNKNOWN"
+            this.find { it.name == name }?.osVersionName ?: "UNKNOWN"
         }
     }
 }

@@ -172,7 +172,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
 
         currentNetwork?.let { updateNetworkConnectionState(NetworkConnectionState.Lost(it)) }
 
-        (context as Activity).runOnUiThread { connectionLiveData.value = false}
+        (context as Activity).runOnUiThread { connectionLiveData.value = false }
     }
 
     override fun onUnavailable() {
@@ -180,7 +180,7 @@ class LabNetworkManagerNewAPI(val context: Context) : NetworkCallback() {
         Timber.e("onUnavailable()")
 
         updateNetworkConnectionState(NetworkConnectionState.Unavailable)
-        (context as Activity).runOnUiThread {  connectionLiveData.value = false}
+        (context as Activity).runOnUiThread { connectionLiveData.value = false }
     }
 
     fun isOnline(): Boolean {

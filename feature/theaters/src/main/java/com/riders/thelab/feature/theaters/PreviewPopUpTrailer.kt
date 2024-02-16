@@ -76,7 +76,10 @@ fun PopUpTrailer(
             modifier = mModifier,
             colors = CardDefaults.cardColors(containerColor = Color.DarkGray)
         ) {
-            AnimatedContent(targetState = tmdbVideoModel.key.isNotBlank(), label = "") { targetState ->
+            AnimatedContent(
+                targetState = tmdbVideoModel.key.isNotBlank(),
+                label = ""
+            ) { targetState ->
                 if (!targetState) {
                     Column {
 

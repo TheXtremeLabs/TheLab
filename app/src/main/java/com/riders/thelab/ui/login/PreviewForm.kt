@@ -20,7 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
@@ -75,7 +75,6 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////////////////////////
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
 
@@ -131,7 +130,6 @@ fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Password(viewModel: LoginViewModel, focusRequester: FocusRequester) {
     val passwordFieldState by viewModel.passwordFieldUiState.collectAsStateWithLifecycle()
@@ -299,7 +297,7 @@ fun Submit(modifier: Modifier, viewModel: LoginViewModel) {
                                         modifier = Modifier
                                             .fillMaxSize()
                                             .weight(.5f),
-                                        imageVector = Icons.Filled.KeyboardArrowRight,
+                                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                         contentDescription = null
                                     )
                                 }

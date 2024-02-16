@@ -4,7 +4,7 @@ import java.io.Serializable
 
 @kotlinx.serialization.Serializable
 data class ForecastWeatherWidgetModel(
-    val day:String,
+    val day: String,
     val temperature: TemperatureModel,
     var icon: String
 ) : Serializable {

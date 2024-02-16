@@ -22,6 +22,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
+@Suppress("EmptyMethod")
 @HiltViewModel
 class SettingsViewModel @Inject constructor(private val repository: IRepository) : BaseViewModel() {
 
