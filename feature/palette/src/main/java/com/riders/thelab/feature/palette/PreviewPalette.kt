@@ -216,6 +216,15 @@ fun PaletteContent(
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.Center
                                     ) {
+                                        Image(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height))
+                                                .clip(RoundedCornerShape(12.dp)),
+                                            painter = painter,
+                                            contentDescription = "palette image wth coil",
+                                            contentScale = ContentScale.Crop,
+                                        )
                                         when (state) {
                                             is AsyncImagePainter.State.Loading -> {
                                                 Timber.i("state is AsyncImagePainter.State.Loading")
@@ -225,15 +234,6 @@ fun PaletteContent(
                                             is AsyncImagePainter.State.Success -> {
                                                 Timber.d("state is AsyncImagePainter.State.Success")
 
-                                                Image(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height))
-                                                        .clip(RoundedCornerShape(12.dp)),
-                                                    painter = painter,
-                                                    contentDescription = "palette image wth coil",
-                                                    contentScale = ContentScale.Crop,
-                                                )
 
                                                 LaunchedEffect(key1 = painter) {
                                                     scope.launch {

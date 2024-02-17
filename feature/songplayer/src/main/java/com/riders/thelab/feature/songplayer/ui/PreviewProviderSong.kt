@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.songplayer
+package com.riders.thelab.feature.songplayer.ui
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.music.SongModel

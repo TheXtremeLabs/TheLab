@@ -21,7 +21,12 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.initialization.InitializationStatus
+import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
+import com.google.firebase.ktx.initialize
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
@@ -126,7 +131,8 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
         Timber.d("initAdsAndFirebase()")
 
         // Firebase Crashlytics
-        FirebaseCrashlytics.getInstance().apply {
+        FirebaseApp.initializeApp(this@TheLabApplication)
+        Firebase.crashlytics.apply {
             setCrashlyticsCollectionEnabled(true)
             setUserId("wayne")
         }

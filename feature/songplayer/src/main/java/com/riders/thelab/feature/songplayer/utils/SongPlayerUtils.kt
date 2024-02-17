@@ -5,31 +5,17 @@ import android.content.Context
 import android.media.MediaMetadata
 import android.media.MediaPlayer
 import android.media.session.PlaybackState
+import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
+import androidx.media3.common.MediaItem
 import com.riders.thelab.core.common.storage.LabFileManager
 import timber.log.Timber
 
 object SongPlayerUtils {
-
-    /**
-     * Function to get Progress percentage
-     * @param currentDuration
-     * @param totalDuration
-     */
-    /*fun getProgressPercentage(currentDuration: Long, totalDuration: Long): Int {
-        val currentSeconds: Long = (currentDuration / 1000)
-        val totalSeconds: Long = (totalDuration / 1000)
-
-        // calculating percentage
-        val percentage = currentSeconds.toDouble() / totalSeconds * 100
-
-        // return percentage
-        return percentage.toInt()
-    }*/
 
     /**
      * Function to get Progress percentage
@@ -64,6 +50,23 @@ object SongPlayerUtils {
         // return current duration in milliseconds
         return currentDuration * 1000
     }
+
+    fun getMediaItem(
+        songTitle: String,
+        songArtists: String,
+        songPath: String,
+        songThumbUri: String? = null
+    ): MediaItem = MediaItem.Builder()
+        .setMediaId("media-1")
+        .setUri(songPath)
+        .setMediaMetadata(
+            androidx.media3.common.MediaMetadata.Builder()
+                .setArtist(songArtists)
+                .setTitle(songTitle)
+                .setArtworkUri(Uri.parse(songThumbUri))
+                .build()
+        )
+        .build()
 
     fun createMediaSession(
         context: Context,

@@ -14,7 +14,7 @@ import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
 import com.riders.thelab.feature.lottie.LottieActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
 import com.riders.thelab.feature.schedule.ui.ScheduleActivity
-import com.riders.thelab.feature.songplayer.SongPlayerActivity
+import com.riders.thelab.feature.songplayer.ui.SongPlayerActivity
 import com.riders.thelab.feature.streaming.StreamingActivity
 import com.riders.thelab.feature.tabs.WorkingTabsActivity
 import com.riders.thelab.feature.theaters.TheatersActivity
@@ -347,7 +347,7 @@ object AppBuilderUtils {
                         .withActivityDescription("Play music that is stored on your phone (Live Streaming wip)...")
                         .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_music))
                         .withActivityClass(SongPlayerActivity::class.java)
-                        .withActivityDate("2024/01/31")
+                        .withActivityDate("2024/02/17")
                         .build()
                 this.add(songPlayer)
 
