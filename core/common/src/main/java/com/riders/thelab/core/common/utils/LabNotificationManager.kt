@@ -14,11 +14,22 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.media.app.NotificationCompat.MediaStyle
 import androidx.media.session.MediaButtonReceiver
 
 import timber.log.Timber
 
 object LabNotificationManager {
+
+    private fun createNotificationAction(context: Context, actionIcon: Int, actionTitle: Int) =
+        NotificationCompat.Action.Builder(
+            actionIcon,
+            context.getString(actionTitle),
+            MediaButtonReceiver.buildMediaButtonPendingIntent(
+                context,
+                PlaybackStateCompat.ACTION_PLAY_PAUSE
+            )
+        ).build()
 
     fun createNotificationChannel(
         context: Context,
@@ -76,7 +87,7 @@ object LabNotificationManager {
             }
 
 
-    @SuppressLint("MissingPermission", "ForegroundServiceType")
+    @SuppressLint("MissingPermission", "ForegroundServiceType", "RestrictedApi")
     fun <T : Service> displayMusicNotification(
         context: Context,
         mediaSession: MediaSessionCompat,
@@ -123,45 +134,38 @@ object LabNotificationManager {
             // Be careful about the color
             setSmallIcon(smallIcon)
 
+            val pauseAction = createNotificationAction(context, actionIcon, actionTitle)
+
             // Add a pause button
-            addAction(
-                NotificationCompat.Action(
-                    actionIcon,
-                    context.getString(actionTitle),
+            addAction(pauseAction)
+
+            // Create a MediaStyle object and supply your media session token to it.
+            // Take advantage of MediaStyle features
+            val mediaStyle: MediaStyle = MediaStyle()
+                .setMediaSession(mediaSession.sessionToken)
+                // Add media control buttons that invoke intents in your media service
+                //.addAction(R.drawable.ic_previous, "Previous", prevPendingIntent) // #0
+                //.addAction(R.drawable.ic_pause, "Pause", pausePendingIntent) // #1
+                //.addAction(R.drawable.ic_next, "Next", nextPendingIntent) // #2
+                .setShowActionsInCompactView(0)
+                // Add a cancel button
+                .setShowCancelButton(true)
+                .setCancelButtonIntent(
                     MediaButtonReceiver.buildMediaButtonPendingIntent(
                         context,
-                        PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        PlaybackStateCompat.ACTION_STOP
                     )
                 )
-            )
 
 
-            // Add media control buttons that invoke intents in your media service
-            //.addAction(R.drawable.ic_previous, "Previous", prevPendingIntent) // #0
-            //.addAction(R.drawable.ic_pause, "Pause", pausePendingIntent) // #1
-            //.addAction(R.drawable.ic_next, "Next", nextPendingIntent) // #2
             // Apply the media style template
-            setStyle(
-                // Take advantage of MediaStyle features
-                androidx.media.app.NotificationCompat.MediaStyle()
-                    //  #1: pause button
-                    .setShowActionsInCompactView(0)
-                    .setMediaSession(mediaSession.sessionToken)
-
-                    // Add a cancel button
-                    .setShowCancelButton(true)
-                    .setCancelButtonIntent(
-                        MediaButtonReceiver.buildMediaButtonPendingIntent(
-                            context,
-                            PlaybackStateCompat.ACTION_STOP
-                        )
-                    )
-            )
+            setStyle(mediaStyle)
             setContentTitle(contentTitle)
             setContentText(contentText)
             setLargeIcon(largeIcon.toBitmap(context))
 
             setSilent(true)
+            setAutoCancel(true)
         }
 
         with(NotificationManagerCompat.from(context)) {

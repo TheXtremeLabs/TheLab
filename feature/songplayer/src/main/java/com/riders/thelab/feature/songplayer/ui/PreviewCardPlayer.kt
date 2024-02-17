@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.songplayer
+package com.riders.thelab.feature.songplayer.ui
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent

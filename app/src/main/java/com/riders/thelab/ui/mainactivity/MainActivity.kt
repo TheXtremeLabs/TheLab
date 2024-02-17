@@ -45,6 +45,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import com.riders.thelab.utils.Constants.GPS_REQUEST
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
@@ -105,6 +106,17 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                             MainContent(viewModel = mViewModel)
                         }
                     }
+                }
+            }
+
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                if (mViewModel.appList.first().isEmpty()) {
+
+                    // Retrieve applications
+                    mViewModel.retrieveApplications(
+                        com.riders.thelab.TheLabApplication.getInstance().getContext()
+                    )
+                    mViewModel.retrieveRecentApps(com.riders.thelab.TheLabApplication.getInstance().getContext())
                 }
             }
         }

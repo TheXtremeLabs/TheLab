@@ -118,7 +118,6 @@ class PaletteViewModel @Inject constructor(private val repository: IRepository) 
                                 .downloadUrl
                                 .addOnSuccessListener { uri: Uri ->
                                     Timber.d("downloadUrl | addOnSuccessListener | uri: $uri")
-                                    updateIsRefreshing(false)
                                     updateUIState(PaletteUiState.Success(uri.toString()))
                                 }
                         }

@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.songplayer
+package com.riders.thelab.feature.songplayer.ui
 
 import android.annotation.SuppressLint
 import android.app.NotificationManager
@@ -30,8 +30,8 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabNotificationManager
 import com.riders.thelab.core.data.local.model.music.SongModel
 import com.riders.thelab.core.data.utils.Constants
+import com.riders.thelab.core.player.service.PlaybackService
 import com.riders.thelab.feature.songplayer.core.SongsManager
-import com.riders.thelab.feature.songplayer.core.service.MusicMediaPlaybackService
 import com.riders.thelab.feature.songplayer.utils.SongPlayerUtils
 import com.riders.thelab.feature.songplayer.utils.parseSongName
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,7 +53,7 @@ class SongPlayerViewModel @Inject constructor(
     //////////////////////////////////////////
     private var listCreationIndex: Int = 0
 
-    var mMediaButtonReceiver: MediaButtonReceiver? = null
+    private var mMediaButtonReceiver: MediaButtonReceiver? = null
 
     // Media Player
     private var mp: MediaPlayer? = null
@@ -85,24 +85,28 @@ class SongPlayerViewModel @Inject constructor(
                 val progress = SongPlayerUtils.getProgressPercentage(currentDuration, totalDuration)
                 // Timber.d("mUpdateTimeTask | run() | progress: $progress")
 
-                updateCurrentProgress(progress)
+                if (!it.isPlaying) {
 
-                @Suppress("DEPRECATION")
-                mHandler = Handler()
-                // Running this thread after 100 milliseconds
-                mHandler?.postDelayed(this, 100)
+                } else {
+                    updateCurrentProgress(progress)
+
+                    @Suppress("DEPRECATION")
+                    mHandler = Handler()
+                    // Running this thread after 100 milliseconds
+                    mHandler?.postDelayed(this, 100)
+                }
             }
         }
     }
 
-    private lateinit var mServiceMusic: MusicMediaPlaybackService
+    private lateinit var mServiceMusic: PlaybackService
     private var mBound: Boolean = false
 
     /** Defines callbacks for service binding, passed to bindService()  */
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            val binder = service as MusicMediaPlaybackService.LocalBinder
+            val binder = service as PlaybackService.LocalBinder
             mServiceMusic = binder.getService()
             mBound = true
         }
@@ -120,11 +124,10 @@ class SongPlayerViewModel @Inject constructor(
     val songList: SnapshotStateList<SongModel> = mutableStateListOf()
     var currentSongIndex: Int by mutableIntStateOf(-1)
         private set
-    var isPlayerCardVisible: Boolean by mutableStateOf(false)
-        private set
+    private var isPlayerCardVisible: Boolean by mutableStateOf(false)
     var isPlayerCardExpanded: Boolean by mutableStateOf(false)
         private set
-    var isPlaying: Boolean by mutableStateOf(false)
+    private var isPlaying: Boolean by mutableStateOf(false)
         private set
     var currentSongProgress: Float by mutableFloatStateOf(0f)
         private set
@@ -240,7 +243,7 @@ class SongPlayerViewModel @Inject constructor(
         val files = f.listFiles() ?: return fileList.toList()
 
         if (path.contains(DOWNLOAD_PLACEHOLDER)) {
-            files.forEachIndexed { index, musicFile ->
+            files.forEachIndexed { _, musicFile ->
                 if (musicFile.name.parseSongName().isNotEmpty()) {
                     Timber.e("musicFile : ${musicFile.absolutePath}")
 
@@ -289,7 +292,7 @@ class SongPlayerViewModel @Inject constructor(
         val prodDirectory = File(prodPath)
         val prodFiles = prodDirectory.listFiles() ?: return fileList
 
-        prodFiles.forEachIndexed { index, prodFile ->
+        prodFiles.forEachIndexed { _, prodFile ->
             fileList.add(
                 SongModel(
                     listCreationIndex,
@@ -328,7 +331,7 @@ class SongPlayerViewModel @Inject constructor(
                 Timber.d("playSong() | ${songModel.path}")
 
                 if (!isPlayerCardVisible) {
-                    updateIsPlayerCardVisible(true)
+                    isPlayerCardVisible = true
                 }
 
                 mp?.let { player ->
@@ -350,10 +353,10 @@ class SongPlayerViewModel @Inject constructor(
                     Constants.NOTIFICATION_MUSIC_CHANNEL_ID
                 )
 
-                val mediaSession = mp?.let {
+                val mediaSession = mp?.run {
                     SongPlayerUtils.createMediaSession(
                         context,
-                        it,
+                        this,
                         songModel.name,
                         songModel.path,
                         LabFileManager.getDrawableURI(
@@ -363,7 +366,7 @@ class SongPlayerViewModel @Inject constructor(
                     )
                 }
                 val mediaController =
-                    mediaSession?.let { SongPlayerUtils.createMediaController(it) }
+                    mediaSession?.run { SongPlayerUtils.createMediaController(this) }
 
                 mediaSession?.let { session ->
                     mediaController?.let { controller ->
@@ -418,7 +421,7 @@ class SongPlayerViewModel @Inject constructor(
         super.onStart(owner)
         Timber.d("onStart()")
         // Bind to LocalService
-        Intent(context, MusicMediaPlaybackService::class.java).also { intent ->
+        Intent(context, PlaybackService::class.java).also { intent ->
             context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
     }

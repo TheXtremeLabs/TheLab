@@ -114,6 +114,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:permissions"))
+    implementation(project(":core:player"))
     implementation(project(":core:ui"))
     implementation(project(":core:testing"))
     implementation(project(":feature:biometric"))
