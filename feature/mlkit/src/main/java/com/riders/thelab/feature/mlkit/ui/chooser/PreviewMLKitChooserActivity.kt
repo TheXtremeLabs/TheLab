@@ -101,7 +101,6 @@ fun MLKitChooserContent() {
                         Text(text = "ML Kit Compose")
                     }
                 }
-
             }
         }
     }

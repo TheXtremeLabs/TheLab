@@ -68,9 +68,7 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                         this,
                         "Permissions are denied. User may access to app with limited location related features"
                     )
-
                 } else {
-
                     initViews()
                     setUpWorkflowModel()
                 }

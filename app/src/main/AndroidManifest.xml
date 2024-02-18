@@ -487,6 +487,12 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.mlkit.ui.compose.MLKitComposeActivity"
+            android:label="@string/activity_barcode_scanning_title"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
 
         <activity
             android:name=".feature.mlkit.ui.xml.settings.SettingsActivity"
