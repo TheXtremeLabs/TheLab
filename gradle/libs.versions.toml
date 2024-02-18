@@ -81,6 +81,7 @@ googleApiClientJackson2 = "2.1.2"
 googleHttpClient = "1.44.1"
 # Google ML Kit
 googleBarcodeScanning = "17.2.0"
+googleGuava = "32.0.1-android"
 #noinspection GradleDependency
 googleObjectDetection = "17.0.0"
 # Google Play Services
@@ -129,6 +130,7 @@ secrets = "2.0.1"
 threeten = "1.4.4"
 timber = "5.0.1"
 turbine = "1.0.0"
+volley="1.2.1"
 types = "4.3.1"
 youtubePlayer = "12.1.0"
 zxing = "3.5.2"
@@ -275,6 +277,7 @@ google-http-client = { group = "com.google.http-client", name = "google-http-cli
 google-play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "googlePlayServicesBase" }
 google-play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googlePlayServicesAuth" }
 google-barcode-scanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "googleBarcodeScanning" }
+google-guava = { group = "com.google.guava", name = "guava", version.ref = "googleGuava" }
 google-objectdetection = { group = "com.google.mlkit", name = "object-detection", version.ref = "googleObjectDetection" }
 google-objectdetection-custom = { group = "com.google.mlkit", name = "object-detection-custom", version.ref = "googleObjectDetection" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
@@ -298,6 +301,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 kotlin-parcelize = { group = "org.jetbrains.kotlin", name = "kotlin-parcelize-runtime", version.ref = "kotlin" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinPlayServices" }
+kotools-types = { group = "org.kotools", name = "types", version.ref = "types" }
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "lint" }
 location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "location" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
@@ -329,7 +333,7 @@ spotify-auth = { group = "com.spotify.android", name = "auth", version.ref = "sp
 threeten = { group = "com.jakewharton.threetenabp", name = "threetenabp", version.ref = "threeten" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
-kotools-types = { group = "org.kotools", name = "types", version.ref = "types" }
+volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "youtubePlayer" }
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 zxing-parent = { group = "com.google.zxing", name = "zxing-parent", version.ref = "zxing" }

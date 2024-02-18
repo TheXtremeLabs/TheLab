@@ -27,7 +27,6 @@ import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
 import com.riders.thelab.ui.floatingview.FloatingViewActivity
 import com.riders.thelab.ui.googledrive.GoogleDriveActivity
-import com.riders.thelab.ui.googlemlkit.LiveBarcodeScanningActivity
 import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
@@ -521,23 +520,6 @@ object AppBuilderUtils {
                         .withActivityDate("2024/02/18")
                         .build()
                 this.add(mlkit)
-
-                // Google ML Kit - Live Barcode
-                val liveBarcode =
-                    AppBuilder
-                        .withId(33)
-                        .withActivityTitle(context.getString(R.string.activity_title_google_ml_kit))
-                        .withActivityDescription("ML Kit brings Google’s machine learning expertise to mobile developers in a powerful and easy-to-use package...")
-                        .withActivityIcon(
-                            getDrawableFromIntResource(
-                                context,
-                                R.drawable.logo_mlkit
-                            )
-                        )
-                        .withActivityClass(LiveBarcodeScanningActivity::class.java)
-                        .withActivityDate("2022/01/28")
-                        .build()
-                this.add(liveBarcode)
 
                 // Streaming
                 val streaming =
