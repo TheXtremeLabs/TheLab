@@ -79,6 +79,7 @@ object LabAddressesUtils {
         }
     }
 
+
     fun Address.getAddressToString(): String {
         val addressStringBuilder = StringBuilder()
         val street = this.featureName + ", " + this.thoroughfare

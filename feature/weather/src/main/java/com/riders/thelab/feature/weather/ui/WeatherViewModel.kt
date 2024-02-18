@@ -226,7 +226,6 @@ class WeatherViewModel @Inject constructor(
                 geocoder,
                 (latitude to longitude).toLocation()
             )?.let { updateWeatherAddress(it) }
-
         } else {
             LabAddressesUtils.getDeviceAddressAndroid13(
                 geocoder,

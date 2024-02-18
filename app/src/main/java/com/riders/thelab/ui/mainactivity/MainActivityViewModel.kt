@@ -17,7 +17,7 @@ import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.common.utils.LabLocationUtils
+import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
@@ -251,30 +251,21 @@ class MainActivityViewModel : BaseViewModel() {
                     if (null == fetchWeather) {
                         Timber.e("Fetch weather error")
                     } else {
+                        val geocoder = Geocoder(context, Locale.getDefault())
+                        val weatherLocation =
+                            (fetchWeather.latitude to fetchWeather.longitude).toLocation()
 
                         if (!LabCompatibilityManager.isTiramisu()) {
-                            LabAddressesUtils.getDeviceAddressLegacy(
-                                Geocoder(context, Locale.getDefault()),
-                                LabLocationUtils.buildTargetLocationObject(
-                                    fetchWeather.latitude,
-                                    fetchWeather.longitude
-                                )
-                            )?.let { address ->
-
-                                buildProcessWeather(fetchWeather, address)
-
-                            } ?: run {
-                                Timber.e("address object is null")
-                            }
+                            LabAddressesUtils.getDeviceAddressLegacy(geocoder, weatherLocation)
+                                ?.let { address ->
+                                    buildProcessWeather(fetchWeather, address)
+                                } ?: run { Timber.e("address object is null") }
                         } else {
                             // back on UI thread
                             withContext(Dispatchers.Main) {
                                 LabAddressesUtils.getDeviceAddressAndroid13(
-                                    Geocoder(context, Locale.getDefault()),
-                                    LabLocationUtils.buildTargetLocationObject(
-                                        fetchWeather.latitude,
-                                        fetchWeather.longitude
-                                    )
+                                    geocoder,
+                                    weatherLocation
                                 ) { address ->
                                     address?.let {
                                         buildProcessWeather(fetchWeather, it)

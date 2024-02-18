@@ -86,7 +86,7 @@ googleObjectDetection = "17.0.0"
 # Google Play Services
 googlePlayServicesBase = "18.3.0"
 #googlePlayServices = "16.0.0"
-googlePlayServicesAuth = "20.7.0"
+googlePlayServicesAuth = "21.0.0"
 glide = "4.16.0"
 glideTransformation = "4.3.0"
 # Hilt (for gradle plugin version and dependency)
@@ -189,9 +189,8 @@ androidx-preferences = { group = "androidx.preference", name = "preference-ktx",
 androidx-dynamicanimation = { group = "androidx.dynamicanimation", name = "dynamicanimation", version.ref = "androidxDynamicAnimation" }
 androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragment" }
 androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "androidxGlance" }
-androidx-glance-material = { group = "androidx.glance", name = "glance-material", version.ref = "androidxGlance" }
+#androidx-glance-material = { group = "androidx.glance", name = "glance-material", version.ref = "androidxGlance" }
 androidx-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "androidxGlance" }
-androidx-glance = { group = "androidx.glance", name = "glance-appwidget", version.ref = "androidxGlance" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
 androidx-lifecycle-compiler = { group = "androidx.lifecycle", name = "lifecycle-compiler", version.ref = "androidxLifecycle" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "androidxLifecycle" }

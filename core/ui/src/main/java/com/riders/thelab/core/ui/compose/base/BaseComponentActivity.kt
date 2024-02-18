@@ -71,7 +71,7 @@ abstract class BaseComponentActivity : ComponentActivity() {
     private fun initPostNotificationsForAndroid13() {
         Timber.d("initPostNotificationsForAndroid13()")
         if (ContextCompat.checkSelfPermission(
-                applicationContext,
+                this,
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
