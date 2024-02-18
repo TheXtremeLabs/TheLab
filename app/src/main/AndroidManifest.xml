@@ -482,16 +482,16 @@
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".ui.googlemlkit.LiveBarcodeScanningActivity"
+            android:name=".feature.mlkit.ui.xml.LiveBarcodeScanningActivity"
             android:label="@string/activity_barcode_scanning_title"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".ui.googlemlkit.settings.SettingsActivity"
+            android:name=".feature.mlkit.ui.xml.settings.SettingsActivity"
             android:label="@string/activity_settings_title"
-            android:parentActivityName=".ui.googlemlkit.LiveBarcodeScanningActivity"
+            android:parentActivityName=".feature.mlkit.ui.xml.LiveBarcodeScanningActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <!-- Google ML Kit -->
