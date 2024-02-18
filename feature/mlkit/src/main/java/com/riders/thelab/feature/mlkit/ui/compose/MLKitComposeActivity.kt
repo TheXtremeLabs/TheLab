@@ -1,6 +1,5 @@
-package com.riders.thelab.feature.mlkit.ui.chooser
+package com.riders.thelab.feature.mlkit.ui.compose
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,12 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.feature.mlkit.ui.compose.MLKitComposeActivity
-import com.riders.thelab.feature.mlkit.ui.xml.LiveBarcodeScanningActivity
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class MLKitChooserActivity : BaseComponentActivity() {
+class MLKitComposeActivity : BaseComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +29,7 @@ class MLKitChooserActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            MLKitChooserContent()
+                            MLKitComposeContent()
                         }
                     }
                 }
@@ -44,16 +41,4 @@ class MLKitChooserActivity : BaseComponentActivity() {
         Timber.e("backPressed()")
         finish()
     }
-
-    fun launchMLKitXmlActivity() = Intent(this, LiveBarcodeScanningActivity::class.java)
-        .run {
-            startActivity(this)
-            finish()
-        }
-
-    fun launchMLKitComposeActivity() = Intent(this, MLKitComposeActivity::class.java)
-        .run {
-            startActivity(this)
-            finish()
-        }
 }
