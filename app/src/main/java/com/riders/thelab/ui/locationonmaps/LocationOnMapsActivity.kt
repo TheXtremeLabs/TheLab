@@ -40,9 +40,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabAddressesUtils.getAddressToString
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
-import com.riders.thelab.core.common.utils.LabLocationUtils
 import com.riders.thelab.core.data.local.bean.MapsEnum
 import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.permissions.PermissionManager
@@ -251,23 +251,48 @@ class LocationOnMapsActivity
 
         // Remove markers
         mMap.clear()
-        Timber.i("onLocationChanged()")
+
         val latitude = location.latitude
         val longitude = location.longitude
-        Timber.e("Lat : %s - Lon : %s", latitude, longitude)
-        val latLng = LatLng(latitude, longitude)
-        mMap.addMarker(
-            MarkerOptions()
-                .position(latLng)
-                .title(
-                    mGeocoder?.let {
-                        LabLocationUtils.getDeviceLocationToString(
-                            it,
-                            location
+        Timber.e("onLocationChanged() | latitude : ${location.latitude}, longitude: ${location.longitude}")
+
+        val latLng = LatLng(location.latitude, location.longitude)
+
+        if (!LabCompatibilityManager.isTiramisu()) {
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(
+                        mGeocoder?.let { geocoder ->
+                            val address = LabAddressesUtils
+                                .getDeviceAddressLegacy(
+                                    geocoder,
+                                    location
+                                )
+
+                            address?.getAddressToString()
+
+                        }
+                    )
+            )
+        } else {
+            mGeocoder?.let { geocoder ->
+                LabAddressesUtils.getDeviceAddressAndroid13(
+                    geocoder,
+                    location
+                ) { address ->
+
+                    address?.let {
+                        mMap.addMarker(
+                            MarkerOptions()
+                                .position(latLng)
+                                .title(it.getAddressToString())
                         )
                     }
-                )
-        )
+                }
+            }
+        }
+
         mMap.isMyLocationEnabled = true
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
         mMap.animateCamera(CameraUpdateFactory.zoomTo(750f), 2000, null)

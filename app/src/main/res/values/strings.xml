@@ -513,6 +513,7 @@
 
 
     <!-- Google ML Kit -->
+    <string name="activity_ml_kit_chooser_title">ML Kit Chooser</string>
     <string name="activity_barcode_scanning_title">Live Barcode Scanning</string>
     <string name="mode_odt_live_title">Object Detection: Live Camera</string>
     <string name="mode_odt_live_subtitle">A device’s live camera can be used to detect objects in an environment.</string>

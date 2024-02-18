@@ -604,7 +604,7 @@ private fun PreviewLabHorizontalViewPagerGeneric() {
             viewModel = hiltViewModel<BaseViewModel>(),
             pagerState = rememberPagerState { 10 },
             items = listOf("1", "2", "3", "4", "5", "6")
-        ) { page, pageOffset ->
+        ) { page, _ ->
             Text(text = "Element $page")
         }
     }
@@ -635,7 +635,7 @@ private fun PreviewLabVerticalViewPagerGeneric() {
             onUpdateViewPagerExpanded = {},
             onUpdateViewPagerDotVisibility = {},
             onCurrentPageChanged = {}
-        ) { page, pageOffset ->
+        ) { page, _ ->
             Text(text = "Element $page")
         }
     }

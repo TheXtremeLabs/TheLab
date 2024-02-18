@@ -16,7 +16,7 @@ import androidx.work.WorkerParameters
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
-import com.riders.thelab.core.common.utils.LabLocationUtils
+import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.weather.toWidgetModel
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
@@ -72,14 +72,14 @@ class WeatherWidgetWorker @AssistedInject constructor(
                 } else {
                     Timber.d("observer.onSuccess(responseFile)")
 
+                    val weatherLocation =
+                        (oneCallWeatherResponse.latitude to oneCallWeatherResponse.longitude).toLocation()
+
                     if (!LabCompatibilityManager.isTiramisu()) {
                         val address = LabAddressesUtils
                             .getDeviceAddressLegacy(
                                 Geocoder(context, Locale.getDefault()),
-                                LabLocationUtils.buildTargetLocationObject(
-                                    oneCallWeatherResponse.latitude,
-                                    oneCallWeatherResponse.longitude
-                                )
+                                weatherLocation
                             )
 
                         // Load city name
@@ -119,10 +119,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
                     } else {
                         LabAddressesUtils.getDeviceAddressAndroid13(
                             Geocoder(context, Locale.getDefault()),
-                            LabLocationUtils.buildTargetLocationObject(
-                                oneCallWeatherResponse.latitude,
-                                oneCallWeatherResponse.longitude
-                            )
+                            weatherLocation
                         ) {
                             it?.let {
                                 // Load city name
