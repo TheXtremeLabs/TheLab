@@ -12,6 +12,7 @@ import com.riders.thelab.feature.colors.ColorActivity
 import com.riders.thelab.feature.download.DownloadActivity
 import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
 import com.riders.thelab.feature.lottie.LottieActivity
+import com.riders.thelab.feature.mlkit.ui.chooser.MLKitChooserActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
 import com.riders.thelab.feature.schedule.ui.ScheduleActivity
 import com.riders.thelab.feature.songplayer.ui.SongPlayerActivity
@@ -504,10 +505,27 @@ object AppBuilderUtils {
                         .build()
                 this.add(musicRecognition)
 
+                // Google ML Kit
+                val mlkit =
+                    AppBuilder
+                        .withId(32)
+                        .withActivityTitle(context.getString(R.string.activity_title_google_ml_kit))
+                        .withActivityDescription("ML Kit brings Google’s machine learning expertise to mobile developers in a powerful and easy-to-use package...")
+                        .withActivityIcon(
+                            getDrawableFromIntResource(
+                                context,
+                                R.drawable.logo_mlkit
+                            )
+                        )
+                        .withActivityClass(MLKitChooserActivity::class.java)
+                        .withActivityDate("2024/02/18")
+                        .build()
+                this.add(mlkit)
+
                 // Google ML Kit - Live Barcode
                 val liveBarcode =
                     AppBuilder
-                        .withId(32)
+                        .withId(33)
                         .withActivityTitle(context.getString(R.string.activity_title_google_ml_kit))
                         .withActivityDescription("ML Kit brings Google’s machine learning expertise to mobile developers in a powerful and easy-to-use package...")
                         .withActivityIcon(
@@ -524,7 +542,7 @@ object AppBuilderUtils {
                 // Streaming
                 val streaming =
                     AppBuilder
-                        .withId(33)
+                        .withId(34)
                         .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_streaming))
                         .withActivityDescription("Use ExoPlayer to stream media from YouTube, Vimeo, Dailymotion, Twitch, and more...")
                         .withActivityIcon(
