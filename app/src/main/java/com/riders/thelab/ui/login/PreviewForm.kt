@@ -26,9 +26,9 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -36,12 +36,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterStart
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
@@ -57,18 +55,19 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.R
+import com.riders.thelab.core.data.local.model.compose.LoginFieldsUIState
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
 import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
-import timber.log.Timber
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_primaryContainer
 
 ///////////////////////////////////////////////////
 //
@@ -76,10 +75,14 @@ import timber.log.Timber
 //
 ///////////////////////////////////////////////////
 @Composable
-fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
-
-    val loginFieldState by viewModel.loginFieldUiState.collectAsStateWithLifecycle()
-    val loginHasError by viewModel.loginHasError.collectAsStateWithLifecycle()
+fun Login(
+    loginFieldState: LoginFieldsUIState.Login,
+    focusRequester: FocusRequester,
+    login: String,
+    onUpdateLogin: (String) -> Unit,
+    loginHasError: Boolean,
+    loginHasLocalError: Boolean
+) {
 
     TheLabTheme {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -87,8 +90,8 @@ fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester),
-                value = viewModel.login,
-                onValueChange = { viewModel.updateLogin(it) },
+                value = login,
+                onValueChange = { onUpdateLogin(it) },
                 placeholder = { Text(text = "Login") },
                 leadingIcon = {
                     Icon(
@@ -120,7 +123,7 @@ fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
                 )
             }
 
-            AnimatedVisibility(visible = viewModel.loginHasLocalError) {
+            AnimatedVisibility(visible = loginHasLocalError) {
                 Text(
                     text = "Login contains invalid characters!",
                     color = Color(0xFFF02828)
@@ -131,8 +134,12 @@ fun Login(viewModel: LoginViewModel, focusRequester: FocusRequester) {
 }
 
 @Composable
-fun Password(viewModel: LoginViewModel, focusRequester: FocusRequester) {
-    val passwordFieldState by viewModel.passwordFieldUiState.collectAsStateWithLifecycle()
+fun Password(
+    passwordFieldState: LoginFieldsUIState.Password,
+    focusRequester: FocusRequester,
+    password: String,
+    onUpdatePassword: (String) -> Unit,
+) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val passwordVisible = remember { mutableStateOf(false) }
@@ -142,8 +149,8 @@ fun Password(viewModel: LoginViewModel, focusRequester: FocusRequester) {
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
-            value = viewModel.password,
-            onValueChange = { viewModel.updatePassword(it) },
+            value = password,
+            onValueChange = { onUpdatePassword(it) },
             placeholder = { Text(text = "Password (6+ characters") },
             leadingIcon = { Icon(imageVector = Icons.Filled.Lock, contentDescription = null) },
             trailingIcon = {
@@ -182,8 +189,7 @@ fun Password(viewModel: LoginViewModel, focusRequester: FocusRequester) {
 }
 
 @Composable
-fun ErrorMessage(viewModel: LoginViewModel) {
-    val loginUiState by viewModel.loginUiState.collectAsStateWithLifecycle()
+fun ErrorMessage(uiState: LoginUiState) {
     val alphaAnimation = remember { Animatable(0f) }
 
     // Text error
@@ -195,9 +201,9 @@ fun ErrorMessage(viewModel: LoginViewModel) {
         color = Color.Red
     )
 
-    if (loginUiState is LoginUiState.UserError) {
-        LaunchedEffect(loginUiState) {
-            when (loginUiState) {
+    if (uiState is LoginUiState.UserError) {
+        LaunchedEffect(uiState) {
+            when (uiState) {
                 is LoginUiState.UserError -> {
                     alphaAnimation.animateTo(1f)
                 }
@@ -211,7 +217,11 @@ fun ErrorMessage(viewModel: LoginViewModel) {
 }
 
 @Composable
-fun RememberUser(modifier: Modifier, viewModel: LoginViewModel) {
+fun RememberUser(
+    modifier: Modifier,
+    isRememberCredentialsChecked: Boolean,
+    onUpdateIsRememberCredentials: (Boolean) -> Unit
+) {
     Box(modifier = modifier, contentAlignment = CenterStart) {
         Row(
             modifier = Modifier
@@ -221,31 +231,31 @@ fun RememberUser(modifier: Modifier, viewModel: LoginViewModel) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
-                checked = viewModel.isRememberCredentials,
-                onCheckedChange = { viewModel.updateIsRememberCredentials(it) }
+                checked = isRememberCredentialsChecked,
+                onCheckedChange = { onUpdateIsRememberCredentials(it) }
             )
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.remember_me),
                 fontSize = 12.sp,
-                maxLines = 2
+                maxLines = 2,
+                color = if (!isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
             )
         }
     }
 }
 
 @Composable
-fun Submit(modifier: Modifier, viewModel: LoginViewModel) {
+fun Submit(modifier: Modifier, uiState: LoginUiState, onLoginButtonClicked: () -> Unit) {
 
-    val uiState by viewModel.loginUiState.collectAsStateWithLifecycle()
-
+    val buttonContainerColor =
+        if (!isSystemInDarkTheme()) md_theme_light_primaryContainer else md_theme_dark_primaryContainer
+    val buttonContentColor = if (!isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     TheLabTheme {
         Box(modifier = modifier, contentAlignment = Alignment.CenterEnd) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -254,12 +264,10 @@ fun Submit(modifier: Modifier, viewModel: LoginViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(40.dp),
-                    onClick = {
-                        Timber.d("Login button clicked")
-                        viewModel.login()
-                    },
-                    contentPadding = PaddingValues(8.dp),
-                    enabled = uiState !is LoginUiState.Connecting
+                    onClick = onLoginButtonClicked,
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    enabled = uiState !is LoginUiState.Connecting,
+                    colors = ButtonDefaults.buttonColors(containerColor = buttonContainerColor)
                 ) {
                     AnimatedContent(
                         targetState = uiState,
@@ -290,15 +298,18 @@ fun Submit(modifier: Modifier, viewModel: LoginViewModel) {
                                             .weight(1f),
                                         text = "Log In",
                                         fontSize = 14.sp,
-                                        maxLines = 1
+                                        maxLines = 1,
+                                        color = buttonContentColor
                                     )
+
 
                                     Icon(
                                         modifier = Modifier
                                             .fillMaxSize()
                                             .weight(.5f),
                                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                        contentDescription = null
+                                        contentDescription = null,
+                                        tint = buttonContentColor
                                     )
                                 }
                             }
@@ -312,15 +323,26 @@ fun Submit(modifier: Modifier, viewModel: LoginViewModel) {
 
 
 @Composable
-fun Form(viewModel: LoginViewModel) {
-    val loginUiState by viewModel.loginUiState.collectAsStateWithLifecycle()
-
+fun Form(
+    loginUiState: LoginUiState,
+    loginFieldState: LoginFieldsUIState.Login,
+    login: String,
+    onUpdateLogin: (String) -> Unit,
+    loginHasError: Boolean,
+    loginHasLocalError: Boolean,
+    passwordFieldState: LoginFieldsUIState.Password,
+    password: String,
+    onUpdatePassword: (String) -> Unit,
+    isRememberCredentialsChecked: Boolean,
+    onUpdateIsRememberCredentials: (Boolean) -> Unit,
+    onLoginButtonClicked: () -> Unit
+) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
     val windowSizeClass: WindowSizeClass = if (LocalInspectionMode.current) {
-        WindowSizeClass.EXPANDED
+        WindowSizeClass.COMPACT
     } else {
         (context as LoginActivity).getDeviceWindowsSizeClass()
     }
@@ -351,22 +373,46 @@ fun Form(viewModel: LoginViewModel) {
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Center
         ) {
-            Login(viewModel, focusRequester)
-            Password(viewModel, focusRequester)
+            Login(
+                loginFieldState = loginFieldState,
+                focusRequester = focusRequester,
+                login = login,
+                loginHasError = loginHasError,
+                loginHasLocalError = loginHasLocalError,
+                onUpdateLogin = onUpdateLogin
+            )
+
+            Password(
+                passwordFieldState = passwordFieldState,
+                focusRequester = focusRequester,
+                password = password,
+                onUpdatePassword = onUpdatePassword
+            )
+
             AnimatedVisibility(visible = loginUiState is LoginUiState.UserError) {
                 Spacer(modifier = Modifier.size(8.dp))
-                ErrorMessage(viewModel)
+                ErrorMessage(uiState = loginUiState)
                 Spacer(modifier = Modifier.size(8.dp))
             }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(56.dp)
+                    .padding(top = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                RememberUser(modifier = Modifier.weight(2f), viewModel = viewModel)
-                Submit(modifier = Modifier.weight(1f), viewModel = viewModel)
+                RememberUser(
+                    modifier = Modifier.weight(2f),
+                    isRememberCredentialsChecked = isRememberCredentialsChecked,
+                    onUpdateIsRememberCredentials = onUpdateIsRememberCredentials
+                )
+
+                Submit(
+                    modifier = Modifier.weight(1f),
+                    uiState = loginUiState,
+                    onLoginButtonClicked = onLoginButtonClicked
+                )
             }
         }
     }
@@ -380,28 +426,68 @@ fun Form(viewModel: LoginViewModel) {
 ///////////////////////////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewLogin() {
-    val viewModel: LoginViewModel = hiltViewModel()
-    Login(viewModel = viewModel, focusRequester = FocusRequester())
+fun PreviewLogin(@PreviewParameter(PreviewProviderLoginFieldsUIState::class) uiState: LoginFieldsUIState.Login) {
+    TheLabTheme {
+        Login(
+            loginFieldState = uiState,
+            login = "John5521",
+            focusRequester = FocusRequester(),
+            loginHasError = false,
+            loginHasLocalError = false,
+            onUpdateLogin = {})
+    }
 }
 
 @DevicePreviews
 @Composable
-fun PreviewPassword() {
-    val viewModel: LoginViewModel = hiltViewModel()
-    Password(viewModel = viewModel, focusRequester = FocusRequester())
+fun PreviewPassword(@PreviewParameter(PreviewProviderPasswordFieldsUIState::class) uiState: LoginFieldsUIState.Password) {
+    TheLabTheme {
+        Password(
+            passwordFieldState = uiState,
+            password = "test1234",
+            focusRequester = FocusRequester(),
+            onUpdatePassword = {})
+    }
 }
 
 @DevicePreviews
 @Composable
-fun PreviewSubmit() {
-    val viewModel: LoginViewModel = hiltViewModel()
-    Submit(modifier = Modifier, viewModel = viewModel)
+fun PreviewRememberUser() {
+    TheLabTheme { RememberUser(modifier = Modifier, isRememberCredentialsChecked = true) {} }
 }
 
 @DevicePreviews
 @Composable
-fun PreviewForm() {
-    val viewModel: LoginViewModel = hiltViewModel()
-    Form(viewModel = viewModel)
+fun PreviewSubmit(@PreviewParameter(PreviewProviderLoginState::class) uiState: LoginUiState) {
+    TheLabTheme { Submit(modifier = Modifier, uiState = uiState) {} }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewForm(@PreviewParameter(PreviewProviderLoginState::class) uiState: LoginUiState) {
+    val loginFieldUiState: LoginFieldsUIState.Login = LoginFieldsUIState.Login.Ok
+    val passwordUiState: LoginFieldsUIState.Password = LoginFieldsUIState.Password.Ok
+
+    val login =
+        if (uiState is LoginUiState.UserSuccess) uiState.user.email else "john.smith@test.com"
+    val password = if (uiState is LoginUiState.UserSuccess) uiState.user.password else "test1234"
+
+    TheLabTheme {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Form(
+                loginUiState = uiState,
+                loginFieldState = loginFieldUiState,
+                login = login,
+                onUpdateLogin = {},
+                loginHasError = false,
+                loginHasLocalError = false,
+                passwordFieldState = passwordUiState,
+                password = password,
+                onUpdatePassword = {},
+                isRememberCredentialsChecked = true,
+                onUpdateIsRememberCredentials = {},
+                onLoginButtonClicked = {}
+            )
+        }
+    }
 }

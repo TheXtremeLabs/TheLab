@@ -21,7 +21,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +37,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.BuildConfig
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
@@ -51,6 +51,7 @@ import com.riders.thelab.core.ui.compose.utils.animatePlacement
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 ///////////////////////////////
@@ -96,7 +97,11 @@ fun LoginContent(viewModel: LoginViewModel) {
     val formVisibility = remember { mutableStateOf(false) }
     val registerVisibility = remember { mutableStateOf(false) }
 
-    val loginUiState by viewModel.loginUiState.collectAsState()
+    val loginUiState by viewModel.loginUiState.collectAsStateWithLifecycle()
+    val loginFieldState by viewModel.loginFieldUiState.collectAsStateWithLifecycle()
+    val loginHasError by viewModel.loginHasError.collectAsStateWithLifecycle()
+    val passwordFieldState by viewModel.passwordFieldUiState.collectAsStateWithLifecycle()
+
 
     var arrangement: Arrangement.Vertical by remember {
         mutableStateOf(Arrangement.Center)
@@ -164,7 +169,23 @@ fun LoginContent(viewModel: LoginViewModel) {
                     .weight(2f),
                 visible = if (LocalInspectionMode.current) false else formVisibility.value
             ) {
-                Form(viewModel = viewModel)
+                Form(
+                    loginUiState = loginUiState,
+                    loginFieldState = loginFieldState,
+                    login = viewModel.login,
+                    onUpdateLogin = { viewModel.updateLogin(it) },
+                    loginHasError = loginHasError,
+                    loginHasLocalError = viewModel.loginHasLocalError,
+                    passwordFieldState = passwordFieldState,
+                    password = viewModel.password,
+                    onUpdatePassword = { viewModel.updatePassword(it) },
+                    isRememberCredentialsChecked = viewModel.isRememberCredentials,
+                    onUpdateIsRememberCredentials = { viewModel.updateIsRememberCredentials(it) },
+                    onLoginButtonClicked = {
+                        Timber.d("Login button clicked")
+                        viewModel.login()
+                    }
+                )
             }
 
             // Register button
