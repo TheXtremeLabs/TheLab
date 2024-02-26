@@ -55,6 +55,8 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 
     private val mViewModel: MainActivityViewModel by viewModels()
 
+    private var mPermissionManager: PermissionManager? = null
+
     // Location
     private var mLabLocationManager: LabLocationManager? = null
     private var locationReceiver: LocationBroadcastReceiver? = null
@@ -94,6 +96,8 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         }
         window.navigationBarColor = ContextCompat.getColor(this, R.color.default_dark)
 
+        mPermissionManager = PermissionManager.from(this)
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
@@ -113,10 +117,8 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                 if (mViewModel.appList.first().isEmpty()) {
 
                     // Retrieve applications
-                    mViewModel.retrieveApplications(
-                        com.riders.thelab.TheLabApplication.getInstance().getContext()
-                    )
-                    mViewModel.retrieveRecentApps(com.riders.thelab.TheLabApplication.getInstance().getContext())
+                    mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
+                    mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
                 }
             }
         }
@@ -215,27 +217,29 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 
         Timber.d("checkPermissions() | hasPermission?: $hasPermission")
 
-        PermissionManager
-            .from(this@MainActivity)
-            .request(Permission.Location)
-            .rationale("Location is needed to discover some features")
-            .checkPermission { granted: Boolean ->
+        mPermissionManager?.let {
+            it.request(Permission.Location)
+                .rationale("Location is needed to discover some features")
+                .checkPermission { granted: Boolean ->
 
-                if (!granted) {
-                    Timber.e("Permissions are denied. User may access to app with limited location related features")
+                    if (!granted) {
+                        Timber.e("Permissions are denied. User may access to app with limited location related features")
 
-                } else {
+                    } else {
 
-                    // Variables
-                    initActivityVariables()
+                        // Variables
+                        initActivityVariables()
 
-                    // Retrieve applications
-                    mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
-                    mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
+                        // Retrieve applications
+                        mViewModel.retrieveApplications(
+                            TheLabApplication.getInstance().getContext()
+                        )
+                        mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
+                    }
                 }
-            }
-    }
+        }
 
+    }
 
     private fun initActivityVariables() {
         Timber.d("initActivityVariables()")
@@ -302,9 +306,12 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 
     fun launchSpeechToText() {
         // Check permission first
-        PermissionManager
-            .from(this@MainActivity)
-            .request(Permission.AudioRecord)
+
+        val manager = checkNotNull(mPermissionManager) {
+            "Permission Manager is null. Then cannot launch speech to text."
+        }
+
+        manager.request(Permission.AudioRecord)
             .rationale("Microphone permission is mandatory in order to use the vocal searchiing fatures.")
             .checkPermission { granted: Boolean ->
 

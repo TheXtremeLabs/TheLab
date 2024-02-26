@@ -3,13 +3,17 @@ package com.riders.thelab.core.player.service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import androidx.annotation.OptIn
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaSession.ConnectionResult
+import androidx.media3.session.MediaSession.ConnectionResult.AcceptedResultBuilder
 import androidx.media3.session.MediaSessionService
 import timber.log.Timber
 
 class PlaybackService : MediaSessionService() {
-    private var mPlayer: ExoPlayer? = null
     private var mMediaSession: MediaSession? = null
 
     //binder given to client
@@ -37,8 +41,8 @@ class PlaybackService : MediaSessionService() {
     override fun onCreate() {
         super.onCreate()
         Timber.d("onCreate()")
-        mPlayer = ExoPlayer.Builder(this).build()
-        mMediaSession = MediaSession.Builder(this, mPlayer!!).build()
+        val player = ExoPlayer.Builder(this).build()
+        mMediaSession = MediaSession.Builder(this, player).setCallback(MyCallback()).build()
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? =
@@ -46,7 +50,7 @@ class PlaybackService : MediaSessionService() {
 
     override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
         super.onUpdateNotification(session, startInForegroundRequired)
-        Timber.d("onUpdateNotification()")
+        Timber.d("onUpdateNotification() | startInForegroundRequired: $startInForegroundRequired")
     }
 
 
@@ -72,6 +76,40 @@ class PlaybackService : MediaSessionService() {
         Timber.i("onTrimMemory()")
     }
 
+    fun getMediaSssion(): MediaSession? = mMediaSession
+
+    fun playSong(mediaItem: MediaItem) {
+        Timber.d("playSong(mediaItem)")
+
+        mMediaSession?.player?.let { player ->
+            if (player.isPlaying) {
+                stop()
+            }
+
+            player.setMediaItem(mediaItem)
+            player.prepare()
+            // Play song
+            player.play()
+        }
+    }
+
+    fun isPlaying(): Boolean = mMediaSession?.player?.isPlaying ?: false
+
+    fun playPause() {
+        mMediaSession?.player?.let {
+            if (!it.isPlaying) {
+                it.play()
+            } else {
+                it.pause()
+            }
+        }
+    }
+
+    fun stop() {
+        mMediaSession?.player?.stop()
+    }
+
+
     // Remember to release the player and media session in onDestroy
     override fun onDestroy() {
         Timber.e("onDestroy()")
@@ -83,7 +121,6 @@ class PlaybackService : MediaSessionService() {
         super.onDestroy()
     }
 
-
     //our inner class
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -93,6 +130,31 @@ class PlaybackService : MediaSessionService() {
         // Return this instance of LocalService so clients can call public methods
         fun getService(): PlaybackService {
             return this@PlaybackService
+        }
+    }
+
+    private inner class MyCallback : MediaSession.Callback {
+        @OptIn(UnstableApi::class)
+        override fun onConnect(
+            session: MediaSession,
+            controller: MediaSession.ControllerInfo
+        ): ConnectionResult {
+            // Set available player and session commands.
+            return AcceptedResultBuilder(session)
+                /*.setAvailablePlayerCommands(
+                    ConnectionResult.DEFAULT_PLAYER_COMMANDS.buildUpon()
+                        .remove(Player.COMMAND_SEEK_TO_NEXT)
+                        .remove(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+                        .remove(Player.COMMAND_SEEK_TO_PREVIOUS)
+                        .remove(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+                        .build()
+                )
+                .setAvailableSessionCommands(
+                    ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
+                        //.add(customCommandFavorites)
+                        .build()
+                )*/
+                .build()
         }
     }
 }

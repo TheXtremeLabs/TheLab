@@ -34,6 +34,7 @@ dependencies {
     // Media
     api(libs.androidx.media)
     api(libs.androidx.media.router)
+    implementation(libs.androidx.media.session)
 
     // OkHttp
     // define a BOM and its version

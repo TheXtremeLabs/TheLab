@@ -18,8 +18,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
-import com.riders.thelab.core.data.local.model.tmdb.toModel
-import com.riders.thelab.core.data.remote.dto.tmdb.MovieDto
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
@@ -74,14 +72,11 @@ fun TheaterTMDBList(
 @DevicePreviews
 @Composable
 private fun PreviewTheaterTMDBList(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
-
-    val list = MovieDto.mockMovie.run { listOf(this.toModel()) }
-
     TheLabTheme {
         TheaterTMDBList(
             rowListState = rememberLazyListState(),
             categoryTitle = "Trending Movies",
-            tmdbList = list,
+            tmdbList = listOf(item),
         ) {}
     }
 }

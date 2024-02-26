@@ -56,7 +56,7 @@ class SongPlayerViewModel @Inject constructor(
     private var mMediaButtonReceiver: MediaButtonReceiver? = null
 
     // Media Player
-    private var mp: MediaPlayer? = null
+    // private var mp: MediaPlayer? = null
 
     // Handler to update UI timer, progress bar etc,.
     private var mHandler: Handler? = null
@@ -71,7 +71,7 @@ class SongPlayerViewModel @Inject constructor(
     /**
      * Background Runnable thread
      */
-    private val mUpdateTimeTask: Runnable = object : Runnable {
+    /*private val mUpdateTimeTask: Runnable = object : Runnable {
         override fun run() {
 
             mp?.let {
@@ -97,7 +97,7 @@ class SongPlayerViewModel @Inject constructor(
                 }
             }
         }
-    }
+    }*/
 
     private lateinit var mServiceMusic: PlaybackService
     private var mBound: Boolean = false
@@ -172,13 +172,13 @@ class SongPlayerViewModel @Inject constructor(
     fun init() {
         Timber.d("init()")
         // Media Player
-        mp = MediaPlayer()
+        /*mp = MediaPlayer()
 
         mp?.let {
             it.setOnPreparedListener(this)
             it.setOnErrorListener(this)
             it.setOnCompletionListener(this)
-        }
+        }*/
         songManager = SongsManager()
         mMediaButtonReceiver = MediaButtonReceiver()
     }
@@ -334,13 +334,14 @@ class SongPlayerViewModel @Inject constructor(
                     isPlayerCardVisible = true
                 }
 
-                mp?.let { player ->
+                /*mp?.let { player ->
                     player.reset()
                     player.setDataSource(songModel.path)
                     player.prepare()
                     // Play song
                     player.start()
-                }
+                }*/
+
 
                 songModel.isPlaying = true
 
@@ -353,7 +354,15 @@ class SongPlayerViewModel @Inject constructor(
                     Constants.NOTIFICATION_MUSIC_CHANNEL_ID
                 )
 
-                val mediaSession = mp?.run {
+                mServiceMusic.playSong(
+                    SongPlayerUtils.getMediaItem(
+                        songModel.name,
+                        songModel.path,
+                        songModel.path
+                    )
+                )
+
+                /*val mediaSession = mp?.run {
                     SongPlayerUtils.createMediaSession(
                         context,
                         this,
@@ -364,28 +373,29 @@ class SongPlayerViewModel @Inject constructor(
                             com.riders.thelab.core.ui.R.drawable.ic_music
                         )
                     )
-                }
-                val mediaController =
-                    mediaSession?.run { SongPlayerUtils.createMediaController(this) }
+                }*/
 
-                mediaSession?.let { session ->
-                    mediaController?.let { controller ->
-                        LabNotificationManager.displayMusicNotification(
-                            context = context,
-                            session,
-                            controller,
-                            mServiceMusic,
-                            smallIcon = com.riders.thelab.core.ui.R.drawable.ic_music,
-                            contentTitle = songModel.name,
-                            contentText = songModel.path,
-                            largeIcon = com.riders.thelab.core.ui.R.drawable.ic_music,
-                            actionIcon = if (!mp!!.isPlaying) com.riders.thelab.core.ui.R.drawable.ic_play else com.riders.thelab.core.ui.R.drawable.ic_pause,
-                            actionTitle = if (!mp!!.isPlaying) com.riders.thelab.core.ui.R.string.action_play else com.riders.thelab.core.ui.R.string.action_pause
-                        )
+                /*val mediaController =
+                    mServiceMusic.getMediaSssion()?.run { SongPlayerUtils.createMediaController(this) }*/
 
-                        // Updating progress bar
-                        updateProgressBar()
-                    }
+                mServiceMusic.getMediaSssion()?.let { session ->
+                    //mediaController?.let { controller ->
+                    LabNotificationManager.displayMusicNotification(
+                        context = context,
+                        session,
+                        // controller,
+                        mServiceMusic,
+                        smallIcon = com.riders.thelab.core.ui.R.drawable.ic_music,
+                        contentTitle = songModel.name,
+                        contentText = songModel.path,
+                        largeIcon = com.riders.thelab.core.ui.R.drawable.ic_music,
+                        actionIcon = if (!mServiceMusic.isPlaying()) com.riders.thelab.core.ui.R.drawable.img_play else com.riders.thelab.core.ui.R.drawable.img_pause,
+                        actionTitle = if (!mServiceMusic.isPlaying()) com.riders.thelab.core.ui.R.string.action_play else com.riders.thelab.core.ui.R.string.action_pause
+                    )
+
+                    // Updating progress bar
+                    updateProgressBar()
+                    // }
                 }
             }
                 .onFailure {
@@ -403,7 +413,7 @@ class SongPlayerViewModel @Inject constructor(
             mHandler = Handler(Looper.getMainLooper())
         }
 
-        mHandler?.postDelayed(mUpdateTimeTask, 100)
+        // mHandler?.postDelayed(mUpdateTimeTask, 100)
     }
 
 
@@ -460,20 +470,20 @@ class SongPlayerViewModel @Inject constructor(
         Timber.e("onDestroy()")
 
         runCatching {
-            if (true == mp?.isPlaying) {
+            /*if (true == mp?.isPlaying) {
                 mp?.let {
                     it.stop()
                     it.reset()
                     it.release()
                 }
-            }
+            }*/
         }
             .onFailure {
                 Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
             }
             .onSuccess {
                 Timber.d("runCatching - onSuccess()")
-                mp = null
+//                mp = null
             }
 
         mHandler = null
@@ -514,7 +524,15 @@ class SongPlayerViewModel @Inject constructor(
     fun togglePlayPauseSong() {
         Timber.d("togglePlayPauseSong()")
 
-        mp?.let {
+        mServiceMusic.playPause()
+
+        if (!mServiceMusic.isPlaying()) {
+            songList[currentSongIndex].isPlaying = true
+        } else {
+            songList[currentSongIndex].isPlaying = false
+        }
+
+        /*mp?.let {
             if (!it.isPlaying) {
                 it.start()
                 songList[currentSongIndex].isPlaying = true
@@ -522,7 +540,7 @@ class SongPlayerViewModel @Inject constructor(
                 it.pause()
                 songList[currentSongIndex].isPlaying = false
             }
-        }
+        }*/
     }
 
     fun playPreviousSong(context: Context) {
