@@ -60,10 +60,12 @@ object SongPlayerUtils {
         .setMediaId("media-1")
         .setUri(songPath)
         .setMediaMetadata(
-            androidx.media3.common.MediaMetadata.Builder()
-                .setArtist(songArtists)
-                .setTitle(songTitle)
-                .setArtworkUri(Uri.parse(songThumbUri))
+            androidx.media3.common.MediaMetadata.Builder().apply {
+                setArtist(songArtists)
+                setTitle(songTitle)
+
+                songThumbUri?.let { this.setArtworkUri(Uri.parse(it)) }
+            }
                 .build()
         )
         .build()

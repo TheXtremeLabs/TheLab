@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -210,7 +211,7 @@ private fun PreviewTheatersContent(@PreviewParameter(PreviewProviderNetworkState
     TheLabTheme(darkTheme = true) {
         TheatersContent(
             viewModel,
-            NetworkState.Unavailable,
+            if (LocalInspectionMode.current) NetworkState.Unavailable else networkState,
             isRefreshing = false,
             onPullToRefresh = { }
         )
