@@ -637,4 +637,8 @@
 
     <!-- Streaming -->
     <string name="activity_title_streaming">Streaming</string>
+    <!-- Location on Maps -->
+    <string name="activity_title_location_on_maps_compose">Location On Maps with Jetpack Compose</string>
+    <!-- Flight aware -->
+    <string name="activity_title_flight">News flight</string>
 </resources>

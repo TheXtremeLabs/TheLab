@@ -121,6 +121,7 @@ dependencies {
     implementation(project(":feature:bluetooth"))
     implementation(project(":feature:colors"))
     implementation(project(":feature:download"))
+    implementation(project(":feature:flightaware"))
     implementation(project(":feature:kat"))
     implementation(project(":feature:locationonmaps"))
     implementation(project(":feature:lottie"))
