@@ -25,10 +25,10 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 @Composable
 fun LabTabItem(
     isSelected: Boolean,
-    onClick: () -> Unit,
     tabWidth: Dp,
     text: String,
-    shape: Shape = RoundedCornerShape(8.dp)
+    shape: Shape = RoundedCornerShape(8.dp),
+    onClick: () -> Unit
 ) {
     val tabTextColor: Color by animateColorAsState(
         targetValue = if (isSelected) {
