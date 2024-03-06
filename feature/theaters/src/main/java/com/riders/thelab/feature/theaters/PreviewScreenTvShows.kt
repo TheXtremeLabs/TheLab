@@ -90,7 +90,9 @@ fun ScreenTvShowsContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        providerIcon = R.drawable.tmdb_logo
+                        providerIcon = R.drawable.tmdb_logo,
+                        hasPadding = false,
+                        hasRoundedCorners = true
                     )
                 }
             }

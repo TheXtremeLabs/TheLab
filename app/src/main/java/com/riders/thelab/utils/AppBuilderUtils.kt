@@ -542,7 +542,7 @@ object AppBuilderUtils {
                 val locationOnMapsCompose =
                     AppBuilder
                         .withId(35)
-                        .withActivityTitle("Location On Maps with Jetpack Compose")
+                        .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_location_on_maps_compose))
                         .withActivityDescription("Display User location on map...")
                         .withActivityIcon(
                             getDrawableFromIntResource(
@@ -554,6 +554,23 @@ object AppBuilderUtils {
                         .withActivityDate("2024/03/06")
                         .build()
                 this.add(locationOnMapsCompose)
+
+                // Flight
+                val flight =
+                    AppBuilder
+                        .withId(36)
+                        .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_flight))
+                        .withActivityDescription("Track and get flights info...")
+                        .withActivityIcon(
+                            getDrawableFromIntResource(
+                                context,
+                                com.riders.thelab.feature.flightaware.R.drawable.ic_flightaware_logo
+                            )
+                        )
+                        .withActivityClass(com.riders.thelab.feature.flightaware.ui.splashscreen.FlightSplashScreenActivity::class.java)
+                        .withActivityDate("2024/03/06")
+                        .build()
+                this.add(flight)
 
                 // Wip
                 val wip =
