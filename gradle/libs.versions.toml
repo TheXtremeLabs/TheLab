@@ -64,12 +64,12 @@ androidxWindowManager = "1.2.0"
 androidxWindowExtensions = "1.0.0-alpha01"
 androidxWork = "2.9.0"
 blurry = "4.0.1"
-coil = "2.5.0"
+coil = "2.6.0"
 # This repository has been archived by the owner on Jul 2, 2021. It is now read-only. Dexter is not under active maintenance anymore
 # dexter = "6.2.3"
 eventbus = "3.3.1"
 # Firebase
-firebaseBom = "32.7.2"
+firebaseBom = "32.7.3"
 firebaseKtx = "23.0.3"
 firebaseAds = "22.6.0"
 # Google Api
@@ -81,17 +81,18 @@ googleApiClientJackson2 = "2.1.2"
 googleHttpClient = "1.44.1"
 # Google ML Kit
 googleBarcodeScanning = "17.2.0"
-googleGuava = "32.0.1-android"
+googleGuava = "33.0.0-android"
 #noinspection GradleDependency
 googleObjectDetection = "17.0.0"
 # Google Play Services
 googlePlayServicesBase = "18.3.0"
 #googlePlayServices = "16.0.0"
 googlePlayServicesAuth = "21.0.0"
+googlePlayServicesMaps = "18.1.0"
 glide = "4.16.0"
 glideTransformation = "4.3.0"
 # Hilt (for gradle plugin version and dependency)
-hilt = "2.50"
+hilt = "2.51"
 hiltExt = "1.2.0"
 jacoco = "0.8.7"
 junit = "1.1.5"
@@ -101,21 +102,22 @@ kotlin = "1.9.22"
 kotlinxCoroutines = "1.8.0"
 kotlinxDatetime = "0.4.1"
 kotlinPlayServices = "1.8.0"
-kotlinxSerializationJson = "1.6.0"
+kotlinxSerializationJson = "1.6.3"
 # KSP - Kotlin Symbol Processing (for gradle plugin version and dependency)
-ksp = "1.9.22-1.0.16"
+ksp = "1.9.22-1.0.17"
 landscapist = "2.2.13"
-lint = "31.2.2"
-location = "21.1.0"
+lint = "31.3.0"
+location = "21.2.0"
 lottie = "6.3.0"
 maps = "18.2.0"
+mapsCompose = "2.11.4"
 material = "1.11.0"
 mapsUtils = "3.4.0"
 # Media Exo Player
 media = "1.7.0"
 mediaRouter = "1.6.0"
 media3 = "1.2.1"
-mockito = "5.9.0"
+mockito = "5.10.0"
 moshi = "1.15.1"
 mpAndroidChart = "3.1.0"
 okhttp = "4.12.0"
@@ -133,7 +135,7 @@ turbine = "1.0.0"
 volley="1.2.1"
 types = "4.3.1"
 youtubePlayer = "12.1.0"
-zxing = "3.5.2"
+zxing = "3.5.3"
 zxingAndroid = "3.3.0"
 
 
@@ -308,6 +310,9 @@ lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie"
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "maps" }
+maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "mapsCompose" }
+maps-compose-utils = { group = "com.google.maps.android", name = "maps-compose-utils", version.ref = "mapsCompose" }
+maps-compose-widgets = { group = "com.google.maps.android", name = "maps-compose-widgets", version.ref = "mapsCompose" }
 maps-utils = { group = "com.google.maps.android", name = "android-maps-utils", version.ref = "mapsUtils" }
 mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-android = { group = "org.mockito", name = "mockito-android", version.ref = "mockito" }
