@@ -538,6 +538,23 @@ object AppBuilderUtils {
                         .build()
                 this.add(streaming)
 
+                //Location On Maps Compose
+                val locationOnMapsCompose =
+                    AppBuilder
+                        .withId(35)
+                        .withActivityTitle("Location On Maps with Jetpack Compose")
+                        .withActivityDescription("Display User location on map...")
+                        .withActivityIcon(
+                            getDrawableFromIntResource(
+                                context,
+                                com.riders.thelab.feature.locationonmaps.R.drawable.ic_location_compose
+                            )
+                        )
+                        .withActivityClass(com.riders.thelab.feature.locationonmaps.LocationOnMapsActivity::class.java)
+                        .withActivityDate("2024/03/06")
+                        .build()
+                this.add(locationOnMapsCompose)
+
                 // Wip
                 val wip =
                     AppBuilder

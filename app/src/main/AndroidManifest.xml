@@ -284,6 +284,13 @@
             android:theme="@style/LocationTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <activity
+            android:name=".feature.locationonmaps.LocationOnMapsActivity"
+            android:label="@string/activity_title_location_on_maps"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/LocationTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
 
         <activity
             android:name=".feature.schedule.ui.ScheduleActivity"

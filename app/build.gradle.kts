@@ -122,6 +122,8 @@ dependencies {
     implementation(project(":feature:colors"))
     implementation(project(":feature:download"))
     implementation(project(":feature:kat"))
+    implementation(project(":feature:locationonmaps"))
+    implementation(project(":feature:lottie"))
     implementation(project(":feature:lottie"))
     implementation(project(":feature:mlkit"))
     implementation(project(":feature:musicrecognition"))
