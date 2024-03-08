@@ -13,6 +13,7 @@ accompanist = "0.32.0"
 androidDesugarJdkLibs = "2.0.4"
 androidxActivity = "1.8.2"
 androidxAppCompat = "1.6.1"
+androidxAppSearch = "1.1.0-alpha02"
 androidxAutoFill = "1.1.0"
 androidxBiometric = "1.1.0"
 androidxBrowser = "1.7.0"
@@ -152,6 +153,10 @@ android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+androidx-appsearch = { group = "androidx.appsearch", name = "appsearch", version.ref = "androidxAppSearch" }
+androidx-appsearch-compiler = { group = "androidx.appsearch", name = "appsearch-compiler", version.ref = "androidxAppSearch" }
+androidx-appsearch-local-storage = { group = "androidx.appsearch", name = "appsearch-local-storage", version.ref = "androidxAppSearch" }
+androidx-appsearch-platform-storage = { group = "androidx.appsearch", name = "appsearch-platform-storage", version.ref = "androidxAppSearch" }
 androidx-autofill = { group = "androidx.autofill", name = "autofill", version.ref = "androidxAutoFill" }
 androidx-benchmark-macro = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "androidxMacroBenchmark" }
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "androidxBiometric" }
