@@ -59,7 +59,8 @@ class FlightMainActivity : BaseComponentActivity() {
                                             mViewModel.getOperator()
                                         }
                                     }
-                                })
+                                }
+                            )
                         }
                     }
                 }
