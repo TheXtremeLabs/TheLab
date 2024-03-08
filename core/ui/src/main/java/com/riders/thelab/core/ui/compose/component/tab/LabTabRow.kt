@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_primaryContainer
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
 import timber.log.Timber
 import java.util.Locale
 
@@ -35,7 +35,6 @@ fun LabTabRow(
     tabWidth: Dp = 150.dp,
     onClick: (index: Int) -> Unit
 ) {
-
     val shape = RoundedCornerShape(16.dp)
     /* animateDpAsState is used to animate the tab indicator offset when the selected tab is changed */
     val indicatorOffset: Dp by animateDpAsState(
@@ -54,7 +53,8 @@ fun LabTabRow(
             LabTabIndicator(
                 indicatorWidth = tabWidth,
                 indicatorOffset = indicatorOffset,
-                indicatorColor = if (!isSystemInDarkTheme()) md_theme_light_primaryContainer else md_theme_dark_primaryContainer,
+                indicatorColor = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
+                backgroundColor = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
                 shape = shape
             )
 
@@ -84,7 +84,7 @@ fun LabTabRow(
 @DevicePreviews
 @Composable
 private fun PreviewLabTabRow() {
-    val selectedIndex = remember { mutableIntStateOf(0) }
+    val selectedIndex = remember { mutableIntStateOf(1) }
 
     TheLabTheme {
         LabTabRow(
