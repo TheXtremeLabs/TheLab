@@ -22,9 +22,11 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.R
@@ -45,7 +47,6 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import com.riders.thelab.utils.Constants.GPS_REQUEST
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
@@ -101,20 +102,39 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
+
+                    val dynamicIslandUiState by mViewModel.dynamicIslandState.collectAsStateWithLifecycle()
+
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            MainContent(viewModel = mViewModel)
+                            MainContent(
+                                viewModel = mViewModel,
+                                dynamicIslandUiState = dynamicIslandUiState,
+                                isDynamicIslandVisible = mViewModel.isDynamicIslandVisible,
+                                onUpdateDynamicIslandState = mViewModel::updateDynamicIslandState,
+                                onUpdateDynamicIslandVisible = mViewModel::updateDynamicIslandVisible,
+                                searchedAppRequest = mViewModel.searchedAppRequest,
+                                onSearchAppRequestChanged = mViewModel::updateSearchAppRequest,
+                                filteredList = mViewModel.filteredList,
+                                whatsNewList = mViewModel.whatsNewAppList,
+                                isMicrophoneEnabled = mViewModel.isMicrophoneEnabled,
+                                onUpdateMicrophoneEnabled = mViewModel::updateMicrophoneEnabled,
+                                isKeyboardVisible = mViewModel.keyboardVisible,
+                                onUpdateKeyboardVisible = mViewModel::updateKeyboardVisible,
+                                isPagerAutoScroll = mViewModel.isPagerAutoScroll,
+                                onLaunchSettings = mViewModel::launchSettings
+                            )
                         }
                     }
                 }
             }
 
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                if (mViewModel.appList.first().isEmpty()) {
+                if (mViewModel.appList.toList().isEmpty()) {
 
                     // Retrieve applications
                     mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
