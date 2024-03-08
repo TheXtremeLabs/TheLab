@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,6 +32,7 @@ import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.data.local.model.compose.WeatherUIState
 import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.data.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,7 +42,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class WeatherActivity : ComponentActivity(), LocationListener {
 
-    private val mWeatherViewModel: WeatherViewModel by viewModels()
+    private val mWeatherViewModel: WeatherViewModel by viewModels<WeatherViewModel>()
 
     private var labLocationManager: LabLocationManager? = null
 
@@ -140,9 +142,9 @@ class WeatherActivity : ComponentActivity(), LocationListener {
                         // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
                         repeatOnLifecycle(Lifecycle.State.STARTED) {
                             setContent {
-
+                                val context = LocalContext.current
                                 val weatherUiState by mWeatherViewModel.weatherUiState.collectAsStateWithLifecycle()
-                                val weatherCityUiState by mWeatherViewModel.weatherUiState.collectAsStateWithLifecycle()
+                                val weatherCityUiState by mWeatherViewModel.weatherCityUiState.collectAsStateWithLifecycle()
 
                                 TheLabTheme {
                                     // A surface container using the 'background' color from the theme
@@ -150,7 +152,38 @@ class WeatherActivity : ComponentActivity(), LocationListener {
                                         modifier = Modifier.fillMaxSize(),
                                         color = MaterialTheme.colorScheme.background
                                     ) {
-                                        WeatherContent(mWeatherViewModel)
+                                        WeatherContent(
+                                            weatherUiState = weatherUiState,
+                                            weatherCityUiState = weatherCityUiState,
+                                            iconState = mWeatherViewModel.iconState,
+                                            onRetryRequest = {
+                                                mWeatherViewModel.retry()
+                                                (context.findActivity() as WeatherActivity).onResume()
+                                            },
+                                            searchMenuExpanded = mWeatherViewModel.expanded,
+                                            onUpdateSearchMenuExpanded = mWeatherViewModel::updateExpanded,
+                                            searchCityQuery = mWeatherViewModel.searchText,
+                                            onUpdateSearchText = mWeatherViewModel::updateSearchText,
+                                            suggestions = mWeatherViewModel.suggestions,
+                                            cityMaxTemp = mWeatherViewModel.cityMaxTemp,
+                                            cityMinTemp = mWeatherViewModel.cityMinTemp,
+                                            weatherAddress = mWeatherViewModel.weatherAddress,
+                                            onFetchWeatherRequest = { latitude, longitude ->
+                                                mWeatherViewModel.fetchWeather(
+                                                    (latitude to longitude).toLocation()
+                                                )
+                                            },
+                                            isWeatherMoreDataVisible = mWeatherViewModel.isWeatherMoreDataVisible,
+                                            onUpdateMoreDataVisibility = mWeatherViewModel::updateMoreDataVisibility,
+                                            onGetMaxMinTemperature = mWeatherViewModel::getMaxMinTemperature,
+                                            onGetCityNameWithCoordinates = { latitude, longitude ->
+                                                mWeatherViewModel.getCityNameWithCoordinates(
+                                                    (context.findActivity() as WeatherActivity),
+                                                    latitude,
+                                                    longitude
+                                                )
+                                            }
+                                        )
                                     }
                                 }
                             }

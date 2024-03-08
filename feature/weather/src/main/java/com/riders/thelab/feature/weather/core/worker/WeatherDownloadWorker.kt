@@ -9,19 +9,24 @@ import androidx.work.WorkerParameters
 import com.riders.thelab.core.common.storage.LabFileManager
 import com.riders.thelab.core.common.utils.LabParser
 import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.weather.CityAppSearch
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.remote.dto.weather.City
+import com.riders.thelab.core.data.utils.WeatherSearchManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
+import java.util.UUID
 
 @SuppressLint("RestrictedApi")
 @HiltWorker
 class WeatherDownloadWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val workerParams: WorkerParameters,
-    private val mRepository: IRepository
+    private val mRepository: IRepository,
+    private val weatherSearchManager: WeatherSearchManager
 ) : CoroutineWorker(context, workerParams) {
 
     private var taskDataString: String? = null
@@ -74,8 +79,12 @@ class WeatherDownloadWorker @AssistedInject constructor(
 
                     Timber.d("Save in database...")
 
+                    // Step 3: Save in databases, app Search and Room
+                    // App search
+                    putCitiesToAppSearch(dtoCities)
+
                     // Step 3 save in database
-                    saveCities(dtoCities)
+                    // saveCities(dtoCities)
 
                     outputData = createOutputData(WORK_SUCCESS)
                     Result.success(outputData!!)
@@ -110,13 +119,41 @@ class WeatherDownloadWorker @AssistedInject constructor(
             .build()
     }
 
+    private suspend fun putCitiesToAppSearch(dtoCities: List<City>) {
+        Timber.d("putCitiesToAppSearch() | cities size: ${dtoCities.size}")
+
+        weatherSearchManager.init()
+
+        runCatching {
+            weatherSearchManager.putCities(
+                dtoCities.map {
+                    CityAppSearch(
+                        id = UUID.randomUUID().toString(),
+                        score = 1,
+                        name = it.name,
+                        state = it.state,
+                        country = it.country,
+                        latitude = it.coordinates.latitude,
+                        longitude = it.coordinates.longitude
+                    )
+                }
+            )
+        }
+            .onFailure {
+                it.printStackTrace()
+                weatherSearchManager.closeSession()
+            }
+            .onSuccess {
+                weatherSearchManager.closeSession()
+            }
+    }
 
     @SuppressLint("CheckResult")
     fun saveCities(dtoCities: List<City>) {
         Timber.d("saveCities()")
 
         try {
-            runBlocking {
+            runBlocking(Dispatchers.IO) {
                 mRepository.saveCities(dtoCities)
                 mRepository.insertWeatherData(WeatherData(0, true))
             }
