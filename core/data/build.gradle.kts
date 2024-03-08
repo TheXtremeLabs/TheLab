@@ -65,6 +65,11 @@ dependencies {
     api(libs.androidx.core.ktx)
     api(libs.kotlinx.serialization.json)
 
+    // AndroidX
+    api(libs.androidx.appsearch)
+    kapt(libs.androidx.appsearch.compiler)
+    api(libs.androidx.appsearch.local.storage)
+
     // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui.tooling)

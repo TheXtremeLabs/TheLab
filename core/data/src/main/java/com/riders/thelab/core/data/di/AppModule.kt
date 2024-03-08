@@ -6,15 +6,22 @@ import com.riders.thelab.core.data.local.LabDatabase
 import com.riders.thelab.core.data.local.dao.ContactDao
 import com.riders.thelab.core.data.local.dao.UserDao
 import com.riders.thelab.core.data.local.dao.WeatherDao
+import com.riders.thelab.core.data.utils.WeatherSearchManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal object AppModule {
+
+    @Singleton
+    @Provides
+    fun providesWeatherAppSearchManager(@ApplicationContext context: Context): WeatherSearchManager =
+        WeatherSearchManager(context)
 
 
     //TODO : Due to Heroku back-end free services ending,
