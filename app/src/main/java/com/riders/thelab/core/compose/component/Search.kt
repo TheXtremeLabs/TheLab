@@ -44,16 +44,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.dynamicisland.CallWaveform
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
-import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 import timber.log.Timber
 
 ///////////////////////////////////////
@@ -62,7 +61,14 @@ import timber.log.Timber
 //
 ///////////////////////////////////////
 @Composable
-fun Search(viewModel: MainActivityViewModel, dynamicIslandState: IslandState) {
+fun Search(
+    dynamicIslandState: IslandState,
+    searchedAppRequest: String,
+    onSearchAppRequestChanged: (String) -> Unit,
+    isMicrophoneEnabled: Boolean,
+    onUpdateMicrophoneEnabled: (Boolean) -> Unit,
+    onUpdateKeyboardVisible: (Boolean) -> Unit
+) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -84,17 +90,17 @@ fun Search(viewModel: MainActivityViewModel, dynamicIslandState: IslandState) {
                         focus.value = it.isFocused
                         if (!it.isFocused) {
                             keyboardController?.hide()
-                            viewModel.updateKeyboardVisible(it.isFocused)
+                            onUpdateKeyboardVisible(it.isFocused)
                         } else {
-                            viewModel.updateKeyboardVisible(it.isFocused)
+                            onUpdateKeyboardVisible(it.isFocused)
                         }
                     }
                 },
-            value = viewModel.searchedAppRequest,
-            onValueChange = { viewModel.updateSearchAppRequest(it) },
+            value = searchedAppRequest,
+            onValueChange = onSearchAppRequestChanged,
             placeholder = {
                 Text(
-                    text = if (viewModel.isMicrophoneEnabled && viewModel.searchedAppRequest.isNotBlank()) {
+                    text = if (isMicrophoneEnabled && searchedAppRequest.isNotBlank()) {
                         "Ecoute en cours..."
                     } else {
                         stringResource(id = R.string.search_app_item_placeholder)
@@ -120,14 +126,14 @@ fun Search(viewModel: MainActivityViewModel, dynamicIslandState: IslandState) {
             trailingIcon = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     AnimatedContent(
-                        targetState = if (LocalInspectionMode.current) true else viewModel.isMicrophoneEnabled,
+                        targetState = if (LocalInspectionMode.current) true else isMicrophoneEnabled,
                         transitionSpec = { fadeIn() + slideInVertically() togetherWith slideOutVertically() + fadeOut() },
                         label = "animation microphone"
                     ) { targetState ->
                         if (!targetState) {
                             IconButton(
                                 onClick = {
-                                    viewModel.updateMicrophoneEnabled(!viewModel.isMicrophoneEnabled)
+                                    onUpdateMicrophoneEnabled(!isMicrophoneEnabled)
                                     (context.findActivity() as MainActivity).launchSpeechToText()
                                 }
                             ) {
@@ -148,11 +154,11 @@ fun Search(viewModel: MainActivityViewModel, dynamicIslandState: IslandState) {
                         }
                     }
 
-                    AnimatedVisibility(visible = if (LocalInspectionMode.current) true else viewModel.searchedAppRequest.isNotBlank()) {
+                    AnimatedVisibility(visible = if (LocalInspectionMode.current) true else searchedAppRequest.isNotBlank()) {
                         IconButton(
                             onClick = {
-                                viewModel.updateMicrophoneEnabled(false)
-                                viewModel.updateSearchAppRequest("")
+                                onUpdateMicrophoneEnabled(false)
+                                onSearchAppRequestChanged("")
                             }
                         ) {
                             Icon(
@@ -166,8 +172,8 @@ fun Search(viewModel: MainActivityViewModel, dynamicIslandState: IslandState) {
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
                 autoCorrect = false,
-                KeyboardType.Text,
-                ImeAction.Done
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
             )
         )
     }
@@ -176,8 +182,8 @@ fun Search(viewModel: MainActivityViewModel, dynamicIslandState: IslandState) {
         Timber.d("Should request focus for textField")
     }
 
-    LaunchedEffect(viewModel.searchedAppRequest) {
-        Timber.d("LaunchedEffect | ${viewModel.searchedAppRequest}")
+    LaunchedEffect(searchedAppRequest) {
+        Timber.d("LaunchedEffect | $searchedAppRequest")
         /*delay(150L)
         focusRequester.freeFocus()
         focusManager.clearFocus(true)*/
@@ -193,6 +199,14 @@ fun Search(viewModel: MainActivityViewModel, dynamicIslandState: IslandState) {
 @DevicePreviews
 @Composable
 fun PreviewSearch(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
-    val viewModel: MainActivityViewModel = hiltViewModel()
-    Search(viewModel, state)
+    TheLabTheme {
+        Search(
+            dynamicIslandState = state,
+            searchedAppRequest = "Colors",
+            onSearchAppRequestChanged = {},
+            isMicrophoneEnabled = false,
+            onUpdateMicrophoneEnabled = {},
+            onUpdateKeyboardVisible = {}
+        )
+    }
 }
