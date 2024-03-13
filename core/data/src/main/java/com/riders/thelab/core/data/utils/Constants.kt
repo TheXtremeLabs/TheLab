@@ -3,6 +3,7 @@ package com.riders.thelab.core.data.utils
 object Constants {
 
     const val DATASTORE_THE_LAB_FILE_NAME = "THE_LAB_DATASTORE"
+    const val APP_SEARCH_WEATHER_CITIES_DATABASE_NAME = "cities"
 
     const val EMULATOR_DEVICE_TAG = "sdk"
 

@@ -1,11 +1,15 @@
 package com.riders.thelab.core.data.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.appsearch.app.AppSearchSession
 import androidx.appsearch.app.PutDocumentsRequest
 import androidx.appsearch.app.SearchSpec
 import androidx.appsearch.app.SetSchemaRequest
 import androidx.appsearch.localstorage.LocalStorage
+import androidx.appsearch.platformstorage.PlatformStorage
+import com.google.common.util.concurrent.ListenableFuture
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.weather.CityAppSearch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,15 +18,27 @@ class WeatherSearchManager(private val appContext: Context) {
 
     private var session: AppSearchSession? = null
 
+    @SuppressLint("NewApi")
     suspend fun init() {
         withContext(Dispatchers.IO) {
-            val sessionFuture = LocalStorage.createSearchSessionAsync(
-                LocalStorage.SearchContext.Builder(
-                    appContext, "cities"
-                )
-                    .build()
-            )
-
+            val sessionFuture: ListenableFuture<AppSearchSession> =
+                if (LabCompatibilityManager.isS()) {
+                    PlatformStorage.createSearchSession(
+                        PlatformStorage.SearchContext.Builder(
+                            appContext,
+                            Constants.APP_SEARCH_WEATHER_CITIES_DATABASE_NAME
+                        )
+                            .build()
+                    )
+                } else {
+                    LocalStorage.createSearchSessionAsync(
+                        LocalStorage.SearchContext.Builder(
+                            appContext,
+                            Constants.APP_SEARCH_WEATHER_CITIES_DATABASE_NAME
+                        )
+                            .build()
+                    )
+                }
             val setSchemaRequest =
                 SetSchemaRequest.Builder().addDocumentClasses(CityAppSearch::class.java).build()
 

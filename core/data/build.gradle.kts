@@ -69,6 +69,7 @@ dependencies {
     api(libs.androidx.appsearch)
     kapt(libs.androidx.appsearch.compiler)
     api(libs.androidx.appsearch.local.storage)
+    api(libs.androidx.appsearch.platform.storage)
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))
