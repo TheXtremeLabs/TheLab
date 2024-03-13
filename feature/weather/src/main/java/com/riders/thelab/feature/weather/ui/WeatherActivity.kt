@@ -11,7 +11,6 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,11 +25,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.WorkInfo
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.data.local.model.compose.WeatherUIState
 import com.riders.thelab.core.permissions.PermissionManager
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.data.SnackBarType
@@ -40,11 +41,13 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class WeatherActivity : ComponentActivity(), LocationListener {
+class WeatherActivity : BaseComponentActivity(), LocationListener {
 
     private val mWeatherViewModel: WeatherViewModel by viewModels<WeatherViewModel>()
 
-    private var labLocationManager: LabLocationManager? = null
+    // Network
+    private var mLabNetworkManager: LabNetworkManager? = null
+    private var mLabLocationManager: LabLocationManager? = null
 
     private val mGpsSwitchStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
@@ -75,7 +78,7 @@ class WeatherActivity : ComponentActivity(), LocationListener {
         if (hasLocationPermissions()) {
             unregisterReceiver(mGpsSwitchStateReceiver)
 
-            labLocationManager?.stopUsingGPS()
+            mLabLocationManager?.stopUsingGPS()
         }
     }
 
@@ -91,7 +94,7 @@ class WeatherActivity : ComponentActivity(), LocationListener {
 
             registerLabLocationManager()
 
-            labLocationManager?.let {
+            mLabLocationManager?.let {
                 updateLocationIcon(it.canGetLocation())
 
                 if (!it.canGetLocation()) {
@@ -103,6 +106,11 @@ class WeatherActivity : ComponentActivity(), LocationListener {
                 }
             }
         }
+    }
+
+    override fun backPressed() {
+        Timber.e("backPressed()")
+        finish()
     }
 
     override fun onDestroy() {
@@ -133,6 +141,10 @@ class WeatherActivity : ComponentActivity(), LocationListener {
                     )
 
                 } else {
+
+                    mLabNetworkManager = LabNetworkManager
+                        .getInstance(this, lifecycle)
+                        .also { mWeatherViewModel.observeNetworkState(it) }
 
                     initViewModelObservers()
 
@@ -225,20 +237,20 @@ class WeatherActivity : ComponentActivity(), LocationListener {
     private fun registerLabLocationManager() {
         Timber.d("registerLabLocationManager()")
 
-        if (null == labLocationManager) {
-            labLocationManager = LabLocationManager(
+        if (null == mLabLocationManager) {
+            mLabLocationManager = LabLocationManager(
                 activity = this@WeatherActivity,
                 locationListener = this@WeatherActivity
             )
         }
 
-        labLocationManager?.let { locationManager ->
+        mLabLocationManager?.let { locationManager ->
 
             if (!locationManager.canGetLocation()) {
                 Timber.e("Cannot get location please enable position")
 
                 // TODO : Should show alert with compose dialog
-                // labLocationManager?.showSettingsAlert()
+                // mLabLocationManager?.showSettingsAlert()
             } else {
                 locationManager.setLocationListener()
                 locationManager.getCurrentLocation()
@@ -248,7 +260,7 @@ class WeatherActivity : ComponentActivity(), LocationListener {
 
     fun fetchCurrentLocation() {
         Timber.d("fetchCurrentLocation()")
-        if (null == labLocationManager || labLocationManager?.canGetLocation() == false) {
+        if (null == mLabLocationManager || mLabLocationManager?.canGetLocation() == false) {
             UIManager.showActionInSnackBar(
                 this,
                 "Cannot get location please enable device's position setting.",
@@ -259,7 +271,7 @@ class WeatherActivity : ComponentActivity(), LocationListener {
             return
         }
 
-        val location = labLocationManager?.getCurrentLocation() ?: return
+        val location = mLabLocationManager?.getCurrentLocation() ?: return
         mWeatherViewModel.fetchWeather((location.latitude to location.longitude).toLocation())
     }
 
