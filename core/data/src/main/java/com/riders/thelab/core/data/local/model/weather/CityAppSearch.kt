@@ -7,11 +7,12 @@ import androidx.appsearch.annotation.Document.Namespace
 import androidx.appsearch.annotation.Document.Score
 import androidx.appsearch.annotation.Document.StringProperty
 import androidx.appsearch.app.AppSearchSchema
+import com.riders.thelab.core.data.utils.Constants
 
 @Document
 data class CityAppSearch(
     @Namespace
-    val namespace: String = "weather_search",
+    val namespace: String = Constants.APP_SEARCH_WEATHER_NAMESPACE,
     @Id
     val id: String,
     @Score

@@ -13,6 +13,7 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.weather.CityAppSearch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class WeatherSearchManager(private val appContext: Context) {
 
@@ -20,10 +21,14 @@ class WeatherSearchManager(private val appContext: Context) {
 
     @SuppressLint("NewApi")
     suspend fun init() {
+        Timber.i("WeatherSearchManager | init")
+
         withContext(Dispatchers.IO) {
             val sessionFuture: ListenableFuture<AppSearchSession> =
                 if (LabCompatibilityManager.isS()) {
-                    PlatformStorage.createSearchSession(
+                    Timber.i("WeatherSearchManager | LabCompatibilityManager is Android 12+")
+
+                    PlatformStorage.createSearchSessionAsync(
                         PlatformStorage.SearchContext.Builder(
                             appContext,
                             Constants.APP_SEARCH_WEATHER_CITIES_DATABASE_NAME
@@ -31,6 +36,8 @@ class WeatherSearchManager(private val appContext: Context) {
                             .build()
                     )
                 } else {
+                    Timber.e("WeatherSearchManager | LabCompatibilityManager is below Android 12")
+
                     LocalStorage.createSearchSessionAsync(
                         LocalStorage.SearchContext.Builder(
                             appContext,
@@ -48,6 +55,8 @@ class WeatherSearchManager(private val appContext: Context) {
     }
 
     suspend fun putCities(cities: List<CityAppSearch>): Boolean {
+        Timber.i("putCities | cities size: ${cities.size}")
+
         return withContext(Dispatchers.IO) {
             session?.putAsync(
                 PutDocumentsRequest.Builder().addDocuments(cities).build()
@@ -58,11 +67,14 @@ class WeatherSearchManager(private val appContext: Context) {
     }
 
     suspend fun searchCities(query: String): List<CityAppSearch> {
+        Timber.d("searchCities() | query: $query")
+
         return withContext(Dispatchers.IO) {
             val searchSpec = SearchSpec.Builder()
-                .setSnippetCount(10)
-                .addFilterNamespaces("weather_search")
-                .setRankingStrategy(SearchSpec.RANKING_STRATEGY_USAGE_COUNT)
+                .setSnippetCount(10_000)
+                .addFilterNamespaces(Constants.APP_SEARCH_WEATHER_NAMESPACE)
+                .setRankingStrategy(SearchSpec.RANKING_STRATEGY_NONE)
+//                .setRankingStrategy(SearchSpec.RANKING_STRATEGY_USAGE_COUNT)
                 .build()
 
             val result =
@@ -72,13 +84,15 @@ class WeatherSearchManager(private val appContext: Context) {
 
             page.mapNotNull {
                 if (CityAppSearch::class.java.simpleName == it.genericDocument.schemaType) {
+                    Timber.d("searchCities() | document matches CityAppSearch schema")
                     it.getDocument(CityAppSearch::class.java)
                 } else null
             }
         }
     }
 
-    suspend fun closeSession() {
+    fun closeSession() {
+        Timber.e("closeSession()")
         session?.close()
         session = null
     }

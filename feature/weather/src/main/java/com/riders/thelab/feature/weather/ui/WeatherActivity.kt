@@ -16,6 +16,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -139,7 +140,6 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                         this,
                         "Permissions are denied. User may access to app with limited location related features"
                     )
-
                 } else {
 
                     mLabNetworkManager = LabNetworkManager
@@ -157,6 +157,10 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                                 val context = LocalContext.current
                                 val weatherUiState by mWeatherViewModel.weatherUiState.collectAsStateWithLifecycle()
                                 val weatherCityUiState by mWeatherViewModel.weatherCityUiState.collectAsStateWithLifecycle()
+                                val citySearch by mWeatherViewModel.searchText.collectAsStateWithLifecycle()
+                                /*val citySearchQuery by mWeatherViewModel.citySearchQuery.collectAsStateWithLifecycle(
+                                    initialValue = emptyList()
+                                )*/
 
                                 TheLabTheme {
                                     // A surface container using the 'background' color from the theme
@@ -174,7 +178,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                                             },
                                             searchMenuExpanded = mWeatherViewModel.expanded,
                                             onUpdateSearchMenuExpanded = mWeatherViewModel::updateExpanded,
-                                            searchCityQuery = mWeatherViewModel.searchText,
+                                            searchCityQuery = citySearch,
                                             onUpdateSearchText = mWeatherViewModel::updateSearchText,
                                             suggestions = mWeatherViewModel.suggestions,
                                             cityMaxTemp = mWeatherViewModel.cityMaxTemp,
@@ -198,6 +202,11 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                                         )
                                     }
                                 }
+
+                                /*LaunchedEffect(citySearch) {
+                                    Timber.e("search list: ${citySearchQuery.toString()}")
+
+                                }*/
                             }
                         }
                     }
@@ -283,7 +292,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
             mWeatherViewModel.updateUIState(WeatherUIState.Error())
         } else {
             mWeatherViewModel.updateIconState(true)
-            mWeatherViewModel.fetchCities(this@WeatherActivity)
+//            mWeatherViewModel.fetchCities(this@WeatherActivity)
         }
     }
 

@@ -91,6 +91,7 @@ import com.riders.thelab.feature.weather.core.component.TheLabTopAppBar
 import com.riders.thelab.feature.weather.utils.Constants
 import com.riders.thelab.feature.weather.utils.WeatherUtils
 import timber.log.Timber
+import java.util.UUID
 import kotlin.math.roundToInt
 
 ///////////////////////////////////////
@@ -104,10 +105,14 @@ fun WeatherLoading(modifier: Modifier = Modifier) {
     TheLabTheme {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .then(modifier)
+                .size(72.dp)
+                .then(modifier),
+            contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            Lottie(
+                modifier = Modifier.fillMaxSize(),
+                url = "https://assets2.lottiefiles.com/packages/lf20_kk62um5v.json"
+            )
         }
     }
 }
@@ -183,7 +188,7 @@ fun WeatherSuccess(
                     expanded = searchMenuExpanded,
                     onDismissRequest = { onUpdateSearchMenuExpanded(false) }
                 ) {
-                    suggestions.take(10).forEachIndexed { _, city ->
+                    suggestions.forEachIndexed { _, city ->
 
                         val countryURL: String =
                             (Constants.BASE_ENDPOINT_WEATHER_FLAG
@@ -826,7 +831,17 @@ fun PreviewWeatherContent(@PreviewParameter(PreviewProviderWeather::class) state
             onUpdateSearchMenuExpanded = {},
             searchCityQuery = "Pa",
             onUpdateSearchText = {},
-            suggestions = listOf(CityModel()),
+            suggestions = listOf(
+                CityModel(
+                    id = 1,
+                    uuid = UUID.randomUUID().toString(),
+                    name = "Johanesburg",
+                    state = "",
+                    country = "South Africa",
+                    longitude = 48.3535,
+                    latitude = 3.58978
+                )
+            ),
             onFetchWeatherRequest = { lat, lon -> },
             weatherAddress = null,
             onGetMaxMinTemperature = {},
@@ -850,7 +865,17 @@ fun PreviewWeatherSuccess(@PreviewParameter(PreviewProviderWeatherCity::class) s
             onUpdateSearchMenuExpanded = {},
             searchCityQuery = "Pa",
             onUpdateSearchText = {},
-            suggestions = listOf(CityModel()),
+            suggestions = listOf(
+                CityModel(
+                    id = 1,
+                    uuid = UUID.randomUUID().toString(),
+                    name = "Johanesburg",
+                    state = "",
+                    country = "South Africa",
+                    longitude = 48.3535,
+                    latitude = 3.58978
+                )
+            ),
             onFetchWeatherRequest = { lat, lon -> },
             weatherAddress = null,
             onGetMaxMinTemperature = {},

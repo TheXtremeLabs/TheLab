@@ -8,6 +8,7 @@ import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.weather.CityMapper
 import com.riders.thelab.core.data.local.model.weather.CityModel
+import com.riders.thelab.core.data.local.model.weather.CityModelFTS
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.remote.dto.weather.City
 import kotlinx.coroutines.flow.Flow
@@ -113,6 +114,8 @@ class DbImpl @Inject constructor(
 
         return mWeatherDao.insertAllRX(citiesToDatabase)
     }
+
+    override suspend fun searchCity(cityQuery: String): List<CityModelFTS> = mWeatherDao.search(cityQuery)
 
     override suspend fun getWeatherData(): WeatherData? {
         return mWeatherDao.getWeatherData()
