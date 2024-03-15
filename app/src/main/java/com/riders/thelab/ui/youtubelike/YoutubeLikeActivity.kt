@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.R
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityYoutubeBinding
@@ -25,6 +26,9 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
 
     private val mYoutubeViewModel: YoutubeLikeViewModel by viewModels()
 
+    // Network
+    private var mLabNetworkManager: LabNetworkManager? = null
+
     private var contentAdapter: YoutubeLikeListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +37,11 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
         setContentView(viewBinding.root)
 
         setupToolbar()
+
+        mLabNetworkManager = LabNetworkManager
+            .getInstance(this, lifecycle)
+            .also { mYoutubeViewModel.observeNetworkState(it) }
+
         initViewModelsObservers()
 
         mYoutubeViewModel.fetchVideos(this)

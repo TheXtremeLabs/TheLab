@@ -41,15 +41,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal object ApiModule {
     @Provides
-    fun provideOkHttpLogger(): HttpLoggingInterceptor =
+    fun provideOkHttpLogger(isBulkDownload: Boolean = false): HttpLoggingInterceptor =
         HttpLoggingInterceptor { message: String -> Timber.tag("OkHttp").d(message) }
-            .setLevel(HttpLoggingInterceptor.Level.BODY)
+            .setLevel(if (isBulkDownload) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY)
 
     /* WEATHER */
     /* Provide OkHttp for the app */
     @Provides
     @Singleton
-    fun provideWeatherOkHttp(): OkHttpClient = OkHttpClient.Builder()
+    fun provideWeatherOkHttp(isBulkDownload: Boolean = false): OkHttpClient = OkHttpClient.Builder()
         .readTimeout(TimeOut.TIME_OUT_READ.value.toLong(), TimeUnit.SECONDS)
         .connectTimeout(TimeOut.TIME_OUT_CONNECTION.value.toLong(), TimeUnit.SECONDS)
         .addInterceptor(
@@ -107,7 +107,7 @@ internal object ApiModule {
                 val request = requestBuilder?.build()
                 chain.proceed(request!!)
             })
-        .addInterceptor(provideOkHttpLogger())
+        .addInterceptor(provideOkHttpLogger(isBulkDownload))
         .build()
 
 
@@ -263,6 +263,13 @@ internal object ApiModule {
 
     @Provides
     @Singleton
+    fun provideWeatherBulkRetrofit(url: String): Retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        .client(provideWeatherOkHttp(true))
+        .build()
+
+    @Provides
+    @Singleton
     fun provideTMDBRetrofit(url: String): Retrofit = Retrofit.Builder()
         .baseUrl(url)
         .client(provideTMDBOkHttp())
@@ -313,7 +320,7 @@ internal object ApiModule {
     @Provides
     @Singleton
     fun proWeatherBulkApiService(): WeatherBulkApiService {
-        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
+        return provideWeatherBulkRetrofit(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
             .create(WeatherBulkApiService::class.java)
     }
 
