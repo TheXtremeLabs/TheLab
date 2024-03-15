@@ -35,11 +35,11 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.BuildConfig
 import com.riders.thelab.R
+import com.riders.thelab.core.data.local.model.compose.LoginFieldsUIState
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHtmlText
@@ -51,7 +51,6 @@ import com.riders.thelab.core.ui.compose.utils.animatePlacement
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 ///////////////////////////////
@@ -88,8 +87,21 @@ fun SignUpButton(onClick: () -> Unit) {
 
 @SuppressLint("NewApi")
 @Composable
-fun LoginContent(viewModel: LoginViewModel) {
-
+fun LoginContent(
+    version: String,
+    loginUiState: LoginUiState,
+    loginFieldState: LoginFieldsUIState.Login,
+    login: String,
+    onUpdateLogin: (String) -> Unit,
+    loginHasError: Boolean,
+    loginHasLocalError: Boolean,
+    passwordFieldState: LoginFieldsUIState.Password,
+    password: String,
+    onUpdatePassword: (String) -> Unit,
+    isRememberCredentialsChecked: Boolean,
+    onUpdateIsRememberCredentials: (Boolean) -> Unit,
+    onLoginButtonClicked: () -> Unit
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -97,15 +109,7 @@ fun LoginContent(viewModel: LoginViewModel) {
     val formVisibility = remember { mutableStateOf(false) }
     val registerVisibility = remember { mutableStateOf(false) }
 
-    val loginUiState by viewModel.loginUiState.collectAsStateWithLifecycle()
-    val loginFieldState by viewModel.loginFieldUiState.collectAsStateWithLifecycle()
-    val loginHasError by viewModel.loginHasError.collectAsStateWithLifecycle()
-    val passwordFieldState by viewModel.passwordFieldUiState.collectAsStateWithLifecycle()
-
-
-    var arrangement: Arrangement.Vertical by remember {
-        mutableStateOf(Arrangement.Center)
-    }
+    var arrangement: Arrangement.Vertical by remember { mutableStateOf(Arrangement.Center) }
 
     TheLabTheme {
 
@@ -153,7 +157,7 @@ fun LoginContent(viewModel: LoginViewModel) {
                 ) {
                     Text(
                         modifier = Modifier.padding(8.dp),
-                        text = if (LocalInspectionMode.current) "12.0.0" else viewModel.version,
+                        text = if (LocalInspectionMode.current) "12.0.0" else version,
                         style = TextStyle(
                             color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
                             textAlign = TextAlign.Center
@@ -172,19 +176,16 @@ fun LoginContent(viewModel: LoginViewModel) {
                 Form(
                     loginUiState = loginUiState,
                     loginFieldState = loginFieldState,
-                    login = viewModel.login,
-                    onUpdateLogin = { viewModel.updateLogin(it) },
+                    login = login,
+                    onUpdateLogin = onUpdateLogin,
                     loginHasError = loginHasError,
-                    loginHasLocalError = viewModel.loginHasLocalError,
+                    loginHasLocalError = loginHasLocalError,
                     passwordFieldState = passwordFieldState,
-                    password = viewModel.password,
-                    onUpdatePassword = { viewModel.updatePassword(it) },
-                    isRememberCredentialsChecked = viewModel.isRememberCredentials,
-                    onUpdateIsRememberCredentials = { viewModel.updateIsRememberCredentials(it) },
-                    onLoginButtonClicked = {
-                        Timber.d("Login button clicked")
-                        viewModel.login()
-                    }
+                    password = password,
+                    onUpdatePassword = onUpdatePassword,
+                    isRememberCredentialsChecked = isRememberCredentialsChecked,
+                    onUpdateIsRememberCredentials = onUpdateIsRememberCredentials,
+                    onLoginButtonClicked = onLoginButtonClicked
                 )
             }
 
@@ -222,7 +223,7 @@ fun LoginContent(viewModel: LoginViewModel) {
             arrangement = Arrangement.Bottom
 
             if (BuildConfig.DEBUG) {
-                viewModel.login()
+                onLoginButtonClicked()
             }
         }
     }
@@ -257,7 +258,30 @@ fun PreviewSignUpButton() {
 
 @DevicePreviews
 @Composable
-fun PreviewLoginContent() {
-    val viewModel: LoginViewModel = hiltViewModel()
-    TheLabTheme { LoginContent(viewModel = viewModel) }
+fun PreviewLoginContent(@PreviewParameter(PreviewProviderLoginState::class) loginUiState: LoginUiState) {
+    val loginFieldUiState: LoginFieldsUIState.Login = LoginFieldsUIState.Login.Ok
+    val passwordUiState: LoginFieldsUIState.Password = LoginFieldsUIState.Password.Ok
+
+    val login =
+        if (loginUiState is LoginUiState.UserSuccess) loginUiState.user.email else "john.smith@test.com"
+    val password =
+        if (loginUiState is LoginUiState.UserSuccess) loginUiState.user.password else "test1234"
+
+    TheLabTheme {
+        LoginContent(
+            version = "12.10.3",
+            loginUiState = loginUiState,
+            loginFieldState = loginFieldUiState,
+            loginHasError = false,
+            login = login,
+            onUpdateLogin = {},
+            loginHasLocalError = false,
+            passwordFieldState = passwordUiState,
+            password = password,
+            onUpdatePassword = {},
+            isRememberCredentialsChecked = true,
+            onUpdateIsRememberCredentials = {},
+            onLoginButtonClicked = {}
+        )
+    }
 }

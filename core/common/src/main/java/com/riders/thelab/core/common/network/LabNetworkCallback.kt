@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
 @SuppressLint("MissingPermission")
 class LabNetworkManager(
     private val context: Context,
