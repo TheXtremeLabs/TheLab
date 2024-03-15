@@ -1,5 +1,7 @@
 ![WelcomeToTheLab](docs/images/the_lab_banner.png)
 
+[![TheLab][thelab-badge]][thelab-project]
+[![Android SDK][android-badge]]
 [![Kotools Types][kotools-types-badge]][kotools-types-project]
 [![Kotlin][kotlin-badge]][kotlin]
 [![kotlinx.serialization][kotlinx.serialization-badge]][kotlinx.serialization]
@@ -69,14 +71,16 @@ Repository created and maintained by Saint-Honoré Michaël([*@MichaelStH*](http
 ![HotCoffeeLoading](docs/gif/lottie_hot_coffee.gif)
 
 [sem-ver]: https://semver.org/
-[kotools-types-badge]: https://img.shields.io/static/v1?label=version&message=12.10.4&color=blue
+[thelab-badge]: https://img.shields.io/static/v1?label=version&message=12.13.15&color=blue
+[thelab-project]: https://github.com/TheXtremeLabs/TheLab
+[android-badge]: https://img.shields.io/static/v1?label=Android%20SDK&message=API%2033&color=green
+[kotools-types-badge]: https://img.shields.io/static/v1?label=Kotools&message=4.5.0&color=blue
 [kotools-types-project]: https://github.com/kotools/types
 [kotlin]: https://kotlinlang.org
-[kotlin-badge]: https://img.shields.io/badge/kotlin-1.9.21-blue?logo=kotlin
+[kotlin-badge]: https://img.shields.io/badge/kotlin-1.9.22-blue?logo=kotlin
 [kotlin.ArithmeticException]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-arithmetic-exception
 [kotlinx.serialization]: https://github.com/Kotlin/kotlinx.serialization
-[kotlinx.serialization-badge]: https://img.shields.io/badge/kotlinx.serialization-1.6.0-blue?logo=kotlin
-[total-functions]: https://xlinux.nist.gov/dads/HTML/totalfunc.html
+[kotlinx.serialization-badge]: https://img.shields.io/badge/kotlinx.serialization-1.6.3-blue?logo=kotlin
 [androidx]: https://developer.android.com/jetpack/androidx?hl=fr
 [jetpack-compose]: https://developer.android.com/jetpack/compose?hl=fr
 [google-apis]: https://console.cloud.google.com/apis/library?hl=fr
