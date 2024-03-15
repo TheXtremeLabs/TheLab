@@ -166,7 +166,11 @@ class SignUpViewModel @Inject constructor(
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             Timber.e("CoroutineExceptionHandler | Error caught with message: ${throwable.message}")
-            UIManager.showToast(context, "Error while saving user to Database")
+
+            viewModelScope.launch(Dispatchers.Main) {
+                UIManager.showToast(context, "Error while saving user to Database")
+            }
+
             updateIsSubmitSuccess(false)
         }
 

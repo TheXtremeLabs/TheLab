@@ -5,6 +5,7 @@ import com.riders.thelab.core.common.utils.decrypt
 import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.bean.TimeOut
 import com.riders.thelab.core.data.remote.api.ArtistsAPIService
+import com.riders.thelab.core.data.remote.api.FlightApiService
 import com.riders.thelab.core.data.remote.api.GoogleAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAccountAPIService
@@ -19,6 +20,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.ConnectionSpec
 import okhttp3.HttpUrl
@@ -39,15 +41,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal object ApiModule {
     @Provides
-    fun provideOkHttpLogger(): HttpLoggingInterceptor =
+    fun provideOkHttpLogger(isBulkDownload: Boolean = false): HttpLoggingInterceptor =
         HttpLoggingInterceptor { message: String -> Timber.tag("OkHttp").d(message) }
-            .setLevel(HttpLoggingInterceptor.Level.BODY)
+            .setLevel(if (isBulkDownload) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY)
 
     /* WEATHER */
     /* Provide OkHttp for the app */
     @Provides
     @Singleton
-    fun provideWeatherOkHttp(): OkHttpClient = OkHttpClient.Builder()
+    fun provideWeatherOkHttp(isBulkDownload: Boolean = false): OkHttpClient = OkHttpClient.Builder()
         .readTimeout(TimeOut.TIME_OUT_READ.value.toLong(), TimeUnit.SECONDS)
         .connectTimeout(TimeOut.TIME_OUT_CONNECTION.value.toLong(), TimeUnit.SECONDS)
         .addInterceptor(
@@ -105,7 +107,7 @@ internal object ApiModule {
                 val request = requestBuilder?.build()
                 chain.proceed(request!!)
             })
-        .addInterceptor(provideOkHttpLogger())
+        .addInterceptor(provideOkHttpLogger(isBulkDownload))
         .build()
 
 
@@ -147,6 +149,27 @@ internal object ApiModule {
 
             val request = requestBuilder?.build()
             chain.proceed(request!!)
+        })
+        .addInterceptor(provideOkHttpLogger())
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideFlightOkHttp(): OkHttpClient = OkHttpClient.Builder()
+        .readTimeout(TimeOut.TIME_OUT_READ.value.toLong(), TimeUnit.SECONDS)
+        .connectTimeout(TimeOut.TIME_OUT_CONNECTION.value.toLong(), TimeUnit.SECONDS)
+        .addInterceptor(Interceptor { chain: Interceptor.Chain ->
+            val original = chain.request()
+            val originalHttpUrl = original.url
+
+            // Request customization: add request headers
+            val requestBuilder = original.newBuilder()
+                .url(originalHttpUrl)
+                .header(Headers.CONTENT_TYPE.value, "application/json; charset=utf-8")
+                .header("x-apikey", BuildConfig.SERVER_API_KEY_FLIGHT_AWARE_AERO.decrypt())
+
+            val request = requestBuilder.build()
+            chain.proceed(request)
         })
         .addInterceptor(provideOkHttpLogger())
         .build()
@@ -202,13 +225,15 @@ internal object ApiModule {
     }
 
 
+    @OptIn(ExperimentalSerializationApi::class)
     private val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
         prettyPrint = true
+        explicitNulls = false
     }
 
-    private const val CONTENT_TYPE_JSON = "application/json"
+    private const val CONTENT_TYPE_JSON = "application/json; charset=utf-8"
 
     /* Provide Retrofit for the app */
     @Provides
@@ -238,9 +263,24 @@ internal object ApiModule {
 
     @Provides
     @Singleton
+    fun provideWeatherBulkRetrofit(url: String): Retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        .client(provideWeatherOkHttp(true))
+        .build()
+
+    @Provides
+    @Singleton
     fun provideTMDBRetrofit(url: String): Retrofit = Retrofit.Builder()
         .baseUrl(url)
         .client(provideTMDBOkHttp())
+        .addConverterFactory(json.asConverterFactory(CONTENT_TYPE_JSON.toMediaType()))
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideFlightRetrofit(url: String): Retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        .client(provideFlightOkHttp())
         .addConverterFactory(json.asConverterFactory(CONTENT_TYPE_JSON.toMediaType()))
         .build()
 
@@ -280,7 +320,7 @@ internal object ApiModule {
     @Provides
     @Singleton
     fun proWeatherBulkApiService(): WeatherBulkApiService {
-        return provideWeatherRetrofit(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
+        return provideWeatherBulkRetrofit(Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD)
             .create(WeatherBulkApiService::class.java)
     }
 
@@ -309,4 +349,9 @@ internal object ApiModule {
     @Singleton
     fun provideTMDBAPIService(): TMDBApiService =
         provideTMDBRetrofit(Constants.BASE_ENDPOINT_TMDB_API).create(TMDBApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideFlightAPIService(): FlightApiService =
+        provideFlightRetrofit(Constants.BASE_ENDPOINT_FLIGHT_AWARE_API).create(FlightApiService::class.java)
 }

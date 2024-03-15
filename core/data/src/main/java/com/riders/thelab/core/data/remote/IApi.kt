@@ -11,6 +11,10 @@ import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.remote.dto.flight.Airport
+import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
+import com.riders.thelab.core.data.remote.dto.flight.Operator
+import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBCreditsResponse
@@ -66,4 +70,10 @@ interface IApi {
     suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse?
     suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse?
     suspend fun getMovieCredits(movieID: Int): TMDBCreditsResponse?
+
+    // FlightAware
+    suspend fun getAirports(maxPages: Int = 1, cursor: String? = null): AirportsResponse
+    suspend fun getAirportById(airportID: String): Airport
+    suspend fun getOperators(maxPages: Int = 1, cursor: String? = null): OperatorResponse
+    suspend fun getOperatorById(operatorID: String): Operator
 }

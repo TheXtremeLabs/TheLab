@@ -18,7 +18,8 @@ import com.acrcloud.rec.ACRCloudConfig
 import com.acrcloud.rec.ACRCloudResult
 import com.acrcloud.rec.IACRCloudListener
 import com.acrcloud.rec.utils.ACRCloudLogger
-import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.network.LabNetworkManager
+import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
@@ -26,6 +27,7 @@ import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,7 +67,8 @@ class ACRCloudViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel(), DefaultLifecycleObserver, IACRCloudListener {
 
-    lateinit var mNetworkManager: LabNetworkManagerNewAPI
+    // Network
+    lateinit var mNetworkState: StateFlow<NetworkState>
 
     private var mClient: ACRCloudClient? = null
     private var mConfig: ACRCloudConfig? = null
@@ -79,9 +82,9 @@ class ACRCloudViewModel @Inject constructor(
     var isRecognizing by mutableStateOf(false)
         private set
 
-    var result by mutableStateOf("")
+    var result: String? by mutableStateOf(null)
         private set
-    private var spotifyToken by mutableStateOf("")
+    private var spotifyToken: String? by mutableStateOf(null)
         private set
 
     private var showToastWithMessage: Pair<Boolean, String> by mutableStateOf(Pair(false, ""))
@@ -137,17 +140,46 @@ class ACRCloudViewModel @Inject constructor(
     // CLASS METHODS
     //
     ///////////////////////////////
-    fun initNetworkManager(context: Context) {
-        Timber.d("initNetworkManager()")
-        mNetworkManager = LabNetworkManagerNewAPI.getInstance(context = context)
+    fun observeNetworkState(networkManager: LabNetworkManager) {
+        Timber.d("observeNetworkState()")
+        mNetworkState = networkManager.networkState
 
-        if (null == mNetworkManager) {
-            Timber.e("NetworkManager is null")
-        } else {
-            val isOnline: Boolean = mNetworkManager.isOnline()
-            Timber.d("Is app online : $isOnline")
+
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            networkManager.getNetworkState().collect { networkState ->
+                when (networkState) {
+                    is NetworkState.Available -> {
+                        Timber.d("network state is Available. All set.")
+//                        updateHasInternetConnection(true)
+
+                        if (spotifyToken.isNullOrBlank()) {
+                            getSpotifyToken()
+                        }
+                    }
+
+                    is NetworkState.Losing -> {
+                        Timber.w("network state is Losing. Internet connection about to be lost")
+//                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Lost -> {
+                        Timber.e("network state is Lost. Should not allow network calls initialization")
+//                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Unavailable -> {
+                        Timber.e("network state is Unavailable. Should not allow network calls initialization")
+//                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Undefined -> {
+                        Timber.i("network state is Undefined. Do nothing")
+                    }
+                }
+            }
         }
     }
+
 
     fun initACRCloud(context: Context) {
         Timber.d("initACRCloud()")

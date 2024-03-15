@@ -15,12 +15,17 @@ import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.local.model.weather.CityModel
+import com.riders.thelab.core.data.local.model.weather.CityModelFTS
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.preferences.PreferencesImpl
 import com.riders.thelab.core.data.remote.ApiImpl
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.remote.dto.flight.Airport
+import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
+import com.riders.thelab.core.data.remote.dto.flight.Operator
+import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBCreditsResponse
@@ -124,6 +129,9 @@ class RepositoryImpl @Inject constructor(
         return mDbImpl.saveCities(dtoCities)
     }
 
+    override suspend fun searchCity(cityQuery: String): List<CityModelFTS> =
+        mDbImpl.searchCity(cityQuery)
+
     override suspend fun getWeatherData(): WeatherData? {
         return mDbImpl.getWeatherData()
     }
@@ -212,6 +220,17 @@ class RepositoryImpl @Inject constructor(
     override suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse =
         mApiImpl.getTrackInfo(bearerToken, trackId)
 
+    override suspend fun getAirports(maxPages: Int, cursor: String?): AirportsResponse =
+        mApiImpl.getAirports(maxPages, cursor)
+
+    override suspend fun getAirportById(airportID: String): Airport =
+        mApiImpl.getAirportById(airportID)
+
+    override suspend fun getOperators(maxPages: Int, cursor: String?): OperatorResponse =
+        mApiImpl.getOperators(maxPages, cursor)
+
+    override suspend fun getOperatorById(operatorID: String): Operator =
+        mApiImpl.getOperatorById(operatorID)
 
     /////////////////////////
     //

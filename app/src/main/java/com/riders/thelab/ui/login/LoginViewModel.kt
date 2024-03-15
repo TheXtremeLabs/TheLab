@@ -9,6 +9,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.BuildConfig
+import com.riders.thelab.core.common.network.LabNetworkManager
+import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.utils.encodeToSha256
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.LoginFieldsUIState
@@ -28,13 +30,13 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @Suppress("EmptyMethod")
 @HiltViewModel
-class LoginViewModel @Inject constructor(
-    private val repository: IRepository
-) : BaseViewModel() {
+class LoginViewModel @Inject constructor(private val repository: IRepository) : BaseViewModel() {
+
     val list = listOf("test", "mike", "chronopost", "john")
 
     //////////////////////////////////////////
@@ -62,12 +64,9 @@ class LoginViewModel @Inject constructor(
         MutableStateFlow<LoginFieldsUIState.Password>(LoginFieldsUIState.Password.Idle)
     val passwordFieldUiState: StateFlow<LoginFieldsUIState.Password> = _passwordFieldUiState
 
-    // Backing property to avoid state updates from other classes
-    private val _networkState: MutableStateFlow<NetworkState> =
-        MutableStateFlow(NetworkState.Disconnected(true))
-
-    // The UI collects from this StateFlow to get its state updates
-    val networkState: StateFlow<NetworkState> = _networkState
+    // Network State
+    var hasInternetConnection: Boolean by mutableStateOf(false)
+        private set
 
     var login by mutableStateOf(if (BuildConfig.DEBUG) "jane.doe@test.com" else "")
         private set
@@ -112,8 +111,8 @@ class LoginViewModel @Inject constructor(
         _passwordFieldUiState.value = newPasswordFieldState
     }
 
-    private fun updateNetworkState(newState: NetworkState) {
-        _networkState.value = newState
+    fun updateHasInternetConnection(hasInternet: Boolean) {
+        this.hasInternetConnection = hasInternet
     }
 
     fun updateLogin(value: String) {
@@ -144,7 +143,9 @@ class LoginViewModel @Inject constructor(
             throwable.printStackTrace()
             Timber.e("coroutineExceptionHandler | ${throwable.message}")
 
-            updateNetworkState(NetworkState.Disconnected(true))
+            if (throwable is UnknownHostException) {
+                updateHasInternetConnection(false)
+            }
 
             val cs404: CharSequence = "404".subSequence(0, 3)
             val cs503: CharSequence = "503".subSequence(0, 3)
@@ -167,11 +168,11 @@ class LoginViewModel @Inject constructor(
         }
 
 
-    ///////////////
+    ///////////////////////////////
     //
     // OVERRIDE
     //
-    ///////////////
+    ///////////////////////////////
     init {
         if (true == dataStoreRememberCredentials.value) {
             dataStoreEmail.value?.let { updateLogin(it) }
@@ -186,11 +187,45 @@ class LoginViewModel @Inject constructor(
     }
 
 
-    ///////////////
+    ///////////////////////////////
     //
-    // Functions
+    // CLASS METHODS
     //
-    ///////////////
+    ///////////////////////////////
+    fun observeNetworkState(networkManager: LabNetworkManager) {
+        Timber.d("observeNetworkState()")
+
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            networkManager.getNetworkState().collect { networkState ->
+                when (networkState) {
+                    is NetworkState.Available -> {
+                        Timber.d("network state is Available. All set.")
+                        updateHasInternetConnection(true)
+                    }
+
+                    is NetworkState.Losing -> {
+                        Timber.w("network state is Losing. Internet connection about to be lost")
+                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Lost -> {
+                        Timber.e("network state is Lost. Should not allow network calls initialization")
+                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Unavailable -> {
+                        Timber.e("network state is Unavailable. Should not allow network calls initialization")
+                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Undefined -> {
+                        Timber.i("network state is Undefined. Do nothing")
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * logging in user. Will make http post request with name, email
      * as parameters
@@ -229,16 +264,6 @@ class LoginViewModel @Inject constructor(
 
     private fun isValidPassword(): Boolean = password.trim().isNotEmpty() && password.length >= 4
 
-    fun getApi() {
-        Timber.d("getApi()")
-        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            Timber.d("getApi()")
-            val response = repository.getApi()
-            Timber.d("$response")
-
-            updateNetworkState(NetworkState.Available(true))
-        }
-    }
 
     private fun logUser(usernameOrEmail: String, password: String) {
         Timber.d("logUser() | username Or Email: $usernameOrEmail, password:$password")

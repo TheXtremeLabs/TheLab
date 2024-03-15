@@ -34,7 +34,14 @@ import com.riders.thelab.ui.mainactivity.MainActivityViewModel
 //
 ///////////////////////////////////////
 @Composable
-fun IslandContent(viewModel: MainActivityViewModel, state: IslandState) {
+fun IslandContent(
+    state: IslandState,
+    searchedAppRequest: String,
+    onSearchAppRequestChanged: (String) -> Unit,
+    isMicrophoneEnabled: Boolean,
+    onUpdateMicrophoneEnabled: (Boolean) -> Unit,
+    onUpdateKeyboardVisible: (Boolean) -> Unit
+) {
 
     val width by animateDpAsState(
         targetValue = state.fullWidth,
@@ -91,7 +98,14 @@ fun IslandContent(viewModel: MainActivityViewModel, state: IslandState) {
                     }
 
                     is IslandState.SearchState -> {
-                        Search(viewModel, state)
+                        Search(
+                            dynamicIslandState = state,
+                            searchedAppRequest = searchedAppRequest,
+                            onSearchAppRequestChanged = onSearchAppRequestChanged,
+                            isMicrophoneEnabled = isMicrophoneEnabled,
+                            onUpdateMicrophoneEnabled = onUpdateMicrophoneEnabled,
+                            onUpdateKeyboardVisible = onUpdateKeyboardVisible
+                        )
                     }
 
                     is IslandState.NetworkState.Available -> {
@@ -123,6 +137,13 @@ fun IslandContent(viewModel: MainActivityViewModel, state: IslandState) {
 @DevicePreviews
 @Composable
 fun PreviewIslandContent(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
-    val viewModel: MainActivityViewModel = hiltViewModel()
-    IslandContent(viewModel, state)
+
+    IslandContent(
+        state = state,
+        searchedAppRequest = "Colors",
+        onSearchAppRequestChanged = {},
+        isMicrophoneEnabled = false,
+        onUpdateMicrophoneEnabled = {},
+        onUpdateKeyboardVisible = {}
+    )
 }

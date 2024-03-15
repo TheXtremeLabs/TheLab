@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -135,6 +134,10 @@ fun App(item: App) {
                                         it
                                     )
                                 } ?: md_theme_dark_background
+                            }
+
+                            stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_flight) -> {
+                                Color(0xFF002f5d)
                             }
 
                             else -> {

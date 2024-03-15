@@ -25,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -109,6 +108,10 @@ fun WhatsNew(item: App) {
                                             it
                                         )
                                     } ?: Color.Transparent
+                                }
+
+                                stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_flight) -> {
+                                    Color(0xFF002f5d)
                                 }
 
                                 else -> {

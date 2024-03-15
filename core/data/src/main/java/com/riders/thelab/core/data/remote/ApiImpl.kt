@@ -17,6 +17,7 @@ import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.remote.api.ArtistsAPIService
+import com.riders.thelab.core.data.remote.api.FlightApiService
 import com.riders.thelab.core.data.remote.api.GoogleAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAccountAPIService
@@ -28,6 +29,10 @@ import com.riders.thelab.core.data.remote.api.YoutubeApiService
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.remote.dto.flight.Airport
+import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
+import com.riders.thelab.core.data.remote.dto.flight.Operator
+import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBCreditsResponse
@@ -57,7 +62,8 @@ class ApiImpl @Inject constructor(
     theLabBackApiService: TheLabBackApiService,
     spotifyAccountApiService: SpotifyAccountAPIService,
     spotifyApiService: SpotifyAPIService,
-    tmdbApiService: TMDBApiService
+    tmdbApiService: TMDBApiService,
+    flightApiService: FlightApiService
 ) : IApi {
 
     private var mArtistsAPIService: ArtistsAPIService = artistsAPIService
@@ -69,6 +75,7 @@ class ApiImpl @Inject constructor(
     private var mSpotifyAccountApiService: SpotifyAccountAPIService = spotifyAccountApiService
     private var mSpotifyApiService: SpotifyAPIService = spotifyApiService
     private var mTmdbApiService: TMDBApiService = tmdbApiService
+    private var mFlightApiService: FlightApiService = flightApiService
 
     private var downloadManager: DownloadManager? = null
 
@@ -302,4 +309,16 @@ class ApiImpl @Inject constructor(
 
     override suspend fun getMovieCredits(movieID: Int): TMDBCreditsResponse? =
         mTmdbApiService.getMovieCredits(movieID)
+
+    override suspend fun getAirports(maxPages: Int, cursor: String?): AirportsResponse =
+        mFlightApiService.getAirports(maxPages, cursor)
+
+    override suspend fun getAirportById(airportID: String): Airport =
+        mFlightApiService.getAirportById(airportID)
+
+    override suspend fun getOperators(maxPages: Int, cursor: String?): OperatorResponse =
+        mFlightApiService.getOperators(maxPages, cursor)
+
+    override suspend fun getOperatorById(operatorID: String): Operator =
+        mFlightApiService.getOperatorById(operatorID)
 }

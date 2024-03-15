@@ -3,6 +3,8 @@ package com.riders.thelab.core.data.utils
 object Constants {
 
     const val DATASTORE_THE_LAB_FILE_NAME = "THE_LAB_DATASTORE"
+    const val APP_SEARCH_WEATHER_NAMESPACE = "weather_search"
+    const val APP_SEARCH_WEATHER_CITIES_DATABASE_NAME = "cities"
 
     const val EMULATOR_DEVICE_TAG = "sdk"
 
@@ -57,6 +59,7 @@ object Constants {
     const val BASE_ENDPOINT_TMDB_IMAGE_W_ORIGINAL = "https://image.tmdb.org/t/p/original"
     const val BASE_ENDPOINT_TMDB_IMAGE_W_500 = "https://image.tmdb.org/t/p/w500"
     const val URL_TMDB_WEBSITE: String = "https://www.themoviedb.org/?language=fr"
+    const val BASE_ENDPOINT_FLIGHT_AWARE_API = "https://aeroapi.flightaware.com/aeroapi/"
 
     // Palette
     const val PALETTE_URL = "http://i.ytimg.com/vi/aNHOfJCphwk/maxresdefault.jpg"

@@ -2,23 +2,29 @@ package com.riders.thelab.ui.youtubelike
 
 import android.content.Intent
 import android.view.View
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.R
-import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.network.LabNetworkManager
+import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.Video
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
@@ -28,8 +34,24 @@ import javax.inject.Inject
 @HiltViewModel
 class YoutubeLikeViewModel @Inject constructor(
     private val repositoryImpl: IRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
+    //////////////////////////////////////////
+    // Compose states
+    //////////////////////////////////////////
+    // Network State
+    private lateinit var mNetworkState: StateFlow<NetworkState>
+    var hasInternetConnection: Boolean by mutableStateOf(false)
+        private set
+
+    fun updateHasInternetConnection(hasInternet: Boolean) {
+        this.hasInternetConnection = hasInternet
+    }
+
+
+    //////////////////////////////////////////
+    // Live data
+    //////////////////////////////////////////
     private val progressVisibility: MutableLiveData<Boolean> = MutableLiveData()
     private val connectionStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val youtubeVideos: MutableLiveData<List<Video>> = MutableLiveData()
@@ -57,17 +79,74 @@ class YoutubeLikeViewModel @Inject constructor(
         return youtubeVideosFailed
     }
 
+    //////////////////////////////////////////
+    // Coroutines
+    //////////////////////////////////////////
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            throwable.printStackTrace()
+            Timber.e(throwable.message)
+        }
+
+
+    ///////////////////////////
+    //
+    // OVERRIDE
+    //
+    ///////////////////////////
+    override fun onCleared() {
+        super.onCleared()
+        Timber.e("onCleared()")
+    }
+
 
     ///////////////////////////
     //
     // Class methods
     //
     ///////////////////////////
+    fun observeNetworkState(networkManager: LabNetworkManager) {
+        Timber.d("observeNetworkState()")
+        mNetworkState = networkManager.networkState
+
+
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            networkManager.getNetworkState().collect { networkState ->
+                when (networkState) {
+                    is NetworkState.Available -> {
+                        Timber.d("network state is Available. All set.")
+                        updateHasInternetConnection(true)
+                    }
+
+                    is NetworkState.Losing -> {
+                        Timber.w("network state is Losing. Internet connection about to be lost")
+                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Lost -> {
+                        Timber.e("network state is Lost. Should not allow network calls initialization")
+                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Unavailable -> {
+                        Timber.e("network state is Unavailable. Should not allow network calls initialization")
+                        updateHasInternetConnection(false)
+                    }
+
+                    is NetworkState.Undefined -> {
+                        Timber.i("network state is Undefined. Do nothing")
+                    }
+                }
+            }
+        }
+    }
+
     fun fetchVideos(activity: YoutubeLikeActivity) {
 
         progressVisibility.value = true
+
         //Test the internet's connection
-        if (!LabNetworkManagerNewAPI.getInstance(activity).isOnline()) {
+        if (!hasInternetConnection) {
             Timber.e("No Internet connection")
             progressVisibility.value = false
             connectionStatus.value = false
@@ -75,37 +154,39 @@ class YoutubeLikeViewModel @Inject constructor(
                 activity,
                 activity.resources.getString(R.string.network_status_disconnected)
             )
-        }
+        } else {
+            Timber.e("Fetch Content")
 
-        Timber.e("Fetch Content")
+            viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+                try {
+                    supervisorScope {
+                        val videos = repositoryImpl.getVideos()
 
-        viewModelScope.launch(IO) {
-            try {
-                supervisorScope {
-                    val videos = repositoryImpl.getVideos()
-
-                    if (videos.isEmpty()) {
-                        withContext(Main) {
-                            youtubeVideosFailed.value = true
-                            progressVisibility.value = false
-                            youtubeVideos.value = videos
-                        }
-                    } else {
-                        withContext(Main) {
-                            progressVisibility.value = false
-                            youtubeVideos.value = videos
+                        if (videos.isEmpty()) {
+                            withContext(Dispatchers.Main) {
+                                youtubeVideosFailed.value = true
+                                progressVisibility.value = false
+                                youtubeVideos.value = videos
+                            }
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                progressVisibility.value = false
+                                youtubeVideos.value = videos
+                            }
                         }
                     }
-                }
 
-            } catch (throwable: Exception) {
-                Timber.e(throwable)
-                withContext(Main) {
-                    progressVisibility.value = false
-                    youtubeVideosFailed.value = true
+                } catch (throwable: Exception) {
+                    Timber.e(throwable)
+                    withContext(Dispatchers.Main) {
+                        progressVisibility.value = false
+                        youtubeVideosFailed.value = true
+                    }
                 }
             }
         }
+
+
     }
 
 
