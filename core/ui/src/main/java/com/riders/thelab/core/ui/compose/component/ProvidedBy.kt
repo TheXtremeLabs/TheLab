@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,7 @@ fun ProvidedBy(
     @DrawableRes providerIcon: Int,
     hasRoundedCorners: Boolean = false,
     hasPadding: Boolean = false,
+    textColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
     backgroundColor: Color? = null
 ) {
     Row(
@@ -41,6 +43,7 @@ fun ProvidedBy(
     ) {
         Text(
             text = if (null == placeholderProvidedBy) "provided by" else stringResource(id = placeholderProvidedBy),
+            color = textColor,
             fontSize = 12.sp
         )
         Box(
