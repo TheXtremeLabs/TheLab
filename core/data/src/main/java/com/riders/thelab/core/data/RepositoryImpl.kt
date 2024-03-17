@@ -15,7 +15,6 @@ import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.local.model.weather.CityModel
-import com.riders.thelab.core.data.local.model.weather.CityModelFTS
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.preferences.PreferencesImpl
 import com.riders.thelab.core.data.remote.ApiImpl
@@ -129,7 +128,7 @@ class RepositoryImpl @Inject constructor(
         return mDbImpl.saveCities(dtoCities)
     }
 
-    override suspend fun searchCity(cityQuery: String): List<CityModelFTS> =
+    override suspend fun searchCity(cityQuery: String): List<CityModel> =
         mDbImpl.searchCity(cityQuery)
 
     override suspend fun getWeatherData(): WeatherData? {

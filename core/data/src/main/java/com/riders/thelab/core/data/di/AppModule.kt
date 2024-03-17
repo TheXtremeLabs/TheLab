@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.LabDatabase
 import com.riders.thelab.core.data.local.dao.ContactDao
 import com.riders.thelab.core.data.local.dao.UserDao
@@ -13,6 +14,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import timber.log.Timber
+import java.util.concurrent.Executors
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -34,9 +37,17 @@ internal object AppModule {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
                     // 3
-                    db.execSQL("INSERT INTO city_fts(city_fts) VALUES ('rebuild')")
+                    db.execSQL("INSERT INTO city_fts(city_fts) VALUES('rebuild')")
                 }
             })
+            .setQueryCallback(
+                { sqlQuery, bindArgs ->
+                    if (BuildConfig.DEBUG) {
+                        Timber.d("QueryCallback | SQL Query: $sqlQuery, SQL Args: $bindArgs")
+                    }
+                },
+                Executors.newSingleThreadExecutor()
+            )
             .fallbackToDestructiveMigration()
             .build()
     }

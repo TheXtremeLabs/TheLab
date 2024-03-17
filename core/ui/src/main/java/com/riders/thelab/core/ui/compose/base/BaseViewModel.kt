@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.Lifecycle
@@ -53,7 +54,7 @@ abstract class BaseViewModel : ViewModel() {
         private set
     var viewPagerDotVisibility: Boolean by mutableStateOf(true)
         private set
-    var viewPagerCurrentIndex: Int by mutableStateOf(0)
+    var viewPagerCurrentIndex: Int by mutableIntStateOf(0)
         private set
 
     fun toggleDarkMode() {

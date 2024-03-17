@@ -4,7 +4,6 @@ import android.database.Cursor
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.weather.CityModel
-import com.riders.thelab.core.data.local.model.weather.CityModelFTS
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.remote.dto.weather.City
 import kotlinx.coroutines.flow.Flow
@@ -50,7 +49,7 @@ interface IDb {
     suspend fun insertWeatherData(isWeatherData: WeatherData): Long
     suspend fun saveCity(city: CityModel): Long
     suspend fun saveCities(dtoCities: List<City>): List<Long>
-    suspend fun searchCity(cityQuery:String): List<CityModelFTS>
+    suspend fun searchCity(cityQuery:String): List<CityModel>
     suspend fun getWeatherData(): WeatherData?
     suspend fun getCities(): List<CityModel>
     fun getCitiesCursor(query: String): Cursor

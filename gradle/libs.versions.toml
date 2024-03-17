@@ -82,7 +82,7 @@ googleApiClientJackson2 = "2.1.2"
 googleHttpClient = "1.44.1"
 # Google ML Kit
 googleBarcodeScanning = "17.2.0"
-googleGuava = "33.0.0-android"
+googleGuava = "33.0.0-jre"
 #noinspection GradleDependency
 googleObjectDetection = "17.0.0"
 # Google Play Services
