@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.dp
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 ///////////////////////////////////////
@@ -47,6 +48,7 @@ fun HalfChild(
 // PREVIEWS
 //
 ///////////////////////////////////////
+@DevicePreviews
 @Composable
 private fun PreviewHalfChild() {
     TheLabTheme {

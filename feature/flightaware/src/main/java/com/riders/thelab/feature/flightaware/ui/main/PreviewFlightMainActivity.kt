@@ -2,6 +2,7 @@ package com.riders.thelab.feature.flightaware.ui.main
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -18,14 +20,20 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text2.BasicTextField2
 import androidx.compose.foundation.text2.input.TextFieldLineLimits
+import androidx.compose.foundation.text2.input.clearText
 import androidx.compose.foundation.text2.input.rememberTextFieldState
+import androidx.compose.foundation.text2.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FlightLand
 import androidx.compose.material.icons.filled.FlightTakeoff
+import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +45,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -67,64 +77,65 @@ fun SearchFlightByCode(onSearch: () -> Unit) {
                 .wrapContentSize(Alignment.Center),
             contentAlignment = Alignment.Center
         ) {
-            Card(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentSize(Alignment.Center)
-                    .padding(16.dp),
-                elevation = CardDefaults.elevatedCardElevation(8.dp)
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(
+
+                Text(modifier = Modifier.fillMaxWidth(), text = "Search a flight")
+
+                BasicTextField2(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-
-                    Text(
-                        text = "Search a flight",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    )
-
-                    BasicTextField2(
-                        modifier = Modifier.fillMaxWidth(),
-                        state = textFieldState,
-                        lineLimits = TextFieldLineLimits.SingleLine,
-                        decorator = { innerTextField ->
-                            if (textFieldState.text.isEmpty())
-                                Text(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                    text = "Enter Flight code",
-                                    style = TextStyle(
-                                        fontWeight = FontWeight.W400,
-                                        color = if (!isSystemInDarkTheme()) Color.DarkGray.copy(
-                                            alpha = .56f
-                                        ) else Color.LightGray.copy(
-                                            alpha = .56f
-                                        )
+                        .padding(vertical = 16.dp),
+                    state = textFieldState,
+                    lineLimits = TextFieldLineLimits.SingleLine,
+                    decorator = { innerTextField ->
+                        if (textFieldState.text.trim().isEmpty()) {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = "Enter Flight code",
+                                style = TextStyle(
+                                    fontWeight = FontWeight.W400,
+                                    color = if (!isSystemInDarkTheme()) Color.DarkGray.copy(
+                                        alpha = .56f
+                                    ) else Color.LightGray.copy(
+                                        alpha = .56f
                                     )
                                 )
-
-                            // you have to invoke this function then cursor will focus and you will able to write something
-                            innerTextField.invoke()
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier.size(30.dp),
+                                contentAlignment = Alignment.CenterEnd
+                            ) {
+                                IconButton(onClick = { textFieldState.clearText() }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Close,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
                         }
-                    )
 
-                    Button(onClick = {
-                        if (textFieldState.text.isEmpty()) {
-                            return@Button
-                        }
-                        onSearch()
-                    }) {
-                        Text("Search")
+                        // you have to invoke this function then cursor will focus and you will able to write something
+                        innerTextField.invoke()
                     }
+                )
+
+                Button(onClick = {
+                    if (textFieldState.text.isEmpty()) {
+                        return@Button
+                    }
+                    onSearch()
+                }) {
+                    Text("Search")
                 }
             }
+
         }
     }
 }
@@ -143,115 +154,142 @@ fun SearchFlightByDestination(onSearch: () -> Unit) {
                 .wrapContentSize(Alignment.Center),
             contentAlignment = Alignment.Center
         ) {
-            Card(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentSize(Alignment.Center)
-                    .padding(16.dp),
-                elevation = CardDefaults.elevatedCardElevation(8.dp)
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(
+
+                Text(modifier = Modifier.fillMaxWidth(), text = "Search a flight")
+
+                // Departure
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-
-                    Text(modifier = Modifier.fillMaxWidth(), text = "Search a flight")
+                    Icon(
+                        imageVector = Icons.Filled.FlightTakeoff,
+                        contentDescription = "icoon_flight_takeoff"
+                    )
 
                     // Departure
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.FlightTakeoff,
-                            contentDescription = "icoon_flight_takeoff"
-                        )
-
-                        // Departure
-                        BasicTextField2(
-                            modifier = Modifier.fillMaxWidth(),
-                            state = departureTextFieldState,
-                            lineLimits = TextFieldLineLimits.SingleLine,
-                            decorator = { innerTextField ->
-                                if (departureTextFieldState.text.isEmpty())
-                                    Text(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 16.dp),
-                                        text = "Enter Departure Airport",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.W400,
-                                            color = if (!isSystemInDarkTheme()) Color.DarkGray.copy(
-                                                alpha = .56f
-                                            ) else Color.LightGray.copy(
-                                                alpha = .56f
-                                            )
+                    BasicTextField2(
+                        modifier = Modifier.fillMaxWidth(),
+                        state = departureTextFieldState,
+                        lineLimits = TextFieldLineLimits.SingleLine,
+                        decorator = { innerTextField ->
+                            if (departureTextFieldState.text.isEmpty())
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                    text = "Enter Departure Airport",
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.W400,
+                                        color = if (!isSystemInDarkTheme()) Color.DarkGray.copy(
+                                            alpha = .56f
+                                        ) else Color.LightGray.copy(
+                                            alpha = .56f
                                         )
                                     )
+                                )
 
-                                // you have to invoke this function then cursor will focus and you will able to write something
-                                innerTextField.invoke()
+                            // you have to invoke this function then cursor will focus and you will able to write something
+                            innerTextField.invoke()
+                        }
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    HorizontalDivider()
+
+                    IconButton(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.onSurface),
+                        onClick = {
+                            if (departureTextFieldState.text.trim()
+                                    .isNotBlank() && arrivalTextFieldState.text.trim().isNotBlank()
+                            ) {
+                                val temp = departureTextFieldState.text.toString()
+                                departureTextFieldState.setTextAndPlaceCursorAtEnd(
+                                    arrivalTextFieldState.text.toString()
+                                )
+                                arrivalTextFieldState.setTextAndPlaceCursorAtEnd(
+                                    temp
+                                )
                             }
+                        }) {
+                        Icon(
+                            modifier = Modifier.rotate(90f),
+                            imageVector = Icons.Filled.SyncAlt,
+                            contentDescription = null
                         )
                     }
+                }
+
+
+                // Arrival
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.FlightLand,
+                        contentDescription = "icon_flight_land"
+                    )
 
                     // Arrival
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.FlightLand,
-                            contentDescription = "icon_flight_land"
-                        )
-
-                        // Arrival
-                        BasicTextField2(
-                            modifier = Modifier.fillMaxWidth(),
-                            state = arrivalTextFieldState,
-                            lineLimits = TextFieldLineLimits.SingleLine,
-                            decorator = { innerTextField ->
-                                if (arrivalTextFieldState.text.isEmpty())
-                                    Text(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 16.dp),
-                                        text = "Enter Arrival Airport",
-                                        style = TextStyle(
-                                            fontWeight = FontWeight.W400,
-                                            color = if (!isSystemInDarkTheme()) Color.DarkGray.copy(
-                                                alpha = .56f
-                                            ) else Color.LightGray.copy(
-                                                alpha = .56f
-                                            )
+                    BasicTextField2(
+                        modifier = Modifier.fillMaxWidth(),
+                        state = arrivalTextFieldState,
+                        lineLimits = TextFieldLineLimits.SingleLine,
+                        decorator = { innerTextField ->
+                            if (arrivalTextFieldState.text.isEmpty())
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                    text = "Enter Arrival Airport",
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.W400,
+                                        color = if (!isSystemInDarkTheme()) Color.DarkGray.copy(
+                                            alpha = .56f
+                                        ) else Color.LightGray.copy(
+                                            alpha = .56f
                                         )
                                     )
+                                )
 
-                                // you have to invoke this function then cursor will focus and you will able to write something
-                                innerTextField.invoke()
-                            }
-                        )
-                    }
-
-                    Button(
-                        onClick = {
-                            if (departureTextFieldState.text.isEmpty() && arrivalTextFieldState.text.isEmpty()) {
-                                return@Button
-                            }
-                            onSearch()
+                            // you have to invoke this function then cursor will focus and you will able to write something
+                            innerTextField.invoke()
                         }
-                    ) {
-                        Text("Search")
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        if (departureTextFieldState.text.isEmpty() && arrivalTextFieldState.text.isEmpty()) {
+                            return@Button
+                        }
+                        onSearch()
                     }
+                ) {
+                    Text("Search")
                 }
             }
         }
@@ -281,24 +319,30 @@ fun FlightMainContent(
                     verticalArrangement = Arrangement.SpaceAround
                 ) {
                     item {
-                        LabTabRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            items = tabs,
-                            selectedItemIndex = tabIndex,
-                            tabWidth = this@BoxWithConstraints.maxWidth / 2
-                        ) { index ->
-                            tabIndex = index
-                            onSearchCategorySelected(tabIndex)
-                        }
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            LabTabRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                items = tabs,
+                                selectedItemIndex = tabIndex,
+                                tabWidth = this@BoxWithConstraints.maxWidth / 2
+                            ) { index ->
+                                tabIndex = index
+                                onSearchCategorySelected(tabIndex)
+                            }
 
-                        LabHorizontalViewPagerGeneric(
-                            pagerState = pagerState,
-                            items = tabs,
-                            onCurrentPageChanged = {}
-                        ) { page, _ ->
-                            when (page) {
-                                0 -> SearchFlightByCode(onSearch = onSearch)
-                                1 -> SearchFlightByDestination(onSearch = onSearch)
+                            LabHorizontalViewPagerGeneric(
+                                pagerState = pagerState,
+                                items = tabs,
+                                onCurrentPageChanged = {}
+                            ) { page, _ ->
+                                when (page) {
+                                    0 -> SearchFlightByCode(onSearch = onSearch)
+                                    1 -> SearchFlightByDestination(onSearch = onSearch)
+                                }
                             }
                         }
                     }
