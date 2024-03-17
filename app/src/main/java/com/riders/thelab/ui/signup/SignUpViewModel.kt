@@ -26,6 +26,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -150,9 +151,7 @@ class SignUpViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repository.isNightMode().collect {
-                updateDarkMode(it)
-            }
+            updateDarkMode(repository.isNightMode().first())
         }
 
         if (BuildConfig.DEBUG) {

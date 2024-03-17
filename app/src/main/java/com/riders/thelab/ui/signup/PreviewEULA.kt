@@ -21,12 +21,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHtmlText
@@ -42,7 +42,7 @@ import com.riders.thelab.core.ui.utils.UIManager
 //
 ///////////////////////////////
 @Composable
-fun EULAScreen(viewModel: SignUpViewModel, onNavigateToUserFormScreen: () -> Unit) {
+fun EULAScreen(isDarkMode: Boolean, onNavigateToUserFormScreen: () -> Unit) {
 
     val context = LocalContext.current
     val verticalScroll: ScrollState = rememberScrollState()
@@ -53,7 +53,7 @@ fun EULAScreen(viewModel: SignUpViewModel, onNavigateToUserFormScreen: () -> Uni
         if (LabCompatibilityManager.isNougat()) HtmlCompat.FROM_HTML_MODE_COMPACT else 0
     )*/
 
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
+    TheLabTheme(darkTheme = isDarkMode) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -87,7 +87,10 @@ fun EULAScreen(viewModel: SignUpViewModel, onNavigateToUserFormScreen: () -> Uni
                     modifier = Modifier
                         .clickable { eulaAgreementChecked.value = !eulaAgreementChecked.value },
                     text = stringResource(id = R.string.accept_agreement_license),
-                    style = TextStyle(fontSize = 14.sp)
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = if (!isDarkMode) Color.Black else Color.White
+                    )
                 )
             }
 
@@ -120,9 +123,7 @@ fun EULAScreen(viewModel: SignUpViewModel, onNavigateToUserFormScreen: () -> Uni
 @DevicePreviews
 @Composable
 private fun PreviewEULAScreen() {
-    val viewModel: SignUpViewModel = hiltViewModel()
-
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
-        EULAScreen(viewModel = viewModel) {}
+    TheLabTheme {
+        EULAScreen(isSystemInDarkTheme()) {}
     }
 }

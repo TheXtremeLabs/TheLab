@@ -2,6 +2,7 @@ package com.riders.thelab.ui.signup
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -85,6 +86,8 @@ fun ExitSignUp(onConfirmed: () -> Unit, onDismiss: () -> Unit) {
 @Composable
 private fun PreviewExit() {
     TheLabTheme {
-        ExitSignUp({}, {})
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            ExitSignUp({}, {})
+        }
     }
 }
