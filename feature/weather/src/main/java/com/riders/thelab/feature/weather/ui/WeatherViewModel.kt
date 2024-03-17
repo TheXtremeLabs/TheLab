@@ -31,9 +31,7 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.WeatherCityUIState
 import com.riders.thelab.core.data.local.model.compose.WeatherUIState
 import com.riders.thelab.core.data.local.model.weather.CityModel
-import com.riders.thelab.core.data.local.model.weather.CityModelFTS
 import com.riders.thelab.core.data.local.model.weather.WeatherData
-import com.riders.thelab.core.data.local.model.weather.toModel
 import com.riders.thelab.core.data.remote.dto.weather.CurrentWeather
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.ui.data.SnackBarType
@@ -42,7 +40,6 @@ import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
 import com.riders.thelab.feature.weather.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -118,8 +115,6 @@ class WeatherViewModel @Inject constructor(
                 mSearchJob?.cancel()
             }
 
-            Timber.d("updateSearchText() | searchText: $searchText")
-
             if (!this.expanded) {
                 this.expanded = true
             }
@@ -169,6 +164,12 @@ class WeatherViewModel @Inject constructor(
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
             Timber.e(throwable.message)
+        }
+    private val searchCityCoroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            throwable.printStackTrace()
+            Timber.e("searchCityCoroutineExceptionHandler | message: ${throwable.message}")
+            handleError(throwable)
         }
 
 
@@ -235,47 +236,34 @@ class WeatherViewModel @Inject constructor(
     private fun getCitiesFromDb(query: String) {
         Timber.d("getCitiesFromDb() | query: $query")
 
-        val sanitizedQuery = sanitizeSearchQuery(Editable.Factory.getInstance().newEditable(query))
-
         mSearchJob =
-            viewModelScope.launch(Dispatchers.IO + SupervisorJob() /*+ coroutineExceptionHandler*/) {
+            viewModelScope.launch(Dispatchers.IO + SupervisorJob() + searchCityCoroutineExceptionHandler) {
                 delay(150L)
 
-                try {
-                    if (query.isBlank()) {
-                        repository.searchCity(sanitizedQuery).all {
-                            Timber.d("getCitiesFromDb() | query.isBlank() | Search: $it")
-                            true
-                        }
-                    } else {
-                        // Replace % with * here
-                        val results = repository.searchCity("*$sanitizedQuery*").let {
-                            Timber.d("getCitiesFromDb() | query.isNotBlank() | Replace % with * here | list: $it")
-                            it
-                        }
-
-                        handleResults(results)
+                if (query.isBlank()) {
+                    repository.searchCity(query).all {
+                        Timber.d("getCitiesFromDb() | query.isBlank() | Search: $it")
+                        true
                     }
-                } catch (exception: Exception) {
-                    when (exception) {
-                        is CancellationException -> {
-                            exception.printStackTrace()
-                            Timber.e("getCitiesFromDb() | CancellationException")
-                        }
+                } else {
+                    val sanitizedQuery =
+                        sanitizeSearchQuery(Editable.Factory.getInstance().newEditable(query))
 
-                        else -> {
-                            Timber.e("getCitiesFromDb() | Exception | message: ${exception.message}")
-                            handleError(exception)
-                        }
+                    // Replace % with * here
+                    val results = repository.searchCity(sanitizedQuery).let {
+                        Timber.d("getCitiesFromDb() | query.isNotBlank() | list: $it")
+                        it
                     }
+
+                    handleResults(results)
                 }
             }
         viewModelScope.launch { mSearchJob?.join() }
     }
 
-    private fun handleResults(cityModelFTS: List<CityModelFTS>) {
-        Timber.d("handleResults() | cityModelFTS size: ${cityModelFTS.size}, update suggestions")
-        updateSuggestions(cityModelFTS.map { it.toModel() })
+    private fun handleResults(cityModel: List<CityModel>) {
+        Timber.d("handleResults() | cityModel size: ${cityModel.size}, update suggestions")
+        updateSuggestions(cityModel)
     }
 
     private fun handleError(t: Throwable) {
@@ -288,9 +276,18 @@ class WeatherViewModel @Inject constructor(
     }
 
     private fun sanitizeSearchQuery(query: Editable?): String {
-        val sanitizedQuery = "\"$query\""
+        if (query == null) {
+            return ""
+        }
+
+        val sanitizedQuery = query.replace(Regex.fromLiteral("\""), "\"\"")
         Timber.d("sanitizeSearchQuery() | sanitized query: $sanitizedQuery")
-        return sanitizedQuery
+
+//        val newQuery = "*\'$query\'*"
+        val newQuery = "'%$query%'"
+        Timber.d("sanitizeSearchQuery() | new query: $newQuery")
+
+        return newQuery
     }
 
     fun retry() {

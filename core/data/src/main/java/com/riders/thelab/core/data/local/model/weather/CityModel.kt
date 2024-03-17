@@ -3,10 +3,20 @@ package com.riders.thelab.core.data.local.model.weather
 import android.database.Cursor
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Fts4
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.riders.thelab.core.data.remote.dto.weather.City
 import java.util.UUID
+
+@Entity(tableName = "city_fts")
+@Fts4(contentEntity = CityModel::class)
+data class CityModelFTS(
+    @PrimaryKey
+    @ColumnInfo("rowid")
+    var id: Int,
+    var name: String
+)
 
 @Entity(tableName = "city")
 data class CityModel(
@@ -39,11 +49,23 @@ data class CityModel(
 
     @Ignore
     constructor(
+        name: String
+    ) : this(
+        id = -1,
+        uuid = UUID.randomUUID().toString(),
+        name = name,
+        state = "state",
+        country = "country"
+    )
+
+    @Ignore
+    constructor(
         uuid: String,
         name: String,
         state: String,
         country: String,
-        longitude: Double = 0.0, latitude: Double = 0.0
+        longitude: Double = 0.0,
+        latitude: Double = 0.0
     ) : this(
         id = -1,
         uuid = uuid,
@@ -65,13 +87,3 @@ data class CityModel(
         longitude = (cursor.getDouble(cursor.getColumnIndexOrThrow("longitude")))
     )
 }
-
-fun CityModel.toAppSearchModel(): CityAppSearch = CityAppSearch(
-    id = UUID.randomUUID().toString(),
-    score = 1,
-    name = this.name,
-    state = this.state,
-    country = this.country,
-    latitude = this.latitude,
-    longitude = this.longitude
-)
