@@ -31,13 +31,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination
 import com.riders.thelab.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
@@ -55,10 +53,15 @@ import timber.log.Timber
 //
 ///////////////////////////////
 @Composable
-fun SignUpHeader(viewModel: SignUpViewModel, currentDestination: NavDestination) {
-
+fun SignUpHeader(
+    isDarkMode: Boolean,
+    currentDestination: NavDestination,
+    onUpdateShouldShowExitDialogConfirmation: (Boolean) -> Unit
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+
+    val headerTextColor = if (!isDarkMode) Color.Black else Color.White
 
     val progressBarEULA = remember { mutableFloatStateOf(0f) }
     val animatedProgressBarEULA = remember { Animatable(progressBarEULA.value) }
@@ -68,7 +71,7 @@ fun SignUpHeader(viewModel: SignUpViewModel, currentDestination: NavDestination)
     val animatedProgressBarSignUpSuccess = remember { Animatable(progressBarSignUpSuccess.value) }
 
 
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
+    TheLabTheme(darkTheme = isDarkMode) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier
@@ -111,12 +114,15 @@ fun SignUpHeader(viewModel: SignUpViewModel, currentDestination: NavDestination)
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         LinearProgressIndicator(
-                            progress = if (LocalInspectionMode.current) .24f else animatedProgressBarEULA.value,
+                            progress = { animatedProgressBarEULA.value },
                             strokeCap = StrokeCap.Round
                         )
                         Text(
                             text = stringResource(id = R.string.title_activity_license_agreement),
-                            style = TextStyle(fontSize = 16.sp)
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                color = headerTextColor
+                            )
                         )
                     }
 
@@ -127,12 +133,15 @@ fun SignUpHeader(viewModel: SignUpViewModel, currentDestination: NavDestination)
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         LinearProgressIndicator(
-                            progress = if (LocalInspectionMode.current) .24f else animatedProgressBarForm.value,
+                            progress = { animatedProgressBarForm.value },
                             strokeCap = StrokeCap.Round
                         )
                         Text(
                             text = stringResource(id = com.riders.thelab.core.ui.R.string.title_activity_user_inscription_form),
-                            style = TextStyle(fontSize = 16.sp)
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                color = headerTextColor
+                            )
                         )
                     }
 
@@ -143,12 +152,15 @@ fun SignUpHeader(viewModel: SignUpViewModel, currentDestination: NavDestination)
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         LinearProgressIndicator(
-                            progress = if (LocalInspectionMode.current) .24f else animatedProgressBarSignUpSuccess.value,
+                            progress = { animatedProgressBarSignUpSuccess.value },
                             strokeCap = StrokeCap.Round
                         )
                         Text(
                             text = stringResource(id = R.string.title_activity_successful_sign_up),
-                            style = TextStyle(fontSize = 16.sp)
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                color = headerTextColor
+                            )
                         )
                     }
                 }
@@ -166,7 +178,7 @@ fun SignUpHeader(viewModel: SignUpViewModel, currentDestination: NavDestination)
                             }
 
                             else -> {
-                                viewModel.updateShouldShowExitDialogConfirmation(true)
+                                onUpdateShouldShowExitDialogConfirmation(true)
                             }
                         }
 
@@ -232,14 +244,11 @@ fun increaseProgressBar(
 @DevicePreviews
 @Composable
 private fun PreviewSignUpHeader() {
-    val viewModel: SignUpViewModel = hiltViewModel()
-
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
-        viewModel.currentDestination?.let {
-            SignUpHeader(
-                viewModel = viewModel,
-                currentDestination = it
-            )
-        }
+    TheLabTheme {
+        SignUpHeader(
+            isDarkMode = isSystemInDarkTheme(),
+            currentDestination = NavDestination(""),
+            onUpdateShouldShowExitDialogConfirmation = {}
+        )
     }
 }

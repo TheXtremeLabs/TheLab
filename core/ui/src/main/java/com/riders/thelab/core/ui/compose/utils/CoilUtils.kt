@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
+import coil.ImageLoader
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.size.Scale
 import coil.size.Size
+import coil.util.DebugLogger
 import com.riders.thelab.core.ui.R
 import timber.log.Timber
 
@@ -27,7 +29,7 @@ fun getCoilImageRequest(
     .Builder(context)
     .data(dataUrl)
     .apply {
-        Timber.d("getCoilImageRequest() | dataUrl : $dataUrl")
+        Timber.d("getCoilImageRequest() | dataUrl : $dataUrl, size : $size, scale : $scale")
 
         crossfade(true)
         allowHardware(false)
@@ -68,5 +70,6 @@ fun getCoilAsyncImagePainter(
         },
         onError = {
             Timber.e("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Error while loading Image")
-        }
+        },
+        imageLoader = ImageLoader.Builder(context).logger(DebugLogger()).build()
     )
