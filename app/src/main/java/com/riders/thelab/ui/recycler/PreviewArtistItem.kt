@@ -27,16 +27,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
 import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.util.DebugLogger
+import coil.size.Scale
+import coil.size.Size
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -57,18 +56,11 @@ fun Artist(@PreviewParameter(PreviewProviderArtistModel::class) artist: ArtistMo
     ////////////////////////////////
     // Coil
     ////////////////////////////////
-    val coilImageLoader = ImageLoader.Builder(context).logger(DebugLogger()).build()
-
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(context).apply {
-            this.data(artist.urlThumb)
-
-            this.crossfade(true)
-            this.allowHardware(false)
-            //transformations(RoundedCornersTransformation(32.dp.value))
-        }
-            .build(),
-        imageLoader = coilImageLoader
+    val painter = getCoilAsyncImagePainter(
+        context = context,
+        dataUrl = artist.urlThumb,
+        size = Size.ORIGINAL,
+        scale = Scale.FILL
     )
     val state = painter.state
 
@@ -88,9 +80,7 @@ fun Artist(@PreviewParameter(PreviewProviderArtistModel::class) artist: ArtistMo
                             if (selectedIndex != artist.id) artist.id else -1
 
                         (context.findActivity() as RecyclerViewActivity).onDetailClick(artist)
-                    }),
-
-            // colors = CardDefaults.cardColors(containerColor = if (artist.id == selectedIndex) Color.Red else Color.DarkGray)
+                    })
         ) {
             Column(
                 modifier = Modifier
@@ -98,8 +88,8 @@ fun Artist(@PreviewParameter(PreviewProviderArtistModel::class) artist: ArtistMo
             ) {
                 Image(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .weight(2f)
+                        .fillMaxWidth()
                         .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
                     painter = painter,
                     contentDescription = "palette image wth coil",
