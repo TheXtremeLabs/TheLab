@@ -3,6 +3,7 @@ package com.riders.thelab.core.data.remote.api
 import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
 import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
+import com.riders.thelab.core.data.remote.dto.flight.AirportsSearchResponse
 import com.riders.thelab.core.data.remote.dto.flight.Operator
 import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
 import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
@@ -19,6 +20,9 @@ interface FlightApiService {
         @Query("max_pages") maxPages: Int = 1,
         @Query("cursor") cursor: String? = null
     ): AirportsResponse
+
+    @GET("https://www.flightaware.com/ajax/ignoreall/airport_names_yajl.rvt?locale=fr_FR&code=1")
+    suspend fun searchAirportById(@Query("q") query: String): AirportsSearchResponse
 
     @GET("airports/{id}")
     suspend fun getAirportById(@Path("id") airportID: String): Airport
@@ -57,6 +61,7 @@ interface FlightApiService {
         @Query("end") endDate: String? = null,
         @Query("type") type: String? = null
     ): AirportFlightsResponse
+
     /**
      * Get flight counts for an airport
      *
@@ -103,6 +108,7 @@ interface FlightApiService {
         @Query("end") endDate: String? = null,
         @Query("type") type: String? = null
     ): AirportFlightsResponse
+
     /**
      * Get all flights for a given airport
      *
@@ -123,7 +129,7 @@ interface FlightApiService {
      */
     @GET("airports/{id}/flights")
     suspend fun getAirportFlightsWithUrl(
-        @Url  flightForAirportIdUrl: String,
+        @Url flightForAirportIdUrl: String,
         @Query("max_pages") maxPages: Int = 1,
         @Query("cursor") cursor: String? = null,
         @Query("start") startDate: String? = null,

@@ -16,5 +16,5 @@ data class AirportFlightsResponse(
     @SerialName("arrivals")
     val arrivals: List<Arrivals>,
     @SerialName("departures")
-    val departures: List<Departures>,
+    val departures: List<Departures>
 ) : Serializable

@@ -65,7 +65,7 @@ data class ScheduledArrivals(
     @SerialName("origin")
     val origin: Origin,
     @SerialName("destination")
-    val destination: Destination,
+    val destination: Destination? = null,
     @SerialName("departure_delay")
     val departureDelay: Int?,
     @SerialName("arrival_delay")
