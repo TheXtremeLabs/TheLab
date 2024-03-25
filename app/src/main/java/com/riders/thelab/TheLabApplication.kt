@@ -135,10 +135,7 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
 
         // Mobile ADS
         MobileAds.initialize(this) { initializationStatus: InitializationStatus ->
-            Timber.d(
-                "initializationStatus : %s",
-                initializationStatus.toString()
-            )
+            Timber.d("initializationStatus: $initializationStatus")
         }
     }
 

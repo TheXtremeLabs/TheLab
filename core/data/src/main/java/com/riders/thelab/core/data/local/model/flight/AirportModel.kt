@@ -25,7 +25,7 @@ data class AirportModel(
 )
 
 fun Airport.toModel(): AirportModel = AirportModel(
-    airportId = this.code ?: this.getAirportId(),
+    airportId = this.airportCode ?: this.getAirportId(),
     alternateId = this.alternateIdent,
     icaoCode = this.icaoCode,
     iataCode = this.iataCode,

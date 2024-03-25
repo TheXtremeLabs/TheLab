@@ -1,6 +1,7 @@
 package com.riders.thelab.core.ui.compose.component
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -39,11 +40,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ComponentActivity
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.utils.findActivity
 import timber.log.Timber
 
 
@@ -84,7 +85,10 @@ fun TheLabTopAppBar(
                 }
             },
             navigationIcon = {
-                IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
+                IconButton(onClick = {
+//                    (context as ComponentActivity).onBackPressed()
+                    executeOnBackPressed(context)
+                }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
@@ -128,7 +132,10 @@ fun TheLabTopAppBar(
                 }
             },
             navigationIcon = {
-                IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
+                IconButton(onClick = {
+//                    (context as ComponentActivity).onBackPressed()
+                    executeOnBackPressed(context)
+                }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
@@ -155,7 +162,10 @@ fun TheLabTopAppBar(navigationIcon: @Composable (() -> Unit)) {
                 .background(Color.Transparent),
             title = {},
             navigationIcon = {
-                IconButton(onClick = { (context.findActivity() as ComponentActivity).onBackPressed() }) {
+                IconButton(onClick = {
+//                    (context.findActivity() as BaseComponentActivity).onBackPressed()
+                    executeOnBackPressed(context)
+                }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
@@ -215,7 +225,11 @@ fun TheLabTopAppBar(
             },
             navigationIcon = {
                 if (null == navigationIcon) {
-                    IconButton(onClick = { (context.findActivity() as BaseComponentActivity).backPressed() }) {
+                    IconButton(
+                        onClick = {
+//                        (context.findActivity() as BaseComponentActivity).backPressed()
+                            executeOnBackPressed(context)
+                        }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = "Back_icon",
@@ -290,7 +304,11 @@ fun TheLabTopAppBarLarge() {
                 }
             },
             navigationIcon = {
-                IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
+                IconButton(
+                    onClick = {
+//                    (context as ComponentActivity).onBackPressed()
+                        executeOnBackPressed(context)
+                    }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
@@ -300,6 +318,25 @@ fun TheLabTopAppBarLarge() {
             },
             colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
         )
+    }
+}
+
+fun executeOnBackPressed(context: Context) {
+    Timber.d("executeOnBackPressed()")
+    runCatching {
+        Timber.d("Attempt to execute backPressed on ComponentActivity()")
+        (context as BaseComponentActivity).backPressed()
+    }.onFailure {
+        it.printStackTrace()
+        Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+
+        runCatching {
+            Timber.d("Attempt to execute fallback backPressed on AppCompatActivity()")
+            (context as BaseAppCompatActivity).backPressed()
+        }.onFailure {
+            it.printStackTrace()
+            Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+        }
     }
 }
 

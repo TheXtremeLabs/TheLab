@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -208,7 +209,7 @@ fun SearchFlightByDestination(onSearch: () -> Unit) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 4.dp, vertical = 8.dp),
+                        .padding(horizontal = 4.dp, vertical = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     HorizontalDivider()
@@ -234,7 +235,8 @@ fun SearchFlightByDestination(onSearch: () -> Unit) {
                         Icon(
                             modifier = Modifier.rotate(90f),
                             imageVector = Icons.Filled.SyncAlt,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = if (!isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
                         )
                     }
                 }
@@ -304,6 +306,7 @@ fun FlightMainContent(
     onSearchCategorySelected: (Int) -> Unit,
     onSearch: () -> Unit
 ) {
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val tabs = listOf("Search Flight by ID", "Search Flight By Destination")
@@ -347,22 +350,11 @@ fun FlightMainContent(
                         }
                     }
 
-
                     item {
-
-                        Box(
-                            modifier = Modifier.fillMaxWidth(.75f),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Card(modifier = Modifier, shape = CircleShape) {
-                                Box(
-                                    modifier = Modifier
-                                        .padding(8.dp)
-                                        .wrapContentSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(text = "Airports size: $airportsSize")
-                                }
+                        Card(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Airports size: $airportsSize")
+                            Button(onClick = { (context as FlightMainActivity).launchAirportSearchActivity() }) {
+                                Text(text = "See all Airports")
                             }
                         }
                     }
@@ -385,7 +377,7 @@ fun FlightMainContent(
 @Composable
 private fun PreviewSearchFlightByCode() {
     TheLabTheme {
-        SearchFlightByCode() {}
+        SearchFlightByCode {}
     }
 }
 

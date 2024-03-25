@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.flightaware.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -18,6 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -27,6 +29,12 @@ class FlightMainActivity : BaseComponentActivity() {
 
     private val mViewModel: FlightViewModel by viewModels<FlightViewModel>()
 
+
+    ///////////////////////////////
+    //
+    // OVERRIDE
+    //
+    ///////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -72,4 +80,13 @@ class FlightMainActivity : BaseComponentActivity() {
         Timber.e("onBackPressed()")
         finish()
     }
+
+
+    ///////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    ///////////////////////////////
+    fun launchAirportSearchActivity() = Intent(this, AirportSearchActivity::class.java)
+        .run { startActivity(this) }
 }

@@ -564,6 +564,21 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.flightaware.ui.flight.FlightDetailActivity"
+            android:parentActivityName=".feature.flightaware.ui.main.FlightMainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.flightaware.ui.airport.AirportSearchActivity"
+            android:parentActivityName=".feature.flightaware.ui.main.FlightMainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.flightaware.ui.airport.AirportSearchDetailActivity"
+            android:parentActivityName=".feature.flightaware.ui.airport.AirportSearchActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <!-- ////////////// ACTIVITIES ////////////// -->
 
 
