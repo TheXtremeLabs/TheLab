@@ -26,6 +26,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+// TODO : Implement splashscreen palette
+// IMPORTANT : add some blue like the flight aware logo
+
 @AndroidEntryPoint
 class FlightMainActivity : BaseComponentActivity() {
 
