@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -12,11 +13,19 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.OperatorModel
 import com.riders.thelab.core.data.local.model.flight.toModel
+import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -32,11 +41,51 @@ class FlightViewModel @Inject constructor(
     var airports: SnapshotStateList<AirportModel> = mutableStateListOf<AirportModel>()
     var operators: SnapshotStateList<OperatorModel> = mutableStateListOf<OperatorModel>()
 
+    var departureAirport by mutableStateOf("")
+        private set
+
+    var departureAirportStateFlow: StateFlow<List<AirportSearch>> =
+        snapshotFlow { departureAirport }
+            .debounce(750)
+            .distinctUntilChanged()
+            .mapLatest {
+                if (it.isEmpty()) {
+                    return@mapLatest emptyList()
+                }
+
+                Timber.d("departureAirportStateFlow | mapLatest | it: ${it}")
+                val list = repository.searchAirportById(it).airports
+                Timber.d("result: $list")
+                list
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
+
+    var arrivalAirport = MutableStateFlow("")
+        private set
+    var arrivalAirportStateFlow: StateFlow<List<AirportSearch>> =
+        snapshotFlow { arrivalAirport }.debounce(750).mapLatest {
+            val list = repository.searchAirportById(it.value).airports
+            Timber.d("result: $list")
+            list
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
+
     var currentAirport: AirportModel? by mutableStateOf(null)
         private set
 
     var currentOperator: OperatorModel? by mutableStateOf(null)
         private set
+
+    fun updateDepartureAirport(airport: String) {
+        this.departureAirport = airport
+    }
 
     private fun updateAirportList(newList: List<AirportModel>) {
         this.airports.addAll(newList)

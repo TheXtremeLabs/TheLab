@@ -24,6 +24,7 @@ import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
 import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
+import com.riders.thelab.core.data.remote.dto.flight.AirportsSearchResponse
 import com.riders.thelab.core.data.remote.dto.flight.Operator
 import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
 import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
@@ -224,6 +225,9 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun getAirports(maxPages: Int, cursor: String?): AirportsResponse =
         mApiImpl.getAirports(maxPages, cursor)
+
+    override suspend fun searchAirportById(query: String): AirportsSearchResponse =
+        mApiImpl.searchAirportById(query)
 
     override suspend fun getAirportById(airportID: String): Airport =
         mApiImpl.getAirportById(airportID)

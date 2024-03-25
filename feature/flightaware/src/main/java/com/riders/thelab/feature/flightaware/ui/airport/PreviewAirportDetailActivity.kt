@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -129,13 +130,24 @@ fun AirportDetailContent(
                 }
 
                 item {
-                    Button(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        onClick = onFlightRequested,
-                        enabled = !isFlightsFetched
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "See Flights for this airport")
+
+                        Button(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            onClick = onFlightRequested,
+                            enabled = !isFlightsFetched
+                        ) {
+                            Text(text = "See Flights for this airport")
+                        }
+
+
                     }
+
                 }
 
                 item {

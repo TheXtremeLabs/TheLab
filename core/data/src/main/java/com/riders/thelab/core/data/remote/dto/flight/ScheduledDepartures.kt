@@ -66,7 +66,7 @@ data class ScheduledDepartures(
     @SerialName("origin")
     val origin: Origin,
     @SerialName("destination")
-    val destination: Destination,
+    val destination: Destination? = null,
     /*
      * Departure delay (in seconds) based on either actual or estimated gate departure time.
      * If gate time is unavailable then based on runway departure time.

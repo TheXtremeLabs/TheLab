@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -14,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
@@ -46,6 +48,8 @@ class FlightMainActivity : BaseComponentActivity() {
 
                     mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
+                    val depAirportFlow by mViewModel.departureAirportStateFlow.collectAsStateWithLifecycle()
+
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
                         Surface(
@@ -56,6 +60,14 @@ class FlightMainActivity : BaseComponentActivity() {
                                 airportsSize = mViewModel.airports.size,
                                 onSearchCategorySelected = {
                                     searchType = it
+                                },
+                                departureAirport = { departureAirport ->
+                                    Timber.d("FlightMainContent | departureAirport : $departureAirport")
+                                    mViewModel.updateDepartureAirport(departureAirport)
+                                    Timber.d("FlightMainContent | mViewModel.departureAirport.value : ${mViewModel.departureAirport}")
+                                },
+                                arrivalAirport = { arrivalAirport ->
+                                    Timber.d("FlightMainContent | arrivalAirport : $arrivalAirport")
                                 },
                                 onSearch = {
                                     when (searchType) {
@@ -70,6 +82,11 @@ class FlightMainActivity : BaseComponentActivity() {
                                 }
                             )
                         }
+                    }
+
+                    LaunchedEffect(key1 = depAirportFlow) {
+                        Timber.d("LaunchedEffect | depAirportFlow: $depAirportFlow | coroutineContext: ${this.coroutineContext}")
+
                     }
                 }
             }

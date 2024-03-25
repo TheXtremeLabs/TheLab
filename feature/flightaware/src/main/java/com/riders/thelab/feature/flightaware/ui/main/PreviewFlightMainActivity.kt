@@ -23,6 +23,7 @@ import androidx.compose.foundation.text2.input.TextFieldLineLimits
 import androidx.compose.foundation.text2.input.clearText
 import androidx.compose.foundation.text2.input.rememberTextFieldState
 import androidx.compose.foundation.text2.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.foundation.text2.input.textAsFlow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FlightLand
@@ -38,6 +39,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +60,7 @@ import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 ///////////////////////////////////////
@@ -143,10 +146,17 @@ fun SearchFlightByCode(onSearch: () -> Unit) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SearchFlightByDestination(onSearch: () -> Unit) {
+fun SearchFlightByDestination(
+    departureAirport: (String) -> Unit,
+    arrivalAirport: (String) -> Unit,
+    onSearch: () -> Unit
+) {
 
     val departureTextFieldState = rememberTextFieldState()
     val arrivalTextFieldState = rememberTextFieldState()
+
+    val departureAirportText by departureTextFieldState.textAsFlow().collectAsState(initial = "")
+    val arrivalAirportText by departureTextFieldState.textAsFlow().collectAsState(initial = "")
 
     TheLabTheme {
         Box(
@@ -296,6 +306,16 @@ fun SearchFlightByDestination(onSearch: () -> Unit) {
             }
         }
     }
+
+    LaunchedEffect(departureAirportText) {
+        Timber.d("LaunchedEffect | departureAirportText: ${departureAirportText.toString()} | coroutineContext: ${this.coroutineContext}")
+        departureAirport(departureAirportText.toString())
+    }
+
+    LaunchedEffect(arrivalAirportText.toString()) {
+        Timber.d("LaunchedEffect | arrivalAirportText: ${arrivalAirportText.toString()} | coroutineContext: ${this.coroutineContext}")
+        arrivalAirport(arrivalAirportText.toString())
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -304,6 +324,8 @@ fun SearchFlightByDestination(onSearch: () -> Unit) {
 fun FlightMainContent(
     airportsSize: Int,
     onSearchCategorySelected: (Int) -> Unit,
+    departureAirport: (String) -> Unit,
+    arrivalAirport: (String) -> Unit,
     onSearch: () -> Unit
 ) {
     val context = LocalContext.current
@@ -344,7 +366,11 @@ fun FlightMainContent(
                             ) { page, _ ->
                                 when (page) {
                                     0 -> SearchFlightByCode(onSearch = onSearch)
-                                    1 -> SearchFlightByDestination(onSearch = onSearch)
+                                    1 -> SearchFlightByDestination(
+                                        departureAirport = departureAirport,
+                                        arrivalAirport = arrivalAirport,
+                                        onSearch = onSearch
+                                    )
                                 }
                             }
                         }
@@ -385,8 +411,7 @@ private fun PreviewSearchFlightByCode() {
 @Composable
 private fun PreviewSearchFlightByDestination() {
     TheLabTheme {
-        SearchFlightByDestination {
-        }
+        SearchFlightByDestination({ }, { }, {})
     }
 }
 
@@ -394,6 +419,6 @@ private fun PreviewSearchFlightByDestination() {
 @Composable
 private fun PreviewFlightMainContent() {
     TheLabTheme {
-        FlightMainContent(5, {}, {})
+        FlightMainContent(10, {}, {}, {}, {})
     }
 }

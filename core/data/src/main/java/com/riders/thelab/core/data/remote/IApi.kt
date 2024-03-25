@@ -14,6 +14,7 @@ import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
 import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
+import com.riders.thelab.core.data.remote.dto.flight.AirportsSearchResponse
 import com.riders.thelab.core.data.remote.dto.flight.Operator
 import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
 import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotools.types.text.NotBlankString
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.http.Query
 
 interface IApi {
 
@@ -76,6 +78,8 @@ interface IApi {
 
     // FlightAware
     suspend fun getAirports(maxPages: Int = 1, cursor: String? = null): AirportsResponse
+    suspend fun searchAirportById(query: String): AirportsSearchResponse
+
     suspend fun getAirportById(airportID: String): Airport
     suspend fun getAirportFlightsById(
         airportID: String,
