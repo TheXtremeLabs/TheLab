@@ -30,9 +30,11 @@ import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.data.remote.dto.UserDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.flight.Airport
+import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
 import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
 import com.riders.thelab.core.data.remote.dto.flight.Operator
 import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
+import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBCreditsResponse
@@ -46,6 +48,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
+import kotools.types.text.NotBlankString
 import okhttp3.ResponseBody
 import retrofit2.Call
 import timber.log.Timber
@@ -316,9 +319,53 @@ class ApiImpl @Inject constructor(
     override suspend fun getAirportById(airportID: String): Airport =
         mFlightApiService.getAirportById(airportID)
 
+    override suspend fun getAirportFlightsById(
+        airportID: String,
+        maxPages: Int,
+        cursor: String?,
+        startDate: String?,
+        endDate: String?,
+        type: String?
+    ): AirportFlightsResponse = mFlightApiService.getAirportFlightsById(
+        airportID,
+        maxPages,
+        cursor,
+        startDate,
+        endDate,
+        type
+    )
+
     override suspend fun getOperators(maxPages: Int, cursor: String?): OperatorResponse =
         mFlightApiService.getOperators(maxPages, cursor)
 
     override suspend fun getOperatorById(operatorID: String): Operator =
         mFlightApiService.getOperatorById(operatorID)
+
+    override suspend fun getFlightOnMap(
+        flightID: NotBlankString,
+        height: Int,
+        width: Int,
+        layerOn: Array<NotBlankString>?,
+        layerOff: Array<NotBlankString>?,
+        showDataBlock: Boolean,
+        airportExpandView: Boolean,
+        showAirports: Boolean,
+        boundingBox: Boolean
+    ): ByteArray = mFlightApiService.getFlightOnMap(
+        flightID,
+        height,
+        width,
+        layerOn,
+        layerOff,
+        showDataBlock,
+        airportExpandView,
+        showAirports,
+        boundingBox
+    )
+
+    override suspend fun searchFlight(
+        query: NotBlankString,
+        maxPages: Int,
+        cursor: String?
+    ): SearchFlightResponse = mFlightApiService.searchFlight(query, maxPages, cursor)
 }

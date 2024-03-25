@@ -77,7 +77,7 @@ Repository created and maintained by Saint-Honoré Michaël([*@MichaelStH*](http
 [kotools-types-badge]: https://img.shields.io/static/v1?label=Kotools&message=4.5.0&color=blue
 [kotools-types-project]: https://github.com/kotools/types
 [kotlin]: https://kotlinlang.org
-[kotlin-badge]: https://img.shields.io/badge/kotlin-1.9.22-blue?logo=kotlin
+[kotlin-badge]: https://img.shields.io/badge/kotlin-1.9.23-blue?logo=kotlin
 [kotlin.ArithmeticException]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-arithmetic-exception
 [kotlinx.serialization]: https://github.com/Kotlin/kotlinx.serialization
 [kotlinx.serialization-badge]: https://img.shields.io/badge/kotlinx.serialization-1.6.3-blue?logo=kotlin

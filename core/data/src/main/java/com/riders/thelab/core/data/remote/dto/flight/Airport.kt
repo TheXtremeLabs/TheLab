@@ -43,6 +43,6 @@ data class Airport(
     val alternatives: List<Airport>? = null
 ) : Serializable {
     fun getAirportId(): String {
-        return this.airportInfoUrl?.split("/")?.last() ?: ""
+        return this.airportInfoUrl?.split("/")?.get(1) ?: ""
     }
 }
