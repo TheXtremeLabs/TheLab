@@ -1,6 +1,6 @@
 [versions]
 # Gradle version
-androidGradlePlugin = "8.3.0"
+androidGradlePlugin = "8.3.1"
 # Google Services
 playServicesGradlePlugin = "4.4.1"
 crashlyticsGradlePlugin = "2.9.9"
@@ -70,7 +70,7 @@ coil = "2.6.0"
 # dexter = "6.2.3"
 eventbus = "3.3.1"
 # Firebase
-firebaseBom = "32.7.4"
+firebaseBom = "32.8.0"
 firebaseKtx = "23.0.3"
 firebaseAds = "23.0.0"
 # Google Api
