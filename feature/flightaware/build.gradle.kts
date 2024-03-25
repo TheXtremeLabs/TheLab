@@ -35,6 +35,16 @@ dependencies {
     api(libs.androidx.concurrent)
     androidTestApi(libs.androidx.work.testing)
 
+    // Maps
+    implementation(libs.maps)
+    implementation(libs.maps.compose)
+    // Optionally, you can include the Compose utils library for Clustering,
+    // Street View metadata checks, etc.
+    implementation(libs.maps.compose.utils)
+    // Optionally, you can include the widgets library for ScaleBar, etc.
+    implementation(libs.maps.compose.widgets)
+    implementation(libs.maps.utils)
+
     /* Hilt - We are going to use hilt.android which includes
      * support for Activity and fragment injection so we need to include
      * the following dependencies */
