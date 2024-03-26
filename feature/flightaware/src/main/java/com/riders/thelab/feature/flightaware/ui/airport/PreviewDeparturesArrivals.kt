@@ -80,7 +80,7 @@ fun DeparturesArrivalsItem(
 fun DeparturesArrivals(departureFlights: List<Departures>, arrivalFlights: List<Arrivals>) {
     val airportFlightsLazyListState = rememberLazyListState()
 
-    val departuresArrivalsHeader = listOf("Flight ID", "Departure", "", "Arrival")
+    val departuresArrivalsHeader = listOf("Flight ID", "Departure", " ", "Arrival")
     val naValue: NotBlankString = NotBlankString.create("N/A")
 
     TheLabTheme {
@@ -108,15 +108,15 @@ fun DeparturesArrivals(departureFlights: List<Departures>, arrivalFlights: List<
                         Card {
 
 
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            repeat(departuresArrivalsHeader.size) {
-                                Text(
-                                    modifier = Modifier.weight(1f),
-                                    text = departuresArrivalsHeader[it]
-                                )
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                repeat(departuresArrivalsHeader.size) {
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = departuresArrivalsHeader[it]
+                                    )
+                                }
                             }
                         }
-                    }
                     }
 
                     items(items = departureFlights) {
@@ -142,14 +142,15 @@ fun DeparturesArrivals(departureFlights: List<Departures>, arrivalFlights: List<
                         Card {
 
 
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            repeat(departuresArrivalsHeader.size) {
-                                Text(
-                                    modifier = Modifier.weight(1f),
-                                    text = departuresArrivalsHeader[it]
-                                )
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                repeat(departuresArrivalsHeader.size) {
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = departuresArrivalsHeader[it]
+                                    )
+                                }
                             }
-                        }}
+                        }
                     }
 
                     items(items = arrivalFlights) {
