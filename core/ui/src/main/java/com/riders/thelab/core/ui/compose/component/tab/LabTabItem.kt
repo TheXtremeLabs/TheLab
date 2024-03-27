@@ -33,14 +33,14 @@ fun LabTabItem(
     text: String,
     shape: Shape = RoundedCornerShape(8.dp),
     selectedTextColor: Color = if (!isSystemInDarkTheme()) md_theme_dark_primary else md_theme_light_primary,
-    unSelectedTextColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
+    unselectedTextColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
     onClick: () -> Unit
 ) {
     val tabTextColor: Color by animateColorAsState(
         targetValue = if (isSelected) {
             selectedTextColor
         } else {
-            unSelectedTextColor
+            unselectedTextColor
         },
         animationSpec = tween(easing = LinearEasing),
         label = "tab_text_animation"

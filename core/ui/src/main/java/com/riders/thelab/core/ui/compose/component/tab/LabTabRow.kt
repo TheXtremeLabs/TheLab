@@ -33,6 +33,10 @@ fun LabTabRow(
     items: List<String>,
     modifier: Modifier = Modifier,
     tabWidth: Dp = 150.dp,
+    indicatorColor:Color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
+    backgroundColor:Color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
+    selectedTextColor: Color = if (!isSystemInDarkTheme()) md_theme_dark_primary else md_theme_light_primary,
+    unselectedTextColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
     onClick: (index: Int) -> Unit
 ) {
     val shape = RoundedCornerShape(16.dp)
@@ -53,8 +57,8 @@ fun LabTabRow(
             LabTabIndicator(
                 indicatorWidth = tabWidth,
                 indicatorOffset = indicatorOffset,
-                indicatorColor = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
-                backgroundColor = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
+                indicatorColor = indicatorColor,
+                backgroundColor = backgroundColor,
                 shape = shape
             )
 
@@ -72,6 +76,8 @@ fun LabTabRow(
                         },
                         tabWidth = tabWidth,
                         text = text,
+                        selectedTextColor = selectedTextColor,
+                        unselectedTextColor = unselectedTextColor,
                         shape = shape
                     )
                 }
