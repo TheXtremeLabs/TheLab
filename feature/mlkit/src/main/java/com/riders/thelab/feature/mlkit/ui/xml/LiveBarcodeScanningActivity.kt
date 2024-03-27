@@ -64,7 +64,7 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
 
                 if (!granted) {
                     Timber.e("Permissions are denied. User may access to app with limited location related features")
-                    UIManager.showActionInToast(
+                    UIManager.showToast(
                         this,
                         "Permissions are denied. User may access to app with limited location related features"
                     )

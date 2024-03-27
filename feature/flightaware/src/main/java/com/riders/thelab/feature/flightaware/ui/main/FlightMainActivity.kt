@@ -4,7 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.text2.input.rememberTextFieldState
+import androidx.compose.foundation.text2.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
@@ -18,10 +21,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchActivity
+import com.riders.thelab.feature.flightaware.viewmodel.FlightSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -33,6 +38,9 @@ import timber.log.Timber
 class FlightMainActivity : BaseComponentActivity() {
 
     private val mViewModel: FlightViewModel by viewModels<FlightViewModel>()
+    private val mFlightSearchViewModel: FlightSearchViewModel by viewModels<FlightSearchViewModel>()
+
+    private var mLabNetworkManager: LabNetworkManager? = null
 
 
     ///////////////////////////////
@@ -40,18 +48,27 @@ class FlightMainActivity : BaseComponentActivity() {
     // OVERRIDE
     //
     ///////////////////////////////
+    @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mLabNetworkManager = LabNetworkManager
+            .getInstance(this, lifecycle)
+            .also { mViewModel.observeNetworkState(it) }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
+                    // Register lifecycle for viewModel
+                    mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
                     var searchType by remember { mutableIntStateOf(0) }
 
-                    mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
+                    val departureAirportsFlow by mFlightSearchViewModel.departureAirportStateFlow.collectAsStateWithLifecycle()
+                    val arrivalAirportsFlow by mFlightSearchViewModel.arrivalAirportStateFlow.collectAsStateWithLifecycle()
 
-                    val depAirportFlow by mViewModel.departureAirportStateFlow.collectAsStateWithLifecycle()
+                    val departureTextFieldState = rememberTextFieldState()
+                    val arrivalTextFieldState = rememberTextFieldState()
 
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
@@ -60,14 +77,16 @@ class FlightMainActivity : BaseComponentActivity() {
                             color = MaterialTheme.colorScheme.background
                         ) {
                             FlightMainContent(
-                                airportsSize = mViewModel.airports.size,
+                                hasConnection = mViewModel.hasInternetConnection,
                                 onSearchCategorySelected = {
                                     searchType = it
                                 },
+                                departureTextFieldState = departureTextFieldState,
+                                arrivalTextFieldState = arrivalTextFieldState,
                                 departureAirport = { departureAirport ->
                                     Timber.d("FlightMainContent | departureAirport : $departureAirport")
-                                    mViewModel.updateDepartureAirport(departureAirport)
-                                    Timber.d("FlightMainContent | mViewModel.departureAirport.value : ${mViewModel.departureAirport}")
+                                    // mViewModel.updateDepartureAirport(departureAirport)
+                                    // Timber.d("FlightMainContent | mViewModel.departureAirport.value : ${mViewModel.departureAirport}")
                                 },
                                 arrivalAirport = { arrivalAirport ->
                                     Timber.d("FlightMainContent | arrivalAirport : $arrivalAirport")
@@ -75,20 +94,30 @@ class FlightMainActivity : BaseComponentActivity() {
                                 onSearch = {
                                     when (searchType) {
                                         0 -> {
-                                            mViewModel.getAirport()
+                                            //  mViewModel.getAirport()
                                         }
 
                                         1 -> {
-                                            mViewModel.getOperator()
+                                            // mViewModel.getOperator()
                                         }
                                     }
-                                }
-                            )
+                                },
+                                departureExpanded = mViewModel.departureDropdownExpanded || departureAirportsFlow.isNotEmpty(),
+                                onDepartureExpanded = mViewModel::updateDepartureExpanded,
+                                onDepartureIconClicked = { },
+                                departureSelectedText = mViewModel.departureAirportSelectedText
+                                    ?: "",
+                                onDepartureSelectedTextChanged = mViewModel::updateDepartureAirportSelectedText,
+                                departureSuggestions = departureAirportsFlow
+                            ) {
+                                mViewModel::updateDepartureAirportOption
+                                departureTextFieldState.setTextAndPlaceCursorAtEnd("${it.name.toString()} (${it.iataCode.toString()})")
+                            }
                         }
                     }
 
-                    LaunchedEffect(key1 = depAirportFlow) {
-                        Timber.d("LaunchedEffect | depAirportFlow: $depAirportFlow | coroutineContext: ${this.coroutineContext}")
+                    LaunchedEffect(departureAirportsFlow) {
+                        Timber.d("LaunchedEffect | departure Airports Flow value: $departureAirportsFlow | coroutineContext: ${this.coroutineContext}")
 
                     }
                 }
@@ -98,6 +127,12 @@ class FlightMainActivity : BaseComponentActivity() {
 
     override fun backPressed() {
         Timber.e("onBackPressed()")
+
+        if (mViewModel.departureDropdownExpanded) {
+            mViewModel.updateDepartureExpanded(false)
+            return
+        }
+
         finish()
     }
 

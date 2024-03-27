@@ -229,6 +229,9 @@ class RepositoryImpl @Inject constructor(
     override suspend fun searchAirportById(query: String): AirportsSearchResponse =
         mApiImpl.searchAirportById(query)
 
+    override suspend fun omniSearchAirport(query: String): AirportsSearchResponse =
+        mApiImpl.omniSearchAirport(query)
+
     override suspend fun getAirportById(airportID: String): Airport =
         mApiImpl.getAirportById(airportID)
 

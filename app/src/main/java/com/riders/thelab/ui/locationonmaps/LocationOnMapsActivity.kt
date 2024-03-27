@@ -427,7 +427,7 @@ class LocationOnMapsActivity
             ?.addOnSuccessListener(this) { _: LocationSettingsResponse? ->
 
                 Timber.i("All location settings are satisfied.")
-                UIManager.showActionInToast(this, "Started location updates!")
+                UIManager.showToast(this, "Started location updates!")
 
                 mFusedLocationClient!!.requestLocationUpdates(
                     mLocationRequest!!,
@@ -455,7 +455,7 @@ class LocationOnMapsActivity
                     val errorMessage =
                         "Location settings are inadequate, and cannot be " +
                                 "fixed here. Fix in Settings."
-                    UIManager.showActionInToast(this, errorMessage)
+                    UIManager.showToast(this, errorMessage)
                     Timber.e(errorMessage)
                 }
                 updateLocationUI()
@@ -467,7 +467,7 @@ class LocationOnMapsActivity
         mFusedLocationClient
             ?.removeLocationUpdates(mLocationCallback!!)
             ?.addOnCompleteListener(this) {
-                UIManager.showActionInToast(this, "Location updates stopped!")
+                UIManager.showToast(this, "Location updates stopped!")
             }
     }
 

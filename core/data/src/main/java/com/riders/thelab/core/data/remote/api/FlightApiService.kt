@@ -23,6 +23,8 @@ interface FlightApiService {
 
     @GET("https://www.flightaware.com/ajax/ignoreall/airport_names_yajl.rvt?locale=fr_FR&code=1")
     suspend fun searchAirportById(@Query("q") query: String): AirportsSearchResponse
+    @GET("https://www.flightaware.com/ajax/ignoreall/omnisearch/airport.rvt?v=50&locale=fr_FR")
+    suspend fun omniSearchAirport(@Query("searchterm") searchTerm: String, @Query("q") query: String): AirportsSearchResponse
 
     @GET("airports/{id}")
     suspend fun getAirportById(@Path("id") airportID: String): Airport

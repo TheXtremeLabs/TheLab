@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RawQuery
+import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.riders.thelab.core.data.local.model.weather.CityModel
@@ -35,6 +36,8 @@ interface WeatherDao {
      * This way, the query matches against the city_fts table but returns the columns of the city table.
      * With this change, the app now uses FTS instead of pattern matching.
      */
+    @Transaction
+    @RewriteQueriesToDropUnusedColumns
     @Query(
         "SELECT * FROM city " +
                 "JOIN city_fts ON city_fts.name = city.name " +
@@ -52,10 +55,12 @@ interface WeatherDao {
     suspend fun searchCity(query: String): List<CityModel>*/
 
     @Transaction
+    @RewriteQueriesToDropUnusedColumns
     @Query("SELECT * FROM city INNER JOIN city_fts ON city.name = city_fts.name WHERE city_fts.name LIKE '%' || :query || '%' LIMIT 10")
     suspend fun searchCityFTS(query: String): List<CityModelFTS>
 
     @RawQuery([CityModelFTS::class])
+    @RewriteQueriesToDropUnusedColumns
     suspend fun searchCityWithRawQuery(rawQuery: SupportSQLiteQuery): List<CityModelFTS>
 
     /* Method to fetch contacts stored locally */

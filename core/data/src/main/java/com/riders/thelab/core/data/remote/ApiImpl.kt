@@ -320,6 +320,9 @@ class ApiImpl @Inject constructor(
     override suspend fun searchAirportById(query: String): AirportsSearchResponse =
         mFlightApiService.searchAirportById(query)
 
+    override suspend fun omniSearchAirport(query: String): AirportsSearchResponse =
+        mFlightApiService.omniSearchAirport(searchTerm = query, query = query)
+
     override suspend fun getAirportById(airportID: String): Airport =
         mFlightApiService.getAirportById(airportID)
 

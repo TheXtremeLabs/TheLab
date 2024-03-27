@@ -144,7 +144,7 @@ class ACRCloudActivity : BaseComponentActivity() {
         // Then we will write some more code here.
     }*/
 
-    @Deprecated("DEPRECATED - Use registerActivityForResult")
+    /*@Deprecated("DEPRECATED - Use registerActivityForResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
 
@@ -157,7 +157,7 @@ class ACRCloudActivity : BaseComponentActivity() {
                 else -> {}
             }
         }
-    }
+    }*/
 
     override fun onResume() {
         super.onResume()

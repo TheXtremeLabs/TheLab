@@ -409,7 +409,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         Timber.d("launchApp : $item")
         when {
             item is LocalApp && item.title?.lowercase()?.contains("drive") == true -> {
-                UIManager.showActionInToast(
+                UIManager.showToast(
                     this@MainActivity,
                     "Please check this functionality later. Problem using Drive REST API v3"
                 )

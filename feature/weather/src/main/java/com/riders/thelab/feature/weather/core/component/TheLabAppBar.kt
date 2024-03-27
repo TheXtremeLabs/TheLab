@@ -1,3 +1,4 @@
+/*
 package com.riders.thelab.feature.weather.core.component
 
 import android.annotation.SuppressLint
@@ -290,4 +291,4 @@ private fun PreviewTheLabTopAppBarLarge() {
     TheLabTheme {
         TheLabTopAppBarLarge()
     }
-}
+}*/
