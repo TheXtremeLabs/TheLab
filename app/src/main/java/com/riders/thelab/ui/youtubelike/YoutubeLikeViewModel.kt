@@ -150,7 +150,7 @@ class YoutubeLikeViewModel @Inject constructor(
             Timber.e("No Internet connection")
             progressVisibility.value = false
             connectionStatus.value = false
-            UIManager.showActionInToast(
+            UIManager.showToast(
                 activity,
                 activity.resources.getString(R.string.network_status_disconnected)
             )

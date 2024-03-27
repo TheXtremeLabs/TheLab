@@ -113,7 +113,7 @@ class ScheduleViewModel : ViewModel() {
             }
         }
 
-        UIManager.showActionInToast(activity, "Alarm set in $i seconds")
+        UIManager.showToast(activity, "Alarm set in $i seconds")
 
         updateUiCountDown(i)
 

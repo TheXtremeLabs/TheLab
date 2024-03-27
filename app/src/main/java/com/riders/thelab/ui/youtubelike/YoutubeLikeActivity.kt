@@ -82,7 +82,7 @@ class YoutubeLikeActivity : AppCompatActivity(), YoutubeListClickListener {
         }
 
         mYoutubeViewModel.getYoutubeVideosFailed().observe(this) {
-            UIManager.showActionInToast(this, "Unable to fetch content")
+            UIManager.showToast(this, "Unable to fetch content")
         }
 
         mYoutubeViewModel.getYoutubeVideos().observe(this) { youtubeList ->

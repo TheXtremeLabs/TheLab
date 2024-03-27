@@ -16,7 +16,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -136,7 +135,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
 
                 if (!granted) {
                     Timber.e("Permissions are denied. User may access to app with limited location related features")
-                    UIManager.showActionInToast(
+                    UIManager.showToast(
                         this,
                         "Permissions are denied. User may access to app with limited location related features"
                     )

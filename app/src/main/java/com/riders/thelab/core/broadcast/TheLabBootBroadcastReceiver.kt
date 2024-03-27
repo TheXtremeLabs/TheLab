@@ -20,7 +20,7 @@ class TheLabBootBroadcastReceiver : BroadcastReceiver() {
 
             if (null != action) {
                 if (action == "android.intent.action.BOOT_COMPLETED") {
-                    UIManager.showActionInToast(
+                    UIManager.showToast(
                         context,
                         "action == \"android.intent.action.BOOT_COMPLETED\""
                     )

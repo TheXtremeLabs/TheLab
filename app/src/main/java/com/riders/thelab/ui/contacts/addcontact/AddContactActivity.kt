@@ -92,7 +92,7 @@ class AddContactActivity : AppCompatActivity() {
             return
         }
 
-        UIManager.showActionInToast(this, "Thank You")
+        UIManager.showToast(this, "Thank You")
 
         mAddContactViewModel.saveContact(
             Contact(
