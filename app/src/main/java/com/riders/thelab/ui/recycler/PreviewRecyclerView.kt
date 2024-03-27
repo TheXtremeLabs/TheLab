@@ -23,8 +23,8 @@ import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.compose.ArtistsUiState
 import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.feature.weather.core.component.TheLabTopAppBar
 import timber.log.Timber
 
 @Composable

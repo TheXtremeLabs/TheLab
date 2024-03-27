@@ -3,6 +3,7 @@ package com.riders.thelab.feature.flightaware.ui.main
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,7 +31,9 @@ import androidx.compose.material.icons.filled.FlightLand
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,14 +54,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
+import com.riders.thelab.core.ui.compose.component.ProvidedBy
 import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.flightaware.R
+import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
+import com.riders.thelab.feature.flightaware.core.theme.buttonColor
+import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
+import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -89,7 +99,11 @@ fun SearchFlightByCode(onSearch: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                Text(modifier = Modifier.fillMaxWidth(), text = "Search a flight")
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Search a flight",
+                    style = TextStyle(color = Color.White)
+                )
 
                 BasicTextField2(
                     modifier = Modifier
@@ -130,13 +144,16 @@ fun SearchFlightByCode(onSearch: () -> Unit) {
                     }
                 )
 
-                Button(onClick = {
-                    if (textFieldState.text.isEmpty()) {
-                        return@Button
-                    }
-                    onSearch()
-                }) {
-                    Text("Search")
+                Button(
+                    onClick = {
+                        if (textFieldState.text.isEmpty()) {
+                            return@Button
+                        }
+                        onSearch()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
+                ) {
+                    Text(text = "Search", style = TextStyle(color = Color.LightGray))
                 }
             }
 
@@ -173,7 +190,11 @@ fun SearchFlightByDestination(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                Text(modifier = Modifier.fillMaxWidth(), text = "Search a flight")
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Search a flight",
+                    style = TextStyle(color = Color.White)
+                )
 
                 // Departure
                 Row(
@@ -185,7 +206,8 @@ fun SearchFlightByDestination(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.FlightTakeoff,
-                        contentDescription = "icoon_flight_takeoff"
+                        contentDescription = "icon_flight_takeoff",
+                        tint = Color.LightGray
                     )
 
                     // Departure
@@ -241,7 +263,8 @@ fun SearchFlightByDestination(
                                     temp
                                 )
                             }
-                        }) {
+                        }
+                    ) {
                         Icon(
                             modifier = Modifier.rotate(90f),
                             imageVector = Icons.Filled.SyncAlt,
@@ -262,7 +285,8 @@ fun SearchFlightByDestination(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.FlightLand,
-                        contentDescription = "icon_flight_land"
+                        contentDescription = "icon_flight_land",
+                        tint = Color.LightGray
                     )
 
                     // Arrival
@@ -299,9 +323,13 @@ fun SearchFlightByDestination(
                             return@Button
                         }
                         onSearch()
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
                 ) {
-                    Text("Search")
+                    Text(
+                        text = "Search",
+                        style = TextStyle(color = Color.LightGray)
+                    )
                 }
             }
         }
@@ -318,6 +346,23 @@ fun SearchFlightByDestination(
     }
 }
 
+@DevicePreviews
+@Composable
+fun Footer() {
+    TheLabTheme {
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            ProvidedBy(
+                providerIcon = R.drawable.ic_flightaware_logo,
+                hasPadding = true,
+                hasRoundedCorners = true,
+                textColor = Color.White,
+                backgroundColor = Color(0xFF002f5d)
+            )
+        }
+    }
+}
+
+
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedBoxWithConstraintsScope")
 @Composable
@@ -331,13 +376,34 @@ fun FlightMainContent(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
-    val tabs = listOf("Search Flight by ID", "Search Flight By Destination")
+    // this is to disable the ripple effect
+    val interactionSource = remember { MutableInteractionSource() }
+
+    val tabs = listOf(
+        stringResource(id = R.string.search_flight_by_id),
+        stringResource(id = R.string.search_flight_by_route)
+    )
     var tabIndex by remember { mutableIntStateOf(0) }
     val pagerState = rememberPagerState { tabs.size }
 
     TheLabTheme {
-        Scaffold(topBar = { TheLabTopAppBar() }) {
-            BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        Scaffold(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = backgroundColor),
+            topBar = {
+                TheLabTopAppBar(
+                    navigationIconColor = Color.LightGray,
+                    backgroundColor = backgroundColor
+                )
+            }
+        ) { contentPadding ->
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding)
+                    .background(color = backgroundColor)
+            ) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
@@ -347,13 +413,17 @@ fun FlightMainContent(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
+                                .padding(horizontal = 16.dp),
+                            colors = CardDefaults.cardColors(containerColor = cardBackgroundColor)
                         ) {
                             LabTabRow(
                                 modifier = Modifier.fillMaxWidth(),
                                 items = tabs,
                                 selectedItemIndex = tabIndex,
-                                tabWidth = this@BoxWithConstraints.maxWidth / 2
+                                tabWidth = this@BoxWithConstraints.maxWidth / tabs.size,
+                                selectedTextColor = searchTextColor,
+                                unselectedTextColor = Color.Gray,
+                                backgroundColor = Color.Transparent
                             ) { index ->
                                 tabIndex = index
                                 onSearchCategorySelected(tabIndex)
@@ -377,12 +447,40 @@ fun FlightMainContent(
                     }
 
                     item {
-                        Card(modifier = Modifier.fillMaxWidth()) {
-                            Text(text = "Airports size: $airportsSize")
-                            Button(onClick = { (context as FlightMainActivity).launchAirportSearchActivity() }) {
-                                Text(text = "See all Airports")
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            colors = CardDefaults.cardColors(containerColor = cardBackgroundColor)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+
+                                Text(
+                                    text = "Airports size: $airportsSize",
+                                    style = TextStyle(color = Color.White)
+                                )
+
+                                Button(
+                                    onClick = { (context as FlightMainActivity).launchAirportSearchActivity() },
+                                    colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
+                                ) {
+                                    Text(
+                                        text = "See all Airports",
+                                        style = TextStyle(color = Color.LightGray)
+                                    )
+                                }
                             }
                         }
+                    }
+
+                    item {
+                        Footer()
                     }
                 }
             }

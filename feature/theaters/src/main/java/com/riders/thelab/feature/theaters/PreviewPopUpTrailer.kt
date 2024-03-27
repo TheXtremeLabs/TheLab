@@ -48,7 +48,7 @@ fun PopUpTrailer(
     val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
 
-    val mModifier = when (orientation) {
+    val mModifier:Modifier = when (orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
             Modifier
                 .fillMaxWidth()
@@ -73,7 +73,7 @@ fun PopUpTrailer(
 
     TheLabTheme {
         Card(
-            modifier = mModifier,
+            modifier = mModifier.then(modifier),
             colors = CardDefaults.cardColors(containerColor = Color.DarkGray)
         ) {
             AnimatedContent(

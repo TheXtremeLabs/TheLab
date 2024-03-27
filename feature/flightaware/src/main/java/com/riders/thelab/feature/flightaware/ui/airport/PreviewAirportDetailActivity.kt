@@ -2,6 +2,7 @@ package com.riders.thelab.feature.flightaware.ui.airport
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.MapProperties
@@ -37,6 +40,9 @@ import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.feature.flightaware.core.component.GoogleMap
+import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
+import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
+import com.riders.thelab.feature.flightaware.core.theme.textColor
 import timber.log.Timber
 
 
@@ -55,7 +61,6 @@ fun AirportDetailContent(
     onFlightRequested: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
-    val airportFlightsLazyListState = rememberLazyListState()
 
     val uiSettings by remember {
         mutableStateOf(
@@ -71,10 +76,13 @@ fun AirportDetailContent(
 
     TheLabTheme {
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = backgroundColor),
             topBar = {
                 TheLabTopAppBar(navigationIcon = { Icons.AutoMirrored.Filled.KeyboardArrowLeft })
-            }
+            },
+            containerColor = backgroundColor
         ) { _ ->
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -110,21 +118,26 @@ fun AirportDetailContent(
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = "${airportModel.name} (${airportModel.iataCode})",
-                            style = Typography.displaySmall
+                            style = Typography.displaySmall,
+                            color = textColor
                         )
                         Text(
                             text = "${airportModel.city}",
-                            style = Typography.bodyLarge
+                            style = Typography.bodyLarge,
+                            color = Color.LightGray
                         )
                         if (!airportModel.state.isNullOrBlank()) {
                             Text(
                                 text = "${airportModel.state}",
-                                style = Typography.bodyMedium
+                                style = Typography.bodyMedium,
+                                color = Color.LightGray
+
                             )
                         }
                         Text(
                             text = "${airportModel.timezone}",
-                            style = Typography.bodyMedium
+                            style = Typography.bodyMedium,
+                            color = Color.LightGray
                         )
                     }
                 }
@@ -140,14 +153,16 @@ fun AirportDetailContent(
                         Button(
                             modifier = Modifier.padding(horizontal = 16.dp),
                             onClick = onFlightRequested,
-                            enabled = !isFlightsFetched
+                            enabled = !isFlightsFetched,
+                            colors = ButtonDefaults.buttonColors(containerColor = searchTextColor)
+
                         ) {
-                            Text(text = "See Flights for this airport")
+                            Text(
+                                text = "See Flights for this airport",
+                                color = textColor
+                            )
                         }
-
-
                     }
-
                 }
 
                 item {

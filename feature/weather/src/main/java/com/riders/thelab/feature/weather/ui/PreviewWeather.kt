@@ -81,13 +81,13 @@ import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.data.WindDirection
-import com.riders.thelab.feature.weather.core.component.TheLabTopAppBar
 import com.riders.thelab.feature.weather.utils.Constants
 import com.riders.thelab.feature.weather.utils.WeatherUtils
 import timber.log.Timber

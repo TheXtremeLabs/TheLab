@@ -4,22 +4,24 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.layout.Box
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
-import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -53,20 +55,13 @@ class AirportSearchDetailActivity : BaseComponentActivity() {
                             color = MaterialTheme.colorScheme.background
                         ) {
                             AnimatedContent(
+                                modifier = Modifier.fillMaxSize(),
                                 targetState = null != mViewModel.airportID && null != mViewModel.airportModel,
+                                transitionSpec = { fadeIn() + slideInHorizontally() togetherWith fadeOut() + slideOutHorizontally() },
                                 label = "transition"
                             ) { targetState ->
                                 if (!targetState) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(48.dp)
-                                            .zIndex(5f), contentAlignment = Alignment.Center
-                                    ) {
-                                        Lottie(
-                                            modifier = Modifier.fillMaxSize(),
-                                            url = "https://assets2.lottiefiles.com/packages/lf20_kk62um5v.json"
-                                        )
-                                    }
+                                    LabLoader(modifier = Modifier.size(56.dp))
                                 } else {
                                     AirportDetailContent(
                                         airportModel = mViewModel.airportModel!!,

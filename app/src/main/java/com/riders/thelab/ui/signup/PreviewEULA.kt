@@ -89,7 +89,7 @@ fun EULAScreen(isDarkMode: Boolean, onNavigateToUserFormScreen: () -> Unit) {
                     text = stringResource(id = R.string.accept_agreement_license),
                     style = TextStyle(
                         fontSize = 14.sp,
-                        color = if (!isDarkMode) Color.Black else Color.White
+                        color = if (!isSystemInDarkTheme()) Color.Black else Color.White
                     )
                 )
             }

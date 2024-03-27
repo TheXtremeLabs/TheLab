@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.GpsFixed
+import androidx.compose.material.icons.filled.GpsOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,7 +39,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ComponentActivity
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
@@ -185,6 +186,7 @@ fun TheLabTopAppBar(
     @PreviewParameter(TextContentPreviewProvider::class) title: String? = null,
     mainCustomContent: @Composable (() -> Unit)? = null,
     withGradientBackground: Boolean = false,
+    backgroundColor: Color = Color.Transparent,
     viewModel: BaseViewModel? = null,
     navigationIcon: @Composable (() -> Unit)? = null,
     navigationIconColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
@@ -245,11 +247,74 @@ fun TheLabTopAppBar(
                     actions()
                 }
             },
-            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+            colors = TopAppBarDefaults.mediumTopAppBarColors(backgroundColor)
         )
     }
 }
 
+/**
+ * Weather toolbar
+ */
+@SuppressLint("RestrictedApi")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TheLabTopAppBar(
+    @PreviewParameter(TextContentPreviewProvider::class) title: String,
+    iconState: Boolean,
+    actionBlock: () -> Unit,
+) {
+    val context = LocalContext.current
+
+    TheLabTheme {
+        TopAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color.Black, MaterialTheme.colorScheme.background)
+                    )
+                ),
+            title = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(start = 16.dp, bottom = 16.dp),
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    Text(text = title, color = Color.White)
+                }
+            },
+            navigationIcon = {
+                IconButton(onClick = { (context as BaseComponentActivity).backPressed() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
+                }
+            },
+            actions = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(bottom = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    IconButton(onClick = actionBlock) {
+                        Icon(
+                            imageVector = if (!iconState) Icons.Filled.GpsOff else Icons.Filled.GpsFixed,
+                            contentDescription = "action icon "
+                        )
+                    }
+                }
+
+            },
+            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+        )
+    }
+}
 
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -323,15 +388,16 @@ fun TheLabTopAppBarLarge() {
 
 fun executeOnBackPressed(context: Context) {
     Timber.d("executeOnBackPressed()")
+
     runCatching {
-        Timber.d("Attempt to execute backPressed on ComponentActivity()")
+        Timber.d("runCatching | Attempt to execute backPressed on ComponentActivity()")
         (context as BaseComponentActivity).backPressed()
     }.onFailure {
         it.printStackTrace()
         Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
 
         runCatching {
-            Timber.d("Attempt to execute fallback backPressed on AppCompatActivity()")
+            Timber.d("runCatching | Attempt to execute fallback backPressed on AppCompatActivity()")
             (context as BaseAppCompatActivity).backPressed()
         }.onFailure {
             it.printStackTrace()
@@ -350,6 +416,30 @@ fun executeOnBackPressed(context: Context) {
 private fun PreviewTheLabTopAppBar() {
     TheLabTheme {
         TheLabTopAppBar("Lorem Ipsum")
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewTheLabTopAppBar(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
+    TheLabTheme {
+        TheLabTopAppBar(title = title, navigationIcon = null)
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewTheLabTopAppBarWeatherGpsOn(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
+    TheLabTheme {
+        TheLabTopAppBar(title = title, iconState = true, actionBlock = {})
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewTheLabTopAppBarWeatherGpsOff(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
+    TheLabTheme {
+        TheLabTopAppBar(title = title, iconState = false, actionBlock = {})
     }
 }
 

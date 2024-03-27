@@ -79,6 +79,8 @@ interface IApi {
     // FlightAware
     suspend fun getAirports(maxPages: Int = 1, cursor: String? = null): AirportsResponse
     suspend fun searchAirportById(query: String): AirportsSearchResponse
+    suspend fun omniSearchAirport(query: String): AirportsSearchResponse
+
 
     suspend fun getAirportById(airportID: String): Airport
     suspend fun getAirportFlightsById(

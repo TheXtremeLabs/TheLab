@@ -141,8 +141,8 @@ class FlightViewModel @Inject constructor(
         super.onResume(owner)
         Timber.d("onResume()")
 
-        getAirport()
-        getOperator()
+//        getAirport()
+//        getOperator()
     }
 
     override fun onStop(owner: LifecycleOwner) {
