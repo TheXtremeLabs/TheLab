@@ -2,6 +2,7 @@ package com.riders.thelab.core.ui.compose.component.loading
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +22,9 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 fun LabLoader(modifier: Modifier) {
     TheLabTheme {
         BoxWithConstraints(
-            modifier = modifier,
+            modifier = Modifier
+                .wrapContentSize()
+                .then(modifier),
             contentAlignment = Alignment.Center
         ) {
             Lottie(

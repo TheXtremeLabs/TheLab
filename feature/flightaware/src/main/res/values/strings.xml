@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-
     <string name="search_flight_by_id">Search Flight by ID</string>
     <string name="search_flight_by_route">Search Flight by route</string>
     <string name="search_flight_from">From (Location)</string>

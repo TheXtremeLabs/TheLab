@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -57,6 +58,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
@@ -76,7 +78,7 @@ import timber.log.Timber
 fun AirportSearchContent(
     airportQuery: String,
     onUpdateAirportQuery: (String) -> Unit,
-    isQueryLoading:Boolean,
+    isQueryLoading: Boolean,
     airportList: List<AirportSearchModel>
 ) {
     val context = LocalContext.current
@@ -158,6 +160,18 @@ fun AirportSearchContent(
                                         enabled = true,
                                         singleLine = true,
                                         visualTransformation = VisualTransformation.None,
+                                        trailingIcon = {
+                                            AnimatedContent(
+                                                targetState = isQueryLoading,
+                                                label = "loading query animation"
+                                            ) { targetState: Boolean ->
+                                                if (!targetState) {
+                                                    Box(modifier = Modifier)
+                                                } else {
+                                                    LabLoader(modifier = Modifier.size(40.dp))
+                                                }
+                                            }
+                                        },
                                         innerTextField = {
                                             innerTextFieldDecorator.invoke()
                                         },
@@ -174,15 +188,6 @@ fun AirportSearchContent(
                             cursorBrush = SolidColor(Color.White),
                             readOnly = false
                         )
-                        /*TextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = airportQuery,
-                            onValueChange = onUpdateAirportQuery,
-                            placeholder = { Text(text = "Enter an airport ID (CDG, ORY, JFK,...)") },
-                            label = { Text(text = "Airport ID") },
-                            singleLine = true,
-                            maxLines = 1
-                        )*/
                     },
                     navigationIcon = {
                         IconButton(onClick = { (context as AirportSearchActivity).backPressed() }) {
@@ -273,6 +278,11 @@ fun AirportSearchContent(
 @Composable
 private fun PreviewAirportSearchContent(@PreviewParameter(PreviewProviderAirports::class) airports: List<AirportSearchModel>) {
     TheLabTheme {
-        AirportSearchContent(airportQuery = "LAX", onUpdateAirportQuery =  {}, isQueryLoading = true, airportList = airports)
+        AirportSearchContent(
+            airportQuery = "Paris Charles de Gaulle (CDG)",
+            onUpdateAirportQuery = {},
+            isQueryLoading = true,
+            airportList = airports
+        )
     }
 }

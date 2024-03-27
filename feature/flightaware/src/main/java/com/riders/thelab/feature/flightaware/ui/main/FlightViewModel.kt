@@ -9,12 +9,16 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
+import com.riders.thelab.core.common.network.LabNetworkManager
+import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
+import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.OperatorModel
 import com.riders.thelab.core.data.local.model.flight.toModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.feature.flightaware.viewmodel.BaseFlightViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -27,55 +31,27 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class FlightViewModel @Inject constructor(
     private val repository: IRepository
-) : BaseViewModel(), DefaultLifecycleObserver {
+) : BaseFlightViewModel(), DefaultLifecycleObserver {
 
     //////////////////////////////////////////
     // Composable states
     //////////////////////////////////////////
-    var airports: SnapshotStateList<AirportModel> = mutableStateListOf<AirportModel>()
-    var operators: SnapshotStateList<OperatorModel> = mutableStateListOf<OperatorModel>()
 
-    var departureAirport by mutableStateOf("")
+    var airports: SnapshotStateList<AirportModel> = mutableStateListOf()
+    var operators: SnapshotStateList<OperatorModel> = mutableStateListOf()
+
+    var departureDropdownExpanded by mutableStateOf(false)
+    var departureAirportOptionSelected: String? by mutableStateOf(null)
         private set
-
-    var departureAirportStateFlow: StateFlow<List<AirportSearch>> =
-        snapshotFlow { departureAirport }
-            .debounce(750)
-            .distinctUntilChanged()
-            .mapLatest {
-                if (it.isEmpty()) {
-                    return@mapLatest emptyList()
-                }
-
-                Timber.d("departureAirportStateFlow | mapLatest | it: ${it}")
-                val list = repository.searchAirportById(it).airports
-                Timber.d("result: $list")
-                list
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = emptyList()
-            )
-
-    var arrivalAirport = MutableStateFlow("")
+    var departureAirportSelectedText: String? by mutableStateOf(null)
         private set
-    var arrivalAirportStateFlow: StateFlow<List<AirportSearch>> =
-        snapshotFlow { arrivalAirport }.debounce(750).mapLatest {
-            val list = repository.searchAirportById(it.value).airports
-            Timber.d("result: $list")
-            list
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
-        )
 
     var currentAirport: AirportModel? by mutableStateOf(null)
         private set
@@ -83,8 +59,25 @@ class FlightViewModel @Inject constructor(
     var currentOperator: OperatorModel? by mutableStateOf(null)
         private set
 
-    fun updateDepartureAirport(airport: String) {
+
+    fun updateDepartureExpanded(isExpanded: Boolean) {
+        Timber.d("updateDepartureExpanded() | isExpanded: $isExpanded")
+        this.departureDropdownExpanded = isExpanded
+    }
+
+  /*  fun updateDepartureAirport(airport: String) {
+        Timber.d("updateDepartureAirport() | airport: $airport")
         this.departureAirport = airport
+    }*/
+
+    fun updateDepartureAirportOption(newAirportOption: String) {
+        Timber.d("updateDepartureAirportOption() | newAirportOption: $newAirportOption")
+        this.departureAirportOptionSelected = newAirportOption
+    }
+
+    fun updateDepartureAirportSelectedText(newAirportText: String) {
+        Timber.d("updateDepartureAirportSelected() | newAirportText: $newAirportText")
+        this.departureAirportSelectedText = newAirportText
     }
 
     private fun updateAirportList(newList: List<AirportModel>) {
@@ -162,6 +155,7 @@ class FlightViewModel @Inject constructor(
     // CLASS METHODS
     //
     ///////////////////////////////
+
     fun getAirports() {
         Timber.d("getAirports()")
 
@@ -221,4 +215,39 @@ class FlightViewModel @Inject constructor(
             updateOperator(operator)
         }
     }
+    fun searchAirports(query: String): List<AirportSearch>? =
+        runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+            Timber.d("searchAirports() | with query: $query")
+            repository.searchAirportById(query).airports
+        }
+
+    private fun getAirportByOmniSearch(airportID: String): List<AirportSearch>? =
+        runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+            Timber.d("getAirportByOmniSearch() | airport ID: $airportID")
+            repository.omniSearchAirport(airportID).airportsOmniData
+        }
+
+
+    fun getAirportById(airportID: String): AirportModel =
+        runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+            Timber.d("getAirportById() | airport ID: $airportID")
+            repository.getAirportById(airportID).toModel()
+        }
+
+
+    private fun getAirportSearchModelList(airportSearchList: List<AirportSearch>): List<AirportSearchModel> =
+        runCatching {
+            buildSet {
+                airportSearchList.forEach {
+                    add(it.toModel())
+                }
+            }.toList()
+        }
+            .onFailure {
+                it.printStackTrace()
+                Timber.e("getAirportSearchModelList() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+            }
+            .getOrElse {
+                emptyList()
+            }
 }

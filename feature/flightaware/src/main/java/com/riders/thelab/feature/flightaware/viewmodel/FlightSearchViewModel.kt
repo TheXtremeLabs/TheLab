@@ -1,10 +1,9 @@
-package com.riders.thelab.feature.flightaware.ui.airport
+package com.riders.thelab.feature.flightaware.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
@@ -26,29 +25,62 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class AirportSearchViewModel @Inject constructor(
+class FlightSearchViewModel @Inject constructor(
     private val repository: IRepository
-) : ViewModel() {
+) : BaseFlightViewModel() {
 
     //////////////////////////////////////////
     // Composable states
     //////////////////////////////////////////
-    // var airports: SnapshotStateList<AirportModel> = mutableStateListOf()
-
-    var airportQuery: String by mutableStateOf("")
+    var departureAirportQuery by mutableStateOf("")
         private set
 
-    var airportStateFlow: StateFlow<List<AirportSearchModel>> =
-        snapshotFlow { airportQuery }
+    var departureAirportStateFlow: StateFlow<List<AirportSearchModel>> =
+        snapshotFlow { departureAirportQuery }
+            .debounce(750)
+            .distinctUntilChanged()
+            .mapLatest { latestDepartureAirportInput ->
+                if (!hasInternetConnection) {
+                    Timber.e("Internet connection not available. Make sure that you are connected to the internet to proceed to the search")
+                    return@mapLatest emptyList()
+                }
+                if (latestDepartureAirportInput.isEmpty()) {
+                    Timber.e("Input is empty. Cannot execute the query.")
+                    return@mapLatest emptyList()
+                }
+
+                Timber.d("departureAirportStateFlow | mapLatest | it: $latestDepartureAirportInput")
+                val airportSearchList = getAirportByOmniSearch(latestDepartureAirportInput)
+                Timber.d("result: $airportSearchList")
+
+                if (airportSearchList.isNullOrEmpty()) {
+                    return@mapLatest emptyList()
+                }
+
+                getAirportSearchModelList(airportSearchList)
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
+
+    var arrivalAirportQuery: String by mutableStateOf("")
+        private set
+    var arrivalAirportStateFlow: StateFlow<List<AirportSearchModel>> =
+        snapshotFlow { arrivalAirportQuery }
             .debounce(750)
             .distinctUntilChanged()
             .mapLatest { latestInput ->
+                if (!hasInternetConnection) {
+                    Timber.e("Internet connection not available. Make sure that you are connected to the internet to proceed to the search")
+                    return@mapLatest emptyList()
+                }
                 if (latestInput.isEmpty()) {
                     return@mapLatest emptyList()
                 }
-                updateIsQueryLoading(true)
 
-                Timber.d("departureAirportStateFlow | mapLatest | it: ${latestInput}")
+                Timber.d("arrivalAirportStateFlow | mapLatest | it: $latestInput")
                 val airportSearchList = getAirportByOmniSearch(latestInput)
                 Timber.d("result: $airportSearchList")
 
@@ -57,44 +89,27 @@ class AirportSearchViewModel @Inject constructor(
                 }
 
                 getAirportSearchModelList(airportSearchList)
-                    .also { updateIsQueryLoading(false) }
-            }
-            .stateIn(
+            }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = emptyList()
             )
 
-    var isQueryLoading: Boolean by mutableStateOf(false)
-        private set
 
-
-    //////////////////////////////////////////
-    // Coroutines
-    //////////////////////////////////////////
+    /////////////////////////////////////
+    // Coroutine
+    /////////////////////////////////////
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
-            throwable.printStackTrace()
-            Timber.e(throwable.message)
-
-            updateIsQueryLoading(false)
+            Timber.e("CoroutineExceptionHandler | Error caught with message: ${throwable.message}")
         }
 
 
-    fun updateIsQueryLoading(loading: Boolean) {
-        this.isQueryLoading = loading
-    }
-
-    fun updateAirportQuery(airportQuery: String) {
-        this.airportQuery = airportQuery
-    }
-
-    fun searchAirports(query: String): List<AirportSearch>? =
-        runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            Timber.d("searchAirports() | with query: $query")
-            repository.searchAirportById(query).airports
-        }
-
+    ///////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    ///////////////////////////////
     private fun getAirportByOmniSearch(airportID: String): List<AirportSearch>? =
         runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             Timber.d("getAirportByOmniSearch() | airport ID: $airportID")
@@ -124,4 +139,5 @@ class AirportSearchViewModel @Inject constructor(
             .getOrElse {
                 emptyList()
             }
+
 }
