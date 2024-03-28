@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotools.types.text.NotBlankString
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.Query
 
 interface IApi {
 
@@ -91,6 +90,21 @@ interface IApi {
         endDate: String? = null,
         type: String? = null
     ): AirportFlightsResponse
+
+    /**
+     * This endpoint is quite similar to the FindFlight operator in prior versions of AeroAPI.
+     * Results may include both non-stop and one-stop flights.
+     * Note that because the returned flights can include multiple legs,
+     * the response format differs from most other flight-returning endpoints.
+     * If the optional start or end query parameters are not provided start will default to 1 day in the future,
+     * while end will default to 7 days in the past relative to the time the query is made.
+     */
+    suspend fun searchFlightByRoute(
+        departureAirportCode: NotBlankString,
+        arrivalAirportCode: NotBlankString,
+        maxPages: Int = 1,
+        cursor: String? = null
+    ): SearchFlightResponse
 
     suspend fun getOperators(maxPages: Int = 1, cursor: String? = null): OperatorResponse
     suspend fun getOperatorById(operatorID: String): Operator

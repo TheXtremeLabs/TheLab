@@ -139,6 +139,36 @@ interface FlightApiService {
         @Query("type") type: String? = null
     ): AirportFlightsResponse
 
+    // TODO: Create model
+    /**
+     * This endpoint is quite similar to the FindFlight operator in prior versions of AeroAPI.
+     * Results may include both non-stop and one-stop flights.
+     * Note that because the returned flights can include multiple legs,
+     * the response format differs from most other flight-returning endpoints.
+     * If the optional start or end query parameters are not provided start will default to 1 day in the future,
+     * while end will default to 7 days in the past relative to the time the query is made.
+     */
+    @GET("/airports/{id}/flights/to/{dest_id}")
+    suspend fun searchFlightByRoute(
+        @Query("id") departureAirportCode: NotBlankString,
+        @Query("dest_id") arrivalAirportCode: NotBlankString,
+        @Query("max_pages") maxPages: Int = 1,
+        @Query("cursor") cursor: String? = null
+    ): SearchFlightResponse
+
+    // TODO: Create model
+    /**
+     * Returns a list of airports located within a given distance from the given location.
+     */
+    @GET("/airports/nearby")
+    suspend fun getAirportNearBy(
+        @Query("latitude") departureAirportCode: NotBlankString,
+        @Query("longitude") arrivalAirportCode: NotBlankString,
+        @Query("radius") radius: Int,
+        @Query("max_pages") maxPages: Int = 1,
+        @Query("cursor") cursor: String? = null
+    ): SearchFlightResponse
+
     @GET("operators")
     suspend fun getOperators(
         @Query("max_pages") maxPages: Int = 1,
@@ -198,7 +228,7 @@ interface FlightApiService {
      * -latlong "MINLAT MINLON MAXLAT MAXLON"
      * -filter {ga|airline}
      */
-    @GET("/flights/{id}/map")
+    @GET("/flights/search")
     suspend fun searchFlight(
         @Query("query") query: NotBlankString,
         @Query("max_pages") maxPages: Int = 1,
