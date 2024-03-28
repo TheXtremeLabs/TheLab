@@ -26,8 +26,7 @@ class PreviewProviderAirportSearch : PreviewParameterProvider<AirportSearchModel
             AirportSearchModel(
                 name = NotBlankString.create("María Dolores (Los Angeles)"),
                 description = NotBlankString.create("María Dolores (Los Angeles)"),
-                icaoCode = NotBlankString.create("SCGE"),
-                iataCode = NotBlankString.create("LSQ")
+                icaoCode = NotBlankString.create("SCGE")
             ),
             AirportSearchModel(
                 name = NotBlankString.create("Los Cabos Int'l (Los Cabos)"),
@@ -64,8 +63,7 @@ class PreviewProviderAirports : PreviewParameterProvider<List<AirportSearchModel
                 AirportSearchModel(
                     name = NotBlankString.create("María Dolores (Los Angeles)"),
                     description = NotBlankString.create("María Dolores (Los Angeles)"),
-                    icaoCode = NotBlankString.create("SCGE"),
-                    iataCode = NotBlankString.create("LSQ")
+                    icaoCode = NotBlankString.create("SCGE")
                 ),
                 AirportSearchModel(
                     name = NotBlankString.create("Los Cabos Int'l (Los Cabos)"),

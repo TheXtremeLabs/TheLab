@@ -27,7 +27,6 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
 
 
 ///////////////////////////////////////
@@ -36,7 +35,7 @@ import kotools.types.experimental.ExperimentalKotoolsTypesApi
 //
 ///////////////////////////////////////
 @Composable
-fun AirportSearchItem(item: AirportSearchModel) {
+fun AirportSearchItemForSearchScreen(item: AirportSearchModel) {
     val context = LocalContext.current
 
     TheLabTheme {
@@ -128,17 +127,113 @@ fun AirportSearchItem(item: AirportSearchModel) {
     }
 }
 
+@Composable
+fun AirportSearchItemForSuggestion(item: AirportSearchModel) {
+    val context = LocalContext.current
+
+    TheLabTheme {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            onClick = {
+                item.icaoCode?.let {
+                    (context as AirportSearchActivity).launchAirportDetail(it.toString())
+                }
+            },
+            colors = CardDefaults.cardColors(containerColor = cardBackgroundColor),
+            shape = RoundedCornerShape(0.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text(
+                    modifier = Modifier.weight(3f),
+                    text = item.name.toString(),
+                    color = Color.White,
+                    maxLines = 2
+                )
+
+                Row(
+                    modifier = Modifier.weight(2f),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+
+                    // IATA CODE
+                    if (null != item.iataCode) {
+                        Box(
+                            modifier = Modifier.border(
+                                width = 2.dp,
+                                color = searchTextColor,
+                                shape = RoundedCornerShape(4.dp)
+                            ), contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(4.dp),
+                                text = item.iataCode.toString(),
+                                fontSize = 14.sp,
+                                color = searchTextColor
+                            )
+                        }
+                    }
+
+                    // ICAO CODE
+                    if (null != item.icaoCode) {
+                        Box(
+                            modifier = Modifier.border(
+                                width = 2.dp,
+                                color = searchTextColor,
+                                shape = RoundedCornerShape(4.dp)
+                            ), contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(4.dp),
+                                text = item.icaoCode.toString(),
+                                fontSize = 14.sp,
+                                color = searchTextColor
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AirportSearchItem(item: AirportSearchModel, isSuggestion: Boolean) {
+    if (!isSuggestion) {
+        AirportSearchItemForSearchScreen(item = item)
+    } else {
+        AirportSearchItemForSuggestion(item = item)
+    }
+}
+
 
 ///////////////////////////////////////
 //
 // PREVIEWS
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalKotoolsTypesApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewAirportSearchItem(@PreviewParameter(PreviewProviderAirportSearch::class) item: AirportSearchModel) {
+private fun PreviewAirportSearchItemForSearchScreen(@PreviewParameter(PreviewProviderAirportSearch::class) item: AirportSearchModel) {
     TheLabTheme {
-        AirportSearchItem(item)
+        AirportSearchItemForSearchScreen(item)
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewAirportSearchItemForSuggestion(@PreviewParameter(PreviewProviderAirportSearch::class) item: AirportSearchModel) {
+    TheLabTheme {
+        AirportSearchItemForSuggestion(item)
     }
 }
