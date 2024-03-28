@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,8 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
+import com.riders.thelab.feature.flightaware.ui.main.FlightMainActivity
+import timber.log.Timber
 
 
 ///////////////////////////////////////
@@ -129,18 +132,11 @@ fun AirportSearchItemForSearchScreen(item: AirportSearchModel) {
 
 @Composable
 fun AirportSearchItemForSuggestion(item: AirportSearchModel) {
-    val context = LocalContext.current
-
     TheLabTheme {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            onClick = {
-                item.icaoCode?.let {
-                    (context as AirportSearchActivity).launchAirportDetail(it.toString())
-                }
-            },
+                .padding(PaddingValues(0.dp)),
             colors = CardDefaults.cardColors(containerColor = cardBackgroundColor),
             shape = RoundedCornerShape(0.dp)
         ) {
@@ -164,7 +160,6 @@ fun AirportSearchItemForSuggestion(item: AirportSearchModel) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
 
                     // IATA CODE
                     if (null != item.iataCode) {
