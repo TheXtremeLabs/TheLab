@@ -47,6 +47,16 @@ object UIManager {
 
 
     /**
+     * show the keyboard
+     *
+     * @param view
+     */
+    fun showKeyboard(context: Context, view: View) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, 0)
+    }
+
+    /**
      * Hide the keyboard
      *
      * @param view

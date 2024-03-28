@@ -18,11 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_tertiaryContainer
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
 import timber.log.Timber
 import java.util.Locale
@@ -33,13 +35,17 @@ fun LabTabRow(
     items: List<String>,
     modifier: Modifier = Modifier,
     tabWidth: Dp = 150.dp,
-    indicatorColor:Color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
-    backgroundColor:Color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
+    indicatorColor: Color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
+    backgroundColor: Color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
     selectedTextColor: Color = if (!isSystemInDarkTheme()) md_theme_dark_primary else md_theme_light_primary,
     unselectedTextColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
+    hasCustomShape: Boolean = false,
+    shape: Shape = if (!hasCustomShape) RoundedCornerShape(16.dp) else RoundedCornerShape(
+        topStart = 24.dp,
+        topEnd = 24.dp
+    ),
     onClick: (index: Int) -> Unit
 ) {
-    val shape = RoundedCornerShape(16.dp)
     /* animateDpAsState is used to animate the tab indicator offset when the selected tab is changed */
     val indicatorOffset: Dp by animateDpAsState(
         targetValue = tabWidth * selectedItemIndex,
@@ -51,15 +57,15 @@ fun LabTabRow(
         Box(
             modifier = modifier
                 .clip(shape)
-                .background(Color.Transparent)
+                .background(backgroundColor)
                 .height(intrinsicSize = IntrinsicSize.Min),
         ) {
             LabTabIndicator(
                 indicatorWidth = tabWidth,
                 indicatorOffset = indicatorOffset,
                 indicatorColor = indicatorColor,
-                backgroundColor = backgroundColor,
-                shape = shape
+                shape = shape,
+                hasCustomShape = hasCustomShape
             )
 
             Row(
@@ -99,7 +105,34 @@ private fun PreviewLabTabRow() {
                 "details".uppercase(Locale.getDefault()),
                 "instructions".uppercase(Locale.getDefault())
             ),
-            onClick = {}
+            onClick = {},
+            backgroundColor = Color.Black,
+            indicatorColor = md_theme_dark_primary,
+            selectedTextColor = Color.White,
+            unselectedTextColor = md_theme_dark_tertiaryContainer,
+            hasCustomShape = false
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewLabTabRowWithCustomShape() {
+    val selectedIndex = remember { mutableIntStateOf(1) }
+
+    TheLabTheme {
+        LabTabRow(
+            selectedItemIndex = selectedIndex.intValue,
+            items = listOf(
+                "details".uppercase(Locale.getDefault()),
+                "instructions".uppercase(Locale.getDefault())
+            ),
+            onClick = {},
+            backgroundColor = Color.Black,
+            indicatorColor = md_theme_dark_primary,
+            selectedTextColor = Color.White,
+            unselectedTextColor = md_theme_dark_tertiaryContainer,
+            hasCustomShape = true
         )
     }
 }
