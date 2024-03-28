@@ -307,6 +307,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
 fun <T : Any> LabHorizontalViewPagerGeneric(
     pagerState: PagerState,
     items: List<T>,
+    modifier: Modifier = Modifier,
     pageCount: Int = items.size,
     viewPagerDotVisibility: Boolean = false,
     updateViewPagerExpanded: (Boolean) -> Unit = {},
@@ -343,7 +344,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
 
     TheLabTheme {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
         ) {
