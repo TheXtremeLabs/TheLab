@@ -7,7 +7,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text2.input.rememberTextFieldState
-import androidx.compose.foundation.text2.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
@@ -31,9 +30,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-// TODO : Implement splashscreen palette
-// IMPORTANT : add some blue like the flight aware logo
-
 @AndroidEntryPoint
 class FlightMainActivity : BaseComponentActivity() {
 
@@ -54,21 +50,18 @@ class FlightMainActivity : BaseComponentActivity() {
 
         mLabNetworkManager = LabNetworkManager
             .getInstance(this, lifecycle)
-            .also { mViewModel.observeNetworkState(it) }
+            .also {
+                mViewModel.observeNetworkState(it)
+                mFlightSearchViewModel.observeNetworkState(it)
+            }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
-                    // Register lifecycle for viewModel
-                    mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
-
                     var searchType by remember { mutableIntStateOf(0) }
 
                     val departureAirportsFlow by mFlightSearchViewModel.departureAirportStateFlow.collectAsStateWithLifecycle()
                     val arrivalAirportsFlow by mFlightSearchViewModel.arrivalAirportStateFlow.collectAsStateWithLifecycle()
-
-                    val departureTextFieldState = rememberTextFieldState()
-                    val arrivalTextFieldState = rememberTextFieldState()
 
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
@@ -80,38 +73,50 @@ class FlightMainActivity : BaseComponentActivity() {
                                 hasConnection = mViewModel.hasInternetConnection,
                                 onSearchCategorySelected = {
                                     searchType = it
+                                    if (0 == it && mViewModel.departureDropdownExpanded) {
+                                        mViewModel.updateDepartureExpanded(false)
+                                    }
                                 },
-                                departureTextFieldState = departureTextFieldState,
-                                arrivalTextFieldState = arrivalTextFieldState,
-                                departureAirport = { departureAirport ->
-                                    Timber.d("FlightMainContent | departureAirport : $departureAirport")
-                                    // mViewModel.updateDepartureAirport(departureAirport)
-                                    // Timber.d("FlightMainContent | mViewModel.departureAirport.value : ${mViewModel.departureAirport}")
-                                },
-                                arrivalAirport = { arrivalAirport ->
-                                    Timber.d("FlightMainContent | arrivalAirport : $arrivalAirport")
-                                },
+                                onUpdateFlightNumber = mFlightSearchViewModel::updateFlightNumber,
                                 onSearch = {
                                     when (searchType) {
-                                        0 -> {
-                                            //  mViewModel.getAirport()
-                                        }
-
+                                        0 -> mFlightSearchViewModel.searchFlightByFlightNumber()
                                         1 -> {
-                                            // mViewModel.getOperator()
+                                            if(null == mViewModel.departureAirportOptionSelected?.icaoCode ) {
+                                                return@FlightMainContent
+                                            }
+                                            if(null == mViewModel.arrivalAirportOptionSelected?.icaoCode) {
+                                                return@FlightMainContent
+                                            }
+
+                                            mFlightSearchViewModel.searchFlightByRoute(
+                                                departureAirportCode = mViewModel.departureAirportOptionSelected!!.icaoCode!!.toString(),
+                                                arrivalAirportCode = mViewModel.arrivalAirportOptionSelected!!.icaoCode!!.toString()
+                                            )
                                         }
                                     }
                                 },
                                 departureExpanded = mViewModel.departureDropdownExpanded || departureAirportsFlow.isNotEmpty(),
                                 onDepartureExpanded = mViewModel::updateDepartureExpanded,
-                                onDepartureIconClicked = { },
-                                departureSelectedText = mViewModel.departureAirportSelectedText
-                                    ?: "",
-                                onDepartureSelectedTextChanged = mViewModel::updateDepartureAirportSelectedText,
-                                departureSuggestions = departureAirportsFlow
+                                departureQuery = mFlightSearchViewModel.departureAirportQuery,
+                                onUpdateDepartureQuery = mFlightSearchViewModel::updateDepartureAirportQuery,
+                                departureSuggestions = departureAirportsFlow,
+                                onDepartureOptionsSelected = {
+                                    mViewModel.updateDepartureAirportOption(it)
+                                    mFlightSearchViewModel.isOptionSelectedByUser = true
+                                    mFlightSearchViewModel.updateDepartureAirportQuery("${it.name.toString()} ${if (null == it.iataCode) "" else "(${it.iataCode?.toString()})"}")
+                                    mViewModel.updateDepartureExpanded(false)
+                                },
+                                arrivalExpanded = mViewModel.arrivalDropdownExpanded || departureAirportsFlow.isNotEmpty(),
+                                onArrivalExpanded = mViewModel::updateArrivalExpanded,
+                                arrivalQuery = mFlightSearchViewModel.arrivalAirportQuery,
+                                onUpdateArrivalQuery = mFlightSearchViewModel::updateArrivalAirportQuery,
+                                arrivalSuggestions = arrivalAirportsFlow
                             ) {
-                                mViewModel::updateDepartureAirportOption
-                                departureTextFieldState.setTextAndPlaceCursorAtEnd("${it.name.toString()} (${it.iataCode.toString()})")
+                                mViewModel.updateArrivalAirportOption(it)
+                                mFlightSearchViewModel.isOptionSelectedByUser = true
+                                mFlightSearchViewModel.updateArrivalAirportQuery("${it.name.toString()} ${if (null == it.iataCode) "" else "(${it.iataCode?.toString()})"}")
+                                mViewModel.updateArrivalExpanded(false)
                             }
                         }
                     }

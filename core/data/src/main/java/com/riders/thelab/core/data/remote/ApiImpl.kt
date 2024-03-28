@@ -342,6 +342,13 @@ class ApiImpl @Inject constructor(
         type
     )
 
+    override suspend fun searchFlightByRoute(
+        departureAirportCode: NotBlankString,
+        arrivalAirportCode: NotBlankString,
+        maxPages: Int,
+        cursor: String?
+    ): SearchFlightResponse = mFlightApiService.searchFlightByRoute(departureAirportCode, arrivalAirportCode, maxPages, cursor)
+
     override suspend fun getOperators(maxPages: Int, cursor: String?): OperatorResponse =
         mFlightApiService.getOperators(maxPages, cursor)
 
