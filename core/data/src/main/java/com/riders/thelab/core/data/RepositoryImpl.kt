@@ -245,6 +245,14 @@ class RepositoryImpl @Inject constructor(
     ): AirportFlightsResponse =
         mApiImpl.getAirportFlightsById(airportID, maxPages, cursor, startDate, endDate, type)
 
+    override suspend fun searchFlightByRoute(
+        departureAirportCode: NotBlankString,
+        arrivalAirportCode: NotBlankString,
+        maxPages: Int,
+        cursor: String?
+    ): SearchFlightResponse =
+        mApiImpl.searchFlightByRoute(departureAirportCode, arrivalAirportCode, maxPages, cursor)
+
     override suspend fun getOperators(maxPages: Int, cursor: String?): OperatorResponse =
         mApiImpl.getOperators(maxPages, cursor)
 
