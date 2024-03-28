@@ -246,7 +246,7 @@ fun AirportSearchContent(
                     }
                 }
 
-                items(items = airportList) { item -> AirportSearchItem(item = item) }
+                items(items = airportList) { item -> AirportSearchItem(item = item,isSuggestion = false) }
             }
 
             AnimatedVisibility(modifier = Modifier.fillMaxWidth(), visible = isQueryLoading) {
