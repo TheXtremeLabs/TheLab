@@ -148,10 +148,10 @@ interface FlightApiService {
      * If the optional start or end query parameters are not provided start will default to 1 day in the future,
      * while end will default to 7 days in the past relative to the time the query is made.
      */
-    @GET("/airports/{id}/flights/to/{dest_id}")
+    @GET("airports/{id}/flights/to/{dest_id}")
     suspend fun searchFlightByRoute(
-        @Query("id") departureAirportCode: NotBlankString,
-        @Query("dest_id") arrivalAirportCode: NotBlankString,
+        @Path("id") departureAirportCode: NotBlankString,
+        @Path("dest_id") arrivalAirportCode: NotBlankString,
         @Query("max_pages") maxPages: Int = 1,
         @Query("cursor") cursor: String? = null
     ): SearchFlightResponse
@@ -160,7 +160,7 @@ interface FlightApiService {
     /**
      * Returns a list of airports located within a given distance from the given location.
      */
-    @GET("/airports/nearby")
+    @GET("airports/nearby")
     suspend fun getAirportNearBy(
         @Query("latitude") departureAirportCode: NotBlankString,
         @Query("longitude") arrivalAirportCode: NotBlankString,
@@ -196,7 +196,7 @@ interface FlightApiService {
      * Data from up to 10 days ago can be obtained.
      * If looking for older data, please use the corresponding historical endpoint.
      */
-    @GET("/flights/{id}/map")
+    @GET("flights/{id}/map")
     suspend fun getFlightOnMap(
         @Path("id") flightID: NotBlankString,
         @Query("height") height: Int = 1,
@@ -228,7 +228,7 @@ interface FlightApiService {
      * -latlong "MINLAT MINLON MAXLAT MAXLON"
      * -filter {ga|airline}
      */
-    @GET("/flights/search")
+    @GET("flights/search")
     suspend fun searchFlight(
         @Query("query") query: NotBlankString,
         @Query("max_pages") maxPages: Int = 1,
