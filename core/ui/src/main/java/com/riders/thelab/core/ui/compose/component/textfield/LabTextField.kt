@@ -29,6 +29,7 @@ import androidx.compose.foundation.text2.input.TextFieldLineLimits
 import androidx.compose.foundation.text2.input.TextFieldState
 import androidx.compose.foundation.text2.input.rememberTextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -113,11 +114,6 @@ fun LabTextField(
             modifier = Modifier
                 .then(modifier)
                 .fillMaxWidth()
-                .onGloballyPositioned { coordinates ->
-                    //This value is used to assign to the DropDown the same width
-                    textFieldSize = coordinates.size.toSize()
-                }
-                .bringIntoViewRequester(bringIntoViewRequester)
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     Timber.d("Recomposition | BasicTextField2.onFocusChanged | onFocusChanged: $it")
@@ -205,23 +201,21 @@ fun LabTextField(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LabTextField2(
+fun LabOutlinedTextField(
     modifier: Modifier,
     onOutsideBoundariesClicked: Boolean,
-    textFieldState: TextFieldState,
+    query: String,
+    onUpdateQuery: (String) -> Unit,
     placeholder: String,
     label: String,
-    hasBorders: Boolean = false,
     leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable (() -> Unit)? = null,
     focusedBorderColor: Color = Color.Unspecified,
     unfocusedBorderColor: Color = Color.Unspecified,
     focusedContainerColor: Color = Color.Transparent,
-    unfocusedContainerColor: Color = Color.Transparent,
-    focusedIndicatorColor: Color = Color.Transparent,
-    unfocusedIndicatorColor: Color = Color.Transparent
+    unfocusedContainerColor: Color = Color.Transparent
 ) {
     val context = LocalContext.current
     val view = LocalView.current
@@ -241,14 +235,10 @@ fun LabTextField2(
 
 
     TheLabTheme {
-        BasicTextField2(
+        OutlinedTextField(
             modifier = Modifier
+                .then(modifier)
                 .fillMaxWidth()
-                /*.onGloballyPositioned { coordinates ->
-                    //This value is used to assign to the DropDown the same width
-                    textFieldSize = coordinates.size.toSize()
-                }
-                .bringIntoViewRequester(bringIntoViewRequester)
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     Timber.d("Recomposition | BasicTextField2.onFocusChanged | onFocusChanged: $it")
@@ -256,17 +246,11 @@ fun LabTextField2(
                     if (isFieldFocused != it.isFocused) {
                         isFieldFocused = it.isFocused
                         if (!it.isFocused) {
-//                                keyboardController?.hide()
                             Timber.d("Recomposition | BasicTextField2.onFocusChanged | hideKeyboard")
                             UIManager.hideKeyboard(context = context, view = view)
                         } else {
                             Timber.d("Recomposition | BasicTextField2.onFocusChanged | show keyboard")
-                            scope.launch {
-                                awaitFrame()
-                                focusRequester.requestFocus()
-                            }
                             UIManager.showKeyboard(context = context, view = view)
-                            // keyboardController?.show()
                         }
                     }
                 }
@@ -276,85 +260,34 @@ fun LabTextField2(
                             bringIntoViewRequester.bringIntoView()
                         }
                     }
-                }*/
+                }
                 .indication(
                     interactionSource = interactionSource,
                     indication = LocalIndication.current
-                )
-                .then(modifier),
-            state = textFieldState,
-            textStyle = TextStyle(
-                textAlign = TextAlign.Justify,
-                color = Color.LightGray
-            ),
+                ),
+            value = query,
+            onValueChange = onUpdateQuery,
+            textStyle = TextStyle(textAlign = TextAlign.Justify, color = Color.LightGray),
+            placeholder = { Text(text = placeholder, color = Color.LightGray) },
+            label = { Text(text = label, color = Color.LightGray) },
             interactionSource = interactionSource,
-            keyboardActions = KeyboardActions(),
-            lineLimits = TextFieldLineLimits.SingleLine,
-            decorator = { innerTextField ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .apply {
-                            if (hasBorders) {
-                                check(Color.Unspecified != focusedBorderColor) {
-                                    "You must specify a focused border color"
-                                }
-
-                                check(Color.Unspecified != unfocusedBorderColor) {
-                                    "You must specify an unfocused border color"
-                                }
-
-                                val borderColorAnimation by animateColorAsState(
-                                    targetValue = if (!isFieldFocused) unfocusedBorderColor.copy(
-                                        alpha = .58f
-                                    ) else focusedBorderColor.copy(
-                                        alpha = .75f
-                                    ),
-                                    label = "border animation animation"
-                                )
-
-                                this.border(
-                                    width = 2.dp,
-                                    color = borderColorAnimation,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                            }
-                        },
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    OutlinedTextFieldDefaults.DecorationBox(
-                        value = textFieldState.text.toString(),
-                        placeholder = { Text(text = placeholder, color = Color.LightGray) },
-                        label = { Text(text = label, color = Color.LightGray) },
-                        interactionSource = interactionSource,
-                        enabled = true,
-                        singleLine = true,
-                        visualTransformation = VisualTransformation.None,
-                        leadingIcon = leadingContent,
-                        trailingIcon = trailingContent,
-                        innerTextField = {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                innerTextField.invoke()
-                            }
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = focusedContainerColor,
-                            unfocusedContainerColor = unfocusedContainerColor,
-                            focusedBorderColor = focusedBorderColor,
-                            unfocusedBorderColor = unfocusedBorderColor,
-                            /*focusedContainerColor = focusedContainerColor,
-                            unfocusedContainerColor = unfocusedContainerColor,
-                            focusedIndicatorColor = focusedIndicatorColor,
-                            unfocusedIndicatorColor = unfocusedIndicatorColor*/
-                        )
-                    )
-                }
-            },
-            readOnly = true,
-            cursorBrush = SolidColor(Color.LightGray)
+            enabled = true,
+            singleLine = true,
+            leadingIcon = leadingContent,
+            trailingIcon = trailingContent,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrect = false,
+                keyboardType = KeyboardType.Text
+            ),
+            visualTransformation = VisualTransformation.None,
+            readOnly = false,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = focusedContainerColor,
+                unfocusedContainerColor = unfocusedContainerColor,
+                focusedBorderColor = focusedBorderColor,
+                unfocusedBorderColor = unfocusedBorderColor
+            )
         )
     }
 
@@ -395,6 +328,143 @@ fun LabTextField2(
         if (onOutsideBoundariesClicked) {
             focusRequester.freeFocus()
             focusManager.clearFocus()
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun LabTextField2(
+    modifier: Modifier,
+    onOutsideBoundariesClicked: Boolean,
+    textFieldState: TextFieldState,
+    placeholder: String,
+    label: String,
+    hasBorders: Boolean = false,
+    leadingContent: @Composable (() -> Unit)? = null,
+    trailingContent: @Composable (() -> Unit)? = null,
+    focusedBorderColor: Color = Color.Unspecified,
+    unfocusedBorderColor: Color = Color.Unspecified,
+    focusedContainerColor: Color = Color.Transparent,
+    unfocusedContainerColor: Color = Color.Transparent,
+    focusedIndicatorColor: Color = Color.Transparent,
+    unfocusedIndicatorColor: Color = Color.Transparent
+) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val keyboardState = keyboardAsState()
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val isFocus by interactionSource.collectIsFocusedAsState()
+
+    TheLabTheme {
+        BasicTextField2(
+            modifier = Modifier
+                .fillMaxWidth()
+                .indication(
+                    interactionSource = interactionSource,
+                    indication = LocalIndication.current
+                )
+                .then(modifier),
+            state = textFieldState,
+            textStyle = TextStyle(
+                textAlign = TextAlign.Justify,
+                color = Color.LightGray
+            ),
+            interactionSource = interactionSource,
+            keyboardActions = KeyboardActions(
+                onDone = { keyboardController?.hide() }
+            ),
+            lineLimits = TextFieldLineLimits.SingleLine,
+            decorator = { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .apply {
+                            if (hasBorders) {
+                                check(Color.Unspecified != focusedBorderColor) {
+                                    "You must specify a focused border color"
+                                }
+
+                                check(Color.Unspecified != unfocusedBorderColor) {
+                                    "You must specify an unfocused border color"
+                                }
+
+                                val borderColorAnimation by animateColorAsState(
+                                    targetValue = if (!isFocus) unfocusedBorderColor.copy(
+                                        alpha = .58f
+                                    ) else focusedBorderColor.copy(
+                                        alpha = .75f
+                                    ),
+                                    label = "border animation animation"
+                                )
+
+                                this.border(
+                                    width = 2.dp,
+                                    color = borderColorAnimation,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                            }
+                        },
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    OutlinedTextFieldDefaults.DecorationBox(
+                        value = textFieldState.text.toString(),
+                        placeholder = { Text(text = placeholder, color = Color.LightGray) },
+                        label = { Text(text = label, color = Color.LightGray) },
+                        interactionSource = interactionSource,
+                        enabled = true,
+                        singleLine = true,
+                        visualTransformation = VisualTransformation.None,
+                        leadingIcon = leadingContent,
+                        trailingIcon = trailingContent,
+                        innerTextField = {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                innerTextField.invoke()
+                            }
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = focusedContainerColor,
+                            unfocusedContainerColor = unfocusedContainerColor,
+                            focusedBorderColor = focusedBorderColor,
+                            unfocusedBorderColor = unfocusedBorderColor
+                        )
+                    )
+                }
+            },
+            readOnly = true,
+            cursorBrush = SolidColor(Color.LightGray)
+        )
+    }
+
+    LaunchedEffect(keyboardState) {
+        Timber.d("LaunchedEffect | keyboardState shown : ${keyboardState.value} | coroutineContext: ${this.coroutineContext}")
+        if (!keyboardState.value) {
+            Timber.d("KeyboardState | should show keyboard ?")
+        } else {
+            //show fab button
+        }
+    }
+
+    LaunchedEffect(interactionSource) {
+        Timber.d("LaunchedEffect | interactionSource: $interactionSource | coroutineContext: ${this.coroutineContext}")
+
+        if (isPressed) {
+            Timber.d("Pressed")
+        }
+        if (isFocus) {
+            Timber.d("Focused")
+        }
+    }
+
+    LaunchedEffect(onOutsideBoundariesClicked) {
+        Timber.d("LaunchedEffect | onOutsideBoundariesClicked: $onOutsideBoundariesClicked | coroutineContext: ${this.coroutineContext}")
+        if (onOutsideBoundariesClicked) {
+            /*focusRequester.freeFocus()
+            focusManager.clearFocus()*/
         }
     }
 }
@@ -571,6 +641,21 @@ fun LabTextField2(
         if (isPressed) {
             Timber.d("Pressed")
         }
+        if (isFocus) {
+            Timber.d("Focused")
+        }
+    }
+
+    LaunchedEffect(isPressed) {
+        Timber.d("LaunchedEffect | isPressed: $isPressed | coroutineContext: ${this.coroutineContext}")
+
+        if (isPressed) {
+            Timber.d("Pressed")
+        }
+    }
+
+    LaunchedEffect(isFocus) {
+        Timber.d("LaunchedEffect | isFocus: $isFocus | coroutineContext: ${this.coroutineContext}")
         if (isFocus) {
             Timber.d("Focused")
         }
