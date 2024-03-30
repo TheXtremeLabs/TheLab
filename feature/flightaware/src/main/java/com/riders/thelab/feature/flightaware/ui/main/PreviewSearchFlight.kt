@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text2.input.clearText
 import androidx.compose.foundation.text2.input.rememberTextFieldState
-import androidx.compose.foundation.text2.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.text2.input.textAsFlow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AirplanemodeActive
@@ -45,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.dropdown.LabDropdownMenu2
-import com.riders.thelab.core.ui.compose.component.textfield.LabTextField2
+import com.riders.thelab.core.ui.compose.component.textfield.LabOutlinedTextField
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.R
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
@@ -63,7 +62,11 @@ import timber.log.Timber
 ///////////////////////////////////////
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SearchFlightByCode(onUpdateFlightNumber: (String) -> Unit, onSearch: () -> Unit) {
+fun SearchFlightByCode(
+    flightNumberQuery: String,
+    onUpdateFlightNumber: (String) -> Unit,
+    onSearch: () -> Unit
+) {
 
     val textFieldState = rememberTextFieldState()
     val textFieldTextFlow by textFieldState.textAsFlow().collectAsState(initial = "")
@@ -94,10 +97,11 @@ fun SearchFlightByCode(onUpdateFlightNumber: (String) -> Unit, onSearch: () -> U
                         .fillMaxWidth()
                         .height(56.dp), contentAlignment = Alignment.CenterStart
                 ) {
-                    LabTextField2(
+                    LabOutlinedTextField(
                         modifier = Modifier.fillMaxSize(),
                         onOutsideBoundariesClicked = false,
-                        textFieldState = textFieldState,
+                        query = flightNumberQuery,
+                        onUpdateQuery = onUpdateFlightNumber,
                         placeholder = stringResource(id = R.string.search_flight_by_number),
                         label = stringResource(id = R.string.placeholder_flight_number),
                         leadingContent = {
@@ -125,11 +129,11 @@ fun SearchFlightByCode(onUpdateFlightNumber: (String) -> Unit, onSearch: () -> U
                                 }
                             }
                         },
-                        focusedIndicatorColor = Color.LightGray,
-                        unfocusedIndicatorColor = Color.Transparent,
+                        /*focusedIndicatorColor = Color.LightGray,
+                        unfocusedIndicatorColor = Color.Transparent,*/
                         focusedContainerColor = backgroundColor,
                         unfocusedContainerColor = cardBackgroundColor,
-                        hasBorders = true,
+//                        hasBorders = true,
                         focusedBorderColor = searchTextColor,
                         unfocusedBorderColor = textColor
                     )
@@ -144,7 +148,10 @@ fun SearchFlightByCode(onUpdateFlightNumber: (String) -> Unit, onSearch: () -> U
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
                 ) {
-                    Text(text = "Search", style = TextStyle(color = Color.LightGray))
+                    Text(
+                        text = stringResource(id = R.string.placeholder_search),
+                        style = TextStyle(color = Color.LightGray)
+                    )
                 }
             }
 
@@ -334,7 +341,7 @@ private fun PreviewSearchFlightByCode() {
                 .background(color = backgroundColor),
             contentAlignment = Alignment.Center
         ) {
-            SearchFlightByCode({},{})
+            SearchFlightByCode(flightNumberQuery = "AFR567", {}, {})
         }
     }
 }

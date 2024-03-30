@@ -74,30 +74,13 @@ import kotlinx.coroutines.launch
 // COMPOSE
 //
 ///////////////////////////////////////
-
-@DevicePreviews
-@Composable
-fun Footer() {
-    TheLabTheme {
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            ProvidedBy(
-                providerIcon = R.drawable.ic_flightaware_logo,
-                hasPadding = true,
-                hasRoundedCorners = true,
-                textColor = Color.White,
-                backgroundColor = Color(0xFF002f5d)
-            )
-        }
-    }
-}
-
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedBoxWithConstraintsScope")
 @Composable
 fun FlightMainContent(
     hasConnection: Boolean,
     onSearchCategorySelected: (Int) -> Unit,
+    flightNumberQuery: String,
     onUpdateFlightNumber: (String) -> Unit,
     onSearch: () -> Unit,
     departureExpanded: Boolean,
@@ -225,6 +208,7 @@ fun FlightMainContent(
                             ) { page, _ ->
                                 when (page) {
                                     0 -> SearchFlightByCode(
+                                        flightNumberQuery = flightNumberQuery,
                                         onUpdateFlightNumber = onUpdateFlightNumber,
                                         onSearch = onSearch
                                     )
@@ -299,11 +283,28 @@ fun FlightMainContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
+fun Footer() {
+    TheLabTheme {
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            ProvidedBy(
+                providerIcon = R.drawable.ic_flightaware_logo,
+                hasPadding = true,
+                hasRoundedCorners = true,
+                textColor = Color.White,
+                backgroundColor = Color(0xFF002f5d)
+            )
+        }
+    }
+}
+
+@DevicePreviews
+@Composable
 private fun PreviewFlightMainContent() {
     TheLabTheme {
         FlightMainContent(
             hasConnection = true,
             onSearchCategorySelected = {},
+            flightNumberQuery = "AFR4986",
             onUpdateFlightNumber = {},
             onSearch = {},
             departureExpanded = true,
@@ -329,6 +330,7 @@ private fun PreviewFlightMainContentNoConnection() {
         FlightMainContent(
             hasConnection = false,
             onSearchCategorySelected = {},
+            flightNumberQuery = "AFR4986",
             onUpdateFlightNumber = {},
             onSearch = {},
             departureExpanded = true,
