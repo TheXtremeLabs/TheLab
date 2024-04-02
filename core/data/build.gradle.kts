@@ -118,8 +118,5 @@ dependencies {
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////
-    //tesImplementation(project(":core:testing"))
-//    androidTestImplementation(project(":core:testing"))
-
     androidTestImplementation(libs.androidx.test.truth)
 }
