@@ -105,7 +105,7 @@ kotlinxDatetime = "0.5.0"
 kotlinPlayServices = "1.8.0"
 kotlinxSerializationJson = "1.6.3"
 # KSP - Kotlin Symbol Processing (for gradle plugin version and dependency)
-ksp = "1.9.22-1.0.18"
+ksp = "1.9.23-1.0.19"
 landscapist = "2.2.13"
 lint = "31.3.1"
 location = "21.2.0"
