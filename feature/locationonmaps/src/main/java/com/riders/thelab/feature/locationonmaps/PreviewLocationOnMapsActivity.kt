@@ -40,6 +40,10 @@ fun LocationOnMapsContent() {
         position = CameraPosition.fromLatLngZoom(userPosition, 10f)
     }
 
+    val animatingSearchBarVisibility by remember {
+        mutableStateOf(true)
+    }
+
     TheLabTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             GoogleMap(
@@ -58,6 +62,9 @@ fun LocationOnMapsContent() {
             )
 
             Switch(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp),
                 checked = uiSettings.zoomControlsEnabled,
                 onCheckedChange = {
                     uiSettings = uiSettings.copy(zoomControlsEnabled = it)

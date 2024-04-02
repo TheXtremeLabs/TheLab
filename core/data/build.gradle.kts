@@ -108,8 +108,6 @@ dependencies {
     api(libs.okhttp)
     api(libs.okhttp.logging)
 
-    // api("org.apache.httpcomponents:httpcore:4.4.15")
-
     // Moshi
     api(libs.moshi)
     api(libs.moshi.kotlin)
@@ -121,7 +119,7 @@ dependencies {
     // Tests Dependencies
     /////////////////////////////
     //tesImplementation(project(":core:testing"))
-    androidTestImplementation(project(":core:testing"))
+//    androidTestImplementation(project(":core:testing"))
 
     androidTestImplementation(libs.androidx.test.truth)
 }

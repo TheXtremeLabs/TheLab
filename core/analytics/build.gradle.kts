@@ -1,7 +1,5 @@
 plugins {
     id("thelab.android.library")
-    id("thelab.android.library.compose")
-    id("thelab.android.hilt")
 }
 
 android {
