@@ -43,9 +43,9 @@ dependencies {
     api(libs.okhttp)
 
     // Moshi
-    api(libs.moshi)
+    /*api(libs.moshi)
     api(libs.moshi.kotlin)
-    ksp(libs.moshi.kotlin.codegen)
+    ksp(libs.moshi.kotlin.codegen)*/
 
 
     ///////////////////////////////////

@@ -239,5 +239,6 @@ object LabCompatibilityManager {
  * 32                  Sv2                         Android 12 Snow cone v2
  * 33                  T                         Android 13 Tiramisu
  * 34                  U                         Android 14 Upside Down Cake
+ * 35                  V                         Android 15 Vanilla Ice Cream
  * 10000                CUR_DEVELOPMENT           Current Development Version
  */
