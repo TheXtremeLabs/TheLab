@@ -48,7 +48,6 @@ dependencies {
     // Assertions
     androidTestApi(libs.androidx.test.ext)
     androidTestApi(libs.androidx.test.truth)
-
     androidTestApi(libs.androidx.test.uiautomator)
 
     androidTestApi(libs.androidx.test.ext)
@@ -59,8 +58,4 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.testManifest)
-
-    /*androidTestImplementation(libs.hilt.android.testing)
-    kaptAndroidTest(libs.hilt.compiler)
-    kaptAndroidTest(libs.hilt.ext.compiler)*/
 }

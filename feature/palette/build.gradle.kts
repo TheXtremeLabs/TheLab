@@ -23,7 +23,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.storage)
 
-
     ///////////////////////////////////
     // General Dependencies
     ///////////////////////////////////
