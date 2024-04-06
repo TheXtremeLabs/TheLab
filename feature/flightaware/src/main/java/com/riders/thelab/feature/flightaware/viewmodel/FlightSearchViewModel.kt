@@ -1,16 +1,22 @@
 package com.riders.thelab.feature.flightaware.viewmodel
 
+import android.app.Activity
+import android.location.Location
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
+import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.toModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
+import com.riders.thelab.feature.flightaware.ui.main.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +38,10 @@ import javax.inject.Inject
 class FlightSearchViewModel @Inject constructor(
     private val repository: IRepository
 ) : BaseFlightViewModel() {
+    //////////////////////////////////////////
+    // Variables
+    //////////////////////////////////////////
+    private var mLabLocationManager: LabLocationManager? = null
     var isOptionSelectedByUser: Boolean = false
 
     //////////////////////////////////////////
@@ -115,6 +125,12 @@ class FlightSearchViewModel @Inject constructor(
                 initialValue = emptyList()
             )
 
+    var airportsNearBy: SnapshotStateList<AirportModel> = mutableStateListOf()
+        private set
+
+    var isAirportsNearByLoading: Boolean by mutableStateOf(false)
+        private set
+
     fun updateFlightNumber(newFlightNumber: String) {
         this.flightNumber = newFlightNumber
     }
@@ -127,12 +143,26 @@ class FlightSearchViewModel @Inject constructor(
         this.arrivalAirportQuery = newAirportQuery
     }
 
+    private fun updateAirportsNearBy(newAirportsNearBy: List<AirportModel>) {
+        this.airportsNearBy.clear()
+        this.airportsNearBy.addAll(newAirportsNearBy)
+    }
+
+    private fun updateIsAirportNearByLoading(isLoading: Boolean) {
+        this.isAirportsNearByLoading = isLoading
+    }
+
+
     /////////////////////////////////////
     // Coroutine
     /////////////////////////////////////
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             Timber.e("CoroutineExceptionHandler | Error caught with message: ${throwable.message}")
+
+            if (isAirportsNearByLoading) {
+                updateIsAirportNearByLoading(false)
+            }
         }
 
 
@@ -141,37 +171,91 @@ class FlightSearchViewModel @Inject constructor(
     // CLASS METHODS
     //
     ///////////////////////////////
+    fun initLocationManager(activity: Activity) {
+        if (null == mLabLocationManager) {
+            mLabLocationManager = runCatching {
+                LabLocationManager.getInstance(activity = activity)
+            }
+                .onFailure {
+                    it.printStackTrace()
+                    Timber.e("initLocationManager() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                }
+                .onSuccess {
+                    Timber.d("initLocationManager() | onSuccess | is success: $it")
+                }
+                .getOrNull()
+        }
+    }
+
     @OptIn(ExperimentalKotoolsTypesApi::class)
-    fun searchFlightByFlightNumber() {
+    fun onEvent(uiEvent: UiEvent, activity: Activity? = null) {
+
+        if (!hasInternetConnection) {
+            Timber.e("Internet connection not available. Make sure that you are connected to the internet to proceed to the search")
+            return
+        }
+
+        when (uiEvent) {
+            is UiEvent.OnUpdateDepartureQuery -> updateDepartureAirportQuery(uiEvent.departureAirportQuery)
+            is UiEvent.OnUpdateArrivalQuery -> updateArrivalAirportQuery(uiEvent.arrivalAirportQuery)
+
+            is UiEvent.OnSearchFlightByID -> searchFlightByFlightNumber(
+                NotBlankString.create(
+                    uiEvent.id
+                )
+            )
+
+            is UiEvent.OnSearchFlightByRoute -> searchFlightByRoute(
+                uiEvent.departureAirportIcaoCode,
+                uiEvent.arrivalAirportIcaoCode
+            )
+
+            is UiEvent.OnFetchAirportNearBy -> {
+                if (null == activity) {
+                    Timber.e("onEvent() | Activity value is null")
+                    return
+                }
+                searchAirportNearBy()
+            }
+
+            else -> Timber.e("onEvent() | else branch | uiEvent: $uiEvent")
+        }
+    }
+
+    @OptIn(ExperimentalKotoolsTypesApi::class)
+    fun searchFlightByFlightNumber(flightNumber: NotBlankString) {
         Timber.d("searchFlightByFlightNumber()")
 
-        if (this.flightNumber.isEmpty()) {
+        if (flightNumber.toString().isEmpty()) {
             Timber.e("FLight number is null. Cannot perform REST call")
             return
         }
 
         val query = NotBlankString.create(if (BuildConfig.DEBUG) "AAL306" else flightNumber)
-        searchFlight(query)
+
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+            repository.searchFlightByID(query)
+        }
     }
 
     @OptIn(ExperimentalKotoolsTypesApi::class)
-    fun searchFlightByRoute(departureAirportCode: String, arrivalAirportCode: String) {
-        Timber.d("searchFlightByRoute() | departureAirportCode: $departureAirportCode, arrivalAirportCode: $arrivalAirportCode")
+    fun searchFlightByRoute(
+        departureAirportCode: NotBlankString,
+        arrivalAirportCode: NotBlankString
+    ) {
+        Timber.d("searchFlightByRoute() | departureAirportCode: ${departureAirportCode.toString()}, arrivalAirportCode: ${arrivalAirportCode.toString()}")
 
-        if (departureAirportCode.isEmpty()) {
+        if (departureAirportCode.toString().isEmpty()) {
             Timber.e("Departure Airport query is null. Cannot perform REST call")
             return
         }
-        if (arrivalAirportCode.isEmpty()) {
+        if (arrivalAirportCode.toString().isEmpty()) {
             Timber.e("Arrival Airport query is null. Cannot perform REST call")
             return
         }
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            repository.searchFlightByRoute(
-                NotBlankString.create(departureAirportCode),
-                NotBlankString.create(arrivalAirportCode)
-            )
+            repository.searchFlightByRoute(departureAirportCode, arrivalAirportCode)
         }
     }
 
@@ -211,5 +295,51 @@ class FlightSearchViewModel @Inject constructor(
             .getOrElse {
                 emptyList()
             }
+
+
+    @OptIn(ExperimentalKotoolsTypesApi::class)
+    fun searchAirportNearBy() {
+        Timber.d("getAirportNearBy()")
+
+        val location: Location? =
+            runCatching {
+                mLabLocationManager?.getCurrentLocation() ?: run {
+                    Timber.e("location manager object is null")
+                    null
+                }
+            }
+                .onFailure {
+                    it.printStackTrace()
+                    Timber.e("getAirportNearBy() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                }
+                .onSuccess {
+                    Timber.d("getAirportNearBy() | onSuccess | is success: $it")
+                }
+                .getOrNull()
+
+        if (null == location) {
+            Timber.d("getAirportNearBy() | location is null")
+            return
+        }
+
+        updateIsAirportNearByLoading(true)
+
+        val latitude = NotBlankString.create(location.latitude)
+        val longitude = NotBlankString.create(location.longitude)
+
+
+        runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+            val response =
+                repository.getAirportNearBy(latitude = latitude, longitude = longitude, radius = 50)
+            if (response.airports.isEmpty()) {
+                Timber.d("getAirportNearBy() | airports list is empty")
+                return@runBlocking
+            }
+
+            updateAirportsNearBy(response.airports.map { it.toModel() })
+
+            updateIsAirportNearByLoading(false)
+        }
+    }
 
 }

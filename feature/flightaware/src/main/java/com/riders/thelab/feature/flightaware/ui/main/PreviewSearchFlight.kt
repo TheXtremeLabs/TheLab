@@ -1,9 +1,12 @@
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,10 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text2.input.clearText
-import androidx.compose.foundation.text2.input.rememberTextFieldState
-import androidx.compose.foundation.text2.input.textAsFlow
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AirplanemodeActive
 import androidx.compose.material.icons.filled.FlightLand
@@ -24,6 +26,8 @@ import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,8 +35,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,7 +50,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.dropdown.LabDropdownMenu2
+import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
 import com.riders.thelab.core.ui.compose.component.textfield.LabOutlinedTextField
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.R
@@ -53,6 +62,10 @@ import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
 import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchItem
+import com.riders.thelab.feature.flightaware.ui.main.UiEvent
+import kotlinx.coroutines.launch
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import kotools.types.text.NotBlankString
 import timber.log.Timber
 
 ///////////////////////////////////////
@@ -60,16 +73,10 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
-fun SearchFlightByCode(
-    flightNumberQuery: String,
-    onUpdateFlightNumber: (String) -> Unit,
-    onSearch: () -> Unit
-) {
-
-    val textFieldState = rememberTextFieldState()
-    val textFieldTextFlow by textFieldState.textAsFlow().collectAsState(initial = "")
+fun SearchFlightByCode(uiEvent: (UiEvent) -> Unit) {
+    var flightNumber by remember { mutableStateOf("") }
 
     TheLabTheme {
         Box(
@@ -100,8 +107,8 @@ fun SearchFlightByCode(
                     LabOutlinedTextField(
                         modifier = Modifier.fillMaxSize(),
                         onOutsideBoundariesClicked = false,
-                        query = flightNumberQuery,
-                        onUpdateQuery = onUpdateFlightNumber,
+                        query = flightNumber,
+                        onUpdateQuery = { newValue -> flightNumber = newValue },
                         placeholder = stringResource(id = R.string.search_flight_by_number),
                         label = stringResource(id = R.string.placeholder_flight_number),
                         leadingContent = {
@@ -114,13 +121,13 @@ fun SearchFlightByCode(
                         },
                         trailingContent = {
                             AnimatedContent(
-                                targetState = textFieldState.text.isNotEmpty(),
+                                targetState = flightNumber.isNotEmpty(),
                                 label = "close icon transition"
                             ) { targetState ->
                                 if (!targetState) {
                                     Box {}
                                 } else {
-                                    IconButton(onClick = { textFieldState.clearText() }) {
+                                    IconButton(onClick = { flightNumber = "" }) {
                                         Icon(
                                             imageVector = Icons.Rounded.Close,
                                             contentDescription = "close icon"
@@ -141,10 +148,13 @@ fun SearchFlightByCode(
 
                 Button(
                     onClick = {
-                        if (textFieldState.text.isEmpty()) {
+                        if (flightNumber.isEmpty()) {
                             return@Button
                         }
-                        onSearch()
+
+                        uiEvent.invoke(
+                            UiEvent.OnSearchFlightByID(NotBlankString.create(flightNumber))
+                        )
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
                 ) {
@@ -157,34 +167,30 @@ fun SearchFlightByCode(
 
         }
     }
-
-    LaunchedEffect(textFieldTextFlow) {
-        onUpdateFlightNumber(textFieldTextFlow.toString())
-    }
 }
 
 
+@OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun SearchFlightByDestination(
-    onSearch: () -> Unit,
+    uiEvent: (UiEvent) -> Unit,
     onOutsideBoundariesClicked: Boolean,
     departureExpanded: Boolean,
     onDepartureExpanded: (Boolean) -> Unit,
-    departureQuery: String,
-    onUpdateDepartureQuery: (String) -> Unit,
     departureSuggestions: List<AirportSearchModel>,
-    onDepartureOptionsSelected: (AirportSearchModel) -> Unit,
     arrivalExpanded: Boolean,
     onArrivalExpanded: (Boolean) -> Unit,
-    arrivalQuery: String,
-    onUpdateArrivalQuery: (String) -> Unit,
     arrivalSuggestions: List<AirportSearchModel>,
-    onArrivalOptionsSelected: (AirportSearchModel) -> Unit
 ) {
+
+    val departureQuery by remember { mutableStateOf("") }
+    val arrivalQuery by remember { mutableStateOf("") }
+
     TheLabTheme {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 8.dp)
                 .wrapContentSize(Alignment.Center),
             contentAlignment = Alignment.Center
         ) {
@@ -221,14 +227,14 @@ fun SearchFlightByDestination(
                     LabDropdownMenu2(
                         modifier = Modifier.fillMaxWidth(),
                         query = departureQuery,
-                        onUpdateQuery = onUpdateDepartureQuery,
+                        onUpdateQuery = { uiEvent.invoke(UiEvent.OnUpdateDepartureQuery(it)) },
                         onOutsideBoundariesClicked = onOutsideBoundariesClicked,
                         expanded = departureExpanded || departureSuggestions.isNotEmpty(),
                         onExpandedChanged = onDepartureExpanded,
                         placeholder = stringResource(id = R.string.search_flight_from),
                         label = stringResource(id = R.string.search_flight_from),
                         suggestions = departureSuggestions,
-                        onOptionsSelected = onDepartureOptionsSelected,
+                        onOptionsSelected = { uiEvent.invoke(UiEvent.OnDepartureOptionsSelected(it)) },
                         dropdownItemContent = {
                             AirportSearchItem(item = departureSuggestions[it], isSuggestion = true)
                         }
@@ -259,8 +265,8 @@ fun SearchFlightByDestination(
                             }
 
                             val temp = departureQuery
-                            onUpdateDepartureQuery(arrivalQuery)
-                            onUpdateArrivalQuery(temp)
+                            uiEvent.invoke(UiEvent.OnUpdateDepartureQuery(arrivalQuery))
+                            uiEvent.invoke(UiEvent.OnUpdateArrivalQuery(temp))
                         }
                     ) {
                         Icon(
@@ -292,14 +298,14 @@ fun SearchFlightByDestination(
                     LabDropdownMenu2(
                         modifier = Modifier.fillMaxWidth(),
                         query = arrivalQuery,
-                        onUpdateQuery = onUpdateArrivalQuery,
+                        onUpdateQuery = { uiEvent.invoke(UiEvent.OnUpdateArrivalQuery(it)) },
                         onOutsideBoundariesClicked = onOutsideBoundariesClicked,
                         expanded = arrivalExpanded || arrivalSuggestions.isNotEmpty(),
                         onExpandedChanged = onArrivalExpanded,
                         placeholder = stringResource(id = R.string.search_flight_destination),
                         label = stringResource(id = R.string.search_flight_destination),
                         suggestions = arrivalSuggestions,
-                        onOptionsSelected = onArrivalOptionsSelected,
+                        onOptionsSelected = { uiEvent.invoke(UiEvent.OnArrivalOptionsSelected(it)) },
                         dropdownItemContent = {
                             AirportSearchItem(item = arrivalSuggestions[it], isSuggestion = true)
                         }
@@ -311,7 +317,16 @@ fun SearchFlightByDestination(
                         if (departureQuery.isEmpty() && arrivalQuery.isEmpty()) {
                             return@Button
                         }
-                        onSearch()
+                        uiEvent.invoke(
+                            UiEvent.OnSearchFlightByRoute(
+                                departureAirportIcaoCode = NotBlankString.create(
+                                    departureQuery
+                                ),
+                                arrivalAirportIcaoCode = NotBlankString.create(
+                                    arrivalQuery
+                                )
+                            )
+                        )
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
                 ) {
@@ -322,6 +337,93 @@ fun SearchFlightByDestination(
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun SearchFlightContent(
+    uiEvent: (UiEvent) -> Unit,
+    searchPageIndex: Int,
+    onOutsideBoundariesClicked: Boolean,
+    departureExpanded: Boolean,
+    onDepartureExpanded: (Boolean) -> Unit,
+    departureSuggestions: List<AirportSearchModel>,
+    arrivalExpanded: Boolean,
+    onArrivalExpanded: (Boolean) -> Unit,
+    arrivalSuggestions: List<AirportSearchModel>,
+) {
+    val scope = rememberCoroutineScope()
+
+    // this is to disable the ripple effect
+    val interactionSource = remember { MutableInteractionSource() }
+
+    val tabs = listOf(
+        stringResource(id = R.string.search_flight_by_id),
+        stringResource(id = R.string.search_flight_by_route)
+    )
+
+    val pagerState = rememberPagerState { tabs.size }
+
+    TheLabTheme {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .indication(
+                    indication = null,
+                    interactionSource = interactionSource
+                ),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = cardBackgroundColor)
+        ) {
+            BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    LabTabRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        items = tabs,
+                        selectedItemIndex = searchPageIndex,
+                        tabWidth = this@BoxWithConstraints.maxWidth / tabs.size,
+                        selectedTextColor = searchTextColor,
+                        unselectedTextColor = Color.Gray,
+                        backgroundColor = backgroundColor,
+                        indicatorColor = cardBackgroundColor,
+                        hasCustomShape = true
+                    ) { index ->
+                        Timber.d("SearchFlightContent | Recomposition | index: $index")
+                        uiEvent.invoke(UiEvent.OnSearchCategorySelected(index))
+                    }
+
+                    LabHorizontalViewPagerGeneric(
+                        pagerState = pagerState,
+                        items = tabs,
+                        onCurrentPageChanged = {}
+                    ) { page, _ ->
+                        when (page) {
+                            0 -> SearchFlightByCode(
+                                uiEvent = uiEvent
+                            )
+
+                            1 -> SearchFlightByDestination(
+                                uiEvent = uiEvent,
+                                onOutsideBoundariesClicked = onOutsideBoundariesClicked,
+                                departureExpanded = departureExpanded,
+                                onDepartureExpanded = onDepartureExpanded,
+                                departureSuggestions = departureSuggestions,
+                                arrivalExpanded = arrivalExpanded,
+                                onArrivalExpanded = onArrivalExpanded,
+                                arrivalSuggestions = arrivalSuggestions,
+                            )
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    LaunchedEffect(searchPageIndex) {
+        scope.launch { pagerState.animateScrollToPage(searchPageIndex) }
     }
 }
 
@@ -341,7 +443,7 @@ private fun PreviewSearchFlightByCode() {
                 .background(color = backgroundColor),
             contentAlignment = Alignment.Center
         ) {
-            SearchFlightByCode(flightNumberQuery = "AFR567", {}, {})
+            SearchFlightByCode(uiEvent = {})
         }
     }
 }
@@ -357,20 +459,23 @@ private fun PreviewSearchFlightByDestination() {
             contentAlignment = Alignment.Center
         ) {
             SearchFlightByDestination(
-                onSearch = {},
+                uiEvent = {},
                 onOutsideBoundariesClicked = false,
                 departureExpanded = false,
                 onDepartureExpanded = {},
-                departureQuery = "None",
-                onUpdateDepartureQuery = {},
                 departureSuggestions = listOf(),
-                onDepartureOptionsSelected = {},
                 arrivalExpanded = true,
                 onArrivalExpanded = {},
-                arrivalQuery = "None",
-                onUpdateArrivalQuery = {},
-                arrivalSuggestions = listOf()
-            ) {}
+                arrivalSuggestions = listOf(),
+            )
         }
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewSearchFlightContent() {
+    TheLabTheme {
+        SearchFlightContent(uiEvent = {}, 0, false, false, {}, emptyList(), false, {}, emptyList())
     }
 }

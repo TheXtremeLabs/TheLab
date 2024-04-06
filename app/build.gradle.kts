@@ -160,11 +160,11 @@ dependencies {
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.palette)
     implementation(libs.androidx.recyclerView)
-    implementation(libs.androidx.material)
     implementation(libs.androidx.dynamicanimation)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.window.manager)
     implementation(libs.androidx.window.extensions)
+    implementation(libs.material)
 
     // Compose: provided by ui module
     // The others dependencies has been added into the AndroidCompose plugin convention class

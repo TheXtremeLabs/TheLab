@@ -15,11 +15,11 @@ data class Flight(
     @SerialName("fa_flight_id")
     val faFlightID: NotBlankString,
     @SerialName("origin")
-    val origin: Origin,
+    val origin: Origin? = null,
     @SerialName("destination")
-    val destination: Destination,
+    val destination: Destination? = null,
     @SerialName("waypoints")
-    val waypoints: Int,
+    val waypoints: Int? = null,
     @SerialName("first_position_time")
     val firstTimePosition: NotBlankString?,
     @SerialName("last_position")
@@ -28,7 +28,7 @@ data class Flight(
      * The order of the coordinates are the top, left, bottom, and right sides of the box.
      */
     @SerialName("bounding_box")
-    val boundingBox: List<Int>,
+    val boundingBox: List<Int>? = null,
     @SerialName("ident_prefix")
     val identPrefix: NotBlankString? = null,
     @SerialName("aircraft_type")
@@ -61,4 +61,6 @@ data class Flight(
     val predictedOnSource: PredictedSource? = null,
     @SerialName("predicted_in_source")
     val predictedInSource: PredictedSource? = null,
+    @SerialName("segments")
+    val segments: List<Segment>? = null,
 ) : Serializable

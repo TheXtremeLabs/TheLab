@@ -30,13 +30,17 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 @Composable
 fun GoogleMap(
     modifier: Modifier,
-    properties: MapProperties,
-    uiSettings: MapUiSettings,
     location: Location,
+    properties: MapProperties? = null,
+    uiSettings: MapUiSettings? = null,
     markerTitle: String? = null,
     markerSnippet: String? = null,
     onMapLoaded: () -> Unit
 ) {
+    val mapProperties: MapProperties =
+        properties ?: remember { mutableStateOf(MapProperties(mapType = MapType.NORMAL)) }.value
+    val mapUiSettings: MapUiSettings =
+        uiSettings ?: remember { mutableStateOf(MapUiSettings()) }.value
     val userPosition = LatLng(location.latitude, location.longitude)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(userPosition, 12.5f)
@@ -46,8 +50,8 @@ fun GoogleMap(
         GoogleMap(
             modifier = modifier,
             cameraPositionState = cameraPositionState,
-            properties = properties,
-            uiSettings = uiSettings,
+            properties = mapProperties,
+            uiSettings = mapUiSettings,
             onMapLoaded = { onMapLoaded() }
         ) {
             if (null == markerTitle && null == markerSnippet) {

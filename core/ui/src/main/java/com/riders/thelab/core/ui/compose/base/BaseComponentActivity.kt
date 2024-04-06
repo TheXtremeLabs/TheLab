@@ -16,7 +16,8 @@ import timber.log.Timber
 
 abstract class BaseComponentActivity : ComponentActivity() {
 
-    private var permissionLauncher: ActivityResultLauncher<String>? = null
+    //    open var permissionLauncher: ActivityResultLauncher<String>? = null
+    open var permissionLauncher: ActivityResultLauncher<Array<String>>? = null
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,9 +82,13 @@ abstract class BaseComponentActivity : ComponentActivity() {
         }
     }
 
-    private fun launchPermissionRequest(permission: String) {
-        Timber.e("requestPermission() | permission: $permission")
-        permissionLauncher?.launch(permission) ?: {
+     fun launchPermissionRequest(permission: String) =
+        launchPermissionRequest(arrayOf(permission))
+
+
+     fun launchPermissionRequest(permissions: Array<String>) {
+        Timber.e("requestPermission() | permissions: $permissions")
+        permissionLauncher?.launch(permissions) ?: {
             Timber.e("Permission launcher has NOT been initialized")
         }
     }

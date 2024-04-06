@@ -1,30 +1,34 @@
 package com.riders.thelab.feature.flightaware.ui.main
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.network.LabNetworkManager
+import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchActivity
+import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchDetailActivity
 import com.riders.thelab.feature.flightaware.viewmodel.FlightSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -35,13 +39,33 @@ class FlightMainActivity : BaseComponentActivity() {
 
     private var mLabNetworkManager: LabNetworkManager? = null
 
+    private var continueWithBlock: Pair<Boolean, () -> Unit> = false to {}
+
+    override var permissionLauncher: ActivityResultLauncher<Array<String>>?
+        get() = super.permissionLauncher
+        set(value) {
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { areGranted: Map<String, Boolean> ->
+                if (!areGranted.values.all { it }) {
+                    Timber.e("Location permissions is NOT granted")
+                } else {
+                    Timber.d("Location permissions is granted")
+
+                    if (continueWithBlock.first) {
+                        continueWithBlock.second()
+
+                        continueWithBlock = false to {}
+                    }
+                }
+            }
+        }
+
 
     ///////////////////////////////
     //
     // OVERRIDE
     //
     ///////////////////////////////
-    @OptIn(ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalKotoolsTypesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -55,8 +79,6 @@ class FlightMainActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
-                    var searchType by remember { mutableIntStateOf(0) }
-
                     val departureAirportsFlow by mFlightSearchViewModel.departureAirportStateFlow.collectAsStateWithLifecycle()
                     val arrivalAirportsFlow by mFlightSearchViewModel.arrivalAirportStateFlow.collectAsStateWithLifecycle()
 
@@ -68,54 +90,54 @@ class FlightMainActivity : BaseComponentActivity() {
                         ) {
                             FlightMainContent(
                                 hasConnection = mViewModel.hasInternetConnection,
-                                onSearchCategorySelected = {
-                                    searchType = it
-                                    if (0 == it && mViewModel.departureDropdownExpanded) {
-                                        mViewModel.updateDepartureExpanded(false)
-                                    }
-                                },
-                                flightNumberQuery = mFlightSearchViewModel.flightNumber,
-                                onUpdateFlightNumber = mFlightSearchViewModel::updateFlightNumber,
-                                onSearch = {
-                                    when (searchType) {
-                                        0 -> mFlightSearchViewModel.searchFlightByFlightNumber()
-                                        1 -> {
-                                            if(null == mViewModel.departureAirportOptionSelected?.icaoCode ) {
-                                                return@FlightMainContent
-                                            }
-                                            if(null == mViewModel.arrivalAirportOptionSelected?.icaoCode) {
-                                                return@FlightMainContent
-                                            }
+                                searchPageIndex = mViewModel.searchPageIndex,
+                                uiEvent = { event ->
+                                    Timber.d("uiEvent | $event")
 
-                                            mFlightSearchViewModel.searchFlightByRoute(
-                                                departureAirportCode = mViewModel.departureAirportOptionSelected!!.icaoCode!!.toString(),
-                                                arrivalAirportCode = mViewModel.arrivalAirportOptionSelected!!.icaoCode!!.toString()
+                                    // Call onEvent for ViewModel
+                                    mViewModel.onEvent(event)
+
+                                    // Call onEvent for FlightSearchViewModel as well
+                                    when (event) {
+                                        is UiEvent.OnFetchAirportNearBy -> {
+                                            if (!hasLocationPermission()) {
+                                                permissionLauncher?.launch(
+                                                    Permission.Location.permissions.toList()
+                                                        .toTypedArray()
+                                                )
+                                                continueWithBlock = true to {
+                                                    mFlightSearchViewModel.onEvent(
+                                                        uiEvent = event,
+                                                        activity = this@FlightMainActivity
+                                                    )
+                                                }
+                                            } else {
+                                                mFlightSearchViewModel.initLocationManager(this@FlightMainActivity)
+                                                mFlightSearchViewModel.onEvent(
+                                                    uiEvent = event,
+                                                    activity = this@FlightMainActivity
+                                                )
+                                            }
+                                        }
+
+                                        else -> {
+
+                                            mFlightSearchViewModel.onEvent(
+                                                uiEvent = event,
+                                                activity = null
                                             )
                                         }
                                     }
                                 },
+                                airportsNearBy = mFlightSearchViewModel.airportsNearBy,
+                                isLoading = mFlightSearchViewModel.isAirportsNearByLoading,
                                 departureExpanded = mViewModel.departureDropdownExpanded || departureAirportsFlow.isNotEmpty(),
                                 onDepartureExpanded = mViewModel::updateDepartureExpanded,
-                                departureQuery = mFlightSearchViewModel.departureAirportQuery,
-                                onUpdateDepartureQuery = mFlightSearchViewModel::updateDepartureAirportQuery,
                                 departureSuggestions = departureAirportsFlow,
-                                onDepartureOptionsSelected = {
-                                    mViewModel.updateDepartureAirportOption(it)
-                                    mFlightSearchViewModel.isOptionSelectedByUser = true
-                                    mFlightSearchViewModel.updateDepartureAirportQuery("${it.name.toString()} ${if (null == it.iataCode) "" else "(${it.iataCode?.toString()})"}")
-                                    mViewModel.updateDepartureExpanded(false)
-                                },
                                 arrivalExpanded = mViewModel.arrivalDropdownExpanded || departureAirportsFlow.isNotEmpty(),
                                 onArrivalExpanded = mViewModel::updateArrivalExpanded,
-                                arrivalQuery = mFlightSearchViewModel.arrivalAirportQuery,
-                                onUpdateArrivalQuery = mFlightSearchViewModel::updateArrivalAirportQuery,
                                 arrivalSuggestions = arrivalAirportsFlow
-                            ) {
-                                mViewModel.updateArrivalAirportOption(it)
-                                mFlightSearchViewModel.isOptionSelectedByUser = true
-                                mFlightSearchViewModel.updateArrivalAirportQuery("${it.name.toString()} ${if (null == it.iataCode) "" else "(${it.iataCode?.toString()})"}")
-                                mViewModel.updateArrivalExpanded(false)
-                            }
+                            )
                         }
                     }
 
@@ -145,6 +167,19 @@ class FlightMainActivity : BaseComponentActivity() {
     // CLASS METHODS
     //
     ///////////////////////////////
+    private fun hasLocationPermission(): Boolean = ContextCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
+
     fun launchAirportSearchActivity() = Intent(this, AirportSearchActivity::class.java)
         .run { startActivity(this) }
+
+    fun launchAirportDetail(airportID: String) =
+        Intent(this, AirportSearchDetailActivity::class.java)
+            .apply { this.putExtra(AirportSearchDetailActivity.EXTRA_AIRPORT_ID, airportID) }
+            .run { startActivity(this) }
 }

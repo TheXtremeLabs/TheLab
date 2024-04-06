@@ -28,8 +28,6 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
-import com.riders.thelab.feature.flightaware.ui.main.FlightMainActivity
-import timber.log.Timber
 
 
 ///////////////////////////////////////

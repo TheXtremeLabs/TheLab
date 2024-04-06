@@ -8,4 +8,6 @@
     <string name="search_flight_destination">To (Destination)</string>
     <string name="placeholder_flight_number">Flight number</string>
     <string name="search_flight_by_number">Enter the flight number</string>
+    <string name="placeholder_airports_near_by">Airports nearby your location</string>
+    <string name="placeholder_get_airports_near_by">Get airports near by</string>
 </resources>

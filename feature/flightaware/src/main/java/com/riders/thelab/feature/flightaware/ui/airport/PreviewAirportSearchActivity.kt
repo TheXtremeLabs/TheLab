@@ -273,7 +273,6 @@ fun AirportSearchContent(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalKotoolsTypesApi::class)
 @DevicePreviews
 @Composable
 private fun PreviewAirportSearchContent(@PreviewParameter(PreviewProviderAirports::class) airports: List<AirportSearchModel>) {
