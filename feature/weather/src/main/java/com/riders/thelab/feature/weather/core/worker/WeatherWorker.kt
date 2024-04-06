@@ -261,30 +261,6 @@ class WeatherWorker @AssistedInject constructor(
         }
     }
 
-    private fun updateWidgetViaBroadcast(bundle: Bundle) {
-        Timber.d("updateWidgetViaBroadcast()")
-
-        val broadcastIntent: Intent =
-            Intent(context, WeatherWidgetReceiver::class.java).apply {
-                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                putExtras(bundle)
-            }
-
-        context.sendBroadcast(broadcastIntent)
-    }
-
-    private fun updateWidgetViaBroadcast(weatherWidgetModel: WeatherWidgetModel) {
-        Timber.d("updateWidgetViaBroadcast()")
-
-        val broadcastIntent: Intent =
-            Intent(context, WeatherWidgetReceiver::class.java).apply {
-                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                putExtra(EXTRA_WEATHER_WIDGET, weatherWidgetModel)
-            }
-
-        context.sendBroadcast(broadcastIntent)
-    }
-
 
     companion object {
         const val WORK_SUCCESS = "Loading finished"

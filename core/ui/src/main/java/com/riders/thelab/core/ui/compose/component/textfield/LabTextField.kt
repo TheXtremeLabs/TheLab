@@ -230,14 +230,12 @@ fun LabOutlinedTextField(
     val isPressed by interactionSource.collectIsPressedAsState()
     val isFocus by interactionSource.collectIsFocusedAsState()
 
-    var textFieldSize by remember { mutableStateOf(Size.Zero) }
     var isFieldFocused: Boolean by remember { mutableStateOf(false) }
 
 
     TheLabTheme {
         OutlinedTextField(
             modifier = Modifier
-                .then(modifier)
                 .fillMaxWidth()
                 .focusRequester(focusRequester)
                 .onFocusChanged {
@@ -264,7 +262,8 @@ fun LabOutlinedTextField(
                 .indication(
                     interactionSource = interactionSource,
                     indication = LocalIndication.current
-                ),
+                )
+                .then(modifier),
             value = query,
             onValueChange = onUpdateQuery,
             textStyle = TextStyle(textAlign = TextAlign.Justify, color = Color.LightGray),

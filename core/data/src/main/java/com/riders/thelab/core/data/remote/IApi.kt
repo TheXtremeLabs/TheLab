@@ -15,6 +15,7 @@ import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
 import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
 import com.riders.thelab.core.data.remote.dto.flight.AirportsSearchResponse
+import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import com.riders.thelab.core.data.remote.dto.flight.Operator
 import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
 import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
@@ -92,6 +93,17 @@ interface IApi {
     ): AirportFlightsResponse
 
     /**
+     * @return a list of airports located within a given distance from the given location.
+     */
+    suspend fun getAirportNearBy(
+        latitude: NotBlankString,
+        longitude: NotBlankString,
+        radius: Int,
+        maxPages: Int = 1,
+        cursor: String? = null
+    ): AirportsResponse
+
+    /**
      * This endpoint is quite similar to the FindFlight operator in prior versions of AeroAPI.
      * Results may include both non-stop and one-stop flights.
      * Note that because the returned flights can include multiple legs,
@@ -102,9 +114,14 @@ interface IApi {
     suspend fun searchFlightByRoute(
         departureAirportCode: NotBlankString,
         arrivalAirportCode: NotBlankString,
+        type: FlightType = FlightType.AIRLINE,
+        connection: NotBlankString? = null,
+        startDate: NotBlankString? = null,
+        endDate: NotBlankString? = null,
         maxPages: Int = 1,
         cursor: String? = null
     ): SearchFlightResponse
+
 
     suspend fun getOperators(maxPages: Int = 1, cursor: String? = null): OperatorResponse
     suspend fun getOperatorById(operatorID: String): Operator
@@ -159,6 +176,38 @@ interface IApi {
      */
     suspend fun searchFlight(
         query: NotBlankString,
+        maxPages: Int = 1,
+        cursor: String? = null
+    ): SearchFlightResponse
+
+    /**
+     * @param ident, registration, or fa_flight_id to fetch.
+     * If using a flight ident, it is highly recommended to specify ICAO flight ident rather than IATA flight ident to avoid ambiguity and unexpected results.
+     * Setting the ident_type can also be used to help disambiguate.
+     * @param type Type of ident provided in the ident parameter.
+     * By default, the passed ident is interpreted as a registration if possible.
+     * This parameter can force the ident to be interpreted as a designator instead.
+     * Allowed: designator ┃ registration ┃ fa_flight_id
+     * @param startDate The starting date range for flight results, comparing against flights' scheduled_out field (or scheduled_off if scheduled_out is missing).
+     * The format is ISO8601 date or datetime, and the bound is inclusive. Specified start date must be no further than 10 days in the past and 2 days in the future.
+     * If not specified, will default to departures starting approximately 11 days in the past. If using date instead of datetime, the time will default to 00:00:00Z.
+     * @param endDate The ending date range for flight results, comparing against flights' scheduled_out field (or scheduled_off if scheduled_out is missing).
+     * The format is ISO8601 date or datetime, and the bound is exclusive. Specified end date must be no further than 10 days in the past and 2 days in the future.
+     * If not specified, will default to departures starting approximately 2 days in the future. If using date instead of datetime, the time will default to 00:00:00Z.
+     * @param maxPages Maximum number of pages to fetch. This is an upper limit and not a guarantee of how many pages will be returned.
+     * @param cursor Opaque value used to get the next batch of data from a paged collection.
+     *
+     * @return the flight info status summary for a registration, ident, or fa_flight_id.
+     * If a fa_flight_id is specified then a maximum of 1 flight is returned,
+     * unless the flight has been diverted in which case both the original flight and any diversions will be returned with a duplicate fa_flight_id.
+     * If a registration or ident is specified, approximately 14 days of recent and scheduled flight information is returned, ordered by scheduled_out (or scheduled_off if scheduled_out is missing) descending.
+     * Alternately, specify a start and end parameter to find your flight(s) of interest, including up to 10 days of flight history.
+     */
+    suspend fun searchFlightByID(
+        query: NotBlankString,
+        type: NotBlankString? = null,
+        startDate: NotBlankString? = null,
+        endDate: NotBlankString? = null,
         maxPages: Int = 1,
         cursor: String? = null
     ): SearchFlightResponse

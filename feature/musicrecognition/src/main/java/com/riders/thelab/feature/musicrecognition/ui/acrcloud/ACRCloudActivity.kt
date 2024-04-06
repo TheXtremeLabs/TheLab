@@ -2,7 +2,6 @@ package com.riders.thelab.feature.musicrecognition.ui.acrcloud
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -31,19 +30,26 @@ import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.spotify.android.appremote.api.error.CouldNotFindSpotifyApp
 import com.spotify.android.appremote.api.error.NotLoggedInException
 import com.spotify.android.appremote.api.error.UserNotAuthorizedException
-import com.spotify.sdk.android.auth.AuthorizationClient
-import com.spotify.sdk.android.auth.AuthorizationResponse
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@Suppress("ControlFlowWithEmptyBody")
 @AndroidEntryPoint
 class ACRCloudActivity : BaseComponentActivity() {
 
     private val mViewModel: ACRCloudViewModel by viewModels()
 
-    private var permissionLauncher: ActivityResultLauncher<String>? = null
+    override var permissionLauncher: ActivityResultLauncher<Array<String>>?
+        get() = super.permissionLauncher
+        set(value) {
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { areGranted ->
+                if (!areGranted.values.all { it }) {
+                    Timber.e("Record audio permission is NOT granted")
+                } else {
+                    Timber.d("Record audio permission is granted ini ACR variables")
+                }
+            }
+        }
 
     private var mLabNetworkManager: LabNetworkManager? = null
 
@@ -66,8 +72,12 @@ class ACRCloudActivity : BaseComponentActivity() {
         override fun onFailure(error: Throwable?) {
             if (error is NotLoggedInException || error is UserNotAuthorizedException) {
                 // Show login button and trigger the login flow from auth library when clicked
+                Timber.d("Show login button and trigger the login flow from auth library when clicked")
             } else if (error is CouldNotFindSpotifyApp) {
                 // Show button to download Spotify
+                Timber.d("Show button to download Spotify")
+            } else {
+                Timber.e("onFailure: $error")
             }
         }
     }
@@ -80,9 +90,6 @@ class ACRCloudActivity : BaseComponentActivity() {
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // TODO refactor permisions
-        initPermissionLauncher()
 
         mLabNetworkManager = LabNetworkManager
             .getInstance(this, lifecycle)
@@ -112,10 +119,7 @@ class ACRCloudActivity : BaseComponentActivity() {
                                 canLaunchAudioRecognition = mViewModel.canLaunchAudioRecognition,
                                 onStartRecognition = {
                                     if (!hasAudioPermission()) {
-                                        permissionLauncher?.launch(Manifest.permission.RECORD_AUDIO)
-                                            ?: run {
-                                                Timber.e("Permission launcher has NOT been initialized")
-                                            }
+                                        launchPermissionRequest(Manifest.permission.RECORD_AUDIO)
                                     } else {
                                         mViewModel::startRecognition
 
@@ -182,18 +186,6 @@ class ACRCloudActivity : BaseComponentActivity() {
     // CLASS METHODS
     //
     ///////////////////////////////
-    private fun initPermissionLauncher() {
-        Timber.d("initPermissionLauncher()")
-        permissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-                if (!isGranted) {
-                    Timber.e("Record audio permission is NOT granted")
-                } else {
-                    Timber.d("Record audio permission is granted ini ACR variables")
-                }
-            }
-    }
-
     private fun hasAudioPermission(): Boolean {
         return if (ContextCompat.checkSelfPermission(
                 applicationContext,

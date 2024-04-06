@@ -40,7 +40,16 @@ data class Airport(
     @SerialName("airport_flights_url")
     val airportFlightUrl: String? = null,
     @SerialName("alternatives")
-    val alternatives: List<Airport>? = null
+    val alternatives: List<Airport>? = null,
+    // Distance of airport from the specified location (statute miles)
+    @SerialName("distance")
+    val distance: Int? = null,
+    /* Direction from specified location to airport (degrees)Constraints: Min 1┃Max 360 */
+    @SerialName("heading")
+    val heading: Int? = null,
+    /* Cardinal direction from specified location to airportAllowed: N┃E┃S┃W┃NE┃SE┃SW┃NW */
+    @SerialName("direction")
+    val direction: String? = null,
 ) : Serializable {
     fun getAirportId(): String {
         return this.airportInfoUrl?.split("/")?.get(1) ?: ""

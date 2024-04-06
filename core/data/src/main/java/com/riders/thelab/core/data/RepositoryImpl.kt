@@ -25,6 +25,7 @@ import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
 import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
 import com.riders.thelab.core.data.remote.dto.flight.AirportsSearchResponse
+import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import com.riders.thelab.core.data.remote.dto.flight.Operator
 import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
 import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
@@ -248,10 +249,30 @@ class RepositoryImpl @Inject constructor(
     override suspend fun searchFlightByRoute(
         departureAirportCode: NotBlankString,
         arrivalAirportCode: NotBlankString,
+        type: FlightType,
+        connection: NotBlankString?,
+        startDate: NotBlankString?,
+        endDate: NotBlankString?,
         maxPages: Int,
         cursor: String?
-    ): SearchFlightResponse =
-        mApiImpl.searchFlightByRoute(departureAirportCode, arrivalAirportCode, maxPages, cursor)
+    ): SearchFlightResponse = mApiImpl.searchFlightByRoute(
+        departureAirportCode,
+        arrivalAirportCode,
+        type,
+        connection,
+        startDate,
+        endDate,
+        maxPages,
+        cursor
+    )
+
+    override suspend fun getAirportNearBy(
+        latitude: NotBlankString,
+        longitude: NotBlankString,
+        radius: Int,
+        maxPages: Int,
+        cursor: String?
+    ): AirportsResponse  = mApiImpl.getAirportNearBy(latitude, longitude, radius, maxPages, cursor)
 
     override suspend fun getOperators(maxPages: Int, cursor: String?): OperatorResponse =
         mApiImpl.getOperators(maxPages, cursor)
@@ -286,6 +307,16 @@ class RepositoryImpl @Inject constructor(
         maxPages: Int,
         cursor: String?
     ): SearchFlightResponse = mApiImpl.searchFlight(query, maxPages, cursor)
+
+    override suspend fun searchFlightByID(
+        query: NotBlankString,
+        type: NotBlankString?,
+        startDate: NotBlankString?,
+        endDate: NotBlankString?,
+        maxPages: Int,
+        cursor: String?
+    ): SearchFlightResponse =
+        mApiImpl.searchFlightByID(query, type, startDate, endDate, maxPages, cursor)
 
     /////////////////////////
     //

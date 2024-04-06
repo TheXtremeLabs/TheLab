@@ -23,8 +23,12 @@ interface FlightApiService {
 
     @GET("https://www.flightaware.com/ajax/ignoreall/airport_names_yajl.rvt?locale=fr_FR&code=1")
     suspend fun searchAirportById(@Query("q") query: String): AirportsSearchResponse
+
     @GET("https://www.flightaware.com/ajax/ignoreall/omnisearch/airport.rvt?v=50&locale=fr_FR")
-    suspend fun omniSearchAirport(@Query("searchterm") searchTerm: String, @Query("q") query: String): AirportsSearchResponse
+    suspend fun omniSearchAirport(
+        @Query("searchterm") searchTerm: String,
+        @Query("q") query: String
+    ): AirportsSearchResponse
 
     @GET("airports/{id}")
     suspend fun getAirportById(@Path("id") airportID: String): Airport
@@ -147,27 +151,50 @@ interface FlightApiService {
      * the response format differs from most other flight-returning endpoints.
      * If the optional start or end query parameters are not provided start will default to 1 day in the future,
      * while end will default to 7 days in the past relative to the time the query is made.
+     *
+     * @param departureAirportCode ICAO, IATA or LID ID of destination airport to fetch. ICAO is highly preferred to prevent ambiguity.
+     * @param arrivalAirportCode ICAO, IATA or LID ID of destination airport to fetch. ICAO is highly preferred to prevent ambiguity.
+     * @param type Type of flights to return. Allowed: General_Aviation ┃ Airline
+     * @param connection Whether flights should be filtered based on their connection status.
+     * If setting start/end date parameters then connection must be set to nonstop, and will default to nonstop if left blank.
+     * If start/end are not specified then leaving this blank will result in a mix of nonstop and one-stop flights being returned,
+     * with a preference for nonstop flights. One-stop flights are identified with a custom heuristic, which may be incomplete.
+     * Allowed: nonstop ┃ onestop
+     * @param startDate The starting date range for flight results. The format is ISO8601 date or datetime, and the bound is inclusive.
+     * Specified start date must be no further than 10 days in the past and 2 days in the future.
+     * If using date instead of datetime, the time will default to 00:00:00Z.
+     * @param endDate The ending date range for flight results. The format is ISO8601 date or datetime, and the bound is exclusive.
+     * Specified end date must be no further than 10 days in the past and 2 days in the future.
+     * If using date instead of datetime, the time will default to 00:00:00Z.
+     * @param maxPages Maximum number of pages to fetch. This is an upper limit and not a guarantee of how many pages will be returned.
+     * @param cursor Opaque value used to get the next batch of data from a paged collection.
+     *
+     * @return the result of flights by route route for specified airports.
      */
     @GET("airports/{id}/flights/to/{dest_id}")
     suspend fun searchFlightByRoute(
         @Path("id") departureAirportCode: NotBlankString,
         @Path("dest_id") arrivalAirportCode: NotBlankString,
+        @Query("type") type: NotBlankString? = null,
+        @Query("connection") connection: NotBlankString? = null,
+        @Query("start") startDate: NotBlankString? = null,
+        @Query("end") endDate: NotBlankString? = null,
         @Query("max_pages") maxPages: Int = 1,
         @Query("cursor") cursor: String? = null
     ): SearchFlightResponse
 
-    // TODO: Create model
+
     /**
-     * Returns a list of airports located within a given distance from the given location.
+     * @return a list of airports located within a given distance from the given location.
      */
     @GET("airports/nearby")
     suspend fun getAirportNearBy(
-        @Query("latitude") departureAirportCode: NotBlankString,
-        @Query("longitude") arrivalAirportCode: NotBlankString,
+        @Query("latitude") latitude: NotBlankString,
+        @Query("longitude") longitude: NotBlankString,
         @Query("radius") radius: Int,
         @Query("max_pages") maxPages: Int = 1,
         @Query("cursor") cursor: String? = null
-    ): SearchFlightResponse
+    ): AirportsResponse
 
     @GET("operators")
     suspend fun getOperators(
@@ -231,6 +258,39 @@ interface FlightApiService {
     @GET("flights/search")
     suspend fun searchFlight(
         @Query("query") query: NotBlankString,
+        @Query("max_pages") maxPages: Int = 1,
+        @Query("cursor") cursor: String? = null
+    ): SearchFlightResponse
+
+    /**
+     * @param ident, registration, or fa_flight_id to fetch.
+     * If using a flight ident, it is highly recommended to specify ICAO flight ident rather than IATA flight ident to avoid ambiguity and unexpected results.
+     * Setting the ident_type can also be used to help disambiguate.
+     * @param type Type of ident provided in the ident parameter.
+     * By default, the passed ident is interpreted as a registration if possible.
+     * This parameter can force the ident to be interpreted as a designator instead.
+     * Allowed: designator ┃ registration ┃ fa_flight_id
+     * @param startDate The starting date range for flight results, comparing against flights' scheduled_out field (or scheduled_off if scheduled_out is missing).
+     * The format is ISO8601 date or datetime, and the bound is inclusive. Specified start date must be no further than 10 days in the past and 2 days in the future.
+     * If not specified, will default to departures starting approximately 11 days in the past. If using date instead of datetime, the time will default to 00:00:00Z.
+     * @param endDate The ending date range for flight results, comparing against flights' scheduled_out field (or scheduled_off if scheduled_out is missing).
+     * The format is ISO8601 date or datetime, and the bound is exclusive. Specified end date must be no further than 10 days in the past and 2 days in the future.
+     * If not specified, will default to departures starting approximately 2 days in the future. If using date instead of datetime, the time will default to 00:00:00Z.
+     * @param maxPages Maximum number of pages to fetch. This is an upper limit and not a guarantee of how many pages will be returned.
+     * @param cursor Opaque value used to get the next batch of data from a paged collection.
+     *
+     * @return the flight info status summary for a registration, ident, or fa_flight_id.
+     * If a fa_flight_id is specified then a maximum of 1 flight is returned,
+     * unless the flight has been diverted in which case both the original flight and any diversions will be returned with a duplicate fa_flight_id.
+     * If a registration or ident is specified, approximately 14 days of recent and scheduled flight information is returned, ordered by scheduled_out (or scheduled_off if scheduled_out is missing) descending.
+     * Alternately, specify a start and end parameter to find your flight(s) of interest, including up to 10 days of flight history.
+     */
+    @GET("flights/{ident}")
+    suspend fun searchFlightByID(
+        @Path("ident") query: NotBlankString,
+        @Query("ident_type") type: NotBlankString? = null,
+        @Query("start") startDate: NotBlankString? = null,
+        @Query("end") endDate: NotBlankString? = null,
         @Query("max_pages") maxPages: Int = 1,
         @Query("cursor") cursor: String? = null
     ): SearchFlightResponse

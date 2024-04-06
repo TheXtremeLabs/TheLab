@@ -33,6 +33,7 @@ import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
 import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
 import com.riders.thelab.core.data.remote.dto.flight.AirportsSearchResponse
+import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import com.riders.thelab.core.data.remote.dto.flight.Operator
 import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
 import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
@@ -50,6 +51,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import okhttp3.ResponseBody
 import retrofit2.Call
 import timber.log.Timber
@@ -345,9 +347,33 @@ class ApiImpl @Inject constructor(
     override suspend fun searchFlightByRoute(
         departureAirportCode: NotBlankString,
         arrivalAirportCode: NotBlankString,
+        type: FlightType,
+        connection: NotBlankString?,
+        startDate: NotBlankString?,
+        endDate: NotBlankString?,
         maxPages: Int,
         cursor: String?
-    ): SearchFlightResponse = mFlightApiService.searchFlightByRoute(departureAirportCode, arrivalAirportCode, maxPages, cursor)
+    ): SearchFlightResponse = mFlightApiService.searchFlightByRoute(
+        departureAirportCode = departureAirportCode,
+        arrivalAirportCode = arrivalAirportCode,
+        type = FlightType.AIRLINE.type.toNotBlankString().getOrThrow(),
+        connection = connection,
+        startDate = startDate,
+        endDate = endDate,
+        maxPages = maxPages,
+        cursor = cursor
+    )
+
+    /**
+     * @return a list of airports located within a given distance from the given location.
+     */
+    override suspend fun getAirportNearBy(
+        latitude: NotBlankString,
+        longitude: NotBlankString,
+        radius: Int,
+        maxPages: Int,
+        cursor: String?
+    ): AirportsResponse = mFlightApiService.getAirportNearBy(latitude, longitude, radius, maxPages, cursor)
 
     override suspend fun getOperators(maxPages: Int, cursor: String?): OperatorResponse =
         mFlightApiService.getOperators(maxPages, cursor)
@@ -382,4 +408,20 @@ class ApiImpl @Inject constructor(
         maxPages: Int,
         cursor: String?
     ): SearchFlightResponse = mFlightApiService.searchFlight(query, maxPages, cursor)
+
+    override suspend fun searchFlightByID(
+        query: NotBlankString,
+        type: NotBlankString?,
+        startDate: NotBlankString?,
+        endDate: NotBlankString?,
+        maxPages: Int,
+        cursor: String?
+    ): SearchFlightResponse = mFlightApiService.searchFlightByID(
+        query = query,
+        type = type,
+        startDate = startDate,
+        endDate = endDate,
+        maxPages = maxPages,
+        cursor = cursor
+    )
 }

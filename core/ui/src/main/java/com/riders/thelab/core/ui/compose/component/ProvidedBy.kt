@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 
 @Composable
 fun ProvidedBy(
@@ -68,6 +70,7 @@ fun ProvidedBy(
 private fun PreviewProvidedBy() {
     TheLabTheme {
         ProvidedBy(
+            modifier = Modifier.background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
             placeholderProvidedBy = R.string.weather_data_provided_by,
             providerIcon = R.drawable.openweathermap_logo_white
         )
@@ -79,6 +82,7 @@ private fun PreviewProvidedBy() {
 private fun PreviewProvidedByWeather() {
     TheLabTheme {
         ProvidedBy(
+            modifier = Modifier.background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
             placeholderProvidedBy = R.string.weather_data_provided_by,
             providerIcon = R.drawable.openweathermap_logo_white
         )
@@ -90,6 +94,7 @@ private fun PreviewProvidedByWeather() {
 private fun PreviewProvidedByTMDB() {
     TheLabTheme {
         ProvidedBy(
+            modifier = Modifier.background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
             providerIcon = R.drawable.tmdb_logo,
             hasRoundedCorners = true
         )
@@ -101,6 +106,7 @@ private fun PreviewProvidedByTMDB() {
 private fun PreviewProvidedByFlightAware() {
     TheLabTheme {
         ProvidedBy(
+            modifier = Modifier.background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
             providerIcon = R.drawable.ic_flightaware_logo,
             hasRoundedCorners = true,
             hasPadding = true,

@@ -1,26 +1,23 @@
 package com.riders.thelab.feature.flightaware.ui.main
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.OperatorModel
 import com.riders.thelab.core.data.local.model.flight.toModel
-import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
 import com.riders.thelab.feature.flightaware.viewmodel.BaseFlightViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -32,6 +29,8 @@ class FlightViewModel @Inject constructor(
     //////////////////////////////////////////
     // Composable states
     //////////////////////////////////////////
+    var searchPageIndex by mutableIntStateOf(0)
+        private set
 
     var airports: SnapshotStateList<AirportModel> = mutableStateListOf()
     var operators: SnapshotStateList<OperatorModel> = mutableStateListOf()
@@ -55,6 +54,9 @@ class FlightViewModel @Inject constructor(
     var currentOperator: OperatorModel? by mutableStateOf(null)
         private set
 
+    private fun updateSearchIndex(newIndex: Int) {
+        this.searchPageIndex = newIndex
+    }
 
     fun updateDepartureExpanded(isExpanded: Boolean) {
         Timber.d("updateDepartureExpanded() | isExpanded: $isExpanded")
@@ -117,6 +119,17 @@ class FlightViewModel @Inject constructor(
     // CLASS METHODS
     //
     ///////////////////////////////
+    fun onEvent(uiEvent: UiEvent) {
+        Timber.d("onEvent() | uiEvent: $uiEvent")
+        when (uiEvent) {
+            is UiEvent.OnSearchCategorySelected -> updateSearchIndex(uiEvent.pageIndex)
+            is UiEvent.OnDepartureOptionsSelected -> updateDepartureAirportOption(uiEvent.departureAirport)
+            is UiEvent.OnArrivalOptionsSelected -> updateArrivalAirportOption(uiEvent.arrivalAirport)
+
+            else -> Timber.e("onEvent() | else branch | uiEvent: $uiEvent")
+        }
+    }
+
     fun getAirports() {
         Timber.d("getAirports()")
 
