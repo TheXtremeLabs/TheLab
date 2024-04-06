@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.flightaware.viewmodel
 
 import android.app.Activity
+import android.content.Context
 import android.location.Location
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -16,6 +17,8 @@ import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.toModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
+import com.riders.thelab.core.data.remote.dto.flight.Flight
+import com.riders.thelab.feature.flightaware.ui.main.FlightMainActivity
 import com.riders.thelab.feature.flightaware.ui.main.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -202,7 +205,8 @@ class FlightSearchViewModel @Inject constructor(
             is UiEvent.OnSearchFlightByID -> searchFlightByFlightNumber(
                 NotBlankString.create(
                     uiEvent.id
-                )
+                ),
+                uiEvent.context
             )
 
             is UiEvent.OnSearchFlightByRoute -> searchFlightByRoute(
@@ -223,7 +227,7 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalKotoolsTypesApi::class)
-    fun searchFlightByFlightNumber(flightNumber: NotBlankString) {
+    fun searchFlightByFlightNumber(flightNumber: NotBlankString, context: Context) {
         Timber.d("searchFlightByFlightNumber()")
 
         if (flightNumber.toString().isEmpty()) {
@@ -234,12 +238,19 @@ class FlightSearchViewModel @Inject constructor(
         val query = NotBlankString.create(if (BuildConfig.DEBUG) "AAL306" else flightNumber)
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            repository.searchFlightByID(query)
+            val flight : Flight = repository.searchFlightByID(query).flights[0]
+
+            runCatching {
+                (context as FlightMainActivity).launchFlightDetail(flight.toModel())
+            }
+                .onFailure {
+                    it.printStackTrace()
+                    Timber.e("searchFlightByFlightNumber() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                }
         }
     }
 
-    @OptIn(ExperimentalKotoolsTypesApi::class)
-    fun searchFlightByRoute(
+    private fun searchFlightByRoute(
         departureAirportCode: NotBlankString,
         arrivalAirportCode: NotBlankString
     ) {
@@ -301,6 +312,8 @@ class FlightSearchViewModel @Inject constructor(
     fun searchAirportNearBy() {
         Timber.d("getAirportNearBy()")
 
+        updateIsAirportNearByLoading(true)
+
         val location: Location? =
             runCatching {
                 mLabLocationManager?.getCurrentLocation() ?: run {
@@ -319,10 +332,10 @@ class FlightSearchViewModel @Inject constructor(
 
         if (null == location) {
             Timber.d("getAirportNearBy() | location is null")
+            updateIsAirportNearByLoading(false)
             return
         }
 
-        updateIsAirportNearByLoading(true)
 
         val latitude = NotBlankString.create(location.latitude)
         val longitude = NotBlankString.create(location.longitude)

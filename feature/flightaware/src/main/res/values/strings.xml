@@ -2,6 +2,7 @@
 <resources>
     <string name="placeholder_search">Search</string>
     <string name="placeholder_search_a_flight">Search a flight</string>
+    <string name="placeholder_where_are_you_flying_to">Where are you flying to</string>
     <string name="search_flight_by_id">Search Flight by ID</string>
     <string name="search_flight_by_route">Search Flight by route</string>
     <string name="search_flight_from">From (Location)</string>

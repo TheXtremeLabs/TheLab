@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -76,6 +77,7 @@ import timber.log.Timber
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun SearchFlightByCode(uiEvent: (UiEvent) -> Unit) {
+    val context = LocalContext.current
     var flightNumber by remember { mutableStateOf("") }
 
     TheLabTheme {
@@ -102,7 +104,8 @@ fun SearchFlightByCode(uiEvent: (UiEvent) -> Unit) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp), contentAlignment = Alignment.CenterStart
+                        .height(64.dp),
+                    contentAlignment = Alignment.CenterStart
                 ) {
                     LabOutlinedTextField(
                         modifier = Modifier.fillMaxSize(),
@@ -153,7 +156,10 @@ fun SearchFlightByCode(uiEvent: (UiEvent) -> Unit) {
                         }
 
                         uiEvent.invoke(
-                            UiEvent.OnSearchFlightByID(NotBlankString.create(flightNumber))
+                            UiEvent.OnSearchFlightByID(
+                                id = NotBlankString.create(flightNumber),
+                                context = context
+                            )
                         )
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
@@ -204,7 +210,7 @@ fun SearchFlightByDestination(
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.placeholder_search_a_flight),
+                    text = stringResource(id = R.string.placeholder_where_are_you_flying_to),
                     style = TextStyle(color = Color.White)
                 )
 
@@ -477,5 +483,13 @@ private fun PreviewSearchFlightByDestination() {
 private fun PreviewSearchFlightContent() {
     TheLabTheme {
         SearchFlightContent(uiEvent = {}, 0, false, false, {}, emptyList(), false, {}, emptyList())
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewSearchFlightContentPage() {
+    TheLabTheme {
+        SearchFlightContent(uiEvent = {}, 1, false, false, {}, emptyList(), false, {}, emptyList())
     }
 }

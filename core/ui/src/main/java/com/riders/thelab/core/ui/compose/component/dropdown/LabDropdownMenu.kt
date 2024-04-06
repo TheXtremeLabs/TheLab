@@ -64,7 +64,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.component.executeOnBackPressed
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.compose.utils.keyboardAsState
 import com.riders.thelab.core.ui.utils.UIManager
 import kotlinx.coroutines.android.awaitFrame
@@ -228,9 +231,11 @@ fun <T> LabDropdownMenu(
     }
 
     BackHandler {
+        Timber.e("BackHandler()")
         if (expanded) {
             onExpandedChanged(false)
         }
+        executeOnBackPressed((context.findActivity() as BaseComponentActivity))
     }
 
     LaunchedEffect(forceRequestFocus) {
@@ -451,9 +456,11 @@ fun <T> LabDropdownMenu2(
     }
 
     BackHandler {
+        Timber.e("BackHandler()")
         if (expanded) {
             onExpandedChanged(false)
         }
+        executeOnBackPressed((context.findActivity() as BaseComponentActivity))
     }
 
     LaunchedEffect(interactionSource) {

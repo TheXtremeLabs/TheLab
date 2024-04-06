@@ -1,6 +1,6 @@
 package com.riders.thelab.feature.flightaware.ui.main
 
-import com.riders.thelab.core.data.local.model.flight.AirportModel
+import android.content.Context
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import kotools.types.text.NotBlankString
 
@@ -8,7 +8,7 @@ sealed interface UiEvent {
     // Search category
     data class OnSearchCategorySelected(val pageIndex: Int) : UiEvent
 
-    data class OnSearchFlightByID(val id: NotBlankString) : UiEvent
+    data class OnSearchFlightByID(val id: NotBlankString, val context: Context) : UiEvent
     data class OnSearchFlightByRoute(
         val departureAirportIcaoCode: NotBlankString,
         val arrivalAirportIcaoCode: NotBlankString

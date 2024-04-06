@@ -21,10 +21,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.data.local.model.Permission
+import com.riders.thelab.core.data.local.model.flight.FlightModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchActivity
 import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchDetailActivity
+import com.riders.thelab.feature.flightaware.ui.flight.FlightDetailActivity
 import com.riders.thelab.feature.flightaware.viewmodel.FlightSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -121,7 +123,6 @@ class FlightMainActivity : BaseComponentActivity() {
                                         }
 
                                         else -> {
-
                                             mFlightSearchViewModel.onEvent(
                                                 uiEvent = event,
                                                 activity = null
@@ -182,4 +183,8 @@ class FlightMainActivity : BaseComponentActivity() {
         Intent(this, AirportSearchDetailActivity::class.java)
             .apply { this.putExtra(AirportSearchDetailActivity.EXTRA_AIRPORT_ID, airportID) }
             .run { startActivity(this) }
+
+    fun launchFlightDetail(flight: FlightModel)  = Intent(this, FlightDetailActivity::class.java)
+        .apply { this.putExtra(FlightDetailActivity.EXTRA_FLIGHT, flight) }
+        .run { startActivity(this) }
 }
