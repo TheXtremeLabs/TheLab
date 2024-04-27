@@ -12,7 +12,7 @@ import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.OperatorModel
 import com.riders.thelab.core.data.local.model.flight.toModel
-import com.riders.thelab.feature.flightaware.viewmodel.BaseFlightViewModel
+import com.riders.thelab.feature.flightaware.viewmodel.FlightSearchViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FlightViewModel @Inject constructor(
     private val repository: IRepository
-) : BaseFlightViewModel() {
+) : FlightSearchViewModel(repository) {
 
     //////////////////////////////////////////
     // Composable states
@@ -39,13 +39,13 @@ class FlightViewModel @Inject constructor(
     // Departures
     var departureDropdownExpanded by mutableStateOf(false)
         private set
-    var departureAirportOptionSelected: AirportSearchModel? by mutableStateOf(null)
+    private var departureAirportOptionSelected: AirportSearchModel? by mutableStateOf(null)
         private set
 
     // Arrival
     var arrivalDropdownExpanded by mutableStateOf(false)
         private set
-    var arrivalAirportOptionSelected: AirportSearchModel? by mutableStateOf(null)
+    private var arrivalAirportOptionSelected: AirportSearchModel? by mutableStateOf(null)
         private set
 
     var currentAirport: AirportModel? by mutableStateOf(null)
@@ -64,8 +64,8 @@ class FlightViewModel @Inject constructor(
     }
 
     fun updateArrivalExpanded(isExpanded: Boolean) {
-        Timber.d("updateDepartureExpanded() | isExpanded: $isExpanded")
-        this.departureDropdownExpanded = isExpanded
+        Timber.d("updateArrivalExpanded() | isExpanded: $isExpanded")
+        this.arrivalDropdownExpanded = isExpanded
     }
 
     fun updateDepartureAirportOption(newAirportOption: AirportSearchModel) {
@@ -120,13 +120,38 @@ class FlightViewModel @Inject constructor(
     //
     ///////////////////////////////
     fun onEvent(uiEvent: UiEvent) {
-        Timber.d("onEvent() | uiEvent: $uiEvent")
         when (uiEvent) {
             is UiEvent.OnSearchCategorySelected -> updateSearchIndex(uiEvent.pageIndex)
-            is UiEvent.OnDepartureOptionsSelected -> updateDepartureAirportOption(uiEvent.departureAirport)
-            is UiEvent.OnArrivalOptionsSelected -> updateArrivalAirportOption(uiEvent.arrivalAirport)
+            is UiEvent.OnDepartureExpanded -> updateDepartureExpanded(uiEvent.expanded)
+            is UiEvent.OnDepartureOptionsSelected -> {
+                isOptionSelectedByUser = true
+                updateDepartureAirportOption(uiEvent.departureAirport)
+                super.updateDepartureAirportQuery(uiEvent.departureAirport.name.toString())
+            }
 
-            else -> Timber.e("onEvent() | else branch | uiEvent: $uiEvent")
+            is UiEvent.OnArrivalExpanded -> updateArrivalExpanded(uiEvent.expanded)
+            is UiEvent.OnArrivalOptionsSelected -> {
+                isOptionSelectedByUser = true
+                updateArrivalAirportOption(uiEvent.arrivalAirport)
+                super.updateArrivalAirportQuery(uiEvent.arrivalAirport.name.toString())
+            }
+
+            is UiEvent.OnSearchFlightByRoute -> {
+                departureAirportOptionSelected?.let { departure ->
+                    arrivalAirportOptionSelected?.let { arrival ->
+                        super.searchFlightByRoute(departure.icaoCode!!, arrival.icaoCode!!)
+                    } ?: run {
+                        Timber.e("onEvent() | onSearchFlightByRoute | arrivalAirportOptionSelected is null")
+                    }
+                } ?: run {
+                    Timber.e("onEvent() | onSearchFlightByRoute | departureAirportOptionSelected is null")
+                }
+            }
+
+            else -> {
+                Timber.e("onEvent() | else branch | uiEvent: $uiEvent")
+                super.onEvent(uiEvent = uiEvent, activity = null)
+            }
         }
     }
 

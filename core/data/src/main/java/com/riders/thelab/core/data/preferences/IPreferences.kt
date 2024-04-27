@@ -17,4 +17,6 @@ interface IPreferences {
     suspend fun saveRememberCredentialsPref(isChecked: Boolean)
     fun getUserToken(): Flow<String>
     suspend fun saveTokenPref(token: String)
+    fun isActivitiesSplashScreenEnabled(): Flow<Boolean>
+    suspend fun toggleActivitiesSplashScreenEnabled()
 }

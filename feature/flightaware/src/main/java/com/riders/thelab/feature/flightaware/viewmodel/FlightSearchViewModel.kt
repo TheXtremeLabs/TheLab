@@ -38,7 +38,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class FlightSearchViewModel @Inject constructor(
+open class FlightSearchViewModel @Inject constructor(
     private val repository: IRepository
 ) : BaseFlightViewModel() {
     //////////////////////////////////////////
@@ -122,7 +122,8 @@ class FlightSearchViewModel @Inject constructor(
                 }
 
                 getAirportSearchModelList(airportSearchList)
-            }.stateIn(
+            }
+            .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = emptyList()
@@ -139,10 +140,12 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     fun updateDepartureAirportQuery(newAirportQuery: String) {
+        Timber.d("updateDepartureAirportQuery() | departure query: $newAirportQuery")
         this.departureAirportQuery = newAirportQuery
     }
 
     fun updateArrivalAirportQuery(newAirportQuery: String) {
+        Timber.d("updateArrivalAirportQuery() | arrival query: $newAirportQuery")
         this.arrivalAirportQuery = newAirportQuery
     }
 
@@ -191,8 +194,7 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalKotoolsTypesApi::class)
-    fun onEvent(uiEvent: UiEvent, activity: Activity? = null) {
-
+    open fun onEvent(uiEvent: UiEvent, activity: Activity? = null) {
         if (!hasInternetConnection) {
             Timber.e("Internet connection not available. Make sure that you are connected to the internet to proceed to the search")
             return
@@ -203,16 +205,14 @@ class FlightSearchViewModel @Inject constructor(
             is UiEvent.OnUpdateArrivalQuery -> updateArrivalAirportQuery(uiEvent.arrivalAirportQuery)
 
             is UiEvent.OnSearchFlightByID -> searchFlightByFlightNumber(
-                NotBlankString.create(
-                    uiEvent.id
-                ),
+                NotBlankString.create(uiEvent.id),
                 uiEvent.context
             )
 
-            is UiEvent.OnSearchFlightByRoute -> searchFlightByRoute(
+            /*is UiEvent.OnSearchFlightByRoute -> searchFlightByRoute(
                 uiEvent.departureAirportIcaoCode,
                 uiEvent.arrivalAirportIcaoCode
-            )
+            )*/
 
             is UiEvent.OnFetchAirportNearBy -> {
                 if (null == activity) {
@@ -250,7 +250,7 @@ class FlightSearchViewModel @Inject constructor(
         }
     }
 
-    private fun searchFlightByRoute(
+     fun searchFlightByRoute(
         departureAirportCode: NotBlankString,
         arrivalAirportCode: NotBlankString
     ) {

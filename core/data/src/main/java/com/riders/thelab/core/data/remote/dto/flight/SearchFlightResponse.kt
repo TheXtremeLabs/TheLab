@@ -159,10 +159,10 @@ import java.io.Serializable
 @kotlinx.serialization.Serializable
 data class SearchFlightResponse(
     @SerialName("links")
-    val links: Link,
+    val links: Link? = null,
     @SerialName("num_pages")
     val numPages: Int,
     @SerialName("flights")
     val flights: List<Flight>,
-): Serializable
+) : Serializable
 

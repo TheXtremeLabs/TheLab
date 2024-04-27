@@ -128,14 +128,6 @@ object UIManager {
     fun showToast(context: Context, message: String) =
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 
-
-    fun showCustomToast(context: Context, type: ToastTypeEnum, message: String) {
-        /*TheLabToast.Builder(context)
-            .setType(type)
-            .setText(message)
-            .show()*/
-    }
-
     fun showActionInSnackBar(
         context: Activity,
         message: String,
