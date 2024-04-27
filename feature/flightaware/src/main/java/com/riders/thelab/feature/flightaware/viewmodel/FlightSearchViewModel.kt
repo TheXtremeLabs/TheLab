@@ -44,6 +44,7 @@ open class FlightSearchViewModel @Inject constructor(
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
+    var isResumed: Boolean = false
     private var mLabLocationManager: LabLocationManager? = null
     var isOptionSelectedByUser: Boolean = false
 
@@ -64,6 +65,11 @@ open class FlightSearchViewModel @Inject constructor(
             .mapLatest { latestDepartureAirportInput ->
                 if (!hasInternetConnection) {
                     Timber.e("Internet connection not available. Make sure that you are connected to the internet to proceed to the search")
+                    return@mapLatest emptyList()
+                }
+                if (isResumed) {
+                    Timber.w("No need to perform action. resumed from activity")
+                    isResumed = false
                     return@mapLatest emptyList()
                 }
                 if (latestDepartureAirportInput.isEmpty()) {
@@ -101,6 +107,11 @@ open class FlightSearchViewModel @Inject constructor(
             .mapLatest { latestArrivalAirportInput ->
                 if (!hasInternetConnection) {
                     Timber.e("Internet connection not available. Make sure that you are connected to the internet to proceed to the search")
+                    return@mapLatest emptyList()
+                }
+                if (isResumed) {
+                    Timber.w("No need to perform action. resumed from activity")
+                    isResumed = false
                     return@mapLatest emptyList()
                 }
                 if (latestArrivalAirportInput.isEmpty()) {
@@ -205,8 +216,8 @@ open class FlightSearchViewModel @Inject constructor(
             is UiEvent.OnUpdateArrivalQuery -> updateArrivalAirportQuery(uiEvent.arrivalAirportQuery)
 
             is UiEvent.OnSearchFlightByID -> searchFlightByFlightNumber(
-                NotBlankString.create(uiEvent.id),
-                uiEvent.context
+                context = uiEvent.context,
+                flightNumber = NotBlankString.create(uiEvent.id)
             )
 
             /*is UiEvent.OnSearchFlightByRoute -> searchFlightByRoute(
@@ -227,7 +238,7 @@ open class FlightSearchViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalKotoolsTypesApi::class)
-    fun searchFlightByFlightNumber(flightNumber: NotBlankString, context: Context) {
+    fun searchFlightByFlightNumber(context: Context, flightNumber: NotBlankString) {
         Timber.d("searchFlightByFlightNumber()")
 
         if (flightNumber.toString().isEmpty()) {
@@ -238,10 +249,13 @@ open class FlightSearchViewModel @Inject constructor(
         val query = NotBlankString.create(if (BuildConfig.DEBUG) "AAL306" else flightNumber)
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            val flight : Flight = repository.searchFlightByID(query).flights[0]
+            val flight: Flight = repository.searchFlightByID(query).flights[0]
 
             runCatching {
-                (context as FlightMainActivity).launchFlightDetail(flight.toModel())
+                (context as FlightMainActivity).launchSearchFlight(
+                    flight.toModel(),
+                    FlightMainActivity.SEARCH_TYPE_FLIGHT_NUMBER
+                )
             }
                 .onFailure {
                     it.printStackTrace()
@@ -250,7 +264,8 @@ open class FlightSearchViewModel @Inject constructor(
         }
     }
 
-     fun searchFlightByRoute(
+    fun searchFlightByRoute(
+        context: Context,
         departureAirportCode: NotBlankString,
         arrivalAirportCode: NotBlankString
     ) {
@@ -266,7 +281,20 @@ open class FlightSearchViewModel @Inject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            repository.searchFlightByRoute(departureAirportCode, arrivalAirportCode)
+            val flights =
+                repository.searchFlightByRoute(departureAirportCode, arrivalAirportCode).flights[0]
+
+
+            runCatching {
+                (context as FlightMainActivity).launchSearchFlight(
+                    flights.toModel(),
+                    FlightMainActivity.SEARCH_TYPE_FLIGHT_ROUTE
+                )
+            }
+                .onFailure {
+                    it.printStackTrace()
+                    Timber.e("searchFlightByFlightNumber() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                }
         }
     }
 

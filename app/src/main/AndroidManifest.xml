@@ -572,6 +572,11 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:name=".feature.flightaware.ui.search.SearchFlightActivity"
+            android:parentActivityName=".feature.flightaware.ui.main.FlightMainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
             android:name=".feature.flightaware.ui.airport.AirportSearchActivity"
             android:parentActivityName=".feature.flightaware.ui.main.FlightMainActivity"
             android:screenOrientation="portrait"
