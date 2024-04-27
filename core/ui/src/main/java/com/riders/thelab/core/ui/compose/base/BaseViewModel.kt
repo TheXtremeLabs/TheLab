@@ -50,6 +50,8 @@ abstract class BaseViewModel : ViewModel() {
         private set
     var isVibration: Boolean by mutableStateOf(true)
         private set
+    var isActivitiesSplashEnabled: Boolean by mutableStateOf(true)
+        private set
     var viewPagerDotExpanded: Boolean by mutableStateOf(true)
         private set
     var viewPagerDotVisibility: Boolean by mutableStateOf(true)
@@ -67,6 +69,9 @@ abstract class BaseViewModel : ViewModel() {
 
     fun updateVibration(isVibration: Boolean) {
         this.isVibration = isVibration
+    }
+    fun updateActivitiesSplashEnabled(isSplashEnabled: Boolean) {
+        this.isActivitiesSplashEnabled = isSplashEnabled
     }
 
     private fun updateVersion(appVersion: String) {

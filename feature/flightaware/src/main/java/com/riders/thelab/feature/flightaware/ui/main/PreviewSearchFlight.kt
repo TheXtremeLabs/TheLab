@@ -186,7 +186,7 @@ fun SearchFlightByDestination(
     arrivalSuggestions: List<AirportSearchModel>,
     uiEvent: (UiEvent) -> Unit
 ) {
-
+    val context = LocalContext.current
     var departureQuery by remember { mutableStateOf("") }
     var arrivalQuery by remember { mutableStateOf("") }
 
@@ -370,14 +370,15 @@ fun SearchFlightByDestination(
                             return@Button
                         }
                         uiEvent.invoke(
-                            UiEvent.OnSearchFlightByRoute/*(
-                                departureAirportIcaoCode = NotBlankString.create(
+                            UiEvent.OnSearchFlightByRoute(
+                                context = context
+                                /*departureAirportIcaoCode = NotBlankString.create(
                                     departureQuery
                                 ),
                                 arrivalAirportIcaoCode = NotBlankString.create(
                                     arrivalQuery
-                                )
-                            )*/
+                                )*/
+                            )
                         )
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = buttonColor)

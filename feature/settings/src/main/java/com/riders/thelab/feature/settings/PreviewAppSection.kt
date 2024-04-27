@@ -210,6 +210,58 @@ fun VibrationCardRowItem(isVibration: Boolean, onToggleVibration: (Boolean) -> U
 }
 
 @Composable
+fun ActivitiesSplashScreenCardRowItem(isEnabled: Boolean, onToggleSplashScreen: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1.5f),
+            verticalArrangement = Arrangement.spacedBy(
+                8.dp,
+                Alignment.CenterVertically
+            )
+        ) {
+            Text(text = "Activities splashscreen")
+            Text(
+                text = if (isEnabled) "Disable Splash screens" else "Enable Splash screens",
+                style = TextStyle(
+                    fontSize = 12.sp
+                )
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(.5f),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier.size(30.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Switch(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .padding(horizontal = 24.dp),
+                    checked = isEnabled,
+                    onCheckedChange = {
+                        onToggleSplashScreen(it)
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun AppSettingsSection(viewModel: SettingsViewModel) {
     TheLabTheme {
         Column(
@@ -249,18 +301,27 @@ fun AppSettingsSection(viewModel: SettingsViewModel) {
                                 "Dark",
                                 true
                             )
-                        } else viewModel.themeOptions[2],
+                        } else viewModel.themeOptions[1],
                         themeOptions = viewModel.themeOptions
                     ) {
-                        if (it.contains("system", true)) {
-                            viewModel.updateDarkMode(viewModel.isDarkMode)
+                        if (it.contains("light", true)) {
+                            viewModel.updateDarkMode(false)
+                        } else if (it.contains("dark", true)) {
+                            viewModel.updateDarkMode(true)
                         } else {
-                            viewModel.updateDarkModeDatastore()
+                            viewModel.updateDarkMode(viewModel.isDarkMode)
+
                         }
                     }
 
                     VibrationCardRowItem(isVibration = viewModel.isVibration) {
+                        viewModel.updateVibration(it)
                         viewModel.updateVibrationDatastore()
+                    }
+
+                    ActivitiesSplashScreenCardRowItem(isEnabled = viewModel.isActivitiesSplashEnabled) {
+                        viewModel.updateActivitiesSplashEnabled(it)
+                        viewModel.updateActivitiesSplashScreenDatastore()
                     }
                 }
             }

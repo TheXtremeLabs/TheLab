@@ -26,6 +26,7 @@ class FlightViewModel @Inject constructor(
     private val repository: IRepository
 ) : FlightSearchViewModel(repository) {
 
+
     //////////////////////////////////////////
     // Composable states
     //////////////////////////////////////////
@@ -139,7 +140,11 @@ class FlightViewModel @Inject constructor(
             is UiEvent.OnSearchFlightByRoute -> {
                 departureAirportOptionSelected?.let { departure ->
                     arrivalAirportOptionSelected?.let { arrival ->
-                        super.searchFlightByRoute(departure.icaoCode!!, arrival.icaoCode!!)
+                        super.searchFlightByRoute(
+                            uiEvent.context,
+                            departure.icaoCode!!,
+                            arrival.icaoCode!!
+                        )
                     } ?: run {
                         Timber.e("onEvent() | onSearchFlightByRoute | arrivalAirportOptionSelected is null")
                     }

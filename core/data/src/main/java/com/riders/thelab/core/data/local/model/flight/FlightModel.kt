@@ -1,10 +1,12 @@
 package com.riders.thelab.core.data.local.model.flight
 
+import androidx.compose.runtime.Stable
 import com.riders.thelab.core.data.remote.dto.flight.Flight
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import java.io.Serializable
 
+@Stable
 @kotlinx.serialization.Serializable
 data class FlightModel(
     val faFlightID: NotBlankString,

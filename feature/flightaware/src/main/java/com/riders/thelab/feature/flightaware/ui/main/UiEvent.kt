@@ -16,10 +16,11 @@ sealed interface UiEvent {
      * @param departureAirportIcaoCode airport's ICAO code
      * @param arrivalAirportIcaoCode airport's ICAO code
      */
-    data object OnSearchFlightByRoute/*(
-        val departureAirportIcaoCode: NotBlankString,
-        val arrivalAirportIcaoCode: NotBlankString
-    )*/ : UiEvent
+    data class OnSearchFlightByRoute(
+        val context:Context
+       /* val departureAirportIcaoCode: NotBlankString,
+        val arrivalAirportIcaoCode: NotBlankString*/
+    ) : UiEvent
 
 
     //////////////////////////////////////////////////////////
