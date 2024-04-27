@@ -62,11 +62,11 @@ fun drawTicketPath(size: Size, cornerRadius: Float): Path {
             x3 = size.width + cornerRadius, y3 = size.height
         )
 
-        lineTo(x = -cornerRadius, y = size.height)
+        lineTo(x = 0f - cornerRadius, y = size.height)
 
         // Bottom left arc
         cubicTo(
-            x1 = -cornerRadius, y1 = size.height,
+            x1 = 0f - cornerRadius, y1 = size.height,
             x2 = 0f, y2 = size.height,
             x3 = 0f, y3 = size.height - cornerRadius
         )
@@ -120,7 +120,7 @@ fun LabTabIndicator(
                                     size.width + (2 * 24.dp.toPx()),
                                     size.height
                                 ),
-                                topLeft = Offset(-(2 * 24f), 0f),
+                                topLeft = Offset(-(2 * 32f), 0f),
                             )
                         }
                     }

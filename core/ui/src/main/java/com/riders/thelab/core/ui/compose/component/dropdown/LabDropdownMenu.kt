@@ -37,7 +37,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -81,14 +80,12 @@ fun <T> LabDropdownMenu(
     modifier: Modifier,
     onOutsideBoundariesClicked: Boolean,
     query: String,
-    onUpdateQuery: (String) -> Unit,
     placeholder: String,
     label: String,
     expanded: Boolean,
-    onExpandedChanged: (Boolean) -> Unit,
+    readOnly: Boolean = false,
     suggestions: List<T>,
-    onOptionsSelected: (T) -> Unit,
-    onExpandIconClicked: () -> Unit = {},
+    dropdownMenuUiEvent: (UiEvent) -> Unit,
     focusedTextColor: Color = Color.Unspecified,
     unfocusedTextColor: Color = Color.Unspecified,
     disabledTextColor: Color = Color.Unspecified,
@@ -173,7 +170,7 @@ fun <T> LabDropdownMenu(
                     )
                     .bringIntoViewRequester(bringIntoViewRequester),
                 value = query,
-                onValueChange = onUpdateQuery,
+                onValueChange = { dropdownMenuUiEvent.invoke(UiEvent.OnUpdateQuery(it)) },
                 textStyle = TextStyle(
                     textAlign = TextAlign.Justify,
                     color = Color.LightGray
@@ -203,13 +200,14 @@ fun <T> LabDropdownMenu(
                     disabledContainerColor = disabledContainerColor,
                     errorContainerColor = errorContainerColor,
                     cursorColor = cursorColor
-                )
+                ),
+                readOnly = readOnly
             )
 
             ExposedDropdownMenu(
                 modifier = Modifier.width(with(LocalDensity.current) { textFieldSize.width.toDp() }),
                 expanded = expanded,
-                onDismissRequest = { onExpandedChanged(false) }
+                onDismissRequest = { dropdownMenuUiEvent.invoke(UiEvent.OnExpandedChanged(false)) }
             ) {
                 suggestions.forEachIndexed { itemIndex, option ->
                     DropdownMenuItem(
@@ -217,8 +215,8 @@ fun <T> LabDropdownMenu(
                             .fillMaxWidth()
                             .height(48.dp),
                         onClick = {
-                            onOptionsSelected(option)
-                            onExpandedChanged(false)
+                            dropdownMenuUiEvent.invoke(UiEvent.OnOptionsSelected(option))
+                            dropdownMenuUiEvent.invoke(UiEvent.OnExpandedChanged(false))
                             focusManager.clearFocus(true)
                         },
                         text = { dropdownItemContent(itemIndex) },
@@ -233,7 +231,7 @@ fun <T> LabDropdownMenu(
     BackHandler {
         Timber.e("BackHandler()")
         if (expanded) {
-            onExpandedChanged(false)
+            dropdownMenuUiEvent.invoke(UiEvent.OnExpandedChanged(false))
         }
         executeOnBackPressed((context.findActivity() as BaseComponentActivity))
     }
@@ -293,39 +291,29 @@ fun <T> LabDropdownMenu2(
     modifier: Modifier,
     onOutsideBoundariesClicked: Boolean,
     query: String,
-    onUpdateQuery: (String) -> Unit,
     placeholder: String,
     label: String,
     expanded: Boolean,
-    onExpandedChanged: (Boolean) -> Unit,
-    onExpandIconClicked: () -> Unit = {},
+    readOnly: Boolean = false,
     suggestions: List<T>,
-    onOptionsSelected: (T) -> Unit,
+    dropdownMenuUiEvent: (UiEvent) -> Unit,
     dropdownItemContent: @Composable (index: Int) -> Unit
 ) {
     val context = LocalContext.current
-    val view = LocalView.current
-    val scope = rememberCoroutineScope()
 
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val keyboardState by keyboardAsState()
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
-//    val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
     val isFocus by interactionSource.collectIsFocusedAsState()
 
-    var textFieldSize by remember { mutableStateOf(Size.Zero) }
-    var isFieldFocused: Boolean by remember { mutableStateOf(false) }
-    var forceRequestFocus: Boolean by remember { mutableStateOf(false) }
-
     val borderColorAnimation by animateColorAsState(
-        targetValue = if (!isFieldFocused) Color.White.copy(alpha = .58f) else Color(0xFFD37818).copy(
+        targetValue = if (!isFocus) Color.White.copy(alpha = .58f) else Color(0xFFD37818).copy(
             alpha = .75f
         ),
         label = "border animation animation"
     )
+
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
     TheLabTheme {
         ExposedDropdownMenuBox(
@@ -333,15 +321,15 @@ fun <T> LabDropdownMenu2(
             expanded = expanded,
             onExpandedChange = {
                 Timber.d("Recomposition | ExposedDropdownMenuBox | onExpandedChange: $it")
-                 onExpandedChanged(!expanded)
-                if (!isFocus) {
+                //dropdownMenuUiEvent.invoke(UiEvent.OnExpandedChanged(!expanded))
+                /*if (!isFocus) {
                     Timber.d("Recomposition | ExposedDropdownMenuBox | call requestFocus")
                     scope.launch {
                         forceRequestFocus = true
                         delay(100)
                         forceRequestFocus = false
                     }
-                }
+                }*/
             }
         ) {
             BasicTextField2(
@@ -352,40 +340,37 @@ fun <T> LabDropdownMenu2(
                         textFieldSize = coordinates.size.toSize()
                     }
                     .menuAnchor()
-                    .focusRequester(focusRequester)
-                    .onFocusChanged {
-                        Timber.d("Recomposition | BasicTextField2.onFocusChanged | onFocusChanged: isFieldFocused $isFieldFocused, it.isFocused: ${it.isFocused}")
+                .focusRequester(focusRequester)
+                /*.onFocusChanged {
+                    Timber.d("Recomposition | BasicTextField2.onFocusChanged | onFocusChanged: isFieldFocused $isFieldFocused, it.isFocused: ${it.isFocused}")
 
-                        if (isFieldFocused != it.isFocused) {
-                            isFieldFocused = it.isFocused
-                            if (!it.isFocused) {
-                                Timber.d("Recomposition | BasicTextField2.onFocusChanged | hideKeyboard")
-                                UIManager.hideKeyboard(context = context, view = view)
-                            } else {
-                                Timber.d("Recomposition | BasicTextField2.onFocusChanged | show keyboard")
-                                // UIManager.showKeyboard(context = context, view = view)
-                            }
+                    if (isFieldFocused != it.isFocused) {
+                        isFieldFocused = it.isFocused
+                        if (!it.isFocused) {
+                            Timber.d("Recomposition | BasicTextField2.onFocusChanged | hideKeyboard")
+                            UIManager.hideKeyboard(context = context, view = view)
+                        } else {
+                            Timber.d("Recomposition | BasicTextField2.onFocusChanged | show keyboard")
+                            // UIManager.showKeyboard(context = context, view = view)
                         }
                     }
-                    /*.onFocusEvent { focusState ->
-                        if (focusState.isFocused) {
-                            scope.launch {
-                                bringIntoViewRequester.bringIntoView()
-                            }
+                }*/
+                /*.onFocusEvent { focusState ->
+                    if (focusState.isFocused) {
+                        scope.launch {
+                            bringIntoViewRequester.bringIntoView()
                         }
-                    }*/
-                    .indication(
-                        interactionSource = interactionSource,
-                        indication = LocalIndication.current
-                    )
+                    }
+                }*/
+                .indication(
+                    interactionSource = interactionSource,
+                    indication = LocalIndication.current
+                )
 //                    .bringIntoViewRequester(bringIntoViewRequester)
                 ,
                 value = query,
-                onValueChange = onUpdateQuery,
-                textStyle = TextStyle(
-                    textAlign = TextAlign.Justify,
-                    color = Color.LightGray
-                ),
+                onValueChange = { dropdownMenuUiEvent.invoke(UiEvent.OnUpdateQuery(it)) },
+                textStyle = TextStyle(textAlign = TextAlign.Justify, color = Color.LightGray),
                 interactionSource = interactionSource,
                 keyboardActions = KeyboardActions(),
                 lineLimits = TextFieldLineLimits.SingleLine,
@@ -427,14 +412,14 @@ fun <T> LabDropdownMenu2(
                         }
                     }
                 },
-                readOnly = true,
+                readOnly = readOnly,
                 cursorBrush = SolidColor(Color.LightGray)
             )
 
             ExposedDropdownMenu(
                 modifier = Modifier.width(with(LocalDensity.current) { textFieldSize.width.toDp() }),
                 expanded = expanded,
-                onDismissRequest = { onExpandedChanged(false) }
+                onDismissRequest = { dropdownMenuUiEvent.invoke(UiEvent.OnExpandedChanged(false)) }
             ) {
                 suggestions.forEachIndexed { itemIndex, option ->
                     DropdownMenuItem(
@@ -442,8 +427,8 @@ fun <T> LabDropdownMenu2(
                             .fillMaxWidth()
                             .height(48.dp),
                         onClick = {
-                            onOptionsSelected(option)
-                            onExpandedChanged(false)
+                            dropdownMenuUiEvent.invoke(UiEvent.OnOptionsSelected(option))
+                            dropdownMenuUiEvent.invoke(UiEvent.OnExpandedChanged(false))
                             focusManager.clearFocus(true)
                         },
                         text = { dropdownItemContent(itemIndex) },
@@ -458,12 +443,12 @@ fun <T> LabDropdownMenu2(
     BackHandler {
         Timber.e("BackHandler()")
         if (expanded) {
-            onExpandedChanged(false)
+            dropdownMenuUiEvent.invoke(UiEvent.OnExpandedChanged(false))
         }
         executeOnBackPressed((context.findActivity() as BaseComponentActivity))
     }
 
-    LaunchedEffect(interactionSource) {
+    /*LaunchedEffect(interactionSource) {
         Timber.i("LaunchedEffect | interactionSource: $interactionSource | coroutineContext: ${this.coroutineContext}")
 
         if (isPressed) {
@@ -490,7 +475,7 @@ fun <T> LabDropdownMenu2(
         } else {
             Timber.i("KeyboardState | keyboard is shown")
         }
-    }
+    }*/
 
     // LaunchedEffect prevents endless focus request
     /*LaunchedEffect(focusRequester) {
@@ -507,8 +492,12 @@ fun <T> LabDropdownMenu2(
     LaunchedEffect(onOutsideBoundariesClicked) {
         Timber.d("LaunchedEffect | onOutsideBoundariesClicked: $onOutsideBoundariesClicked | coroutineContext: ${this.coroutineContext}")
         if (onOutsideBoundariesClicked) {
-            focusRequester.freeFocus()
-            focusManager.clearFocus()
+            /*focusRequester.freeFocus()
+            focusManager.clearFocus()*/
+
+            if (expanded) {
+                dropdownMenuUiEvent.invoke(UiEvent.OnExpandedChanged(false))
+            }
         }
     }
 
@@ -539,15 +528,12 @@ private fun PreviewLabDropdownMenu() {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 query = "Pi'erre",
-                onUpdateQuery = {},
                 expanded = true,
                 onOutsideBoundariesClicked = false,
-                onExpandedChanged = {},
-                onExpandIconClicked = { },
                 placeholder = "Select an option",
                 label = "Search hint",
                 suggestions = listOf(),
-                onOptionsSelected = {},
+                dropdownMenuUiEvent = {},
                 dropdownItemContent = {}
             )
         }
@@ -571,15 +557,12 @@ private fun PreviewLabDropdownMenu2() {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 query = "Pi'erre",
-                onUpdateQuery = {},
                 expanded = true,
                 onOutsideBoundariesClicked = false,
-                onExpandedChanged = {},
-                onExpandIconClicked = { },
                 placeholder = "Select an option",
                 label = "Search hint",
                 suggestions = listOf("test", "mike", "chronopost", "john", "None"),
-                onOptionsSelected = {},
+                dropdownMenuUiEvent = {},
                 dropdownItemContent = {}
             )
         }

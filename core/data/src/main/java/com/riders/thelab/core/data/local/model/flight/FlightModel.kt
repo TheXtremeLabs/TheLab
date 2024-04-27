@@ -1,6 +1,7 @@
 package com.riders.thelab.core.data.local.model.flight
 
 import com.riders.thelab.core.data.remote.dto.flight.Flight
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import java.io.Serializable
 
@@ -66,14 +67,15 @@ data class FlightModel(
     val segments: List<SegmentModel>? = null,
 ) : Serializable
 
+@OptIn(ExperimentalKotoolsTypesApi::class)
 fun Flight.toModel(): FlightModel = FlightModel(
-    faFlightID = this.faFlightID,
-    operatorID = this.operatorID,
+    faFlightID = this.faFlightID ?: NotBlankString.create("N/A"),
+    operatorID = this.operatorID ?: NotBlankString.create("N/A"),
     identICAO = this.identICAO,
     identIATA = this.identIATA,
-    origin = this.origin.toModel(),
+    origin = this.origin?.toModel(),
     destination = this.destination?.toModel(),
-    status = this.status,
+    status = this.status ?: NotBlankString.create("N/A"),
     progress = this.progress,
     waypoints = this.waypoints,
     firstTimePosition = this.firstTimePosition,
@@ -106,6 +108,6 @@ fun Flight.toModel(): FlightModel = FlightModel(
     actualIn = this.actualIn,
     actualOff = this.actualOff,
     actualOn = this.actualOn,
-    foresightPredictionsAvailable = this.foresightPredictionsAvailable,
+    foresightPredictionsAvailable = this.foresightPredictionsAvailable ?: false,
     segments = this.segments?.map { it.toModel() },
 )

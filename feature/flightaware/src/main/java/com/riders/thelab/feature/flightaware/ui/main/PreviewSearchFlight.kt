@@ -179,18 +179,16 @@ fun SearchFlightByCode(uiEvent: (UiEvent) -> Unit) {
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun SearchFlightByDestination(
-    uiEvent: (UiEvent) -> Unit,
     onOutsideBoundariesClicked: Boolean,
     departureExpanded: Boolean,
-    onDepartureExpanded: (Boolean) -> Unit,
     departureSuggestions: List<AirportSearchModel>,
     arrivalExpanded: Boolean,
-    onArrivalExpanded: (Boolean) -> Unit,
     arrivalSuggestions: List<AirportSearchModel>,
+    uiEvent: (UiEvent) -> Unit
 ) {
 
-    val departureQuery by remember { mutableStateOf("") }
-    val arrivalQuery by remember { mutableStateOf("") }
+    var departureQuery by remember { mutableStateOf("") }
+    var arrivalQuery by remember { mutableStateOf("") }
 
     TheLabTheme {
         Box(
@@ -230,17 +228,41 @@ fun SearchFlightByDestination(
                     )
 
                     // Departure
-                    LabDropdownMenu2(
+                    LabDropdownMenu2<AirportSearchModel>(
                         modifier = Modifier.fillMaxWidth(),
                         query = departureQuery,
-                        onUpdateQuery = { uiEvent.invoke(UiEvent.OnUpdateDepartureQuery(it)) },
+//                        onUpdateQuery = { uiEvent.invoke(UiEvent.OnUpdateDepartureQuery(it)) },
                         onOutsideBoundariesClicked = onOutsideBoundariesClicked,
-                        expanded = departureExpanded || departureSuggestions.isNotEmpty(),
-                        onExpandedChanged = onDepartureExpanded,
+                        expanded = departureExpanded,
+//                        onExpandedChanged = onDepartureExpanded,
                         placeholder = stringResource(id = R.string.search_flight_from),
                         label = stringResource(id = R.string.search_flight_from),
                         suggestions = departureSuggestions,
-                        onOptionsSelected = { uiEvent.invoke(UiEvent.OnDepartureOptionsSelected(it)) },
+//                        onOptionsSelected = { uiEvent.invoke(UiEvent.OnDepartureOptionsSelected(it)) },
+                        dropdownMenuUiEvent = { event ->
+                            when (event) {
+                                is com.riders.thelab.core.ui.compose.component.dropdown.UiEvent.OnUpdateQuery -> {
+                                    departureQuery = event.newValue
+                                    uiEvent.invoke(UiEvent.OnUpdateDepartureQuery(event.newValue))
+                                }
+
+                                is com.riders.thelab.core.ui.compose.component.dropdown.UiEvent.OnExpandedChanged -> {
+                                    uiEvent.invoke(UiEvent.OnDepartureExpanded(event.expanded))
+                                }
+
+                                is com.riders.thelab.core.ui.compose.component.dropdown.UiEvent.OnOptionsSelected<*> -> {
+                                    val data: AirportSearchModel = event.data as AirportSearchModel
+                                    departureQuery = data.name.toString()
+                                    uiEvent.invoke(UiEvent.OnDepartureOptionsSelected(data))
+                                    uiEvent.invoke(UiEvent.OnDepartureExpanded(false))
+                                    uiEvent.invoke(UiEvent.OnUpdateDepartureQuery(data.name.toString()))
+                                }
+
+                                else -> {
+                                    Timber.e("SearchFlightByDestination | recomposition | dropdownMenuUiEvent else branch")
+                                }
+                            }
+                        },
                         dropdownItemContent = {
                             AirportSearchItem(item = departureSuggestions[it], isSuggestion = true)
                         }
@@ -304,14 +326,38 @@ fun SearchFlightByDestination(
                     LabDropdownMenu2(
                         modifier = Modifier.fillMaxWidth(),
                         query = arrivalQuery,
-                        onUpdateQuery = { uiEvent.invoke(UiEvent.OnUpdateArrivalQuery(it)) },
+//                        onUpdateQuery = { uiEvent.invoke(UiEvent.OnUpdateArrivalQuery(it)) },
                         onOutsideBoundariesClicked = onOutsideBoundariesClicked,
-                        expanded = arrivalExpanded || arrivalSuggestions.isNotEmpty(),
-                        onExpandedChanged = onArrivalExpanded,
+                        expanded = arrivalExpanded,
+//                        onExpandedChanged = onArrivalExpanded,
                         placeholder = stringResource(id = R.string.search_flight_destination),
                         label = stringResource(id = R.string.search_flight_destination),
                         suggestions = arrivalSuggestions,
-                        onOptionsSelected = { uiEvent.invoke(UiEvent.OnArrivalOptionsSelected(it)) },
+//                        onOptionsSelected = { uiEvent.invoke(UiEvent.OnArrivalOptionsSelected(it)) },
+                        dropdownMenuUiEvent = { event ->
+                            when (event) {
+                                is com.riders.thelab.core.ui.compose.component.dropdown.UiEvent.OnUpdateQuery -> {
+                                    arrivalQuery = event.newValue
+                                    uiEvent.invoke(UiEvent.OnUpdateArrivalQuery(event.newValue))
+                                }
+
+                                is com.riders.thelab.core.ui.compose.component.dropdown.UiEvent.OnExpandedChanged -> {
+                                    uiEvent.invoke(UiEvent.OnArrivalExpanded(event.expanded))
+                                }
+
+                                is com.riders.thelab.core.ui.compose.component.dropdown.UiEvent.OnOptionsSelected<*> -> {
+                                    val data: AirportSearchModel = event.data as AirportSearchModel
+                                    arrivalQuery = data.name.toString()
+                                    uiEvent.invoke(UiEvent.OnArrivalOptionsSelected(data))
+                                    uiEvent.invoke(UiEvent.OnArrivalExpanded(false))
+                                    uiEvent.invoke(UiEvent.OnUpdateArrivalQuery(data.name.toString()))
+                                }
+
+                                else -> {
+                                    Timber.e("SearchFlightByDestination | recomposition | dropdownMenuUiEvent else branch")
+                                }
+                            }
+                        },
                         dropdownItemContent = {
                             AirportSearchItem(item = arrivalSuggestions[it], isSuggestion = true)
                         }
@@ -324,14 +370,14 @@ fun SearchFlightByDestination(
                             return@Button
                         }
                         uiEvent.invoke(
-                            UiEvent.OnSearchFlightByRoute(
+                            UiEvent.OnSearchFlightByRoute/*(
                                 departureAirportIcaoCode = NotBlankString.create(
                                     departureQuery
                                 ),
                                 arrivalAirportIcaoCode = NotBlankString.create(
                                     arrivalQuery
                                 )
-                            )
+                            )*/
                         )
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
@@ -353,10 +399,8 @@ fun SearchFlightContent(
     searchPageIndex: Int,
     onOutsideBoundariesClicked: Boolean,
     departureExpanded: Boolean,
-    onDepartureExpanded: (Boolean) -> Unit,
     departureSuggestions: List<AirportSearchModel>,
     arrivalExpanded: Boolean,
-    onArrivalExpanded: (Boolean) -> Unit,
     arrivalSuggestions: List<AirportSearchModel>,
 ) {
     val scope = rememberCoroutineScope()
@@ -411,14 +455,12 @@ fun SearchFlightContent(
                             )
 
                             1 -> SearchFlightByDestination(
-                                uiEvent = uiEvent,
                                 onOutsideBoundariesClicked = onOutsideBoundariesClicked,
                                 departureExpanded = departureExpanded,
-                                onDepartureExpanded = onDepartureExpanded,
                                 departureSuggestions = departureSuggestions,
                                 arrivalExpanded = arrivalExpanded,
-                                onArrivalExpanded = onArrivalExpanded,
                                 arrivalSuggestions = arrivalSuggestions,
+                                uiEvent = uiEvent,
                             )
                         }
                     }
@@ -465,15 +507,12 @@ private fun PreviewSearchFlightByDestination() {
             contentAlignment = Alignment.Center
         ) {
             SearchFlightByDestination(
-                uiEvent = {},
                 onOutsideBoundariesClicked = false,
                 departureExpanded = false,
-                onDepartureExpanded = {},
                 departureSuggestions = listOf(),
                 arrivalExpanded = true,
-                onArrivalExpanded = {},
                 arrivalSuggestions = listOf(),
-            )
+            ) {}
         }
     }
 }
@@ -482,7 +521,7 @@ private fun PreviewSearchFlightByDestination() {
 @Composable
 private fun PreviewSearchFlightContent() {
     TheLabTheme {
-        SearchFlightContent(uiEvent = {}, 0, false, false, {}, emptyList(), false, {}, emptyList())
+        SearchFlightContent(uiEvent = {}, 0, false, false, emptyList(), false, emptyList())
     }
 }
 
@@ -490,6 +529,6 @@ private fun PreviewSearchFlightContent() {
 @Composable
 private fun PreviewSearchFlightContentPage() {
     TheLabTheme {
-        SearchFlightContent(uiEvent = {}, 1, false, false, {}, emptyList(), false, {}, emptyList())
+        SearchFlightContent(uiEvent = {}, 1, false, false, emptyList(), false, emptyList())
     }
 }

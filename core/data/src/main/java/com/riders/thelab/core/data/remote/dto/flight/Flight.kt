@@ -7,17 +7,17 @@ import java.io.Serializable
 @kotlinx.serialization.Serializable
 data class Flight(
     @SerialName("ident")
-    val operatorID: NotBlankString,
+    val operatorID: NotBlankString? = null,
     @SerialName("ident_icao")
     val identICAO: NotBlankString? = null,
     @SerialName("ident_iata")
     val identIATA: NotBlankString? = null,
     @SerialName("fa_flight_id")
-    val faFlightID: NotBlankString,
+    val faFlightID: NotBlankString? = null,
     @SerialName("waypoints")
     val waypoints: Int? = null,
     @SerialName("first_position_time")
-    val firstTimePosition: NotBlankString?,
+    val firstTimePosition: NotBlankString? = null,
     @SerialName("last_position")
     val lastPosition: LastPosition?,
     /* List of 4 coordinates representing the edges of a box that entirely contains this flight's positions.
@@ -41,22 +41,22 @@ data class Flight(
     val inboundFaFlightID: NotBlankString? = null,
 
     @SerialName("codeshares")
-    val codeShares: List<NotBlankString>,
+    val codeShares: List<NotBlankString>? = null,
 
     @SerialName("codeshares_iata")
-    val codeSharesIata: List<NotBlankString>,
+    val codeSharesIata: List<NotBlankString>? = null,
 
     /* Flag indicating whether this flight is blocked from public viewing.*/
     @SerialName("blocked")
-    val blocked: Boolean,
+    val blocked: Boolean? = null,
     @SerialName("diverted")
-    val diverted: Boolean,
+    val diverted: Boolean? = null,
     @SerialName("cancelled")
-    val cancelled: Boolean,
+    val cancelled: Boolean? = null,
     @SerialName("position_only")
-    val positionOnly: Boolean,
+    val positionOnly: Boolean? = null,
     @SerialName("origin")
-    val origin: Origin,
+    val origin: Origin? = null,
     @SerialName("destination")
     val destination: Destination? = null,
     /*
@@ -84,7 +84,7 @@ data class Flight(
     @SerialName("progress_percent")
     val progress: Int?,
     @SerialName("status")
-    val status: NotBlankString,
+    val status: NotBlankString? = null,
     @SerialName("route_distance")
     val routeDistance: Int?,
     /* Filed IFR airspeed (knots). */
@@ -113,7 +113,7 @@ data class Flight(
     @SerialName("terminal_destination")
     val terminalDestination: NotBlankString? = null,
     @SerialName("type")
-    val type: String,
+    val type: String? = null,
     /* Scheduled gate departure time. */
     @SerialName("scheduled_out")
     val scheduledOut: NotBlankString? = null,
@@ -151,7 +151,7 @@ data class Flight(
     @SerialName("actual_on")
     val actualOn: NotBlankString? = null,
     @SerialName("foresight_predictions_available")
-    val foresightPredictionsAvailable: Boolean,
+    val foresightPredictionsAvailable: Boolean? = null,
     /* Predicted time of gate departure event. Only available from /foresight endpoints. */
     @SerialName("predicted_out")
     val predictedOut: NotBlankString? = null,

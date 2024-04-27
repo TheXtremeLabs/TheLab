@@ -71,7 +71,13 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
             }
 
             repository.isVibration().collect {
+                Timber.d("init | isVibration() | value: $it")
                 updateVibration(it)
+            }
+
+            repository.isActivitiesSplashScreenEnabled().collect {
+                Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
+                updateActivitiesSplashEnabled(it)
             }
         }
 
@@ -93,6 +99,12 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
     fun updateVibrationDatastore() {
         viewModelScope.launch {
             repository.toggleVibration()
+        }
+    }
+
+    fun updateActivitiesSplashScreenDatastore() {
+        viewModelScope.launch {
+            repository.toggleActivitiesSplashScreenEnabled()
         }
     }
 

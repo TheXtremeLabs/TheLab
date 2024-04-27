@@ -33,11 +33,14 @@ import kotlinx.coroutines.launch
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import timber.log.Timber
 
+// TODO : Package organization
+// TODO : flight (search id and route ; list and details)
+// TODO : airports (search and details)
+
 @AndroidEntryPoint
 class FlightMainActivity : BaseComponentActivity() {
 
     private val mViewModel: FlightViewModel by viewModels<FlightViewModel>()
-    private val mFlightSearchViewModel: FlightSearchViewModel by viewModels<FlightSearchViewModel>()
 
     private var mLabNetworkManager: LabNetworkManager? = null
 
@@ -75,14 +78,14 @@ class FlightMainActivity : BaseComponentActivity() {
             .getInstance(this, lifecycle)
             .also {
                 mViewModel.observeNetworkState(it)
-                mFlightSearchViewModel.observeNetworkState(it)
+                // mFlightSearchViewModel.observeNetworkState(it)
             }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
-                    val departureAirportsFlow by mFlightSearchViewModel.departureAirportStateFlow.collectAsStateWithLifecycle()
-                    val arrivalAirportsFlow by mFlightSearchViewModel.arrivalAirportStateFlow.collectAsStateWithLifecycle()
+                    val departureAirportsFlow by mViewModel.departureAirportStateFlow.collectAsStateWithLifecycle()
+                    val arrivalAirportsFlow by mViewModel.arrivalAirportStateFlow.collectAsStateWithLifecycle()
 
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
@@ -93,11 +96,17 @@ class FlightMainActivity : BaseComponentActivity() {
                             FlightMainContent(
                                 hasConnection = mViewModel.hasInternetConnection,
                                 searchPageIndex = mViewModel.searchPageIndex,
+                                airportsNearBy = mViewModel.airportsNearBy,
+                                isLoading = mViewModel.isAirportsNearByLoading,
+                                departureExpanded = mViewModel.departureDropdownExpanded,
+                                departureSuggestions = departureAirportsFlow,
+                                arrivalExpanded = mViewModel.arrivalDropdownExpanded,
+                                arrivalSuggestions = arrivalAirportsFlow,
                                 uiEvent = { event ->
-                                    Timber.d("uiEvent | $event")
+                                    Timber.i("uiEvent | ${event.javaClass.name}")
 
                                     // Call onEvent for ViewModel
-                                    mViewModel.onEvent(event)
+                                    // mViewModel.onEvent(event)
 
                                     // Call onEvent for FlightSearchViewModel as well
                                     when (event) {
@@ -108,14 +117,14 @@ class FlightMainActivity : BaseComponentActivity() {
                                                         .toTypedArray()
                                                 )
                                                 continueWithBlock = true to {
-                                                    mFlightSearchViewModel.onEvent(
+                                                    mViewModel.onEvent(
                                                         uiEvent = event,
                                                         activity = this@FlightMainActivity
                                                     )
                                                 }
                                             } else {
-                                                mFlightSearchViewModel.initLocationManager(this@FlightMainActivity)
-                                                mFlightSearchViewModel.onEvent(
+                                                mViewModel.initLocationManager(this@FlightMainActivity)
+                                                mViewModel.onEvent(
                                                     uiEvent = event,
                                                     activity = this@FlightMainActivity
                                                 )
@@ -123,28 +132,21 @@ class FlightMainActivity : BaseComponentActivity() {
                                         }
 
                                         else -> {
-                                            mFlightSearchViewModel.onEvent(
-                                                uiEvent = event,
-                                                activity = null
-                                            )
+                                            mViewModel.onEvent(uiEvent = event)
                                         }
                                     }
                                 },
-                                airportsNearBy = mFlightSearchViewModel.airportsNearBy,
-                                isLoading = mFlightSearchViewModel.isAirportsNearByLoading,
-                                departureExpanded = mViewModel.departureDropdownExpanded || departureAirportsFlow.isNotEmpty(),
-                                onDepartureExpanded = mViewModel::updateDepartureExpanded,
-                                departureSuggestions = departureAirportsFlow,
-                                arrivalExpanded = mViewModel.arrivalDropdownExpanded || departureAirportsFlow.isNotEmpty(),
-                                onArrivalExpanded = mViewModel::updateArrivalExpanded,
-                                arrivalSuggestions = arrivalAirportsFlow
                             )
                         }
                     }
 
                     LaunchedEffect(departureAirportsFlow) {
                         Timber.d("LaunchedEffect | departure Airports Flow value: $departureAirportsFlow | coroutineContext: ${this.coroutineContext}")
-
+                        mViewModel.onEvent(UiEvent.OnDepartureExpanded(departureAirportsFlow.isNotEmpty()))
+                    }
+                    LaunchedEffect(arrivalAirportsFlow) {
+                        Timber.d("LaunchedEffect | arrival Airports Flow value: $arrivalAirportsFlow | coroutineContext: ${this.coroutineContext}")
+                        mViewModel.onEvent(UiEvent.OnArrivalExpanded(arrivalAirportsFlow.isNotEmpty()))
                     }
                 }
             }
@@ -184,7 +186,7 @@ class FlightMainActivity : BaseComponentActivity() {
             .apply { this.putExtra(AirportSearchDetailActivity.EXTRA_AIRPORT_ID, airportID) }
             .run { startActivity(this) }
 
-    fun launchFlightDetail(flight: FlightModel)  = Intent(this, FlightDetailActivity::class.java)
+    fun launchFlightDetail(flight: FlightModel) = Intent(this, FlightDetailActivity::class.java)
         .apply { this.putExtra(FlightDetailActivity.EXTRA_FLIGHT, flight) }
         .run { startActivity(this) }
 }

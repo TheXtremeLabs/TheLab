@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Error
@@ -34,7 +34,6 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TooltipState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +45,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.flight.AirportModel
@@ -81,10 +79,8 @@ fun FlightMainContent(
     airportsNearBy: List<AirportModel>,
     isLoading: Boolean,
     departureExpanded: Boolean,
-    onDepartureExpanded: (Boolean) -> Unit,
     departureSuggestions: List<AirportSearchModel>,
     arrivalExpanded: Boolean,
-    onArrivalExpanded: (Boolean) -> Unit,
     arrivalSuggestions: List<AirportSearchModel>,
 ) {
     val context = LocalContext.current
@@ -176,10 +172,8 @@ fun FlightMainContent(
                             searchPageIndex = searchPageIndex,
                             onOutsideBoundariesClicked = onOutsideBoundariesClicked,
                             departureExpanded = departureExpanded,
-                            onDepartureExpanded = onDepartureExpanded,
                             departureSuggestions = departureSuggestions,
                             arrivalExpanded = arrivalExpanded,
-                            onArrivalExpanded = onArrivalExpanded,
                             arrivalSuggestions = arrivalSuggestions
                         )
                     }
@@ -222,9 +216,16 @@ fun FlightMainContent(
 
                     item {
                         AirportNearByContent(
+                            modifier = Modifier.clickable {
+                                scope.launch {
+                                    onOutsideBoundariesClicked = true
+                                    delay(250)
+                                    onOutsideBoundariesClicked = false
+                                }
+                            },
                             hasInternetConnection = hasConnection,
-                            uiEvent = uiEvent,
                             airports = airportsNearBy,
+                            uiEvent = uiEvent,
                             isLoading = isLoading
                         )
                     }
@@ -270,10 +271,8 @@ private fun PreviewFlightMainContent() {
             airportsNearBy = emptyList(),
             isLoading = true,
             departureExpanded = true,
-            onDepartureExpanded = {},
             departureSuggestions = listOf(),
             arrivalExpanded = true,
-            onArrivalExpanded = {},
             arrivalSuggestions = listOf()
         )
     }
@@ -291,10 +290,8 @@ private fun PreviewFlightMainContentNoConnection() {
             airportsNearBy = emptyList(),
             isLoading = false,
             departureExpanded = true,
-            onDepartureExpanded = {},
             departureSuggestions = listOf(),
             arrivalExpanded = true,
-            onArrivalExpanded = {},
             arrivalSuggestions = listOf()
         )
     }
