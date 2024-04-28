@@ -229,7 +229,7 @@ fun SearchFlightByRouteContent(
                             )
                         }
 
-                        itemsIndexed(items = flights) { index, item ->
+                        itemsIndexed(items = flights) { _, item ->
                             SearchFlightByRouteItem(item)
                         }
 

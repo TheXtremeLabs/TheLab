@@ -88,8 +88,7 @@ class AirportSearchDetailViewModel @Inject constructor(
                     val airportResponse: Airport = repository.getAirportById(it.toString())
 
                     Timber.d("getAirportById() | result: $airportResponse")
-                    val airportModel: AirportModel = airportResponse.toModel()
-                    updateAirportModel(airportModel)
+                    updateAirportModel(airportResponse.toModel())
                 }
             }
         } ?: run {

@@ -41,7 +41,6 @@ import java.util.Locale
 
 @Composable
 fun SearchFlightByRouteItem(flight: SegmentModel) {
-    val locale = Locale.getDefault()
     val zoneId by remember { mutableStateOf(ZoneId.systemDefault()) }
     val departureLocalDateTime by remember {
         mutableStateOf(

@@ -47,7 +47,7 @@ class FlightMainActivity : BaseComponentActivity() {
 
     override var permissionLauncher: ActivityResultLauncher<Array<String>>?
         get() = super.permissionLauncher
-        set(value) {
+        set(@Suppress("UNUSED_PARAMETER") value) {
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { areGranted: Map<String, Boolean> ->
                 if (!areGranted.values.all { it }) {
                     Timber.e("Location permissions is NOT granted")
