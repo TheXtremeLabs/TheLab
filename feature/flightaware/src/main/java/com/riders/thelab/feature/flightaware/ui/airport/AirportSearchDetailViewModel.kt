@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.toModel
+import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.Arrivals
 import com.riders.thelab.core.data.remote.dto.flight.Departures
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
@@ -84,10 +85,11 @@ class AirportSearchDetailViewModel @Inject constructor(
         airportID?.let {
             if (it.toString() != "N/A") {
                 viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-                    val airportResponse = repository.getAirportById(it.toString())
+                    val airportResponse: Airport = repository.getAirportById(it.toString())
 
                     Timber.d("getAirportById() | result: $airportResponse")
-                    updateAirportModel(airportResponse.toModel())
+                    val airportModel: AirportModel = airportResponse.toModel()
+                    updateAirportModel(airportModel)
                 }
             }
         } ?: run {
