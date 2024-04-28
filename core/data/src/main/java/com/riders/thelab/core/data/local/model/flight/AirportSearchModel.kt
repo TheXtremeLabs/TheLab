@@ -19,7 +19,6 @@ data class AirportSearchModel(
     val iataCode: NotBlankString? = null
 )
 
-
 @OptIn(ExperimentalKotoolsTypesApi::class)
 fun AirportSearch.toModel(): AirportSearchModel = AirportSearchModel(
     city = this.cityName?.let { NotBlankString.create(it) },

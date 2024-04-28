@@ -10,6 +10,7 @@ import com.riders.thelab.core.data.local.model.compose.SearchFlightUiState
 import com.riders.thelab.core.data.local.model.flight.FlightModel
 import com.riders.thelab.core.data.local.model.flight.OperatorModel
 import com.riders.thelab.core.data.local.model.flight.toModel
+import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +48,6 @@ class SearchFlightViewModel @Inject constructor(
             throwable.printStackTrace()
             Timber.e(throwable.message)
         }
-
 
 
     /////////////////////////////////////
@@ -115,7 +115,7 @@ class SearchFlightViewModel @Inject constructor(
                 val response: OperatorModel =
                     repository.getOperatorById(segmentModel.operatorICAO.toString()).toModel()
 
-                val wikiResponse = repository.getWikimediaResponse(
+                val wikiResponse: WikimediaResponse = repository.getWikimediaResponse(
                     NotBlankString.create(
                         response.wikiUrl.toString().split("/").last()
                     )

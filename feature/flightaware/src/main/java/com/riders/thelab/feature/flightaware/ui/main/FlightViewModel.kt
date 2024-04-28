@@ -12,6 +12,8 @@ import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.OperatorModel
 import com.riders.thelab.core.data.local.model.flight.toModel
+import com.riders.thelab.core.data.remote.dto.flight.Airport
+import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
 import com.riders.thelab.feature.flightaware.BuildConfig
 import com.riders.thelab.feature.flightaware.ui.airport.PreviewProviderAirportSearch
 import com.riders.thelab.feature.flightaware.viewmodel.FlightSearchViewModel
@@ -173,15 +175,15 @@ class FlightViewModel @Inject constructor(
         Timber.d("getAirports()")
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            val firstAirports = repository.getAirports(maxPages = 3)
+            val firstAirports: AirportsResponse = repository.getAirports(maxPages = 3)
             Timber.d("First Airports Next link: ${firstAirports.links.getNext()}")
 
-            val secondAirports =
+            val secondAirports: AirportsResponse =
                 repository.getAirports(maxPages = 3, cursor = firstAirports.links.getNext())
-            val thirdAirports =
+            val thirdAirports: AirportsResponse =
                 repository.getAirports(maxPages = 3, cursor = secondAirports.links.getNext())
 
-            val totalAirports =
+            val totalAirports: List<Airport> =
                 firstAirports.airports + secondAirports.airports + thirdAirports.airports
 
             Timber.d("Total Airports: ${totalAirports.size}")

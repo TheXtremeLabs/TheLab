@@ -102,16 +102,18 @@ class AirportSearchViewModel @Inject constructor(
         }
 
 
-    fun getAirportById(airportID: String): AirportModel =
-        runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+    fun getAirportById(airportID: String): AirportModel {
+        return runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             Timber.d("getAirportById() | airport ID: $airportID")
-            repository.getAirportById(airportID).toModel()
+            val airportModel: AirportModel = repository.getAirportById(airportID).toModel()
+            airportModel
         }
+    }
 
 
     private fun getAirportSearchModelList(airportSearchList: List<AirportSearch>): List<AirportSearchModel> =
         runCatching {
-            buildSet {
+            buildSet<AirportSearchModel> {
                 airportSearchList.forEach {
                     add(it.toModel())
                 }

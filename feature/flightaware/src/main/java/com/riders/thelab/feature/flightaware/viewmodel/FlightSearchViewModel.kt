@@ -15,6 +15,7 @@ import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
+import com.riders.thelab.core.data.local.model.flight.FlightModel
 import com.riders.thelab.core.data.local.model.flight.toModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
 import com.riders.thelab.core.data.remote.dto.flight.Flight
@@ -290,7 +291,7 @@ open class FlightSearchViewModel @Inject constructor(
             }
 
             runCatching {
-                val flightModel = flights[0].toModel()
+                val flightModel: FlightModel = flights[0].toModel()
 
                 (context as FlightMainActivity).launchSearchFlight(
                     flightModel,
