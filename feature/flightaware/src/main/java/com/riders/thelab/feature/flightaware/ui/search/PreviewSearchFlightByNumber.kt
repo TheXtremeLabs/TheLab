@@ -22,13 +22,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.flight.FlightModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.ui.flight.FlightDetailContent
 import com.riders.thelab.feature.flightaware.ui.flight.FlightInfoContainer
 import com.riders.thelab.feature.flightaware.ui.flight.FlightStatusCard
-import com.riders.thelab.feature.flightaware.ui.flight.PreviewProviderFlight
+import com.riders.thelab.feature.flightaware.ui.main.Footer
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
@@ -95,6 +95,9 @@ fun SearchFlightByNumberContent(flight: FlightModel, uiEvent: (UiEvent) -> Unit)
                         )
                     }
 
+                    item {
+                        Footer()
+                    }
                 }
             }
         }

@@ -8,6 +8,7 @@ object PreferencesKeys {
     // APP
     val DATASTORE_DARK_MODE_KEY = booleanPreferencesKey("DATASTORE_DARK_MODE_KEY")
     val DATASTORE_VIBRATION_KEY = booleanPreferencesKey("DATASTORE_VIBRATION_KEY")
+    val DATASTORE_ACTIVITIES_SPLASH_SCREEN_KEY = booleanPreferencesKey("DATASTORE_VIBRATION_KEY")
 
     // USER
     val DATASTORE_EMAIL_KEY = stringPreferencesKey("DATASTORE_EMAIL_KEY")

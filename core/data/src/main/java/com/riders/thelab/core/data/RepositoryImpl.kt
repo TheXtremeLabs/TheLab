@@ -37,6 +37,7 @@ import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.City
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import kotlinx.coroutines.flow.Flow
 import kotools.types.text.NotBlankString
 import okhttp3.ResponseBody
@@ -272,7 +273,7 @@ class RepositoryImpl @Inject constructor(
         radius: Int,
         maxPages: Int,
         cursor: String?
-    ): AirportsResponse  = mApiImpl.getAirportNearBy(latitude, longitude, radius, maxPages, cursor)
+    ): AirportsResponse = mApiImpl.getAirportNearBy(latitude, longitude, radius, maxPages, cursor)
 
     override suspend fun getOperators(maxPages: Int, cursor: String?): OperatorResponse =
         mApiImpl.getOperators(maxPages, cursor)
@@ -318,6 +319,10 @@ class RepositoryImpl @Inject constructor(
     ): SearchFlightResponse =
         mApiImpl.searchFlightByID(query, type, startDate, endDate, maxPages, cursor)
 
+    override suspend fun getWikimediaResponse(query: NotBlankString): WikimediaResponse =
+        mApiImpl.getWikimediaResponse(query)
+
+
     /////////////////////////
     //
     // PREFERENCES
@@ -349,4 +354,10 @@ class RepositoryImpl @Inject constructor(
     override fun getUserToken(): Flow<String> = mPreferencesImpl.getUserToken()
 
     override suspend fun saveTokenPref(token: String) = mPreferencesImpl.saveTokenPref(token)
+
+    override fun isActivitiesSplashScreenEnabled(): Flow<Boolean> =
+        mPreferencesImpl.isActivitiesSplashScreenEnabled()
+
+    override suspend fun toggleActivitiesSplashScreenEnabled() =
+        mPreferencesImpl.toggleActivitiesSplashScreenEnabled()
 }

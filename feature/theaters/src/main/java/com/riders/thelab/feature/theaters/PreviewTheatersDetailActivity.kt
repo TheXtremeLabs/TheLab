@@ -40,12 +40,11 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import coil.compose.AsyncImagePainter
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBDetailUiState
-import com.riders.thelab.core.data.local.model.tmdb.TMDBVideoModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
-import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.utils.loadImage

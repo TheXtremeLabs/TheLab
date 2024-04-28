@@ -2,8 +2,6 @@ package com.riders.thelab.feature.flightaware.ui.airport
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
-import com.riders.thelab.core.data.remote.dto.flight.Arrivals
-import com.riders.thelab.core.data.remote.dto.flight.Departures
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
@@ -16,6 +14,13 @@ class PreviewProviderAirportSearch : PreviewParameterProvider<AirportSearchModel
                 description = NotBlankString.create("Los Angeles Intl (Los Angeles)"),
                 icaoCode = NotBlankString.create("KLAX"),
                 iataCode = NotBlankString.create("LAX")
+            ),
+            AirportSearchModel(
+                name = NotBlankString.create("Paris-Charles-de-Gaulle"),
+                description = NotBlankString.create("Paris-Charles-de-Gaulle"),
+                icaoCode = NotBlankString.create("LFPG"),
+                iataCode = NotBlankString.create("CDG"),
+                city = NotBlankString.create("Paris"),
             ),
             AirportSearchModel(
                 name = NotBlankString.create("Whiteman (Los Angeles)"),

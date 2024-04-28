@@ -20,12 +20,21 @@ import com.riders.thelab.core.data.local.model.compose.SearchFlightUiState
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import kotools.types.text.NotBlankString
 import timber.log.Timber
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
+@AndroidEntryPoint
 class SearchFlightActivity : BaseComponentActivity() {
 
     private val mViewModel: SearchFlightViewModel by viewModels<SearchFlightViewModel>()
+    private val locale = Locale.getDefault()
+    private var currentDate: NotBlankString? = null
 
     ///////////////////////////////
     //
@@ -34,6 +43,9 @@ class SearchFlightActivity : BaseComponentActivity() {
     ///////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setupCurrentDate()
+
         mViewModel.getBundle(intent)
 
         lifecycleScope.launch {
@@ -68,6 +80,7 @@ class SearchFlightActivity : BaseComponentActivity() {
 
                                     is SearchFlightUiState.SearchFlightByRoute -> {
                                         SearchFlightByRouteContent(
+                                            currentDate = currentDate!!,
                                             flights = targetState.flight.segments!!,
                                             uiEvent = mViewModel::onEvent
                                         )
@@ -95,7 +108,25 @@ class SearchFlightActivity : BaseComponentActivity() {
         finish()
     }
 
+
+    ///////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    ///////////////////////////////
+    @OptIn(ExperimentalKotoolsTypesApi::class)
+    fun setupCurrentDate() {
+        Timber.d("setupCurrentDate()")
+        val now = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN, locale)
+        val formattedDate = now.format(formatter)
+
+        currentDate = NotBlankString.create(formattedDate)
+    }
+
     companion object {
+        const val DATE_FORMAT_PATTERN = "d MMM uuuu"
+
         const val EXTRA_FLIGHT: String = "EXTRA_FLIGHT"
         const val EXTRA_FLIGHT_LIST: String = "EXTRA_FLIGHT_LIST"
         const val EXTRA_SEARCH_TYPE: String = "EXTRA_SEARCH_TYPE"

@@ -57,9 +57,10 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.riders.thelab.core.data.local.model.compose.PaletteUiState
+import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
-import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.snackbar.SnackbarVisualsCustom
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.loadImage
@@ -105,7 +106,7 @@ fun PaletteContent(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TheLabTopAppBar(
-                title = stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_palette),
+                title = stringResource(id = R.string.activity_title_palette),
                 withGradientBackground = true,
                 actions = {
                     Box(

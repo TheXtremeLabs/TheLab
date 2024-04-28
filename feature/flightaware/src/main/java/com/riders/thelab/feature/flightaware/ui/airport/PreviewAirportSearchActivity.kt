@@ -24,12 +24,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text2.BasicTextField2
 import androidx.compose.foundation.text2.input.TextFieldLineLimits
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -64,7 +64,7 @@ import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import com.riders.thelab.feature.flightaware.ui.main.Footer
 import timber.log.Timber
 
 
@@ -246,7 +246,16 @@ fun AirportSearchContent(
                     }
                 }
 
-                items(items = airportList) { item -> AirportSearchItem(item = item,isSuggestion = false) }
+                items(items = airportList) { item ->
+                    AirportSearchItem(
+                        item = item,
+                        isSuggestion = false
+                    )
+                }
+
+                item {
+                    Footer()
+                }
             }
 
             AnimatedVisibility(modifier = Modifier.fillMaxWidth(), visible = isQueryLoading) {

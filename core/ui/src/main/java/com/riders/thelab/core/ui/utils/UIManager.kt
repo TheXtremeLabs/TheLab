@@ -28,9 +28,8 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.core.ui.compose.component.executeOnBackPressed
+import com.riders.thelab.core.ui.compose.component.toolbar.executeOnBackPressed
 import com.riders.thelab.core.ui.data.SnackBarType
-import com.riders.thelab.core.ui.views.toast.ToastTypeEnum
 import timber.log.Timber
 
 object UIManager {

@@ -60,6 +60,7 @@ object Constants {
     const val BASE_ENDPOINT_TMDB_IMAGE_W_500 = "https://image.tmdb.org/t/p/w500"
     const val URL_TMDB_WEBSITE: String = "https://www.themoviedb.org/?language=fr"
     const val BASE_ENDPOINT_FLIGHT_AWARE_API = "https://aeroapi.flightaware.com/aeroapi/"
+    const val BASE_ENDPOINT_WIKIMEDIA_API = "https://en.wikipedia.org/"
 
     // Palette
     const val PALETTE_URL = "http://i.ytimg.com/vi/aNHOfJCphwk/maxresdefault.jpg"
