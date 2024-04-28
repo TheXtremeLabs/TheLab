@@ -187,7 +187,7 @@ class FlightViewModel @Inject constructor(
                 firstAirports.airports + secondAirports.airports + thirdAirports.airports
 
             Timber.d("Total Airports: ${totalAirports.size}")
-            updateAirportList(totalAirports.map { it.toModel() })
+            updateAirportList(totalAirports.map { airport -> airport.toModel() })
         }
     }
 

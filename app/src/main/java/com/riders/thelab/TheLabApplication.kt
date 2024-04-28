@@ -19,8 +19,8 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.initialization.InitializationStatus
+/*import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.initialization.InitializationStatus*/
 import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
@@ -134,9 +134,9 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
         }
 
         // Mobile ADS
-        MobileAds.initialize(this) { initializationStatus: InitializationStatus ->
+        /*MobileAds.initialize(this) { initializationStatus: InitializationStatus ->
             Timber.d("initializationStatus: $initializationStatus")
-        }
+        }*/
     }
 
     private fun delayedInit() {

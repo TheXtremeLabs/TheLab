@@ -14,9 +14,7 @@ data class FCDKatUser(
     val username: String,
     val createdTimestamp: Timestamp,
     val fcmToken: String
-) : Serializable {
-    constructor() : this("", "", "", Timestamp.now(), "")
-}
+) : Serializable
 
 
 /**

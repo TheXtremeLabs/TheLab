@@ -12,7 +12,7 @@ dependencies {
     /////////////////////////////
     // Firebase
     api(platform(libs.firebase.bom))
-    api(libs.firebase.ads)
+//    api(libs.firebase.ads)
     api(libs.firebase.analytics)
     api(libs.firebase.auth)
     api(libs.firebase.crashlytics)

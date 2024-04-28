@@ -6,15 +6,12 @@ import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBVideoModel
 import com.riders.thelab.core.data.local.model.tmdb.toModel
 import com.riders.thelab.core.data.remote.dto.tmdb.MovieDto
-import com.riders.thelab.core.data.remote.dto.tmdb.VideoDto
 
 
 class PreviewProviderTMDBVideoModel : PreviewParameterProvider<TMDBVideoModel> {
     override val values: Sequence<TMDBVideoModel>
         get() = sequenceOf(
-            VideoDto(
-                iso_639_1 = "en",
-                iso_3166_1 = "US",
+            TMDBVideoModel(
                 name = "20th Anniversary Trailer",
                 key = "dfeUzm6KF4g",
                 site = "YouTube",
@@ -23,7 +20,7 @@ class PreviewProviderTMDBVideoModel : PreviewParameterProvider<TMDBVideoModel> {
                 official = true,
                 publishedAt = "2019-10-15T18:59:47.000Z",
                 id = "64fb16fbdb4ed610343d72c3"
-            ).toModel()
+            )
         )
 }
 
