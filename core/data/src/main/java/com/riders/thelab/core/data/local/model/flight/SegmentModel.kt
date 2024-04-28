@@ -1,8 +1,6 @@
 package com.riders.thelab.core.data.local.model.flight
 
-import com.riders.thelab.core.data.remote.dto.flight.Destination
 import com.riders.thelab.core.data.remote.dto.flight.FlightType
-import com.riders.thelab.core.data.remote.dto.flight.Origin
 import com.riders.thelab.core.data.remote.dto.flight.Segment
 import kotools.types.text.NotBlankString
 import java.io.Serializable
@@ -30,8 +28,8 @@ data class SegmentModel(
     val diverted: Boolean,
     val cancelled: Boolean,
     val positionOnly: Boolean,
-    val origin: Origin,
-    val destination: Destination? = null,
+    val origin: OriginDestinationModel,
+    val destination: OriginDestinationModel? = null,
     val departureDelay: Int?,
     val arrivalDelay: Int?,
     val progress: Int?,
@@ -53,6 +51,7 @@ data class SegmentModel(
     val terminalOrigin: NotBlankString?,
     val terminalDestination: NotBlankString?,
     val type: FlightType,
+    val filedEte: Int? = null,
     /* Scheduled gate departure time. */
     val scheduledOut: NotBlankString?,
     /* Estimated gate departure time. */
@@ -97,8 +96,8 @@ fun Segment.toModel(): SegmentModel = SegmentModel(
     diverted = this.diverted,
     cancelled = this.cancelled,
     positionOnly = this.positionOnly,
-    origin = this.origin,
-    destination = this.destination,
+    origin = this.origin.toModel(),
+    destination = this.destination?.toModel(),
     departureDelay = this.departureDelay,
     arrivalDelay = this.arrivalDelay,
     progress = this.progress,

@@ -56,5 +56,8 @@ dependencies {
     // Charts
     api(libs.mpandroidchart)
 
+    // Jsoup - Java library HTML Dom Parser
+    implementation("org.jsoup:jsoup:1.14.3")
+
     androidTestImplementation(project(":core:testing"))
 }

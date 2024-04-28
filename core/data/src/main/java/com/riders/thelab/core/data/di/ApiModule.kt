@@ -13,6 +13,7 @@ import com.riders.thelab.core.data.remote.api.TMDBApiService
 import com.riders.thelab.core.data.remote.api.TheLabBackApiService
 import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
+import com.riders.thelab.core.data.remote.api.WikimediaApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
 import com.riders.thelab.core.data.utils.Constants
 import com.riders.thelab.core.data.utils.Headers
@@ -284,6 +285,14 @@ internal object ApiModule {
         .addConverterFactory(json.asConverterFactory(CONTENT_TYPE_JSON.toMediaType()))
         .build()
 
+    @Provides
+    @Singleton
+    fun provideWikimediaRetrofit(url: String): Retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        .client(provideOkHttp())
+        .addConverterFactory(json.asConverterFactory(CONTENT_TYPE_JSON.toMediaType()))
+        .build()
+
 
     @Provides
     @Singleton
@@ -354,4 +363,9 @@ internal object ApiModule {
     @Singleton
     fun provideFlightAPIService(): FlightApiService =
         provideFlightRetrofit(Constants.BASE_ENDPOINT_FLIGHT_AWARE_API).create(FlightApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideWikimediaAPIService(): WikimediaApiService =
+        provideWikimediaRetrofit(Constants.BASE_ENDPOINT_WIKIMEDIA_API).create(WikimediaApiService::class.java)
 }

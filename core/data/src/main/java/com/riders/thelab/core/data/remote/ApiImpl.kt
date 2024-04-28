@@ -25,6 +25,7 @@ import com.riders.thelab.core.data.remote.api.TMDBApiService
 import com.riders.thelab.core.data.remote.api.TheLabBackApiService
 import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
+import com.riders.thelab.core.data.remote.api.WikimediaApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.data.remote.dto.UserDto
@@ -44,6 +45,7 @@ import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -69,7 +71,8 @@ class ApiImpl @Inject constructor(
     spotifyAccountApiService: SpotifyAccountAPIService,
     spotifyApiService: SpotifyAPIService,
     tmdbApiService: TMDBApiService,
-    flightApiService: FlightApiService
+    flightApiService: FlightApiService,
+    wikimediaService: WikimediaApiService
 ) : IApi {
 
     private var mArtistsAPIService: ArtistsAPIService = artistsAPIService
@@ -82,6 +85,7 @@ class ApiImpl @Inject constructor(
     private var mSpotifyApiService: SpotifyAPIService = spotifyApiService
     private var mTmdbApiService: TMDBApiService = tmdbApiService
     private var mFlightApiService: FlightApiService = flightApiService
+    private var mWikimediaApiService: WikimediaApiService = wikimediaService
 
     private var downloadManager: DownloadManager? = null
 
@@ -373,7 +377,8 @@ class ApiImpl @Inject constructor(
         radius: Int,
         maxPages: Int,
         cursor: String?
-    ): AirportsResponse = mFlightApiService.getAirportNearBy(latitude, longitude, radius, maxPages, cursor)
+    ): AirportsResponse =
+        mFlightApiService.getAirportNearBy(latitude, longitude, radius, maxPages, cursor)
 
     override suspend fun getOperators(maxPages: Int, cursor: String?): OperatorResponse =
         mFlightApiService.getOperators(maxPages, cursor)
@@ -424,4 +429,7 @@ class ApiImpl @Inject constructor(
         maxPages = maxPages,
         cursor = cursor
     )
+
+    override suspend fun getWikimediaResponse(query: NotBlankString): WikimediaResponse =
+        mWikimediaApiService.getWikimediaResponse(query)
 }

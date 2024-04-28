@@ -39,7 +39,8 @@ object AppHelperModule {
             ApiModule.provideSpotifyAccountAPIService(),
             ApiModule.provideSpotifyAPIService(),
             ApiModule.provideTMDBAPIService(),
-            ApiModule.provideFlightAPIService()
+            ApiModule.provideFlightAPIService(),
+            ApiModule.provideWikimediaAPIService(),
         )
 
     @Provides

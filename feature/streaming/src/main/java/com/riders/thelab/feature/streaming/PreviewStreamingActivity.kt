@@ -14,9 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.riders.thelab.core.player.ExoPlayer
+import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabVerticalViewPagerGeneric
-import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import timber.log.Timber
@@ -40,7 +41,7 @@ fun StreamingContent() {
         Scaffold(
             topBar = {
                 TheLabTopAppBar(
-                    title = stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_streaming),
+                    title = stringResource(id = R.string.activity_title_streaming),
                     isDarkThemeForced = true,
                     navigationIcon = {}
                 )

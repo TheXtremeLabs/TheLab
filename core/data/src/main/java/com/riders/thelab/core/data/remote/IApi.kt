@@ -26,6 +26,7 @@ import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import kotlinx.coroutines.flow.Flow
 import kotools.types.text.NotBlankString
 import okhttp3.ResponseBody
@@ -211,4 +212,7 @@ interface IApi {
         maxPages: Int = 1,
         cursor: String? = null
     ): SearchFlightResponse
+
+    // Wikimedia
+    suspend fun getWikimediaResponse(query: NotBlankString): WikimediaResponse
 }

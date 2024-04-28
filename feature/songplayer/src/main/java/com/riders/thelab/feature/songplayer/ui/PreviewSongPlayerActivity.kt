@@ -24,9 +24,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.riders.thelab.core.data.local.model.music.SongModel
+import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.NoItemFound
-import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
@@ -56,7 +57,7 @@ fun SongPlayerContent(
         Scaffold(
             topBar = {
                 TheLabTopAppBar(
-                    title = stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_music),
+                    title = stringResource(id = R.string.activity_title_music),
                     isDarkThemeForced = darkModeForced,
                     navigationIcon = {}
                 )

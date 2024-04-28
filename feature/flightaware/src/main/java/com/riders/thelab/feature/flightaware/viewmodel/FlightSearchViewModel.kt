@@ -282,12 +282,18 @@ open class FlightSearchViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             val flights =
-                repository.searchFlightByRoute(departureAirportCode, arrivalAirportCode).flights[0]
+                repository.searchFlightByRoute(departureAirportCode, arrivalAirportCode).flights
 
+            if (flights.isEmpty()) {
+                Timber.e("No results found for search query $departureAirportCode to $arrivalAirportCode")
+                return@launch
+            }
 
             runCatching {
+                val flightModel = flights[0].toModel()
+
                 (context as FlightMainActivity).launchSearchFlight(
-                    flights.toModel(),
+                    flightModel,
                     FlightMainActivity.SEARCH_TYPE_FLIGHT_ROUTE
                 )
             }

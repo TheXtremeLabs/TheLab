@@ -56,6 +56,7 @@ import com.riders.thelab.core.ui.compose.component.dropdown.LabDropdownMenu2
 import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
 import com.riders.thelab.core.ui.compose.component.textfield.LabOutlinedTextField
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.flightaware.BuildConfig
 import com.riders.thelab.feature.flightaware.R
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.buttonColor
@@ -366,9 +367,12 @@ fun SearchFlightByDestination(
 
                 Button(
                     onClick = {
-                        if (departureQuery.isEmpty() && arrivalQuery.isEmpty()) {
-                            return@Button
+                        if(!BuildConfig.DEBUG) {
+                            if (departureQuery.isEmpty() && arrivalQuery.isEmpty()) {
+                                return@Button
+                            }
                         }
+
                         uiEvent.invoke(
                             UiEvent.OnSearchFlightByRoute(
                                 context = context

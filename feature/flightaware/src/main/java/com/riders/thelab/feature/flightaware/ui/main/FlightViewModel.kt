@@ -12,6 +12,8 @@ import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.OperatorModel
 import com.riders.thelab.core.data.local.model.flight.toModel
+import com.riders.thelab.feature.flightaware.BuildConfig
+import com.riders.thelab.feature.flightaware.ui.airport.PreviewProviderAirportSearch
 import com.riders.thelab.feature.flightaware.viewmodel.FlightSearchViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -110,6 +112,13 @@ class FlightViewModel @Inject constructor(
     // OVERRIDE
     //
     ///////////////////////////////
+    init {
+        if (BuildConfig.DEBUG) {
+            updateDepartureAirportOption(PreviewProviderAirportSearch().values.toList()[0])
+            updateArrivalAirportOption(PreviewProviderAirportSearch().values.toList()[1])
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         Timber.e("onCleared()")
