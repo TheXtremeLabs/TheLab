@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -44,6 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
@@ -249,7 +252,7 @@ fun TheLabTopAppBar(
                 TopAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(56.dp, 96.dp)
+                        .height(56.dp)
                         .background(
                             Brush.verticalGradient(
                                 listOf(
@@ -262,19 +265,15 @@ fun TheLabTopAppBar(
                         if (null != title && null == mainCustomContent) {
                             Column(
                                 modifier = Modifier
-                                    .fillMaxHeight()
-                                    .padding(start = 16.dp, bottom = 16.dp),
-                                verticalArrangement = Arrangement.Bottom
+                                    .fillMaxSize()
+                                    .padding(start = 8.dp),
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.Center
                             ) {
                                 Text(text = title, color = Color.White)
                             }
                         } else if (null != mainCustomContent && null == title) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                mainCustomContent()
-                            }
+                            mainCustomContent()
                         } else {
                             Timber.e("Both title and mainCustomContent cannot be null or Not null. You have to define one them only")
                         }
@@ -282,8 +281,8 @@ fun TheLabTopAppBar(
                     navigationIcon = {
                         if (null == navigationIcon) {
                             IconButton(
+                                modifier = Modifier.zIndex(10f),
                                 onClick = {
-//                        (context.findActivity() as BaseComponentActivity).backPressed()
                                     executeOnBackPressed(context)
                                 }) {
                                 Icon(
@@ -309,6 +308,7 @@ fun TheLabTopAppBar(
                 MediumTopAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .requiredHeightIn(56.dp, toolbarMaxHeight)
                         .background(
                             Brush.verticalGradient(
                                 listOf(
@@ -321,19 +321,19 @@ fun TheLabTopAppBar(
                         if (null != title && null == mainCustomContent) {
                             Column(
                                 modifier = Modifier
-                                    .fillMaxHeight()
-                                    .padding(start = 16.dp, bottom = 16.dp),
-                                verticalArrangement = Arrangement.Bottom
+                                    .fillMaxSize()
+                                    .padding(start = 16.dp),
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.Center
                             ) {
-                                Text(text = title, color = Color.White)
+                                Text(
+                                    modifier = Modifier.padding(start = 16.dp),
+                                    text = title,
+                                    color = Color.White
+                                )
                             }
                         } else if (null != mainCustomContent && null == title) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                mainCustomContent()
-                            }
+                            mainCustomContent()
                         } else {
                             Timber.e("Both title and mainCustomContent cannot be null or Not null. You have to define one them only")
                         }
@@ -368,7 +368,7 @@ fun TheLabTopAppBar(
                 LargeTopAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(toolbarMaxHeight)
+                        .requiredHeight(toolbarMaxHeight)
                         .background(
                             Brush.verticalGradient(
                                 listOf(
@@ -388,12 +388,7 @@ fun TheLabTopAppBar(
                                 Text(text = title, color = Color.White)
                             }
                         } else if (null != mainCustomContent && null == title) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                mainCustomContent()
-                            }
+                            mainCustomContent()
                         } else {
                             Timber.e("Both title and mainCustomContent cannot be null or Not null. You have to define one them only")
                         }
@@ -402,7 +397,6 @@ fun TheLabTopAppBar(
                         if (null == navigationIcon) {
                             IconButton(
                                 onClick = {
-//                        (context.findActivity() as BaseComponentActivity).backPressed()
                                     executeOnBackPressed(context)
                                 }) {
                                 Icon(
@@ -500,14 +494,13 @@ fun TheLabTopAppBar(
 @DevicePreviews
 @Composable
 fun TheLabTopAppBarLarge() {
-
     val context = LocalContext.current
 
     TheLabTheme {
         LargeTopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(96.dp)
+                .requiredHeight(96.dp)
                 .background(
                     Brush.verticalGradient(
                         listOf(Color.Black, Color.Transparent)
@@ -517,12 +510,14 @@ fun TheLabTopAppBarLarge() {
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .padding(start = 16.dp, bottom = 16.dp),
+                        .padding(start = 16.dp, bottom = 0.dp),
                     verticalArrangement = Arrangement.Bottom
                 ) {
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = "Welcome to ", color = Color.White)
+                    Row(
+                        modifier = Modifier.padding(start = 16.dp, bottom = 0.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(modifier = Modifier, text = "Welcome to ", color = Color.White)
                         Spacer(modifier = Modifier.size(8.dp))
                         Image(
                             modifier = Modifier.height(16.dp),
@@ -550,7 +545,6 @@ fun TheLabTopAppBarLarge() {
             navigationIcon = {
                 IconButton(
                     onClick = {
-//                    (context as ComponentActivity).onBackPressed()
                         executeOnBackPressed(context)
                     }) {
                     Icon(
@@ -647,7 +641,30 @@ private fun PreviewTheLabTopAppBarWithBaseViewModel(@PreviewParameter(TextConten
 
 @DevicePreviews
 @Composable
-private fun PreviewTheLabTopAppBarWithToolbarSize(@PreviewParameter(PreviewProviderToolbarSize::class) toolbarSize: ToolbarSize) {
+private fun PreviewTheLabTopAppBarWithToolbarSizeTitleString(
+    @PreviewParameter(
+        PreviewProviderToolbarSize::class
+    ) toolbarSize: ToolbarSize
+) {
+    TheLabTheme {
+        TheLabTopAppBar(
+            toolbarSize = toolbarSize,
+            toolbarMaxHeight = if (ToolbarSize.LARGE == toolbarSize) dimensionResource(id = R.dimen.max_card_image_height) else 96.dp,
+            title = "Palette",
+            backgroundColor = Color(0xFF032342),
+            withGradientBackground = false,
+            navigationIcon = null
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewTheLabTopAppBarWithToolbarSizeCustomContent(
+    @PreviewParameter(
+        PreviewProviderToolbarSize::class
+    ) toolbarSize: ToolbarSize
+) {
     TheLabTheme {
         TheLabTopAppBar(
             toolbarSize = toolbarSize,
@@ -656,7 +673,10 @@ private fun PreviewTheLabTopAppBarWithToolbarSize(@PreviewParameter(PreviewProvi
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 56.dp)
+                        .padding(top = if (ToolbarSize.LARGE == toolbarSize) 56.dp else 0.dp)
+                        .zIndex(3f),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Text(text = "Palette")
                     Text(text = "Custom Toolbar Size")

@@ -23,6 +23,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,16 +43,20 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
+import com.riders.thelab.feature.flightaware.core.component.DottedLink
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
 import com.riders.thelab.feature.flightaware.ui.main.UiEvent
+import com.riders.thelab.feature.flightaware.ui.search.SearchFlightActivity
 import com.riders.thelab.feature.flightaware.utils.Constants
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 
 ///////////////////////////////////////
@@ -57,7 +64,6 @@ import java.time.ZoneId
 // COMPOSE
 //
 ///////////////////////////////////////
-
 @Composable
 fun FlightStatusCard(
     flightId: NotBlankString,
@@ -80,7 +86,8 @@ fun FlightStatusCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            colors = CardDefaults.cardColors(containerColor = cardBackgroundColor)
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+            colors = CardDefaults.elevatedCardColors(containerColor = cardBackgroundColor)
         ) {
             Column(
                 modifier = Modifier
@@ -108,32 +115,22 @@ fun FlightStatusCard(
                         modifier = Modifier
                             .width(120.dp)
                             .height(48.dp)
-                            .clip(RoundedCornerShape(16.dp))
+                            .padding(vertical = 4.dp)
+                            .clip(RoundedCornerShape(8.dp))
                             .background(color = Color.White.copy(alpha = .95f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
                             modifier = Modifier
-                                .size(
-                                    width = this.maxWidth,
-                                    height = this.maxHeight
-                                )
-                                .padding(horizontal = 8.dp),
+                                .size(width = this.maxWidth, height = this.maxHeight)
+                                .padding(horizontal = 4.dp),
                             painter = painter,
                             contentDescription = "airline_logo_icon",
-                            contentScale = ContentScale.Fit
+                            contentScale = ContentScale.Crop
                         )
                     }
-
-                    Text(
-                        text = airlineOperatorId.toString(),
-                        style = TextStyle(
-                            fontWeight = FontWeight.W200,
-                            fontSize = 16.sp,
-                            color = textColor
-                        )
-                    )
                 }
+
                 // Departure & Arrival
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -141,41 +138,44 @@ fun FlightStatusCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
+                        modifier = Modifier.weight(.5f),
                         text = departureAirportIataCode.toString(),
                         style = TextStyle(
                             fontWeight = FontWeight.W600,
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             color = textColor
                         )
                     )
+
+                    DottedLink(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 16.dp)
+                    )
+
                     Text(
+                        modifier = Modifier.weight(.5f),
                         text = arrivalAirportIataCode.toString(),
                         style = TextStyle(
                             fontWeight = FontWeight.W600,
                             fontSize = 20.sp,
-                            color = textColor
+                            color = textColor,
+                            textAlign = TextAlign.End
                         )
                     )
                 }
+
                 // Flight status
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = flightStatus.toString(),
                         style = TextStyle(
                             fontWeight = FontWeight.W600,
-                            fontSize = 20.sp,
-                            color = textColor
-                        )
-                    )
-                    Text(
-                        text = flightStatus.toString(),
-                        style = TextStyle(
-                            fontWeight = FontWeight.W600,
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             color = textColor
                         )
                     )
@@ -186,19 +186,64 @@ fun FlightStatusCard(
 }
 
 @Composable
-fun FlightInfoContainer(
-    departureDate: NotBlankString,
-    departureTime: NotBlankString,
-    arrivalDate: NotBlankString,
-    arrivalTime: NotBlankString
+fun InfoContainerTitleDescription(
+    modifier: Modifier = Modifier,
+    title: NotBlankString,
+    description: NotBlankString,
+    isRightSide: Boolean = false
 ) {
+    TheLabTheme {
+        Column(
+            modifier = Modifier.then(modifier),
+            horizontalAlignment = if (isRightSide) Alignment.End else Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+        ) {
+            Text(
+                text = title.toString(),
+                style = TextStyle(
+                    fontWeight = FontWeight.W300,
+                    fontSize = 13.sp,
+                    color = Color.LightGray,
+                    textAlign = if (isRightSide) TextAlign.End else TextAlign.Start
+                )
+            )
+            Text(
+                text = description.toString(),
+                style = TextStyle(
+                    fontWeight = FontWeight.W600,
+                    fontSize = 15.sp,
+                    color = textColor,
+                    textAlign = if (isRightSide) TextAlign.End else TextAlign.Start
+                )
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalKotoolsTypesApi::class)
+@Composable
+fun FlightInfoContainer(
+    airline: NotBlankString,
+    aircraftType: NotBlankString,
+    estimatedDepartureDate: NotBlankString,
+    estimatedDepartureTime: NotBlankString,
+    estimatedArrivalDate: NotBlankString,
+    estimatedArrivalTime: NotBlankString,
+    actualDepartureDate: NotBlankString,
+    actualDepartureTime: NotBlankString,
+    actualArrivalDate: NotBlankString,
+    actualArrivalTime: NotBlankString,
+) {
+    val locale by remember { mutableStateOf(Locale.getDefault()) }
+    val formatter = DateTimeFormatter.ofPattern(SearchFlightActivity.DATE_FORMAT_PATTERN, locale)
 
     TheLabTheme {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            colors = CardDefaults.cardColors(containerColor = cardBackgroundColor)
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+            colors = CardDefaults.elevatedCardColors(containerColor = cardBackgroundColor)
         ) {
             Column(
                 modifier = Modifier
@@ -207,51 +252,123 @@ fun FlightInfoContainer(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
             ) {
-                // Departure date time
+                // Airline & Aircraft Type
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = departureDate.toLocalDateTime().toLocalDate().toString(),
-                        style = TextStyle(
-                            fontWeight = FontWeight.W600,
-                            fontSize = 20.sp,
-                            color = textColor
-                        )
+                    InfoContainerTitleDescription(
+                        title = NotBlankString.create("Airline"),
+                        description = airline
                     )
-                    Text(
-                        text = departureTime.toLocalDateTime().toLocalTime().toString(),
-                        style = TextStyle(
-                            fontWeight = FontWeight.W600,
-                            fontSize = 20.sp,
-                            color = textColor
-                        )
+
+                    InfoContainerTitleDescription(
+                        title = NotBlankString.create("Aircraft type"),
+                        description = aircraftType,
+                        isRightSide = true
                     )
                 }
 
-                // Arrival date time
+                // Estimated Departure / Arrival date
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = arrivalDate.toLocalDateTime().toLocalDate().toString(),
-                        style = TextStyle(
-                            fontWeight = FontWeight.W600,
-                            fontSize = 20.sp,
-                            color = textColor
+                    InfoContainerTitleDescription(
+                        modifier = Modifier.weight(1f),
+                        title = NotBlankString.create("Estimated Departure date"),
+                        description = NotBlankString.create(
+                            if (estimatedDepartureDate.toString() == "N/A") "N/A" else estimatedDepartureDate.toLocalDateTime()
+                                .format(formatter).toString()
                         )
                     )
-                    Text(
-                        text = arrivalTime.toLocalDateTime().toLocalTime().toString(),
-                        style = TextStyle(
-                            fontWeight = FontWeight.W600,
-                            fontSize = 20.sp,
-                            color = textColor
+
+                    InfoContainerTitleDescription(
+                        modifier = Modifier.weight(1f),
+                        title = NotBlankString.create("Estimated Arrival date"),
+                        description = NotBlankString.create(
+                            if (estimatedArrivalDate.toString() == "N/A") "N/A" else estimatedArrivalDate.toLocalDateTime()
+                                .format(formatter).toString()
+                        ),
+                        isRightSide = true
+                    )
+                }
+
+                // Estimated Departure / Arrival time
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    InfoContainerTitleDescription(
+                        title = NotBlankString.create("Departure time"),
+                        description = NotBlankString.create(
+                            if (estimatedDepartureTime.toString() == "N/A") "N/A" else estimatedDepartureTime.toLocalDateTime()
+                                .toLocalTime().toString()
                         )
+                    )
+
+                    InfoContainerTitleDescription(
+                        title = NotBlankString.create("Arrival time"),
+                        description = NotBlankString.create(
+                            if (estimatedArrivalTime.toString() == "N/A") "N/A" else estimatedArrivalTime.toLocalDateTime()
+                                .toLocalTime().toString()
+                        ),
+                        isRightSide = true
+                    )
+                }
+
+                // Actual Departure / Arrival date
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    InfoContainerTitleDescription(
+                        modifier = Modifier.weight(1f),
+                        title = NotBlankString.create("Actual Departure date"),
+                        description = NotBlankString.create(
+                            if (actualDepartureDate.toString() == "N/A") "N/A" else actualDepartureDate.toLocalDateTime()
+                                .format(formatter).toString()
+                        )
+                    )
+
+                    InfoContainerTitleDescription(
+                        modifier = Modifier.weight(1f),
+                        title = NotBlankString.create("Actual Arrival date"),
+                        description = NotBlankString.create(
+                            if (actualArrivalDate.toString() == "N/A") "N/A" else actualArrivalDate.toLocalDateTime()
+                                .format(formatter).toString()
+                        ),
+                        isRightSide = true
+                    )
+                }
+
+                // Actual Departure / Arrival time
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    InfoContainerTitleDescription(
+                        title = NotBlankString.create("Actual Departure time"),
+                        description = NotBlankString.create(
+                            if (actualDepartureTime.toString() == "N/A") "N/A" else actualDepartureTime.toLocalDateTime()
+                                .toLocalTime().toString()
+                        )
+                    )
+
+                    InfoContainerTitleDescription(
+                        title = NotBlankString.create("Actual Arrival time"),
+                        description = NotBlankString.create(
+                            if (actualArrivalTime.toString() == "N/A") "N/A" else actualArrivalTime.toLocalDateTime()
+                                .toLocalTime().toString()
+                        ),
+                        isRightSide = true
                     )
                 }
             }
@@ -313,10 +430,20 @@ fun FlightDetailContent(flight: FlightModel, uiEvent: (UiEvent) -> Unit) {
 
                     item {
                         FlightInfoContainer(
-                            departureDate = flight.estimatedOut ?: NotBlankString.create("N/A"),
-                            departureTime = flight.scheduledOut ?: NotBlankString.create("N/A"),
-                            arrivalDate = flight.estimatedOn ?: NotBlankString.create("N/A"),
-                            arrivalTime = flight.scheduledOn ?: NotBlankString.create("N/A"),
+                            airline = flight.operatorID ?: NotBlankString.create("N/A"),
+                            aircraftType = flight.aircraftType ?: NotBlankString.create("N/A"),
+                            estimatedDepartureDate = flight.estimatedOut
+                                ?: NotBlankString.create("N/A"),
+                            estimatedDepartureTime = flight.estimatedOut
+                                ?: NotBlankString.create("N/A"),
+                            estimatedArrivalDate = flight.estimatedIn
+                                ?: NotBlankString.create("N/A"),
+                            estimatedArrivalTime = flight.estimatedIn
+                                ?: NotBlankString.create("N/A"),
+                            actualDepartureDate = flight.actualOut ?: NotBlankString.create("N/A"),
+                            actualDepartureTime = flight.actualOut ?: NotBlankString.create("N/A"),
+                            actualArrivalDate = flight.actualIn ?: NotBlankString.create("N/A"),
+                            actualArrivalTime = flight.actualIn ?: NotBlankString.create("N/A"),
                         )
                     }
 
@@ -351,6 +478,55 @@ private fun PreviewFlightStatusCard(@PreviewParameter(PreviewProviderFlight::cla
                 flightStatus = flight.status
             )
         }
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewInfoContainerTitleDescription(@PreviewParameter(PreviewProviderFlight::class) flight: FlightModel) {
+    TheLabTheme {
+        InfoContainerTitleDescription(
+            modifier = Modifier.background(backgroundColor),
+            title = flight.estimatedOut!!,
+            description = flight.scheduledOut!!
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewInfoContainerTitleDescriptionRightSide(@PreviewParameter(PreviewProviderFlight::class) flight: FlightModel) {
+    TheLabTheme {
+        InfoContainerTitleDescription(
+            modifier = Modifier.background(backgroundColor),
+            title = flight.estimatedIn!!,
+            description = flight.scheduledIn!!,
+            isRightSide = true
+        )
+    }
+}
+
+@OptIn(ExperimentalKotoolsTypesApi::class)
+@DevicePreviews
+@Composable
+private fun PreviewFlightInfoContainer(@PreviewParameter(PreviewProviderFlight::class) flight: FlightModel) {
+    TheLabTheme {
+        FlightInfoContainer(
+            airline = flight.operatorID ?: NotBlankString.create("N/A"),
+            aircraftType = flight.aircraftType ?: NotBlankString.create("N/A"),
+            estimatedDepartureDate = flight.estimatedOut
+                ?: NotBlankString.create("N/A"),
+            estimatedDepartureTime = flight.estimatedOut
+                ?: NotBlankString.create("N/A"),
+            estimatedArrivalDate = flight.estimatedIn
+                ?: NotBlankString.create("N/A"),
+            estimatedArrivalTime = flight.estimatedIn
+                ?: NotBlankString.create("N/A"),
+            actualDepartureDate = flight.actualOut ?: NotBlankString.create("N/A"),
+            actualDepartureTime = flight.actualOut ?: NotBlankString.create("N/A"),
+            actualArrivalDate = flight.actualIn ?: NotBlankString.create("N/A"),
+            actualArrivalTime = flight.actualIn ?: NotBlankString.create("N/A"),
+        )
     }
 }
 

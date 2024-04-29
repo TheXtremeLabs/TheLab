@@ -42,13 +42,19 @@ class FlightDetailActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            AnimatedContent(modifier = Modifier.fillMaxSize(), targetState = null != mViewModel.flight , contentAlignment = Alignment.Center,
+                            AnimatedContent(
+                                modifier = Modifier.fillMaxSize(),
+                                targetState = null != mViewModel.flight,
+                                contentAlignment = Alignment.Center,
                                 label = "flight animation content"
-                            ) { targetState->
-                                if(!targetState) {
+                            ) { targetState ->
+                                if (!targetState) {
                                     LabLoader(modifier = Modifier.size(40.dp))
-                                }else {
-                                    FlightDetailContent(flight = mViewModel.flight!!, uiEvent = mViewModel::onEvent)
+                                } else {
+                                    FlightDetailContent(
+                                        flight = mViewModel.flight!!,
+                                        uiEvent = mViewModel::onEvent
+                                    )
                                 }
                             }
                         }

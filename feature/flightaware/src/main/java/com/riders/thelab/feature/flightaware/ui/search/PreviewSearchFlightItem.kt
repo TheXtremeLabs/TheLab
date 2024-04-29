@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.data.local.model.flight.FlightModel
-import com.riders.thelab.core.data.local.model.flight.SegmentModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
@@ -40,14 +39,21 @@ import com.riders.thelab.feature.flightaware.core.component.DottedLink
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
+import com.riders.thelab.feature.flightaware.ui.flight.InfoContainerTitleDescription
 import com.riders.thelab.feature.flightaware.utils.Constants
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import kotools.types.text.NotBlankString
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
+@OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
-fun SearchFlightByRouteItem(flight: SegmentModel) {
+fun SearchFlightItem(
+    flight: FlightModel,
+    uiEvent: (UiEvent) -> Unit
+) {
     val context = LocalContext.current
     val zoneId by remember { mutableStateOf(ZoneId.systemDefault()) }
     val departureLocalDateTime by remember {
@@ -77,6 +83,7 @@ fun SearchFlightByRouteItem(flight: SegmentModel) {
     TheLabTheme {
         Card(
             modifier = Modifier.fillMaxWidth(),
+            onClick = { uiEvent.invoke(UiEvent.OnFlightClicked(flight)) },
             elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.elevatedCardColors(containerColor = cardBackgroundColor)
@@ -102,7 +109,7 @@ fun SearchFlightByRouteItem(flight: SegmentModel) {
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = flight.origin.codeIcao.toString(),
+                            text = flight.origin?.codeIcao.toString(),
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.W600,
@@ -110,7 +117,7 @@ fun SearchFlightByRouteItem(flight: SegmentModel) {
                             )
                         )
                         Text(
-                            text = flight.origin.city.toString(),
+                            text = flight.origin?.city.toString(),
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.W400,
@@ -215,9 +222,10 @@ fun SearchFlightByRouteItem(flight: SegmentModel) {
                         )
                     }
 
-                    Text(
-                        text = "Status: ${flight.status}",
-                        color = textColor
+                    InfoContainerTitleDescription(
+                        title = NotBlankString.create("Status"),
+                        description = flight.status,
+                        isRightSide = true
                     )
                 }
             }
@@ -227,8 +235,8 @@ fun SearchFlightByRouteItem(flight: SegmentModel) {
 
 @DevicePreviews
 @Composable
-private fun PreviewSearchFlightByRouteItem(@PreviewParameter(PreviewProviderFlight::class) flight: FlightModel) {
+private fun PreviewSearchFlightItem(@PreviewParameter(PreviewProviderFlight::class) flight: FlightModel) {
     TheLabTheme {
-        SearchFlightByRouteItem(flight.segments?.get(0)!!)
+        SearchFlightItem(flight) {}
     }
 }
