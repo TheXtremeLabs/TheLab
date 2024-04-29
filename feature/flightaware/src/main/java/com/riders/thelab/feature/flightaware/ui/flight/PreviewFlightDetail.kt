@@ -175,7 +175,7 @@ fun FlightStatusCard(
                         text = flightStatus.toString(),
                         style = TextStyle(
                             fontWeight = FontWeight.W600,
-                            fontSize = 18.sp,
+                            fontSize = 16.sp,
                             color = textColor
                         )
                     )
