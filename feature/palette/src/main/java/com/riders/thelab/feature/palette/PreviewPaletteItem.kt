@@ -29,11 +29,7 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 //
 ///////////////////////////////////////
 @Composable
-fun PaletteItem(
-    index: Int = 0,
-    text: String,
-    color: Color? = MaterialTheme.colorScheme.background
-) {
+fun PaletteItem(text: String, color: Color? = MaterialTheme.colorScheme.background) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -75,6 +71,6 @@ private fun PreviewPaletteItem(@PreviewParameter(TextContentPreviewProvider::cla
     val color: Color = md_theme_dark_primary
 
     TheLabTheme {
-        PaletteItem(text = text, index = index, color = color)
+        PaletteItem(text = text, color = color)
     }
 }

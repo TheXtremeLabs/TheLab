@@ -46,7 +46,7 @@ data class TDMBCastModel(
         "${Constants.BASE_ENDPOINT_TMDB_IMAGE_W_ORIGINAL}${this.profileThumbnail}"
 }
 
-fun TMDBCastDto.toModel(): TDMBCastModel = TDMBCastModel(
+fun TMDBCastDto.toCastModel(): TDMBCastModel = TDMBCastModel(
     isAdult,
     gender,
     id,
@@ -62,7 +62,7 @@ fun TMDBCastDto.toModel(): TDMBCastModel = TDMBCastModel(
 )
 
 
-fun TMDBCrewDto.toModel(): TDMBCastModel = TDMBCastModel(
+fun TMDBCrewDto.toCastModel(): TDMBCastModel = TDMBCastModel(
     isAdult,
     gender,
     id,

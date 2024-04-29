@@ -9,7 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
-import com.riders.thelab.core.data.local.model.flight.toModel
+import com.riders.thelab.core.data.local.model.flight.toAirportModel
+import com.riders.thelab.core.data.local.model.flight.toAirportSearchModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -105,16 +106,16 @@ class AirportSearchViewModel @Inject constructor(
     fun getAirportById(airportID: String): AirportModel {
         return runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             Timber.d("getAirportById() | airport ID: $airportID")
-            repository.getAirportById(airportID).toModel()
+            repository.getAirportById(airportID).toAirportModel()
         }
     }
 
 
     private fun getAirportSearchModelList(airportSearchList: List<AirportSearch>): List<AirportSearchModel> =
         runCatching {
-            buildSet<AirportSearchModel> {
+            buildSet {
                 airportSearchList.forEach {
-                    add(it.toModel())
+                    add(it.toAirportSearchModel())
                 }
             }.toList()
         }

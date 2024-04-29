@@ -33,6 +33,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -88,9 +89,7 @@ fun LabTextField(
     placeholder: String,
     label: String,
     leadingContent: @Composable (() -> Unit)? = null,
-    trailingContent: @Composable (() -> Unit)? = null,
-    focusedBorderColor: Color = Color.Unspecified,
-    unfocusedBorderColor: Color = Color.Unspecified
+    trailingContent: @Composable (() -> Unit)? = null
 ) {
     val context = LocalContext.current
     val view = LocalView.current
@@ -156,6 +155,7 @@ fun LabTextField(
                 keyboardType = KeyboardType.Text
             ),
             visualTransformation = VisualTransformation.None,
+            colors = TextFieldDefaults.colors(),
             readOnly = false
         )
     }
@@ -695,9 +695,7 @@ private fun PreviewLabTextField() {
                 onUpdateQuery = {},
                 onOutsideBoundariesClicked = false,
                 placeholder = "Select an option",
-                label = "Search hint",
-                focusedBorderColor = Color.Red,
-                unfocusedBorderColor = Color.LightGray
+                label = "Search hint"
             )
         }
     }

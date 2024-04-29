@@ -61,7 +61,7 @@ data class TMDBItemModel(
         "${Constants.BASE_ENDPOINT_TMDB_IMAGE_W_500}${this.poster}"
 }
 
-fun MovieDto.toModel(): TMDBItemModel = TMDBItemModel(
+fun MovieDto.toItemModel(): TMDBItemModel = TMDBItemModel(
     type = "Movie",
     id = this.id,
     isMovie = true,
@@ -81,7 +81,7 @@ fun MovieDto.toModel(): TMDBItemModel = TMDBItemModel(
     popularity = this.voteNumber
 )
 
-fun TvShowsDto.toModel(): TMDBItemModel = TMDBItemModel(
+fun TvShowsDto.toItemModel(): TMDBItemModel = TMDBItemModel(
     type = "Tv Show",
     id = this.id,
     isMovie = true,

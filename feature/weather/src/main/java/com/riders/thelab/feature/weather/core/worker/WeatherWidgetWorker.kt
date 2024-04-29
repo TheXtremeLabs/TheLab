@@ -18,6 +18,8 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.IRepository
+import com.riders.thelab.core.data.local.model.weather.ForecastWeatherWidgetModel
+import com.riders.thelab.core.data.local.model.weather.WeatherWidgetModel
 import com.riders.thelab.core.data.local.model.weather.toWidgetModel
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.ui.compose.utils.getIconUri
@@ -87,10 +89,11 @@ class WeatherWidgetWorker @AssistedInject constructor(
                         val weatherWidgetBundle =
                             runBlocking {
                                 oneCallWeatherResponse.toWidgetModel().apply {
-                                    this?.let {
-                                        icon = it.icon.toWeatherIconFullUrl().getIconUri(context)
+                                    this?.let { weatherWidgetModel: WeatherWidgetModel ->
+                                        icon = weatherWidgetModel.icon.toWeatherIconFullUrl()
+                                            .getIconUri(context)
 
-                                        it.forecast.forEach { forecastElement ->
+                                        weatherWidgetModel.forecast.forEach { forecastElement: ForecastWeatherWidgetModel ->
                                             forecastElement.icon =
                                                 forecastElement.icon.toWeatherIconFullUrl()
                                                     .getIconUri(context)

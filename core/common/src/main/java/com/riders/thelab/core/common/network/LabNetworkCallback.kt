@@ -147,8 +147,7 @@ class LabNetworkManager(
     }
 
     @SuppressLint("NewApi")
-    @Suppress("DEPRECATION")
-    fun isNetworkAvailable(): Boolean = if (LabCompatibilityManager.isAndroid10()) {
+    fun isNetworkAvailable(): Boolean = if (LabCompatibilityManager.isMarshmallow()) {
         Timber.d("isNetworkAvailable()")
 
         capabilities?.isNetworkCapabilitiesValid() ?: run {
@@ -157,6 +156,7 @@ class LabNetworkManager(
         }
     } else {
         runCatching {
+            @Suppress("DEPRECATION")
             val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
 
             activeNetworkInfo?.run {

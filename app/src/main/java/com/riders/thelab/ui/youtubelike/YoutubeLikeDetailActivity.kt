@@ -18,11 +18,12 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.Video
+import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
 import com.riders.thelab.databinding.ActivityYoutubeDetailBinding
 import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
 
-class YoutubeLikeDetailActivity : AppCompatActivity() {
+class YoutubeLikeDetailActivity : BaseAppCompatActivity() {
 
     companion object {
         //Bundle Arguments
@@ -53,6 +54,10 @@ class YoutubeLikeDetailActivity : AppCompatActivity() {
         getBundle()
 
         loadContent()
+    }
+
+    override fun backPressed() {
+        finishAfterTransition()
     }
 
     @Suppress("DEPRECATION")
@@ -160,11 +165,5 @@ class YoutubeLikeDetailActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finishAfterTransition()
     }
 }

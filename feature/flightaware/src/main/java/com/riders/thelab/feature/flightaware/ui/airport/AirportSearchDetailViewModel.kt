@@ -9,7 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
-import com.riders.thelab.core.data.local.model.flight.toModel
+import com.riders.thelab.core.data.local.model.flight.toAirportModel
 import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.Arrivals
 import com.riders.thelab.core.data.remote.dto.flight.Departures
@@ -88,7 +88,7 @@ class AirportSearchDetailViewModel @Inject constructor(
                     val airportResponse: Airport = repository.getAirportById(it.toString())
 
                     Timber.d("getAirportById() | result: $airportResponse")
-                    updateAirportModel(airportResponse.toModel())
+                    updateAirportModel(airportResponse.toAirportModel())
                 }
             }
         } ?: run {

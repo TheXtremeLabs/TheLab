@@ -33,7 +33,7 @@ fun <T> TheLabRow(
         horizontalArrangement = horizontalArrangement,
         verticalAlignment = verticalAlignment
     ) {
-        itemsIndexed(items = list) { index, item ->
+        itemsIndexed(items = list) { _, item ->
             itemContent(item)
         }
     }

@@ -51,7 +51,6 @@ import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import timber.log.Timber
 
 
@@ -114,11 +113,7 @@ fun TheLabTopAppBar(
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TheLabTopAppBar(
-    viewModel: BaseViewModel,
-    @PreviewParameter(TextContentPreviewProvider::class) title: String,
-    navigationIcon: @Composable (() -> Unit)? = null
-) {
+fun TheLabTopAppBar(viewModel: BaseViewModel, title: String) {
     val context = LocalContext.current
 
     TheLabTheme(darkTheme = viewModel.isDarkMode) {
@@ -143,7 +138,6 @@ fun TheLabTopAppBar(
             },
             navigationIcon = {
                 IconButton(onClick = {
-//                    (context as ComponentActivity).onBackPressed()
                     executeOnBackPressed(context)
                 }) {
                     Icon(
@@ -175,7 +169,7 @@ fun TheLabTopAppBar(
 ) {
     val context = LocalContext.current
 
-    TheLabTheme {
+    TheLabTheme(viewModel?.isDarkMode ?: isSystemInDarkTheme()) {
         TopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -210,7 +204,6 @@ fun TheLabTopAppBar(
                 if (null == navigationIcon) {
                     IconButton(
                         onClick = {
-//                        (context.findActivity() as BaseComponentActivity).backPressed()
                             executeOnBackPressed(context)
                         }) {
                         Icon(
@@ -250,7 +243,7 @@ fun TheLabTopAppBar(
 ) {
     val context = LocalContext.current
 
-    TheLabTheme {
+    TheLabTheme(viewModel?.isDarkMode ?: isSystemInDarkTheme()) {
         when (toolbarSize) {
             ToolbarSize.SMALL -> {
                 TopAppBar(

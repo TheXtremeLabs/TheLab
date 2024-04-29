@@ -841,14 +841,14 @@ fun PreviewWeatherContent(@PreviewParameter(PreviewProviderWeather::class) state
                     latitude = 3.58978
                 )
             ),
-            onFetchWeatherRequest = { lat, lon -> },
+            onFetchWeatherRequest = { _, _ -> },
             weatherAddress = null,
             onGetMaxMinTemperature = {},
             cityMaxTemp = "",
             cityMinTemp = "",
             isWeatherMoreDataVisible = true,
             onUpdateMoreDataVisibility = {},
-            onGetCityNameWithCoordinates = { lat, lon -> }
+            onGetCityNameWithCoordinates = {  _, _ -> }
         )
     }
 }
@@ -875,14 +875,14 @@ fun PreviewWeatherSuccess(@PreviewParameter(PreviewProviderWeatherCity::class) s
                     latitude = 3.58978
                 )
             ),
-            onFetchWeatherRequest = { lat, lon -> },
+            onFetchWeatherRequest = {  _, _ -> },
             weatherAddress = null,
             onGetMaxMinTemperature = {},
             cityMaxTemp = "",
             cityMinTemp = "",
             isWeatherMoreDataVisible = true,
             onUpdateMoreDataVisibility = {},
-            onGetCityNameWithCoordinates = { lat, lon -> }
+            onGetCityNameWithCoordinates = {  _, _ -> }
         )
     }
 }
@@ -899,7 +899,7 @@ fun PreviewWeatherData(@PreviewParameter(PreviewProviderWeatherCity::class) stat
             cityMinTemp = "",
             isWeatherMoreDataVisible = false,
             onUpdateMoreDataVisibility = {},
-            onGetCityNameWithCoordinates = { lat, lon -> }
+            onGetCityNameWithCoordinates = {  _, _ -> }
         )
     }
 }

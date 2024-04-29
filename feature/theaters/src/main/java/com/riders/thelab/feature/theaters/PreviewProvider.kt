@@ -4,7 +4,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBVideoModel
-import com.riders.thelab.core.data.local.model.tmdb.toModel
+import com.riders.thelab.core.data.local.model.tmdb.toItemModel
 import com.riders.thelab.core.data.remote.dto.tmdb.MovieDto
 
 
@@ -42,7 +42,7 @@ class PreviewProviderTMDBItemModel : PreviewParameterProvider<TMDBItemModel> {
                 false,
                 7.6,
                 3455
-            ).toModel()
+            ).toItemModel()
         )
 }
 
@@ -66,7 +66,7 @@ class PreviewProviderTMDBDetailUiState : PreviewParameterProvider<TMDBUiState.TM
                     false,
                     7.6,
                     3455
-                ).toModel()
+                ).toItemModel()
             ),
             TMDBUiState.TMDBDetailUiState.Loading
         )

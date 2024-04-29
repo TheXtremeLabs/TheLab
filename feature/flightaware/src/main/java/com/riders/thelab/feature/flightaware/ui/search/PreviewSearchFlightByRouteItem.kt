@@ -1,10 +1,16 @@
 package com.riders.thelab.feature.flightaware.ui.search
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AirplanemodeActive
@@ -18,8 +24,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,17 +39,19 @@ import com.riders.thelab.core.data.local.model.flight.FlightModel
 import com.riders.thelab.core.data.local.model.flight.SegmentModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
+import com.riders.thelab.feature.flightaware.utils.Constants
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
-import java.util.Locale
 
 @Composable
 fun SearchFlightByRouteItem(flight: SegmentModel) {
+    val context = LocalContext.current
     val zoneId by remember { mutableStateOf(ZoneId.systemDefault()) }
     val departureLocalDateTime by remember {
         mutableStateOf(
@@ -58,6 +69,13 @@ fun SearchFlightByRouteItem(flight: SegmentModel) {
             )
         )
     }
+
+    val flightIATA = flight.identIATA.toString().take(2)
+    val painter = getCoilAsyncImagePainter(
+        context = context,
+        dataUrl = "${Constants.ENDPOINT_FLIGHT_FULL_LOGO}$flightIATA${Constants.EXTENSION_SVG}",
+        isSvg = true
+    )
 
     TheLabTheme {
         Card(
@@ -174,10 +192,26 @@ fun SearchFlightByRouteItem(flight: SegmentModel) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "Flight number: ${flight.operatorID.toString()}\n${flight.operator.toString()}",
-                        color = textColor
-                    )
+                    BoxWithConstraints(
+                        modifier = Modifier
+                            .width(72.dp)
+                            .height(40.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(color = Color.White.copy(alpha = .95f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .size(
+                                    width = this.maxWidth,
+                                    height = this.maxHeight
+                                )
+                                .padding(horizontal = 8.dp),
+                            painter = painter,
+                            contentDescription = "airline_logo_icon",
+                            contentScale = ContentScale.Fit
+                        )
+                    }
 
                     Text(
                         text = "Status: ${flight.status.toString()}",

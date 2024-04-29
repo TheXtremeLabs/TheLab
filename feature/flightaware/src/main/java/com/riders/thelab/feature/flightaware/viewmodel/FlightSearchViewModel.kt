@@ -16,7 +16,9 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.FlightModel
-import com.riders.thelab.core.data.local.model.flight.toModel
+import com.riders.thelab.core.data.local.model.flight.toAirportModel
+import com.riders.thelab.core.data.local.model.flight.toAirportSearchModel
+import com.riders.thelab.core.data.local.model.flight.toFlightModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
 import com.riders.thelab.core.data.remote.dto.flight.Flight
 import com.riders.thelab.feature.flightaware.ui.main.FlightMainActivity
@@ -254,7 +256,7 @@ open class FlightSearchViewModel @Inject constructor(
 
             runCatching {
                 (context as FlightMainActivity).launchSearchFlight(
-                    flight.toModel(),
+                    flight.toFlightModel(),
                     FlightMainActivity.SEARCH_TYPE_FLIGHT_NUMBER
                 )
             }
@@ -291,7 +293,7 @@ open class FlightSearchViewModel @Inject constructor(
             }
 
             runCatching {
-                val flightModel: FlightModel = flights[0].toModel()
+                val flightModel: FlightModel = flights[0].toFlightModel()
 
                 (context as FlightMainActivity).launchSearchFlight(
                     flightModel,
@@ -322,7 +324,7 @@ open class FlightSearchViewModel @Inject constructor(
     fun getAirportById(airportID: String): AirportModel =
         runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             Timber.d("getAirportById() | airport ID: $airportID")
-            repository.getAirportById(airportID).toModel()
+            repository.getAirportById(airportID).toAirportModel()
         }
 
 
@@ -330,7 +332,7 @@ open class FlightSearchViewModel @Inject constructor(
         runCatching {
             buildSet {
                 airportSearchList.forEach {
-                    add(it.toModel())
+                    add(it.toAirportSearchModel())
                 }
             }.toList()
         }
@@ -384,7 +386,7 @@ open class FlightSearchViewModel @Inject constructor(
                 return@runBlocking
             }
 
-            updateAirportsNearBy(response.airports.map { it.toModel() })
+            updateAirportsNearBy(response.airports.map { it.toAirportModel() })
 
             updateIsAirportNearByLoading(false)
         }

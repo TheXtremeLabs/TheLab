@@ -24,7 +24,7 @@ data class AirportModel(
     val airportFlightUrl: String? = null,
 )
 
-fun Airport.toModel(): AirportModel = AirportModel(
+fun Airport.toAirportModel(): AirportModel = AirportModel(
     airportId = this.airportCode ?: this.getAirportId(),
     alternateId = this.alternateIdent,
     icaoCode = this.icaoCode,

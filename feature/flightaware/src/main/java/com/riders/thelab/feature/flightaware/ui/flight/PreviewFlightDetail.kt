@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.flightaware.ui.flight
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -10,10 +11,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
@@ -22,7 +26,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -32,12 +39,17 @@ import com.riders.thelab.core.data.local.model.flight.FlightModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
 import com.riders.thelab.feature.flightaware.ui.main.UiEvent
+import com.riders.thelab.feature.flightaware.utils.Constants
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 
 ///////////////////////////////////////
@@ -54,6 +66,15 @@ fun FlightStatusCard(
     arrivalAirportIataCode: NotBlankString,
     flightStatus: NotBlankString
 ) {
+    val context = LocalContext.current
+
+    val flightIATA = flightId.toString().take(2)
+    val painter = getCoilAsyncImagePainter(
+        context = context,
+        dataUrl = "${Constants.ENDPOINT_FLIGHT_FULL_LOGO}$flightIATA${Constants.EXTENSION_SVG}",
+        isSvg = true
+    )
+
     TheLabTheme {
         Card(
             modifier = Modifier
@@ -82,6 +103,28 @@ fun FlightStatusCard(
                             color = textColor
                         )
                     )
+
+                    BoxWithConstraints(
+                        modifier = Modifier
+                            .width(120.dp)
+                            .height(48.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(color = Color.White.copy(alpha = .95f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .size(
+                                    width = this.maxWidth,
+                                    height = this.maxHeight
+                                )
+                                .padding(horizontal = 8.dp),
+                            painter = painter,
+                            contentDescription = "airline_logo_icon",
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+
                     Text(
                         text = airlineOperatorId.toString(),
                         style = TextStyle(
@@ -149,6 +192,7 @@ fun FlightInfoContainer(
     arrivalDate: NotBlankString,
     arrivalTime: NotBlankString
 ) {
+
     TheLabTheme {
         Card(
             modifier = Modifier
@@ -170,7 +214,7 @@ fun FlightInfoContainer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = departureDate.toString(),
+                        text = departureDate.toLocalDateTime().toLocalDate().toString(),
                         style = TextStyle(
                             fontWeight = FontWeight.W600,
                             fontSize = 20.sp,
@@ -178,7 +222,7 @@ fun FlightInfoContainer(
                         )
                     )
                     Text(
-                        text = departureTime.toString(),
+                        text = departureTime.toLocalDateTime().toLocalTime().toString(),
                         style = TextStyle(
                             fontWeight = FontWeight.W600,
                             fontSize = 20.sp,
@@ -194,7 +238,7 @@ fun FlightInfoContainer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = arrivalDate.toString(),
+                        text = arrivalDate.toLocalDateTime().toLocalDate().toString(),
                         style = TextStyle(
                             fontWeight = FontWeight.W600,
                             fontSize = 20.sp,
@@ -202,7 +246,7 @@ fun FlightInfoContainer(
                         )
                     )
                     Text(
-                        text = arrivalTime.toString(),
+                        text = arrivalTime.toLocalDateTime().toLocalTime().toString(),
                         style = TextStyle(
                             fontWeight = FontWeight.W600,
                             fontSize = 20.sp,
@@ -214,6 +258,10 @@ fun FlightInfoContainer(
         }
     }
 }
+
+private val zoneId: ZoneId = ZoneId.systemDefault()
+private fun NotBlankString.toLocalDateTime(): LocalDateTime =
+    LocalDateTime.ofInstant(Instant.parse(this.toString()), zoneId)
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable

@@ -70,13 +70,13 @@ data class FlightModel(
 ) : Serializable
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
-fun Flight.toModel(): FlightModel = FlightModel(
+fun Flight.toFlightModel(): FlightModel = FlightModel(
     faFlightID = this.faFlightID ?: NotBlankString.create("N/A"),
     operatorID = this.operatorID ?: NotBlankString.create("N/A"),
     identICAO = this.identICAO,
     identIATA = this.identIATA,
-    origin = this.origin?.toModel(),
-    destination = this.destination?.toModel(),
+    origin = this.origin?.toOriginDestinationModel(),
+    destination = this.destination?.toOriginDestinationModel(),
     status = this.status ?: NotBlankString.create("N/A"),
     progress = this.progress,
     waypoints = this.waypoints,
@@ -111,5 +111,5 @@ fun Flight.toModel(): FlightModel = FlightModel(
     actualOff = this.actualOff,
     actualOn = this.actualOn,
     foresightPredictionsAvailable = this.foresightPredictionsAvailable ?: false,
-    segments = this.segments?.map { it.toModel() },
+    segments = this.segments?.map { it.toSegmentModel() },
 )
