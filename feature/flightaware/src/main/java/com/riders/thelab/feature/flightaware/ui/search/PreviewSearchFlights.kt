@@ -17,18 +17,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AirplanemodeActive
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.TextStyle
@@ -38,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.riders.thelab.core.data.local.model.flight.FlightModel
-import com.riders.thelab.core.data.local.model.flight.SegmentModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
@@ -51,14 +46,13 @@ import com.riders.thelab.feature.flightaware.ui.main.Footer
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
-
 ///////////////////////////////////////
 //
 // COMPOSE
 //
 ///////////////////////////////////////
 @Composable
-fun SearchFlightByRouteContent(
+fun SearchFlightsContent(
     currentDate: NotBlankString,
     flights: List<FlightModel>,
     uiEvent: (UiEvent) -> Unit
@@ -76,7 +70,7 @@ fun SearchFlightByRouteContent(
                     navigationIconColor = Color.White,
                     withGradientBackground = false,
                     backgroundColor = cardBackgroundColor
-                ) {}
+                )
             },
             containerColor = backgroundColor
         ) { contentPadding ->
@@ -85,7 +79,7 @@ fun SearchFlightByRouteContent(
                     .fillMaxSize()
                     .padding(contentPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
+                verticalArrangement = Arrangement.Top
             ) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -112,10 +106,12 @@ fun SearchFlightByRouteContent(
                         )
 
                         // Top Flight Icon
-                        DottedLink(modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth(.85f)
-                            .zIndex(5f))
+                        DottedLink(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(.85f)
+                                .zIndex(5f)
+                        )
 
                         // Bottom flight route info
                         Row(
@@ -205,13 +201,14 @@ fun SearchFlightByRouteContent(
                     ) {
                         item {
                             Text(
+                                modifier = Modifier.padding(top = 16.dp),
                                 text = "Found ${flights.size} flight(s)",
                                 color = textColor
                             )
                         }
 
-                        itemsIndexed(items = flights.map { it.segments }) { _, item ->
-                            // SearchFlightByRouteItem(item)
+                        itemsIndexed(items = flights) { _, item ->
+                            SearchFlightItem(flight = item, uiEvent = uiEvent)
                         }
 
                         item {
@@ -232,7 +229,7 @@ fun SearchFlightByRouteContent(
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewSearchFlightByRouteContent(@PreviewParameter(PreviewProviderFlight::class) flight: FlightModel) {
+private fun PreviewSearchFlightsContent(@PreviewParameter(PreviewProviderFlight::class) flight: FlightModel) {
     TheLabTheme {
         Box(
             modifier = Modifier
@@ -240,7 +237,7 @@ private fun PreviewSearchFlightByRouteContent(@PreviewParameter(PreviewProviderF
                 .background(color = backgroundColor),
             contentAlignment = Alignment.Center
         ) {
-            SearchFlightByRouteContent(
+            SearchFlightsContent(
                 currentDate = NotBlankString.create("24/04/2024"),
                 flights = listOf(flight),
                 uiEvent = {}

@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -29,8 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
@@ -39,8 +40,9 @@ import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.remote.dto.flight.Arrivals
 import com.riders.thelab.core.data.remote.dto.flight.Departures
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.feature.flightaware.core.component.GoogleMap
@@ -64,6 +66,7 @@ fun AirportDetailContent(
     isFlightsFetched: Boolean,
     onFlightRequested: () -> Unit
 ) {
+    val context = LocalContext.current
     val lazyListState = rememberLazyListState()
 
     val uiSettings by remember {
@@ -85,7 +88,12 @@ fun AirportDetailContent(
                 .fillMaxSize()
                 .background(color = backgroundColor),
             topBar = {
-                TheLabTopAppBar(navigationIcon = { Icons.AutoMirrored.Filled.KeyboardArrowLeft })
+                TheLabTopAppBar(
+                    toolbarSize = ToolbarSize.SMALL,
+                    withGradientBackground = false,
+                    navigationIconColor = if (LocalInspectionMode.current) Color.White else backgroundColor,
+                    actions = null
+                )
             },
             containerColor = backgroundColor
         ) { _ ->
@@ -101,6 +109,7 @@ fun AirportDetailContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width))
+                            .zIndex(2f)
                     ) {
                         GoogleMap(
                             modifier = Modifier.fillMaxSize(),

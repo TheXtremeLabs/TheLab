@@ -27,8 +27,11 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchActivity
 import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchDetailActivity
 import com.riders.thelab.feature.flightaware.ui.search.SearchFlightActivity
+import com.riders.thelab.feature.flightaware.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import timber.log.Timber
 
@@ -196,20 +199,21 @@ class FlightMainActivity : BaseComponentActivity() {
             .apply { this.putExtra(AirportSearchDetailActivity.EXTRA_AIRPORT_ID, airportID) }
             .run { startActivity(this) }
 
-    fun launchSearchFlight(flight: FlightModel, searchType: String) =
+    fun launchSearchFlights(flights: List<FlightModel>, searchType: String) =
         Intent(this, SearchFlightActivity::class.java)
             .apply {
                 this.putExtra(
-                    SearchFlightActivity.EXTRA_SEARCH_TYPE,
+                    Constants.EXTRA_SEARCH_TYPE,
                     when (searchType) {
-                        SEARCH_TYPE_FLIGHT_NUMBER -> SearchFlightActivity.EXTRA_SEARCH_TYPE_FLIGHT_NUMBER
-                        SEARCH_TYPE_FLIGHT_ROUTE -> SearchFlightActivity.EXTRA_SEARCH_TYPE_FLIGHT_ROUTE
+                        SEARCH_TYPE_FLIGHT_NUMBER -> Constants.EXTRA_SEARCH_TYPE_FLIGHT_NUMBER
+                        SEARCH_TYPE_FLIGHT_ROUTE -> Constants.EXTRA_SEARCH_TYPE_FLIGHT_ROUTE
                         else -> "UNKNOWN"
                     }
                 )
-                this.putExtra(SearchFlightActivity.EXTRA_FLIGHT, flight)
+                this.putExtra(Constants.EXTRA_FLIGHT,  Json.encodeToString(flights))
             }
             .run { startActivity(this) }
+
 
     companion object {
         const val SEARCH_TYPE_FLIGHT_NUMBER: String = "SEARCH_TYPE_FLIGHT_NUMBER"

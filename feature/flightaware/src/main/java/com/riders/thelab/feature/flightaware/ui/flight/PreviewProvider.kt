@@ -40,8 +40,18 @@ class PreviewProviderFlight : PreviewParameterProvider<FlightModel> {
                 aircraftType = NotBlankString.create("A321"),
                 progress = 20,
                 status = NotBlankString.create("Planifié"),
+                scheduledOut = NotBlankString.create("2024-04-28T01:30:00Z"),
+                estimatedOut = NotBlankString.create("2024-04-28T01:30:00Z"),
+                actualOut = null,
+                scheduledOff = NotBlankString.create("2024-04-28T01:40:00Z"),
+                estimatedOff = NotBlankString.create("2024-04-28T01:40:00Z"),
                 actualOff = null,
+                scheduledOn = NotBlankString.create("2024-04-28T12:10:00Z"),
+                estimatedOn = NotBlankString.create("2024-04-28T12:10:00Z"),
                 actualOn = null,
+                scheduledIn = NotBlankString.create("2024-04-28T12:20:00Z"),
+                estimatedIn = NotBlankString.create("2024-04-28T12:20:00Z"),
+                actualIn = null,
                 foresightPredictionsAvailable = false,
                 segments = null
             )

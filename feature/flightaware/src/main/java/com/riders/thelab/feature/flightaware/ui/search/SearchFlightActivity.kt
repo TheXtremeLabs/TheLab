@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.flightaware.ui.search
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -17,10 +18,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.data.local.model.compose.SearchFlightUiState
+import com.riders.thelab.core.data.local.model.flight.FlightModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import dagger.hilt.android.AndroidEntryPoint
+import com.riders.thelab.feature.flightaware.ui.flight.FlightDetailActivity
+import com.riders.thelab.feature.flightaware.utils.Constants
 import kotlinx.coroutines.launch
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
@@ -29,7 +32,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-@AndroidEntryPoint
+
 class SearchFlightActivity : BaseComponentActivity() {
 
     private val mViewModel: SearchFlightViewModel by viewModels<SearchFlightViewModel>()
@@ -71,18 +74,17 @@ class SearchFlightActivity : BaseComponentActivity() {
                                         LabLoader(modifier = Modifier.size(40.dp))
                                     }
 
-                                    is SearchFlightUiState.SearchFlightByNumber -> {
-                                        SearchFlightByNumberContent(
-                                            flight = targetState.flight,
-                                            uiEvent = mViewModel::onEvent
-                                        )
-                                    }
-
-                                    is SearchFlightUiState.SearchFlightByRoute -> {
-                                        SearchFlightByRouteContent(
+                                    is SearchFlightUiState.Success -> {
+                                        SearchFlightsContent(
                                             currentDate = currentDate!!,
-                                            flights = targetState.flight.segments!!,
-                                            uiEvent = mViewModel::onEvent
+                                            flights = targetState.flights,
+                                            uiEvent = {
+                                                when (it) {
+                                                    is UiEvent.OnFlightClicked -> {
+                                                        launchFlightDetail(it.flightModel)
+                                                    }
+                                                }
+                                            }
                                         )
                                     }
                                 }
@@ -124,13 +126,12 @@ class SearchFlightActivity : BaseComponentActivity() {
         currentDate = NotBlankString.create(formattedDate)
     }
 
+    private fun launchFlightDetail(flightModel: FlightModel) =
+        Intent(this@SearchFlightActivity, FlightDetailActivity::class.java)
+            .apply { this.putExtra(Constants.EXTRA_FLIGHT, flightModel) }
+            .run { startActivity(this) }
+
     companion object {
         const val DATE_FORMAT_PATTERN = "d MMM uuuu"
-
-        const val EXTRA_FLIGHT: String = "EXTRA_FLIGHT"
-        const val EXTRA_FLIGHT_LIST: String = "EXTRA_FLIGHT_LIST"
-        const val EXTRA_SEARCH_TYPE: String = "EXTRA_SEARCH_TYPE"
-        const val EXTRA_SEARCH_TYPE_FLIGHT_NUMBER: String = "EXTRA_SEARCH_TYPE_FLIGHT_NUMBER"
-        const val EXTRA_SEARCH_TYPE_FLIGHT_ROUTE: String = "EXTRA_SEARCH_TYPE_FLIGHT_ROUTE"
     }
 }
