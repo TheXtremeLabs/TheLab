@@ -17,7 +17,7 @@ import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingTvShowItemUiState
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTvShowsUiState
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
-import com.riders.thelab.core.data.local.model.tmdb.toModel
+import com.riders.thelab.core.data.local.model.tmdb.toItemModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
@@ -56,7 +56,7 @@ fun ScreenTvShowsContent(
 
                         if (targetState is TMDBTrendingTvShowItemUiState.Success) {
                             val item: TMDBItemModel =
-                                targetState.response.results.map { it.toModel() }[0]
+                                targetState.response.results.map { it.toItemModel() }[0]
 
                             TrendingTMDBItem(trendingItem = item) {
                                 onTMDBItemDetailClicked(it)
@@ -71,7 +71,7 @@ fun ScreenTvShowsContent(
                         if (targetState is TMDBTvShowsUiState.Success) {
 
                             val tmdbList: List<TMDBItemModel> =
-                                targetState.response.results.map { it.toModel() }
+                                targetState.response.results.map { it.toItemModel() }
 
                             TheaterTMDBList(
                                 rowListState = lazyRowTrendingListState,

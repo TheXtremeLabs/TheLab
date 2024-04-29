@@ -38,7 +38,7 @@ data class TMDBCrewModel(
 ) : Serializable
 
 /*
-fun TMDBCrewDto.toModel(): TDMBCrewModel = TDMBCrewModel(
+fun TMDBCrewDto.toFlightModel(): TDMBCrewModel = TDMBCrewModel(
     isAdult,
     gender,
     id,

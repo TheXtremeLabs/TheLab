@@ -95,7 +95,7 @@ object LabFileManager {
     fun unzipGzip(responseBody: ResponseBody): String? = runCatching {
         Timber.i("unzipGzip(responseBody: ResponseBody) | Build stream objects with json file received ...")
 
-        var json: String? = null
+        var json: String?
         val compressedInputStream: InputStream = GZIPInputStream(responseBody.byteStream())
         val inputSource = InputSource(compressedInputStream)
         val inputStream: InputStream = BufferedInputStream(inputSource.byteStream)
@@ -310,7 +310,7 @@ object LabFileManager {
             File(it, context.resources.getString(R.string.app_name)).apply { mkdirs() }
         }
 
-        return if (mediaDir != null && mediaDir.exists())
+        return if (mediaDir.exists())
             mediaDir else context.filesDir
     }
 

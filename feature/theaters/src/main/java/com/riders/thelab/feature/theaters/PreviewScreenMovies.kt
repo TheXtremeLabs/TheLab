@@ -18,7 +18,7 @@ import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBMoviesUiS
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingMovieItemUiState
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBUpcomingMoviesUiState
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
-import com.riders.thelab.core.data.local.model.tmdb.toModel
+import com.riders.thelab.core.data.local.model.tmdb.toItemModel
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
@@ -62,7 +62,7 @@ fun ScreenMovieContent(
                         if (targetState is TMDBTrendingMovieItemUiState.Success) {
 
                             val item: TMDBItemModel =
-                                targetState.response.results.map { it.toModel() }[0]
+                                targetState.response.results.map { it.toItemModel() }[0]
 
                             TrendingTMDBItem(trendingItem = item) {
                                 onTMDBItemDetailClicked(it)
@@ -77,7 +77,7 @@ fun ScreenMovieContent(
                         if (targetState is TMDBTrendingMovieItemUiState.Success) {
 
                             val tmdbList: List<TMDBItemModel> =
-                                targetState.response.results.map { it.toModel() }
+                                targetState.response.results.map { it.toItemModel() }
 
                             TheaterTMDBList(
                                 rowListState = lazyRowTrendingListState,
@@ -98,7 +98,7 @@ fun ScreenMovieContent(
                         if (targetState is TMDBUpcomingMoviesUiState.Success) {
 
                             val tmdbList: List<TMDBItemModel> =
-                                targetState.response.results.map { it.toModel() }
+                                targetState.response.results.map { it.toItemModel() }
 
                             TheaterTMDBList(
                                 rowListState = lazyRowUpcomingListState,
@@ -118,7 +118,7 @@ fun ScreenMovieContent(
 
                         if (targetState is TMDBMoviesUiState.Success) {
                             val tmdbList: List<TMDBItemModel> =
-                                targetState.response.results.map { it.toModel() }
+                                targetState.response.results.map { it.toItemModel() }
 
                             TheaterTMDBList(
                                 rowListState = lazyRowPopularListState,

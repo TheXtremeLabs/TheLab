@@ -30,7 +30,7 @@ data class OperatorModel(
     val alternatives: List<OperatorModel>? = null
 )
 
-fun Operator.toModel(): OperatorModel = OperatorModel(
+fun Operator.toOperatorModel(): OperatorModel = OperatorModel(
     name = this.name,
     shortname = this.shortname,
     city = this.city,
@@ -42,5 +42,5 @@ fun Operator.toModel(): OperatorModel = OperatorModel(
     phone = this.phone,
     url = this.url,
     wikiUrl = this.wikiUrl,
-    alternatives = this.alternatives?.map { it.toModel() }
+    alternatives = this.alternatives?.map { it.toOperatorModel() }
 )

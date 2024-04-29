@@ -104,9 +104,6 @@ class FlightMainActivity : BaseComponentActivity() {
                                 uiEvent = { event ->
                                     Timber.i("uiEvent | ${event.javaClass.name}")
 
-                                    // Call onEvent for ViewModel
-                                    // mViewModel.onEvent(event)
-
                                     // Call onEvent for FlightSearchViewModel as well
                                     when (event) {
                                         is UiEvent.OnFetchAirportNearBy -> {
@@ -116,6 +113,7 @@ class FlightMainActivity : BaseComponentActivity() {
                                                         .toTypedArray()
                                                 )
                                                 continueWithBlock = true to {
+                                                    // Call onEvent for ViewModel
                                                     mViewModel.onEvent(
                                                         uiEvent = event,
                                                         activity = this@FlightMainActivity
@@ -123,6 +121,7 @@ class FlightMainActivity : BaseComponentActivity() {
                                                 }
                                             } else {
                                                 mViewModel.initLocationManager(this@FlightMainActivity)
+                                                // Call onEvent for ViewModel
                                                 mViewModel.onEvent(
                                                     uiEvent = event,
                                                     activity = this@FlightMainActivity
@@ -131,6 +130,7 @@ class FlightMainActivity : BaseComponentActivity() {
                                         }
 
                                         else -> {
+                                            // Call onEvent for ViewModel
                                             mViewModel.onEvent(uiEvent = event)
                                         }
                                     }

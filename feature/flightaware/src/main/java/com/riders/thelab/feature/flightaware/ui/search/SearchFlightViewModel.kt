@@ -9,7 +9,7 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.SearchFlightUiState
 import com.riders.thelab.core.data.local.model.flight.FlightModel
 import com.riders.thelab.core.data.local.model.flight.OperatorModel
-import com.riders.thelab.core.data.local.model.flight.toModel
+import com.riders.thelab.core.data.local.model.flight.toOperatorModel
 import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Node
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -88,8 +89,7 @@ class SearchFlightViewModel @Inject constructor(
                         // Log
                         Timber.d("SearchFlightActivity.EXTRA_SEARCH_TYPE_FLIGHT_ROUTE | item : $it")
                         updateUiState(SearchFlightUiState.SearchFlightByRoute(it))
-
-                        getAirlinesThumbnails(it)
+//                        getAirlinesThumbnails(it)
                     }
                         ?: run { Timber.e("SearchFlightActivity.EXTRA_SEARCH_TYPE_FLIGHT_ROUTE | Extra item object is null") }
                 }
@@ -113,7 +113,8 @@ class SearchFlightViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
             flightModel.segments?.forEach { segmentModel ->
                 val response: OperatorModel =
-                    repository.getOperatorById(segmentModel.operatorICAO.toString()).toModel()
+                    repository.getOperatorById(segmentModel.operatorICAO.toString())
+                        .toOperatorModel()
 
                 val wikiResponse: WikimediaResponse = repository.getWikimediaResponse(
                     NotBlankString.create(
@@ -122,16 +123,49 @@ class SearchFlightViewModel @Inject constructor(
                 )
 
                 runCatching {
-                    val body = Jsoup.parse(wikiResponse.parsed.text.toString()).body()
-                    Timber.d("getAirlinesThumbnails() | body : $body with children size of ${body.childrenSize()}")
+                    Jsoup
+                        .parse(wikiResponse.parsed.text.toString())
+                        .apply {
+                            Timber.d("getAirlinesThumbnails() | body children size of ${this.childrenSize()}")
 
+                            val firstDiv = this.childNodes()[0]
+                            Timber.d("getAirlinesThumbnails() | first div child node size of: ${firstDiv.childNodes().size}")
+
+                            val filteredNodeTypeOfFile: List<Node> =
+                                firstDiv.childNodes()[1].childNodes()[0].childNodes()
+                                    .filter { element -> element.hasAttr("typeof") }
+                            Timber.d("getAirlinesThumbnails() | filteredNodeTypeOfFile node size of: ${filteredNodeTypeOfFile.size}")
+
+                            val filteredFile: List<Node> = mutableListOf<Node>().apply {
+                                filteredNodeTypeOfFile.forEach {
+                                    this.add(
+                                        it.childNodes().filter { element ->
+                                            element.nodeName() == "a"
+                                        }[0]
+                                    )
+                                }
+                            }
+                            Timber.d("getAirlinesThumbnails() | filteredFile node size of: ${filteredFile.size}")
+
+                            val imageSrcs: List<Node> = filteredFile.toList().filter {
+                                it.attributes()["href"].lowercase().trim().contains("logo")
+                            }
+                            Timber.d("getAirlinesThumbnails() | image Srcs : $imageSrcs")
+
+                            if (imageSrcs.isEmpty()) {
+                                Timber.e("getAirlinesThumbnails() | List is empty")
+                            } else {
+                                val imageSrc = imageSrcs[0]
+                                Timber.d("getAirlinesThumbnails() | image Src : $imageSrc")
+                            }
+                        }
                 }
                     .onFailure {
                         it.printStackTrace()
                         Timber.e("getAirlinesThumbnails() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
                     }
                     .onSuccess {
-                        Timber.d("getAirlinesThumbnails() | onSuccess | is success: $it")
+                        Timber.d("getAirlinesThumbnails() | onSuccess")
                     }
             }
         }

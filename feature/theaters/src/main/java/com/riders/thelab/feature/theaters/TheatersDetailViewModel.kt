@@ -13,7 +13,8 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBDetailUiState
 import com.riders.thelab.core.data.local.model.tmdb.TDMBCastModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
-import com.riders.thelab.core.data.local.model.tmdb.toModel
+import com.riders.thelab.core.data.local.model.tmdb.toCastModel
+import com.riders.thelab.core.data.local.model.tmdb.toVideoModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -129,13 +130,13 @@ class TheatersDetailViewModel @Inject constructor(
                             Timber.e("getVideos() | No videos found.")
                         } else {
 
-                            mTMDBItemModel!!.videos = tvShowVideo.results.map { it.toModel() }
+                            mTMDBItemModel!!.videos = tvShowVideo.results.map { it.toVideoModel() }
                             // updateTMDBItemUiState(TMDBDetailUiState.Success(mTMDBItemModel!!))
                         }
                     } ?: run { Timber.e("tvShowVideoResponse is null") }
                 } else {
 
-                    mTMDBItemModel!!.videos = movieVideo.results.map { it.toModel() }
+                    mTMDBItemModel!!.videos = movieVideo.results.map { it.toVideoModel() }
                     // updateTMDBItemUiState(TMDBDetailUiState.Success(mTMDBItemModel!!))
                 }
 
@@ -160,7 +161,7 @@ class TheatersDetailViewModel @Inject constructor(
                 val castList: MutableList<TDMBCastModel> = mutableListOf()
                 response.cast.forEach {
                     if (it.knownForDepartment.contains("acting", true)) {
-                        castList.add(it.toModel())
+                        castList.add(it.toCastModel())
                     }
                 }
                 mTMDBItemModel!!.cast = castList
@@ -168,7 +169,7 @@ class TheatersDetailViewModel @Inject constructor(
                 val crewList: MutableList<TDMBCastModel> = mutableListOf()
                 response.crew.forEach {
                     if (it.department.contains("production", true)) {
-                        crewList.add(it.toModel())
+                        crewList.add(it.toCastModel())
                     }
                 }
 

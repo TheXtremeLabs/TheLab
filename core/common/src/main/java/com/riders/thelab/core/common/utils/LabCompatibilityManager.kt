@@ -128,6 +128,14 @@ object LabCompatibilityManager {
         return getSdkVersion() >= VERSION_CODES.UPSIDE_DOWN_CAKE
     }
 
+    /**
+     * Determine if the device is running API level 34 or higher.
+     * Upside Down Cake
+     */
+    fun isVanillaIceCream(): Boolean {
+        return getSdkVersion() >= 35
+    }
+
 
     /**
      * Determine if the device is a tablet (i.e. it has a large screen).

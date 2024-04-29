@@ -11,7 +11,8 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.OperatorModel
-import com.riders.thelab.core.data.local.model.flight.toModel
+import com.riders.thelab.core.data.local.model.flight.toAirportModel
+import com.riders.thelab.core.data.local.model.flight.toOperatorModel
 import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
 import com.riders.thelab.feature.flightaware.BuildConfig
@@ -187,7 +188,7 @@ class FlightViewModel @Inject constructor(
                 firstAirports.airports + secondAirports.airports + thirdAirports.airports
 
             Timber.d("Total Airports: ${totalAirports.size}")
-            updateAirportList(totalAirports.map { airport -> airport.toModel() })
+            updateAirportList(totalAirports.map { airport -> airport.toAirportModel() })
         }
     }
 
@@ -195,7 +196,7 @@ class FlightViewModel @Inject constructor(
         Timber.d("getAirport() | id: $airportID")
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            val airport = repository.getAirportById(airportID).toModel()
+            val airport = repository.getAirportById(airportID).toAirportModel()
             Timber.d("airport: $airport")
             updateAirport(airport)
         }
@@ -217,7 +218,7 @@ class FlightViewModel @Inject constructor(
                 firstOperators.operators + secondOperators.operators + thirdOperators.operators
 
             Timber.d("Total Operators: ${totalOperators.size}")
-            updateOperators(totalOperators.map { it.toModel() })
+            updateOperators(totalOperators.map { it.toOperatorModel() })
         }
     }
 
@@ -225,7 +226,7 @@ class FlightViewModel @Inject constructor(
         Timber.d("getOperator() | id: $operatorID")
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            val operator = repository.getOperatorById(operatorID).toModel()
+            val operator = repository.getOperatorById(operatorID).toOperatorModel()
             Timber.d("operator: $operator")
             updateOperator(operator)
         }

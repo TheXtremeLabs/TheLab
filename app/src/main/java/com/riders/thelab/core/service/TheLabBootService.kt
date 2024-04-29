@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.IBinder
 import android.widget.Toast
@@ -56,7 +57,7 @@ class TheLabBootService : Service() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag", "ForegroundServiceType")
+    @SuppressLint("UnspecifiedImmutableFlag", "ForegroundServiceType", "NewApi")
     private fun displaySessionNotification() {
         if (!LabCompatibilityManager.isOreo()) {
             Toast.makeText(
@@ -127,8 +128,16 @@ class TheLabBootService : Service() {
                     bigText = R.string.notification_big_text
                 )
 
-            // notificationId is a unique int for each notification that you must define
-            startForeground(Constants.NOTIFICATION_ID, notification.build())
+            if (LabCompatibilityManager.isUpsideDownCake()) {
+                startForeground(
+                    Constants.NOTIFICATION_ID,
+                    notification.build(),
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                )
+            } else {
+                // notificationId is a unique int for each notification that you must define
+                startForeground(Constants.NOTIFICATION_ID, notification.build())
+            }
         }
     }
 

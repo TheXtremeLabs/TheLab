@@ -56,7 +56,6 @@ import kotools.types.text.NotBlankString
 // COMPOSE
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun SearchFlightByRouteContent(
     currentDate: NotBlankString,
@@ -73,6 +72,7 @@ fun SearchFlightByRouteContent(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TheLabTopAppBar(
+                    navigationIconColor = Color.White,
                     withGradientBackground = false,
                     backgroundColor = cardBackgroundColor
                 ) {}

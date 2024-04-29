@@ -2,7 +2,7 @@ package com.riders.thelab.core.data.local.model.weather
 
 import com.riders.thelab.core.common.utils.DateTimeUtils
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
-import com.riders.thelab.core.data.remote.dto.weather.toModel
+import com.riders.thelab.core.data.remote.dto.weather.toTemperatureModel
 import java.io.Serializable
 
 @kotlinx.serialization.Serializable
@@ -56,7 +56,7 @@ fun OneCallWeatherResponse.toWidgetModel(): WeatherWidgetModel? = this.currentWe
             this.map {
                 ForecastWeatherWidgetModel(
                     day = DateTimeUtils.getDayFromTime(it.dateTimeUTC),
-                    temperature = it.temperature.toModel(),
+                    temperature = it.temperature.toTemperatureModel(),
                     icon = it.weather[0].icon
                 )
             }.toList()

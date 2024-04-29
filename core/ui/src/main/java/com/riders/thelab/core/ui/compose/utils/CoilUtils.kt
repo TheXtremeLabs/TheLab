@@ -7,6 +7,7 @@ import androidx.compose.ui.res.painterResource
 import coil.ImageLoader
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import coil.decode.SvgDecoder
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.size.Scale
@@ -46,16 +47,50 @@ fun getCoilImageRequest(
     }
     .build()
 
+fun getCoilImageRequestSvg(
+    context: Context,
+    dataUrl: String,
+    size: Size? = null,
+    scale: Scale? = null,
+    isCaching: Boolean = true
+): ImageRequest = ImageRequest
+    .Builder(context)
+    .data(dataUrl)
+    .decoderFactory(SvgDecoder.Factory())
+    .apply {
+        Timber.d("getCoilImageRequest() | dataUrl : $dataUrl, size : $size, scale : $scale")
+
+        crossfade(true)
+        allowHardware(false)
+        //transformations(RoundedCornersTransformation(32.dp.value))
+
+        size(size ?: Size.ORIGINAL)
+        scale(scale ?: Scale.FIT)
+
+        if (isCaching) {
+            networkCachePolicy(CachePolicy.ENABLED)
+            diskCachePolicy(CachePolicy.DISABLED)
+            memoryCachePolicy(CachePolicy.ENABLED)
+        }
+    }
+    .build()
+
 @Composable
 fun getCoilAsyncImagePainter(
     context: Context,
     dataUrl: String,
+    isSvg: Boolean = false,
     size: Size? = null,
     scale: Scale? = null,
     @DrawableRes placeholderResId: Int = R.drawable.logo_colors
 ): AsyncImagePainter =
     rememberAsyncImagePainter(
-        model = getCoilImageRequest(
+        model = if (!isSvg) getCoilImageRequest(
+            context = context,
+            dataUrl = dataUrl,
+            size = size,
+            scale = scale
+        ) else getCoilImageRequestSvg(
             context = context,
             dataUrl = dataUrl,
             size = size,

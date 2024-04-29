@@ -16,7 +16,7 @@ data class OriginDestinationModel(
     val airportInfoUrl: NotBlankString?
 ) : Serializable
 
-fun Origin.toModel(): OriginDestinationModel = OriginDestinationModel(
+fun Origin.toOriginDestinationModel(): OriginDestinationModel = OriginDestinationModel(
     this.codeIcao,
     this.codeIata,
     this.codeLid,
@@ -26,7 +26,7 @@ fun Origin.toModel(): OriginDestinationModel = OriginDestinationModel(
     this.airportInfoUrl
 )
 
-fun Destination.toModel(): OriginDestinationModel = OriginDestinationModel(
+fun Destination.toOriginDestinationModel(): OriginDestinationModel = OriginDestinationModel(
     this.codeIcao,
     this.codeIata,
     this.codeLid,

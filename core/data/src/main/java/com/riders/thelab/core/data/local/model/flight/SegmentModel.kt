@@ -78,7 +78,7 @@ data class SegmentModel(
     val actualIn: NotBlankString?
 ) : Serializable
 
-fun Segment.toModel(): SegmentModel = SegmentModel(
+fun Segment.toSegmentModel(): SegmentModel = SegmentModel(
     operatorID = this.operatorID,
     identICAO = this.identICAO,
     identIATA = this.identIATA,
@@ -96,8 +96,8 @@ fun Segment.toModel(): SegmentModel = SegmentModel(
     diverted = this.diverted,
     cancelled = this.cancelled,
     positionOnly = this.positionOnly,
-    origin = this.origin.toModel(),
-    destination = this.destination?.toModel(),
+    origin = this.origin.toOriginDestinationModel(),
+    destination = this.destination?.toOriginDestinationModel(),
     departureDelay = this.departureDelay,
     arrivalDelay = this.arrivalDelay,
     progress = this.progress,

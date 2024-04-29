@@ -20,7 +20,7 @@ data class AirportSearchModel(
 )
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
-fun AirportSearch.toModel(): AirportSearchModel = AirportSearchModel(
+fun AirportSearch.toAirportSearchModel(): AirportSearchModel = AirportSearchModel(
     city = this.cityName?.let { NotBlankString.create(it) },
     name = this.description?.let { NotBlankString.create(it) },
     description = this.description?.let { NotBlankString.create(it) },

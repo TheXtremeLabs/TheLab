@@ -270,7 +270,6 @@ fun PaletteContent(
 
                         itemsIndexed(paletteColorList.value) { index, item ->
                             PaletteItem(
-                                index,
                                 text = paletteNameList[index],
                                 color = item?.let { Color(it) })
                         }
