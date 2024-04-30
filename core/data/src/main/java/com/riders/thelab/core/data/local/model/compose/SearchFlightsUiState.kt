@@ -5,12 +5,12 @@ import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import kotools.types.text.NotBlankString
 
 @Stable
-sealed interface FlightDetailUiState {
-    data class Success(val flight: SearchFlightModel) : FlightDetailUiState
+sealed interface SearchFlightsUiState {
+    data class Success(val flights: List<SearchFlightModel>) : SearchFlightsUiState
     data class Error(
         val message: NotBlankString,
         val throwable: Throwable? = null
-    ) : FlightDetailUiState
+    ) : SearchFlightsUiState
 
-    data object Loading : FlightDetailUiState
+    data object Loading : SearchFlightsUiState
 }

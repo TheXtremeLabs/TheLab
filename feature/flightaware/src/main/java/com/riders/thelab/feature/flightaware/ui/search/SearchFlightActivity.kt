@@ -17,8 +17,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.riders.thelab.core.data.local.model.compose.SearchFlightUiState
-import com.riders.thelab.core.data.local.model.flight.FlightModel
+import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -63,29 +62,10 @@ class SearchFlightActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            AnimatedContent(
-                                modifier = Modifier.fillMaxSize(),
-                                targetState = uiState,
-                                contentAlignment = Alignment.Center,
-                                label = "search_flight_animation_content"
-                            ) { targetState ->
-                                when (targetState) {
-                                    is SearchFlightUiState.Loading -> {
-                                        LabLoader(modifier = Modifier.size(40.dp))
-                                    }
-
-                                    is SearchFlightUiState.Success -> {
-                                        SearchFlightsContent(
-                                            currentDate = currentDate!!,
-                                            flights = targetState.flights,
-                                            uiEvent = {
-                                                when (it) {
-                                                    is UiEvent.OnFlightClicked -> {
-                                                        launchFlightDetail(it.flightModel)
-                                                    }
-                                                }
-                                            }
-                                        )
+                            SearchFlightsContent(currentDate = currentDate!!, uiState = uiState) {event ->
+                                when (event) {
+                                    is UiEvent.OnFlightClicked -> {
+                                        launchFlightDetail(event.flightItem)
                                     }
                                 }
                             }
@@ -126,9 +106,9 @@ class SearchFlightActivity : BaseComponentActivity() {
         currentDate = NotBlankString.create(formattedDate)
     }
 
-    private fun launchFlightDetail(flightModel: FlightModel) =
+    private fun launchFlightDetail(flight: SearchFlightModel) =
         Intent(this@SearchFlightActivity, FlightDetailActivity::class.java)
-            .apply { this.putExtra(Constants.EXTRA_FLIGHT, flightModel) }
+            .apply { this.putExtra(Constants.EXTRA_FLIGHT, flight) }
             .run { startActivity(this) }
 
     companion object {
