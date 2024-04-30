@@ -102,7 +102,7 @@ fun SearchFlightByRouteItem(flight: SegmentModel) {
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = flight.origin.codeIcao.toString(),
+                            text = flight.origin?.codeIcao.toString(),
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.W600,
@@ -110,7 +110,7 @@ fun SearchFlightByRouteItem(flight: SegmentModel) {
                             )
                         )
                         Text(
-                            text = flight.origin.city.toString(),
+                            text = flight.origin?.city.toString(),
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.W400,

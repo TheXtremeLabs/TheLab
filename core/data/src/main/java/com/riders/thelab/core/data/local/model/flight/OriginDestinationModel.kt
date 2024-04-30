@@ -1,7 +1,6 @@
 package com.riders.thelab.core.data.local.model.flight
 
-import com.riders.thelab.core.data.remote.dto.flight.Destination
-import com.riders.thelab.core.data.remote.dto.flight.Origin
+import com.riders.thelab.core.data.remote.dto.flight.OriginDestination
 import kotools.types.text.NotBlankString
 import java.io.Serializable
 
@@ -16,17 +15,7 @@ data class OriginDestinationModel(
     val airportInfoUrl: NotBlankString?
 ) : Serializable
 
-fun Origin.toOriginDestinationModel(): OriginDestinationModel = OriginDestinationModel(
-    this.codeIcao,
-    this.codeIata,
-    this.codeLid,
-    this.timezone,
-    this.name,
-    this.city,
-    this.airportInfoUrl
-)
-
-fun Destination.toOriginDestinationModel(): OriginDestinationModel = OriginDestinationModel(
+fun OriginDestination.toOriginDestinationModel(): OriginDestinationModel = OriginDestinationModel(
     this.codeIcao,
     this.codeIata,
     this.codeLid,

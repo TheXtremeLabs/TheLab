@@ -4,22 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
-import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.ui.flight.FlightDetailActivity
 import com.riders.thelab.feature.flightaware.utils.Constants
@@ -62,7 +57,10 @@ class SearchFlightActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            SearchFlightsContent(currentDate = currentDate!!, uiState = uiState) {event ->
+                            SearchFlightsContent(
+                                currentDate = currentDate!!,
+                                uiState = uiState
+                            ) { event ->
                                 when (event) {
                                     is UiEvent.OnFlightClicked -> {
                                         launchFlightDetail(event.flightItem)

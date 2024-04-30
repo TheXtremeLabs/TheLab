@@ -8,13 +8,17 @@ import com.riders.thelab.core.data.remote.dto.flight.Segment
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import java.io.Serializable
+
 @Stable
 @Immutable
 @kotlinx.serialization.Serializable
 data class SearchFlightModel(
-
     val faFlightID: NotBlankString,
     val flightNumber: NotBlankString? = null,
+
+    val ident: NotBlankString? = null,
+    val identICAO: NotBlankString? = null,
+    val identIATA: NotBlankString? = null,
 
     val operatorID: NotBlankString,
     val operatorName: NotBlankString? = null,
@@ -108,7 +112,9 @@ fun Flight.toSearchFlightModel(): SearchFlightModel = SearchFlightModel(
     operatorID = this.operatorID ?: NotBlankString.create("N/A"),
     operatorName = this.operatorID ?: NotBlankString.create("N/A"),
     operatorICAO = this.identICAO,
+    identICAO = this.identICAO,
     operatorIATA = this.identIATA,
+    identIATA = this.identIATA,
     origin = this.origin?.toOriginDestinationModel(),
     destination = this.destination?.toOriginDestinationModel(),
     status = this.status ?: NotBlankString.create("N/A"),
@@ -118,7 +124,11 @@ fun Flight.toSearchFlightModel(): SearchFlightModel = SearchFlightModel(
     boundingBox = this.boundingBox,
     identPrefix = this.identPrefix,
     aircraftType = this.aircraftType,
-    type = this.type?.let { FlightType.valueOf(it) } ?: FlightType.UNKNOWN,
+    type = this.type?.let { flightType ->
+        FlightType.entries.first { element ->
+            element.type.lowercase() == flightType.trim().lowercase()
+        }
+    } ?: FlightType.UNKNOWN,
     gateOrigin = this.gateOrigin,
     gateDestination = this.gateDestination,
     terminalOrigin = this.terminalOrigin,
@@ -148,13 +158,17 @@ fun Flight.toSearchFlightModel(): SearchFlightModel = SearchFlightModel(
     foresightPredictionsAvailable = this.foresightPredictionsAvailable ?: false
 )
 
+@OptIn(ExperimentalKotoolsTypesApi::class)
 fun Segment.toSearchFlightModel(): SearchFlightModel = SearchFlightModel(
     faFlightID = this.faFlightID,
+    flightNumber = this.flightNumber,
+    ident = this.ident,
+    identICAO = this.identICAO,
+    identIATA = this.identIATA,
     operatorName = this.operator,
-    operatorID = this.operatorID,
+    operatorID = this.ident,
     operatorICAO = this.operatorICAO,
     operatorIATA = this.operatorIATA,
-    flightNumber = this.flightNumber,
     registration = this.registration,
     atcIdent = this.atcIdent,
     inboundFaFlightID = this.inboundFaFlightID,
@@ -162,12 +176,12 @@ fun Segment.toSearchFlightModel(): SearchFlightModel = SearchFlightModel(
     diverted = this.diverted,
     cancelled = this.cancelled,
     positionOnly = this.positionOnly,
-    origin = this.origin.toOriginDestinationModel(),
+    origin = this.origin?.toOriginDestinationModel(),
     destination = this.destination?.toOriginDestinationModel(),
     departureDelay = this.departureDelay,
     arrivalDelay = this.arrivalDelay,
     progress = this.progress,
-    status = this.status,
+    status = this.status ?: NotBlankString.create("N/A"),
     aircraftType = this.aircraftType,
     routeDistance = this.routeDistance,
     filedAirSpeed = this.filedAirSpeed,
@@ -181,7 +195,11 @@ fun Segment.toSearchFlightModel(): SearchFlightModel = SearchFlightModel(
     gateDestination = this.gateDestination,
     terminalOrigin = this.terminalOrigin,
     terminalDestination = this.terminalDestination,
-    type = FlightType.entries.first { it.type == type },
+    type = this.type?.let { flightType ->
+        FlightType.entries.first { element ->
+            element.type.lowercase() == flightType.trim().lowercase()
+        }
+    } ?: FlightType.UNKNOWN,
     scheduledOut = this.scheduledOut,
     estimatedOut = this.estimatedOut,
     actualOut = this.actualOut,
@@ -195,5 +213,5 @@ fun Segment.toSearchFlightModel(): SearchFlightModel = SearchFlightModel(
     estimatedIn = this.estimatedIn,
     actualIn = this.actualIn,
     actualRunwayOff = this.actualRunwayOff,
-    actualRunwayOn = this.actualRunwayOn,
+    actualRunwayOn = this.actualRunwayOn
 )

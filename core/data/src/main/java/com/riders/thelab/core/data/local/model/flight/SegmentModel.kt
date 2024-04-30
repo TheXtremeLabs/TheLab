@@ -2,6 +2,7 @@ package com.riders.thelab.core.data.local.model.flight
 
 import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import com.riders.thelab.core.data.remote.dto.flight.Segment
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import java.io.Serializable
 
@@ -28,7 +29,7 @@ data class SegmentModel(
     val diverted: Boolean,
     val cancelled: Boolean,
     val positionOnly: Boolean,
-    val origin: OriginDestinationModel,
+    val origin: OriginDestinationModel? = null,
     val destination: OriginDestinationModel? = null,
     val departureDelay: Int?,
     val arrivalDelay: Int?,
@@ -78,30 +79,31 @@ data class SegmentModel(
     val actualIn: NotBlankString?
 ) : Serializable
 
+@OptIn(ExperimentalKotoolsTypesApi::class)
 fun Segment.toSegmentModel(): SegmentModel = SegmentModel(
-    operatorID = this.operatorID,
+    faFlightID = this.faFlightID,
+    operator = this.operator,
+    operatorID = this.ident,
     identICAO = this.identICAO,
     identIATA = this.identIATA,
     actualRunwayOff = this.actualRunwayOff,
     actualRunwayOn = this.actualRunwayOn,
-    faFlightID = this.faFlightID,
-    operator = this.operator,
     operatorICAO = this.operatorICAO,
     operatorIATA = this.operatorIATA,
     flightNumber = this.flightNumber,
     registration = this.registration,
     atcIdent = this.atcIdent,
     inboundFaFlightID = this.inboundFaFlightID,
-    blocked = this.blocked,
-    diverted = this.diverted,
-    cancelled = this.cancelled,
-    positionOnly = this.positionOnly,
-    origin = this.origin.toOriginDestinationModel(),
+    blocked = this.blocked ?: false,
+    diverted = this.diverted ?: false,
+    cancelled = this.cancelled ?: false,
+    positionOnly = this.positionOnly ?: false,
+    origin = this.origin?.toOriginDestinationModel(),
     destination = this.destination?.toOriginDestinationModel(),
     departureDelay = this.departureDelay,
     arrivalDelay = this.arrivalDelay,
     progress = this.progress,
-    status = this.status,
+    status = this.status ?: NotBlankString.create("N/A"),
     aircraftType = this.aircraftType,
     routeDistance = this.routeDistance,
     filedAirSpeed = this.filedAirSpeed,
@@ -115,7 +117,11 @@ fun Segment.toSegmentModel(): SegmentModel = SegmentModel(
     gateDestination = this.gateDestination,
     terminalOrigin = this.terminalOrigin,
     terminalDestination = this.terminalDestination,
-    type = FlightType.entries.first { it.type == type },
+    type = this.type?.let { flightType ->
+        FlightType.entries.first { element ->
+            element.type.lowercase() == flightType.trim().lowercase()
+        }
+    } ?: FlightType.UNKNOWN,
     scheduledOut = this.scheduledOut,
     estimatedOut = this.estimatedOut,
     actualOut = this.actualOut,

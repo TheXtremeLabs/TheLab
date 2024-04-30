@@ -18,6 +18,7 @@ import com.riders.thelab.core.data.remote.dto.flight.AirportsSearchResponse
 import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import com.riders.thelab.core.data.remote.dto.flight.Operator
 import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
+import com.riders.thelab.core.data.remote.dto.flight.SearchByRouteResponse
 import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
@@ -121,7 +122,7 @@ interface IApi {
         endDate: NotBlankString? = null,
         maxPages: Int = 1,
         cursor: String? = null
-    ): SearchFlightResponse
+    ): SearchByRouteResponse
 
 
     suspend fun getOperators(maxPages: Int = 1, cursor: String? = null): OperatorResponse

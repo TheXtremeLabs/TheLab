@@ -36,8 +36,6 @@ class SearchFlightViewModel : ViewModel() {
         Timber.d("getBundle()")
 
         runCatching {
-
-
             // Try to get bundle values
             intent.extras?.let { bundle ->
 
@@ -45,22 +43,23 @@ class SearchFlightViewModel : ViewModel() {
                 val flightString: String? = bundle.getString(Constants.EXTRA_FLIGHT)
 
                 flightString?.let {
-                    val extraItem: List<SearchFlightModel>? = Json.decodeFromString(flightString)
+                    val extraItem: List<SearchFlightModel>? =
+                        Json.decodeFromString(flightString) as List<SearchFlightModel>
+
                     when (searchType) {
                         Constants.EXTRA_SEARCH_TYPE_FLIGHT_NUMBER -> {
-
-                            extraItem?.let { flights ->
+                            extraItem?.let { flights: List<SearchFlightModel> ->
                                 // Log
-                                Timber.d("SearchFlightActivity.EXTRA_SEARCH_TYPE_FLIGHT_NUMBER | item : $it")
+                                Timber.d("SearchFlightActivity.EXTRA_SEARCH_TYPE_FLIGHT_NUMBER | item length: ${flights.size}")
                                 updateUiState(SearchFlightsUiState.Success(flights))
                             }
                                 ?: run { Timber.e("SearchFlightActivity.EXTRA_SEARCH_TYPE_FLIGHT_NUMBER | Extra item object is null") }
                         }
 
                         Constants.EXTRA_SEARCH_TYPE_FLIGHT_ROUTE -> {
-                            extraItem?.let { flights ->
+                            extraItem?.let { flights: List<SearchFlightModel> ->
                                 // Log
-                                Timber.d("SearchFlightActivity.EXTRA_SEARCH_TYPE_FLIGHT_ROUTE | item : $it")
+                                Timber.d("SearchFlightActivity.EXTRA_SEARCH_TYPE_FLIGHT_ROUTE | item length: ${flights.size}")
                                 updateUiState(SearchFlightsUiState.Success(flights))
                             }
                                 ?: run {
@@ -95,7 +94,7 @@ class SearchFlightViewModel : ViewModel() {
                 )
             }
             .onSuccess {
-                Timber.d("getBundle() | onSuccess | is success: $it")
+                Timber.d("getBundle() | onSuccess")
             }
     }
 }

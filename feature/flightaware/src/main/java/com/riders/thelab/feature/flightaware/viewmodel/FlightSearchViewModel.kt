@@ -15,11 +15,12 @@ import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
-import com.riders.thelab.core.data.local.model.flight.FlightModel
+import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.data.local.model.flight.toAirportModel
 import com.riders.thelab.core.data.local.model.flight.toAirportSearchModel
-import com.riders.thelab.core.data.local.model.flight.toFlightModel
+import com.riders.thelab.core.data.local.model.flight.toSearchFlightModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
+import com.riders.thelab.core.data.remote.dto.flight.Segment
 import com.riders.thelab.feature.flightaware.ui.main.FlightMainActivity
 import com.riders.thelab.feature.flightaware.ui.main.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -254,10 +255,10 @@ open class FlightSearchViewModel @Inject constructor(
             val flights = repository.searchFlightByID(query).flights
 
             runCatching {
-                val flightModels: List<FlightModel> = flights.map { it.toFlightModel() }
+                val flightsModel: List<SearchFlightModel> = flights.map { it.toSearchFlightModel() }
                 (context as FlightMainActivity).launchSearchFlights(
-                    flights = flights.map { it.toFlightModel() },
-                    searchType = FlightMainActivity.SEARCH_TYPE_FLIGHT_ROUTE
+                    flights = flightsModel,
+                    searchType = FlightMainActivity.SEARCH_TYPE_FLIGHT_NUMBER
                 )
             }
                 .onFailure {
@@ -289,19 +290,33 @@ open class FlightSearchViewModel @Inject constructor(
                     departureAirportCode,
                     arrivalAirportCode,
                     maxPages = 5
-                ).flights
-
-            if (flights.isEmpty()) {
-                Timber.e("No results found for search query $departureAirportCode to $arrivalAirportCode")
-                return@launch
-            }
+                ).flights.also {
+                    Timber.d("flights total : ${it.size}")
+                }
 
             runCatching {
-                val flightModels: List<FlightModel> = flights.map { it.toFlightModel() }
-                (context as FlightMainActivity).launchSearchFlights(
-                    flights = flightModels,
-                    searchType = FlightMainActivity.SEARCH_TYPE_FLIGHT_ROUTE
-                )
+                if (flights.isEmpty()) {
+                    Timber.e("No results found for search query $departureAirportCode to $arrivalAirportCode")
+                    return@launch
+                }
+
+                val segments: List<Segment>? = flights[0].segments.also {
+                    Timber.d("segments total: ${it?.size}")
+                }
+
+                if (segments.isNullOrEmpty()) {
+                    Timber.e("No results found for segments")
+                    return@launch
+                } else {
+                    val flightModels: List<SearchFlightModel> =
+                        flights.map { it.segments?.get(0)?.toSearchFlightModel()!! }.also {
+                            Timber.d("Search flight model Result : ${it.take(3)}")
+                        }
+                    (context as FlightMainActivity).launchSearchFlights(
+                        flights = flightModels,
+                        searchType = FlightMainActivity.SEARCH_TYPE_FLIGHT_ROUTE
+                    )
+                }
             }
                 .onFailure {
                     it.printStackTrace()

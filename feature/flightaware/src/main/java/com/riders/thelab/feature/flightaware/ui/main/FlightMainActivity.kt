@@ -22,6 +22,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.data.local.model.flight.FlightModel
+import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchActivity
@@ -199,9 +200,11 @@ class FlightMainActivity : BaseComponentActivity() {
             .apply { this.putExtra(AirportSearchDetailActivity.EXTRA_AIRPORT_ID, airportID) }
             .run { startActivity(this) }
 
-    fun launchSearchFlights(flights: List<FlightModel>, searchType: String) =
+    fun launchSearchFlights(flights: List<SearchFlightModel>, searchType: String) =
         Intent(this, SearchFlightActivity::class.java)
             .apply {
+                Timber.d("launchSearchFlights() | with flights length: ${flights.size}")
+
                 this.putExtra(
                     Constants.EXTRA_SEARCH_TYPE,
                     when (searchType) {

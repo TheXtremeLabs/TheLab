@@ -56,9 +56,9 @@ data class Flight(
     @SerialName("position_only")
     val positionOnly: Boolean? = null,
     @SerialName("origin")
-    val origin: Origin? = null,
+    val origin: OriginDestination? = null,
     @SerialName("destination")
-    val destination: Destination? = null,
+    val destination: OriginDestination? = null,
     /*
      * Departure delay (in seconds) based on either actual or estimated gate departure time.
      * If gate time is unavailable then based on runway departure time.

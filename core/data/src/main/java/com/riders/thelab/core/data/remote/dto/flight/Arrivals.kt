@@ -64,9 +64,9 @@ data class Arrivals(
     @SerialName("position_only")
     val positionOnly: Boolean,
     @SerialName("origin")
-    val origin: Origin,
+    val origin: OriginDestination,
     @SerialName("destination")
-    val destination: Destination? = null,
+    val destination: OriginDestination? = null,
     /*
      * Departure delay (in seconds) based on either actual or estimated gate departure time.
      * If gate time is unavailable then based on runway departure time.
