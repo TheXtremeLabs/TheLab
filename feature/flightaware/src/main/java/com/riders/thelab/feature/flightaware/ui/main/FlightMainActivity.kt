@@ -21,7 +21,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.data.local.model.Permission
-import com.riders.thelab.core.data.local.model.flight.FlightModel
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -49,20 +48,17 @@ class FlightMainActivity : BaseComponentActivity() {
 
     private var continueWithBlock: Pair<Boolean, () -> Unit> = false to {}
 
-    override var permissionLauncher: ActivityResultLauncher<Array<String>>?
-        get() = super.permissionLauncher
-        set(@Suppress("UNUSED_PARAMETER") value) {
-            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { areGranted: Map<String, Boolean> ->
-                if (!areGranted.values.all { it }) {
-                    Timber.e("Location permissions is NOT granted")
-                } else {
-                    Timber.d("Location permissions is granted")
+    override var permissionLauncher: ActivityResultLauncher<Array<String>>? =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { areGranted: Map<String, Boolean> ->
+            if (!areGranted.values.all { it }) {
+                Timber.e("$areGranted permissions is NOT granted")
+            } else {
+                Timber.d("$areGranted permissions is granted")
 
-                    if (continueWithBlock.first) {
-                        continueWithBlock.second()
+                if (continueWithBlock.first) {
+                    continueWithBlock.second()
 
-                        continueWithBlock = false to {}
-                    }
+                    continueWithBlock = false to {}
                 }
             }
         }
@@ -113,9 +109,14 @@ class FlightMainActivity : BaseComponentActivity() {
                                         is UiEvent.OnFetchAirportNearBy -> {
                                             if (!hasLocationPermission()) {
                                                 permissionLauncher?.launch(
-                                                    Permission.Location.permissions.toList()
+                                                    Permission.Location
+                                                        .permissions
+                                                        .toList()
                                                         .toTypedArray()
                                                 )
+
+                                                mViewModel.initLocationManager(this@FlightMainActivity)
+
                                                 continueWithBlock = true to {
                                                     // Call onEvent for ViewModel
                                                     mViewModel.onEvent(
@@ -213,7 +214,7 @@ class FlightMainActivity : BaseComponentActivity() {
                         else -> "UNKNOWN"
                     }
                 )
-                this.putExtra(Constants.EXTRA_FLIGHT,  Json.encodeToString(flights))
+                this.putExtra(Constants.EXTRA_FLIGHT, Json.encodeToString(flights))
             }
             .run { startActivity(this) }
 

@@ -429,8 +429,9 @@ fun SearchFlightContent(
                     indication = null,
                     interactionSource = interactionSource
                 ),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = cardBackgroundColor)
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+            colors = CardDefaults.elevatedCardColors(containerColor = cardBackgroundColor),
+            shape = RoundedCornerShape(24.dp)
         ) {
             BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.fillMaxWidth()) {

@@ -37,7 +37,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.riders.thelab.core.data.local.model.flight.FlightModel
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -69,14 +68,14 @@ private fun NotBlankString.toLocalDateTime(): LocalDateTime =
 @Composable
 fun FlightStatusCard(
     flightId: NotBlankString,
-    airlineOperatorId: NotBlankString,
+    airlineIATA: NotBlankString,
     departureAirportIataCode: NotBlankString,
     arrivalAirportIataCode: NotBlankString,
     flightStatus: NotBlankString
 ) {
     val context = LocalContext.current
 
-    val flightIATA = flightId.toString().take(2)
+    val flightIATA = airlineIATA.toString().take(2)
     val painter = getCoilAsyncImagePainter(
         context = context,
         dataUrl = "${Constants.ENDPOINT_FLIGHT_FULL_LOGO}$flightIATA${Constants.EXTENSION_SVG}",
@@ -381,18 +380,10 @@ fun FlightInfoContainer(
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun FlightDetailSuccessContent(flight: SearchFlightModel) {
-    val context = LocalContext.current
     val lazyListState = rememberLazyListState()
 
     // this is to disable the ripple effect
     val interactionSource = remember { MutableInteractionSource() }
-
-    val flightIATA = flight.flightNumber.toString().take(2)
-    val painter = getCoilAsyncImagePainter(
-        context = context,
-        dataUrl = "${Constants.ENDPOINT_FLIGHT_FULL_LOGO}$flightIATA${Constants.EXTENSION_SVG}",
-        isSvg = true
-    )
 
     TheLabTheme {
         LazyColumn(
@@ -410,7 +401,7 @@ fun FlightDetailSuccessContent(flight: SearchFlightModel) {
                     flightId = NotBlankString.create(
                         flight.faFlightID.toString().split("-")[0]
                     ),
-                    airlineOperatorId = flight.operatorID,
+                    airlineIATA = flight.identIATA ?: flight.identICAO!!,
                     departureAirportIataCode = flight.origin?.codeIcao
                         ?: NotBlankString.create("N/A"),
                     arrivalAirportIataCode = flight.destination?.codeIcao
@@ -421,7 +412,7 @@ fun FlightDetailSuccessContent(flight: SearchFlightModel) {
 
             item {
                 FlightInfoContainer(
-                    airline = flight.operatorID ?: NotBlankString.create("N/A"),
+                    airline = flight.operatorID,
                     aircraftType = flight.aircraftType ?: NotBlankString.create("N/A"),
                     estimatedDepartureDate = flight.estimatedOut
                         ?: NotBlankString.create("N/A"),
@@ -460,7 +451,7 @@ private fun PreviewFlightStatusCard(@PreviewParameter(PreviewProviderFlight::cla
         ) {
             FlightStatusCard(
                 flightId = NotBlankString.create(flight.faFlightID.toString().split("-")[0]),
-                airlineOperatorId = flight.operatorID,
+                airlineIATA = flight.operatorID,
                 departureAirportIataCode = flight.origin?.codeIata ?: NotBlankString.create("N/A"),
                 arrivalAirportIataCode = flight.destination?.codeIata
                     ?: NotBlankString.create("N/A"),
@@ -501,7 +492,7 @@ private fun PreviewInfoContainerTitleDescriptionRightSide(@PreviewParameter(Prev
 private fun PreviewFlightInfoContainer(@PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel) {
     TheLabTheme {
         FlightInfoContainer(
-            airline = flight.operatorID ?: NotBlankString.create("N/A"),
+            airline = flight.operatorID,
             aircraftType = flight.aircraftType ?: NotBlankString.create("N/A"),
             estimatedDepartureDate = flight.estimatedOut
                 ?: NotBlankString.create("N/A"),

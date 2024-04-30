@@ -1,9 +1,7 @@
 package com.riders.thelab.feature.flightaware.ui.main
 
 import SearchFlightContent
-import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -16,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -69,8 +68,7 @@ import kotlinx.coroutines.launch
 // COMPOSE
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedBoxWithConstraintsScope")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlightMainContent(
     hasConnection: Boolean,
@@ -158,7 +156,7 @@ fun FlightMainContent(
             ) {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .size(this.maxWidth, this.maxHeight)
                         .indication(
                             indication = null,
                             interactionSource = interactionSource
@@ -190,7 +188,8 @@ fun FlightMainContent(
                                     onOutsideBoundariesClicked = false
                                 }
                             },
-                            colors = CardDefaults.cardColors(containerColor = cardBackgroundColor)
+                            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+                            colors = CardDefaults.elevatedCardColors(containerColor = cardBackgroundColor),
                         ) {
                             Column(
                                 modifier = Modifier

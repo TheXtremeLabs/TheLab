@@ -79,7 +79,7 @@ fun SearchFlightByNumberContent(flight: FlightModel, uiEvent: (UiEvent) -> Unit)
                             flightId = NotBlankString.create(
                                 flight.faFlightID.toString().split("-")[0]
                             ),
-                            airlineOperatorId = flight.operatorID,
+                            airlineIATA = flight.identIATA ?: flight.identICAO!!,
                             departureAirportIataCode = flight.origin?.codeIcao
                                 ?: NotBlankString.create("N/A"),
                             arrivalAirportIataCode = flight.destination?.codeIcao
@@ -90,7 +90,7 @@ fun SearchFlightByNumberContent(flight: FlightModel, uiEvent: (UiEvent) -> Unit)
 
                     item {
                         FlightInfoContainer(
-                            airline = flight.operatorID ?: NotBlankString.create("N/A"),
+                            airline = flight.operatorID,
                             aircraftType = flight.aircraftType ?: NotBlankString.create("N/A"),
                             estimatedDepartureDate = flight.estimatedOut
                                 ?: NotBlankString.create("N/A"),

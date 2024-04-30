@@ -55,9 +55,6 @@ open class FlightSearchViewModel @Inject constructor(
     // Composable states
     //////////////////////////////////////////
 
-    var flightNumber: String by mutableStateOf("")
-        private set
-
     var departureAirportQuery: String by mutableStateOf("")
         private set
 
@@ -149,9 +146,6 @@ open class FlightSearchViewModel @Inject constructor(
     var isAirportsNearByLoading: Boolean by mutableStateOf(false)
         private set
 
-    fun updateFlightNumber(newFlightNumber: String) {
-        this.flightNumber = newFlightNumber
-    }
 
     fun updateDepartureAirportQuery(newAirportQuery: String) {
         Timber.d("updateDepartureAirportQuery() | departure query: $newAirportQuery")
@@ -391,23 +385,21 @@ open class FlightSearchViewModel @Inject constructor(
             return
         }
 
-
         val latitude = NotBlankString.create(location.latitude)
         val longitude = NotBlankString.create(location.longitude)
 
-
-        runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             val response =
-                repository.getAirportNearBy(latitude = latitude, longitude = longitude, radius = 50)
+                repository.getAirportNearBy(latitude = latitude, longitude = longitude, radius = 30)
             if (response.airports.isEmpty()) {
                 Timber.d("getAirportNearBy() | airports list is empty")
-                return@runBlocking
+                return@launch
             }
 
-            updateAirportsNearBy(response.airports.map { it.toAirportModel() })
-
+            val airports: List<AirportModel> =
+                response.airports.map { it.toAirportModel() }.take(10)
             updateIsAirportNearByLoading(false)
+            updateAirportsNearBy(airports)
         }
     }
-
 }
