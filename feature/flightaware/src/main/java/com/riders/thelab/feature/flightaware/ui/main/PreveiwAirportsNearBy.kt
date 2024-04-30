@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -77,7 +78,7 @@ fun AirportNearByItem(airport: AirportModel) {
                 .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_mid_height)),
             onClick = {
                 airport.icaoCode?.let {
-                    (context as FlightMainActivity).launchAirportDetail(it.toString())
+                    (context as FlightMainActivity).launchAirportDetail(it)
                 } ?: run {
                     Timber.e("icaoCode is null")
                 }
@@ -192,7 +193,7 @@ fun AirportNearByItem(airport: AirportModel) {
 
 @Composable
 fun AirportNearByContent(
-    modifier : Modifier,
+    modifier: Modifier,
     hasInternetConnection: Boolean,
     airports: List<AirportModel>,
     uiEvent: (UiEvent) -> Unit,
@@ -210,7 +211,8 @@ fun AirportNearByContent(
                 )
                 .padding(horizontal = 16.dp)
                 .then(modifier),
-            colors = CardDefaults.cardColors(containerColor = cardBackgroundColor)
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+            colors = CardDefaults.elevatedCardColors(containerColor = cardBackgroundColor),
         ) {
             Column(
                 modifier = Modifier
@@ -257,7 +259,7 @@ fun AirportNearByContent(
                                     text = stringResource(id = R.string.placeholder_get_airports_near_by),
                                     color = textColor
                                 )
-                                AnimatedVisibility(visible = isLoading) {
+                                AnimatedVisibility(visible = if (LocalInspectionMode.current) true else isLoading) {
                                     LabLoader(modifier = Modifier.size(30.dp))
                                 }
                             }
