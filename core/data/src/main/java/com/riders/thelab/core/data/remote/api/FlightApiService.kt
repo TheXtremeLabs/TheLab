@@ -6,6 +6,7 @@ import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
 import com.riders.thelab.core.data.remote.dto.flight.AirportsSearchResponse
 import com.riders.thelab.core.data.remote.dto.flight.Operator
 import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
+import com.riders.thelab.core.data.remote.dto.flight.SearchByRouteResponse
 import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
 import kotools.types.text.NotBlankString
 import retrofit2.http.GET
@@ -181,7 +182,7 @@ interface FlightApiService {
         @Query("end") endDate: NotBlankString? = null,
         @Query("max_pages") maxPages: Int = 1,
         @Query("cursor") cursor: String? = null
-    ): SearchFlightResponse
+    ): SearchByRouteResponse
 
 
     /**

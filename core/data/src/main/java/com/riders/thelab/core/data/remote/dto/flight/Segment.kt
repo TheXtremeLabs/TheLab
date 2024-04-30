@@ -6,28 +6,28 @@ import java.io.Serializable
 
 @kotlinx.serialization.Serializable
 data class Segment(
+    @SerialName("fa_flight_id")
+    val faFlightID: NotBlankString,
     @SerialName("ident")
-    val operatorID: NotBlankString,
+    val ident: NotBlankString,
     @SerialName("ident_icao")
-    val identICAO: NotBlankString? = null,
+    val identICAO: NotBlankString,
     @SerialName("ident_iata")
-    val identIATA: NotBlankString? = null,
+    val identIATA: NotBlankString,
     /* Actual departure runway at origin, when known */
     @SerialName("actual_runway_off")
     val actualRunwayOff: NotBlankString? = null,
     /* Actual arrival runway at destination, when known */
     @SerialName("actual_runway_on")
     val actualRunwayOn: NotBlankString? = null,
-    @SerialName("fa_flight_id")
-    val faFlightID: NotBlankString,
     @SerialName("operator")
-    val operator: NotBlankString? = null,
+    val operator: NotBlankString,
     @SerialName("operator_icao")
-    val operatorICAO: NotBlankString? = null,
+    val operatorICAO: NotBlankString,
     @SerialName("operator_iata")
-    val operatorIATA: NotBlankString? = null,
+    val operatorIATA: NotBlankString,
     @SerialName("flight_number")
-    val flightNumber: NotBlankString? = null,
+    val flightNumber: NotBlankString,
     @SerialName("registration")
     val registration: NotBlankString? = null,
     /* The ident of the flight for Air Traffic Control purposes, when known and different than ident.*/
@@ -36,17 +36,17 @@ data class Segment(
     @SerialName("inbound_fa_flight_id")
     val inboundFaFlightID: NotBlankString? = null,/* Flag indicating whether this flight is blocked from public viewing.*/
     @SerialName("blocked")
-    val blocked: Boolean,
+    val blocked: Boolean? = false,
     @SerialName("diverted")
-    val diverted: Boolean,
+    val diverted: Boolean? = false,
     @SerialName("cancelled")
-    val cancelled: Boolean,
+    val cancelled: Boolean? = false,
     @SerialName("position_only")
-    val positionOnly: Boolean,
+    val positionOnly: Boolean? = false,
     @SerialName("origin")
-    val origin: Origin,
+    val origin: OriginDestination? = null,
     @SerialName("destination")
-    val destination: Destination? = null,
+    val destination: OriginDestination? = null,
     @SerialName("departure_delay")
     val departureDelay: Int?,
     @SerialName("arrival_delay")
@@ -57,7 +57,7 @@ data class Segment(
     @SerialName("progress_percent")
     val progress: Int?,
     @SerialName("status")
-    val status: NotBlankString,
+    val status: NotBlankString? = null,
     @SerialName("aircraft_type")
     val aircraftType: NotBlankString?,
     @SerialName("route_distance")
@@ -89,7 +89,7 @@ data class Segment(
     val terminalDestination: NotBlankString?,
     @SerialName("type")
 //    val type: FlightType,
-    val type: String,
+    val type: String? = null,
     /* Scheduled gate departure time. */
     @SerialName("scheduled_out")
     val scheduledOut: NotBlankString?,

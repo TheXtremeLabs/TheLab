@@ -37,6 +37,7 @@ import com.riders.thelab.core.data.remote.dto.flight.AirportsSearchResponse
 import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import com.riders.thelab.core.data.remote.dto.flight.Operator
 import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
+import com.riders.thelab.core.data.remote.dto.flight.SearchByRouteResponse
 import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
@@ -357,7 +358,7 @@ class ApiImpl @Inject constructor(
         endDate: NotBlankString?,
         maxPages: Int,
         cursor: String?
-    ): SearchFlightResponse = mFlightApiService.searchFlightByRoute(
+    ): SearchByRouteResponse = mFlightApiService.searchFlightByRoute(
         departureAirportCode = departureAirportCode,
         arrivalAirportCode = arrivalAirportCode,
         type = FlightType.AIRLINE.type.toNotBlankString().getOrThrow(),
