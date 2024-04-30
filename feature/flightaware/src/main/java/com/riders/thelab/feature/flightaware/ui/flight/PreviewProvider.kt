@@ -1,19 +1,32 @@
 package com.riders.thelab.feature.flightaware.ui.flight
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.riders.thelab.core.data.local.model.flight.FlightModel
+import com.riders.thelab.core.data.local.model.compose.FlightDetailUiState
 import com.riders.thelab.core.data.local.model.flight.OriginDestinationModel
+import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
+import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
-class PreviewProviderFlight : PreviewParameterProvider<FlightModel> {
+class PreviewProviderUiState : PreviewParameterProvider<FlightDetailUiState> {
     @OptIn(ExperimentalKotoolsTypesApi::class)
-    override val values: Sequence<FlightModel>
+    override val values: Sequence<FlightDetailUiState>
         get() = sequenceOf(
-            FlightModel(
+            FlightDetailUiState.Loading,
+            FlightDetailUiState.Error(NotBlankString.create("Error occurred while getting value")),
+            FlightDetailUiState.Success(PreviewProviderFlight().values.toList()[0]),
+        )
+}
+
+class PreviewProviderFlight : PreviewParameterProvider<SearchFlightModel> {
+    @OptIn(ExperimentalKotoolsTypesApi::class)
+    override val values: Sequence<SearchFlightModel>
+        get() = sequenceOf(
+            SearchFlightModel(
+                operatorName = NotBlankString.create("American Airlines"),
                 operatorID = NotBlankString.create("AAL306"),
-                identICAO = NotBlankString.create("AAL306"),
-                identIATA = NotBlankString.create("AA306"),
+                operatorICAO = NotBlankString.create("AAL306"),
+                operatorIATA = NotBlankString.create("AA306"),
                 faFlightID = NotBlankString.create("AAL306-1712349302-airline-801p"),
                 origin = OriginDestinationModel(
                     codeIcao = NotBlankString.create("KJFK"),
@@ -33,6 +46,7 @@ class PreviewProviderFlight : PreviewParameterProvider<FlightModel> {
                     city = NotBlankString.create("Los Angeles"),
                     airportInfoUrl = NotBlankString.create("/airports/KLAX")
                 ),
+                type = FlightType.AIRLINE,
                 waypoints = null,
                 firstTimePosition = null,
                 boundingBox = null,
@@ -53,7 +67,6 @@ class PreviewProviderFlight : PreviewParameterProvider<FlightModel> {
                 estimatedIn = NotBlankString.create("2024-04-28T12:20:00Z"),
                 actualIn = null,
                 foresightPredictionsAvailable = false,
-                segments = null
             )
         )
 }

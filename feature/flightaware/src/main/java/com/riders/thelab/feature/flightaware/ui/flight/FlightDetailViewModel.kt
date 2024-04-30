@@ -2,47 +2,64 @@ package com.riders.thelab.feature.flightaware.ui.flight
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.os.Bundle
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.data.local.model.flight.FlightModel
+import com.riders.thelab.core.data.local.model.compose.FlightDetailUiState
+import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.feature.flightaware.ui.main.UiEvent
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import kotools.types.text.NotBlankString
 import timber.log.Timber
 
 class FlightDetailViewModel : BaseViewModel() {
 
-    var flight: FlightModel? by mutableStateOf(null)
-        private set
+    //////////////////////////////////////////
+    // Compose states
+    //////////////////////////////////////////
+    private var _flightDetailUiState: MutableStateFlow<FlightDetailUiState> =
+        MutableStateFlow(FlightDetailUiState.Loading)
+    var flightDetailUiState: StateFlow<FlightDetailUiState> = _flightDetailUiState
 
-    private fun updateFlight(newFlight: FlightModel) {
-        this.flight = newFlight
+    private fun updateUiState(newState: FlightDetailUiState) {
+        this._flightDetailUiState.value = newState
     }
 
+
+    @OptIn(ExperimentalKotoolsTypesApi::class)
     @Suppress("DEPRECATION")
     @SuppressLint("NewApi")
     fun getBundle(intent: Intent) {
         Timber.d("getBundle()")
 
         // Try to get bundle values
-        intent.extras?.let {
-            val extraItem: FlightModel? = if (!LabCompatibilityManager.isTiramisu()) {
-                it.getSerializable(FlightDetailActivity.EXTRA_FLIGHT) as FlightModel?
+        intent.extras?.let { bundle: Bundle ->
+            val extraItem: SearchFlightModel? = if (!LabCompatibilityManager.isTiramisu()) {
+                bundle.getSerializable(FlightDetailActivity.EXTRA_FLIGHT) as SearchFlightModel?
             } else {
-                it.getSerializable(FlightDetailActivity.EXTRA_FLIGHT, FlightModel::class.java)
+                bundle.getSerializable(
+                    FlightDetailActivity.EXTRA_FLIGHT,
+                    SearchFlightModel::class.java
+                )
             }
 
-            extraItem?.let {
+            extraItem?.let { item: SearchFlightModel ->
                 // Log
-                Timber.d("item : $it")
-                updateFlight(it)
-            } ?: run { Timber.e("Extra recycler view item object is null") }
-        } ?: run { Timber.e("Intent extras are null") }
+                Timber.d("item : $item")
+                updateUiState(FlightDetailUiState.Success(item))
+            } ?: run {
+                Timber.e("Extra recycler view item object is null")
+                updateUiState(FlightDetailUiState.Error(NotBlankString.create("Error occurred while getting value")))
+            }
+        } ?: run {
+            Timber.e("Intent extras are null")
+            updateUiState(FlightDetailUiState.Error(NotBlankString.create("Error occurred while getting value")))
+        }
     }
 
     fun onEvent(uiEvent: UiEvent) {
         Timber.d("onEvent() | uiEvent: $uiEvent")
-
     }
 }
