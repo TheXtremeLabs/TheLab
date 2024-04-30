@@ -8,7 +8,7 @@ import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
-class PreviewProviderUiState : PreviewParameterProvider<FlightDetailUiState> {
+class PreviewProviderFlightDetailUiState : PreviewParameterProvider<FlightDetailUiState> {
     @OptIn(ExperimentalKotoolsTypesApi::class)
     override val values: Sequence<FlightDetailUiState>
         get() = sequenceOf(

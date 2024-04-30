@@ -77,7 +77,7 @@ fun FlightDetailContent(uiState: FlightDetailUiState) {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewFlightDetailContent(@PreviewParameter(PreviewProviderUiState::class) uiState: FlightDetailUiState) {
+private fun PreviewFlightDetailContent(@PreviewParameter(PreviewProviderFlightDetailUiState::class) uiState: FlightDetailUiState) {
     TheLabTheme {
         FlightDetailContent(uiState = uiState)
     }

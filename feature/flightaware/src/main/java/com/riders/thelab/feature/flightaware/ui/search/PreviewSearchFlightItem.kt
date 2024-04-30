@@ -31,7 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.riders.thelab.core.data.local.model.flight.FlightModel
+import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
@@ -50,10 +50,7 @@ import java.time.temporal.ChronoUnit
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
-fun SearchFlightItem(
-    flight: FlightModel,
-    uiEvent: (UiEvent) -> Unit
-) {
+fun SearchFlightItem(flight: SearchFlightModel, uiEvent: (UiEvent) -> Unit) {
     val context = LocalContext.current
     val zoneId by remember { mutableStateOf(ZoneId.systemDefault()) }
     val departureLocalDateTime by remember {
@@ -73,7 +70,7 @@ fun SearchFlightItem(
         )
     }
 
-    val flightIATA = flight.identIATA.toString().take(2)
+    val flightIATA = flight.operatorIATA.toString().take(2)
     val painter = getCoilAsyncImagePainter(
         context = context,
         dataUrl = "${Constants.ENDPOINT_FLIGHT_FULL_LOGO}$flightIATA${Constants.EXTENSION_SVG}",
@@ -235,7 +232,7 @@ fun SearchFlightItem(
 
 @DevicePreviews
 @Composable
-private fun PreviewSearchFlightItem(@PreviewParameter(PreviewProviderFlight::class) flight: FlightModel) {
+private fun PreviewSearchFlightItem(@PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel) {
     TheLabTheme {
         SearchFlightItem(flight) {}
     }
