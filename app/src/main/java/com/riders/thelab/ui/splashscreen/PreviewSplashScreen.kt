@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,12 +36,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.riders.thelab.BuildConfig
 import com.riders.thelab.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
@@ -89,7 +88,7 @@ fun NoContentFound() {
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
-fun VideoView(viewModel: SplashScreenViewModel) {
+fun VideoView(videoPath: String, uiEvent: (UiEvent) -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -97,7 +96,7 @@ fun VideoView(viewModel: SplashScreenViewModel) {
         .build()
         .also { exoPlayer ->
             val mediaItem = MediaItem.Builder()
-                .setUri(viewModel.videoPath!!)
+                .setUri(videoPath)
                 .build()
             exoPlayer.setMediaItem(mediaItem)
             exoPlayer.prepare()
@@ -132,10 +131,9 @@ fun VideoView(viewModel: SplashScreenViewModel) {
                                 Timber.e("State.STATE_ENDED")
 
                                 scope.launch {
-                                    // viewModel.updateVideoViewVisibility(false)
-                                    viewModel.updateSwitchContent(true)
+                                    uiEvent.invoke(UiEvent.OnUpdateSwitchContent(true))
                                     delay(250L)
-                                    viewModel.updateStartCountDown(true)
+                                    uiEvent.invoke(UiEvent.OnUpdateStartCountDown(true))
                                 }
                             }
                         }
@@ -150,10 +148,9 @@ fun VideoView(viewModel: SplashScreenViewModel) {
 }
 
 @Composable
-fun LoadingContent(viewModel: SplashScreenViewModel) {
+fun LoadingContent(version: String) {
 
     val scope = rememberCoroutineScope()
-    val version by viewModel.version
     val progressBarVisibility = remember { mutableStateOf(false) }
 
     TheLabTheme {
@@ -214,9 +211,14 @@ fun LoadingContent(viewModel: SplashScreenViewModel) {
 }
 
 @Composable
-fun SplashScreenContent(viewModel: SplashScreenViewModel) {
+fun SplashScreenContent(
+    version: String,
+    videoPath: String?,
+    switchContent: Boolean,
+    startCountDown: Boolean,
+    uiEvent: (UiEvent) -> Unit
+) {
     val context = LocalContext.current
-    val startCountDown by viewModel.startCountDown
 
     TheLabTheme {
         Column(
@@ -225,19 +227,18 @@ fun SplashScreenContent(viewModel: SplashScreenViewModel) {
             verticalArrangement = Arrangement.Center
         ) {
 
-            if (null == viewModel.videoPath) {
+            if (null == videoPath) {
                 NoContentFound()
             } else {
-
                 AnimatedContent(
-                    targetState = viewModel.switchContent,
+                    targetState = switchContent,
                     transitionSpec = { fadeIn() togetherWith fadeOut() },
                     label = ""
                 ) { targetState ->
                     if (!targetState) {
-                        VideoView(viewModel)
+                        VideoView(videoPath = videoPath, uiEvent = uiEvent)
                     } else {
-                        LoadingContent(viewModel)
+                        LoadingContent(version)
                     }
                 }
             }
@@ -271,26 +272,28 @@ private fun PreviewNoContentFound() {
 @DevicePreviews
 @Composable
 private fun PreviewLoadingContent() {
-    val viewModel: SplashScreenViewModel = hiltViewModel()
     TheLabTheme {
-        LoadingContent(viewModel)
+        LoadingContent(version = BuildConfig.VERSION_NAME)
     }
 }
 
 @DevicePreviews
 @Composable
 private fun PreviewVideoContent() {
-    val viewModel: SplashScreenViewModel = hiltViewModel()
     TheLabTheme {
-        VideoView(viewModel)
+        VideoView(videoPath = "") {}
     }
 }
 
 @DevicePreviews
 @Composable
 private fun PreviewSplashScreenContent() {
-    val viewModel: SplashScreenViewModel = hiltViewModel()
     TheLabTheme {
-        SplashScreenContent(viewModel = viewModel)
+        SplashScreenContent(
+            version = BuildConfig.VERSION_NAME,
+            videoPath = "",
+            switchContent = true,
+            startCountDown = false
+        ) {}
     }
 }

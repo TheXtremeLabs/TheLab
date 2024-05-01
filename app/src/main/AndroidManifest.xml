@@ -220,11 +220,11 @@
             android:name=".ui.splashscreen.SplashScreenActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
 
         <activity
@@ -582,14 +582,7 @@
             android:exported="true"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity">
-            <!-- TODO: Remove this as Launcher activity  -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".feature.flightaware.ui.flight.FlightDetailActivity"
             android:parentActivityName=".feature.flightaware.ui.main.FlightMainActivity"

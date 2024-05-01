@@ -35,7 +35,17 @@ class SettingsActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            SettingsContent(mViewModel)
+                            SettingsContent(
+                                isDarkMode = mViewModel.isDarkMode,
+                                themeOptions = mViewModel.themeOptions,
+                                version = mViewModel.version,
+                                deviceInformation = mViewModel.deviceInfo,
+                                showModeInfo = mViewModel.showMoreInfoOnDevice,
+                                isVibration=mViewModel.isVibration,
+                                isActivitiesSplashEnabled= mViewModel.isActivitiesSplashEnabled,
+                                user = mViewModel.user,
+                                uiEvent = mViewModel::onEvent
+                            )
                         }
                     }
                 }

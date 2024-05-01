@@ -44,7 +44,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
@@ -61,7 +60,7 @@ import kotlinx.coroutines.launch
 fun AppThemeCardRowItem(
     preselectedThemeOptions: String,
     themeOptions: List<String>,
-    onOptionsSelected: (String) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val expanded = remember { mutableStateOf(false) }
@@ -77,17 +76,13 @@ fun AppThemeCardRowItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .height(64.dp)
             .padding(horizontal = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Text(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(1f),
-            text = "Dark Mode"
-        )
+        Text(modifier = Modifier.weight(1f), text = "Dark Mode")
 
         ExposedDropdownMenuBox(
             modifier = Modifier.weight(1f),
@@ -144,7 +139,7 @@ fun AppThemeCardRowItem(
                     DropdownMenuItem(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            onOptionsSelected(option)
+                            uiEvent.invoke(UiEvent.OnThemeSelected(option))
                             selectedText.value = option
                             expanded.value = false
                             focusManager.clearFocus(true)
@@ -158,7 +153,7 @@ fun AppThemeCardRowItem(
 }
 
 @Composable
-fun VibrationCardRowItem(isVibration: Boolean, onToggleVibration: (Boolean) -> Unit) {
+fun VibrationCardRowItem(isVibration: Boolean, uiEvent: (UiEvent) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -201,7 +196,7 @@ fun VibrationCardRowItem(isVibration: Boolean, onToggleVibration: (Boolean) -> U
                         .padding(horizontal = 24.dp),
                     checked = isVibration,
                     onCheckedChange = {
-                        onToggleVibration(it)
+                        uiEvent.invoke(UiEvent.OnUpdateVibrationEnable(it))
                     }
                 )
             }
@@ -210,7 +205,7 @@ fun VibrationCardRowItem(isVibration: Boolean, onToggleVibration: (Boolean) -> U
 }
 
 @Composable
-fun ActivitiesSplashScreenCardRowItem(isEnabled: Boolean, onToggleSplashScreen: (Boolean) -> Unit) {
+fun ActivitiesSplashScreenCardRowItem(isEnabled: Boolean, uiEvent: (UiEvent) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -253,7 +248,7 @@ fun ActivitiesSplashScreenCardRowItem(isEnabled: Boolean, onToggleSplashScreen: 
                         .padding(horizontal = 24.dp),
                     checked = isEnabled,
                     onCheckedChange = {
-                        onToggleSplashScreen(it)
+                        uiEvent.invoke(UiEvent.OnUpdateActivitiesSplashScreenEnable(it))
                     }
                 )
             }
@@ -262,7 +257,14 @@ fun ActivitiesSplashScreenCardRowItem(isEnabled: Boolean, onToggleSplashScreen: 
 }
 
 @Composable
-fun AppSettingsSection(viewModel: SettingsViewModel) {
+fun AppSettingsSection(
+    version: String,
+    isDarkMode: Boolean,
+    themeOptions: List<String>,
+    isVibration: Boolean,
+    isActivitiesSplashEnabled: Boolean,
+    uiEvent: (UiEvent) -> Unit
+) {
     TheLabTheme {
         Column(
             modifier = Modifier
@@ -292,37 +294,26 @@ fun AppSettingsSection(viewModel: SettingsViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = "App version")
-                        Text(text = viewModel.version)
+                        Text(text = version)
                     }
 
                     AppThemeCardRowItem(
-                        preselectedThemeOptions = if (viewModel.isDarkMode) viewModel.themeOptions.first {
+                        preselectedThemeOptions = if (isDarkMode) themeOptions.first {
                             it.contains(
                                 "Dark",
                                 true
                             )
-                        } else viewModel.themeOptions[1],
-                        themeOptions = viewModel.themeOptions
-                    ) {
-                        if (it.contains("light", true)) {
-                            viewModel.updateDarkMode(false)
-                        } else if (it.contains("dark", true)) {
-                            viewModel.updateDarkMode(true)
-                        } else {
-                            viewModel.updateDarkMode(viewModel.isDarkMode)
+                        } else themeOptions[1],
+                        themeOptions = themeOptions,
+                        uiEvent = uiEvent
+                    )
 
-                        }
-                    }
+                    VibrationCardRowItem(isVibration = isVibration, uiEvent = uiEvent)
 
-                    VibrationCardRowItem(isVibration = viewModel.isVibration) {
-                        viewModel.updateVibration(it)
-                        viewModel.updateVibrationDatastore()
-                    }
-
-                    ActivitiesSplashScreenCardRowItem(isEnabled = viewModel.isActivitiesSplashEnabled) {
-                        viewModel.updateActivitiesSplashEnabled(it)
-                        viewModel.updateActivitiesSplashScreenDatastore()
-                    }
+                    ActivitiesSplashScreenCardRowItem(
+                        isEnabled = isActivitiesSplashEnabled,
+                        uiEvent = uiEvent
+                    )
                 }
             }
         }
@@ -355,8 +346,13 @@ private fun PreviewVibrationCardRowItem() {
 @DevicePreviews
 @Composable
 private fun PreviewAppSettingsSection() {
-    val viewModel: SettingsViewModel = hiltViewModel()
     TheLabTheme {
-        AppSettingsSection(viewModel)
+        AppSettingsSection(
+            version = "12.14.11",
+            isDarkMode = true,
+            themeOptions = listOf("Light", "Dark", "Use System"),
+            isVibration = true,
+            isActivitiesSplashEnabled = false
+        ) {}
     }
 }

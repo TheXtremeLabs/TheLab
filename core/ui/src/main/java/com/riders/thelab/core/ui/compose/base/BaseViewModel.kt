@@ -52,6 +52,8 @@ abstract class BaseViewModel : ViewModel() {
         private set
     var isActivitiesSplashEnabled: Boolean by mutableStateOf(true)
         private set
+    var isUserLoggedIn: Boolean by mutableStateOf(false)
+        private set
     var viewPagerDotExpanded: Boolean by mutableStateOf(true)
         private set
     var viewPagerDotVisibility: Boolean by mutableStateOf(true)
@@ -59,19 +61,24 @@ abstract class BaseViewModel : ViewModel() {
     var viewPagerCurrentIndex: Int by mutableIntStateOf(0)
         private set
 
-    fun toggleDarkMode() {
-        isDarkMode = !isDarkMode
-    }
-
     fun updateDarkMode(darkMode: Boolean) {
+        Timber.d("updateDarkMode() | darkMode: $darkMode")
         this.isDarkMode = darkMode
     }
 
     fun updateVibration(isVibration: Boolean) {
+        Timber.d("updateVibration() | isVibration: $isVibration")
         this.isVibration = isVibration
     }
+
     fun updateActivitiesSplashEnabled(isSplashEnabled: Boolean) {
+        Timber.d("updateActivitiesSplashEnabled() | isSplashEnabled: $isSplashEnabled")
         this.isActivitiesSplashEnabled = isSplashEnabled
+    }
+
+    fun updateIsUserLoggedIn(isUserLoggedIn: Boolean) {
+        Timber.d("updateIsUserLoggedIn() | isUserLoggedIn: $isUserLoggedIn")
+        this.isUserLoggedIn = isUserLoggedIn
     }
 
     private fun updateVersion(appVersion: String) {
@@ -104,7 +111,7 @@ abstract class BaseViewModel : ViewModel() {
             updateVersion(version)
 
         } catch (error: PackageManager.NameNotFoundException) {
-            Timber.e(error)
+            Timber.e("retrieveAppVersion() | Error caught: $error")
         }
     }
 }
