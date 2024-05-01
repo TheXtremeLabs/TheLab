@@ -10,16 +10,22 @@ import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
     private val repository: IRepository
-) : BaseViewModel() {
+) : BaseViewModel(), CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + Job()
 
     //////////////////////////////////////////
     // Compose states
@@ -52,16 +58,30 @@ class SplashScreenViewModel @Inject constructor(
             Timber.e("coroutineExceptionHandler | ${throwable.message}")
         }
 
+    ////////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    ////////////////////////////////////////
+    init {
+        runBlocking(coroutineContext + coroutineExceptionHandler) {
+            repository.isActivitiesSplashScreenEnabled().first()
+        }.also {
+            Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
+            updateActivitiesSplashEnabled(it)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Timber.e("onCleared()")
+    }
+
     //////////////////////////////////////////
     //
     // Class Methods
     //
     //////////////////////////////////////////
-    fun activitiesSplashScreenEnabled(): Boolean =
-        runBlocking(Dispatchers.IO + coroutineExceptionHandler) {
-            repository.isActivitiesSplashScreenEnabled().first()
-        }
-
     fun checkUserLoggedIn(): Boolean = runBlocking(Dispatchers.IO + coroutineExceptionHandler) {
         repository.getUsersSync().isNotEmpty()
                 && 1 == repository.getUsersSync().size
