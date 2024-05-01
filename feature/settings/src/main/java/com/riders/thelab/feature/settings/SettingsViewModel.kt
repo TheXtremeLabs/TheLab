@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -50,7 +51,7 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
         this.deviceInfo = deviceInformation
     }
 
-    fun updateShowMoreInfoOnDevice(showMore: Boolean) {
+    private fun updateShowMoreInfoOnDevice(showMore: Boolean) {
         this.showMoreInfoOnDevice = showMore
     }
 
@@ -64,21 +65,28 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
         }
 
     init {
-        viewModelScope.launch {
-            repository.isNightMode().collect {
-                Timber.d("init | isNightMode() | dark mode value: $it")
-                updateDarkMode(it)
-            }
+        runBlocking(Dispatchers.IO + coroutineExceptionHandler) {
+//        viewModelScope.launch {
+//            repository.isNightMode().collect {
+//                Timber.d("init | isNightMode() | dark mode value: $it")
+            updateDarkMode(repository.isNightMode().first())
+//            }
 
-            repository.isVibration().collect {
-                Timber.d("init | isVibration() | value: $it")
-                updateVibration(it)
-            }
+        }
+        runBlocking(Dispatchers.IO + coroutineExceptionHandler) {
+//        viewModelScope.launch {
+//            repository.isVibration().collect {
+//                Timber.d("init | isVibration() | value: $it")
+            updateVibration(repository.isVibration().first())
+//            }
+        }
 
-            repository.isActivitiesSplashScreenEnabled().collect {
-                Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
-                updateActivitiesSplashEnabled(it)
-            }
+        runBlocking(Dispatchers.IO + coroutineExceptionHandler) {
+//        viewModelScope.launch {
+//            repository.isActivitiesSplashScreenEnabled().collect {
+//                Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
+            updateActivitiesSplashEnabled(repository.isActivitiesSplashScreenEnabled().first())
+//            }
         }
 
         getLoggedUser()
@@ -90,19 +98,53 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
     // CLASS METHODS
     //
     //////////////////////////////////////////
-    fun updateDarkModeDatastore() {
+    fun onEvent(event: UiEvent) {
+        when (event) {
+            is UiEvent.OnThemeSelected -> {
+                if (event.option.contains("light", true)) {
+                    updateDarkMode(false)
+                    updateDarkModeDatastore()
+                } else if (event.option.contains("dark", true)) {
+                    updateDarkMode(true)
+                    updateDarkModeDatastore()
+                } else {
+                    updateDarkMode(isDarkMode)
+                }
+            }
+
+            is UiEvent.OnUpdateVibrationEnable -> {
+                updateVibrationDatastore()
+                updateVibration(event.isVibrationEnable)
+            }
+
+            is UiEvent.OnUpdateActivitiesSplashScreenEnable -> {
+                updateActivitiesSplashScreenDatastore()
+                updateActivitiesSplashEnabled(event.isActivitiesSplashScreenEnable)
+            }
+
+            is UiEvent.OnUpdateUser -> updateUser(event.user)
+            is UiEvent.OnUpdateDeviceInfo -> updateDeviceInfo(event.deviceInformation)
+            is UiEvent.OnUpdateShowMoreInfoOnDevice -> updateShowMoreInfoOnDevice(event.expanded)
+            is UiEvent.OnLogoutClicked -> logout()
+        }
+    }
+
+    private fun updateDarkModeDatastore() {
+        Timber.d("updateDarkModeDatastore()")
         viewModelScope.launch {
             repository.toggleNightMode()
         }
     }
 
-    fun updateVibrationDatastore() {
+    private fun updateVibrationDatastore() {
+        Timber.d("updateVibrationDatastore()")
         viewModelScope.launch {
             repository.toggleVibration()
         }
     }
 
-    fun updateActivitiesSplashScreenDatastore() {
+    private fun updateActivitiesSplashScreenDatastore() {
+        Timber.d("updateActivitiesSplashScreenDatastore()")
         viewModelScope.launch {
             repository.toggleActivitiesSplashScreenEnabled()
         }
@@ -118,7 +160,7 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
         user?.let { updateUser(it) }
     }
 
-    fun logout() {
+    private fun logout() {
         viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             repository.getUsersSync().firstOrNull { it.logged }?.let {
                 repository.logoutUser(it._id.toInt())

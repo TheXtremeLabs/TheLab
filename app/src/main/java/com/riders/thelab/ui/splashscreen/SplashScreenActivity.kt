@@ -24,27 +24,18 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
-class SplashScreenActivity : ComponentActivity(), CoroutineScope {
-
-    override val coroutineContext: CoroutineContext get() = Dispatchers.Main + Job()
-
+class SplashScreenActivity : ComponentActivity() {
 
     private val mViewModel: SplashScreenViewModel by viewModels()
 
     private val permissionRequestLauncher: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             Timber.d("registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) | $it")
-
         }
-
 
     /////////////////////////////////////
     //
@@ -59,24 +50,42 @@ class SplashScreenActivity : ComponentActivity(), CoroutineScope {
 
         super.onCreate(savedInstanceState)
 
-        if (LabCompatibilityManager.isTiramisu()) {
-            requestPermissionForAndroid13()
-        }
+        // Check if activities splash screens are enabled
+        if (!mViewModel.activitiesSplashScreenEnabled()) {
 
-        mViewModel.retrieveAppVersion(this@SplashScreenActivity)
-        mViewModel.getVideoPath(this@SplashScreenActivity)
+            // Check if user is logged in
+            if (!mViewModel.checkUserLoggedIn()) {
+                goToLoginActivity()
+            } else {
+                goToMainActivity()
+            }
+        } else {
 
-        lifecycleScope.launch {
-            Timber.d("coroutine launch with name ${this.coroutineContext}")
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                setContent {
-                    TheLabTheme {
-                        // A surface container using the 'background' color from the theme
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
-                        ) {
-                            SplashScreenContent(mViewModel)
+            if (LabCompatibilityManager.isTiramisu()) {
+                requestPermissionForAndroid13()
+            }
+
+            mViewModel.retrieveAppVersion(this@SplashScreenActivity)
+            mViewModel.getVideoPath(this@SplashScreenActivity)
+
+            lifecycleScope.launch {
+                Timber.d("coroutine launch with name ${this.coroutineContext}")
+                repeatOnLifecycle(Lifecycle.State.CREATED) {
+                    setContent {
+                        TheLabTheme {
+                            // A surface container using the 'background' color from the theme
+                            Surface(
+                                modifier = Modifier.fillMaxSize(),
+                                color = MaterialTheme.colorScheme.background
+                            ) {
+                                SplashScreenContent(
+                                    version = mViewModel.version,
+                                    videoPath = mViewModel.videoPath,
+                                    switchContent = mViewModel.switchContent,
+                                    startCountDown = mViewModel.startCountDown,
+                                    uiEvent = mViewModel::onEvent
+                                )
+                            }
                         }
                     }
                 }
@@ -118,6 +127,12 @@ class SplashScreenActivity : ComponentActivity(), CoroutineScope {
     fun goToLoginActivity() {
         Timber.d("goToLoginActivity()")
         Navigator(this).callLoginActivity()
+        finish()
+    }
+
+    fun goToMainActivity() {
+        Timber.d("goToMainActivity()")
+        Navigator(this).callMainActivity()
         finish()
     }
 }

@@ -155,6 +155,48 @@ fun TheLabTopAppBar(viewModel: BaseViewModel, title: String) {
     }
 }
 
+@SuppressLint("RestrictedApi")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TheLabTopAppBar(isDarkMode: Boolean, title: String) {
+    val context = LocalContext.current
+
+    TheLabTheme(darkTheme = isDarkMode) {
+        TopAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color.Black, MaterialTheme.colorScheme.background)
+                    )
+                ),
+            title = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(start = 16.dp, bottom = 16.dp),
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    Text(text = title, color = Color.White)
+                }
+            },
+            navigationIcon = {
+                IconButton(onClick = {
+                    executeOnBackPressed(context)
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+        )
+    }
+}
+
 
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)

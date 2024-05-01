@@ -213,7 +213,7 @@ class PreferencesImpl @Inject constructor(
         // In your case, you get the data by using a certain key, the PreferencesKeys.NIGHT_MODE_KEY.
         // If the key isn’t set when you try to read the data it returns null.
         // You use the Elvis operator to handle this and return false instead.
-        it[PreferencesKeys.DATASTORE_ACTIVITIES_SPLASH_SCREEN_KEY] ?: false
+        it[PreferencesKeys.DATASTORE_ACTIVITIES_SPLASH_SCREEN_KEY] ?: true
     }
 
     override suspend fun toggleActivitiesSplashScreenEnabled() {

@@ -108,7 +108,7 @@ fun EditProfileCardRowItem(username: String, email: String) {
 }
 
 @Composable
-fun UserSection(username: String, email: String, onLogoutClicked: (Boolean) -> Unit) {
+fun UserSection(username: String, email: String, uiEvent: (UiEvent) -> Unit) {
     TheLabTheme {
         Column(
             modifier = Modifier
@@ -141,7 +141,7 @@ fun UserSection(username: String, email: String, onLogoutClicked: (Boolean) -> U
                     ) {
                         Button(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { onLogoutClicked(true) }
+                            onClick = { uiEvent.invoke(UiEvent.OnLogoutClicked) }
                         ) {
                             Text(
                                 text = stringResource(id = com.riders.thelab.core.ui.R.string.action_logout)

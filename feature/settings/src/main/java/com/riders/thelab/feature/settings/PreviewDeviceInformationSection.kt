@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.riders.thelab.core.data.local.model.DeviceInformation
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
@@ -34,34 +34,34 @@ import com.riders.thelab.core.ui.compose.theme.Typography
 //
 ///////////////////////////////
 @Composable
-fun ShowMoreButton(viewModel: SettingsViewModel) {
-    Button(onClick = { viewModel.updateShowMoreInfoOnDevice(!viewModel.showMoreInfoOnDevice) }) {
-        AnimatedContent(
-            targetState = viewModel.showMoreInfoOnDevice,
-            label = "device_show_more_visibility_animation"
-        ) { targetState ->
-            Row(
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.spacedBy(
-                    16.dp,
-                    Alignment.CenterHorizontally
-                ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = if (!targetState) "Show More" else "Close Panel")
-                Icon(
-                    imageVector = if (!targetState) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
-                    contentDescription = "more icon"
-                )
+fun ShowMoreButton(showMoreInfoOnDevice: Boolean, uiEvent: (UiEvent) -> Unit) {
+    TheLabTheme {
+        Button(onClick = { uiEvent.invoke(UiEvent.OnUpdateShowMoreInfoOnDevice(!showMoreInfoOnDevice)) }) {
+            AnimatedContent(
+                targetState = showMoreInfoOnDevice,
+                label = "device_show_more_visibility_animation"
+            ) { targetState ->
+                Row(
+                    modifier = Modifier,
+                    horizontalArrangement = Arrangement.spacedBy(
+                        16.dp,
+                        Alignment.CenterHorizontally
+                    ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = if (!targetState) "Show More" else "Close Panel")
+                    Icon(
+                        imageVector = if (!targetState) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
+                        contentDescription = "more icon"
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun DeviceSpecs(viewModel: SettingsViewModel) {
-
-    val deviceInfo = viewModel.deviceInfo!!
+fun DeviceSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
 
     Column(
         modifier = Modifier
@@ -71,7 +71,7 @@ fun DeviceSpecs(viewModel: SettingsViewModel) {
     ) {
         AnimatedVisibility(
             modifier = Modifier.fillMaxWidth(),
-            visible = viewModel.showMoreInfoOnDevice
+            visible = showMoreInfoOnDevice
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -112,7 +112,7 @@ fun DeviceSpecs(viewModel: SettingsViewModel) {
 
         AnimatedVisibility(
             modifier = Modifier.fillMaxWidth(),
-            visible = viewModel.showMoreInfoOnDevice
+            visible = showMoreInfoOnDevice
         ) {
 
             Column(
@@ -161,8 +161,7 @@ fun DeviceSpecs(viewModel: SettingsViewModel) {
 }
 
 @Composable
-fun AndroidSpecs(viewModel: SettingsViewModel) {
-    val deviceInfo = viewModel.deviceInfo!!
+fun AndroidSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
 
     Column(
         modifier = Modifier
@@ -172,7 +171,7 @@ fun AndroidSpecs(viewModel: SettingsViewModel) {
 
         AnimatedVisibility(
             modifier = Modifier.fillMaxWidth(),
-            visible = viewModel.showMoreInfoOnDevice
+            visible = showMoreInfoOnDevice
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -205,7 +204,7 @@ fun AndroidSpecs(viewModel: SettingsViewModel) {
 
         AnimatedVisibility(
             modifier = Modifier.fillMaxWidth(),
-            visible = viewModel.showMoreInfoOnDevice
+            visible = showMoreInfoOnDevice
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -228,7 +227,11 @@ fun AndroidSpecs(viewModel: SettingsViewModel) {
 }
 
 @Composable
-fun DeviceInfoSection(viewModel: SettingsViewModel) {
+fun DeviceInfoSection(
+    deviceInformation: DeviceInformation?,
+    showModeInfo: Boolean,
+    uiEvent: (UiEvent) -> Unit
+) {
     TheLabTheme {
         Column(
             modifier = Modifier
@@ -253,7 +256,7 @@ fun DeviceInfoSection(viewModel: SettingsViewModel) {
                 ) {
                     AnimatedContent(
                         modifier = Modifier.align(Alignment.TopCenter),
-                        targetState = null != viewModel.deviceInfo,
+                        targetState = null != deviceInformation,
                         label = "content_transition",
                     ) { target ->
                         if (!target) {
@@ -277,12 +280,21 @@ fun DeviceInfoSection(viewModel: SettingsViewModel) {
                                 )
                             ) {
                                 // Device Specs
-                                DeviceSpecs(viewModel)
+                                DeviceSpecs(
+                                    deviceInfo = deviceInformation!!,
+                                    showMoreInfoOnDevice = showModeInfo
+                                )
 
                                 // Android Specs
-                                AndroidSpecs(viewModel)
+                                AndroidSpecs(
+                                    deviceInfo = deviceInformation,
+                                    showMoreInfoOnDevice = showModeInfo
+                                )
 
-                                ShowMoreButton(viewModel)
+                                ShowMoreButton(
+                                    showMoreInfoOnDevice = showModeInfo,
+                                    uiEvent = uiEvent
+                                )
                             }
                         }
                     }
@@ -301,8 +313,7 @@ fun DeviceInfoSection(viewModel: SettingsViewModel) {
 @DevicePreviews
 @Composable
 private fun PreviewDeviceInfoSection() {
-    val viewModel = hiltViewModel<SettingsViewModel>()
     TheLabTheme {
-        DeviceInfoSection(viewModel)
+        DeviceInfoSection(deviceInformation = DeviceInformation(), showModeInfo = true) {}
     }
 }
