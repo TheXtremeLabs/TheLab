@@ -1,6 +1,4 @@
-@file:Suppress("RedundantSetter")
-
-package com.riders.thelab.feature.theaters
+package com.riders.thelab.feature.theaters.detail
 
 import android.app.Activity
 import android.content.Intent

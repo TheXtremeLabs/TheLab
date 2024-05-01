@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.theaters
+package com.riders.thelab.feature.theaters.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -42,6 +41,7 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
+import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBItemModel
 
 ///////////////////////////////////////
 //
@@ -49,10 +49,7 @@ import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 //
 ///////////////////////////////////////
 @Composable
-fun TrendingTMDBItem(
-    trendingItem: TMDBItemModel,
-    onTrendingItemDetailClicked: (trendingItem: TMDBItemModel) -> Unit
-) {
+fun TrendingTMDBItem(trendingItem: TMDBItemModel, uiEvent: (UiEvent) -> Unit) {
     val painter = getCoilAsyncImagePainter(
         context = LocalContext.current,
         dataUrl = trendingItem.getPosterImageUrl(),
@@ -129,7 +126,7 @@ fun TrendingTMDBItem(
                     )
                     IconButton(
                         modifier = Modifier.weight(1f),
-                        onClick = { onTrendingItemDetailClicked(trendingItem) }
+                        onClick = { uiEvent.invoke(UiEvent.OnItemDetailClicked(trendingItem)) }
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -149,7 +146,7 @@ fun TrendingTMDBItem(
 
 
 @Composable
-fun TMDBItem(tmdbItem: TMDBItemModel, onItemClicked: (item: TMDBItemModel) -> Unit) {
+fun TMDBItem(tmdbItem: TMDBItemModel, uiEvent: (UiEvent) -> Unit) {
     val painter =
         getCoilAsyncImagePainter(
             context = LocalContext.current,
@@ -162,7 +159,7 @@ fun TMDBItem(tmdbItem: TMDBItemModel, onItemClicked: (item: TMDBItemModel) -> Un
                 width = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height),
                 height = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width)
             ),
-            onClick = { onItemClicked(tmdbItem) }
+            onClick = { uiEvent.invoke(UiEvent.OnItemDetailClicked(tmdbItem)) }
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -203,7 +200,6 @@ fun TMDBItem(tmdbItem: TMDBItemModel, onItemClicked: (item: TMDBItemModel) -> Un
 @DevicePreviews
 @Composable
 private fun PreviewTrendingTMDBItem(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
-
     TheLabTheme {
         TrendingTMDBItem(item) { }
     }

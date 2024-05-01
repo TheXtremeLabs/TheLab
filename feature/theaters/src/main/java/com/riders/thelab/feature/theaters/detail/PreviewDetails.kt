@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.theaters
+package com.riders.thelab.feature.theaters.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +45,7 @@ import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
+import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBItemModel
 import java.util.Locale
 import kotlin.math.roundToInt
 

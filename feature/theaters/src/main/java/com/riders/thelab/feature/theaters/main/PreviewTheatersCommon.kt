@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.theaters
+package com.riders.thelab.feature.theaters.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBItemModel
 
 
 ///////////////////////////////////////
@@ -32,7 +33,7 @@ fun TheaterTMDBList(
     rowListState: LazyListState,
     categoryTitle: String,
     tmdbList: List<TMDBItemModel>,
-    onItemClicked: (item: TMDBItemModel) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     TheLabTheme {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -54,9 +55,7 @@ fun TheaterTMDBList(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 items(items = tmdbList) { tmdbItem ->
-                    TMDBItem(tmdbItem) {
-                        onItemClicked(it)
-                    }
+                    TMDBItem(tmdbItem = tmdbItem, uiEvent = uiEvent)
                 }
             }
         }

@@ -330,13 +330,13 @@
             android:theme="@style/PaletteTheme" />
 
         <activity
-            android:name=".feature.theaters.TheatersActivity"
+            android:name=".feature.theaters.main.TheatersActivity"
             android:label="@string/activity_title_theaters"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/MultiPaneTheme" />
         <activity
-            android:name=".feature.theaters.TheatersDetailActivity"
-            android:parentActivityName=".feature.theaters.TheatersActivity"
+            android:name=".feature.theaters.detail.TheatersDetailActivity"
+            android:parentActivityName=".feature.theaters.main.TheatersActivity"
             android:theme="@style/MultiPaneTheme" />
 
         <activity

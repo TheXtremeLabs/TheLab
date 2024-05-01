@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.theaters
+package com.riders.thelab.feature.theaters.splashscreen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable

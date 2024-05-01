@@ -307,6 +307,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
 fun <T : Any> LabHorizontalViewPagerGeneric(
     pagerState: PagerState,
     items: List<T>,
+    onCurrentPageChanged: (Int) -> Unit,
     modifier: Modifier = Modifier,
     pageCount: Int = items.size,
     viewPagerDotVisibility: Boolean = false,
@@ -315,7 +316,6 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
     updateViewPagerDotVisibility: (Boolean) -> Unit = {},
     autoScroll: Boolean = false,
     userScrollEnabled: Boolean = true,
-    onCurrentPageChanged: (Int) -> Unit,
     content: @Composable (page: Int, pageOffset: Float) -> Unit
 ) {
     val scope = rememberCoroutineScope()

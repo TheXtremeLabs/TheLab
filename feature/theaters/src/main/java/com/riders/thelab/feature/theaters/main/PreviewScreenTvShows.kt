@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.theaters
+package com.riders.thelab.feature.theaters.main
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
@@ -22,7 +22,6 @@ import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import timber.log.Timber
 
 
 ///////////////////////////////////////
@@ -35,7 +34,7 @@ import timber.log.Timber
 fun ScreenTvShowsContent(
     trendingTvShowItem: TMDBTrendingTvShowItemUiState,
     trendingTvShows: TMDBTvShowsUiState,
-    onTMDBItemDetailClicked: (tmdbItemModel: TMDBItemModel) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
     val lazyRowTrendingListState = rememberLazyListState()
@@ -58,9 +57,7 @@ fun ScreenTvShowsContent(
                             val item: TMDBItemModel =
                                 targetState.response.results.map { it.toItemModel() }[0]
 
-                            TrendingTMDBItem(trendingItem = item) {
-                                onTMDBItemDetailClicked(it)
-                            }
+                            TrendingTMDBItem(trendingItem = item, uiEvent = uiEvent)
                         }
                     }
                 }
@@ -76,11 +73,9 @@ fun ScreenTvShowsContent(
                             TheaterTMDBList(
                                 rowListState = lazyRowTrendingListState,
                                 categoryTitle = MovieCategoryEnum.TRENDING.value,
-                                tmdbList = tmdbList
-                            ) { item: TMDBItemModel ->
-                                Timber.d(item.toString())
-                                onTMDBItemDetailClicked(item)
-                            }
+                                tmdbList = tmdbList,
+                                uiEvent = uiEvent
+                            )
                         }
                     }
                 }

@@ -13,7 +13,9 @@ import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -22,10 +24,15 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 @Suppress("EmptyMethod")
 @HiltViewModel
-class SettingsViewModel @Inject constructor(private val repository: IRepository) : BaseViewModel() {
+class SettingsViewModel @Inject constructor(private val repository: IRepository) : BaseViewModel(),
+    CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + Job()
 
     //////////////////////////////////////////
     // Variables
@@ -65,28 +72,28 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
         }
 
     init {
-        runBlocking(Dispatchers.IO + coroutineExceptionHandler) {
-//        viewModelScope.launch {
-//            repository.isNightMode().collect {
-//                Timber.d("init | isNightMode() | dark mode value: $it")
-            updateDarkMode(repository.isNightMode().first())
-//            }
-
-        }
-        runBlocking(Dispatchers.IO + coroutineExceptionHandler) {
-//        viewModelScope.launch {
-//            repository.isVibration().collect {
-//                Timber.d("init | isVibration() | value: $it")
-            updateVibration(repository.isVibration().first())
-//            }
+        // Dark Mode settings
+        runBlocking(coroutineContext + coroutineExceptionHandler) {
+            repository.isNightMode().first()
+        }.also {
+            Timber.d("init | isNightMode() | dark mode value: $it")
+            updateDarkMode(it)
         }
 
-        runBlocking(Dispatchers.IO + coroutineExceptionHandler) {
-//        viewModelScope.launch {
-//            repository.isActivitiesSplashScreenEnabled().collect {
-//                Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
-            updateActivitiesSplashEnabled(repository.isActivitiesSplashScreenEnabled().first())
-//            }
+        // Vibration settings
+        runBlocking(coroutineContext + coroutineExceptionHandler) {
+            repository.isVibration().first()
+        }.also {
+            Timber.d("init | isVibration() | value: $it")
+            updateVibration(it)
+        }
+
+        // Activities splashscreen
+        runBlocking(coroutineContext + coroutineExceptionHandler) {
+            repository.isActivitiesSplashScreenEnabled().first()
+        }.also {
+            Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
+            updateActivitiesSplashEnabled(it)
         }
 
         getLoggedUser()
@@ -131,21 +138,21 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
 
     private fun updateDarkModeDatastore() {
         Timber.d("updateDarkModeDatastore()")
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
             repository.toggleNightMode()
         }
     }
 
     private fun updateVibrationDatastore() {
         Timber.d("updateVibrationDatastore()")
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
             repository.toggleVibration()
         }
     }
 
     private fun updateActivitiesSplashScreenDatastore() {
         Timber.d("updateActivitiesSplashScreenDatastore()")
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
             repository.toggleActivitiesSplashScreenEnabled()
         }
     }
@@ -154,14 +161,14 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
         Timber.d("getLoggedUser()")
 
         val user: User? =
-            runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+            runBlocking(coroutineContext + SupervisorJob() + coroutineExceptionHandler) {
                 repository.getUsersSync().firstOrNull { it.logged }
             }
         user?.let { updateUser(it) }
     }
 
     private fun logout() {
-        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
             repository.getUsersSync().firstOrNull { it.logged }?.let {
                 repository.logoutUser(it._id.toInt())
             }
@@ -171,7 +178,7 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
     fun fetchDeviceInformation() {
         Timber.d("getDeviceInfo()")
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(coroutineContext) {
             //Retrieve Screen's height and width
             val metrics = DisplayMetrics()
 

@@ -18,7 +18,7 @@ import com.riders.thelab.feature.schedule.ui.ScheduleActivity
 import com.riders.thelab.feature.songplayer.ui.SongPlayerActivity
 import com.riders.thelab.feature.streaming.StreamingActivity
 import com.riders.thelab.feature.tabs.WorkingTabsActivity
-import com.riders.thelab.feature.theaters.TheatersActivity
+import com.riders.thelab.feature.theaters.main.TheatersActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.camera.CameraActivity
