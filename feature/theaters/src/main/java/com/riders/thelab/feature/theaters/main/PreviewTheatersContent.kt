@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.theaters
+package com.riders.thelab.feature.theaters.main
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
@@ -18,23 +18,19 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.common.network.NetworkState
+import com.riders.thelab.core.data.local.model.compose.TMDBUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
-import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
 import com.riders.thelab.core.ui.compose.component.network.PreviewProviderNetworkState
 import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -49,27 +45,30 @@ import timber.log.Timber
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TheatersContent(
-    viewModel: TheatersViewModel,
     networkState: NetworkState,
+    categories: List<String>,
+    tabRowSelected: Int,
+    trendingMovieItem: TMDBUiState.TMDBTrendingMovieItemUiState,
+    movies: TMDBUiState.TMDBMoviesUiState,
+    upcomingMovies: TMDBUiState.TMDBUpcomingMoviesUiState,
+    trendingTvShowItem: TMDBUiState.TMDBTrendingTvShowItemUiState,
+    trendingTvShows: TMDBUiState.TMDBTvShowsUiState,
     isRefreshing: Boolean,
-    onPullToRefresh: (Boolean) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
-
-    val activity: TheatersActivity = LocalContext.current as TheatersActivity
     val scope = rememberCoroutineScope()
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = { onPullToRefresh(true) }
+        onRefresh = {
+            uiEvent.invoke(UiEvent.OnPullToRefresh(true))
+            if (isRefreshing) {
+                uiEvent.invoke(UiEvent.OnFetchTMDBData)
+            }
+        }
     )
 
-    val pagerState: PagerState = rememberPagerState { viewModel.categories.size }
-
-    val trendingMovieItem by viewModel.tmdbTrendingMovieItemUiState.collectAsStateWithLifecycle()
-    val movies by viewModel.tmdbMoviesUiState.collectAsStateWithLifecycle()
-    val upcomingMovies by viewModel.tmdbUpcomingMoviesUiState.collectAsStateWithLifecycle()
-    val trendingTvShowItem by viewModel.tmdbTrendingTvShowItemUiState.collectAsStateWithLifecycle()
-    val trendingTvShows by viewModel.tmdbTrendingTvShowsUiState.collectAsStateWithLifecycle()
+    val pagerState: PagerState = rememberPagerState { categories.size }
 
     val transitionSpec: () -> ContentTransform = {
         fadeIn(tween(durationMillis = 200)) togetherWith fadeOut(
@@ -92,10 +91,10 @@ fun TheatersContent(
                             when (targetState) {
                                 is NetworkState.Available -> {
                                     LabTabRow(
-                                        selectedItemIndex = viewModel.tabRowSelected,
-                                        items = viewModel.categories
+                                        selectedItemIndex = tabRowSelected,
+                                        items = categories
                                     ) {
-                                        viewModel.updateTabRowSelected(it)
+                                        uiEvent.invoke(UiEvent.OnUpdateTabRowSelected(it))
                                     }
                                 }
 
@@ -126,11 +125,9 @@ fun TheatersContent(
                             )
                         ) {
                             LabHorizontalViewPagerGeneric(
-                                viewModel = viewModel,
                                 pagerState = pagerState,
-                                items = viewModel.categories,
-                                autoScroll = false,
-                                userScrollEnabled = false
+                                items = categories,
+                                onCurrentPageChanged = {}
                             ) { page, _ ->
 
                                 when (page) {
@@ -139,12 +136,7 @@ fun TheatersContent(
                                             trendingMovieItem,
                                             movies,
                                             upcomingMovies,
-                                            onTMDBItemDetailClicked = {
-                                                viewModel.getTMDBItemDetail(
-                                                    activity,
-                                                    it
-                                                )
-                                            }
+                                            uiEvent = uiEvent
                                         )
                                     }
 
@@ -152,12 +144,7 @@ fun TheatersContent(
                                         ScreenTvShowsContent(
                                             trendingTvShowItem,
                                             trendingTvShows,
-                                            onTMDBItemDetailClicked = {
-                                                viewModel.getTMDBItemDetail(
-                                                    activity,
-                                                    it
-                                                )
-                                            }
+                                            uiEvent = uiEvent
                                         )
                                     }
                                 }
@@ -180,11 +167,11 @@ fun TheatersContent(
         }
     }
 
-    LaunchedEffect(key1 = viewModel.tabRowSelected) {
-        Timber.d("LaunchedEffect | tabRowSelected : ${viewModel.tabRowSelected} | with: ${this.coroutineContext}")
+    LaunchedEffect(key1 = tabRowSelected) {
+        Timber.d("LaunchedEffect | tabRowSelected : ${tabRowSelected} | with: ${this.coroutineContext}")
 
         scope.launch {
-            pagerState.animateScrollToPage(viewModel.tabRowSelected)
+            pagerState.animateScrollToPage(tabRowSelected)
         }
     }
 
@@ -192,7 +179,7 @@ fun TheatersContent(
         Timber.d("LaunchedEffect | isRefreshing : $isRefreshing | with: ${this.coroutineContext}")
 
         if (isRefreshing) {
-            onPullToRefresh(isRefreshing)
+            uiEvent.invoke(UiEvent.OnPullToRefresh(isRefreshing))
         }
     }
 }
@@ -206,14 +193,19 @@ fun TheatersContent(
 @DevicePreviews
 @Composable
 private fun PreviewTheatersContent(@PreviewParameter(PreviewProviderNetworkState::class) networkState: NetworkState) {
-    val viewModel: TheatersViewModel = hiltViewModel()
 
     TheLabTheme(darkTheme = true) {
         TheatersContent(
-            viewModel,
-            if (LocalInspectionMode.current) NetworkState.Unavailable else networkState,
+            networkState = networkState,
+            categories = listOf("Movies", "Tv Shows"),
+            tabRowSelected = 0,
+            trendingMovieItem = TMDBUiState.TMDBTrendingMovieItemUiState.Loading,
+            movies = TMDBUiState.TMDBMoviesUiState.Loading,
+            upcomingMovies = TMDBUiState.TMDBUpcomingMoviesUiState.Loading,
+            trendingTvShowItem = TMDBUiState.TMDBTrendingTvShowItemUiState.Loading,
+            trendingTvShows = TMDBUiState.TMDBTvShowsUiState.Loading,
             isRefreshing = false,
-            onPullToRefresh = { }
+            uiEvent = {}
         )
     }
 }

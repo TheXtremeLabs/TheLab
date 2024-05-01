@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.theaters
+package com.riders.thelab.feature.theaters.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

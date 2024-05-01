@@ -36,13 +36,13 @@ class SettingsActivity : BaseComponentActivity() {
                             color = MaterialTheme.colorScheme.background
                         ) {
                             SettingsContent(
-                                isDarkMode = mViewModel.isDarkMode,
-                                themeOptions = mViewModel.themeOptions,
                                 version = mViewModel.version,
+                                themeOptions = mViewModel.themeOptions,
+                                isDarkMode = mViewModel.isDarkMode,
+                                isVibration = mViewModel.isVibration,
+                                isActivitiesSplashEnabled = mViewModel.isActivitiesSplashEnabled,
                                 deviceInformation = mViewModel.deviceInfo,
                                 showModeInfo = mViewModel.showMoreInfoOnDevice,
-                                isVibration=mViewModel.isVibration,
-                                isActivitiesSplashEnabled= mViewModel.isActivitiesSplashEnabled,
                                 user = mViewModel.user,
                                 uiEvent = mViewModel::onEvent
                             )

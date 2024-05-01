@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.theaters
+package com.riders.thelab.feature.theaters.detail
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
@@ -48,6 +48,8 @@ import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.utils.loadImage
+import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBDetailUiState
+import com.riders.thelab.feature.theaters.main.trendingItemImageHeight
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.theaters
+package com.riders.thelab.feature.theaters.detail
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
@@ -34,6 +34,7 @@ import com.riders.thelab.core.player.YoutubeVideoPlayer
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBVideoModel
 import timber.log.Timber
 
 @Composable

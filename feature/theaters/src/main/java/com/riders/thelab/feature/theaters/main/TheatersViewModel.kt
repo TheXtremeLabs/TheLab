@@ -1,7 +1,6 @@
-package com.riders.thelab.feature.theaters
+package com.riders.thelab.feature.theaters.main
 
 import android.content.Context
-import android.content.Intent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -19,26 +18,31 @@ import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingM
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingTvShowItemUiState
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTvShowsUiState
 import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBUpcomingMoviesUiState
-import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-@Suppress("EmptyMethod")
 @HiltViewModel
 class TheatersViewModel @Inject constructor(
     private val repository: IRepository
-) : BaseViewModel() {
+) : BaseViewModel(), CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + Job()
 
     ////////////////////////////////////////
     // Compose states
@@ -147,7 +151,7 @@ class TheatersViewModel @Inject constructor(
         this.hasConnection = hasConnection
     }
 
-    fun updateIsRefreshing(isRefreshing: Boolean) {
+    private fun updateIsRefreshing(isRefreshing: Boolean) {
         this.isRefreshing = isRefreshing
     }
 
@@ -157,8 +161,28 @@ class TheatersViewModel @Inject constructor(
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
-            Timber.e(throwable.message)
+            Timber.e("Coroutine Exception caught with message: ${throwable.message} (${throwable.javaClass})")
         }
+
+
+    ////////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    ////////////////////////////////////////
+    init {
+        runBlocking(coroutineContext + coroutineExceptionHandler) {
+            repository.isActivitiesSplashScreenEnabled().first()
+        }.also {
+            Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
+            updateActivitiesSplashEnabled(it)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Timber.e("onCleared()")
+    }
 
 
     ////////////////////////////////////////
@@ -203,7 +227,20 @@ class TheatersViewModel @Inject constructor(
         }
     }
 
-    fun fetchTMDBData() {
+    fun onEvent(event: UiEvent) {
+        Timber.d("onEvent() | event: $event")
+
+        when (event) {
+            is UiEvent.OnUpdateTabRowSelected -> updateTabRowSelected(event.tabSelected)
+            is UiEvent.OnPullToRefresh -> updateIsRefreshing(event.isRefreshing)
+            is UiEvent.OnFetchTMDBData -> fetchTMDBData()
+            else -> {
+                Timber.e("onEvent() | ele branch unhandled event: $event")
+            }
+        }
+    }
+
+    private fun fetchTMDBData() {
         Timber.d("fetchTMDBData()")
 
         // Trending Movie
@@ -345,24 +382,5 @@ class TheatersViewModel @Inject constructor(
         updatePopularMovieList(
             movies.filter { it.category == MovieCategoryEnum.POPULAR.value }
         )
-    }
-
-
-    fun getTMDBItemDetail(activity: Context, item: TMDBItemModel) {
-        Timber.d("getTMDBItemDetail() | movie: $item")
-
-        Intent(activity, TheatersDetailActivity::class.java)
-            .apply {
-                putExtra(TheatersDetailActivity.EXTRA_TMDB_ITEM, json.encodeToString(item))
-            }
-            .runCatching {
-                activity.startActivity(this)
-            }
-            .onFailure {
-                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
-            }
-            .onSuccess {
-                Timber.d("runCatching - onSuccess() | Activity launched successfully")
-            }
     }
 }
