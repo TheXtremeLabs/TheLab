@@ -51,46 +51,49 @@ class SplashScreenActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // Check if activities splash screens are enabled
-        if (!mViewModel.activitiesSplashScreenEnabled()) {
-
+        if (!mViewModel.isActivitiesSplashEnabled) {
             // Check if user is logged in
             if (!mViewModel.checkUserLoggedIn()) {
+                Timber.e("Activities' splashscreen are disabled. Call loginActivity()")
                 goToLoginActivity()
+                return
             } else {
+                Timber.e("Activities' splashscreen are disabled. Call mainActivity()")
                 goToMainActivity()
+                return
             }
-        } else {
+        }
 
-            if (LabCompatibilityManager.isTiramisu()) {
-                requestPermissionForAndroid13()
-            }
+        if (LabCompatibilityManager.isTiramisu()) {
+            requestPermissionForAndroid13()
+        }
 
-            mViewModel.retrieveAppVersion(this@SplashScreenActivity)
-            mViewModel.getVideoPath(this@SplashScreenActivity)
+        mViewModel.retrieveAppVersion(this@SplashScreenActivity)
+        mViewModel.getVideoPath(this@SplashScreenActivity)
 
-            lifecycleScope.launch {
-                Timber.d("coroutine launch with name ${this.coroutineContext}")
-                repeatOnLifecycle(Lifecycle.State.CREATED) {
-                    setContent {
-                        TheLabTheme {
-                            // A surface container using the 'background' color from the theme
-                            Surface(
-                                modifier = Modifier.fillMaxSize(),
-                                color = MaterialTheme.colorScheme.background
-                            ) {
-                                SplashScreenContent(
-                                    version = mViewModel.version,
-                                    videoPath = mViewModel.videoPath,
-                                    switchContent = mViewModel.switchContent,
-                                    startCountDown = mViewModel.startCountDown,
-                                    uiEvent = mViewModel::onEvent
-                                )
-                            }
+        lifecycleScope.launch {
+            Timber.d("coroutine launch with name ${this.coroutineContext}")
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                setContent {
+                    TheLabTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            SplashScreenContent(
+                                version = mViewModel.version,
+                                videoPath = mViewModel.videoPath,
+                                switchContent = mViewModel.switchContent,
+                                startCountDown = mViewModel.startCountDown,
+                                uiEvent = mViewModel::onEvent
+                            )
                         }
                     }
                 }
             }
         }
+
     }
 
 
