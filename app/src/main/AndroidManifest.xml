@@ -351,13 +351,9 @@
             android:theme="@style/BuiltInWebViewTheme" />
 
         <activity
-            android:name=".ui.youtubelike.YoutubeLikeActivity"
+            android:name=".feature.youtube.ui.YoutubeActivity"
             android:label="@string/activity_title_youtube_like"
             android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:theme="@style/YoutubeTheme" />
-        <activity
-            android:name=".ui.youtubelike.YoutubeLikeDetailActivity"
-            android:parentActivityName=".ui.youtubelike.YoutubeLikeActivity"
             android:theme="@style/YoutubeTheme" />
 
         <activity

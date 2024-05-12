@@ -1,18 +1,21 @@
 package com.riders.thelab.core.data.local.model
 
-import kotlinx.serialization.SerialName
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
+import com.riders.thelab.core.data.remote.dto.VideoDto
 import java.io.Serializable
 
-@kotlinx.serialization.Serializable
+@Immutable
+@Stable
 data class Video(
-    @SerialName("id")
     var id: String,
-    @SerialName("name")
-    var name: String,
-    @SerialName("description")
-    var description: String,
-    @SerialName("imageUrl")
-    var imageUrl: String,
-    @SerialName("videoUrl")
-    var videoUrl: String
-) : Serializable
+    val name: String,
+    val description: String,
+    val imageUrl: String,
+    val videoUrl: String
+) : Serializable {
+    constructor() : this("", "", "", "", "")
+}
+
+
+fun VideoDto.toModel(): Video = Video(id, name, description, imageUrl, videoUrl)

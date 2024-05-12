@@ -20,7 +20,7 @@ import timber.log.Timber
  * https://www.sinasamaki.com/loading-images-using-coil-in-jetpack-compose/
  */
 @Composable
-fun getCoilImageRequest(
+private fun getCoilImageRequest(
     context: Context,
     dataUrl: String,
     size: Size? = null,
@@ -47,7 +47,7 @@ fun getCoilImageRequest(
     }
     .build()
 
-fun getCoilImageRequestSvg(
+private fun getCoilImageRequestSvg(
     context: Context,
     dataUrl: String,
     size: Size? = null,

@@ -84,7 +84,7 @@ fun LabHorizontalViewPager(
     val fling = PagerDefaults.flingBehavior(
         state = pagerState,
         pagerSnapDistance = PagerSnapDistance.atMost(1),
-        lowVelocityAnimationSpec = spring(
+        snapAnimationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -106,7 +106,7 @@ fun LabHorizontalViewPager(
                 state = pagerState,
                 //pageSpacing = 8.dp,
                 //contentPadding = contentPadding,
-                beyondBoundsPageCount = 2,
+                beyondViewportPageCount = 2,
                 flingBehavior = fling
             ) { page: Int ->
 
@@ -202,7 +202,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
     val fling = PagerDefaults.flingBehavior(
         state = pagerState,
         pagerSnapDistance = PagerSnapDistance.atMost(1),
-        lowVelocityAnimationSpec = spring(
+        snapAnimationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -224,7 +224,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
                 state = pagerState,
                 //pageSpacing = 8.dp,
                 //contentPadding = contentPadding,
-                beyondBoundsPageCount = 2,
+                beyondViewportPageCount = 2,
                 flingBehavior = fling,
                 userScrollEnabled = userScrollEnabled
             ) { page: Int ->
@@ -330,7 +330,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
     val fling = PagerDefaults.flingBehavior(
         state = pagerState,
         pagerSnapDistance = PagerSnapDistance.atMost(1),
-        lowVelocityAnimationSpec = spring(
+        snapAnimationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -352,7 +352,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
                 state = pagerState,
                 //pageSpacing = 8.dp,
                 //contentPadding = contentPadding,
-                beyondBoundsPageCount = 2,
+                beyondViewportPageCount = 2,
                 flingBehavior = fling,
                 userScrollEnabled = userScrollEnabled
             ) { page: Int ->
@@ -491,7 +491,6 @@ fun HorizontalPagerIndicator(
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabVerticalViewPager(
     viewModel: BaseViewModel,
@@ -556,7 +555,7 @@ fun <T : Any> LabVerticalViewPagerGeneric(
     val fling = PagerDefaults.flingBehavior(
         state = pagerState,
         pagerSnapDistance = PagerSnapDistance.atMost(1),
-        lowVelocityAnimationSpec = spring(
+        snapAnimationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -578,7 +577,7 @@ fun <T : Any> LabVerticalViewPagerGeneric(
                 state = pagerState,
                 //pageSpacing = 8.dp,
                 //contentPadding = contentPadding,
-                beyondBoundsPageCount = 2,
+                beyondViewportPageCount = 2,
                 flingBehavior = fling,
                 userScrollEnabled = userScrollEnabled
             ) { page: Int ->

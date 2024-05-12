@@ -7,9 +7,9 @@ import android.location.Location
 import com.google.firebase.storage.StorageReference
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
-import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.data.remote.dto.UserDto
+import com.riders.thelab.core.data.remote.dto.VideoDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
@@ -41,7 +41,7 @@ interface IApi {
 
     // GET
     suspend fun getArtists(url: String): List<Artist>
-    suspend fun getVideos(): List<Video>
+    suspend fun getVideos(): List<VideoDto>
     suspend fun getWeatherOneCallAPI(location: Location): OneCallWeatherResponse?
     fun getBulkWeatherCitiesFile(): Call<ResponseBody>
     suspend fun getBulkDownload(context: Context): Flow<Download>

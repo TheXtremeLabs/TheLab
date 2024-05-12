@@ -15,7 +15,6 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
-import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.remote.api.ArtistsAPIService
 import com.riders.thelab.core.data.remote.api.FlightApiService
 import com.riders.thelab.core.data.remote.api.GoogleAPIService
@@ -29,6 +28,7 @@ import com.riders.thelab.core.data.remote.api.WikimediaApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.data.remote.dto.UserDto
+import com.riders.thelab.core.data.remote.dto.VideoDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
@@ -137,7 +137,7 @@ class ApiImpl @Inject constructor(
 
     override suspend fun getArtists(url: String): List<Artist> = mArtistsAPIService.getArtists(url)
 
-    override suspend fun getVideos(): List<Video> = mYoutubeApiService.fetchYoutubeVideos()
+    override suspend fun getVideos(): List<VideoDto> = mYoutubeApiService.fetchYoutubeVideos()
 
     override suspend fun getWeatherOneCallAPI(location: Location): OneCallWeatherResponse =
         mWeatherApiService

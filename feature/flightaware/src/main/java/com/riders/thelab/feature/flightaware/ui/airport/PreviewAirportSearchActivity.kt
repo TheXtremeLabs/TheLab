@@ -21,9 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text2.BasicTextField2
-import androidx.compose.foundation.text2.input.TextFieldLineLimits
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -73,7 +71,7 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AirportSearchContent(
     airportQuery: String,
@@ -106,7 +104,7 @@ fun AirportSearchContent(
                 TopAppBar(
                     modifier = Modifier.fillMaxWidth(),
                     title = {
-                        BasicTextField2(
+                        BasicTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .focusRequester(focusRequester)
@@ -130,8 +128,7 @@ fun AirportSearchContent(
                             onValueChange = onUpdateAirportQuery,
                             textStyle = TextStyle(textAlign = TextAlign.Start, color = Color.White),
                             interactionSource = interactionSource,
-                            keyboardActions = KeyboardActions(),
-                            decorator = { innerTextFieldDecorator ->
+                            decorationBox = { innerTextFieldDecorator ->
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
@@ -184,7 +181,7 @@ fun AirportSearchContent(
                                     )
                                 }
                             },
-                            lineLimits = TextFieldLineLimits.SingleLine,
+                            maxLines = 1,
                             cursorBrush = SolidColor(Color.White),
                             readOnly = false
                         )

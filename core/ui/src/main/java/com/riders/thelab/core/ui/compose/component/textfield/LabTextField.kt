@@ -22,12 +22,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text2.BasicTextField2
-import androidx.compose.foundation.text2.input.TextFieldLineLimits
-import androidx.compose.foundation.text2.input.TextFieldState
-import androidx.compose.foundation.text2.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -357,7 +357,7 @@ fun LabTextField2(
     val isFocus by interactionSource.collectIsFocusedAsState()
 
     TheLabTheme {
-        BasicTextField2(
+        BasicTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .indication(
@@ -371,9 +371,6 @@ fun LabTextField2(
                 color = Color.LightGray
             ),
             interactionSource = interactionSource,
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }
-            ),
             lineLimits = TextFieldLineLimits.SingleLine,
             decorator = { innerTextField ->
                 Box(
@@ -499,7 +496,7 @@ fun LabTextField2(
 
 
     TheLabTheme {
-        BasicTextField2(
+        BasicTextField(
             modifier = Modifier
                 .then(modifier)
                 .fillMaxWidth()
@@ -548,8 +545,8 @@ fun LabTextField2(
             ),
             interactionSource = interactionSource,
             keyboardActions = KeyboardActions(),
-            lineLimits = TextFieldLineLimits.SingleLine,
-            decorator = { innerTextField ->
+            maxLines = 1,
+            decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

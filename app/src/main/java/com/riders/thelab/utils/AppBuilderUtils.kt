@@ -20,6 +20,7 @@ import com.riders.thelab.feature.streaming.StreamingActivity
 import com.riders.thelab.feature.tabs.WorkingTabsActivity
 import com.riders.thelab.feature.theaters.main.TheatersActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
+import com.riders.thelab.feature.youtube.ui.YoutubeActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.camera.CameraActivity
 import com.riders.thelab.ui.compose.ComposeActivity
@@ -224,7 +225,7 @@ object AppBuilderUtils {
                 this.add(builtInWebView)
 
                 // Youtube
-                val youtubeLike =
+                val youtube =
                     AppBuilder
                         .withId(15)
                         .withActivityTitle(context.getString(R.string.activity_title_youtube_like))
@@ -235,11 +236,10 @@ object AppBuilderUtils {
                                 R.drawable.youtube_icon_like
                             )
                         )
-                        .withActivityClass(YoutubeLikeActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityClass(YoutubeActivity::class.java)
+                        .withActivityDate("2024/05/12")
                         .build()
-                this.add(youtubeLike)
-
+                this.add(youtube)
 
                 // Weather
                 val weather =
