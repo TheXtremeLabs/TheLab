@@ -136,6 +136,7 @@ dependencies {
     implementation(project(":feature:tabs"))
     implementation(project(":feature:theaters"))
     implementation(project(":feature:weather"))
+    implementation(project(":feature:youtube"))
 
     /////////////////////////////
     // General Dependencies

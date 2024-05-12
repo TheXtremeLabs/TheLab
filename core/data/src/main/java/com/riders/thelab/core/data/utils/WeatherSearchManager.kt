@@ -1,3 +1,4 @@
+/*
 package com.riders.thelab.core.data.utils
 
 import android.annotation.SuppressLint
@@ -96,4 +97,4 @@ class WeatherSearchManager(private val appContext: Context) {
         session?.close()
         session = null
     }
-}
+}*/

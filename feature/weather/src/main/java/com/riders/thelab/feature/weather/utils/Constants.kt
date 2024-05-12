@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.weather.utils
 
-object Constants {
+object
+Constants {
 
     /////////////////////////////////////////////
     //

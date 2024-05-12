@@ -109,7 +109,6 @@ class YoutubeLikeViewModel @Inject constructor(
         Timber.d("observeNetworkState()")
         mNetworkState = networkManager.networkState
 
-
         viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             networkManager.getNetworkState().collect { networkState ->
                 when (networkState) {

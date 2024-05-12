@@ -25,9 +25,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text2.BasicTextField2
-import androidx.compose.foundation.text2.input.TextFieldLineLimits
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -332,7 +331,7 @@ fun <T> LabDropdownMenu2(
                 }*/
             }
         ) {
-            BasicTextField2(
+            BasicTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .onGloballyPositioned { coordinates ->
@@ -340,32 +339,32 @@ fun <T> LabDropdownMenu2(
                         textFieldSize = coordinates.size.toSize()
                     }
                     .menuAnchor()
-                .focusRequester(focusRequester)
-                /*.onFocusChanged {
-                    Timber.d("Recomposition | BasicTextField2.onFocusChanged | onFocusChanged: isFieldFocused $isFieldFocused, it.isFocused: ${it.isFocused}")
+                    .focusRequester(focusRequester)
+                    /*.onFocusChanged {
+                        Timber.d("Recomposition | BasicTextField2.onFocusChanged | onFocusChanged: isFieldFocused $isFieldFocused, it.isFocused: ${it.isFocused}")
 
-                    if (isFieldFocused != it.isFocused) {
-                        isFieldFocused = it.isFocused
-                        if (!it.isFocused) {
-                            Timber.d("Recomposition | BasicTextField2.onFocusChanged | hideKeyboard")
-                            UIManager.hideKeyboard(context = context, view = view)
-                        } else {
-                            Timber.d("Recomposition | BasicTextField2.onFocusChanged | show keyboard")
-                            // UIManager.showKeyboard(context = context, view = view)
+                        if (isFieldFocused != it.isFocused) {
+                            isFieldFocused = it.isFocused
+                            if (!it.isFocused) {
+                                Timber.d("Recomposition | BasicTextField2.onFocusChanged | hideKeyboard")
+                                UIManager.hideKeyboard(context = context, view = view)
+                            } else {
+                                Timber.d("Recomposition | BasicTextField2.onFocusChanged | show keyboard")
+                                // UIManager.showKeyboard(context = context, view = view)
+                            }
                         }
-                    }
-                }*/
-                /*.onFocusEvent { focusState ->
-                    if (focusState.isFocused) {
-                        scope.launch {
-                            bringIntoViewRequester.bringIntoView()
+                    }*/
+                    /*.onFocusEvent { focusState ->
+                        if (focusState.isFocused) {
+                            scope.launch {
+                                bringIntoViewRequester.bringIntoView()
+                            }
                         }
-                    }
-                }*/
-                .indication(
-                    interactionSource = interactionSource,
-                    indication = LocalIndication.current
-                )
+                    }*/
+                    .indication(
+                        interactionSource = interactionSource,
+                        indication = LocalIndication.current
+                    )
 //                    .bringIntoViewRequester(bringIntoViewRequester)
                 ,
                 value = query,
@@ -373,8 +372,8 @@ fun <T> LabDropdownMenu2(
                 textStyle = TextStyle(textAlign = TextAlign.Justify, color = Color.LightGray),
                 interactionSource = interactionSource,
                 keyboardActions = KeyboardActions(),
-                lineLimits = TextFieldLineLimits.SingleLine,
-                decorator = { innerTextField ->
+                maxLines = 1,
+                decorationBox = { innerTextField ->
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
