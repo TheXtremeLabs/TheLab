@@ -1,14 +1,29 @@
+/*
 package com.riders.thelab.feature.weather.core.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.GpsFixed
 import androidx.compose.material.icons.filled.GpsOff
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,12 +35,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ComponentActivity
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.feature.weather.ui.WeatherViewModel
 
 
 ///////////////////////////
@@ -66,7 +80,7 @@ fun TheLabTopAppBar(
             navigationIcon = {
                 IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = Color.White
                     )
@@ -76,6 +90,7 @@ fun TheLabTopAppBar(
         )
     }
 }
+
 
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +109,7 @@ fun TheLabTopAppBar(navigationIcon: @Composable (() -> Unit)) {
             navigationIcon = {
                 IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = Color.White
                     )
@@ -110,7 +125,7 @@ fun TheLabTopAppBar(navigationIcon: @Composable (() -> Unit)) {
 @Composable
 fun TheLabTopAppBar(
     @PreviewParameter(TextContentPreviewProvider::class) title: String,
-    viewModel: WeatherViewModel,
+    iconState: Boolean,
     actionBlock: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -136,9 +151,9 @@ fun TheLabTopAppBar(
                 }
             },
             navigationIcon = {
-                IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
+                IconButton(onClick = { (context as BaseComponentActivity).backPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = Color.White
                     )
@@ -154,7 +169,7 @@ fun TheLabTopAppBar(
                 ) {
                     IconButton(onClick = actionBlock) {
                         Icon(
-                            imageVector = if (!viewModel.iconState) Icons.Filled.GpsOff else Icons.Filled.GpsFixed,
+                            imageVector = if (!iconState) Icons.Filled.GpsOff else Icons.Filled.GpsFixed,
                             contentDescription = "action icon "
                         )
                     }
@@ -221,7 +236,7 @@ fun TheLabTopAppBarLarge() {
             navigationIcon = {
                 IconButton(onClick = { (context as ComponentActivity).onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = Color.White
                     )
@@ -249,9 +264,24 @@ private fun PreviewTheLabTopAppBar() {
 @DevicePreviews
 @Composable
 private fun PreviewTheLabTopAppBar(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
-    val viewModel: WeatherViewModel = hiltViewModel()
     TheLabTheme {
-        TheLabTopAppBar(title, viewModel) {}
+        TheLabTopAppBar(title = title, navigationIcon = null)
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewTheLabTopAppBarWeatherGpsOn(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
+    TheLabTheme {
+        TheLabTopAppBar(title = title, iconState = true, actionBlock = {})
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewTheLabTopAppBarWeatherGpsOff(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
+    TheLabTheme {
+        TheLabTopAppBar(title = title, iconState = false, actionBlock = {})
     }
 }
 
@@ -261,4 +291,4 @@ private fun PreviewTheLabTopAppBarLarge() {
     TheLabTheme {
         TheLabTopAppBarLarge()
     }
-}
+}*/

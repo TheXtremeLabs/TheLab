@@ -20,7 +20,4 @@ dependencies {
     ///////////////////////////////////
     // Kotlin
     api(libs.kotlinx.datetime)
-
-    // Dexter
-    api(libs.dexter)
 }

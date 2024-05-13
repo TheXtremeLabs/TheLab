@@ -12,7 +12,7 @@ import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.core.common.utils.isValidPhone
 import com.riders.thelab.core.data.local.model.kat.KatUserAuthModel
 import com.riders.thelab.core.data.local.model.kat.KatUserModel
-import com.riders.thelab.core.data.local.model.kat.toDto
+import com.riders.thelab.core.data.local.model.kat.toKatDto
 import com.riders.thelab.core.data.remote.dto.kat.FCDKatUser
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.compose.utils.findActivity
@@ -209,17 +209,15 @@ class KatMainViewModel @Inject constructor(
         }
 
         if (null == mFirebaseCloudDatastoreUser) {
-            if (null != mKatUserAuth) {
-                val newKatUser = KatUserModel(
-                    userId = FirebaseUtils.getCurrentUserID(),
-                    phone = "0614589309".isValidPhone(),
-                    username = mKatUserAuth!!.email,
-                    createdTimestamp = Timestamp.now(),
-                    fcmToken = deviceFCMToken!!
-                )
+            val newKatUser = KatUserModel(
+                userId = FirebaseUtils.getCurrentUserID(),
+                phone = "0614589309".isValidPhone(),
+                username = mKatUserAuth!!.email,
+                createdTimestamp = Timestamp.now(),
+                fcmToken = deviceFCMToken!!
+            )
 
-                mFirebaseCloudDatastoreUser = newKatUser.toDto()
-            }
+            mFirebaseCloudDatastoreUser = newKatUser.toKatDto()
         } else {
             Timber.d("Already logged in")
         }

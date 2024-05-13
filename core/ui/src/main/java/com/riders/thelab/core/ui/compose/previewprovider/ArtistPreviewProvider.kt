@@ -1,41 +1,23 @@
 package com.riders.thelab.core.ui.compose.previewprovider
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.riders.thelab.core.data.local.model.music.Artist
+import com.riders.thelab.core.data.local.model.music.ArtistModel
 import kotools.types.text.toNotBlankString
 
-class ArtistModelPreviewProvider : PreviewParameterProvider<Artist> {
-    override val values: Sequence<Artist>
+class ArtistModelPreviewProvider : PreviewParameterProvider<ArtistModel> {
+    override val values: Sequence<ArtistModel>
         get() = sequenceOf(
-            Artist(
-                "Pi'erre".toNotBlankString().getOrThrow(),
-                "Pi'erre".toNotBlankString().getOrThrow(),
+            ArtistModel(
+                1,
+                "Pi'erre".toNotBlankString().getOrThrow().toString(),
+                "Pi'erre".toNotBlankString().getOrThrow().toString(),
                 "",
-                "Bourne".toNotBlankString().getOrThrow(),
-                "12/06/1990".toNotBlankString().getOrThrow(),
-                "Oregon".toNotBlankString().getOrThrow(),
-                "",
-                "",
-                "http://pierrethumb.com".toNotBlankString().getOrThrow(),
-                ""
-            )
-        )
-}
-
-class ArtistPreviewProvider :
-    PreviewParameterProvider<com.riders.thelab.core.data.remote.dto.artist.Artist> {
-    override val values: Sequence<com.riders.thelab.core.data.remote.dto.artist.Artist>
-        get() = sequenceOf(
-            com.riders.thelab.core.data.remote.dto.artist.Artist(
-                "Pi'erre",
-                "Pi'erre",
-                "",
-                "Bourne",
-                "12/06/1990",
-                "Oregon",
+                "Bourne".toNotBlankString().getOrThrow().toString(),
+                "12/06/1990".toNotBlankString().getOrThrow().toString(),
+                "Oregon".toNotBlankString().getOrThrow().toString(),
                 "",
                 "",
-                "http://pierrethumb.com",
+                "http://pierrethumb.com".toNotBlankString().getOrThrow().toString(),
                 ""
             )
         )

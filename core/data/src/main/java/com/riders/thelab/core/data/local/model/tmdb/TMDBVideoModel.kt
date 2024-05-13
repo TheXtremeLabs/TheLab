@@ -26,6 +26,6 @@ data class TMDBVideoModel(
     constructor() : this("", "", "", "", 0, "", false, "")
 }
 
-fun VideoDto.toModel(): TMDBVideoModel = TMDBVideoModel(
+fun VideoDto.toVideoModel(): TMDBVideoModel = TMDBVideoModel(
     id, name, key, site, size, type, official, publishedAt
 )

@@ -2,6 +2,7 @@ package com.riders.thelab.ui.signup
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,6 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -31,11 +31,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -47,13 +45,15 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.R
+import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.compose.UserState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import kotools.types.web.EmailAddress
 import timber.log.Timber
 
 ///////////////////////////////
@@ -61,9 +61,25 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
-fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
+fun FormFields(
+    modifier: Modifier,
+    emailHasError: Boolean,
+    passwordsHasError: Boolean,
+    firstname: String,
+    onUpdateFirstname: (String) -> Unit,
+    lastname: String,
+    onUpdateLastname: (String) -> Unit,
+    username: String,
+    onUpdateUsername: (String) -> Unit,
+    email: EmailAddress,
+    onUpdateEmail: (EmailAddress) -> Unit,
+    password: String,
+    onUpdatePassword: (String) -> Unit,
+    passwordConfirmation: String,
+    onUpdatePasswordConfirmation: (String) -> Unit
+) {
 
     val verticalScroll = rememberScrollState()
 
@@ -73,10 +89,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
     //val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
-    val emailHasError by viewModel.emailHasError.collectAsStateWithLifecycle()
     val passwordVisibility = remember { mutableStateOf(false) }
     val passwordConfirmationVisibility = remember { mutableStateOf(false) }
-    val passwordsHasError by viewModel.passwordsHasError.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -90,8 +104,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
-            value = viewModel.firstname,
-            onValueChange = { viewModel.updateFirstname(it) },
+            value = firstname,
+            onValueChange = { onUpdateFirstname(it) },
             label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_first_name)) },
             placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_first_name)) },
             leadingIcon = {
@@ -122,8 +136,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
-            value = viewModel.lastname,
-            onValueChange = { viewModel.updateLastname(it) },
+            value = lastname,
+            onValueChange = { onUpdateLastname(it) },
             label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_last_name)) },
             placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_last_name)) },
             leadingIcon = {
@@ -154,8 +168,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
-            value = viewModel.username,
-            onValueChange = { viewModel.updateUsername(it) },
+            value = username,
+            onValueChange = { onUpdateUsername(it) },
             label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_username)) },
             placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_username)) },
             leadingIcon = {
@@ -186,8 +200,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
-            value = viewModel.email,
-            onValueChange = { viewModel.updateEmail(it) },
+            value = email.toString(),
+            onValueChange = { onUpdateEmail(EmailAddress.create(it)) },
             label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_email)) },
             placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_email)) },
             leadingIcon = {
@@ -225,8 +239,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
-            value = viewModel.password,
-            onValueChange = { viewModel.updatePassword(it) },
+            value = password,
+            onValueChange = { onUpdatePassword(it) },
             label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_password)) },
             placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_password_min_characters)) },
             leadingIcon = {
@@ -280,8 +294,8 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
-            value = viewModel.passwordConfirmation,
-            onValueChange = { viewModel.updatePasswordConfirmation(it) },
+            value = passwordConfirmation,
+            onValueChange = { onUpdatePasswordConfirmation(it) },
             label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_confirm_password)) },
             placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_confirm_your_password)) },
             leadingIcon = {
@@ -327,10 +341,14 @@ fun FormFields(modifier: Modifier, viewModel: SignUpViewModel) {
 }
 
 @Composable
-fun SubmitFormButton(viewModel: SignUpViewModel, userState: UserState) {
+fun SubmitFormButton(
+    userState: UserState,
+    userFormButtonEnabled: Boolean,
+    onSubmitForm: () -> Unit
+) {
     Button(
-        onClick = { viewModel.submitForm() },
-        enabled = viewModel.userFormButtonEnabled && userState !is UserState.Saving
+        onClick = onSubmitForm,
+        enabled = userFormButtonEnabled && userState !is UserState.Saving
     ) {
         Row(
             modifier = Modifier,
@@ -346,13 +364,34 @@ fun SubmitFormButton(viewModel: SignUpViewModel, userState: UserState) {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
-fun FormScreen(viewModel: SignUpViewModel, onNavigateToSignUpSuccessScreen: () -> Unit) {
-
-    val userState by viewModel.userState.collectAsStateWithLifecycle()
-
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
+fun FormScreen(
+    userUiState: UserState,
+    isDarkMode: Boolean,
+    emailHasError: Boolean,
+    passwordsHasError: Boolean,
+    firstname: String,
+    onUpdateFirstname: (String) -> Unit,
+    lastname: String,
+    onUpdateLastname: (String) -> Unit,
+    username: String,
+    onUpdateUsername: (String) -> Unit,
+    email: EmailAddress,
+    onUpdateEmail: (EmailAddress) -> Unit,
+    password: String,
+    onUpdatePassword: (String) -> Unit,
+    passwordConfirmation: String,
+    onUpdatePasswordConfirmation: (String) -> Unit,
+    userFormButtonEnabled: Boolean,
+    onSubmitForm: () -> Unit,
+    isSubmitSuccess: Boolean,
+    message: String,
+    shouldShowSaveOrErrorView: Boolean,
+    onUpdateShouldShowExitDialogConfirmation: (Boolean) -> Unit,
+    onNavigateToSignUpSuccessScreen: () -> Unit
+) {
+    TheLabTheme(darkTheme = isDarkMode) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
             // Form Content
             Column(
@@ -361,9 +400,28 @@ fun FormScreen(viewModel: SignUpViewModel, onNavigateToSignUpSuccessScreen: () -
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(text = "Please fill this form to register")
+                Text(
+                    text = "Please fill this form to register",
+                    color = if (!isDarkMode) Color.Black else Color.White
+                )
 
-                FormFields(modifier = Modifier.weight(3f), viewModel = viewModel)
+                FormFields(
+                    modifier = Modifier.weight(3f),
+                    emailHasError = emailHasError,
+                    passwordsHasError = passwordsHasError,
+                    firstname = firstname,
+                    onUpdateFirstname = onUpdateFirstname,
+                    lastname = lastname,
+                    onUpdateLastname = onUpdateLastname,
+                    username = username,
+                    onUpdateUsername = onUpdateUsername,
+                    email = email,
+                    onUpdateEmail = onUpdateEmail,
+                    password = password,
+                    onUpdatePassword = onUpdatePassword,
+                    passwordConfirmation = passwordConfirmation,
+                    onUpdatePasswordConfirmation = onUpdatePasswordConfirmation
+                )
 
                 Box(
                     modifier = Modifier
@@ -371,7 +429,11 @@ fun FormScreen(viewModel: SignUpViewModel, onNavigateToSignUpSuccessScreen: () -
                         .weight(.5f),
                     contentAlignment = Alignment.Center
                 ) {
-                    SubmitFormButton(viewModel, userState)
+                    SubmitFormButton(
+                        userState = userUiState,
+                        userFormButtonEnabled = userFormButtonEnabled,
+                        onSubmitForm = onSubmitForm
+                    )
                 }
             }
 
@@ -381,29 +443,29 @@ fun FormScreen(viewModel: SignUpViewModel, onNavigateToSignUpSuccessScreen: () -
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.TopCenter),
-                visible = viewModel.shouldShowSaveOrErrorView
+                visible = shouldShowSaveOrErrorView
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(modifier = Modifier.padding(start = 8.dp), text = viewModel.message)
+                    Text(modifier = Modifier.padding(start = 8.dp), text = message)
                     CircularProgressIndicator(modifier = Modifier.padding(end = 8.dp))
                 }
             }
         }
     }
 
-    LaunchedEffect(viewModel.isSubmitSuccess) {
-        if (viewModel.isSubmitSuccess) {
+    LaunchedEffect(isSubmitSuccess) {
+        if (isSubmitSuccess) {
             onNavigateToSignUpSuccessScreen()
         }
     }
 
     BackHandler(enabled = true) {
         Timber.e("BackHandler()")
-        viewModel.updateShouldShowExitDialogConfirmation(true)
+        onUpdateShouldShowExitDialogConfirmation(true)
     }
 }
 
@@ -414,28 +476,68 @@ fun FormScreen(viewModel: SignUpViewModel, onNavigateToSignUpSuccessScreen: () -
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewSubmitFormButton() {
-    val viewModel: SignUpViewModel = hiltViewModel()
+private fun PreviewSubmitFormButton(@PreviewParameter(PreviewProviderUserState::class) state: UserState) {
     TheLabTheme {
-        SubmitFormButton(viewModel, UserState.Saving)
+        SubmitFormButton(userState = state, userFormButtonEnabled = state !is UserState.Saving) {}
     }
 }
 
+@OptIn(ExperimentalKotoolsTypesApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewFormFields() {
-    val viewModel: SignUpViewModel = hiltViewModel()
+private fun PreviewFormFields(@PreviewParameter(PreviewProviderUser::class) user: User) {
     TheLabTheme {
-        FormFields(Modifier.fillMaxSize(), viewModel)
+        FormFields(
+            modifier = Modifier.fillMaxSize(),
+            emailHasError = false,
+            passwordsHasError = false,
+            firstname = user.firstname,
+            onUpdateFirstname = {},
+            lastname = user.lastname,
+            onUpdateLastname = {},
+            username = user.username,
+            onUpdateUsername = {},
+            email = EmailAddress.create(user.email),
+            onUpdateEmail = {},
+            password = user.password,
+            onUpdatePassword = {},
+            passwordConfirmation = user.password,
+            onUpdatePasswordConfirmation = {}
+        )
     }
 }
 
+@OptIn(ExperimentalKotoolsTypesApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewFormScreen() {
-    val viewModel: SignUpViewModel = hiltViewModel()
+private fun PreviewFormScreen(@PreviewParameter(PreviewProviderUserState::class) state: UserState) {
+    val user: User = User.mockUserForTests[0]
 
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
-        FormScreen(viewModel = viewModel) {}
+    TheLabTheme {
+        FormScreen(
+            userUiState = state,
+            isDarkMode = isSystemInDarkTheme(),
+            userFormButtonEnabled = state !is UserState.Saving,
+            onSubmitForm = {},
+            isSubmitSuccess = state is UserState.Saved,
+            message = "Please enter",
+            shouldShowSaveOrErrorView = false,
+            onUpdateShouldShowExitDialogConfirmation = {},
+            onNavigateToSignUpSuccessScreen = {},
+            emailHasError = false,
+            passwordsHasError = false,
+            firstname = user.firstname,
+            onUpdateFirstname = {},
+            lastname = user.lastname,
+            onUpdateLastname = {},
+            username = user.username,
+            onUpdateUsername = {},
+            email = EmailAddress.create(user.email),
+            onUpdateEmail = {},
+            password = user.password,
+            onUpdatePassword = {},
+            passwordConfirmation = user.password,
+            onUpdatePasswordConfirmation = {}
+        )
     }
 }

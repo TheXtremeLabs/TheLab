@@ -1,6 +1,6 @@
 package com.riders.thelab.core.data.local.model
 
-data class Message(val sender: String, val message: String, val isUser: Boolean){
+data class Message(val sender: String, val message: String, val isUser: Boolean) {
     companion object {
         private const val senderPierre = "Pi'erre"
         private const val senderCarti = "Carti"

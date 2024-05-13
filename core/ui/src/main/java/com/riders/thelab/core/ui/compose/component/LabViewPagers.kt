@@ -84,7 +84,7 @@ fun LabHorizontalViewPager(
     val fling = PagerDefaults.flingBehavior(
         state = pagerState,
         pagerSnapDistance = PagerSnapDistance.atMost(1),
-        lowVelocityAnimationSpec = spring(
+        snapAnimationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -106,7 +106,7 @@ fun LabHorizontalViewPager(
                 state = pagerState,
                 //pageSpacing = 8.dp,
                 //contentPadding = contentPadding,
-                beyondBoundsPageCount = 2,
+                beyondViewportPageCount = 2,
                 flingBehavior = fling
             ) { page: Int ->
 
@@ -202,7 +202,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
     val fling = PagerDefaults.flingBehavior(
         state = pagerState,
         pagerSnapDistance = PagerSnapDistance.atMost(1),
-        lowVelocityAnimationSpec = spring(
+        snapAnimationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -224,7 +224,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
                 state = pagerState,
                 //pageSpacing = 8.dp,
                 //contentPadding = contentPadding,
-                beyondBoundsPageCount = 2,
+                beyondViewportPageCount = 2,
                 flingBehavior = fling,
                 userScrollEnabled = userScrollEnabled
             ) { page: Int ->
@@ -283,6 +283,134 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
 
         delay(500L)
         viewModel.updateViewPagerDotVisibility(true)
+
+        if (autoScroll) {
+            scope.launch {
+                while (true) {
+                    delay(3_000L)
+
+                    // Timber.d("onCurrentPageChanged | currentPage: ${pagerState.currentPage}, pageCount:$pageCount")
+                    if (pagerState.currentPage == pageCount - 1) {
+                        pagerState.animateScrollToPage(0)
+                    } else {
+                        if (items.size > 1)
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun <T : Any> LabHorizontalViewPagerGeneric(
+    pagerState: PagerState,
+    items: List<T>,
+    onCurrentPageChanged: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    pageCount: Int = items.size,
+    viewPagerDotVisibility: Boolean = false,
+    updateViewPagerExpanded: (Boolean) -> Unit = {},
+    viewPagerDotExpanded: Boolean = false,
+    updateViewPagerDotVisibility: (Boolean) -> Unit = {},
+    autoScroll: Boolean = false,
+    userScrollEnabled: Boolean = true,
+    content: @Composable (page: Int, pageOffset: Float) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    val screenWidth: Int = LocalConfiguration.current.screenWidthDp
+    val horizontalPadding: Dp = 8.dp
+    val itemWidth: Dp = dimensionResource(id = R.dimen.max_card_image_width)
+    val contentPadding = PaddingValues(
+        start = horizontalPadding,
+        end = (screenWidth - itemWidth.value.toInt() + horizontalPadding.value.toInt()).dp
+    )
+
+    val fling = PagerDefaults.flingBehavior(
+        state = pagerState,
+        pagerSnapDistance = PagerSnapDistance.atMost(1),
+        snapAnimationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+
+    val dotsAnimatedAlpha =
+        animateFloatAsState(
+            targetValue = if (!viewPagerDotVisibility) 0.0f else 1f,
+            label = ""
+        )
+
+    TheLabTheme {
+        Column(
+            modifier = modifier,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+        ) {
+            HorizontalPager(
+                state = pagerState,
+                //pageSpacing = 8.dp,
+                //contentPadding = contentPadding,
+                beyondViewportPageCount = 2,
+                flingBehavior = fling,
+                userScrollEnabled = userScrollEnabled
+            ) { page: Int ->
+
+                val pageOffset = pagerState.calculateCurrentOffsetForPage(page)
+
+                val imageSize = animateFloatAsState(
+                    targetValue = if (0.0f != pageOffset) 0.75f else 1f,
+                    animationSpec = tween(durationMillis = 500),
+                    label = "image size animation"
+                )
+
+                Box(
+                    modifier = Modifier
+                        .graphicsLayer {
+                            // translate the contents by the size of the page, to prevent the pages from sliding in from left or right and stays in the center
+//                            translationX = pageOffset * size.width
+                            // apply an alpha to fade the current page in and the old page out
+                            // alpha = 1 - pageOffset.absoluteValue
+
+                            // get a scale value between 1 and 1.75f, 1.75 will be when its resting,
+                            // 1f is the smallest it'll be when not the focused page
+                            //val scale = lerp(.75f, 1f, pageOffset)
+                            // apply the scale equally to both X and Y, to not distort the image
+                            scaleX = imageSize.value
+                            scaleY = imageSize.value
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    // page composable
+                    content(page, pageOffset)
+                }
+            }
+
+            AnimatedVisibility(visible = viewPagerDotExpanded) {
+                HorizontalPagerIndicator(
+                    modifier = Modifier.alpha(dotsAnimatedAlpha.value),
+                    pageCount = pageCount,
+                    currentPage = pagerState.currentPage,
+                    targetPage = pagerState.targetPage,
+                    currentPageOffsetFraction = pagerState.currentPageOffsetFraction
+                )
+            }
+        }
+    }
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            onCurrentPageChanged(page)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        delay(750L)
+        updateViewPagerExpanded(true)
+
+        delay(500L)
+        updateViewPagerDotVisibility(true)
 
         if (autoScroll) {
             scope.launch {
@@ -363,7 +491,6 @@ fun HorizontalPagerIndicator(
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabVerticalViewPager(
     viewModel: BaseViewModel,
@@ -428,7 +555,7 @@ fun <T : Any> LabVerticalViewPagerGeneric(
     val fling = PagerDefaults.flingBehavior(
         state = pagerState,
         pagerSnapDistance = PagerSnapDistance.atMost(1),
-        lowVelocityAnimationSpec = spring(
+        snapAnimationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -450,7 +577,7 @@ fun <T : Any> LabVerticalViewPagerGeneric(
                 state = pagerState,
                 //pageSpacing = 8.dp,
                 //contentPadding = contentPadding,
-                beyondBoundsPageCount = 2,
+                beyondViewportPageCount = 2,
                 flingBehavior = fling,
                 userScrollEnabled = userScrollEnabled
             ) { page: Int ->
@@ -604,7 +731,7 @@ private fun PreviewLabHorizontalViewPagerGeneric() {
             viewModel = hiltViewModel<BaseViewModel>(),
             pagerState = rememberPagerState { 10 },
             items = listOf("1", "2", "3", "4", "5", "6")
-        ) { page, pageOffset ->
+        ) { page, _ ->
             Text(text = "Element $page")
         }
     }
@@ -635,7 +762,7 @@ private fun PreviewLabVerticalViewPagerGeneric() {
             onUpdateViewPagerExpanded = {},
             onUpdateViewPagerDotVisibility = {},
             onCurrentPageChanged = {}
-        ) { page, pageOffset ->
+        ) { page, _ ->
             Text(text = "Element $page")
         }
     }

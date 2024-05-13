@@ -87,12 +87,21 @@ fun DownloadItem(modifier: Modifier, item: Download) {
                                 .zIndex(3f),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .zIndex(3f),
-                                progress = if (LocalInspectionMode.current) .45f else animatedProgress
-                            )
+                            if (LocalInspectionMode.current) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .zIndex(3f),
+                                    progress = { .45f }
+                                )
+                            } else {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .zIndex(3f),
+                                    progress = { animatedProgress }
+                                )
+                            }
                         }
                     } else {
                         Card(

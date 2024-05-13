@@ -17,9 +17,9 @@ import com.google.firebase.storage.StorageReference
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.ArtistsUiState
+import com.riders.thelab.core.data.local.model.music.ArtistModel
+import com.riders.thelab.core.data.local.model.music.toModel
 import com.riders.thelab.core.data.remote.dto.artist.Artist
-import com.riders.thelab.core.ui.data.SnackBarType
-import com.riders.thelab.core.ui.utils.UIManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -38,13 +38,12 @@ class RecyclerViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
 
-    val artistThumbnails = mutableListOf<String>()
+    private val artistThumbnails = mutableListOf<String>()
 
     private val jsonURLFetched: MutableLiveData<String> = MutableLiveData()
     private val jsonURLError: MutableLiveData<Boolean> = MutableLiveData()
     private val artistsThumbnails: MutableLiveData<List<String>> = MutableLiveData()
     private val artistsThumbnailsError: MutableLiveData<Boolean> = MutableLiveData()
-    private val artists: MutableLiveData<List<Artist>> = MutableLiveData()
     private val artistsError: MutableLiveData<Boolean> = MutableLiveData()
 
     //////////////////////////////////////////
@@ -76,10 +75,6 @@ class RecyclerViewModel @Inject constructor(
 
     fun getArtistsThumbnailsError(): LiveData<Boolean> {
         return artistsThumbnailsError
-    }
-
-    fun getArtists(): LiveData<List<Artist>> {
-        return artists
     }
 
     fun getArtistsError(): LiveData<Boolean> {
@@ -231,19 +226,22 @@ class RecyclerViewModel @Inject constructor(
         Timber.d("fetchArtists()")
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val job = repository.getArtists(urlPath)
+                val listOfArtistDto: List<Artist> = repository.getArtists(urlPath)
 
-                _artistUiState.value = ArtistsUiState.Success(job)
+                val artists: List<ArtistModel> =
+                    listOfArtistDto
+                        .mapIndexed { index: Int, artist: Artist -> artist.toModel(index.toByte()) }
+                        .onEach { artist ->
+                            Timber.d("url : ${artist.urlThumb}")
+                            artist.urlThumb =
+                                artistThumbnails.firstOrNull { it.contains(artist.urlThumb) }
+                                    ?: ""
+                        }
 
-                /*withContext(Dispatchers.Main) {
-                    artists.value = job
-                }*/
+                _artistUiState.value = ArtistsUiState.Success(artists)
             } catch (throwable: Exception) {
                 Timber.e(throwable)
                 _artistUiState.value = ArtistsUiState.Error(throwable)
-                /*withContext(Dispatchers.Main) {
-                    artistsError.value = true
-                }*/
             }
         }
     }
@@ -251,7 +249,7 @@ class RecyclerViewModel @Inject constructor(
 
     fun onDetailClick(
         activity: Activity,
-        item: Artist,
+        item: ArtistModel,
         sharedImageView: ShapeableImageView
     ) {
         Timber.d("onDetailClick(item, sharedImageView, position)")
@@ -274,30 +272,5 @@ class RecyclerViewModel @Inject constructor(
         )
         // navigator: Navigator
         activity.startActivity(intent, options.toBundle())
-    }
-
-    fun onDeleteClick(
-        activity: Activity,
-        item: Artist,
-        adapter: RecyclerViewAdapter,
-        position: Int
-    ) {
-        Timber.d("onDeleteClick() item %s at position : %s", item.artistName, position)
-
-        // get the removed item name to display it in snack bar
-        val name = item.artistName
-
-        // backup of removed item for undo purpose
-
-        // remove the item from recycler view
-        adapter.removeItem(position)
-
-        // showing snack bar with Undo option
-        UIManager.showActionInSnackBar(
-            activity, "$name removed from cart!", SnackBarType.WARNING, "UNDO"
-        ) {
-            // undo is selected, restore the deleted item
-            adapter.restoreItem(item, position)
-        }
     }
 }

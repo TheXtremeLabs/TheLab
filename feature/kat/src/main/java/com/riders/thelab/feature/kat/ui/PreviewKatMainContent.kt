@@ -15,8 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.AlternateEmail
-import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material3.Card
@@ -177,7 +177,7 @@ fun KatMainContent(
                         BottomNavigationItem(
                             icon = {
                                 Icon(
-                                    if (screen is KatScreenRoute.Chat) Icons.Filled.Message else Icons.Filled.Person,
+                                    if (screen is KatScreenRoute.Chat) Icons.AutoMirrored.Filled.Message else Icons.Filled.Person,
                                     contentDescription = null,
                                     tint = textAndIconColor
                                 )

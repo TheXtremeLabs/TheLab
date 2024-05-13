@@ -4,8 +4,8 @@ import java.io.Serializable
 
 @kotlinx.serialization.Serializable
 data class TemperatureModel(
-    val temperature:Double= 0.0,
-    val realFeels: Double= 0.0,
+    val temperature: Double = 0.0,
+    val realFeels: Double = 0.0,
     val day: Double = 0.0,
     val min: Double = 0.0,
     val max: Double = 0.0,

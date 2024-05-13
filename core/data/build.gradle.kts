@@ -65,6 +65,12 @@ dependencies {
     api(libs.androidx.core.ktx)
     api(libs.kotlinx.serialization.json)
 
+    // AndroidX
+    api(libs.androidx.appsearch)
+    kapt(libs.androidx.appsearch.compiler)
+    api(libs.androidx.appsearch.local.storage)
+    api(libs.androidx.appsearch.platform.storage)
+
     // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui.tooling)
@@ -102,20 +108,15 @@ dependencies {
     api(libs.okhttp)
     api(libs.okhttp.logging)
 
-    // api("org.apache.httpcomponents:httpcore:4.4.15")
-
     // Moshi
     api(libs.moshi)
     api(libs.moshi.kotlin)
-    kapt(libs.moshi.kotlin.codegen)
+    ksp(libs.moshi.kotlin.codegen)
 
     api(libs.kotools.types)
 
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////
-    //tesImplementation(project(":core:testing"))
-    androidTestImplementation(project(":core:testing"))
-
     androidTestImplementation(libs.androidx.test.truth)
 }

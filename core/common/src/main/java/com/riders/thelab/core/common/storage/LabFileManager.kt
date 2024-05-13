@@ -2,7 +2,6 @@ package com.riders.thelab.core.common.storage
 
 import android.content.ContentResolver
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -14,19 +13,17 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.os.EnvironmentCompat
 import com.riders.thelab.core.common.R
-import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import okhttp3.ResponseBody
 import okhttp3.internal.io.FileSystem
+import okio.GzipSource
 import okio.buffer
 import okio.source
 import org.xml.sax.InputSource
 import timber.log.Timber
 import java.io.BufferedInputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 import java.util.zip.GZIPInputStream
 
 /**
@@ -95,42 +92,114 @@ object LabFileManager {
      * @param responseBody
      * @return
      */
-    fun unzipGzip(responseBody: ResponseBody): String? {
-        Timber.d("unzipGzip()")
-        var json: String? = null
-        try {
-            Timber.d("Build stream objects with json file received ...")
-            val compressedInputStream: InputStream = GZIPInputStream(responseBody.byteStream())
-            val inputSource = InputSource(compressedInputStream)
-            val inputStream: InputStream = BufferedInputStream(inputSource.byteStream)
-            Timber.d("Build buffer and string builder ...")
-            val sb = StringBuilder()
-            try {
-                inputStream.source().use { fileSource ->
-                    fileSource.buffer().use { bufferedSource ->
-                        while (true) {
-                            val line = bufferedSource.readUtf8Line() ?: break
-                            sb.append(line)
-                        }
-                        Timber.d("File read, build json target variable ...")
-                        json = sb.toString()
-                        return json
-                    }
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
-                e.printStackTrace()
-            } finally {
-                compressedInputStream.close()
-                inputStream.close()
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-            e.printStackTrace()
-        }
-        return json
-    }
+    fun unzipGzip(responseBody: ResponseBody): String? = runCatching {
+        Timber.i("unzipGzip(responseBody: ResponseBody) | Build stream objects with json file received ...")
 
+        var json: String?
+        val compressedInputStream: InputStream = GZIPInputStream(responseBody.byteStream())
+        val inputSource = InputSource(compressedInputStream)
+        val inputStream: InputStream = BufferedInputStream(inputSource.byteStream)
+
+        // Build buffer and StringBuilder
+        val sb = StringBuilder()
+
+        inputStream.source().use { fileSource ->
+            fileSource.buffer().use { bufferedSource ->
+                while (true) {
+                    val line = bufferedSource.readUtf8Line() ?: break
+                    sb.append(line)
+                }
+
+                json = sb.toString()
+            }
+        }
+
+        compressedInputStream.close()
+        inputStream.close()
+
+        json
+    }
+        .onFailure {
+            it.printStackTrace()
+            Timber.e("unzipGzip() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+        }
+        .onSuccess {
+            Timber.d("unzipGzip() | onSuccess | is success: $it")
+        }
+        .getOrNull()
+
+    /**
+     * Ref : https://stackoverflow.com/questions/10469407/android-decompress-downloaded-xml-gz-file
+     * https://stackoverflow.com/questions/216894/get-an-outputstream-into-a-string
+     *
+     * @param responseBody
+     * @return
+     */
+    fun unzipGzip(responseBodyStream: InputStream): String? = runCatching {
+        Timber.i("unzipGzip(responseBodyStream: InputStream) | Build stream objects with json file received ...")
+
+        var json: String?
+        val compressedInputStream: InputStream = GZIPInputStream(responseBodyStream)
+        val inputSource = InputSource(compressedInputStream)
+        val inputStream: InputStream = BufferedInputStream(inputSource.byteStream)
+
+        // Build buffer and StringBuilder
+        val sb = StringBuilder()
+
+        inputStream.source().use { fileSource ->
+            fileSource.buffer().use { bufferedSource ->
+                while (true) {
+                    val line = bufferedSource.readUtf8Line() ?: break
+                    sb.append(line)
+                }
+
+                json = sb.toString()
+            }
+        }
+
+        compressedInputStream.close()
+        inputStream.close()
+
+        json
+    }
+        .onFailure {
+            it.printStackTrace()
+            Timber.e("unzipGzip() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+        }
+        .onSuccess {
+            Timber.d("unzipGzip() | onSuccess | is success: $it")
+        }
+        .getOrNull()
+
+    fun unzipGzip(gzip: GzipSource): String? = runCatching {
+        Timber.i("unzipGzip(gzip: GzipSource) | Build stream objects with json file received ...")
+
+        var json: String?
+
+        // Build buffer and StringBuilder
+        val sb = StringBuilder()
+
+        gzip.use { fileSource ->
+            fileSource.buffer().use { bufferedSource ->
+                while (true) {
+                    val line = bufferedSource.readUtf8Line() ?: break
+                    sb.append(line)
+                }
+
+                json = sb.toString()
+            }
+        }
+
+        json
+    }
+        .onFailure {
+            it.printStackTrace()
+            Timber.e("unzipGzip() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+        }
+        .onSuccess {
+            Timber.d("unzipGzip() | onSuccess | is success: $it")
+        }
+        .getOrNull()
 
     fun getDrawableURI(@NonNull context: Context, @AnyRes drawableId: Int): String {
         val imageUri: Uri = Uri.parse(
@@ -241,7 +310,7 @@ object LabFileManager {
             File(it, context.resources.getString(R.string.app_name)).apply { mkdirs() }
         }
 
-        return if (mediaDir != null && mediaDir.exists())
+        return if (mediaDir.exists())
             mediaDir else context.filesDir
     }
 
@@ -287,4 +356,5 @@ object LabFileManager {
         getFileFromAssets(context, filename)?.let { stream ->
             stream.bufferedReader().use { it.readText() }
         }
+
 }

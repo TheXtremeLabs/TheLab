@@ -1,9 +1,7 @@
 package com.riders.thelab.feature.weather.core.worker
 
 import android.annotation.SuppressLint
-import android.appwidget.AppWidgetManager
 import android.content.Context
-import android.content.Intent
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
@@ -15,15 +13,14 @@ import com.riders.thelab.core.common.utils.DateTimeUtils
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
-import com.riders.thelab.core.common.utils.LabLocationUtils
+import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.weather.ForecastWeatherWidgetModel
 import com.riders.thelab.core.data.local.model.weather.TemperatureModel
 import com.riders.thelab.core.data.local.model.weather.WeatherWidgetModel
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
-import com.riders.thelab.core.data.remote.dto.weather.toModel
+import com.riders.thelab.core.data.remote.dto.weather.toTemperatureModel
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.feature.weather.core.widget.WeatherWidgetReceiver
 import com.riders.thelab.feature.weather.utils.WeatherUtils
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -75,15 +72,12 @@ class WeatherWorker @AssistedInject constructor(
                 } else {
                     Timber.d("observer.onSuccess(responseFile)")
 
+                    val weatherLocation =
+                        (oneCallWeatherResponse.latitude to oneCallWeatherResponse.longitude).toLocation()
+
                     if (!LabCompatibilityManager.isTiramisu()) {
-                        val address = LabAddressesUtils
-                            .getDeviceAddressLegacy(
-                                geocoder,
-                                LabLocationUtils.buildTargetLocationObject(
-                                    oneCallWeatherResponse.latitude,
-                                    oneCallWeatherResponse.longitude
-                                )
-                            )
+                        val address =
+                            LabAddressesUtils.getDeviceAddressLegacy(geocoder, weatherLocation)
 
                         // Load city name
                         val cityName = address?.locality
@@ -109,15 +103,8 @@ class WeatherWorker @AssistedInject constructor(
                             Result.success(outputData!!)
                         }
 
-
                     } else {
-                        LabAddressesUtils.getDeviceAddressAndroid13(
-                            geocoder,
-                            LabLocationUtils.buildTargetLocationObject(
-                                oneCallWeatherResponse.latitude,
-                                oneCallWeatherResponse.longitude
-                            )
-                        ) {
+                        LabAddressesUtils.getDeviceAddressAndroid13(geocoder, weatherLocation) {
                             it?.let {
                                 // Load city name
                                 val cityName = it.locality
@@ -221,7 +208,7 @@ class WeatherWorker @AssistedInject constructor(
      * Build bundle to send to widget provider
      *
      */
-    private suspend fun buildWeatherWidget(
+    private fun buildWeatherWidget(
         response: OneCallWeatherResponse,
         city: String,
         country: String
@@ -245,7 +232,7 @@ class WeatherWorker @AssistedInject constructor(
                 this.map {
                     ForecastWeatherWidgetModel(
                         day = DateTimeUtils.getDayFromTime(it.dateTimeUTC),
-                        temperature = it.temperature.toModel(),
+                        temperature = it.temperature.toTemperatureModel(),
                         icon = it.weather[0].icon
                     )
                 }.toList()
@@ -269,30 +256,6 @@ class WeatherWorker @AssistedInject constructor(
             Timber.e("current weather object is null")
             return null
         }
-    }
-
-    private fun updateWidgetViaBroadcast(bundle: Bundle) {
-        Timber.d("updateWidgetViaBroadcast()")
-
-        val broadcastIntent: Intent =
-            Intent(context, WeatherWidgetReceiver::class.java).apply {
-                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                putExtras(bundle)
-            }
-
-        context.sendBroadcast(broadcastIntent)
-    }
-
-    private fun updateWidgetViaBroadcast(weatherWidgetModel: WeatherWidgetModel) {
-        Timber.d("updateWidgetViaBroadcast()")
-
-        val broadcastIntent: Intent =
-            Intent(context, WeatherWidgetReceiver::class.java).apply {
-                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                putExtra(EXTRA_WEATHER_WIDGET, weatherWidgetModel)
-            }
-
-        context.sendBroadcast(broadcastIntent)
     }
 
 

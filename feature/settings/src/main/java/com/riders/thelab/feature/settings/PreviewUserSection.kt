@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -100,7 +100,7 @@ fun EditProfileCardRowItem(username: String, email: String) {
         ) {
             Icon(
                 modifier = Modifier.size(30.dp),
-                imageVector = Icons.Filled.KeyboardArrowRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = "arrow_right"
             )
         }
@@ -108,7 +108,7 @@ fun EditProfileCardRowItem(username: String, email: String) {
 }
 
 @Composable
-fun UserSection(username: String, email: String, onLogoutClicked: (Boolean) -> Unit) {
+fun UserSection(username: String, email: String, uiEvent: (UiEvent) -> Unit) {
     TheLabTheme {
         Column(
             modifier = Modifier
@@ -141,7 +141,7 @@ fun UserSection(username: String, email: String, onLogoutClicked: (Boolean) -> U
                     ) {
                         Button(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { onLogoutClicked(true) }
+                            onClick = { uiEvent.invoke(UiEvent.OnLogoutClicked) }
                         ) {
                             Text(
                                 text = stringResource(id = com.riders.thelab.core.ui.R.string.action_logout)

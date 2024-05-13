@@ -36,7 +36,6 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_light_onPrimaryContainer
 // COMPOSE
 //
 ///////////////////////////////
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatRoomItem(username: String, phoneNumber: String, onChatRoomClicked: () -> Unit) {
     TheLabTheme {
@@ -67,7 +66,7 @@ fun ChatRoomItem(username: String, phoneNumber: String, onChatRoomClicked: () ->
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Row() {
+                    Row {
                         Text(
                             text = username,
                             color = if (!isSystemInDarkTheme()) md_theme_light_onPrimaryContainer else md_theme_dark_onPrimaryContainer

@@ -2,6 +2,7 @@ plugins {
     id("thelab.android.library")
     kotlin("android")
     kotlin("kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -33,6 +34,7 @@ dependencies {
     // Media
     api(libs.androidx.media)
     api(libs.androidx.media.router)
+    implementation(libs.androidx.media.session)
 
     // OkHttp
     // define a BOM and its version
@@ -41,9 +43,9 @@ dependencies {
     api(libs.okhttp)
 
     // Moshi
-    api(libs.moshi)
+    /*api(libs.moshi)
     api(libs.moshi.kotlin)
-    kapt(libs.moshi.kotlin.codegen)
+    ksp(libs.moshi.kotlin.codegen)*/
 
 
     ///////////////////////////////////

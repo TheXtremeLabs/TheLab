@@ -24,6 +24,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,7 +55,6 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 
-@OptIn(ExperimentalMaterial3Api::class)
 @DevicePreviews
 @Composable
 fun UserCardIcon() {
@@ -95,7 +95,7 @@ fun UserCardIcon() {
                     // Handle refresh!
                 })
 
-            Divider()
+            HorizontalDivider()
 
             DropdownMenuItem(
                 text = { Text(text = "Settings") },
@@ -103,7 +103,7 @@ fun UserCardIcon() {
                     // Handle settings!
                 })
 
-            Divider()
+            HorizontalDivider()
 
             DropdownMenuItem(
                 text = { Text(text = "Send Feedback") },
@@ -115,7 +115,6 @@ fun UserCardIcon() {
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppBarContent(viewModel: MainActivityViewModel, focusManager: FocusManager) {
 

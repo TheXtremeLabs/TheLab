@@ -1,5 +1,10 @@
 package com.riders.thelab.core.common.utils
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.location.Location
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import timber.log.Timber
 import java.security.MessageDigest
 import javax.crypto.Cipher
@@ -7,6 +12,15 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
+
+
+/////////////////////////////////////////////////////
+// Location
+/////////////////////////////////////////////////////
+fun Pair<Double, Double>.toLocation(): Location = Location("").apply {
+    latitude = first
+    longitude = second
+}
 
 
 /////////////////////////////////////////////////////
@@ -68,4 +82,14 @@ fun String.encrypt(): String {
     cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, initializationVector)
     val cipherText = cipher.doFinal(this.toByteArray())
     return Base64.encode(cipherText)
+}
+
+
+/////////////////////////////////////////////////////
+// Image
+/////////////////////////////////////////////////////
+fun Int.toBitmap(context: Context): Bitmap? {
+    require(0 != this) { "Drawable must be greater than 0" }
+    return ContextCompat.getDrawable(context, this)?.toBitmap()
+
 }

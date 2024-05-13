@@ -51,7 +51,7 @@ android {
         getByName("debug") {
             isDebuggable = true
 
-            // Enables code shrinking, obfuscation, and optimization for only
+            // Enables CODE shrinking, obfuscation, and optimization for only
             // your project's release build type.
             isMinifyEnabled = false
 
@@ -61,18 +61,18 @@ android {
         getByName("release") {
             isDebuggable = false
 
-            // Enables code shrinking, obfuscation, and optimization for only
+            // Enables CODE shrinking, obfuscation, and optimization for only
             // your project's release build type.
             isMinifyEnabled = true
 
             // Enables resource shrinking, which is performed by the
             // Android Gradle plugin.
-            isShrinkResources = true  // Enables code shrinking for the release build type.
+            isShrinkResources = true  // Enables CODE shrinking for the release build type.
 
             // Disables PNG crunching for the "release" build type.
             isCrunchPngs = false
 
-            // Enables code shrinking, obfuscation, and optimization for only
+            // Enables CODE shrinking, obfuscation, and optimization for only
             // your project's release build type.
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -114,20 +114,29 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:permissions"))
+    implementation(project(":core:player"))
     implementation(project(":core:ui"))
     implementation(project(":core:testing"))
     implementation(project(":feature:biometric"))
     implementation(project(":feature:bluetooth"))
     implementation(project(":feature:colors"))
     implementation(project(":feature:download"))
+    implementation(project(":feature:flightaware"))
     implementation(project(":feature:kat"))
+    implementation(project(":feature:locationonmaps"))
     implementation(project(":feature:lottie"))
+    implementation(project(":feature:lottie"))
+    implementation(project(":feature:mlkit"))
     implementation(project(":feature:musicrecognition"))
+    implementation(project(":feature:palette"))
     implementation(project(":feature:schedule"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:songplayer"))
     implementation(project(":feature:streaming"))
+    implementation(project(":feature:tabs"))
     implementation(project(":feature:theaters"))
     implementation(project(":feature:weather"))
+    implementation(project(":feature:youtube"))
 
     /////////////////////////////
     // General Dependencies
@@ -152,11 +161,11 @@ dependencies {
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.palette)
     implementation(libs.androidx.recyclerView)
-    implementation(libs.androidx.material)
     implementation(libs.androidx.dynamicanimation)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.window.manager)
     implementation(libs.androidx.window.extensions)
+    implementation(libs.material)
 
     // Compose: provided by ui module
     // The others dependencies has been added into the AndroidCompose plugin convention class
@@ -229,12 +238,10 @@ dependencies {
     // OkHttp: provided by data module
 
     // Moshi: provided by data module
-    kapt(libs.moshi.kotlin.codegen)
+    ksp(libs.moshi.kotlin.codegen)
 
     // MPAndroidChart
     implementation(libs.mpandroidchart)
-
-    // Dexter: provided by permissions module
 
     // Glide
     implementation(libs.glide)

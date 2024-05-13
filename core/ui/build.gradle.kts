@@ -63,20 +63,23 @@ dependencies {
     api(libs.androidx.compose.material3.windowSizeClass)
     api(libs.androidx.compose.material)
     api(libs.androidx.compose.material3)
+    api(libs.androidx.compose.material3.android)
+    api(libs.androidx.compose.material3.adaptative)
+    api(libs.androidx.compose.material3.adaptative.layout)
+    api(libs.androidx.compose.material3.adaptative.navigation)
     api(libs.androidx.navigation.compose)
     api(libs.androidx.compose.runtime)
     api(libs.androidx.compose.runtime.livedata)
+    api(libs.androidx.compose.runtime.tracing)
     debugApi(libs.androidx.compose.ui.tooling)
     api(libs.androidx.compose.ui.tooling.preview)
+    api(libs.androidx.compose.ui)
     api(libs.androidx.compose.ui.util)
     api(libs.androidx.hilt.navigation.compose)
     api(libs.androidx.lifecycle.runtimeCompose)
     api(libs.androidx.lifecycle.viewModelCompose)
     api(libs.androidx.metrics)
     api(libs.androidx.tracing.ktx)
-
-    // Dexter
-    api(libs.dexter)
 
     // Glide
     api(libs.glide)

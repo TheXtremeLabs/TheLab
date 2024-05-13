@@ -13,22 +13,34 @@ import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.User
-import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.preferences.PreferencesImpl
 import com.riders.thelab.core.data.remote.ApiImpl
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.data.remote.dto.UserDto
+import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.remote.dto.flight.Airport
+import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
+import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
+import com.riders.thelab.core.data.remote.dto.flight.AirportsSearchResponse
+import com.riders.thelab.core.data.remote.dto.flight.FlightType
+import com.riders.thelab.core.data.remote.dto.flight.Operator
+import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
+import com.riders.thelab.core.data.remote.dto.flight.SearchByRouteResponse
+import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBCreditsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.City
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import kotlinx.coroutines.flow.Flow
+import kotools.types.text.NotBlankString
 import okhttp3.ResponseBody
 import retrofit2.Call
 import javax.inject.Inject
@@ -123,6 +135,9 @@ class RepositoryImpl @Inject constructor(
         return mDbImpl.saveCities(dtoCities)
     }
 
+    override suspend fun searchCity(cityQuery: String): List<CityModel> =
+        mDbImpl.searchCity(cityQuery)
+
     override suspend fun getWeatherData(): WeatherData? {
         return mDbImpl.getWeatherData()
     }
@@ -152,7 +167,7 @@ class RepositoryImpl @Inject constructor(
         return mApiImpl.getArtists(url)
     }
 
-    override suspend fun getVideos(): List<Video> {
+    override suspend fun getVideos(): List<VideoDto> {
         return mApiImpl.getVideos()
     }
 
@@ -194,6 +209,9 @@ class RepositoryImpl @Inject constructor(
     override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? =
         mApiImpl.getTvShowVideos(thShowID)
 
+    override suspend fun getMovieCredits(movieID: Int): TMDBCreditsResponse? =
+        mApiImpl.getMovieCredits(movieID)
+
     override suspend fun getApi(): ApiResponse = mApiImpl.getApi()
 
     override suspend fun login(user: UserDto) = mApiImpl.login(user)
@@ -207,6 +225,103 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun getTrackInfo(bearerToken: String, trackId: String): SpotifyResponse =
         mApiImpl.getTrackInfo(bearerToken, trackId)
+
+    override suspend fun getAirports(maxPages: Int, cursor: String?): AirportsResponse =
+        mApiImpl.getAirports(maxPages, cursor)
+
+    override suspend fun searchAirportById(query: String): AirportsSearchResponse =
+        mApiImpl.searchAirportById(query)
+
+    override suspend fun omniSearchAirport(query: String): AirportsSearchResponse =
+        mApiImpl.omniSearchAirport(query)
+
+    override suspend fun getAirportById(airportID: String): Airport =
+        mApiImpl.getAirportById(airportID)
+
+    override suspend fun getAirportFlightsById(
+        airportID: String,
+        maxPages: Int,
+        cursor: String?,
+        startDate: String?,
+        endDate: String?,
+        type: String?
+    ): AirportFlightsResponse =
+        mApiImpl.getAirportFlightsById(airportID, maxPages, cursor, startDate, endDate, type)
+
+    override suspend fun searchFlightByRoute(
+        departureAirportCode: NotBlankString,
+        arrivalAirportCode: NotBlankString,
+        type: FlightType,
+        connection: NotBlankString?,
+        startDate: NotBlankString?,
+        endDate: NotBlankString?,
+        maxPages: Int,
+        cursor: String?
+    ): SearchByRouteResponse = mApiImpl.searchFlightByRoute(
+        departureAirportCode,
+        arrivalAirportCode,
+        type,
+        connection,
+        startDate,
+        endDate,
+        maxPages,
+        cursor
+    )
+
+    override suspend fun getAirportNearBy(
+        latitude: NotBlankString,
+        longitude: NotBlankString,
+        radius: Int,
+        maxPages: Int,
+        cursor: String?
+    ): AirportsResponse = mApiImpl.getAirportNearBy(latitude, longitude, radius, maxPages, cursor)
+
+    override suspend fun getOperators(maxPages: Int, cursor: String?): OperatorResponse =
+        mApiImpl.getOperators(maxPages, cursor)
+
+    override suspend fun getOperatorById(operatorID: String): Operator =
+        mApiImpl.getOperatorById(operatorID)
+
+    override suspend fun getFlightOnMap(
+        flightID: NotBlankString,
+        height: Int,
+        width: Int,
+        layerOn: Array<NotBlankString>?,
+        layerOff: Array<NotBlankString>?,
+        showDataBlock: Boolean,
+        airportExpandView: Boolean,
+        showAirports: Boolean,
+        boundingBox: Boolean
+    ): ByteArray = mApiImpl.getFlightOnMap(
+        flightID,
+        height,
+        width,
+        layerOn,
+        layerOff,
+        showDataBlock,
+        airportExpandView,
+        showAirports,
+        boundingBox
+    )
+
+    override suspend fun searchFlight(
+        query: NotBlankString,
+        maxPages: Int,
+        cursor: String?
+    ): SearchFlightResponse = mApiImpl.searchFlight(query, maxPages, cursor)
+
+    override suspend fun searchFlightByID(
+        query: NotBlankString,
+        type: NotBlankString?,
+        startDate: NotBlankString?,
+        endDate: NotBlankString?,
+        maxPages: Int,
+        cursor: String?
+    ): SearchFlightResponse =
+        mApiImpl.searchFlightByID(query, type, startDate, endDate, maxPages, cursor)
+
+    override suspend fun getWikimediaResponse(query: NotBlankString): WikimediaResponse =
+        mApiImpl.getWikimediaResponse(query)
 
 
     /////////////////////////
@@ -240,4 +355,10 @@ class RepositoryImpl @Inject constructor(
     override fun getUserToken(): Flow<String> = mPreferencesImpl.getUserToken()
 
     override suspend fun saveTokenPref(token: String) = mPreferencesImpl.saveTokenPref(token)
+
+    override fun isActivitiesSplashScreenEnabled(): Flow<Boolean> =
+        mPreferencesImpl.isActivitiesSplashScreenEnabled()
+
+    override suspend fun toggleActivitiesSplashScreenEnabled() =
+        mPreferencesImpl.toggleActivitiesSplashScreenEnabled()
 }

@@ -7,13 +7,14 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.WindowMetricsCalculator
-import com.riders.thelab.BuildConfig
-import com.riders.thelab.core.common.network.LabNetworkManagerNewAPI
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -30,10 +31,8 @@ class LoginActivity : BaseComponentActivity() {
     // Use of the database to store and log users
     private val mViewModel: LoginViewModel by viewModels()
 
-    private var mNetworkManager: LabNetworkManagerNewAPI? = null
-    private lateinit var mNavigator: Navigator
-
-    private var networkState: Boolean = false
+    private var mLabNetworkManager: LabNetworkManager? = null
+    private var mNavigator: Navigator? = null
 
     private var windowSize: WindowSizeClass? = null
 
@@ -41,17 +40,13 @@ class LoginActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (BuildConfig.DEBUG) {
-            mNetworkManager = LabNetworkManagerNewAPI.getInstance(this@LoginActivity)
-            val isOnline = mNetworkManager?.isOnline()
-            Timber.d("Is app online : $isOnline")
-        }
+        mLabNetworkManager = LabNetworkManager
+            .getInstance(this, lifecycle)
+            .also { mViewModel.observeNetworkState(it) }
 
         mNavigator = Navigator(this)
 
         mViewModel.retrieveAppVersion(this@LoginActivity)
-
-        initViewModelObservers()
 
         // Start a coroutine in the lifecycle scope
         lifecycleScope.launch {
@@ -59,44 +54,45 @@ class LoginActivity : BaseComponentActivity() {
                 computeWindowSizeClasses()
 
                 setContent {
+                    val loginUiState by mViewModel.loginUiState.collectAsStateWithLifecycle()
+                    val loginFieldState by mViewModel.loginFieldUiState.collectAsStateWithLifecycle()
+                    val loginHasError by mViewModel.loginHasError.collectAsStateWithLifecycle()
+                    val passwordFieldState by mViewModel.passwordFieldUiState.collectAsStateWithLifecycle()
+
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            LoginContent(viewModel = mViewModel)
+                            LoginContent(
+                                version = mViewModel.version,
+                                loginUiState = loginUiState,
+                                loginFieldState = loginFieldState,
+                                login = mViewModel.login,
+                                onUpdateLogin = mViewModel::updateLogin,
+                                loginHasLocalError = mViewModel.loginHasLocalError,
+                                loginHasError = loginHasError,
+                                passwordFieldState = passwordFieldState,
+                                password = mViewModel.password,
+                                onUpdatePassword = mViewModel::updatePassword,
+                                isRememberCredentialsChecked = mViewModel.isRememberCredentials,
+                                onUpdateIsRememberCredentials = mViewModel::updateIsRememberCredentials,
+                                onLoginButtonClicked = mViewModel::login
+                            )
                         }
                     }
                 }
             }
         }
 
-        // Start a coroutine in the lifecycle scope
         lifecycleScope.launch {
-            // repeatOnLifecycle launches the block in a new coroutine every time the
-            // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // Trigger the flow and start listening for values.
-                // Note that this happens when lifecycle is STARTED and stops
-                // collecting when the lifecycle is STOPPED
-                mViewModel.networkState.collect { state ->
-                    // New value received
-                    networkState = when (state) {
-                        is NetworkState.Available -> {
-                            state.available
-                            //enableEditTexts()
-                            //enableButton()
-                            // hideMainActivityButton()
-                        }
-
-                        is NetworkState.Disconnected -> {
-                            state.disconnected
-                            //disableEditTexts()
-                            // disableButton()
-                            //showGoToMainActivityButton()
-                        }
-                    }
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                if (mViewModel.hasInternetConnection) {
+                    UIManager.showConnectionStatusInSnackBar(
+                        this@LoginActivity,
+                        true
+                    )
                 }
             }
         }
@@ -153,26 +149,10 @@ class LoginActivity : BaseComponentActivity() {
         return windowSize!!
     }
 
-    private fun initViewModelObservers() {
-        Timber.d("initViewModelObservers()")
-        /*mViewModel.getDataStoreEmail().observe(this) { binding.inputEmail.setText(it) }
-        mViewModel.getDataStorePassword().observe(this) { binding.inputPassword.setText(it) }
-        mViewModel.getDataStoreRememberCredentials()
-            .observe(this) { binding.cbRememberMe.isChecked = it }*/
+    fun launchSignUpActivity() = mNavigator?.callSignUpActivity()
 
-        mNetworkManager?.getConnectionState()?.observe(
-            this
-        ) {
-            UIManager.showConnectionStatusInSnackBar(
-                this,
-                it
-            )
-        }
-    }
-
-    fun launchSignUpActivity() = mNavigator.callSignUpActivity()
     fun launchMainActivity() {
-        mNavigator.callMainActivity()
+        mNavigator?.callMainActivity()
         finish()
     }
 }

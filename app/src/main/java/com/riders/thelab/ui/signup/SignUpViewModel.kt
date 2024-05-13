@@ -26,6 +26,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -33,6 +34,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
+@Suppress("EmptyMethod")
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     @ApplicationContext context: Context,
@@ -149,9 +151,7 @@ class SignUpViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repository.isNightMode().collect {
-                updateDarkMode(it)
-            }
+            updateDarkMode(repository.isNightMode().first())
         }
 
         if (BuildConfig.DEBUG) {
@@ -165,7 +165,11 @@ class SignUpViewModel @Inject constructor(
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             Timber.e("CoroutineExceptionHandler | Error caught with message: ${throwable.message}")
-            UIManager.showToast(context, "Error while saving user to Database")
+
+            viewModelScope.launch(Dispatchers.Main) {
+                UIManager.showToast(context, "Error while saving user to Database")
+            }
+
             updateIsSubmitSuccess(false)
         }
 

@@ -23,7 +23,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = AndroidConfiguration.Sdk.TARGET
 
-                defaultConfig.versionCode = AndroidConfiguration.Application.code
+                defaultConfig.versionCode = AndroidConfiguration.Application.CODE
                 defaultConfig.versionName = AndroidConfiguration.Application.version.toString()
                 // configureFlavors(this)
                 configureTimber()

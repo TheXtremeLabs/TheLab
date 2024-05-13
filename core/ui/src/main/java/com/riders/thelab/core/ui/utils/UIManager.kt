@@ -28,8 +28,8 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.riders.thelab.core.ui.R
+import com.riders.thelab.core.ui.compose.component.toolbar.executeOnBackPressed
 import com.riders.thelab.core.ui.data.SnackBarType
-import com.riders.thelab.core.ui.views.toast.ToastTypeEnum
 import timber.log.Timber
 
 object UIManager {
@@ -44,6 +44,16 @@ object UIManager {
             view.visibility = View.GONE
     }
 
+
+    /**
+     * show the keyboard
+     *
+     * @param view
+     */
+    fun showKeyboard(context: Context, view: View) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, 0)
+    }
 
     /**
      * Hide the keyboard
@@ -83,7 +93,7 @@ object UIManager {
         alertDialog.setMessage(message)
         alertDialog.setNegativeButton(negativeMessage) { _: DialogInterface, _: Int ->
             if (negativeMessage != null) {
-                showActionInToast(context, negativeMessage)
+                this.showToast(context, negativeMessage)
 
                 if (negativeMessage.equals("Réessayer", ignoreCase = true)) {
                     //launchActivity(context, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK, null, null);
@@ -96,8 +106,9 @@ object UIManager {
             }*/
         }
         alertDialog.setPositiveButton(positiveMessage) { _: DialogInterface?, _: Int ->
-            showActionInToast(context, positiveMessage)
-            activity?.onBackPressed()
+            this.showToast(context, positiveMessage)
+//            activity?.onBackPressed()
+            activity?.let { executeOnBackPressed(it) }
             if (negativeMessage.equals("Quitter", ignoreCase = true)) {
                 activity!!.finish()
             }
@@ -110,24 +121,11 @@ object UIManager {
 
 
     fun showToast(context: Context, @StringRes stringResId: Int) {
-        showToast(context, context.getString(stringResId))
+        this.showToast(context, context.getString(stringResId))
     }
 
     fun showToast(context: Context, message: String) =
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-
-
-    // TODO : Remove this method
-    fun showActionInToast(context: Context, textToShow: String) {
-        Toast.makeText(context, textToShow, Toast.LENGTH_SHORT).show()
-    }
-
-    fun showCustomToast(context: Context, type: ToastTypeEnum, message: String) {
-        /*TheLabToast.Builder(context)
-            .setType(type)
-            .setText(message)
-            .show()*/
-    }
 
     fun showActionInSnackBar(
         context: Activity,

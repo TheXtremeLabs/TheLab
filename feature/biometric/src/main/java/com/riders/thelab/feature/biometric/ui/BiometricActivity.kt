@@ -38,7 +38,7 @@ class BiometricActivity : FragmentActivity() {
         // Check if fingerprint hardware is available
         if (!LabBiometricManager.hasFingerPrintHardware(context = this)) {
             Timber.e("The device doesn't have finger print hardware")
-            UIManager.showActionInToast(
+            UIManager.showToast(
                 this@BiometricActivity,
                 "The device doesn't have finger print hardware",
             )

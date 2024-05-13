@@ -23,7 +23,7 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 
 @DevicePreviews
 @Composable
-fun NoConnection() {
+fun NoNetworkConnection() {
     TheLabTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = md_theme_dark_background) {
             Column(

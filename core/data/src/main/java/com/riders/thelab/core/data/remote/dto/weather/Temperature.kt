@@ -25,7 +25,7 @@ data class Temperature(
     val morning: Double = 0.0
 ) : Serializable
 
-fun Temperature.toModel(): TemperatureModel =
+fun Temperature.toTemperatureModel(): TemperatureModel =
     TemperatureModel(
         day = day,
         min = min,

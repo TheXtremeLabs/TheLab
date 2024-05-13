@@ -3,8 +3,10 @@ package com.riders.thelab.core.ui.compose.component.tab
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,20 +23,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
 
 @Composable
 fun LabTabItem(
     isSelected: Boolean,
-    onClick: () -> Unit,
     tabWidth: Dp,
     text: String,
-    shape: Shape = RoundedCornerShape(8.dp)
+    shape: Shape = RoundedCornerShape(8.dp),
+    selectedTextColor: Color = if (!isSystemInDarkTheme()) md_theme_dark_primary else md_theme_light_primary,
+    unselectedTextColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
+    onClick: () -> Unit
 ) {
     val tabTextColor: Color by animateColorAsState(
         targetValue = if (isSelected) {
-            if (!isSystemInDarkTheme()) Color.Black else Color.White
+            selectedTextColor
         } else {
-            if (!isSystemInDarkTheme()) Color.White else Color.Black
+            unselectedTextColor
         },
         animationSpec = tween(easing = LinearEasing),
         label = "tab_text_animation"
@@ -57,11 +63,13 @@ fun LabTabItem(
 @Composable
 private fun PreviewLabTabItem() {
     TheLabTheme {
-        LabTabItem(
-            isSelected = true,
-            onClick = { },
-            tabWidth = 150.dp,
-            text = "Tab Text"
-        )
+        Box(modifier = Modifier.background(if (!isSystemInDarkTheme()) Color.White else Color.Black)) {
+            LabTabItem(
+                isSelected = true,
+                onClick = { },
+                tabWidth = 150.dp,
+                text = "Tab Text"
+            )
+        }
     }
 }

@@ -11,10 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.riders.thelab.core.data.local.model.DeviceInformation
+import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
@@ -24,15 +25,25 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 //
 ///////////////////////////////
 @Composable
-fun SettingsContent(viewModel: SettingsViewModel) {
+fun SettingsContent(
+    isDarkMode: Boolean,
+    themeOptions: List<String>,
+    version: String,
+    deviceInformation: DeviceInformation?,
+    showModeInfo: Boolean,
+    isVibration: Boolean,
+    isActivitiesSplashEnabled: Boolean,
+    user: User?,
+    uiEvent: (UiEvent) -> Unit
+) {
     val lazyListState = rememberLazyListState()
 
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
+    TheLabTheme(darkTheme = isDarkMode) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TheLabTopAppBar(
-                    viewModel = viewModel,
+                    isDarkMode = isDarkMode,
                     title = stringResource(id = R.string.activity_settings_title)
                 )
             }
@@ -46,14 +57,27 @@ fun SettingsContent(viewModel: SettingsViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                item { AppSettingsSection(viewModel) }
-                item { DeviceInfoSection(viewModel) }
+                item {
+                    AppSettingsSection(
+                        isDarkMode = isDarkMode,
+                        themeOptions = themeOptions,
+                        version = version,
+                        isVibration = isVibration,
+                        isActivitiesSplashEnabled = isActivitiesSplashEnabled,
+                        uiEvent = uiEvent
+                    )
+                }
+                item {
+                    DeviceInfoSection(
+                        deviceInformation = deviceInformation,
+                        showModeInfo = showModeInfo,
+                        uiEvent = uiEvent
+                    )
+                }
 
-                if (null != viewModel.user) {
+                if (null != user) {
                     item {
-                        UserSection(viewModel.user!!.username, viewModel.user!!.email) {
-                            viewModel.logout()
-                        }
+                        UserSection(username = user.username, email = user.email, uiEvent = uiEvent)
                     }
                 }
             }
@@ -70,8 +94,18 @@ fun SettingsContent(viewModel: SettingsViewModel) {
 @DevicePreviews
 @Composable
 private fun PreviewSettingsContent() {
-    val viewModel: SettingsViewModel = hiltViewModel()
     TheLabTheme {
-        SettingsContent(viewModel)
+        SettingsContent(
+            isDarkMode = true,
+            themeOptions = listOf("Light", "Dark"),
+            version = "12.14.11",
+            deviceInformation = DeviceInformation(),
+            showModeInfo = true,
+            isVibration = true,
+            isActivitiesSplashEnabled = false,
+            user = User()
+        ) {
+
+        }
     }
 }

@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
 @SuppressLint("MissingPermission")
 class LabNetworkManager(
     private val context: Context,
@@ -148,8 +147,7 @@ class LabNetworkManager(
     }
 
     @SuppressLint("NewApi")
-    @Suppress("DEPRECATION")
-    fun isNetworkAvailable(): Boolean = if (LabCompatibilityManager.isAndroid10()) {
+    fun isNetworkAvailable(): Boolean = if (LabCompatibilityManager.isMarshmallow()) {
         Timber.d("isNetworkAvailable()")
 
         capabilities?.isNetworkCapabilitiesValid() ?: run {
@@ -158,6 +156,7 @@ class LabNetworkManager(
         }
     } else {
         runCatching {
+            @Suppress("DEPRECATION")
             val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
 
             activeNetworkInfo?.run {

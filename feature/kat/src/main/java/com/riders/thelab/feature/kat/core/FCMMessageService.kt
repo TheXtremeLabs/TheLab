@@ -91,7 +91,7 @@ class FCMMessageService : FirebaseMessagingService() {
         val intent = Intent(this, KatMainActivity::class.java)
 
         // Assign channel ID
-        val channel_id = "notification_channel"
+        val channelID = "notification_channel"
         // Here FLAG_ACTIVITY_CLEAR_TOP flag is set to clear
         // the activities present in the activity stack,
         // on the top of the Activity that is to be launched
@@ -108,7 +108,7 @@ class FCMMessageService : FirebaseMessagingService() {
         // class. This will allow control over all the flags
         var builder: NotificationCompat.Builder = NotificationCompat.Builder(
             applicationContext,
-            channel_id
+            channelID
         )
             .setSubText("Kat - new messages")
             .setContentTitle(title)
@@ -141,7 +141,7 @@ class FCMMessageService : FirebaseMessagingService() {
         // Check if the Android Version is greater than Oreo
         if (LabCompatibilityManager.isOreo()) {
             val notificationChannel = NotificationChannel(
-                channel_id,
+                channelID,
                 applicationContext.getString(R.string.kat_notification_channel),
                 NotificationManager.IMPORTANCE_HIGH
             )

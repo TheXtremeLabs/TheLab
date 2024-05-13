@@ -47,7 +47,7 @@ class DbImpl @Inject constructor(
 
     override fun getUserByName(lastname: String): User = mUserDao.getUserByName(lastname)
 
-    override fun getUserByUsername(username: String): User  = mUserDao.getUserByUsername(username)
+    override fun getUserByUsername(username: String): User = mUserDao.getUserByUsername(username)
 
     override fun getUserByEmail(email: String): User = mUserDao.getUserByEmail(email)
 
@@ -112,6 +112,12 @@ class DbImpl @Inject constructor(
         val citiesToDatabase: List<CityModel> = ArrayList(CityMapper.getCityList(dtoCities))
 
         return mWeatherDao.insertAllRX(citiesToDatabase)
+    }
+
+
+    override suspend fun searchCity(cityQuery: String): List<CityModel> {
+        Timber.d("searchCity: $cityQuery")
+        return mWeatherDao.searchCity(cityQuery)
     }
 
     override suspend fun getWeatherData(): WeatherData? {

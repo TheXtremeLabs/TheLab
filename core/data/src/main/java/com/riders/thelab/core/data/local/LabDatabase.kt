@@ -8,11 +8,12 @@ import com.riders.thelab.core.data.local.dao.WeatherDao
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.weather.CityModel
+import com.riders.thelab.core.data.local.model.weather.CityModelFTS
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 
 @Database(
-    entities = [User::class, Contact::class, CityModel::class, WeatherData::class],
-    version = 1,
+    entities = [User::class, Contact::class, CityModelFTS::class, CityModel::class, WeatherData::class],
+    version = 3,
     /*autoMigrations = [
         AutoMigration(from = 1, to = 2),
     ],*/

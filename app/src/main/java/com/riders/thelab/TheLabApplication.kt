@@ -19,14 +19,15 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.initialization.InitializationStatus
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+/*import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.initialization.InitializationStatus*/
+import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
 import com.riders.thelab.feature.weather.core.worker.WeatherWidgetWorker
-import com.riders.thelab.feature.weather.core.worker.WeatherWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +44,6 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
-
 
     private val mWorkerConstraints: Constraints = Constraints.Builder()
         .apply {
@@ -71,7 +71,7 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
 //        val appLifecycleObserver = TheLabAppLifecycleObserver()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
-        delayedInit()
+        // delayedInit()
 
         if (BuildConfig.DEBUG) {
             LabDeviceManager.logDeviceInfo()
@@ -127,18 +127,16 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
         Timber.d("initAdsAndFirebase()")
 
         // Firebase Crashlytics
-        FirebaseCrashlytics.getInstance().apply {
+        FirebaseApp.initializeApp(this@TheLabApplication)
+        Firebase.crashlytics.apply {
             setCrashlyticsCollectionEnabled(true)
             setUserId("wayne")
         }
 
         // Mobile ADS
-        MobileAds.initialize(this) { initializationStatus: InitializationStatus ->
-            Timber.d(
-                "initializationStatus : %s",
-                initializationStatus.toString()
-            )
-        }
+        /*MobileAds.initialize(this) { initializationStatus: InitializationStatus ->
+            Timber.d("initializationStatus: $initializationStatus")
+        }*/
     }
 
     private fun delayedInit() {

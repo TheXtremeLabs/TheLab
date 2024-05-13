@@ -30,7 +30,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AirplanemodeActive
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.SignalWifiConnectedNoInternet4
-import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -40,7 +39,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,26 +49,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
-import com.riders.thelab.core.common.network.NetworkConnectionState
+import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
-import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.fab.PulsarFab
-import com.riders.thelab.core.ui.compose.component.network.NoConnection
+import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
 import com.riders.thelab.core.ui.compose.component.toast.Toast
-import com.riders.thelab.core.ui.compose.theme.Orange
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onBackground
@@ -93,7 +88,12 @@ import timber.log.Timber
 //
 ///////////////////////////////
 @Composable
-fun Idle(viewModel: ACRCloudViewModel) {
+fun Idle(
+    result: String,
+    canLaunchAudioRecognition: Boolean,
+    onStartRecognition: () -> Unit,
+    isRecognizing: Boolean
+) {
     TheLabTheme {
         Row(
             modifier = Modifier
@@ -101,14 +101,14 @@ fun Idle(viewModel: ACRCloudViewModel) {
                 .padding(8.dp),
             verticalAlignment = Alignment.Top
         ) {
-            Text(modifier = Modifier, text = viewModel.result)
+            Text(modifier = Modifier, text = result ?: "")
             Button(
                 modifier = Modifier,
-                onClick = { viewModel.startRecognition() },
-                enabled = viewModel.canLaunchAudioRecognition
+                onClick = onStartRecognition,
+                enabled = canLaunchAudioRecognition
             ) {
                 Text(
-                    text = if (!viewModel.isRecognizing) stringResource(id = R.string.msg_start_recognition) else stringResource(
+                    text = if (!isRecognizing) stringResource(id = R.string.msg_start_recognition) else stringResource(
                         id = R.string.msg_stop_recognition
                     )
                 )
@@ -118,7 +118,10 @@ fun Idle(viewModel: ACRCloudViewModel) {
 }
 
 @Composable
-fun ACRError(viewModel: ACRCloudViewModel) {
+fun ACRError(
+    canLaunchAudioRecognition: Boolean,
+    onStartRecognition: () -> Unit
+) {
     TheLabTheme {
         Column(
             modifier = Modifier
@@ -140,8 +143,8 @@ fun ACRError(viewModel: ACRCloudViewModel) {
             )
             Button(
                 modifier = Modifier,
-                onClick = { viewModel.startRecognition() },
-                enabled = viewModel.canLaunchAudioRecognition
+                onClick = onStartRecognition,
+                enabled = canLaunchAudioRecognition
             ) {
                 Text(text = "Retry")
             }
@@ -150,14 +153,14 @@ fun ACRError(viewModel: ACRCloudViewModel) {
 }
 
 @Composable
-fun Searching(viewModel: ACRCloudViewModel) {
+fun Searching(result: String) {
     TheLabTheme {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround
         ) {
-            Text(modifier = Modifier, text = viewModel.result)
+            Text(modifier = Modifier, text = result ?: "")
             PulsarFab {
                 Image(
                     modifier = Modifier.size(72.dp),
@@ -299,19 +302,21 @@ fun RecognitionResult(state: ACRUiState.RecognitionSuccessful) {
 
 
 @Composable
-fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
+fun ACRCloudActivityContent(
+    acrUiState: ACRUiState,
+    networkState: NetworkState,
+    result: String,
+    canLaunchAudioRecognition: Boolean,
+    onStartRecognition: () -> Unit,
+    isRecognizing: Boolean
+) {
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val connectionState by viewModel.mNetworkManager.networkConnectionState.collectAsStateWithLifecycle()
-    val isConnected by viewModel.mNetworkManager.getConnectionState().observeAsState()
+    val isConnected = networkState == NetworkState.Available
     var currentCapabilityChangedCount by remember { mutableIntStateOf(0) }
     val maxCapabilitiesCountTaken = 1
 
-    // Register lifecycle events
-    viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
-
     val animatedHeight by animateDpAsState(
-        targetValue = when (uiState) {
+        targetValue = when (acrUiState) {
             is ACRUiState.ProcessRecognition -> {
                 0.dp
             }
@@ -336,19 +341,19 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
             floatingActionButton = {
 
                 AnimatedContent(
-                    targetState = viewModel.isRecognizing,
+                    targetState = isRecognizing,
                     label = "something"
                 ) { target ->
                     if (!target) {
                         androidx.compose.material.FloatingActionButton(
-                            backgroundColor = if (!viewModel.isRecognizing) {
+                            backgroundColor = if (!isRecognizing) {
                                 md_theme_light_onPrimaryContainer
                             } else {
                                 if (!isSystemInDarkTheme()) md_theme_light_onBackground else md_theme_dark_onBackground
                             },
                             onClick = {
-                                if (!viewModel.isRecognizing) {
-                                    viewModel.startRecognition()
+                                if (!isRecognizing) {
+                                    onStartRecognition()
                                 } else {
                                     Timber.e("FloatingActionButton | onClick | recognition is already running")
                                 }
@@ -383,8 +388,8 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
             }
         ) { contentPadding ->
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                if (null == isConnected || isConnected?.equals(false) == true) {
-                    NoConnection()
+                if (isConnected.equals(false)) {
+                    NoNetworkConnection()
                 } else {
                     Column(
                         modifier = Modifier
@@ -395,7 +400,7 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                         verticalArrangement = Arrangement.Bottom
                     ) {
                         AnimatedContent(
-                            targetState = uiState,
+                            targetState = acrUiState,
                             transitionSpec = {
                                 fadeIn(
                                     animationSpec = tween(
@@ -416,11 +421,16 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                         ) { targetState ->
                             when (targetState) {
                                 is ACRUiState.Idle -> {
-                                    Idle(viewModel = viewModel)
+                                    Idle(
+                                        result = result,
+                                        canLaunchAudioRecognition = canLaunchAudioRecognition,
+                                        onStartRecognition = onStartRecognition,
+                                        isRecognizing = isRecognizing
+                                    )
                                 }
 
                                 is ACRUiState.ProcessRecognition -> {
-                                    Searching(viewModel = viewModel)
+                                    Searching(result = result)
                                 }
 
                                 is ACRUiState.RecognitionSuccessful -> {
@@ -432,7 +442,10 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                                 }
 
                                 is ACRUiState.Error -> {
-                                    ACRError(viewModel = viewModel)
+                                    ACRError(
+                                        canLaunchAudioRecognition = canLaunchAudioRecognition,
+                                        onStartRecognition = onStartRecognition
+                                    )
                                 }
                             }
                         }
@@ -440,11 +453,11 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                 }
 
                 AnimatedContent(
-                    targetState = connectionState,
+                    targetState = networkState,
                     label = "Toast animation content"
                 ) { targetState ->
                     when (targetState) {
-                        is NetworkConnectionState.Connected -> {
+                        is NetworkState.Available -> {
                             Toast(
                                 message = "You are connected to the internet",
                                 imageVector = Icons.Filled.Check,
@@ -453,7 +466,7 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                             currentCapabilityChangedCount = 0
                         }
 
-                        is NetworkConnectionState.OnCapabilitiesChanged -> {
+                        /*is NetworkConnectionState.OnCapabilitiesChanged -> {
                             currentCapabilityChangedCount += 1
 
                             if (currentCapabilityChangedCount < maxCapabilitiesCountTaken) {
@@ -463,9 +476,9 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                                     containerColor = Orange
                                 )
                             }
-                        }
+                        }*/
 
-                        is NetworkConnectionState.OnLosing -> {
+                        is NetworkState.Losing -> {
                             Toast(
                                 message = "Losing Internet connection !",
                                 imageVector = Icons.Filled.SignalWifiConnectedNoInternet4,
@@ -473,8 +486,8 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
                             )
                         }
 
-                        is NetworkConnectionState.Lost,
-                        is NetworkConnectionState.Unavailable -> {
+                        is NetworkState.Lost,
+                        is NetworkState.Unavailable -> {
                             Toast(
                                 message = "Internet is unavailable",
                                 imageVector = Icons.Filled.AirplanemodeActive,
@@ -500,27 +513,29 @@ fun ACRCloudActivityContent(viewModel: ACRCloudViewModel) {
 @DevicePreviews
 @Composable
 fun PreviewIdle() {
-    val viewModel: ACRCloudViewModel = hiltViewModel()
     TheLabTheme {
-        Idle(viewModel = viewModel)
+        Idle(
+            result = "Wheezy feat. Gunna",
+            canLaunchAudioRecognition = true,
+            onStartRecognition = {},
+            isRecognizing = false
+        )
     }
 }
 
 @DevicePreviews
 @Composable
 fun PreviewACRError() {
-    val viewModel: ACRCloudViewModel = hiltViewModel()
     TheLabTheme {
-        ACRError(viewModel = viewModel)
+        ACRError(canLaunchAudioRecognition = true, onStartRecognition = {})
     }
 }
 
 @DevicePreviews
 @Composable
 fun PreviewSearching() {
-    val viewModel: ACRCloudViewModel = hiltViewModel()
     TheLabTheme {
-        Searching(viewModel = viewModel)
+        Searching(result = "Wheezy feat. Gunna")
     }
 }
 
@@ -542,9 +557,16 @@ fun PreviewRecognitionError() {
 
 @DevicePreviews
 @Composable
-fun PreviewMainActivityContent() {
-    val viewModel: ACRCloudViewModel = hiltViewModel()
+fun PreviewMainActivityContent(@PreviewParameter(PreviewProviderACRCloud::class) acrUiState: ACRUiState) {
+
     TheLabTheme {
-        ACRCloudActivityContent(viewModel = viewModel)
+        ACRCloudActivityContent(
+            acrUiState = acrUiState,
+            networkState = NetworkState.Available,
+            result = "Wheezy feat. Gunna",
+            canLaunchAudioRecognition = true,
+            onStartRecognition = {},
+            isRecognizing = false
+        )
     }
 }

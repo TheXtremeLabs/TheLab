@@ -41,6 +41,8 @@
     <dimen name="card_elevation">8dp</dimen>
     <dimen name="max_card_image_width">344dp</dimen>
     <dimen name="max_card_image_height">194dp</dimen>
+    <dimen name="card_image_mid_height">260dp</dimen>
+
 
     <dimen name="activity_section_title">20sp</dimen>
 
