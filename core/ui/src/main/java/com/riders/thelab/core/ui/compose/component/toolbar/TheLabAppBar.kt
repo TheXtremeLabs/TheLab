@@ -276,7 +276,8 @@ fun TheLabTopAppBar(
 @Composable
 fun TheLabTopAppBar(
     toolbarSize: ToolbarSize,
-    @PreviewParameter(TextContentPreviewProvider::class) title: String? = null,
+    title: String? = null,
+    titleColor: Color = Color.White,
     toolbarMaxHeight: Dp = 96.dp,
     mainCustomContent: @Composable (() -> Unit)? = null,
     withGradientBackground: Boolean = false,
@@ -312,7 +313,7 @@ fun TheLabTopAppBar(
                                 horizontalAlignment = Alignment.Start,
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                Text(text = title, color = Color.White)
+                                Text(text = title, color = titleColor)
                             }
                         } else if (null != mainCustomContent && null == title) {
                             mainCustomContent()

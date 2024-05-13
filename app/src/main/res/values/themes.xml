@@ -202,6 +202,8 @@
         <item name="colorPrimaryDark">@color/swipeDownColorPrimaryDark</item>
         <item name="colorAccent">@color/swipeDownColorAccent</item>
 
+        <item name="android:statusBarColor">@color/swipeDownColorAccent</item>
+
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
 
