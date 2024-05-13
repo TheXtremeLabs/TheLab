@@ -17,4 +17,6 @@ data class SnackbarVisualsCustom(
     @DrawableRes val drawableRes: Int? = null,
     val icon: ImageVector? = null,
     val containerColor: Color = Color.Black
-) : SnackbarVisuals
+) : SnackbarVisuals {
+    constructor() : this(message = "")
+}

@@ -35,7 +35,17 @@ class SettingsActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            SettingsContent(mViewModel)
+                            SettingsContent(
+                                version = mViewModel.version,
+                                themeOptions = mViewModel.themeOptions,
+                                isDarkMode = mViewModel.isDarkMode,
+                                isVibration = mViewModel.isVibration,
+                                isActivitiesSplashEnabled = mViewModel.isActivitiesSplashEnabled,
+                                deviceInformation = mViewModel.deviceInfo,
+                                showModeInfo = mViewModel.showMoreInfoOnDevice,
+                                user = mViewModel.user,
+                                uiEvent = mViewModel::onEvent
+                            )
                         }
                     }
                 }
@@ -47,7 +57,7 @@ class SettingsActivity : BaseComponentActivity() {
         super.onStart()
 
         mViewModel.retrieveAppVersion(this@SettingsActivity)
-        mViewModel.fetchDeviceInformation(this@SettingsActivity)
+        mViewModel.fetchDeviceInformation()
     }
 
     override fun backPressed() {

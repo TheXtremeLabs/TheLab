@@ -12,6 +12,6 @@ data class Download(
     var downloadRefId: Long = -1
 ) {
     override fun toString(): String {
-        return "Filename: $filename with progress: $progress (id: ${downloadRefId} | completed? $isComplete)"
+        return "Filename: $filename with progress: $progress (id: $downloadRefId | completed? $isComplete)"
     }
 }

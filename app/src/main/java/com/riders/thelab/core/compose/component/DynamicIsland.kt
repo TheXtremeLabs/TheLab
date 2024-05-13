@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.dynamicisland.IslandBubbleContent
@@ -35,13 +34,20 @@ import com.riders.thelab.core.ui.compose.component.dynamicisland.MetaEntity
 import com.riders.thelab.core.ui.compose.component.dynamicisland.bubbleEnterTransition
 import com.riders.thelab.core.ui.compose.component.dynamicisland.bubbleExitTransition
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
-import com.riders.thelab.ui.mainactivity.MainActivityViewModel
+import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.math.roundToInt
 
 @Composable
-fun DynamicIsland(viewModel: MainActivityViewModel, islandState: IslandState) {
+fun DynamicIsland(
+    islandState: IslandState,
+    searchedAppRequest: String,
+    onSearchAppRequestChanged: (String) -> Unit,
+    isMicrophoneEnabled: Boolean,
+    onUpdateMicrophoneEnabled: (Boolean) -> Unit,
+    onUpdateKeyboardVisible: (Boolean) -> Unit
+) {
     val config = LocalConfiguration.current
 
     val targetValue = (config.screenWidthDp.dp / 2) - islandState.fullWidth / 2
@@ -100,7 +106,14 @@ fun DynamicIsland(viewModel: MainActivityViewModel, islandState: IslandState) {
                     )
                 }
             ) {
-                IslandContent(viewModel = viewModel, state = islandState)
+                IslandContent(
+                    state = islandState,
+                    searchedAppRequest = searchedAppRequest,
+                    onSearchAppRequestChanged = onSearchAppRequestChanged,
+                    isMicrophoneEnabled = isMicrophoneEnabled,
+                    onUpdateMicrophoneEnabled = onUpdateMicrophoneEnabled,
+                    onUpdateKeyboardVisible = onUpdateKeyboardVisible
+                )
             }
 
             AnimatedVisibility(
@@ -136,7 +149,17 @@ fun DynamicIsland(viewModel: MainActivityViewModel, islandState: IslandState) {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewDynamicIsland(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
-    val viewModel: MainActivityViewModel = hiltViewModel()
-    DynamicIsland(viewModel, state)
+private fun PreviewDynamicIsland(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
+    TheLabTheme {
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            DynamicIsland(
+                islandState = state,
+                searchedAppRequest = "Colors",
+                onSearchAppRequestChanged = {},
+                isMicrophoneEnabled = false,
+                onUpdateMicrophoneEnabled = {},
+                onUpdateKeyboardVisible = {}
+            )
+        }
+    }
 }

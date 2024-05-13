@@ -6,7 +6,8 @@ import android.content.SharedPreferences
 class LabPreferenceManager(context: Context) {
 
     // Shared Preferences
-    private var pref: SharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    private var pref: SharedPreferences =
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     // Editor for Shared preferences
     private var editor: SharedPreferences.Editor? = null

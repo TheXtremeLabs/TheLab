@@ -20,7 +20,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object BiometricModule {
-
+    @Suppress("SameReturnValue")
     @Provides
     @Singleton
     fun provideRequiredAuthenticators(): Int =

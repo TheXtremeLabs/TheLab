@@ -15,8 +15,8 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
-import com.riders.thelab.core.data.local.model.Video
 import com.riders.thelab.core.data.remote.api.ArtistsAPIService
+import com.riders.thelab.core.data.remote.api.FlightApiService
 import com.riders.thelab.core.data.remote.api.GoogleAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAPIService
 import com.riders.thelab.core.data.remote.api.SpotifyAccountAPIService
@@ -24,22 +24,37 @@ import com.riders.thelab.core.data.remote.api.TMDBApiService
 import com.riders.thelab.core.data.remote.api.TheLabBackApiService
 import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
+import com.riders.thelab.core.data.remote.api.WikimediaApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.data.remote.dto.UserDto
+import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.remote.dto.flight.Airport
+import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
+import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
+import com.riders.thelab.core.data.remote.dto.flight.AirportsSearchResponse
+import com.riders.thelab.core.data.remote.dto.flight.FlightType
+import com.riders.thelab.core.data.remote.dto.flight.Operator
+import com.riders.thelab.core.data.remote.dto.flight.OperatorResponse
+import com.riders.thelab.core.data.remote.dto.flight.SearchByRouteResponse
+import com.riders.thelab.core.data.remote.dto.flight.SearchFlightResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBCreditsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
+import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import okhttp3.ResponseBody
 import retrofit2.Call
 import timber.log.Timber
@@ -56,7 +71,9 @@ class ApiImpl @Inject constructor(
     theLabBackApiService: TheLabBackApiService,
     spotifyAccountApiService: SpotifyAccountAPIService,
     spotifyApiService: SpotifyAPIService,
-    tmdbApiService: TMDBApiService
+    tmdbApiService: TMDBApiService,
+    flightApiService: FlightApiService,
+    wikimediaService: WikimediaApiService
 ) : IApi {
 
     private var mArtistsAPIService: ArtistsAPIService = artistsAPIService
@@ -68,6 +85,8 @@ class ApiImpl @Inject constructor(
     private var mSpotifyAccountApiService: SpotifyAccountAPIService = spotifyAccountApiService
     private var mSpotifyApiService: SpotifyAPIService = spotifyApiService
     private var mTmdbApiService: TMDBApiService = tmdbApiService
+    private var mFlightApiService: FlightApiService = flightApiService
+    private var mWikimediaApiService: WikimediaApiService = wikimediaService
 
     private var downloadManager: DownloadManager? = null
 
@@ -104,11 +123,13 @@ class ApiImpl @Inject constructor(
 
         // If sign in fails, display a message to the user.
         Timber.w("signInAnonymously:failure %s", exception.toString())
-        Toast.makeText(
-            activity,
-            "Authentication failed.",
-            Toast.LENGTH_SHORT
-        ).show()
+        activity.runOnUiThread {
+            Toast.makeText(
+                activity,
+                "Authentication failed.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
         null
     }
@@ -116,7 +137,7 @@ class ApiImpl @Inject constructor(
 
     override suspend fun getArtists(url: String): List<Artist> = mArtistsAPIService.getArtists(url)
 
-    override suspend fun getVideos(): List<Video> = mYoutubeApiService.fetchYoutubeVideos()
+    override suspend fun getVideos(): List<VideoDto> = mYoutubeApiService.fetchYoutubeVideos()
 
     override suspend fun getWeatherOneCallAPI(location: Location): OneCallWeatherResponse =
         mWeatherApiService
@@ -272,22 +293,144 @@ class ApiImpl @Inject constructor(
     override fun cancelDownload(downloadId: Long): Int = downloadManager!!.remove(downloadId)
 
     override fun cancelDownloads(downloadIds: List<Long>): Int {
-        var totalDownloadStooped: Int = 0
+        var totalDownloadStooped = 0
         downloadIds.forEach { totalDownloadStooped += downloadManager!!.remove(it) }
         return totalDownloadStooped
     }
 
-    override suspend fun getTrendingMovies(): TMDBMovieResponse = mTmdbApiService.getTrendingMovies()
+    override suspend fun getTrendingMovies(): TMDBMovieResponse =
+        mTmdbApiService.getTrendingMovies()
 
     override suspend fun getPopularMovies(): TMDBMovieResponse = mTmdbApiService.getPopularMovies()
 
-    override suspend fun getUpcomingMovies(): TMDBMovieResponse = mTmdbApiService.getUpcomingMovies()
+    override suspend fun getUpcomingMovies(): TMDBMovieResponse =
+        mTmdbApiService.getUpcomingMovies()
 
-    override suspend fun getTrendingTvShows(): TMDBTvShowsResponse = mTmdbApiService.getTrendingTvShows()
+    override suspend fun getTrendingTvShows(): TMDBTvShowsResponse =
+        mTmdbApiService.getTrendingTvShows()
 
-    override suspend fun getPopularTvShows(): TMDBTvShowsResponse = mTmdbApiService.getPopularTvShows()
+    override suspend fun getPopularTvShows(): TMDBTvShowsResponse =
+        mTmdbApiService.getPopularTvShows()
 
-    override suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse? = mTmdbApiService.getMovieVideos(movieID)
+    override suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse? =
+        mTmdbApiService.getMovieVideos(movieID)
 
-    override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? = mTmdbApiService.getTvShowVideos(thShowID)
+    override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? =
+        mTmdbApiService.getTvShowVideos(thShowID)
+
+    override suspend fun getMovieCredits(movieID: Int): TMDBCreditsResponse? =
+        mTmdbApiService.getMovieCredits(movieID)
+
+    override suspend fun getAirports(maxPages: Int, cursor: String?): AirportsResponse =
+        mFlightApiService.getAirports(maxPages, cursor)
+
+    override suspend fun searchAirportById(query: String): AirportsSearchResponse =
+        mFlightApiService.searchAirportById(query)
+
+    override suspend fun omniSearchAirport(query: String): AirportsSearchResponse =
+        mFlightApiService.omniSearchAirport(searchTerm = query, query = query)
+
+    override suspend fun getAirportById(airportID: String): Airport =
+        mFlightApiService.getAirportById(airportID)
+
+    override suspend fun getAirportFlightsById(
+        airportID: String,
+        maxPages: Int,
+        cursor: String?,
+        startDate: String?,
+        endDate: String?,
+        type: String?
+    ): AirportFlightsResponse = mFlightApiService.getAirportFlightsById(
+        airportID,
+        maxPages,
+        cursor,
+        startDate,
+        endDate,
+        type
+    )
+
+    override suspend fun searchFlightByRoute(
+        departureAirportCode: NotBlankString,
+        arrivalAirportCode: NotBlankString,
+        type: FlightType,
+        connection: NotBlankString?,
+        startDate: NotBlankString?,
+        endDate: NotBlankString?,
+        maxPages: Int,
+        cursor: String?
+    ): SearchByRouteResponse = mFlightApiService.searchFlightByRoute(
+        departureAirportCode = departureAirportCode,
+        arrivalAirportCode = arrivalAirportCode,
+        type = FlightType.AIRLINE.type.toNotBlankString().getOrThrow(),
+        connection = connection,
+        startDate = startDate,
+        endDate = endDate,
+        maxPages = maxPages,
+        cursor = cursor
+    )
+
+    /**
+     * @return a list of airports located within a given distance from the given location.
+     */
+    override suspend fun getAirportNearBy(
+        latitude: NotBlankString,
+        longitude: NotBlankString,
+        radius: Int,
+        maxPages: Int,
+        cursor: String?
+    ): AirportsResponse =
+        mFlightApiService.getAirportNearBy(latitude, longitude, radius, maxPages, cursor)
+
+    override suspend fun getOperators(maxPages: Int, cursor: String?): OperatorResponse =
+        mFlightApiService.getOperators(maxPages, cursor)
+
+    override suspend fun getOperatorById(operatorID: String): Operator =
+        mFlightApiService.getOperatorById(operatorID)
+
+    override suspend fun getFlightOnMap(
+        flightID: NotBlankString,
+        height: Int,
+        width: Int,
+        layerOn: Array<NotBlankString>?,
+        layerOff: Array<NotBlankString>?,
+        showDataBlock: Boolean,
+        airportExpandView: Boolean,
+        showAirports: Boolean,
+        boundingBox: Boolean
+    ): ByteArray = mFlightApiService.getFlightOnMap(
+        flightID,
+        height,
+        width,
+        layerOn,
+        layerOff,
+        showDataBlock,
+        airportExpandView,
+        showAirports,
+        boundingBox
+    )
+
+    override suspend fun searchFlight(
+        query: NotBlankString,
+        maxPages: Int,
+        cursor: String?
+    ): SearchFlightResponse = mFlightApiService.searchFlight(query, maxPages, cursor)
+
+    override suspend fun searchFlightByID(
+        query: NotBlankString,
+        type: NotBlankString?,
+        startDate: NotBlankString?,
+        endDate: NotBlankString?,
+        maxPages: Int,
+        cursor: String?
+    ): SearchFlightResponse = mFlightApiService.searchFlightByID(
+        query = query,
+        type = type,
+        startDate = startDate,
+        endDate = endDate,
+        maxPages = maxPages,
+        cursor = cursor
+    )
+
+    override suspend fun getWikimediaResponse(query: NotBlankString): WikimediaResponse =
+        mWikimediaApiService.getWikimediaResponse(query)
 }

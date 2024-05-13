@@ -28,7 +28,7 @@ object LabAppManager {
         "com.praeter"
     )
 
-    val mockApps = listOf<MockApp>(
+    val mockApps: List<MockApp> = listOf(
         // Colors
         MockApp(
             R.string.activity_title_colors,

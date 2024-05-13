@@ -55,6 +55,13 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
+    <uses-permission
+        android:name="android.permission.NEARBY_DEVICES"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission
+        android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation" />
+
 
     <!-- User Data -->
     <!-- Permissions required by GoogleAuthUtil -->
@@ -87,14 +94,36 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.any" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <!--<uses-feature android:name="android.hardware.camera.external"/>
-    <uses-feature android:name="android.hardware.camera.flash"/>-->
+    <uses-feature android:name="android.hardware.camera.front" />
+    <uses-feature android:name="android.hardware.camera.external" />
+    <uses-feature android:name="android.hardware.camera.flash" />
+    <uses-feature android:name="android.hardware.camera.level.full" />
 
     <!-- Android 13+ permission dialog -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Media Notification Foreground Service -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
+        android:minSdkVersion="34"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.START_FOREGROUND_SERVICES_FROM_BACKGROUND"
+        android:minSdkVersion="34"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+        android:minSdkVersion="34"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- Required only if your app targets Android 13 or higher. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
+    <!-- Android 13+ player controls -->
+    <uses-permission
+        android:name="android.permission.MEDIA_CONTENT_CONTROL"
+        tools:ignore="ProtectedPermissions" />
 
     <!-- Location -->
     <uses-feature
@@ -176,6 +205,16 @@
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="barcode" />
 
+        <!-- Fix Manifest merger failed : Attribute property#android.adservices.AD_SERVICES_CONFIG@resource error with AGP 8.3.0 -->
+        <!--<meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/APP_NUMBER" />-->
+        <!--<property
+            android:name="android.adservices.AD_SERVICES_CONFIG"
+            android:resource="@xml/gma_ad_services_config"
+            tools:replace="android:resource" />-->
+
+
         <!-- ////////////// ACTIVITIES ////////////// -->
         <activity
             android:name=".ui.splashscreen.SplashScreenActivity"
@@ -228,7 +267,7 @@
             android:theme="@style/Theme.TheLab.NoActionBar" />
 
         <activity
-            android:name=".ui.tabs.WorkingTabsActivity"
+            android:name=".feature.tabs.WorkingTabsActivity"
             android:label="@string/activity_title_working_tabs"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/TabTheme" />
@@ -269,6 +308,13 @@
             android:theme="@style/LocationTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <activity
+            android:name=".feature.locationonmaps.LocationOnMapsActivity"
+            android:label="@string/activity_title_location_on_maps"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/LocationTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
 
         <activity
             android:name=".feature.schedule.ui.ScheduleActivity"
@@ -278,19 +324,19 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name=".ui.palette.PaletteActivity"
+            android:name=".feature.palette.PaletteActivity"
             android:label="@string/activity_title_palette"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/PaletteTheme" />
 
         <activity
-            android:name=".feature.theaters.TheatersActivity"
+            android:name=".feature.theaters.main.TheatersActivity"
             android:label="@string/activity_title_theaters"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/MultiPaneTheme" />
         <activity
-            android:name=".feature.theaters.TheatersDetailActivity"
-            android:parentActivityName=".feature.theaters.TheatersActivity"
+            android:name=".feature.theaters.detail.TheatersDetailActivity"
+            android:parentActivityName=".feature.theaters.main.TheatersActivity"
             android:theme="@style/MultiPaneTheme" />
 
         <activity
@@ -305,13 +351,14 @@
             android:theme="@style/BuiltInWebViewTheme" />
 
         <activity
-            android:name=".ui.youtubelike.YoutubeLikeActivity"
+            android:name=".feature.youtube.ui.splashscreen.YoutubeSplashScreenActivity"
             android:label="@string/activity_title_youtube_like"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/YoutubeTheme" />
         <activity
-            android:name=".ui.youtubelike.YoutubeLikeDetailActivity"
-            android:parentActivityName=".ui.youtubelike.YoutubeLikeActivity"
+            android:name=".feature.youtube.ui.main.YoutubeActivity"
+            android:label="@string/activity_title_youtube_like"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/YoutubeTheme" />
 
         <activity
@@ -383,7 +430,7 @@
 
 
         <activity
-            android:name=".ui.songplayer.SongPlayerActivity"
+            android:name=".feature.songplayer.ui.SongPlayerActivity"
             android:label="@string/activity_title_music"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
@@ -460,18 +507,32 @@
 
         <!-- Google ML Kit -->
         <activity
-            android:name=".ui.googlemlkit.LiveBarcodeScanningActivity"
+            android:name=".feature.mlkit.ui.chooser.MLKitChooserActivity"
+            android:label="@string/activity_ml_kit_chooser_title"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".feature.mlkit.ui.xml.LiveBarcodeScanningActivity"
+            android:label="@string/activity_barcode_scanning_title"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.mlkit.ui.compose.MLKitComposeActivity"
             android:label="@string/activity_barcode_scanning_title"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".ui.googlemlkit.settings.SettingsActivity"
+            android:name=".feature.mlkit.ui.xml.settings.SettingsActivity"
             android:label="@string/activity_settings_title"
-            android:parentActivityName=".ui.googlemlkit.LiveBarcodeScanningActivity"
+            android:parentActivityName=".feature.mlkit.ui.xml.LiveBarcodeScanningActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+        <!-- Google ML Kit -->
 
         <activity
             android:name=".feature.settings.SettingsActivity"
@@ -508,6 +569,39 @@
         <activity
             android:name=".feature.streaming.StreamingActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <!-- Flight -->
+        <activity
+            android:name=".feature.flightaware.ui.splashscreen.FlightSplashScreenActivity"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.flightaware.ui.main.FlightMainActivity"
+            android:exported="true"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.flightaware.ui.flight.FlightDetailActivity"
+            android:parentActivityName=".feature.flightaware.ui.main.FlightMainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.flightaware.ui.search.SearchFlightActivity"
+            android:parentActivityName=".feature.flightaware.ui.main.FlightMainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.flightaware.ui.airport.AirportSearchActivity"
+            android:parentActivityName=".feature.flightaware.ui.main.FlightMainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.flightaware.ui.airport.AirportSearchDetailActivity"
+            android:parentActivityName=".feature.flightaware.ui.airport.AirportSearchActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <!-- ////////////// ACTIVITIES ////////////// -->
@@ -580,7 +674,8 @@
 
         <service
             android:name=".core.service.TheLabBootService"
-            android:exported="true" />
+            android:exported="true"
+            android:foregroundServiceType="specialUse" />
 
         <service android:name=".feature.schedule.core.ScheduleAlarmService" />
 
@@ -589,14 +684,15 @@
             android:enabled="true"
             android:exported="false" />
 
-        <service
-            android:name=".core.service.MusicMediaPlaybackService"
+        <!--<service
+            android:name=".feature.songplayer.core.service.MusicMediaPlaybackService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
-        </service>
+        </service>-->
+
 
         <service
             android:name=".feature.kat.core.FCMMessageService"

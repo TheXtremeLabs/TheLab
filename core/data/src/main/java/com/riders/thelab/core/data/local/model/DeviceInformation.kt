@@ -20,4 +20,6 @@ data class DeviceInformation(
     val sdkVersion: Int = 0,
     val androidRelease: String,
     val rooted: Boolean = false
-)
+) {
+    constructor() : this("", "", "", "", "", "", "", "", 0, 0, "", 0, "")
+}

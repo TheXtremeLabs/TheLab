@@ -14,11 +14,12 @@ object LabBiometricManager {
      *
      * @return
      */
+    @Suppress("DEPRECATION")
     fun hasFingerPrintHardware(context: Context): Boolean =
         when (
-            if (!LabCompatibilityManager.isAndroid10()) BiometricManager.from(context)
-                .canAuthenticate() else BiometricManager.from(context)
-                .canAuthenticate(Authenticators.BIOMETRIC_WEAK)
+            if (!LabCompatibilityManager.isAndroid10())
+                BiometricManager.from(context).canAuthenticate()
+            else BiometricManager.from(context).canAuthenticate(Authenticators.BIOMETRIC_WEAK)
         ) {
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,

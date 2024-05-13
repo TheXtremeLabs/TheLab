@@ -1,5 +1,8 @@
 package com.riders.thelab.ui.mainactivity
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.VectorDrawable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -35,7 +38,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
@@ -43,22 +45,41 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.compose.component.DynamicIsland
+import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.utils.LabAppManager
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainContent(viewModel: MainActivityViewModel) {
+fun MainContent(
+    viewModel: MainActivityViewModel,
+    dynamicIslandUiState: IslandState,
+    isDynamicIslandVisible: Boolean,
+    onUpdateDynamicIslandState: (IslandState) -> Unit,
+    onUpdateDynamicIslandVisible: (Boolean) -> Unit,
+    searchedAppRequest: String,
+    onSearchAppRequestChanged: (String) -> Unit,
+    filteredList: List<App>,
+    whatsNewList: List<LocalApp>,
+    isMicrophoneEnabled: Boolean,
+    onUpdateMicrophoneEnabled: (Boolean) -> Unit,
+    isKeyboardVisible: Boolean,
+    onUpdateKeyboardVisible: (Boolean) -> Unit,
+    isPagerAutoScroll: Boolean,
+    onLaunchSettings: () -> Unit
+) {
     val context = LocalContext.current
     val density = LocalDensity.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -82,10 +103,6 @@ fun MainContent(viewModel: MainActivityViewModel) {
             )
         )
 
-    val dynamicIslandUiState by viewModel.dynamicIslandState.collectAsStateWithLifecycle()
-    // val appList by viewModel.appList.collectAsStateWithLifecycle()
-    val whatsNewList: List<LocalApp> by viewModel.whatsNewAppList.collectAsStateWithLifecycle()
-
 
     TheLabTheme {
         BottomSheetScaffold(
@@ -93,10 +110,8 @@ fun MainContent(viewModel: MainActivityViewModel) {
             modifier = Modifier
                 .fillMaxSize()
                 .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
-            //topBar = { TheLabMainTopAppBar(viewModel, focusManager) },
             floatingActionButtonPosition = androidx.compose.material.FabPosition.End,
             floatingActionButton = {
-//                androidx.compose.material3.ExtendedFloatingActionButton(
                 androidx.compose.material3.FloatingActionButton(
                     modifier = Modifier.padding(bottom = 40.dp),
                     onClick = {
@@ -132,17 +147,17 @@ fun MainContent(viewModel: MainActivityViewModel) {
                                 onPress = {
                                     UIManager.showToast(context, "Press Detected")
 
-                                    if (viewModel.keyboardVisible) {
+                                    if (isKeyboardVisible) {
                                         // 1. Update value
-                                        viewModel.updateKeyboardVisible(false)
+                                        onUpdateKeyboardVisible(false)
                                         // 2. Clear focus
                                         focusManager.clearFocus(true)
                                         // 3. hide keyboard
                                         keyboardController?.hide()
 
                                         if (dynamicIslandUiState is IslandState.SearchState) {
-                                            viewModel.updateDynamicIslandState(IslandState.DefaultState)
-                                            viewModel.updateDynamicIslandVisible(false)
+                                            onUpdateDynamicIslandState(IslandState.DefaultState)
+                                            onUpdateDynamicIslandVisible(false)
                                         }
                                     }
                                 }
@@ -161,30 +176,30 @@ fun MainContent(viewModel: MainActivityViewModel) {
                         Header(
                             viewModel = viewModel,
                             whatsNewList = whatsNewList,
-                            isKeyboardVisible = viewModel.keyboardVisible,
-                            pagerAutoScroll = viewModel.isPagerAutoScroll,
+                            isKeyboardVisible = isKeyboardVisible,
+                            pagerAutoScroll = isPagerAutoScroll,
                             onSearchClicked = {
-                                viewModel.updateKeyboardVisible(true)
-                                viewModel.updateDynamicIslandState(IslandState.SearchState())
+                                onUpdateDynamicIslandVisible(true)
+                                onUpdateDynamicIslandState(IslandState.SearchState())
                             },
-                            onSettingsClicked = { viewModel.launchSettings() }
+                            onSettingsClicked = onLaunchSettings
                         )
                     }
 
                     items(
-                        items = viewModel.filteredList,
+                        items = filteredList,
                         key = { it.id }
                     ) { appItem ->
                         App(item = appItem)
                     }
 
-                    if (viewModel.filteredList.isEmpty()) {
+                    if (searchedAppRequest.trim() != "" && filteredList.isEmpty()) {
                         item(span = {
                             // Replace "maxCurrentLineSpan" with the number of spans this item should take.
                             // Use "maxCurrentLineSpan" if you want to take full width.
                             GridItemSpan(maxCurrentLineSpan)
                         }) {
-                            NoItemFound(viewModel.searchedAppRequest)
+                            NoItemFound(searchedAppRequest)
                         }
                     }
                 }
@@ -192,7 +207,7 @@ fun MainContent(viewModel: MainActivityViewModel) {
                 // Dynamic Island
                 AnimatedVisibility(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    visible = viewModel.isDynamicIslandVisible,
+                    visible = isDynamicIslandVisible,
                     enter = slideInVertically {
                         // Slide in from 40 dp from the top.
                         with(density) { -40.dp.roundToPx() }
@@ -205,7 +220,14 @@ fun MainContent(viewModel: MainActivityViewModel) {
                         with(density) { -40.dp.roundToPx() }
                     } + fadeOut()
                 ) {
-                    DynamicIsland(viewModel, dynamicIslandUiState)
+                    DynamicIsland(
+                        islandState = dynamicIslandUiState,
+                        searchedAppRequest = searchedAppRequest,
+                        onSearchAppRequestChanged = onSearchAppRequestChanged,
+                        isMicrophoneEnabled = isMicrophoneEnabled,
+                        onUpdateMicrophoneEnabled = onUpdateMicrophoneEnabled,
+                        onUpdateKeyboardVisible = onUpdateKeyboardVisible
+                    )
                 }
             }
         }
@@ -227,12 +249,11 @@ fun MainContent(viewModel: MainActivityViewModel) {
                     dynamicIslandUiState is IslandState.NetworkState.Available ||
                     dynamicIslandUiState is IslandState.NetworkState.Lost ||
                     dynamicIslandUiState is IslandState.NetworkState.Unavailable)
-            && viewModel.keyboardVisible
+            && isKeyboardVisible
         ) {
-            viewModel.updateDynamicIslandVisible(true)
+            onUpdateDynamicIslandVisible(true)
         } else {
-            viewModel.updateDynamicIslandVisible(false)
-
+            onUpdateDynamicIslandVisible(false)
         }
     }
 }
@@ -245,8 +266,50 @@ fun MainContent(viewModel: MainActivityViewModel) {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewMainContent() {
+private fun PreviewMainContent(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
+
+    val context = LocalContext.current
+    val appList = LabAppManager.getActivityList(context).take(3).let {
+        it.map { localApp ->
+
+            val bitmap: Bitmap? = if (localApp.appDrawableIcon is BitmapDrawable) {
+                (localApp.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
+            } else if (localApp.appDrawableIcon is VectorDrawable) {
+                App.getBitmap(localApp.appDrawableIcon as VectorDrawable)!!
+            } else {
+                null
+            }
+
+            LocalApp(
+                localApp.id,
+                localApp.appTitle!!,
+                localApp.appDescription!!,
+                null,
+                localApp.appActivity,
+                localApp.appDate!!
+            ).apply {
+                this.bitmap = bitmap
+            }
+        }
+    }
+
     TheLabTheme {
-        MainContent(viewModel = MainActivityViewModel())
+        MainContent(
+            viewModel = MainActivityViewModel(),
+            dynamicIslandUiState = state,
+            filteredList = appList,
+            whatsNewList = appList,
+            searchedAppRequest = "Colors",
+            isKeyboardVisible = true,
+            isPagerAutoScroll = true,
+            onSearchAppRequestChanged = { },
+            onLaunchSettings = {},
+            isMicrophoneEnabled = false,
+            onUpdateMicrophoneEnabled = {},
+            onUpdateKeyboardVisible = {},
+            onUpdateDynamicIslandState = {},
+            onUpdateDynamicIslandVisible = {},
+            isDynamicIslandVisible = true
+        )
     }
 }

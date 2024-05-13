@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHtmlText
@@ -135,8 +134,12 @@ fun SignUpSuccessContent(
 }
 
 @Composable
-fun SignUpSuccessScreen(viewModel: SignUpViewModel, onNavigateToSignUpSuccessScreen: () -> Unit) {
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
+fun SignUpSuccessScreen(
+    isDarkMode: Boolean,
+    username: String,
+    onNavigateToSignUpSuccessScreen: () -> Unit
+) {
+    TheLabTheme(darkTheme = isDarkMode) {
         Box(modifier = Modifier.fillMaxSize()) {
             // Background lottie animation
             Box(
@@ -163,7 +166,7 @@ fun SignUpSuccessScreen(viewModel: SignUpViewModel, onNavigateToSignUpSuccessScr
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .zIndex(5f),
-                username = viewModel.username,
+                username = username,
                 onNavigateToSignUpSuccessScreen = onNavigateToSignUpSuccessScreen
             )
         }
@@ -195,9 +198,7 @@ private fun PreviewSignUpSuccessContent() {
 @DevicePreviews
 @Composable
 private fun PreviewSignUpSuccessScreen() {
-    val viewModel: SignUpViewModel = hiltViewModel()
-
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
-        SignUpSuccessScreen(viewModel = viewModel) {}
+    TheLabTheme {
+        SignUpSuccessScreen(isDarkMode = isSystemInDarkTheme(), username = "JaneDoe") {}
     }
 }

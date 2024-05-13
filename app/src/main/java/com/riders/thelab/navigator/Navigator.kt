@@ -41,7 +41,12 @@ class Navigator(private val activity: Activity) {
     }
 
     fun callSettingsActivity() {
-        activity.startActivity(Intent(activity, com.riders.thelab.feature.settings.SettingsActivity::class.java))
+        activity.startActivity(
+            Intent(
+                activity,
+                com.riders.thelab.feature.settings.SettingsActivity::class.java
+            )
+        )
     }
 
     /* Detail Activities */

@@ -45,7 +45,7 @@ suspend fun String.getIconUri(context: Context): String {
     // Get the path of the loaded image from DiskCache.
     val path = context.imageLoader.diskCache?.openSnapshot(this)?.use { snapshot ->
         Timber.i("diskCache?.openSnapshot(iconUrl) | snapshot")
-        
+
         val imageFile = snapshot.data.toFile()
         Timber.i("diskCache?.openSnapshot(iconUrl) | snapshot | file path: ${imageFile.absolutePath}")
 
@@ -71,7 +71,7 @@ suspend fun String.getIconUri(context: Context): String {
             )
         }
 
-        Timber.i("return the path | ${contentUri.toString()}")
+        Timber.i("return the path | $contentUri")
         // return the path
         contentUri.toString()
     }

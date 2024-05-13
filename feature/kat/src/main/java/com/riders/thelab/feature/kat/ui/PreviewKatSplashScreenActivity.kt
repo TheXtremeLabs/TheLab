@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -90,7 +91,7 @@ fun KatSplashScreenContent() {
                 ) {
                     Icon(
                         modifier = Modifier.size(36.dp),
-                        imageVector = Icons.Filled.Message,
+                        imageVector = Icons.AutoMirrored.Filled.Message,
                         contentDescription = "message_icon",
                         tint = textAndIconColor
                     )

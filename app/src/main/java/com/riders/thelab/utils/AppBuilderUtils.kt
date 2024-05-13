@@ -12,11 +12,15 @@ import com.riders.thelab.feature.colors.ColorActivity
 import com.riders.thelab.feature.download.DownloadActivity
 import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
 import com.riders.thelab.feature.lottie.LottieActivity
+import com.riders.thelab.feature.mlkit.ui.chooser.MLKitChooserActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
 import com.riders.thelab.feature.schedule.ui.ScheduleActivity
+import com.riders.thelab.feature.songplayer.ui.SongPlayerActivity
 import com.riders.thelab.feature.streaming.StreamingActivity
-import com.riders.thelab.feature.theaters.TheatersActivity
+import com.riders.thelab.feature.tabs.WorkingTabsActivity
+import com.riders.thelab.feature.theaters.main.TheatersActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
+import com.riders.thelab.feature.youtube.ui.splashscreen.YoutubeSplashScreenActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.camera.CameraActivity
 import com.riders.thelab.ui.compose.ComposeActivity
@@ -24,18 +28,13 @@ import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
 import com.riders.thelab.ui.floatingview.FloatingViewActivity
 import com.riders.thelab.ui.googledrive.GoogleDriveActivity
-import com.riders.thelab.ui.googlemlkit.LiveBarcodeScanningActivity
 import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
-import com.riders.thelab.ui.palette.PaletteActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.screenshot.ScreenShotActivity
-import com.riders.thelab.ui.songplayer.SongPlayerActivity
 import com.riders.thelab.ui.spring.SpringActivity
-import com.riders.thelab.ui.tabs.WorkingTabsActivity
 import com.riders.thelab.ui.transition.TransitionActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
-import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity
 
 object AppBuilderUtils {
     fun buildActivities(context: Context): List<App> =
@@ -101,7 +100,7 @@ object AppBuilderUtils {
                         .withActivityDescription("ViewPager Fragments Tabs...")
                         .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_tab))
                         .withActivityClass(WorkingTabsActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityDate("2015/01/20")
                         .build()
                 this.add(tabs)
 
@@ -185,8 +184,8 @@ object AppBuilderUtils {
                                 R.drawable.ic_palette
                             )
                         )
-                        .withActivityClass(PaletteActivity::class.java)
-                        .withActivityDate("2023/01/16")
+                        .withActivityClass(com.riders.thelab.feature.palette.PaletteActivity::class.java)
+                        .withActivityDate("2024/02/12")
                         .build()
                 this.add(palette)
 
@@ -225,7 +224,7 @@ object AppBuilderUtils {
                 this.add(builtInWebView)
 
                 // Youtube
-                val youtubeLike =
+                val youtube =
                     AppBuilder
                         .withId(15)
                         .withActivityTitle(context.getString(R.string.activity_title_youtube_like))
@@ -236,11 +235,10 @@ object AppBuilderUtils {
                                 R.drawable.youtube_icon_like
                             )
                         )
-                        .withActivityClass(YoutubeLikeActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityClass(YoutubeSplashScreenActivity::class.java)
+                        .withActivityDate("2024/05/13")
                         .build()
-                this.add(youtubeLike)
-
+                this.add(youtube)
 
                 // Weather
                 val weather =
@@ -348,7 +346,7 @@ object AppBuilderUtils {
                         .withActivityDescription("Play music that is stored on your phone (Live Streaming wip)...")
                         .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_music))
                         .withActivityClass(SongPlayerActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityDate("2024/02/17")
                         .build()
                 this.add(songPlayer)
 
@@ -505,8 +503,8 @@ object AppBuilderUtils {
                         .build()
                 this.add(musicRecognition)
 
-                // Google ML Kit - Live Barcode
-                val liveBarcode =
+                // Google ML Kit
+                val mlkit =
                     AppBuilder
                         .withId(32)
                         .withActivityTitle(context.getString(R.string.activity_title_google_ml_kit))
@@ -517,15 +515,15 @@ object AppBuilderUtils {
                                 R.drawable.logo_mlkit
                             )
                         )
-                        .withActivityClass(LiveBarcodeScanningActivity::class.java)
-                        .withActivityDate("2022/01/28")
+                        .withActivityClass(MLKitChooserActivity::class.java)
+                        .withActivityDate("2024/02/18")
                         .build()
-                this.add(liveBarcode)
+                this.add(mlkit)
 
                 // Streaming
                 val streaming =
                     AppBuilder
-                        .withId(33)
+                        .withId(34)
                         .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_streaming))
                         .withActivityDescription("Use ExoPlayer to stream media from YouTube, Vimeo, Dailymotion, Twitch, and more...")
                         .withActivityIcon(
@@ -538,6 +536,40 @@ object AppBuilderUtils {
                         .withActivityDate("2024/01/24")
                         .build()
                 this.add(streaming)
+
+                //Location On Maps Compose
+                val locationOnMapsCompose =
+                    AppBuilder
+                        .withId(35)
+                        .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_location_on_maps_compose))
+                        .withActivityDescription("Display User location on map...")
+                        .withActivityIcon(
+                            getDrawableFromIntResource(
+                                context,
+                                com.riders.thelab.feature.locationonmaps.R.drawable.ic_location_compose
+                            )
+                        )
+                        .withActivityClass(com.riders.thelab.feature.locationonmaps.LocationOnMapsActivity::class.java)
+                        .withActivityDate("2024/03/06")
+                        .build()
+                this.add(locationOnMapsCompose)
+
+                // Flight
+                val flight =
+                    AppBuilder
+                        .withId(36)
+                        .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_flight))
+                        .withActivityDescription("Track and get flights info...")
+                        .withActivityIcon(
+                            getDrawableFromIntResource(
+                                context,
+                                com.riders.thelab.feature.flightaware.R.drawable.ic_flightaware_logo
+                            )
+                        )
+                        .withActivityClass(com.riders.thelab.feature.flightaware.ui.splashscreen.FlightSplashScreenActivity::class.java)
+                        .withActivityDate("2024/03/06")
+                        .build()
+                this.add(flight)
 
                 // Wip
                 val wip =

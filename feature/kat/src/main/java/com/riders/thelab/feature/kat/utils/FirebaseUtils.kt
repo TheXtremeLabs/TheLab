@@ -353,9 +353,9 @@ object FirebaseUtils {
                 if (null == value) {
                     onFailure(Throwable("Value is null"))
                 } else {
-                    Timber.d("value: ${value.toString()}")
+                    Timber.d("value: $value")
                     val users: List<FCDKatUser> = value.toObjects(FCDKatUser::class.java)
-                    Timber.d("users: ${users.toString()}")
+                    Timber.d("users: $users")
                     onSuccess(users.map { it.toModel() })
                 }
             }
@@ -440,9 +440,9 @@ object FirebaseUtils {
                 if (null == value) {
                     onFailure(Throwable("Value is null"))
                 } else {
-                    Timber.d("value: ${value.toString()}")
+                    Timber.d("value: $value")
                     val messages: List<KatModel> = value.toObjects(KatModel::class.java)
-                    Timber.d("users: ${messages.toString()}")
+                    Timber.d("users: $messages")
                     onSuccess(messages)
                 }
             }

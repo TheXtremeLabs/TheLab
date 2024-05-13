@@ -10,6 +10,7 @@ import android.location.Address
 import android.location.Geocoder
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
@@ -17,7 +18,7 @@ import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.common.utils.LabLocationUtils
+import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
@@ -29,8 +30,6 @@ import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.LabAppManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,23 +52,15 @@ class MainActivityViewModel : BaseViewModel() {
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    // App List
-    // Backing property to avoid state updates from other classes
-    private val _whatsNewAppList: MutableStateFlow<List<LocalApp>> =
-        MutableStateFlow(emptyList())
-
-    // The UI collects from this StateFlow to get its state updates
-    val whatsNewAppList: StateFlow<List<LocalApp>> = _whatsNewAppList
-
-    // app List
-    private val _appList: MutableStateFlow<List<App>> = MutableStateFlow(emptyList())
-    val appList: StateFlow<List<App>> = _appList
+    // App Lists
+    var whatsNewAppList = mutableStateListOf<LocalApp>()
+    var appList = mutableStateListOf<App>()
 
     val filteredList: List<App> by derivedStateOf {
-        if(searchedAppRequest.trim().isBlank()){
-            _appList.value
+        if (searchedAppRequest.trim().isBlank() || searchedAppRequest.trim() == "") {
+            appList.toList()
         } else {
-            _appList.value.filter {
+            appList.toList().filter {
                 (it.appName != null && it.appName?.contains(
                     searchedAppRequest, ignoreCase = true
                 )!!) || (it.appTitle != null && it.appTitle?.contains(
@@ -108,11 +99,13 @@ class MainActivityViewModel : BaseViewModel() {
 
     // App List
     private fun updateWhatsNewList(whatsNewList: List<LocalApp>) {
-        this._whatsNewAppList.value = whatsNewList
+        this.whatsNewAppList.clear()
+        this.whatsNewAppList.addAll(whatsNewList)
     }
 
     private fun updateAppList(appList: List<App>) {
-        this._appList.value = appList
+        this.appList.clear()
+        this.appList.addAll(appList)
     }
 
     // Dynamic Island
@@ -239,7 +232,7 @@ class MainActivityViewModel : BaseViewModel() {
     @SuppressLint("NewApi")
     fun fetchWeather(context: Context, latitude: Double, longitude: Double) {
         Timber.d("suspend fetchWeather()")
-        viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             try {
                 supervisorScope {
 
@@ -253,30 +246,21 @@ class MainActivityViewModel : BaseViewModel() {
                     if (null == fetchWeather) {
                         Timber.e("Fetch weather error")
                     } else {
+                        val geocoder = Geocoder(context, Locale.getDefault())
+                        val weatherLocation =
+                            (fetchWeather.latitude to fetchWeather.longitude).toLocation()
 
                         if (!LabCompatibilityManager.isTiramisu()) {
-                            LabAddressesUtils.getDeviceAddressLegacy(
-                                Geocoder(context, Locale.getDefault()),
-                                LabLocationUtils.buildTargetLocationObject(
-                                    fetchWeather.latitude,
-                                    fetchWeather.longitude
-                                )
-                            )?.let { address ->
-
-                                buildProcessWeather(fetchWeather, address)
-
-                            } ?: run {
-                                Timber.e("address object is null")
-                            }
+                            LabAddressesUtils.getDeviceAddressLegacy(geocoder, weatherLocation)
+                                ?.let { address ->
+                                    buildProcessWeather(fetchWeather, address)
+                                } ?: run { Timber.e("address object is null") }
                         } else {
                             // back on UI thread
-                            withContext(Main) {
+                            withContext(Dispatchers.Main) {
                                 LabAddressesUtils.getDeviceAddressAndroid13(
-                                    Geocoder(context, Locale.getDefault()),
-                                    LabLocationUtils.buildTargetLocationObject(
-                                        fetchWeather.latitude,
-                                        fetchWeather.longitude
-                                    )
+                                    geocoder,
+                                    weatherLocation
                                 ) { address ->
                                     address?.let {
                                         buildProcessWeather(fetchWeather, it)
@@ -309,12 +293,12 @@ class MainActivityViewModel : BaseViewModel() {
 
         temperature?.let { temp ->
             weatherIconUrl?.let { icon ->
-                    ProcessedWeather(
-                        cityName,
-                        cityCountry,
-                        temp,
-                        icon
-                    )
+                ProcessedWeather(
+                    cityName,
+                    cityCountry,
+                    temp,
+                    icon
+                )
             } ?: run { Timber.e("Weather icon object is null") }
         } ?: run { Timber.e("Temperature object is null") }
     }
@@ -344,12 +328,18 @@ class MainActivityViewModel : BaseViewModel() {
             .sortedByDescending { (it as LocalApp).appDate }
             .take(3)
             .map {
-                var bitmap: Bitmap? = if (it.appDrawableIcon is BitmapDrawable) {
-                    (it.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
-                } else if (it.appDrawableIcon is VectorDrawable) {
-                    App.getBitmap(it.appDrawableIcon as VectorDrawable)!!
-                } else {
-                    null
+                val bitmap: Bitmap? = when (it.appDrawableIcon) {
+                    is BitmapDrawable -> {
+                        (it.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
+                    }
+
+                    is VectorDrawable -> {
+                        App.getBitmap(it.appDrawableIcon as VectorDrawable)!!
+                    }
+
+                    else -> {
+                        null
+                    }
                 }
 
                 LocalApp(

@@ -18,7 +18,7 @@ import retrofit2.Retrofit
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class KatRestClient() {
+class KatRestClient {
 
     private val json = Json {
         ignoreUnknownKeys = true

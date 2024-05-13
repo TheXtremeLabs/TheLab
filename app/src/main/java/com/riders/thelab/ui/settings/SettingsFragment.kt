@@ -17,14 +17,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setupPreferences() {
         val darkModeSettings: SwitchPreferenceCompat? =
-            findPreference(getString(R.string.pref_key_dark_mode))
+            findPreference(getString(com.riders.thelab.core.ui.R.string.pref_key_dark_mode))
         darkModeSettings?.setOnPreferenceChangeListener { preference, newValue ->
             Timber.e("$preference + $newValue")
             true
         }
 
         val wipeDataSettings: Preference? =
-            findPreference(getString(R.string.pref_key_wipe_data))
+            findPreference(getString(com.riders.thelab.core.ui.R.string.pref_key_wipe_data))
         wipeDataSettings?.setOnPreferenceClickListener {
             Timber.e("$it clicked")
             Timber.e("Should ask user for delete all preferences")

@@ -16,6 +16,7 @@ import timber.log.Timber
 
 
 @SuppressLint("MissingPermission")
+@Suppress("EmptyMethod")
 class BluetoothViewModel : BaseViewModel() {
 
     //////////////////////////////////////////
@@ -56,7 +57,7 @@ class BluetoothViewModel : BaseViewModel() {
     }
 
     fun addNewBluetoothAvailableDevices(newDevice: BluetoothDevice) {
-        Timber.d("addNewBluetoothAvailableDevices() | ${newDevice.toString()}")
+        Timber.d("addNewBluetoothAvailableDevices() | $newDevice")
 
         val mutableSetBluetoothDevices: MutableSet<BluetoothDevice> =
             this._availableDevices.value.toMutableSet()

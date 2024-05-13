@@ -3,13 +3,20 @@ package com.riders.thelab.core.common.utils
 import android.annotation.SuppressLint
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 object DateTimeUtils {
 
     private const val UTC = "UTC"
     private const val GMT = "GMT"
+
+    @Suppress("ConstPropertyName")
     private const val HH_mm = "HH:mm"
+
+    @Suppress("ConstPropertyName")
     private const val dd_MM = "dd/MM"
 
     @SuppressLint("SimpleDateFormat")

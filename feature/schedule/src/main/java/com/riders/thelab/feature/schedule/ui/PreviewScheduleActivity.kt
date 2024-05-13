@@ -18,17 +18,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.PlainTooltipBox
-import androidx.compose.material3.PlainTooltipState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
@@ -39,20 +39,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
+import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.component.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_surfaceTint
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_surfaceTint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleContent(
     scheduleState: ScheduleJobAlarmUiState,
     onUpdateUIState: (ScheduleJobAlarmUiState) -> Unit,
-    tooltipState: PlainTooltipState,
+    tooltipState: TooltipState,
     onStartButtonClicked: () -> Unit,
     countDownQuery: String,
     onUpdateCountDownQuery: (String) -> Unit,
@@ -73,7 +74,7 @@ fun ScheduleContent(
     TheLabTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = { TheLabTopAppBar(stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_schedule_jobs)) }
+            topBar = { TheLabTopAppBar(stringResource(id = R.string.activity_title_schedule_jobs)) }
         ) { contentPadding ->
 
             Box(
@@ -109,9 +110,10 @@ fun ScheduleContent(
                         maxLines = 1,
                         trailingIcon = {
                             if (countDownQuery.isBlank()) {
-                                PlainTooltipBox(
+                                TooltipBox(
                                     tooltip = { Text(text = "Field can't be empty. Please enter a valid number") },
-                                    tooltipState = tooltipState
+                                    state = tooltipState,
+                                    positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()
                                 ) {
                                     IconButton(
                                         onClick = {
@@ -158,7 +160,7 @@ fun ScheduleContent(
     }
 
     LaunchedEffect(isCountDownStarted) {
-        Timber.d("LaunchedEffect(viewModel.isCountDownStarted) with: ${isCountDownStarted}")
+        Timber.d("LaunchedEffect(viewModel.isCountDownStarted) with: $isCountDownStarted")
 
         // Should update loading view
         onUpdateLoadingViewVisible(isCountDownStarted)
@@ -186,7 +188,7 @@ fun ScheduleContent(
     }
 
     LaunchedEffect(isCountDownDone) {
-        Timber.d("LaunchedEffect(viewModel.isCountDownDone) with: ${isCountDownDone}")
+        Timber.d("LaunchedEffect(viewModel.isCountDownDone) with: $isCountDownDone")
 
         onUpdateLoadingViewVisible(isCountDownDone)
 
@@ -203,7 +205,7 @@ fun ScheduleContent(
 @DevicePreviews
 @Composable
 private fun PreviewScheduleContent(@PreviewParameter(PreviewProvider::class) scheduleState: ScheduleJobAlarmUiState) {
-    val tooltipState = PlainTooltipState()
+    val tooltipState = TooltipState()
 
     TheLabTheme {
         ScheduleContent(

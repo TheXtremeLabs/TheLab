@@ -5,10 +5,11 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
 import androidx.activity.ComponentActivity
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
@@ -21,8 +22,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.riders.thelab.core.data.local.model.Message
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 fun Context.findActivity(): Activity? = when (this) {
     is BaseComponentActivity -> this
@@ -61,4 +63,18 @@ fun keyboardAsStateView(): State<Boolean> {
         }
     }
     return keyboardState
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+fun showTooltip(scope: CoroutineScope, tooltipState: TooltipState) = scope.launch {
+    if (!tooltipState.isVisible) {
+        tooltipState.show()
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+fun hideTooltip(scope: CoroutineScope, tooltipState: TooltipState) = scope.launch {
+    if (tooltipState.isVisible) {
+        tooltipState.dismiss()
+    }
 }

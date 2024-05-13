@@ -1,11 +1,11 @@
 package com.riders.thelab.ui.mainactivity
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.location.Location
@@ -22,29 +22,26 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 import com.riders.thelab.R
 import com.riders.thelab.TheLabApplication
 import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
+import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
-import com.riders.thelab.core.permissions.DexterPermissionManager
+import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
@@ -58,6 +55,8 @@ import java.util.Locale
 class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, RecognitionListener {
 
     private val mViewModel: MainActivityViewModel by viewModels()
+
+    private var mPermissionManager: PermissionManager? = null
 
     // Location
     private var mLabLocationManager: LabLocationManager? = null
@@ -98,18 +97,48 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         }
         window.navigationBarColor = ContextCompat.getColor(this, R.color.default_dark)
 
+        mPermissionManager = PermissionManager.from(this)
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
+
+                    val dynamicIslandUiState by mViewModel.dynamicIslandState.collectAsStateWithLifecycle()
+
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            MainContent(viewModel = mViewModel)
+                            MainContent(
+                                viewModel = mViewModel,
+                                dynamicIslandUiState = dynamicIslandUiState,
+                                isDynamicIslandVisible = mViewModel.isDynamicIslandVisible,
+                                onUpdateDynamicIslandState = mViewModel::updateDynamicIslandState,
+                                onUpdateDynamicIslandVisible = mViewModel::updateDynamicIslandVisible,
+                                searchedAppRequest = mViewModel.searchedAppRequest,
+                                onSearchAppRequestChanged = mViewModel::updateSearchAppRequest,
+                                filteredList = mViewModel.filteredList,
+                                whatsNewList = mViewModel.whatsNewAppList,
+                                isMicrophoneEnabled = mViewModel.isMicrophoneEnabled,
+                                onUpdateMicrophoneEnabled = mViewModel::updateMicrophoneEnabled,
+                                isKeyboardVisible = mViewModel.keyboardVisible,
+                                onUpdateKeyboardVisible = mViewModel::updateKeyboardVisible,
+                                isPagerAutoScroll = mViewModel.isPagerAutoScroll,
+                                onLaunchSettings = mViewModel::launchSettings
+                            )
                         }
                     }
+                }
+            }
+
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                if (mViewModel.appList.toList().isEmpty()) {
+
+                    // Retrieve applications
+                    mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
+                    mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
                 }
             }
         }
@@ -195,26 +224,42 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
     //
     /////////////////////////////////////
     private fun checkPermissions() {
-        DexterPermissionManager(this)
-            .checkPermissions(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                onPermissionDenied = {
-                    Timber.e("Permissions are denied. User may access to app with limited location related features")
-                },
-                onShouldShowRationale = { Timber.w("Permissions are denied. User may access to app with limited location related features") },
-                onPermissionGranted = {
+        val setOfPermissions: Set<String> = buildSet {
+            Permission.Location.permissions.forEach { add(it) }
+        }
+        val arrayOfPermissions: Array<String> = setOfPermissions.toTypedArray()
 
-                    // Variables
-                    initActivityVariables()
+        val hasPermission = arrayOfPermissions.all {
+            val granted = checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+            Timber.d("checkPermissions() | granted?: $granted")
+            checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+        }
 
-                    // Retrieve applications
-                    mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
-                    mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
+        Timber.d("checkPermissions() | hasPermission?: $hasPermission")
+
+        mPermissionManager?.let {
+            it.request(Permission.Location)
+                .rationale("Location is needed to discover some features")
+                .checkPermission { granted: Boolean ->
+
+                    if (!granted) {
+                        Timber.e("Permissions are denied. User may access to app with limited location related features")
+
+                    } else {
+
+                        // Variables
+                        initActivityVariables()
+
+                        // Retrieve applications
+                        mViewModel.retrieveApplications(
+                            TheLabApplication.getInstance().getContext()
+                        )
+                        mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
+                    }
                 }
-            )
-    }
+        }
 
+    }
 
     private fun initActivityVariables() {
         Timber.d("initActivityVariables()")
@@ -281,11 +326,20 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 
     fun launchSpeechToText() {
         // Check permission first
-        Dexter
-            .withContext(this@MainActivity)
-            .withPermission(Manifest.permission.RECORD_AUDIO)
-            .withListener(object : PermissionListener {
-                override fun onPermissionGranted(grantedResponse: PermissionGrantedResponse?) {
+
+        val manager = checkNotNull(mPermissionManager) {
+            "Permission Manager is null. Then cannot launch speech to text."
+        }
+
+        manager.request(Permission.AudioRecord)
+            .rationale("Microphone permission is mandatory in order to use the vocal searchiing fatures.")
+            .checkPermission { granted: Boolean ->
+
+                if (!granted) {
+                    // if the permissions are not accepted we are displaying
+                    // a toast message as permissions denied on below line.
+                    UIManager.showToast(this@MainActivity, "Permissions Denied..")
+                } else {
                     // if all the permissions are granted we are displaying
                     // a simple toast message.
                     UIManager.showToast(this@MainActivity, "Permissions Granted..")
@@ -296,31 +350,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                     Timber.i("startListening() ... ")
                     speech?.startListening(recognizerIntent)
                 }
-
-                override fun onPermissionDenied(permissionDenied: PermissionDeniedResponse?) {
-                    // if the permissions are not accepted we are displaying
-                    // a toast message as permissions denied on below line.
-                    UIManager.showToast(this@MainActivity, "Permissions Denied..")
-                }
-
-                // on below line we are calling on permission
-                // rational should be shown method.
-                override fun onPermissionRationaleShouldBeShown(
-                    permissionRequest: PermissionRequest?,
-                    token: PermissionToken?
-                ) {
-                    // in this method we are calling continue
-                    // permission request until permissions are not granted.
-                    token?.continuePermissionRequest()
-                }
-            })
-            .withErrorListener {
-
-                // on below line method will be called when dexter
-                // throws any error while requesting permissions.
-                UIManager.showToast(this@MainActivity, it.name)
             }
-            .check()
     }
 
     // Init Speech To Text Variables
@@ -379,7 +409,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         Timber.d("launchApp : $item")
         when {
             item is LocalApp && item.title?.lowercase()?.contains("drive") == true -> {
-                UIManager.showActionInToast(
+                UIManager.showToast(
                     this@MainActivity,
                     "Please check this functionality later. Problem using Drive REST API v3"
                 )

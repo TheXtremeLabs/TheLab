@@ -5,7 +5,7 @@ pluginManagement {
      * repositories Gradle uses to search or download the Gradle plugins and
      * their transitive dependencies. Gradle pre-configures support for remote
      * repositories such as JCenter, Maven Central, and Ivy. You can also use
-     * local repositories or define your own remote repositories. The code below
+     * local repositories or define your own remote repositories. The CODE below
      * defines the Gradle Plugin Portal, Google's Maven repository,
      * and the Maven Central Repository as the repositories Gradle should use to look for its dependencies.
      */
@@ -64,15 +64,21 @@ include(":feature:biometric")
 include(":feature:bluetooth")
 include(":feature:colors")
 include(":feature:download")
+include(":feature:flightaware")
 include(":feature:kat")
+include(":feature:locationonmaps")
 include(":feature:lottie")
+include(":feature:mlkit")
 include(":feature:musicrecognition")
+include(":feature:palette")
 include(":feature:schedule")
 include(":feature:settings")
 include(":feature:songplayer")
 include(":feature:streaming")
+include(":feature:tabs")
 include(":feature:theaters")
 include(":feature:weather")
+include(":feature:youtube")
 include(":spotify-app-remote")
 include(":spotify-auth")
 include(":spotify-auth-store")

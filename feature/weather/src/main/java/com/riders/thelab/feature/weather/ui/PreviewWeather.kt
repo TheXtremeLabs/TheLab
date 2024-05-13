@@ -32,7 +32,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -49,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -64,32 +64,33 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.riders.thelab.core.common.utils.DateTimeUtils
-import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.local.model.compose.WeatherCityUIState
 import com.riders.thelab.core.data.local.model.compose.WeatherUIState
+import com.riders.thelab.core.data.local.model.weather.CityModel
+import com.riders.thelab.core.data.remote.dto.weather.CurrentWeather
 import com.riders.thelab.core.data.remote.dto.weather.DailyWeather
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.data.WindDirection
-import com.riders.thelab.feature.weather.core.component.TheLabTopAppBar
 import com.riders.thelab.feature.weather.utils.Constants
 import com.riders.thelab.feature.weather.utils.WeatherUtils
 import timber.log.Timber
+import java.util.UUID
 import kotlin.math.roundToInt
 
 ///////////////////////////////////////
@@ -103,23 +104,42 @@ fun WeatherLoading(modifier: Modifier = Modifier) {
     TheLabTheme {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .then(modifier)
+                .size(72.dp)
+                .then(modifier),
+            contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            Lottie(
+                modifier = Modifier.fillMaxSize(),
+                url = "https://assets2.lottiefiles.com/packages/lf20_kk62um5v.json"
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WeatherSuccess(viewModel: WeatherViewModel) {
+fun WeatherSuccess(
+    weatherCityUiState: WeatherCityUIState,
+    searchMenuExpanded: Boolean,
+    onUpdateSearchMenuExpanded: (Boolean) -> Unit,
+    searchCityQuery: String,
+    onUpdateSearchText: (String) -> Unit,
+    suggestions: List<CityModel>,
+    onFetchWeatherRequest: (Double, Double) -> Unit,
+    weatherAddress: Address?,
+    onGetMaxMinTemperature: (List<CurrentWeather>) -> Unit,
+    cityMaxTemp: String,
+    cityMinTemp: String,
+    isWeatherMoreDataVisible: Boolean,
+    onUpdateMoreDataVisibility: () -> Unit,
+    onGetCityNameWithCoordinates: (Double, Double) -> Unit
+) {
 
     val focusManager: FocusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-    val icon = if (viewModel.expanded)
+    val icon = if (searchMenuExpanded)
         Icons.Filled.ArrowDropUp //it requires androidx.compose.material:material-icons-extended
     else
         Icons.Filled.ArrowDropDown
@@ -130,14 +150,14 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
             // Weather city search field
             ExposedDropdownMenuBox(
                 modifier = Modifier.fillMaxWidth(),
-                expanded = viewModel.expanded,
+                expanded = searchMenuExpanded,
                 onExpandedChange = {
-                    viewModel.expanded = !viewModel.expanded
+                    onUpdateSearchMenuExpanded(!searchMenuExpanded)
                 }
             ) {
                 TextField(
-                    value = viewModel.searchText,
-                    onValueChange = { viewModel.updateSearchText(it) },
+                    value = searchCityQuery,
+                    onValueChange = { onUpdateSearchText(it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .onGloballyPositioned { coordinates ->
@@ -148,9 +168,12 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
                         .menuAnchor(),
                     label = { Text("Search a Country, City,...") },
                     trailingIcon = {
-                        Icon(imageVector = icon,
-                            contentDescription = "contentDescription",
-                            Modifier.clickable { viewModel.expanded = !viewModel.expanded }
+                        Icon(
+                            modifier = Modifier
+                                .rotate(if (!searchMenuExpanded) 0f else 180f)
+                                .clickable { onUpdateSearchMenuExpanded(!searchMenuExpanded) },
+                            imageVector = icon,
+                            contentDescription = "contentDescription"
                         )
                     },
                     singleLine = true,
@@ -161,10 +184,10 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
                 ExposedDropdownMenu(
                     modifier = Modifier
                         .width(with(LocalDensity.current) { textFieldSize.width.toDp() }),
-                    expanded = viewModel.expanded,
-                    onDismissRequest = { viewModel.expanded = false }
+                    expanded = searchMenuExpanded,
+                    onDismissRequest = { onUpdateSearchMenuExpanded(false) }
                 ) {
-                    viewModel.suggestions.take(10).forEachIndexed { _, city ->
+                    suggestions.forEachIndexed { _, city ->
 
                         val countryURL: String =
                             (Constants.BASE_ENDPOINT_WEATHER_FLAG
@@ -187,10 +210,10 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
                         DropdownMenuItem(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
-                                viewModel.updateSearchText("${city.name}, ${city.country}")
-                                viewModel.expanded = false
+                                onUpdateSearchText("${city.name}, ${city.country}")
+                                onUpdateSearchMenuExpanded(false)
                                 focusManager.clearFocus(true)
-                                viewModel.fetchWeather((city.latitude to city.longitude).toLocation())
+                                onFetchWeatherRequest(city.latitude, city.longitude)
                             },
                             text = {
                                 Row(
@@ -218,197 +241,214 @@ fun WeatherSuccess(viewModel: WeatherViewModel) {
             }
 
             // Weather city data to display
-            WeatherData(viewModel)
+            WeatherData(
+                cityUIState = weatherCityUiState,
+                weatherAddress = weatherAddress,
+                onGetMaxMinTemperature = onGetMaxMinTemperature,
+                cityMaxTemp = cityMaxTemp,
+                cityMinTemp = cityMinTemp,
+                isWeatherMoreDataVisible = isWeatherMoreDataVisible,
+                onUpdateMoreDataVisibility = onUpdateMoreDataVisibility,
+                onGetCityNameWithCoordinates = onGetCityNameWithCoordinates
+            )
         }
     }
 }
 
 @Composable
-fun WeatherData(viewModel: WeatherViewModel) {
+fun WeatherData(
+    cityUIState: WeatherCityUIState,
+    weatherAddress: Address?,
+    onGetMaxMinTemperature: (List<CurrentWeather>) -> Unit,
+    cityMaxTemp: String,
+    cityMinTemp: String,
+    isWeatherMoreDataVisible: Boolean,
+    onUpdateMoreDataVisibility: () -> Unit,
+    onGetCityNameWithCoordinates: (Double, Double) -> Unit
+) {
 
     val context = LocalContext.current
-    val cityUIState by viewModel.weatherCityUiState.collectAsStateWithLifecycle()
 
-    if (cityUIState is WeatherCityUIState.Success) {
+    when (cityUIState) {
+        is WeatherCityUIState.Success -> {
+            val weather = cityUIState.weather
 
-        val weather = (cityUIState as WeatherCityUIState.Success).weather
-
-        val painter = rememberAsyncImagePainter(
-            model = ImageRequest
-                .Builder(LocalContext.current)
-                .data(
-                    WeatherUtils.getWeatherIconFromApi(
-                        weather
-                            .currentWeather
-                            ?.weather!![0]
-                            .icon
+            val painter = rememberAsyncImagePainter(
+                model = ImageRequest
+                    .Builder(LocalContext.current)
+                    .data(
+                        WeatherUtils.getWeatherIconFromApi(
+                            weather
+                                .currentWeather
+                                ?.weather!![0]
+                                .icon
+                        )
                     )
-                )
-                .apply {
-                    crossfade(true)
-                    allowHardware(false)
-                    //transformations(RoundedCornersTransformation(32.dp.value))
-                }
-                .build(),
-            placeholder = painterResource(R.drawable.logo_colors),
-        )
+                    .apply {
+                        crossfade(true)
+                        allowHardware(false)
+                        //transformations(RoundedCornersTransformation(32.dp.value))
+                    }
+                    .build(),
+                placeholder = painterResource(R.drawable.logo_colors),
+            )
 
-        val address: Address? = viewModel.weatherAddress
+            val address: Address? = weatherAddress
 
-        // Load city name
-        val cityName = address?.locality
-        val country = address?.countryName
+            // Load city name
+            val cityName = address?.locality
+            val country = address?.countryName
 
-        // Temperatures
-        val temperature =
-            "${weather.currentWeather!!.temperature.roundToInt()} ${
-                (context.findActivity() as WeatherActivity).getString(
-                    R.string.degree_placeholder
-                )
-            }"
+            // Temperatures
+            val temperature =
+                "${weather.currentWeather!!.temperature.roundToInt()} ${
+                    (context.findActivity() as WeatherActivity).getString(
+                        R.string.degree_placeholder
+                    )
+                }"
 
-        weather.hourlyWeather?.let { viewModel.getMaxMinTemperature(it) }
+            weather.hourlyWeather?.let { onGetMaxMinTemperature(it) }
 
-        TheLabTheme {
-            AnimatedVisibility(visible = cityUIState is WeatherCityUIState.Success) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
+            TheLabTheme {
+                AnimatedVisibility(visible = true) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
                     ) {
-                        Column(
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                                .padding(16.dp)
                         ) {
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                // Weather icon
-                                Image(
-                                    modifier = Modifier
-                                        .size(72.dp)
-                                        .clip(RoundedCornerShape(12.dp)),
-                                    painter = painter,
-                                    contentDescription = "weather icon wth coil",
-                                    contentScale = ContentScale.Fit,
-                                )
 
-                                // Colum with city name country and weather state
-                                Column(
-                                    horizontalAlignment = Alignment.End,
-                                    verticalArrangement = Arrangement.Center
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(text = "$cityName, $country")
-                                    Text(
-                                        text = weather.currentWeather!!.weather!![0].main,
-                                        style = Typography.titleSmall,
-                                        fontWeight = FontWeight.ExtraBold
-                                    )
-                                }
-                            }
-
-                            // Temperature row container
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Column(modifier = Modifier) {
-                                    // current temperature
-                                    Text(
-                                        text = temperature,
-                                        style = Typography.titleLarge,
-                                        fontWeight = FontWeight.Bold
+                                    // Weather icon
+                                    Image(
+                                        modifier = Modifier
+                                            .size(72.dp)
+                                            .clip(RoundedCornerShape(12.dp)),
+                                        painter = painter,
+                                        contentDescription = "weather icon wth coil",
+                                        contentScale = ContentScale.Fit,
                                     )
 
-                                    // Min | Max Temperatures
-                                    Row(
-                                        modifier = Modifier,
-                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                        verticalAlignment = Alignment.CenterVertically
+                                    // Colum with city name country and weather state
+                                    Column(
+                                        horizontalAlignment = Alignment.End,
+                                        verticalArrangement = Arrangement.Center
                                     ) {
+                                        Text(text = "$cityName, $country")
                                         Text(
-                                            text = viewModel.cityMaxTemp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "|"
-                                        )
-                                        Text(
-                                            text = viewModel.cityMinTemp
+                                            text = weather.currentWeather!!.weather!![0].main,
+                                            style = Typography.titleSmall,
+                                            fontWeight = FontWeight.ExtraBold
                                         )
                                     }
                                 }
 
-                                Button(onClick = { viewModel.updateMoreDataVisibility() }) {
-                                    AnimatedContent(
-                                        targetState = viewModel.isWeatherMoreDataVisible,
-                                        label = "weather_visibility_animation"
-                                    ) { targetState ->
+                                // Temperature row container
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Column(modifier = Modifier) {
+                                        // current temperature
+                                        Text(
+                                            text = temperature,
+                                            style = Typography.titleLarge,
+                                            fontWeight = FontWeight.Bold
+                                        )
+
+                                        // Min | Max Temperatures
                                         Row(
                                             modifier = Modifier,
-                                            horizontalArrangement = Arrangement.spacedBy(
-                                                16.dp,
-                                                Alignment.CenterHorizontally
-                                            ),
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp),
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            Text(text = if (!targetState) "Show More" else "Close Panel")
-                                            Icon(
-                                                imageVector = if (!targetState) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
-                                                contentDescription = "more icon"
+                                            Text(
+                                                text = cityMaxTemp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text(
+                                                text = "|"
+                                            )
+                                            Text(
+                                                text = cityMinTemp
                                             )
                                         }
                                     }
+
+                                    Button(onClick = { onUpdateMoreDataVisibility() }) {
+                                        AnimatedContent(
+                                            targetState = isWeatherMoreDataVisible,
+                                            label = "weather_visibility_animation"
+                                        ) { targetState ->
+                                            Row(
+                                                modifier = Modifier,
+                                                horizontalArrangement = Arrangement.spacedBy(
+                                                    16.dp,
+                                                    Alignment.CenterHorizontally
+                                                ),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(text = if (!targetState) "Show More" else "Close Panel")
+                                                Icon(
+                                                    imageVector = if (!targetState) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
+                                                    contentDescription = "more icon"
+                                                )
+                                            }
+                                        }
+                                    }
                                 }
-                            }
 
-                            AnimatedVisibility(visible = viewModel.isWeatherMoreDataVisible) {
-                                WeatherMoreData(weather)
-                            }
+                                AnimatedVisibility(visible = isWeatherMoreDataVisible) {
+                                    WeatherMoreData(weather)
+                                }
 
-                            // Forecast
-                            WeatherDailyForecast(
-                                viewModel = viewModel,
-                                dailyWeatherList = weather.dailyWeather!!
+                                // Forecast
+                                WeatherDailyForecast(
+                                    dailyWeatherList = weather.dailyWeather!!
+                                )
+                            }
+                        }
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.weather_data_provided_by),
+                                fontSize = 12.sp
+                            )
+                            Image(
+                                modifier = Modifier.height(28.dp),
+                                painter = painterResource(id = R.drawable.openweathermap_logo_white),
+                                contentDescription = "open weather icon"
                             )
                         }
                     }
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.weather_data_provided_by),
-                            fontSize = 12.sp
-                        )
-                        Image(
-                            modifier = Modifier.height(28.dp),
-                            painter = painterResource(id = R.drawable.openweathermap_logo_white),
-                            contentDescription = "open weather icon"
-                        )
-                    }
                 }
+            }
+
+            LaunchedEffect(weather) {
+                onGetCityNameWithCoordinates(weather.latitude, weather.longitude)
             }
         }
 
-        LaunchedEffect(weather) {
-            viewModel.getCityNameWithCoordinates(
-                context.findActivity() as WeatherActivity,
-                weather.latitude,
-                weather.longitude
-            )
+        else -> {
+            Box(modifier = Modifier)
         }
     }
 }
@@ -433,12 +473,12 @@ fun WeatherMoreData(weather: OneCallWeatherResponse) {
         (context.findActivity() as WeatherActivity).resources.getString(R.string.percent_placeholder)
     }"
 
-    val pressure: String = "${weather.currentWeather?.pressure.toString()} ${
+    val pressure = "${weather.currentWeather?.pressure.toString()} ${
         (context.findActivity() as WeatherActivity).resources.getString(R.string.pressure_unit_placeholder)
     }"
 
     // Wind
-    val wind: String = "${weather.currentWeather?.windSpeed.toString()} ${
+    val wind = "${weather.currentWeather?.windSpeed.toString()} ${
         (context.findActivity() as WeatherActivity).resources.getString(R.string.meter_unit_placeholder)
     }"
 
@@ -568,7 +608,7 @@ fun WeatherMoreData(weather: OneCallWeatherResponse) {
 }
 
 @Composable
-fun WeatherDailyForecast(viewModel: WeatherViewModel, dailyWeatherList: List<DailyWeather>) {
+fun WeatherDailyForecast(dailyWeatherList: List<DailyWeather>) {
     val listState = rememberLazyListState()
 
     TheLabTheme {
@@ -651,10 +691,7 @@ fun WeatherDailyForecast(viewModel: WeatherViewModel, dailyWeatherList: List<Dai
 }
 
 @Composable
-fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
-
-    val context = LocalContext.current
-
+fun WeatherError(modifier: Modifier, onRetryButtonClicked: () -> Unit) {
     TheLabTheme {
         Box(
             modifier = Modifier
@@ -673,10 +710,7 @@ fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
 
                 Text("Error while getting weather for your location")
 
-                Button(onClick = {
-                    viewModel.retry()
-                    (context.findActivity() as WeatherActivity).onResume()
-                }) {
+                Button(onClick = onRetryButtonClicked) {
                     Text(stringResource(id = R.string.action_retry))
                 }
             }
@@ -685,10 +719,27 @@ fun WeatherError(modifier: Modifier, viewModel: WeatherViewModel) {
 }
 
 @Composable
-fun WeatherContent(viewModel: WeatherViewModel) {
+fun WeatherContent(
+    weatherUiState: WeatherUIState,
+    weatherCityUiState: WeatherCityUIState,
+    iconState: Boolean,
+    onRetryRequest: () -> Unit,
+    searchMenuExpanded: Boolean,
+    onUpdateSearchMenuExpanded: (Boolean) -> Unit,
+    searchCityQuery: String,
+    onUpdateSearchText: (String) -> Unit,
+    suggestions: List<CityModel>,
+    onFetchWeatherRequest: (Double, Double) -> Unit,
+    weatherAddress: Address?,
+    onGetMaxMinTemperature: (List<CurrentWeather>) -> Unit,
+    cityMaxTemp: String,
+    cityMinTemp: String,
+    isWeatherMoreDataVisible: Boolean,
+    onUpdateMoreDataVisibility: () -> Unit,
+    onGetCityNameWithCoordinates: (Double, Double) -> Unit
+) {
 
     val context = LocalContext.current
-    val weatherUIState by viewModel.weatherUiState.collectAsStateWithLifecycle()
 
     TheLabTheme {
         Scaffold(
@@ -696,18 +747,18 @@ fun WeatherContent(viewModel: WeatherViewModel) {
             topBar = {
                 TheLabTopAppBar(
                     title = stringResource(id = R.string.activity_title_weather),
-                    viewModel,
-                    if (!viewModel.iconState) {
-                        {
+                    iconState = iconState,
+                    actionBlock = {
+                        if (!iconState) {
                             Timber.e("Unable to perform action due to location feature unavailable")
                             Toast.makeText(
                                 context,
                                 "Please make sure that the location setting is enabled",
                                 Toast.LENGTH_LONG
                             ).show()
+                        } else {
+                            (context.findActivity() as WeatherActivity).fetchCurrentLocation()
                         }
-                    } else {
-                        { (context.findActivity() as WeatherActivity).fetchCurrentLocation() }
                     }
                 )
             }
@@ -717,20 +768,35 @@ fun WeatherContent(viewModel: WeatherViewModel) {
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                when (weatherUIState) {
+                when (weatherUiState) {
                     is WeatherUIState.Loading -> {
                         WeatherLoading(modifier = Modifier.align(Alignment.Center))
                     }
 
                     is WeatherUIState.SuccessWeatherData,
                     is WeatherUIState.Success -> {
-                        WeatherSuccess(viewModel)
+                        WeatherSuccess(
+                            weatherCityUiState = weatherCityUiState,
+                            searchMenuExpanded = searchMenuExpanded,
+                            onUpdateSearchMenuExpanded = onUpdateSearchMenuExpanded,
+                            searchCityQuery = searchCityQuery,
+                            onUpdateSearchText = onUpdateSearchText,
+                            suggestions = suggestions,
+                            onFetchWeatherRequest = onFetchWeatherRequest,
+                            weatherAddress = weatherAddress,
+                            onGetMaxMinTemperature = onGetMaxMinTemperature,
+                            cityMaxTemp = cityMaxTemp,
+                            cityMinTemp = cityMinTemp,
+                            isWeatherMoreDataVisible = isWeatherMoreDataVisible,
+                            onUpdateMoreDataVisibility = onUpdateMoreDataVisibility,
+                            onGetCityNameWithCoordinates = onGetCityNameWithCoordinates
+                        )
                     }
 
                     is WeatherUIState.Error -> {
                         WeatherError(
                             modifier = Modifier.align(Alignment.Center),
-                            viewModel = viewModel
+                            onRetryButtonClicked = onRetryRequest
                         )
                     }
 
@@ -751,34 +817,90 @@ fun WeatherContent(viewModel: WeatherViewModel) {
 ///////////////////////////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewWeatherContent() {
-    val viewModel: WeatherViewModel = hiltViewModel()
+fun PreviewWeatherContent(@PreviewParameter(PreviewProviderWeather::class) state: WeatherUIState) {
+    val weatherCityUiState = PreviewProviderWeatherCity().values.toList()[3]
 
     TheLabTheme {
-        WeatherContent(viewModel = viewModel)
+        WeatherContent(
+            weatherUiState = state,
+            weatherCityUiState = weatherCityUiState,
+            iconState = true,
+            onRetryRequest = {},
+            searchMenuExpanded = true,
+            onUpdateSearchMenuExpanded = {},
+            searchCityQuery = "Pa",
+            onUpdateSearchText = {},
+            suggestions = listOf(
+                CityModel(
+                    id = 1,
+                    uuid = UUID.randomUUID().toString(),
+                    name = "Johanesburg",
+                    state = "",
+                    country = "South Africa",
+                    longitude = 48.3535,
+                    latitude = 3.58978
+                )
+            ),
+            onFetchWeatherRequest = { _, _ -> },
+            weatherAddress = null,
+            onGetMaxMinTemperature = {},
+            cityMaxTemp = "",
+            cityMinTemp = "",
+            isWeatherMoreDataVisible = true,
+            onUpdateMoreDataVisibility = {},
+            onGetCityNameWithCoordinates = {  _, _ -> }
+        )
     }
 }
 
 @DevicePreviews
 @Composable
-fun PreviewWeatherSuccess() {
-    val viewModel: WeatherViewModel = hiltViewModel()
-    viewModel.updateUIState(WeatherUIState.SuccessWeatherData(true))
-    viewModel.updateWeatherCityUIState(WeatherCityUIState.Success(OneCallWeatherResponse.getMockResponse()))
+fun PreviewWeatherSuccess(@PreviewParameter(PreviewProviderWeatherCity::class) state: WeatherCityUIState) {
 
     TheLabTheme {
-        WeatherSuccess(viewModel = viewModel)
+        WeatherSuccess(
+            weatherCityUiState = state,
+            searchMenuExpanded = true,
+            onUpdateSearchMenuExpanded = {},
+            searchCityQuery = "Pa",
+            onUpdateSearchText = {},
+            suggestions = listOf(
+                CityModel(
+                    id = 1,
+                    uuid = UUID.randomUUID().toString(),
+                    name = "Johanesburg",
+                    state = "",
+                    country = "South Africa",
+                    longitude = 48.3535,
+                    latitude = 3.58978
+                )
+            ),
+            onFetchWeatherRequest = {  _, _ -> },
+            weatherAddress = null,
+            onGetMaxMinTemperature = {},
+            cityMaxTemp = "",
+            cityMinTemp = "",
+            isWeatherMoreDataVisible = true,
+            onUpdateMoreDataVisibility = {},
+            onGetCityNameWithCoordinates = {  _, _ -> }
+        )
     }
 }
 
 @DevicePreviews
 @Composable
-fun PreviewWeatherData() {
-    val viewModel: WeatherViewModel = hiltViewModel()
-    viewModel.updateUIState(WeatherUIState.SuccessWeatherData(true))
-    viewModel.updateWeatherCityUIState(WeatherCityUIState.Success(OneCallWeatherResponse.getMockResponse()))
+fun PreviewWeatherData(@PreviewParameter(PreviewProviderWeatherCity::class) state: WeatherCityUIState) {
     TheLabTheme {
-        WeatherData(viewModel = viewModel)
+        WeatherData(
+            cityUIState = state,
+            weatherAddress = null,
+            onGetMaxMinTemperature = {},
+            cityMaxTemp = "",
+            cityMinTemp = "",
+            isWeatherMoreDataVisible = false,
+            onUpdateMoreDataVisibility = {},
+            onGetCityNameWithCoordinates = {  _, _ -> }
+        )
     }
 }
 
@@ -792,19 +914,16 @@ fun PreviewWeatherMoreData() {
 
 @DevicePreviews
 @Composable
-fun PreviewWeatherDailyForecast() {
-    val viewModel: WeatherViewModel = hiltViewModel()
+fun PreviewWeatherDailyForecast(@PreviewParameter(PreviewProviderWeatherCity::class) dailies: List<DailyWeather>) {
     TheLabTheme {
-        WeatherDailyForecast(viewModel, listOf())
+        WeatherDailyForecast(dailies)
     }
-
 }
 
 @DevicePreviews
 @Composable
 fun PreviewWeatherError() {
-    val viewModel: WeatherViewModel = hiltViewModel()
     TheLabTheme {
-        WeatherError(modifier = Modifier, viewModel = viewModel)
+        WeatherError(modifier = Modifier, onRetryButtonClicked = {})
     }
 }

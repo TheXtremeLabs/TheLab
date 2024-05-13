@@ -19,11 +19,12 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
-import kotools.types.text.toNotBlankString
 import timber.log.Timber
 
 
+@Suppress("EmptyMethod")
 class KatChatViewModel : ViewModel() {
 
     /////////////////////////
@@ -185,18 +186,19 @@ class KatChatViewModel : ViewModel() {
         )
     }
 
+    @OptIn(ExperimentalKotoolsTypesApi::class)
     fun sendMessage(context: Activity, textInput: String) {
         Timber.d("sendMessage() | textInput: $textInput")
 
         runCatching {
-            val message: NotBlankString = textInput.toNotBlankString().getOrThrow()
+            val message: NotBlankString = NotBlankString.create(textInput)
 
             FirebaseUtils.sendMessageToUser(
                 context = context,
                 message = message,
                 chatroomId = mChatRoomId!!,
                 chatRoomModel = mChatRoom!!,
-                onFailure = { Timber.e("runCatching | onFailure() | Error caught: ${it}") },
+                onFailure = { Timber.e("runCatching | onFailure() | Error caught: $it") },
                 onSuccess = {
                     if (it) {
                         // clear Message TextField

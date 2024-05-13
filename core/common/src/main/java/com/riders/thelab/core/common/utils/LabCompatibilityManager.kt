@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Build.VERSION_CODES
-import androidx.annotation.RequiresApi
 import com.riders.thelab.core.common.bean.AndroidReleases
 import timber.log.Timber
 import java.lang.reflect.Field
@@ -129,6 +128,14 @@ object LabCompatibilityManager {
         return getSdkVersion() >= VERSION_CODES.UPSIDE_DOWN_CAKE
     }
 
+    /**
+     * Determine if the device is running API level 34 or higher.
+     * Upside Down Cake
+     */
+    fun isVanillaIceCream(): Boolean {
+        return getSdkVersion() >= 35
+    }
+
 
     /**
      * Determine if the device is a tablet (i.e. it has a large screen).
@@ -240,5 +247,6 @@ object LabCompatibilityManager {
  * 32                  Sv2                         Android 12 Snow cone v2
  * 33                  T                         Android 13 Tiramisu
  * 34                  U                         Android 14 Upside Down Cake
+ * 35                  V                         Android 15 Vanilla Ice Cream
  * 10000                CUR_DEVELOPMENT           Current Development Version
  */

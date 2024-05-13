@@ -188,9 +188,9 @@ class BiometricViewModel @Inject constructor(
             getResult { prepareAuthContext(CryptoPurpose.Encryption) }
                 .switch(
                     success = { authContext = it },
-                    error = {
+                    error = { throwable ->
                         // In this case we decide to not show and error to the end user.
-                        Timber.e(it)
+                        Timber.e("reduceState() | onFailure | error caught with message: ${throwable?.message} (class: ${throwable?.javaClass?.simpleName})")
                     }
                 )
         }
@@ -302,8 +302,8 @@ class BiometricViewModel @Inject constructor(
         val result = getResult { biometricRepository.fetchAndStoreEncryptedToken(cryptoObject) }
         result.switch(
             success = { Timber.i("fetchAndStoreEncryptedToken done") },
-            error = {
-                it?.let { ex ->
+            error = { throwable ->
+                throwable?.let { ex ->
                     if (ex is InvalidCryptoLayerException) {
                         handleInvalidCryptoException(ex, false)
                     } else {
@@ -320,11 +320,11 @@ class BiometricViewModel @Inject constructor(
             doLoginWithToken(tokenAsCredential)
         }.switch(
             success = { Timber.d("Login Done") },
-            error = { th ->
-                if (th is InvalidCryptoLayerException) {
+            error = { throwable ->
+                if (throwable is InvalidCryptoLayerException) {
                     _uiState.update { (it as LoginUiState.Logged).copy(canLoginWithBiometry = false) }
                 } else {
-                    handleError(th)
+                    handleError(throwable)
                 }
             }
         )
@@ -349,8 +349,8 @@ class BiometricViewModel @Inject constructor(
                             )
                         }
                     },
-                    error = {
-                        it?.let { ex ->
+                    error = { throwable ->
+                        throwable?.let { ex ->
                             if (ex is InvalidCryptoLayerException) {
                                 handleInvalidCryptoException(ex, true)
                             } else {

@@ -1,7 +1,5 @@
 plugins {
     id("thelab.android.library")
-    id("thelab.android.library.compose")
-    id("thelab.android.hilt")
 }
 
 android {
@@ -14,7 +12,7 @@ dependencies {
     /////////////////////////////
     // Firebase
     api(platform(libs.firebase.bom))
-    api(libs.firebase.ads)
+//    api(libs.firebase.ads)
     api(libs.firebase.analytics)
     api(libs.firebase.auth)
     api(libs.firebase.crashlytics)

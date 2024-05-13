@@ -9,4 +9,4 @@ data class NotificationData(
     val title: String,
     @SerialName("message")
     val message: String
-): Serializable
+) : Serializable

@@ -1,5 +1,6 @@
 package com.riders.thelab.core.data.remote.api
 
+import com.riders.thelab.core.data.remote.dto.tmdb.TMDBCreditsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
@@ -28,4 +29,10 @@ interface TMDBApiService {
 
     @GET("tv/{tvShowID}/videos")
     suspend fun getTvShowVideos(@Path("tvShowID") tvShowID: Int): TMDBVideoResponse?
+
+    @GET("movie/{movieID}/credits")
+    suspend fun getMovieCredits(@Path("movieID") movieID: Int): TMDBCreditsResponse?
+
+    @GET("person/{personID}/images")
+    suspend fun getProfileImage(@Path("personID") personID: Int): TMDBCreditsResponse?
 }

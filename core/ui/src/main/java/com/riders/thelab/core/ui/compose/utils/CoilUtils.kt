@@ -4,12 +4,15 @@ import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
+import coil.ImageLoader
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import coil.decode.SvgDecoder
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.size.Scale
 import coil.size.Size
+import coil.util.DebugLogger
 import com.riders.thelab.core.ui.R
 import timber.log.Timber
 
@@ -17,7 +20,7 @@ import timber.log.Timber
  * https://www.sinasamaki.com/loading-images-using-coil-in-jetpack-compose/
  */
 @Composable
-fun getCoilImageRequest(
+private fun getCoilImageRequest(
     context: Context,
     dataUrl: String,
     size: Size? = null,
@@ -27,7 +30,35 @@ fun getCoilImageRequest(
     .Builder(context)
     .data(dataUrl)
     .apply {
-        Timber.d("getCoilImageRequest() | dataUrl : $dataUrl")
+        Timber.d("getCoilImageRequest() | dataUrl : $dataUrl, size : $size, scale : $scale")
+
+        crossfade(true)
+        allowHardware(false)
+        //transformations(RoundedCornersTransformation(32.dp.value))
+
+        size(size ?: Size.ORIGINAL)
+        scale(scale ?: Scale.FIT)
+
+        if (isCaching) {
+            networkCachePolicy(CachePolicy.ENABLED)
+            diskCachePolicy(CachePolicy.DISABLED)
+            memoryCachePolicy(CachePolicy.ENABLED)
+        }
+    }
+    .build()
+
+private fun getCoilImageRequestSvg(
+    context: Context,
+    dataUrl: String,
+    size: Size? = null,
+    scale: Scale? = null,
+    isCaching: Boolean = true
+): ImageRequest = ImageRequest
+    .Builder(context)
+    .data(dataUrl)
+    .decoderFactory(SvgDecoder.Factory())
+    .apply {
+        Timber.d("getCoilImageRequest() | dataUrl : $dataUrl, size : $size, scale : $scale")
 
         crossfade(true)
         allowHardware(false)
@@ -48,12 +79,18 @@ fun getCoilImageRequest(
 fun getCoilAsyncImagePainter(
     context: Context,
     dataUrl: String,
+    isSvg: Boolean = false,
     size: Size? = null,
     scale: Scale? = null,
     @DrawableRes placeholderResId: Int = R.drawable.logo_colors
 ): AsyncImagePainter =
     rememberAsyncImagePainter(
-        model = getCoilImageRequest(
+        model = if (!isSvg) getCoilImageRequest(
+            context = context,
+            dataUrl = dataUrl,
+            size = size,
+            scale = scale
+        ) else getCoilImageRequestSvg(
             context = context,
             dataUrl = dataUrl,
             size = size,
@@ -68,5 +105,6 @@ fun getCoilAsyncImagePainter(
         },
         onError = {
             Timber.e("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Error while loading Image")
-        }
+        },
+        imageLoader = ImageLoader.Builder(context).logger(DebugLogger()).build()
     )

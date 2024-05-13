@@ -30,6 +30,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
+@Suppress("EmptyMethod")
 @HiltViewModel
 class DownloadViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -272,98 +273,102 @@ class DownloadViewModel @Inject constructor(
                     .getDownloadManager(context)
                     .query(DownloadManager.Query().setFilterById(reference))
 
-                if (cursor.moveToFirst()) {
-                    val status =
-                        cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                cursor.use {
+                    if (it.moveToFirst()) {
+                        val status = it.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
 
-                    when (status) {
-                        DownloadManager.STATUS_FAILED -> {
-                            Timber.e("DownloadManager.STATUS_FAILED")
-
-                            downloadList.find { reference == it.downloadRefId }?.let {
-                                it.isComplete = true
-                                it.isError = true to "Download failed"
-
-                                Timber.e("item: $this")
-                            }
-                            _downloadListState.value.find { reference == it.downloadRefId }?.let {
-                                it.isComplete = true
-                                it.isError = true to "Download failed"
-
-                                Timber.e("item: $this")
-                            }
-
-                            finishDownload = true
-                        }
-
-                        DownloadManager.STATUS_PAUSED -> {
-                            Timber.e("DownloadManager.STATUS_PAUSED")
-                        }
-
-                        DownloadManager.STATUS_PENDING -> {
-                            Timber.d("DownloadManager.STATUS_PENDING")
-                        }
-
-                        DownloadManager.STATUS_RUNNING -> {
-                            // Timber.d("DownloadManager.STATUS_RUNNING")
-                            val total =
-                                cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-                            if (total >= 0) {
-                                val downloaded =
-                                    cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
-                                progress = (downloaded * 100L / total).toInt()
-                                Timber.d("downloaded: $progress %")
-
-                                val progressFloat = (progress / 100).toFloat()
+                        when (status) {
+                            DownloadManager.STATUS_FAILED -> {
+                                Timber.e("DownloadManager.STATUS_FAILED")
 
                                 downloadList.find { reference == it.downloadRefId }?.let {
-                                    // val index = downloadList.indexOf(it)
-                                    // updateProgressAtIndex(index, progress)
-                                    withContext(Dispatchers.Main) {
-                                        it.progress = progress
-                                    }
-                                } ?: run { Timber.e("download item not found with id: $reference") }
+                                    it.isComplete = true
+                                    it.isError = true to "Download failed"
 
+                                    Timber.e("item: $this")
+                                }
                                 _downloadListState.value.find { reference == it.downloadRefId }
                                     ?.let {
+                                        it.isComplete = true
+                                        it.isError = true to "Download failed"
+
+                                        Timber.e("item: $this")
+                                    }
+
+                                finishDownload = true
+                            }
+
+                            DownloadManager.STATUS_PAUSED -> {
+                                Timber.e("DownloadManager.STATUS_PAUSED")
+                            }
+
+                            DownloadManager.STATUS_PENDING -> {
+                                Timber.d("DownloadManager.STATUS_PENDING")
+                            }
+
+                            DownloadManager.STATUS_RUNNING -> {
+                                // Timber.d("DownloadManager.STATUS_RUNNING")
+                                val total =
+                                    cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+                                if (total >= 0) {
+                                    val downloaded =
+                                        cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                                    progress = (downloaded * 100L / total).toInt()
+                                    Timber.d("downloaded: $progress %")
+
+                                    val progressFloat = (progress / 100).toFloat()
+
+                                    downloadList.find { reference == it.downloadRefId }?.let {
                                         // val index = downloadList.indexOf(it)
                                         // updateProgressAtIndex(index, progress)
                                         withContext(Dispatchers.Main) {
                                             it.progress = progress
                                         }
                                     }
-                                    ?: run { Timber.e("download item not found with id: $reference") }
+                                        ?: run { Timber.e("download item not found with id: $reference") }
 
-                                // if you use downloadmanger in async task, here you can use like this to display progress.
-                                // Don't forget to do the division in long to get more digits rather than double.
-                                //  publishProgress((int) ((downloaded * 100L) / total));
-                            }
-                        }
+                                    _downloadListState.value.find { reference == it.downloadRefId }
+                                        ?.let {
+                                            // val index = downloadList.indexOf(it)
+                                            // updateProgressAtIndex(index, progress)
+                                            withContext(Dispatchers.Main) {
+                                                it.progress = progress
+                                            }
+                                        }
+                                        ?: run { Timber.e("download item not found with id: $reference") }
 
-                        DownloadManager.STATUS_SUCCESSFUL -> {
-                            Timber.d("DownloadManager.STATUS_SUCCESSFUL")
-
-                            progress = 100
-                            // if you use aysnc task
-                            // publishProgress(100);
-                            finishDownload = true
-
-                            downloadList.find { reference == it.downloadRefId }?.let {
-                                it.progress = progress
-                                it.isComplete = true
-
-                                Timber.d("item: $this")
+                                    // if you use downloadmanger in async task, here you can use like this to display progress.
+                                    // Don't forget to do the division in long to get more digits rather than double.
+                                    //  publishProgress((int) ((downloaded * 100L) / total));
+                                }
                             }
 
-                            _downloadListState.value.find { reference == it.downloadRefId }?.let {
-                                it.progress = progress
-                                it.isComplete = true
+                            DownloadManager.STATUS_SUCCESSFUL -> {
+                                Timber.d("DownloadManager.STATUS_SUCCESSFUL")
 
-                                Timber.d("item: $this")
+                                progress = 100
+                                // if you use aysnc task
+                                // publishProgress(100);
+                                finishDownload = true
+
+                                downloadList.find { reference == it.downloadRefId }?.let {
+                                    it.progress = progress
+                                    it.isComplete = true
+
+                                    Timber.d("item: $this")
+                                }
+
+                                _downloadListState.value.find { reference == it.downloadRefId }
+                                    ?.let {
+                                        it.progress = progress
+                                        it.isComplete = true
+
+                                        Timber.d("item: $this")
+                                    }
+
+                                delay(500L)
+                                onFinishedDownload()
                             }
-
-                            delay(500L)
-                            onFinishedDownload()
                         }
                     }
                 }

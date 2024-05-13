@@ -17,14 +17,18 @@ dependencies {
     ///////////////////////////////////
     implementation(project(":core:ui"))
 
-    implementation(libs.androidx.media.common)
+    api(libs.androidx.media)
+    api(libs.androidx.media.common)
     implementation(libs.androidx.media.cast)
+    implementation(libs.androidx.media.database)
     implementation(libs.androidx.media.decoder)
-    implementation(libs.androidx.media.exoplayer)
+    api(libs.androidx.media.exoplayer)
     implementation(libs.androidx.media.exoplayer.dash)
     implementation(libs.androidx.media.exoplayer.hls)
     implementation(libs.androidx.media.exoplayer.rtsp)
-    implementation(libs.androidx.media.ui)
+    implementation(libs.androidx.media.extractor)
+    api(libs.androidx.media.session)
+    api(libs.androidx.media.ui)
     implementation(libs.youtube.player)
 
     /////////////////////////////

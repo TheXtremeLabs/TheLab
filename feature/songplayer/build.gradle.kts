@@ -18,8 +18,10 @@ dependencies {
     // Project
     ///////////////////////////////////
     implementation(project(":core:analytics"))
+    implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:permissions"))
+    implementation(project(":core:player"))
 
 
     ///////////////////////////////////
@@ -29,7 +31,7 @@ dependencies {
     api(libs.kotlinx.coroutines.android)
 
     // AndroidX
-    api(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.ktx)
 
     androidTestImplementation(project(":core:testing"))
 }

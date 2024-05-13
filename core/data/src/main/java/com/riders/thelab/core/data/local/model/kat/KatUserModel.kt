@@ -2,7 +2,6 @@ package com.riders.thelab.core.data.local.model.kat
 
 import com.google.firebase.Timestamp
 import com.riders.thelab.core.data.remote.dto.kat.FCDKatUser
-import com.riders.thelab.core.data.serializer.FirebaseTimestampSerializer
 import java.io.Serializable
 
 /**
@@ -16,14 +15,12 @@ data class KatUserModel(
     //@kotlinx.serialization.Serializable(with = FirebaseTimestampSerializer::class)
     val createdTimestamp: Timestamp,
     val fcmToken: String
-) : Serializable {
-    constructor() : this("", "", "", Timestamp.now(), "")
-}
+) : Serializable
 
 
 /**
  * Converts [KatUserModel] object to FCD (Firebase Cloud Datastore) [FCDKatUser] object
  * @return [FCDKatUser] object
  */
-fun KatUserModel.toDto(): FCDKatUser =
+fun KatUserModel.toKatDto(): FCDKatUser =
     FCDKatUser(this.userId, this.phone, this.username, this.createdTimestamp, this.fcmToken)
