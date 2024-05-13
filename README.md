@@ -54,6 +54,14 @@ TheLab was originally developed in Java and XML layouts and view bindings for UI
   <img src="docs/images/Screenshot_palette_1_dark.png" alt="palette_1" width="300"/>
 </p>
 
+***Youtube Like***
+<p>
+  <img src="docs/images/Screenshot_youtube_1_light.png" alt="youtube_1" width="300"/>
+</p>
+<p>
+  <img src="docs/images/Screenshot_youtube_2_light.png" alt="youtube_2" width="300"/>
+</p>
+
 ***Settings***
 <p>
   <img src="docs/images/Screenshot_settings_1_light.png" alt="settings_1" width="300"/>
@@ -77,11 +85,11 @@ Repository created and maintained by Saint-Honoré Michaël([*@MichaelStH*](http
 ![HotCoffeeLoading](docs/gif/lottie_hot_coffee.gif)
 
 [sem-ver]: https://semver.org/
-[thelab-badge]: https://img.shields.io/static/v1?label=version&message=12.15.1&color=blue
+[thelab-badge]: https://img.shields.io/static/v1?label=version&message=12.16.0&color=blue
 [thelab-project]: https://github.com/TheXtremeLabs/TheLab
 [android-badge]: https://img.shields.io/static/v1?logo=android&label=Android%20SDK&message=API%2034&color=green
 [android-project]: https://www.android.com/intl/fr_fr/
-[kotools-types-badge]: https://img.shields.io/static/v1?label=Kotools&message=4.5.0&color=blue
+[kotools-types-badge]: https://img.shields.io/static/v1?label=Kotools&message=4.5.2&color=blue
 [kotools-types-project]: https://github.com/kotools/types
 [kotlin]: https://kotlinlang.org
 [kotlin-badge]: https://img.shields.io/badge/kotlin-1.9.23-blue?logo=kotlin
