@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.youtube.ui
+package com.riders.thelab.feature.youtube.ui.main
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -12,18 +12,27 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.utils.UIManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class YoutubeActivity : BaseComponentActivity() {
 
     private val mViewModel: YoutubeViewModel by viewModels<YoutubeViewModel>()
 
+    private val mNetworkManager: LabNetworkManager by lazy {
+        LabNetworkManager(context = this@YoutubeActivity, lifecycle = this.lifecycle)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mViewModel.observeNetworkState(mNetworkManager)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -43,10 +52,22 @@ class YoutubeActivity : BaseComponentActivity() {
                 }
             }
         }
-
-        mViewModel.fetchVideos(this@YoutubeActivity)
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        //Test the internet's connection
+        if (!mViewModel.hasInternetConnection) {
+            Timber.e("No Internet connection")
+            UIManager.showToast(
+                this@YoutubeActivity,
+                getString(com.riders.thelab.core.ui.R.string.network_status_disconnected)
+            )
+        } else {
+            mViewModel.fetchVideos()
+        }
+    }
 
     override fun backPressed() {
         finish()

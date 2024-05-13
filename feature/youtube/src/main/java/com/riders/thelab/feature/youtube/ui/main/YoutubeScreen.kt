@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.youtube.ui
+package com.riders.thelab.feature.youtube.ui.main
 
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString

@@ -1,8 +1,8 @@
-package com.riders.thelab.core.data.local.model
+package com.riders.thelab.core.data.local.model.youtube
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import com.riders.thelab.core.data.remote.dto.VideoDto
+import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
 import java.io.Serializable
 
 @Immutable

@@ -20,7 +20,7 @@ import com.riders.thelab.feature.streaming.StreamingActivity
 import com.riders.thelab.feature.tabs.WorkingTabsActivity
 import com.riders.thelab.feature.theaters.main.TheatersActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
-import com.riders.thelab.feature.youtube.ui.YoutubeActivity
+import com.riders.thelab.feature.youtube.ui.splashscreen.YoutubeSplashScreenActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.camera.CameraActivity
 import com.riders.thelab.ui.compose.ComposeActivity
@@ -35,7 +35,6 @@ import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.ui.transition.TransitionActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
-import com.riders.thelab.ui.youtubelike.YoutubeLikeActivity
 
 object AppBuilderUtils {
     fun buildActivities(context: Context): List<App> =
@@ -236,8 +235,8 @@ object AppBuilderUtils {
                                 R.drawable.youtube_icon_like
                             )
                         )
-                        .withActivityClass(YoutubeActivity::class.java)
-                        .withActivityDate("2024/05/12")
+                        .withActivityClass(YoutubeSplashScreenActivity::class.java)
+                        .withActivityDate("2024/05/13")
                         .build()
                 this.add(youtube)
 

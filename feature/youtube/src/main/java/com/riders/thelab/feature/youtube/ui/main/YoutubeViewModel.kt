@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.youtube.ui
+package com.riders.thelab.feature.youtube.ui.main
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,12 +8,13 @@ import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.YoutubeUiState
-import com.riders.thelab.core.data.local.model.toModel
+import com.riders.thelab.core.data.local.model.youtube.toModel
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
-import com.riders.thelab.core.ui.utils.UIManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,11 +26,17 @@ import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class YoutubeViewModel @Inject constructor(
     private val repository: IRepository
-) : BaseViewModel() {
+) : BaseViewModel(), CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + Job()
+
+    var fetchContentJob: Job? = null
 
     /////////////////////////////////////////////////
     // Composable states
@@ -72,8 +79,14 @@ class YoutubeViewModel @Inject constructor(
     //
     ///////////////////////////
     override fun onCleared() {
-        super.onCleared()
         Timber.e("onCleared()")
+
+        if (true == fetchContentJob?.isActive) {
+            fetchContentJob?.cancel()
+        }
+
+        fetchContentJob = null
+        super.onCleared()
     }
 
     /////////////////////////////////////////////////
@@ -90,6 +103,8 @@ class YoutubeViewModel @Inject constructor(
                     is NetworkState.Available -> {
                         Timber.d("network state is Available. All set.")
                         updateHasInternetConnection(true)
+
+                        fetchVideos()
                     }
 
                     is NetworkState.Losing -> {
@@ -116,18 +131,14 @@ class YoutubeViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalKotoolsTypesApi::class)
-    fun fetchVideos(activity: YoutubeActivity) {
+    fun fetchVideos() {
+        Timber.d("fetchVideos() | Fetch Content")
 
-        //Test the internet's connection
-        if (!hasInternetConnection) {
-            Timber.e("No Internet connection")
-            UIManager.showToast(
-                activity,
-                activity.resources.getString(com.riders.thelab.core.ui.R.string.network_status_disconnected)
-            )
-        } else {
-            Timber.e("Fetch Content")
+        if (true == fetchContentJob?.isActive) {
+            fetchContentJob?.cancel()
+        }
 
+        fetchContentJob =
             viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
                 try {
                     supervisorScope {
@@ -152,6 +163,6 @@ class YoutubeViewModel @Inject constructor(
                     }
                 }
             }
-        }
+
     }
 }

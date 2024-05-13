@@ -1,4 +1,4 @@
-package com.riders.thelab.core.data.remote.dto
+package com.riders.thelab.core.data.remote.dto.youtube
 
 import kotlinx.serialization.SerialName
 import java.io.Serializable
