@@ -9,10 +9,8 @@ import androidx.work.WorkerParameters
 import com.riders.thelab.core.common.storage.LabFileManager
 import com.riders.thelab.core.common.utils.LabParser
 import com.riders.thelab.core.data.IRepository
-import com.riders.thelab.core.data.local.model.weather.CityAppSearch
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.remote.dto.weather.City
-import com.riders.thelab.core.data.utils.WeatherSearchManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import okhttp3.ResponseBody
@@ -20,7 +18,6 @@ import okio.gzip
 import okio.source
 import timber.log.Timber
 import java.io.InputStream
-import java.util.UUID
 
 
 @SuppressLint("RestrictedApi")

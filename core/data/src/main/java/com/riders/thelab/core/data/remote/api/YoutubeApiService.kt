@@ -1,6 +1,6 @@
 package com.riders.thelab.core.data.remote.api
 
-import com.riders.thelab.core.data.remote.dto.VideoDto
+import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
 import retrofit2.http.GET
 
 interface YoutubeApiService {

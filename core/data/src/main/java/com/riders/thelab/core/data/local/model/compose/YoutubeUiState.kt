@@ -1,6 +1,6 @@
 package com.riders.thelab.core.data.local.model.compose
 
-import com.riders.thelab.core.data.local.model.Video
+import com.riders.thelab.core.data.local.model.youtube.Video
 import kotools.types.text.NotBlankString
 
 sealed interface YoutubeUiState {

@@ -351,7 +351,12 @@
             android:theme="@style/BuiltInWebViewTheme" />
 
         <activity
-            android:name=".feature.youtube.ui.YoutubeActivity"
+            android:name=".feature.youtube.ui.splashscreen.YoutubeSplashScreenActivity"
+            android:label="@string/activity_title_youtube_like"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/YoutubeTheme" />
+        <activity
+            android:name=".feature.youtube.ui.main.YoutubeActivity"
             android:label="@string/activity_title_youtube_like"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/YoutubeTheme" />
