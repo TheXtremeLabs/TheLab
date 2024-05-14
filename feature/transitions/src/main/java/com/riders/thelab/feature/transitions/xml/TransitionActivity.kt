@@ -1,4 +1,4 @@
-package com.riders.thelab.ui.transition
+package com.riders.thelab.feature.transitions.xml
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,10 +7,12 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
-import com.riders.thelab.R
-import com.riders.thelab.databinding.ActivityTransitionBinding
+import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
+import com.riders.thelab.feature.transitions.R
+import com.riders.thelab.feature.transitions.databinding.ActivityTransitionBinding
+import timber.log.Timber
 
-class TransitionActivity : AppCompatActivity(), View.OnClickListener {
+class TransitionActivity : BaseAppCompatActivity(), View.OnClickListener {
 
     private var _viewBinding: ActivityTransitionBinding? = null
 
@@ -19,6 +21,11 @@ class TransitionActivity : AppCompatActivity(), View.OnClickListener {
     private val binding get() = _viewBinding!!
 
 
+    /////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    /////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val w = window
@@ -32,17 +39,28 @@ class TransitionActivity : AppCompatActivity(), View.OnClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                backPressed()
             }
         }
         return true
     }
+
+    override fun backPressed() {
+        Timber.e("backPressed() | call finishAfterTransition method")
+        finish()
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
         _viewBinding = null
     }
 
+    /////////////////////////////////////
+    //
+    // IMPLEMENTS
+    //
+    /////////////////////////////////////
     override fun onClick(view: View?) {
         // Variables
         val intent = Intent(this, TransitionDetailActivity::class.java)

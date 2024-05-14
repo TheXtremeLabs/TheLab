@@ -378,16 +378,26 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
 
+        <!-- Transitions -->
         <activity
-            android:name=".ui.transition.TransitionActivity"
-            android:label="@string/activity_title_transition"
+            android:name=".feature.transitions.chooser.TransitionsChooserActivity"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/TransitionTheme" />
         <activity
-            android:name=".ui.transition.TransitionDetailActivity"
-            android:label="@string/activity_title_transition_detail"
-            android:parentActivityName=".ui.transition.TransitionActivity"
+            android:name=".feature.transitions.compose.TransitionsComposeActivity"
+            android:parentActivityName=".feature.transitions.chooser.TransitionsChooserActivity"
             android:theme="@style/TransitionTheme" />
+        <activity
+            android:name=".feature.transitions.xml.TransitionActivity"
+            android:label="@string/activity_title_transition"
+            android:parentActivityName=".feature.transitions.chooser.TransitionsChooserActivity"
+            android:theme="@style/TransitionTheme" />
+        <activity
+            android:name=".feature.transitions.xml.TransitionDetailActivity"
+            android:label="@string/activity_title_transition_detail"
+            android:parentActivityName=".feature.transitions.xml.TransitionActivity"
+            android:theme="@style/TransitionTheme" />
+        <!-- Transitions -->
 
         <activity
             android:name=".ui.customtoast.CustomToastActivity"
