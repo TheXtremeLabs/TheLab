@@ -88,11 +88,7 @@ class WeatherWorker @AssistedInject constructor(
 
                         val weatherWidgetBundle =
                             runBlocking {
-                                buildWeatherWidget(
-                                    oneCallWeatherResponse,
-                                    cityName!!,
-                                    country!!
-                                )
+                                buildWeatherWidget(oneCallWeatherResponse)
                             }
 
                         if (null == weatherWidgetBundle) {
@@ -119,13 +115,7 @@ class WeatherWorker @AssistedInject constructor(
                                 // updateWidgetViaBroadcast(weatherBundle)
 
                                 val weatherWidgetBundle =
-                                    runBlocking {
-                                        buildWeatherWidget(
-                                            oneCallWeatherResponse,
-                                            cityName!!,
-                                            country!!
-                                        )
-                                    }
+                                    runBlocking { buildWeatherWidget(oneCallWeatherResponse) }
                                 weatherWidgetBundle?.let {
                                     // updateWidgetViaBroadcast(weatherWidgetBundle)
                                     // Create and send outputData
@@ -208,11 +198,7 @@ class WeatherWorker @AssistedInject constructor(
      * Build bundle to send to widget provider
      *
      */
-    private fun buildWeatherWidget(
-        response: OneCallWeatherResponse,
-        city: String,
-        country: String
-    ): WeatherWidgetModel? {
+    private fun buildWeatherWidget(response: OneCallWeatherResponse): WeatherWidgetModel? {
         Timber.d("buildWeatherWidget()")
 
         response.currentWeather?.run {
@@ -238,10 +224,8 @@ class WeatherWorker @AssistedInject constructor(
                 }.toList()
             }
 
-            val currentTemperature =
-                "${this.temperature.roundToInt()} ${context.getString(R.string.degree_placeholder)}"
-            val realFeels =
-                "${this.feelsLike.roundToInt()} ${context.getString(R.string.degree_placeholder)}"
+            /*val currentTemperature = "${this.temperature.roundToInt()} ${context.getString(R.string.degree_placeholder)}"
+            val realFeels = "${this.feelsLike.roundToInt()} ${context.getString(R.string.degree_placeholder)}"*/
 
             temperature.let { temp ->
                 icon?.let { ic ->

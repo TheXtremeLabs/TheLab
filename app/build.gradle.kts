@@ -135,6 +135,7 @@ dependencies {
     implementation(project(":feature:streaming"))
     implementation(project(":feature:tabs"))
     implementation(project(":feature:theaters"))
+    implementation(project(":feature:transitions"))
     implementation(project(":feature:weather"))
     implementation(project(":feature:youtube"))
 

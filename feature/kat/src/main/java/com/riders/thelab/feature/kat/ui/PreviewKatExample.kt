@@ -1,7 +1,5 @@
-package com.riders.thelab.ui.compose
+package com.riders.thelab.feature.kat.ui
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
@@ -37,49 +35,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.Message
+import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import timber.log.Timber
 
-class ComposeActivity : BaseComponentActivity() {
-
-    /////////////////////////////////////
-    //
-    // OVERRIDE
-    //
-    /////////////////////////////////////
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            TheLabTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    ConversationContent()
-                }
-            }
-        }
-    }
-
-    override fun backPressed() {
-        Timber.e("Back pressed")
-        finish()
-    }
-}
 
 /////////////////////////////////////
 //
-// CLASS METHODS
+// COMPOSE
 //
 /////////////////////////////////////
-
 @Composable
 fun UserMessageCard(msg: Message) {
     // We keep track if the message is expanded or not in this

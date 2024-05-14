@@ -82,12 +82,12 @@ private fun getImageProvider(path: String): ImageProvider {
 @Composable
 fun WeatherWidgetContent() {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+    // val scope = rememberCoroutineScope()
 
     // Get the stored stated based on our custom state definition.
     val weatherInfo = currentState<WeatherInfo>()
     // It will be one of the provided ones
-    val size = LocalSize.current
+    // val size = LocalSize.current
 
     GlanceTheme {
         Box(
