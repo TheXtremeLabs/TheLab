@@ -2,6 +2,7 @@ package com.riders.thelab.feature.transitions.compose
 
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import  java.io.Serializable
 
 sealed class Screen(val route: NotBlankString) {
 

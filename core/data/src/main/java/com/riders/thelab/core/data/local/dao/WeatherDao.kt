@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import androidx.room.RoomWarnings
 import androidx.room.Transaction
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.riders.thelab.core.data.local.model.weather.CityModel
@@ -54,6 +55,7 @@ interface WeatherDao {
     )
     suspend fun searchCity(query: String): List<CityModel>*/
 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Transaction
     @RewriteQueriesToDropUnusedColumns
     @Query("SELECT * FROM city INNER JOIN city_fts ON city.name = city_fts.name WHERE city_fts.name LIKE '%' || :query || '%' LIMIT 10")

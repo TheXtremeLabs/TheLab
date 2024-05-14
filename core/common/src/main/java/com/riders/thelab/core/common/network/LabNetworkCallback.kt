@@ -160,6 +160,7 @@ class LabNetworkManager(
             val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
 
             activeNetworkInfo?.run {
+                @Suppress("DEPRECATION")
                 val isActive: Boolean = this.isConnected
                 Timber.d("Network is available: $isActive")
                 isActive

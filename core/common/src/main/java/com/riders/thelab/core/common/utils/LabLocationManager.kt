@@ -342,4 +342,3 @@ class LabLocationManager(val context: Context) : LocationListener {
         }
     }
 }
-

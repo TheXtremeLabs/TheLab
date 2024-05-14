@@ -171,7 +171,8 @@ fun TransitionsComposeContent() {
     val currentDestination = backstackEntry?.destination?.route
 
     TheLabTheme {
-        Scaffold(modifier = Modifier.fillMaxSize(),
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
             topBar = { TheLabTopAppBar(title = "Transitions with Compose") }
         ) { contentPadding ->
             SharedTransitionLayout(
@@ -184,7 +185,7 @@ fun TransitionsComposeContent() {
                     navController = navController,
                     startDestination = Screen.Main.route.toString()
                 ) {
-                    composable<Screen.Main> {
+                    composable(route = Screen.Main.route.toString()) {
                         MainScreen(
                             sharedTransitionScope = this@SharedTransitionLayout,
                             animatedVisibilityScope = this@composable,
@@ -192,7 +193,7 @@ fun TransitionsComposeContent() {
                         )
                     }
 
-                    composable<Screen.Detail> {
+                    composable(route = "detail") {
                         DetailScreen(
                             sharedTransitionScope = this@SharedTransitionLayout,
                             animatedVisibilityScope = this@composable,
