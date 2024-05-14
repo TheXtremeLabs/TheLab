@@ -23,7 +23,6 @@ import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.feature.youtube.ui.splashscreen.YoutubeSplashScreenActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
 import com.riders.thelab.ui.camera.CameraActivity
-import com.riders.thelab.ui.compose.ComposeActivity
 import com.riders.thelab.ui.contacts.ContactsActivity
 import com.riders.thelab.ui.customtoast.CustomToastActivity
 import com.riders.thelab.ui.floatingview.FloatingViewActivity
@@ -33,7 +32,7 @@ import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.spring.SpringActivity
-import com.riders.thelab.ui.transition.TransitionActivity
+import com.riders.thelab.feature.transitions.xml.TransitionActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
 
 object AppBuilderUtils {
@@ -116,8 +115,8 @@ object AppBuilderUtils {
                                 R.drawable.ic_flip_to_back
                             )
                         )
-                        .withActivityClass(TransitionActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityClass(com.riders.thelab.feature.transitions.chooser.TransitionsChooserActivity::class.java)
+                        .withActivityDate("2024/05/14")
                         .build()
                 this.add(transitions)
 
@@ -433,23 +432,6 @@ object AppBuilderUtils {
                         .withActivityDate("2023/12/27")
                         .build()
                 this.add(bluetooth)
-
-                // Jetpack Compose
-                val jetpackCompose =
-                    AppBuilder
-                        .withId(28)
-                        .withActivityTitle(context.getString(R.string.activity_title_compose))
-                        .withActivityDescription("Jetpack Compose is Android’s modern toolkit for building native UI with less code, powerful tools, and intuitive Kotlin APIs...")
-                        .withActivityIcon(
-                            getDrawableFromIntResource(
-                                context,
-                                R.drawable.jetpack_compose
-                            )
-                        )
-                        .withActivityClass(ComposeActivity::class.java)
-                        .withActivityDate("2023/01/29")
-                        .build()
-                this.add(jetpackCompose)
 
 
                 // Camera
