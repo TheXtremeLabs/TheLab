@@ -18,12 +18,12 @@ this app (biometric section, speech-to-text, floating widgets, file downloading,
 TheLab uses multiple libraries for UI as much as for network, image loading, dependency injection, serialization and so on
 
 - [AndroidX Packages][androidx] (Room, Worker, Material, Palette, Lifecycle, Biometric, Datastore...)
-- [AndroidX Jetpack Compose][jetpack-compose]
-- [Coil][coil]
-- [Lottie][lottie]
+- [AndroidX Jetpack Compose][jetpack-compose] Android’s modern toolkit for building native UI with less code, powerful tools, and intuitive Kotlin APIs...
+- [Coil][coil] An image loading library for Android backed by Kotlin Coroutines
+- [Lottie][lottie] A mobile library for Android and iOS that parses Adobe After Effects animations exported as json with Bodymovin and renders them natively on mobile!
 - [Media and Exoplayer][exoplayer]
 - [Google APIs][google-apis]
-- [Hilt][dagger-hilt]
+- [Hilt][dagger-hilt] A standard way to incorporate Dagger dependency injection into an Android application
 - [Kotlin Serialization][kotlinx-serialization]
 - [Retrofit][retrofit]
 - [OkHttp][okhttp]
