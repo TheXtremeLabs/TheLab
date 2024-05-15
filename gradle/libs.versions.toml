@@ -25,7 +25,7 @@ androidxComposeBom = "2024.05.00"
 androidxComposeAlpha = "1.7.0-alpha08"
 androidxComposeCompiler = "1.5.13"
 androidxComposeMaterial3 = "1.2.1"
-androidxComposeMaterial3Adaptative = "1.0.0-alpha12"
+androidxComposeMaterial3Adaptative = "1.0.0-beta01"
 androidxComposeUiTooling = "1.6.7"
 androidxComposeRuntimeTracing = "1.0.0-beta01"
 androidxCardView = "1.0.0"
@@ -33,20 +33,21 @@ androidxConstraintLayout = "2.1.4"
 androidxConcurrent = "1.1.0"
 androidxCore = "1.13.1"
 androidxCoreSplashscreen = "1.0.1"
+androidxCredentials = "1.2.2"
 androidxDataStore = "1.1.1"
 androidxDataStorePreference = "1.2.1"
 androidxDynamicAnimation = "1.0.0"
 # espresso version {strictly 3.5.0}
 #noinspection GradleDependency
 androidxEspresso = "3.5.0"
-androidxFragment = "1.7.0"
+androidxFragment = "1.7.1"
 androidxGlance = "1.0.0"
 androidxHiltNavigationCompose = "1.2.0"
-androidxLifecycle = "2.7.0"
+androidxLifecycle = "2.8.0"
 androidxMacroBenchmark = "1.2.4"
 androidxMetrics = "1.0.0-beta01"
 androidxMultiDex = "2.0.1"
-androidxNavigation = "2.8.0-alpha08"
+androidxNavigation = "2.8.0-beta01"
 androidxPalette = "1.0.0"
 androidxProfileinstaller = "1.3.1"
 androidxRecyclerView = "1.3.2"
@@ -60,7 +61,7 @@ androidxTestRunner = "1.5.0"
 androidxTestTruth = "1.5.0"
 androidxTracing = "1.2.0"
 androidxUiAutomator = "2.3.0"
-androidxViewPager2 = "1.0.0"
+androidxViewPager2 = "1.1.0"
 androidxWindowManager = "1.2.0"
 androidxWindowExtensions = "1.0.0-alpha01"
 androidxWork = "2.9.0"
@@ -79,6 +80,7 @@ googleApiClientOAuth = "1.34.1"
 googleApiDriveV3 = "v3-rev20221219-2.0.0"
 googleApiClientJackson2 = "2.1.2"
 googleHttpClient = "1.44.1"
+googleIdentity = "1.1.0"
 # Google ML Kit
 googleBarcodeScanning = "17.2.0"
 googleGuava = "33.0.0-jre"
@@ -87,6 +89,8 @@ googleObjectDetection = "17.0.1"
 # Google Play Services
 googlePlayServicesBase = "18.4.0"
 googlePlayServicesAuth = "21.1.1"
+googlePlayServicesDrive = "17.0.0"
+googlePlayServicesTasks = "18.1.0"
 glide = "4.16.0"
 glideTransformation = "4.3.0"
 # Hilt (for gradle plugin version and dependency)
@@ -191,6 +195,9 @@ androidx-concurrent = { group = "androidx.concurrent", name = "concurrent-future
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxCoreSplashscreen" }
+#noinspection CredentialDependency
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidxCredentials" }
+androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidxCredentials" }
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore", version.ref = "androidxDataStore" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
 androidx-preferences = { group = "androidx.preference", name = "preference-ktx", version.ref = "androidxDataStorePreference" }
@@ -280,8 +287,12 @@ google-api-client-oauth-java6 = { group = "com.google.oauth-client", name = "goo
 google-api-client-jetty = { group = "com.google.oauth-client", name = "google-oauth-client-jetty", version.ref = "googleApiClientOAuth" }
 google-api-drive = { group = "com.google.apis", name = "google-api-services-drive", version.ref = "googleApiDriveV3" }
 google-http-client = { group = "com.google.http-client", name = "google-http-client-android", version.ref = "googleHttpClient" }
+google-http-client-gson = { group = "com.google.http-client", name = "google-http-client-gson", version.ref = "googleHttpClient" }
+google-identity = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleIdentity" }
 google-play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "googlePlayServicesBase" }
 google-play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googlePlayServicesAuth" }
+google-play-services-drive = { group = "com.google.android.gms", name = "play-services-drive", version.ref = "googlePlayServicesDrive" }
+google-play-services-tasks = { group = "com.google.android.gms", name = "play-services-tasks", version.ref = "googlePlayServicesTasks" }
 google-barcode-scanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "googleBarcodeScanning" }
 google-guava = { group = "com.google.guava", name = "guava", version.ref = "googleGuava" }
 google-guava-listenablefuture = { group = "com.google.guava", name = "listenablefuture", version.ref = "googleGuavaListenableFuture" }
