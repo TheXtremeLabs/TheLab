@@ -76,7 +76,6 @@ fun ScheduleContent(
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-
                 AnimatedVisibility(
                     modifier = Modifier.align(Alignment.TopCenter),
                     visible = scheduleState is ScheduleJobAlarmUiState.Started
@@ -128,7 +127,8 @@ fun ScheduleContent(
                                     }
                                 }
                             }
-                        }
+                        },
+                        readOnly = false
                     )
 
                     Button(

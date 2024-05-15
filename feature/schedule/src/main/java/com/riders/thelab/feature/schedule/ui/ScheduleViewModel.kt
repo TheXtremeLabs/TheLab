@@ -18,13 +18,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.schedule.core.ScheduleAlarmReceiver
 import com.riders.thelab.feature.schedule.core.ScheduleAlarmService
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
 
-class ScheduleViewModel : ViewModel() {
+class ScheduleViewModel : BaseViewModel() {
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
@@ -45,7 +46,7 @@ class ScheduleViewModel : ViewModel() {
     val tooltipState = TooltipState()
 
 
-    fun updateUIState(state: ScheduleJobAlarmUiState) {
+    private fun updateUIState(state: ScheduleJobAlarmUiState) {
         _scheduleJobUiState.value = state
     }
 
@@ -60,11 +61,11 @@ class ScheduleViewModel : ViewModel() {
     var uiCountDown by mutableLongStateOf(0L)
         private set
 
-    fun updateCountDownQuery(countDown: String) {
+    private fun updateCountDownQuery(countDown: String) {
         countDownQuery = countDown
     }
 
-    fun updateCountDownStarted(started: Boolean) {
+    private fun updateCountDownStarted(started: Boolean) {
         isCountDownStarted = started
     }
 
@@ -72,11 +73,11 @@ class ScheduleViewModel : ViewModel() {
         isCountDownDone = done
     }
 
-    fun updateLoadingViewVisible(visible: Boolean) {
+    private fun updateLoadingViewVisible(visible: Boolean) {
         isLoadingViewVisible = visible
     }
 
-    fun updateUiCountDown(millisUntilFinished: Long) {
+    private fun updateUiCountDown(millisUntilFinished: Long) {
         uiCountDown = millisUntilFinished
     }
 

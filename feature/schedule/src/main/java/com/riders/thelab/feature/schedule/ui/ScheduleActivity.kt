@@ -59,6 +59,7 @@ class ScheduleActivity : BaseComponentActivity() {
                                     when (event) {
                                         is UiEvent.OnStartButtonClicked -> {
                                             Timber.d("Start Count Down clicked")
+
                                             if (mViewModel.countDownQuery.isNotBlank()) {
                                                 mViewModel.startAlert(
                                                     this@ScheduleActivity,
