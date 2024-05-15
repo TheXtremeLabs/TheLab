@@ -190,7 +190,7 @@ class BiometricViewModel @Inject constructor(
                     success = { authContext = it },
                     error = { throwable ->
                         // In this case we decide to not show and error to the end user.
-                        Timber.e("reduceState() | onFailure | error caught with message: ${throwable?.message} (class: ${throwable?.javaClass?.simpleName})")
+                        Timber.e("reduceState() | onFailure | error caught with message: ${throwable?.message} (class: ${throwable?.javaClass?.canonicalName})")
                     }
                 )
         }

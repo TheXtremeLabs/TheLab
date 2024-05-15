@@ -52,18 +52,12 @@ import timber.log.Timber
 @Composable
 fun ScheduleContent(
     scheduleState: ScheduleJobAlarmUiState,
-    onUpdateUIState: (ScheduleJobAlarmUiState) -> Unit,
     tooltipState: TooltipState,
-    onStartButtonClicked: () -> Unit,
     countDownQuery: String,
-    onUpdateCountDownQuery: (String) -> Unit,
     uiCountDown: Long,
     isCountDownStarted: Boolean,
-    onUpdateCountDownStarted: (Boolean) -> Unit,
-    onUpdateLoadingViewVisible: (Boolean) -> Unit,
-    onUpdateUiCountDown: (Long) -> Unit,
     isCountDownDone: Boolean,
-    onUpdateCountDownDone: (Boolean) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -103,7 +97,7 @@ fun ScheduleContent(
                             .fillMaxWidth(.7f)
                             .focusRequester(focusRequester),
                         value = countDownQuery,
-                        onValueChange = { onUpdateCountDownQuery(it) },
+                        onValueChange = { uiEvent.invoke(UiEvent.OnUpdateCountDownQuery(it)) },
                         placeholder = { Text(text = "Enter a value to start the count down") },
                         label = { Text(text = "Count Down") },
                         singleLine = true,
@@ -138,7 +132,7 @@ fun ScheduleContent(
                     )
 
                     Button(
-                        onClick = onStartButtonClicked,
+                        onClick = { uiEvent.invoke(UiEvent.OnStartButtonClicked) },
                         enabled = scheduleState !is ScheduleJobAlarmUiState.Started,
                     ) {
                         Text(modifier = Modifier.padding(end = 8.dp), text = "Start count Down")
@@ -163,7 +157,7 @@ fun ScheduleContent(
         Timber.d("LaunchedEffect(viewModel.isCountDownStarted) with: $isCountDownStarted")
 
         // Should update loading view
-        onUpdateLoadingViewVisible(isCountDownStarted)
+        uiEvent.invoke(UiEvent.OnUpdateLoadingViewVisible(isCountDownStarted))
 
         if (isCountDownStarted) {
             focusManager.clearFocus(true)
@@ -174,13 +168,15 @@ fun ScheduleContent(
             scope.launch {
                 object : CountDownTimer(millsFuture, 1000) {
                     override fun onTick(millisUntilFinished: Long) {
-                        onUpdateUiCountDown(millisUntilFinished / 1000)
+                        uiEvent.invoke(UiEvent.OnUpdateUiCountDown(millisUntilFinished / 1000))
                     }
 
                     override fun onFinish() {
                         Timber.e("Count down finished")
-                        onUpdateCountDownDone(true)
-                        onUpdateUIState(ScheduleJobAlarmUiState.Done)
+                        uiEvent.invoke(UiEvent.OnUpdateCountDownDone(true))
+                        uiEvent.invoke(
+                            UiEvent.OnUpdateScheduleJobAlarmUiState(ScheduleJobAlarmUiState.Done)
+                        )
                     }
                 }.start()
             }
@@ -190,10 +186,10 @@ fun ScheduleContent(
     LaunchedEffect(isCountDownDone) {
         Timber.d("LaunchedEffect(viewModel.isCountDownDone) with: $isCountDownDone")
 
-        onUpdateLoadingViewVisible(isCountDownDone)
+        uiEvent.invoke(UiEvent.OnUpdateLoadingViewVisible(isCountDownDone))
 
         if (isCountDownDone) {
-            onUpdateCountDownStarted(false)
+            uiEvent.invoke(UiEvent.OnUpdateCountDownStarted(false))
             // viewModel.updateUIState(ScheduleJobAlarmUiState.Done)
             focusManager.clearFocus(true)
             keyboardController?.hide()
@@ -210,18 +206,11 @@ private fun PreviewScheduleContent(@PreviewParameter(PreviewProvider::class) sch
     TheLabTheme {
         ScheduleContent(
             scheduleState,
-            {},
             tooltipState,
-            {},
             "2",
-            {},
             1000L,
             true,
-            {},
-            {},
-            {},
-            false,
-            {}
-        )
+            false
+        ) {}
     }
 }

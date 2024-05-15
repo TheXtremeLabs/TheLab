@@ -121,7 +121,7 @@ class AirportSearchViewModel @Inject constructor(
         }
             .onFailure {
                 it.printStackTrace()
-                Timber.e("getAirportSearchModelList() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                Timber.e("getAirportSearchModelList() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
             }
             .getOrElse {
                 emptyList()

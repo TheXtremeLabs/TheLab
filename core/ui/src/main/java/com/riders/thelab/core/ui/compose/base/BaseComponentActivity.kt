@@ -11,8 +11,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.riders.thelab.core.common.bus.Listen
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import timber.log.Timber
+import java.lang.reflect.InvocationTargetException
 
 abstract class BaseComponentActivity : ComponentActivity() {
 
@@ -87,10 +89,25 @@ abstract class BaseComponentActivity : ComponentActivity() {
 
 
      fun launchPermissionRequest(permissions: Array<String>) {
-        Timber.e("requestPermission() | permissions: $permissions")
-        permissionLauncher?.launch(permissions) ?: {
-            Timber.e("Permission launcher has NOT been initialized")
-        }
+         Timber.e("requestPermission() | permissions: $permissions")
+         permissionLauncher?.launch(permissions) ?: {
+             Timber.e("Permission launcher has NOT been initialized")
+         }
+     }
+
+    fun subscribeToKotlinBus() {
+        Timber.i("subscribeToKotlinBus()")
+        javaClass.declaredMethods
+            .filter { it.isAnnotationPresent(Listen::class.java) }
+            .forEach {
+                try {
+                    it.invoke(this)
+                } catch (e: IllegalAccessException) {
+                    Timber.e(e)
+                } catch (e: InvocationTargetException) {
+                    Timber.e(e)
+                }
+            }
     }
 
     abstract fun backPressed()

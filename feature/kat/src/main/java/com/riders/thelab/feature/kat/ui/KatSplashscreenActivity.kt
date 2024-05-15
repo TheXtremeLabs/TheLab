@@ -84,7 +84,7 @@ class KatSplashscreenActivity : BaseComponentActivity() {
             startActivity(this)
         }
         .onFailure { throwable ->
-            Timber.e("launchKatActivity() | onFailure | error caught with message: ${throwable.message} (class: ${throwable.javaClass.simpleName})")
+            Timber.e("launchKatActivity() | onFailure | error caught with message: ${throwable.message} (class: ${throwable.javaClass.canonicalName})")
         }
         .onSuccess {
             Timber.d("launchKatActivity() | onSuccess | Activity launched successfully")

@@ -610,14 +610,14 @@ fun executeOnBackPressed(context: Context) {
         (context as BaseComponentActivity).backPressed()
     }.onFailure {
         it.printStackTrace()
-        Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+        Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
 
         runCatching {
             Timber.d("runCatching | Attempt to execute fallback backPressed on AppCompatActivity()")
             (context as BaseAppCompatActivity).backPressed()
         }.onFailure {
             it.printStackTrace()
-            Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+            Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
         }
     }
 }

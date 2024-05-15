@@ -121,7 +121,7 @@ object LabFileManager {
     }
         .onFailure {
             it.printStackTrace()
-            Timber.e("unzipGzip() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+            Timber.e("unzipGzip() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
         }
         .onSuccess {
             Timber.d("unzipGzip() | onSuccess | is success: $it")
@@ -164,7 +164,7 @@ object LabFileManager {
     }
         .onFailure {
             it.printStackTrace()
-            Timber.e("unzipGzip() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+            Timber.e("unzipGzip() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
         }
         .onSuccess {
             Timber.d("unzipGzip() | onSuccess | is success: $it")
@@ -194,7 +194,7 @@ object LabFileManager {
     }
         .onFailure {
             it.printStackTrace()
-            Timber.e("unzipGzip() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+            Timber.e("unzipGzip() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
         }
         .onSuccess {
             Timber.d("unzipGzip() | onSuccess | is success: $it")

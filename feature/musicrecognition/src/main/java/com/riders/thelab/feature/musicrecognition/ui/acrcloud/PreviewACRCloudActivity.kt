@@ -101,7 +101,7 @@ fun Idle(
                 .padding(8.dp),
             verticalAlignment = Alignment.Top
         ) {
-            Text(modifier = Modifier, text = result ?: "")
+            Text(modifier = Modifier, text = result)
             Button(
                 modifier = Modifier,
                 onClick = onStartRecognition,
@@ -160,7 +160,7 @@ fun Searching(result: String) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround
         ) {
-            Text(modifier = Modifier, text = result ?: "")
+            Text(modifier = Modifier, text = result)
             PulsarFab {
                 Image(
                     modifier = Modifier.size(72.dp),
@@ -313,7 +313,7 @@ fun ACRCloudActivityContent(
 
     val isConnected = networkState == NetworkState.Available
     var currentCapabilityChangedCount by remember { mutableIntStateOf(0) }
-    val maxCapabilitiesCountTaken = 1
+   //  val maxCapabilitiesCountTaken = 1
 
     val animatedHeight by animateDpAsState(
         targetValue = when (acrUiState) {

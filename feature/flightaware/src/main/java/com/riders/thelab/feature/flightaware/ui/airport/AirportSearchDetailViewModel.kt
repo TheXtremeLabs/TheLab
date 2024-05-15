@@ -110,7 +110,7 @@ class AirportSearchDetailViewModel @Inject constructor(
             airportID?.let { updateAirportID(it) }
         }.onFailure {
             it.printStackTrace()
-            Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+            Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
         }
     }
 

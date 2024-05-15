@@ -39,7 +39,7 @@ class KatMainViewModel @Inject constructor(
     private var mFirebaseCloudDatastoreUser: FCDKatUser? = null
     private var deviceFCMToken: String? = null
 
-    fun updateToken(newToken: String) {
+    private fun updateToken(newToken: String) {
         this.deviceFCMToken = newToken
     }
 

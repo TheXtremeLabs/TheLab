@@ -67,10 +67,7 @@ fun PaletteItem(text: String, color: Color? = MaterialTheme.colorScheme.backgrou
 @DevicePreviews
 @Composable
 private fun PreviewPaletteItem(@PreviewParameter(TextContentPreviewProvider::class) text: String) {
-    val index = 0
-    val color: Color = md_theme_dark_primary
-
     TheLabTheme {
-        PaletteItem(text = text, color = color)
+        PaletteItem(text = text, color = md_theme_dark_primary)
     }
 }

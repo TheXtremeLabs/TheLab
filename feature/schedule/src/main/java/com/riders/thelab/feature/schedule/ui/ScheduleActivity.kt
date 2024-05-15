@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TooltipState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -33,12 +32,14 @@ class ScheduleActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        subscribeToKotlinBus()
+
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
                     val scope = rememberCoroutineScope()
-                    val tooltipState = TooltipState()
+//                    val tooltipState = TooltipState()
                     val scheduleState by mViewModel.scheduleJobUiState.collectAsStateWithLifecycle()
 
                     TheLabTheme {
@@ -49,38 +50,30 @@ class ScheduleActivity : BaseComponentActivity() {
                         ) {
                             ScheduleContent(
                                 scheduleState = scheduleState,
-                                onUpdateUIState = { mViewModel.updateUIState(it) },
-                                tooltipState = tooltipState,
-                                onStartButtonClicked = {
-                                    Timber.d("Start Count Down clicked")
-                                    if (mViewModel.countDownQuery.isNotBlank()) {
-                                        mViewModel.startAlert(
-                                            this@ScheduleActivity,
-                                            mViewModel.countDownQuery
-                                        )
-                                    } else {
-                                        if (!tooltipState.isVisible) {
-                                            scope.launch { tooltipState.show() }
-                                        }
-                                    }
-                                },
+                                tooltipState = mViewModel.tooltipState,
                                 countDownQuery = mViewModel.countDownQuery,
-                                onUpdateCountDownQuery = { mViewModel.updateCountDownQuery(it) },
                                 uiCountDown = mViewModel.uiCountDown,
                                 isCountDownStarted = mViewModel.isCountDownStarted,
-                                onUpdateCountDownStarted = { mViewModel.updateCountDownStarted(it) },
-                                onUpdateLoadingViewVisible = {
-                                    mViewModel.updateLoadingViewVisible(
-                                        it
-                                    )
-                                },
-                                onUpdateUiCountDown = { millisUntilFinished: Long ->
-                                    mViewModel.updateUiCountDown(
-                                        millisUntilFinished
-                                    )
-                                },
                                 isCountDownDone = mViewModel.isCountDownDone,
-                                onUpdateCountDownDone = { mViewModel.updateCountDownDone(it) }
+                                uiEvent = { event ->
+                                    when (event) {
+                                        is UiEvent.OnStartButtonClicked -> {
+                                            Timber.d("Start Count Down clicked")
+                                            if (mViewModel.countDownQuery.isNotBlank()) {
+                                                mViewModel.startAlert(
+                                                    this@ScheduleActivity,
+                                                    mViewModel.countDownQuery
+                                                )
+                                            } else {
+                                                if (!mViewModel.tooltipState.isVisible) {
+                                                    scope.launch { mViewModel.tooltipState.show() }
+                                                }
+                                            }
+                                        }
+
+                                        else -> mViewModel::onEvent
+                                    }
+                                }
                             )
                         }
                     }

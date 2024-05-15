@@ -113,8 +113,10 @@ fun DownloaderContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(48.dp)
-                                .animateItemPlacement(
-                                    animationSpec = tween(
+                                .animateItem(
+                                    fadeInSpec = tween(300),
+                                    fadeOutSpec = tween(300),
+                                    placementSpec = tween(
                                         durationMillis = 500,
                                         easing = LinearOutSlowInEasing,
                                     )

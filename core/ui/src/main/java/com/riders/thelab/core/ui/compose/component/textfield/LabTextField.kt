@@ -151,7 +151,7 @@ fun LabTextField(
             trailingIcon = trailingContent,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Text
             ),
             visualTransformation = VisualTransformation.None,
@@ -276,7 +276,7 @@ fun LabOutlinedTextField(
             trailingIcon = trailingContent,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Text
             ),
             visualTransformation = VisualTransformation.None,
@@ -331,7 +331,7 @@ fun LabOutlinedTextField(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabTextField2(
     modifier: Modifier,
@@ -346,11 +346,9 @@ fun LabTextField2(
     unfocusedBorderColor: Color = Color.Unspecified,
     focusedContainerColor: Color = Color.Transparent,
     unfocusedContainerColor: Color = Color.Transparent,
-    focusedIndicatorColor: Color = Color.Transparent,
-    unfocusedIndicatorColor: Color = Color.Transparent
 ) {
 
-    val keyboardController = LocalSoftwareKeyboardController.current
+//    val keyboardController = LocalSoftwareKeyboardController.current
     val keyboardState = keyboardAsState()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -458,10 +456,10 @@ fun LabTextField2(
 
     LaunchedEffect(onOutsideBoundariesClicked) {
         Timber.d("LaunchedEffect | onOutsideBoundariesClicked: $onOutsideBoundariesClicked | coroutineContext: ${this.coroutineContext}")
-        if (onOutsideBoundariesClicked) {
-            /*focusRequester.freeFocus()
-            focusManager.clearFocus()*/
-        }
+        /*if (onOutsideBoundariesClicked) {
+          focusRster.freeFocus()
+          focusManager.clearFocus()
+        }*/
     }
 }
 
@@ -619,7 +617,7 @@ fun LabTextField2(
         }
     }
 
-    // LaunchedEffect prevents endless focus request
+// LaunchedEffect prevents endless focus request
     LaunchedEffect(focusRequester) {
         Timber.d("LaunchedEffect | focusRequester: $focusRequester | coroutineContext: ${this.coroutineContext}")
 
@@ -698,7 +696,6 @@ private fun PreviewLabTextField() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @DevicePreviews
 @Composable
 private fun PreviewLabTextField2TextFieldState() {
@@ -723,9 +720,7 @@ private fun PreviewLabTextField2TextFieldState() {
                 label = "Search hint",
                 hasBorders = true,
                 focusedBorderColor = Color.Red,
-                unfocusedBorderColor = Color.LightGray,
-                focusedIndicatorColor = Color.LightGray,
-                unfocusedIndicatorColor = Color.Transparent
+                unfocusedBorderColor = Color.LightGray
             )
         }
     }

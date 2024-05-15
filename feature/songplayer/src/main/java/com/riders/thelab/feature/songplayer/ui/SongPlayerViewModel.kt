@@ -309,7 +309,7 @@ class SongPlayerViewModel @Inject constructor(
     }
         .onFailure {
             it.printStackTrace()
-            Timber.e("runCatching | onFailure | error caught class: ${it.javaClass.simpleName}, with message: ${it.message}")
+            Timber.e("runCatching | onFailure | error caugh with message: ${it.message} (class: ${it.javaClass.canonicalName})")
         }
         .onSuccess {
             Timber.d("runCatching | onSuccess | files fetched successfully")
@@ -400,7 +400,7 @@ class SongPlayerViewModel @Inject constructor(
             }
                 .onFailure {
                     it.printStackTrace()
-                    Timber.e("runCatching | onFailure | error caught class: ${it.javaClass.simpleName}, with message: ${it.message}")
+                    Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
                 }
         } ?: run { Timber.e("Unable to find song item with id $songId") }
     }

@@ -9,6 +9,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.IBinder
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TooltipState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +40,11 @@ class ScheduleViewModel : ViewModel() {
     private var _scheduleJobUiState =
         MutableStateFlow<ScheduleJobAlarmUiState>(ScheduleJobAlarmUiState.None)
     val scheduleJobUiState = _scheduleJobUiState
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    val tooltipState = TooltipState()
+
+
     fun updateUIState(state: ScheduleJobAlarmUiState) {
         _scheduleJobUiState.value = state
     }
@@ -79,6 +86,20 @@ class ScheduleViewModel : ViewModel() {
     // Class Methods
     //
     //////////////////////////////////////////
+    fun onEvent(event: UiEvent) {
+        Timber.d("onEvent() | event: $event")
+
+        when (event) {
+            is UiEvent.OnUpdateScheduleJobAlarmUiState -> updateUIState(event.newState)
+            is UiEvent.OnStartButtonClicked -> {}
+            is UiEvent.OnUpdateCountDownQuery -> updateCountDownQuery(event.value)
+            is UiEvent.OnUpdateCountDownStarted -> updateCountDownStarted(event.isStared)
+            is UiEvent.OnUpdateLoadingViewVisible -> updateLoadingViewVisible(event.isLoadingVisible)
+            is UiEvent.OnUpdateUiCountDown -> updateUiCountDown(event.millisUntilFinished)
+            is UiEvent.OnUpdateCountDownDone -> updateCountDownDone(event.isCountDownDone)
+        }
+    }
+
     fun startAlert(activity: Activity, countDownTime: String) {
         Timber.d("Time entered : %s second(s)", countDownTime)
 

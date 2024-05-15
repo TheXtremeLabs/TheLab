@@ -40,9 +40,8 @@ fun LocationOnMapsContent() {
         position = CameraPosition.fromLatLngZoom(userPosition, 10f)
     }
 
-    val animatingSearchBarVisibility by remember {
-        mutableStateOf(true)
-    }
+    // TODO: Implement google places search functionality
+    // val animatingSearchBarVisibility by remember { mutableStateOf(true) }
 
     TheLabTheme {
         Box(modifier = Modifier.fillMaxSize()) {

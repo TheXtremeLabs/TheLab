@@ -192,7 +192,7 @@ open class FlightSearchViewModel @Inject constructor(
             }
                 .onFailure {
                     it.printStackTrace()
-                    Timber.e("initLocationManager() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                    Timber.e("initLocationManager() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
                 }
                 .onSuccess {
                     Timber.d("initLocationManager() | onSuccess | is success: $it")
@@ -257,7 +257,7 @@ open class FlightSearchViewModel @Inject constructor(
             }
                 .onFailure {
                     it.printStackTrace()
-                    Timber.e("searchFlightByFlightNumber() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                    Timber.e("searchFlightByFlightNumber() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
                 }
         }
     }
@@ -314,7 +314,7 @@ open class FlightSearchViewModel @Inject constructor(
             }
                 .onFailure {
                     it.printStackTrace()
-                    Timber.e("searchFlightByFlightNumber() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                    Timber.e("searchFlightByFlightNumber() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
                 }
         }
     }
@@ -350,7 +350,7 @@ open class FlightSearchViewModel @Inject constructor(
         }
             .onFailure {
                 it.printStackTrace()
-                Timber.e("getAirportSearchModelList() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                Timber.e("getAirportSearchModelList() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
             }
             .getOrElse {
                 emptyList()
@@ -372,7 +372,7 @@ open class FlightSearchViewModel @Inject constructor(
             }
                 .onFailure {
                     it.printStackTrace()
-                    Timber.e("getAirportNearBy() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                    Timber.e("getAirportNearBy() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
                 }
                 .onSuccess {
                     Timber.d("getAirportNearBy() | onSuccess | is success: $it")

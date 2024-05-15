@@ -4,13 +4,16 @@ import android.annotation.SuppressLint
 import android.graphics.RenderEffect
 import android.graphics.Shader
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,13 +22,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
@@ -168,8 +174,76 @@ fun Modifier.animatePlacement(): Modifier = composed {
         }
 }
 
+
 //////////////////////////////////////
-// Pager Trnaasition
+// Faded edges
+//////////////////////////////////////
+enum class FadeSide { LEFT, RIGHT, TOP, BOTTOM }
+
+fun Size.getFadeOffsets(side: FadeSide): Pair<Offset, Offset> {
+    return when (side) {
+        FadeSide.LEFT -> Offset.Zero to Offset(width, 0f)
+        FadeSide.RIGHT -> Offset(width, 0f) to Offset.Zero
+        FadeSide.TOP -> Offset.Zero to Offset(0f, height)
+        FadeSide.BOTTOM -> Offset(0f, height) to Offset.Zero
+    }
+}
+
+@Composable
+fun Modifier.fadeEdge(
+    vararg sides: FadeSide,
+    color: Color,
+    width: Dp,
+    isVisible: Boolean,
+    spec: AnimationSpec<Dp>?
+) = composed {
+    require(width > 0.dp) { "Invalid fade width: Width must be greater than 0" }
+
+    val animatedWidth = spec?.let {
+        animateDpAsState(
+            targetValue = if (isVisible) width else 0.dp,
+            animationSpec = spec,
+            label = "Fade width"
+        ).value
+    }
+
+    drawWithContent {
+        // Draw the content
+        this@drawWithContent.drawContent()
+
+        // Go through all the provided sides
+        sides.forEach { side ->
+            // Get start and end gradient offsets
+            val (start, end) = this.size.getFadeOffsets(side)
+
+            // Define the static width
+            val staticWidth = if (isVisible) width.toPx() else 0f
+            // Define the final width
+            val widthPx = animatedWidth?.toPx() ?: staticWidth
+
+            // Calculate the fraction based on view size
+            val fraction = when (side) {
+                FadeSide.LEFT, FadeSide.RIGHT -> widthPx / this.size.width
+                FadeSide.TOP, FadeSide.BOTTOM -> widthPx / this.size.height
+
+            }
+
+            // Draw the gradient
+            drawRect(
+                brush = Brush.linearGradient(
+                    0f to color,
+                    fraction to Color.Transparent,
+                    start = start,
+                    end = end
+                ),
+                size = this.size
+            )
+        }
+    }
+}
+
+//////////////////////////////////////
+// Pager Transition
 //////////////////////////////////////
 @OptIn(ExperimentalFoundationApi::class)
 fun Modifier.pagerFadeTransition(page: Int, pagerState: PagerState) =

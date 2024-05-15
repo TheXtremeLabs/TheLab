@@ -85,7 +85,7 @@ class SearchFlightViewModel : ViewModel() {
         }
             .onFailure {
                 it.printStackTrace()
-                Timber.e("getBundle() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                Timber.e("getBundle() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
                 updateUiState(
                     SearchFlightsUiState.Error(
                         message = NotBlankString.create("Error occurred while getting value"),

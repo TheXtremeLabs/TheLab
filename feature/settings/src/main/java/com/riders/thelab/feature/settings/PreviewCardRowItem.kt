@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ fun CardRowItem(title: String, subtitle: String? = null, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
+            .clickable (onClick = onClick)
             .then(modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -53,7 +53,5 @@ class TransitionDetailActivity : BaseAppCompatActivity(), View.OnClickListener {
     // IMPLEMENTS
     //
     /////////////////////////////////////
-    override fun onClick(view: View?) {
-        onBackPressed()
-    }
+    override fun onClick(view: View?) { backPressed() }
 }

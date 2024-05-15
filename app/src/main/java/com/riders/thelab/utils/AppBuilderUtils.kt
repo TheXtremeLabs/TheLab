@@ -32,7 +32,6 @@ import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
 import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.spring.SpringActivity
-import com.riders.thelab.feature.transitions.xml.TransitionActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
 
 object AppBuilderUtils {
@@ -378,9 +377,10 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(GoogleDriveActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityDate("2015/20/01")
                         .build()
                 this.add(googleDrive)
+
 
                 // download
                 val download =
@@ -433,6 +433,21 @@ object AppBuilderUtils {
                         .build()
                 this.add(bluetooth)
 
+                val googleDrive2 =
+                    AppBuilder
+                        .withId(28)
+                        .withActivityTitle("Google Drive API")
+                        .withActivityDescription("Exploring Google Drive Api...")
+                        .withActivityIcon(
+                            getDrawableFromIntResource(
+                                context,
+                                com.riders.thelab.feature.googledrive.R.drawable.ic_google_drive_logo
+                            )
+                        )
+                        .withActivityClass(com.riders.thelab.feature.googledrive.ui.GoogleDriveActivity::class.java)
+                        .withActivityDate("2024/05/15")
+                        .build()
+                this.add(googleDrive2)
 
                 // Camera
                 val camera =

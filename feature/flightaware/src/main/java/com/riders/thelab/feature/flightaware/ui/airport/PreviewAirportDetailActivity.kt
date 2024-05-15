@@ -66,7 +66,6 @@ fun AirportDetailContent(
     isFlightsFetched: Boolean,
     onFlightRequested: () -> Unit
 ) {
-    val context = LocalContext.current
     val lazyListState = rememberLazyListState()
 
     val uiSettings by remember {

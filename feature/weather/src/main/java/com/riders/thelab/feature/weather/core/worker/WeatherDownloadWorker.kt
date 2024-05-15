@@ -139,11 +139,11 @@ class WeatherDownloadWorker @AssistedInject constructor(
         }
             .onFailure {
                 it.printStackTrace()
-                Timber.e("doWork() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+                Timber.e("doWork() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
             }
             .onSuccess { }
             .getOrElse {
-                Timber.e("getOrElse | error caught with message: $WORK_DOWNLOAD_FAILED | ${it.message} (class: ${it.javaClass.simpleName})")
+                Timber.e("getOrElse | error caught with message: $WORK_DOWNLOAD_FAILED | ${it.message} (class: ${it.javaClass.canonicalName})")
                 outputData = createOutputData(WORK_DOWNLOAD_FAILED)
                 Result.failure(outputData!!)
             }
@@ -171,7 +171,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
     }
         .onFailure {
             it.printStackTrace()
-            Timber.e("saveCities() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.simpleName})")
+            Timber.e("saveCities() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
         }
         .onSuccess {
             Timber.d("saveCities() | onSuccess | is success: $it")

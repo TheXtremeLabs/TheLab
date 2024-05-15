@@ -71,7 +71,7 @@ fun ColorsButton(currentColor: Int, onButtonClicked: () -> Unit) {
     ) { /* update some business state here */ }
 
     // Observe changes to the binary state for these interactions
-    val isPressed by interactionSource.collectIsPressedAsState()
+    // val isPressed by interactionSource.collectIsPressedAsState()
 
     // Use the state to change our UI
     /*val (text, color) = when {

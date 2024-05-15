@@ -316,7 +316,7 @@ class DownloadViewModel @Inject constructor(
                                     progress = (downloaded * 100L / total).toInt()
                                     Timber.d("downloaded: $progress %")
 
-                                    val progressFloat = (progress / 100).toFloat()
+                                    // val progressFloat = (progress / 100).toFloat()
 
                                     downloadList.find { reference == it.downloadRefId }?.let {
                                         // val index = downloadList.indexOf(it)
