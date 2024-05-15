@@ -456,6 +456,11 @@
             android:label="@string/activity_title_google_drive"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
+        <activity
+            android:name=".feature.googledrive.ui.GoogleDriveActivity"
+            android:label="@string/activity_title_google_drive"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:theme="@style/Theme.TheLab" />
 
         <activity
             android:name=".feature.download.DownloadActivity"

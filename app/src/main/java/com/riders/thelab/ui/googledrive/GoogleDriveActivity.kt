@@ -140,6 +140,7 @@ class GoogleDriveActivity
         Timber.i("validateServerClientID()")
         val serverClientId = getString(R.string.server_client_id)
         val suffix = ".apps.googleusercontent.com"
+
         if (!serverClientId.trim { it <= ' ' }.endsWith(suffix)) {
             val message =
                 "Invalid server client ID in strings.xml, must end with $suffix"
