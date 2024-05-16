@@ -8,6 +8,6 @@ class PreviewProvider : PreviewParameterProvider<ScheduleJobAlarmUiState> {
         get() = sequenceOf(
             ScheduleJobAlarmUiState.Started(true, 20L),
             ScheduleJobAlarmUiState.Done,
-            ScheduleJobAlarmUiState.None
+            ScheduleJobAlarmUiState.Idle
         )
 }

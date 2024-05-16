@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
@@ -23,12 +23,15 @@ import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.schedule.core.ScheduleAlarmReceiver
 import com.riders.thelab.feature.schedule.core.ScheduleAlarmService
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.ref.WeakReference
 
 class ScheduleViewModel : BaseViewModel() {
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
+    private var mWeakRefActivity: WeakReference<ScheduleActivity>? = null
     private var mPendingIntent: PendingIntent? = null
     private var mServiceConnection: ServiceConnection? = null
     private var mAlarmBroadcast: ScheduleAlarmReceiver? = null
@@ -38,13 +41,12 @@ class ScheduleViewModel : BaseViewModel() {
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    private var _scheduleJobUiState =
-        MutableStateFlow<ScheduleJobAlarmUiState>(ScheduleJobAlarmUiState.None)
-    val scheduleJobUiState = _scheduleJobUiState
-
     @OptIn(ExperimentalMaterial3Api::class)
     val tooltipState = TooltipState()
 
+    private var _scheduleJobUiState =
+        MutableStateFlow<ScheduleJobAlarmUiState>(ScheduleJobAlarmUiState.Idle)
+    val scheduleJobUiState = _scheduleJobUiState
 
     private fun updateUIState(state: ScheduleJobAlarmUiState) {
         _scheduleJobUiState.value = state
@@ -61,7 +63,7 @@ class ScheduleViewModel : BaseViewModel() {
     var uiCountDown by mutableLongStateOf(0L)
         private set
 
-    private fun updateCountDownQuery(countDown: String) {
+    fun updateCountDownQuery(countDown: String) {
         countDownQuery = countDown
     }
 
@@ -87,13 +89,37 @@ class ScheduleViewModel : BaseViewModel() {
     // Class Methods
     //
     //////////////////////////////////////////
+    fun init(scheduleActivity: ScheduleActivity) {
+        if (null == mWeakRefActivity) {
+            this.mWeakRefActivity = WeakReference(scheduleActivity)
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
     fun onEvent(event: UiEvent) {
         Timber.d("onEvent() | event: $event")
 
         when (event) {
             is UiEvent.OnUpdateScheduleJobAlarmUiState -> updateUIState(event.newState)
-            is UiEvent.OnStartButtonClicked -> {}
-            is UiEvent.OnUpdateCountDownQuery -> updateCountDownQuery(event.value)
+            is UiEvent.OnStartButtonClicked -> {
+                mWeakRefActivity?.get()?.let { activity ->
+                    Timber.d("Start Count Down clicked")
+
+                    if (countDownQuery.isNotBlank()) {
+                        startAlert(activity, countDownQuery)
+                    } else {
+                        if (!tooltipState.isVisible) {
+                            viewModelScope.launch { tooltipState.show() }
+                        }
+                    }
+
+                }
+            }
+
+            is UiEvent.OnUpdateCountDownQuery -> {
+                updateCountDownQuery(event.newValue)
+            }
+
             is UiEvent.OnUpdateCountDownStarted -> updateCountDownStarted(event.isStared)
             is UiEvent.OnUpdateLoadingViewVisible -> updateLoadingViewVisible(event.isLoadingVisible)
             is UiEvent.OnUpdateUiCountDown -> updateUiCountDown(event.millisUntilFinished)

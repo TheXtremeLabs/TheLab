@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.QuestionMark
 import androidx.compose.material.icons.outlined.Schedule
@@ -36,6 +37,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
@@ -96,7 +100,13 @@ fun ScheduleContent(
                             .fillMaxWidth(.7f)
                             .focusRequester(focusRequester),
                         value = countDownQuery,
-                        onValueChange = { uiEvent.invoke(UiEvent.OnUpdateCountDownQuery(it)) },
+                        onValueChange = { newValue ->
+                            uiEvent.invoke(
+                                UiEvent.OnUpdateCountDownQuery(
+                                    newValue
+                                )
+                            )
+                        },
                         placeholder = { Text(text = "Enter a value to start the count down") },
                         label = { Text(text = "Count Down") },
                         singleLine = true,
@@ -128,6 +138,13 @@ fun ScheduleContent(
                                 }
                             }
                         },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            capitalization = KeyboardCapitalization.None,
+                            autoCorrectEnabled = false,
+                            imeAction = ImeAction.Done,
+                            showKeyboardOnFocus = true
+                        ),
                         readOnly = false
                     )
 

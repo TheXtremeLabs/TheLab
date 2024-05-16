@@ -9,7 +9,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,11 +25,13 @@ import timber.log.Timber
 
 class ScheduleActivity : BaseComponentActivity() {
 
-    private val mViewModel: ScheduleViewModel by viewModels()
+    private val mViewModel: ScheduleViewModel by viewModels<ScheduleViewModel>()
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mViewModel.init(this@ScheduleActivity)
 
         subscribeToKotlinBus()
 
@@ -38,8 +39,6 @@ class ScheduleActivity : BaseComponentActivity() {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-                    val scope = rememberCoroutineScope()
-//                    val tooltipState = TooltipState()
                     val scheduleState by mViewModel.scheduleJobUiState.collectAsStateWithLifecycle()
 
                     TheLabTheme {
@@ -55,26 +54,7 @@ class ScheduleActivity : BaseComponentActivity() {
                                 uiCountDown = mViewModel.uiCountDown,
                                 isCountDownStarted = mViewModel.isCountDownStarted,
                                 isCountDownDone = mViewModel.isCountDownDone,
-                                uiEvent = { event ->
-                                    when (event) {
-                                        is UiEvent.OnStartButtonClicked -> {
-                                            Timber.d("Start Count Down clicked")
-
-                                            if (mViewModel.countDownQuery.isNotBlank()) {
-                                                mViewModel.startAlert(
-                                                    this@ScheduleActivity,
-                                                    mViewModel.countDownQuery
-                                                )
-                                            } else {
-                                                if (!mViewModel.tooltipState.isVisible) {
-                                                    scope.launch { mViewModel.tooltipState.show() }
-                                                }
-                                            }
-                                        }
-
-                                        else -> mViewModel::onEvent
-                                    }
-                                }
+                                uiEvent = { event -> mViewModel.onEvent(event) }
                             )
                         }
                     }

@@ -106,6 +106,8 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
     //
     //////////////////////////////////////////
     fun onEvent(event: UiEvent) {
+        Timber.d("onEvent() | event: $event")
+
         when (event) {
             is UiEvent.OnThemeSelected -> {
                 if (event.option.contains("light", true)) {
