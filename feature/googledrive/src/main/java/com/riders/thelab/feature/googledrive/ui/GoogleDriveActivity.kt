@@ -28,6 +28,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.googledrive.core.google.GooglePlayServicesManager
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiState
+import com.riders.thelab.feature.googledrive.data.local.compose.GoogleSignInState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -131,7 +132,8 @@ class GoogleDriveActivity : BaseComponentActivity(), OnConnectionFailedListener 
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
 
-                    val uiState by mViewModel.googleDriveUiState.collectAsStateWithLifecycle()
+                    val uiState: GoogleDriveUiState by mViewModel.googleDriveUiState.collectAsStateWithLifecycle()
+                    val signInState: GoogleSignInState by mViewModel.signInState.collectAsStateWithLifecycle()
 
                     TheLabTheme {
                         // A surface container using the 'background' color from the theme
@@ -141,12 +143,36 @@ class GoogleDriveActivity : BaseComponentActivity(), OnConnectionFailedListener 
                         ) {
                             GoogleDriveContent(
                                 uiState = uiState,
-                                hasInternetConnection = mViewModel.hasInternetConnection
-                            ) { event -> }
+                                signInState = signInState,
+                                hasInternetConnection = mViewModel.isConnected,
+                                googleDriveHelper = mViewModel.mGoogleDriveHelper,
+                                driveServiceHelper = mViewModel.mDriveServiceHelper,
+                            ) { event -> mViewModel.onEvent(event) }
                         }
                     }
                 }
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (null != mViewModel.mDriveServiceHelper) {
+            mViewModel.mDriveServiceHelper?.queryFiles()
+                ?.addOnFailureListener { throwable ->
+                    Timber.e("task | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
+                }
+                ?.addOnSuccessListener {
+                    Timber.d("task | addOnSuccessListener | value: ${it.toString()}")
+                }
+                ?.addOnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        Timber.e("task | addOnCompleteListener | failed")
+                    } else {
+                        Timber.i("task | addOnCompleteListener | successful, result: ${task.result}")
+                    }
+                }
         }
     }
 

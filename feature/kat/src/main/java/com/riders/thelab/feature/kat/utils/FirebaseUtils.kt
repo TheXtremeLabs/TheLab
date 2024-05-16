@@ -105,7 +105,7 @@ object FirebaseUtils {
 
         auth.createUserWithEmailAndPassword(email, password)
             .addOnFailureListener { throwable ->
-                Timber.e("createUserWithEmailAndPassword | addOnFailureListener | message: ${throwable.message}")
+                Timber.e("createUserWithEmailAndPassword | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                 onFailure(throwable)
             }
             .addOnCompleteListener(context) { task ->
@@ -139,7 +139,7 @@ object FirebaseUtils {
         auth
             .signInWithEmailAndPassword(email, password)
             .addOnFailureListener { throwable ->
-                Timber.e("signInWithEmailAndPassword | addOnFailureListener | message: ${throwable.message}")
+                Timber.e("signInWithEmailAndPassword | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                 onFailure(throwable)
             }
             .addOnCompleteListener(context) { task ->
@@ -179,7 +179,7 @@ object FirebaseUtils {
         FirebaseMessaging.getInstance()
             .token
             .addOnFailureListener(context) { throwable ->
-                Timber.e("FirebaseMessaging.getToken() | addOnFailureListener | message: ${throwable.message}")
+                Timber.e("FirebaseMessaging.getToken() | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                 onFailure(throwable)
             }
             .addOnCompleteListener(context) { task ->
@@ -224,7 +224,7 @@ object FirebaseUtils {
             documentReference
                 .set(katUser)
                 .addOnFailureListener { throwable ->
-                    Timber.e("currentUserDetails.set() | addOnFailureListener | message: ${throwable.message}")
+                    Timber.e("currentUserDetails.set() | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                     onFailure(throwable)
                 }
                 .addOnCompleteListener(context) { task ->
@@ -248,7 +248,7 @@ object FirebaseUtils {
             documentReference
                 .get()
                 .addOnFailureListener { throwable ->
-                    Timber.e("getUser | addOnFailureListener | message: ${throwable.message}")
+                    Timber.e("getUser | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                     onFailure(throwable)
                 }
                 .addOnCompleteListener(context) { task ->
@@ -280,7 +280,7 @@ object FirebaseUtils {
             .document(fcmKatUserId)
             .get()
             .addOnFailureListener(context) { throwable ->
-                Timber.e("currentUserDetails.get() | addOnFailureListener | message: ${throwable.message}")
+                Timber.e("currentUserDetails.get() | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                 onFailure(throwable)
             }
             .addOnCompleteListener(context) { task ->
@@ -306,7 +306,7 @@ object FirebaseUtils {
             documentReference
                 .get()
                 .addOnFailureListener { throwable ->
-                    Timber.e("currentUserDetails.get() | addOnFailureListener | message: ${throwable.message}")
+                    Timber.e("currentUserDetails.get() | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                     onFailure(throwable)
                 }
                 .addOnCompleteListener(context) { task ->
@@ -373,7 +373,7 @@ object FirebaseUtils {
             .document(chatroomId)
             .get()
             .addOnFailureListener { throwable ->
-                Timber.e("getChatRoom() | addOnFailureListener | message: ${throwable.message}")
+                Timber.e("getChatRoom() | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                 onFailure(throwable)
             }
             .addOnCompleteListener(context) { task ->
@@ -484,7 +484,7 @@ object FirebaseUtils {
         chatMessagesCollectionReference
             .add(chatModel)
             .addOnFailureListener(context) { throwable ->
-                Timber.e("getChatRoom() | addOnFailureListener | message: ${throwable.message}")
+                Timber.e("getChatRoom() | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                 onFailure(throwable)
             }
             .addOnCompleteListener(context) { task ->

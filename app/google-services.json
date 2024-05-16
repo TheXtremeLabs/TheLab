@@ -8,6 +8,38 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:759951804103:android:95407efe1fb24f7292a0e2",
+        "android_client_info": {
+          "package_name": "com.riders.labtalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759951804103-0v514jklc3ljftruf5f7dfb397b7hoce.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDt2Vdy_Q90sdrwoiscsSP69JWUgdFUZ6g"
+        },
+        {
+          "current_key": "AIzaSyDuywb98tO1xXHb9lflC2iTLs_67jgihgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759951804103-0v514jklc3ljftruf5f7dfb397b7hoce.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:759951804103:android:c845858ff825de7792a0e2",
         "android_client_info": {
           "package_name": "com.riders.thelab"
@@ -16,6 +48,14 @@
       "oauth_client": [
         {
           "client_id": "759951804103-a49rs2ee6v6603o39u0pu06egtofcgh1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.riders.thelab",
+            "certificate_hash": "81f2478ab1641382e965f10a2e092fa3bbd90a79"
+          }
+        },
+        {
+          "client_id": "759951804103-c299tr9tt848ctc30dduafs4hrk7j68u.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.riders.thelab",
@@ -28,6 +68,9 @@
         }
       ],
       "api_key": [
+        {
+          "current_key": "AIzaSyDt2Vdy_Q90sdrwoiscsSP69JWUgdFUZ6g"
+        },
         {
           "current_key": "AIzaSyDuywb98tO1xXHb9lflC2iTLs_67jgihgQ"
         }

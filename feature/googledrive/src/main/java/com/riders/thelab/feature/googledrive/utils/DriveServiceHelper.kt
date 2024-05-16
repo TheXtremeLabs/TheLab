@@ -152,11 +152,27 @@ class DriveServiceHelper<T : Activity>(activity: T) {
     fun queryFiles(): Task<FileList> {
         Timber.d("queryFiles()")
 
+        /*mDriveService?.let { service ->
+            Tasks.forResult(
+                service.files()
+                    ?.list()
+                    ?.setSpaces("drive")
+                    ?.execute()
+            )
+        } ?: run {
+            Timber.e("queryFiles() | mDriveService is null")
+            null
+        }*/
+
         return Tasks.call(mExecutor) {
             mDriveService?.files()
                 ?.list()
                 ?.setSpaces("drive")
                 ?.execute()
+                ?: run {
+                    Timber.e("queryFiles() | mDriveService is null")
+                    null
+                }
         }
     }
 

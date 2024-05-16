@@ -11,6 +11,7 @@ import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.feature.googledrive.BuildConfig
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiState
+import com.riders.thelab.feature.googledrive.data.local.compose.GoogleSignInState
 import com.riders.thelab.feature.googledrive.utils.DriveServiceHelper
 import com.riders.thelab.feature.googledrive.utils.GoogleDriveHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,8 +38,8 @@ class GoogleDriveViewModel @Inject constructor() : BaseViewModel(), CoroutineSco
     // Variables
     /////////////////////////////////////////////////
     private var mNetworkManager: LabNetworkManager? = null
-    /*private*/ var mGoogleDriveHelper: GoogleDriveHelper<GoogleDriveActivity>? = null
-    private var mDriveServiceHelper: DriveServiceHelper<GoogleDriveActivity>? = null
+    var mGoogleDriveHelper: GoogleDriveHelper<GoogleDriveActivity>? = null
+    var mDriveServiceHelper: DriveServiceHelper<GoogleDriveActivity>? = null
 
     /////////////////////////////////////////////////
     // Composable states
@@ -46,14 +47,21 @@ class GoogleDriveViewModel @Inject constructor() : BaseViewModel(), CoroutineSco
     private var _googleDriveUiState: MutableStateFlow<GoogleDriveUiState> =
         MutableStateFlow(GoogleDriveUiState.Loading)
     val googleDriveUiState: StateFlow<GoogleDriveUiState> = _googleDriveUiState.asStateFlow()
+    private var _signInState: MutableStateFlow<GoogleSignInState> =
+        MutableStateFlow(GoogleSignInState.Disconnected)
+    val signInState: StateFlow<GoogleSignInState> = _signInState.asStateFlow()
 
     var hasInternetConnection: Boolean by mutableStateOf(if (BuildConfig.DEBUG) true else false)
 
-    private val networkState by lazy { mNetworkManager!!.networkState }
+    private val networkState by lazy { this.mNetworkManager!!.networkState }
     val isConnected: Boolean by derivedStateOf { networkState.value is NetworkState.Available }
 
     fun updateGoogleDriveUiState(newState: GoogleDriveUiState) {
         this._googleDriveUiState.value = newState
+    }
+
+    fun updateGoogleSignInState(newState: GoogleSignInState) {
+        this._signInState.value = newState
     }
 
     private fun updateHasInternetConnection(hasInternet: Boolean) {
@@ -125,18 +133,7 @@ class GoogleDriveViewModel @Inject constructor() : BaseViewModel(), CoroutineSco
         mGoogleDriveHelper = GoogleDriveHelper(activity)
         mDriveServiceHelper = DriveServiceHelper(activity)
 
-        /*mGoogleDriveHelper?.let { mGoogleDrive ->
-            mDriveServiceHelper?.let { mDriveService ->
-
-            }
-        }*/
-
-        updateGoogleDriveUiState(
-            GoogleDriveUiState.Success(
-                googleDriveHelper = mGoogleDriveHelper!!,
-                driveServiceHelper = null
-            )
-        )
+        updateGoogleDriveUiState(GoogleDriveUiState.Success)
 
         // Authenticate the user. For most apps, this should be done when the user performs an
         // action that requires Drive access rather than in onCreate.
@@ -147,10 +144,18 @@ class GoogleDriveViewModel @Inject constructor() : BaseViewModel(), CoroutineSco
         Timber.d("onEvent() | event: ${uiEvent.javaClass.simpleName}")
 
         when (uiEvent) {
+            is UiEvent.OnHandleAccount -> {
+                updateGoogleSignInState(GoogleSignInState.Connected(uiEvent.account))
+            }
+
             is UiEvent.OnHandleSignInResult -> {
                 Timber.d("onEvent() | event: ${uiEvent.task.toString()}")
 
                 // getGoogleDriveFiles()
+            }
+
+            else -> {
+
             }
         }
     }

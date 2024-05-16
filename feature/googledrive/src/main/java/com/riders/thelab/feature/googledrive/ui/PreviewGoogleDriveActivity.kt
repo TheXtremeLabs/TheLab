@@ -1,22 +1,33 @@
 package com.riders.thelab.feature.googledrive.ui
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,26 +41,34 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter
+import com.riders.thelab.core.data.local.model.google.GoogleAccountModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.NoItemFound
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.success
 import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.feature.googledrive.R
 import com.riders.thelab.feature.googledrive.core.google.GoogleSignInManager
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiState
+import com.riders.thelab.feature.googledrive.data.local.compose.GoogleSignInState
+import com.riders.thelab.feature.googledrive.utils.DriveServiceHelper
+import com.riders.thelab.feature.googledrive.utils.GoogleDriveHelper
 import kotlinx.coroutines.launch
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import timber.log.Timber
 
 ///////////////////////////////////////
 //
@@ -62,7 +81,6 @@ fun PlayServicesUnavailableContent() {
     val hue: Float by remember { mutableFloatStateOf(50f) }
 
     TheLabTheme {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -74,19 +92,15 @@ fun PlayServicesUnavailableContent() {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(.65f)
-                    .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height)),
+                    .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height))
+                    .clip(RoundedCornerShape(16.dp)),
                 contentAlignment = Alignment.Center
             ) {
-
                 Image(
-                    modifier = Modifier.fillMaxSize(),
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_google_drive_logo),
-                    contentDescription = null
-                )
-
-                Image(
-                    modifier = Modifier.fillMaxSize(),
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_google_drive_logo),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(16.dp)),
+                    painter = painterResource(id = R.drawable.ic_google_drive_logo),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(
                         color = Color.DarkGray.copy(
@@ -129,102 +143,173 @@ fun PlayServicesUnavailableContent() {
 }
 
 @Composable
-fun GoogleDriveContentSuccess(uiState: GoogleDriveUiState.Success, hasInternetConnection: Boolean) {
-
-    val context = LocalContext.current
-    val activity: GoogleDriveActivity = context.findActivity() as GoogleDriveActivity
-    val scope = rememberCoroutineScope()
-    val googleDriveHelper = uiState.googleDriveHelper
-
-    /*val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            // Timber.d("Recomposition | ActivityResultContracts.StartActivityForResult | resultCode: ${if (result.resultCode == Activity.RESULT_OK) "Activity.RESULT_OK" else "Activity.RESULT_CANCELED"}, data: ${result.data}")
-
-            val intent: Intent? = result.data
-
-            when (result.resultCode) {
-                Activity.RESULT_CANCELED -> {
-                    Timber.e("Recomposition | ActivityResultContracts.StartActivityForResult | Activity.RESULT_CANCELED")
-
-                    if (null == intent) {
-                        UIManager.showToast(context, "Google Login Error!")
-                        return@rememberLauncherForActivityResult
-                    }
-                    Timber.e("Recomposition | ActivityResultContracts.StartActivityForResult | Activity.RESULT_CANCELED | bundle: ${intent.extras?.toString()}")
-                }
-
-                Activity.RESULT_OK -> {
-                    Timber.d("Recomposition | ActivityResultContracts.StartActivityForResult | Activity.RESULT_OK")
-
-                    if (null == intent) {
-                        UIManager.showToast(context, "Google Login Error!")
-                        return@rememberLauncherForActivityResult
-                    }
-                    UIManager.showToast(context, "Google Login Success!")
-
-                    val task: Task<GoogleSignInAccount> =
-                        GoogleSignIn.getSignedInAccountFromIntent(intent)
-
-                    */
-    /**
-     * handle [task] result
-     *//*
-                    Timber.d("Recomposition | ActivityResultContracts.StartActivityForResult | handle [task] result")
-
-                    task
-                        .addOnFailureListener { throwable ->
-                            Timber.e("task | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
-                        }
-                        .addOnSuccessListener {
-                            Timber.d("task | addOnSuccessListener | value: ${it.toString()}")
-                        }
-                        .addOnCompleteListener {
-                            if (!task.isSuccessful) {
-                                Timber.e("task | addOnCompleteListener | Google Sign In Failed")
-                            } else {
-                                Timber.i("task | addOnCompleteListener | Sign in successful")
-                                val account = task.result
-
-                                if (account != null) {
-                                    googleDriveHelper.setGoogleAccount(account)
-                                }
-                            }
-                        }
-                }
-
-                else -> {
-                    Timber.d("Recomposition | ActivityResultContracts.StartActivityForResult | else branch with result code : ${result.resultCode}")
-                }
-            }
-        }*/
+fun Header(signInState: GoogleSignInState) {
+    val backgroundColor: Color = when (signInState) {
+        is GoogleSignInState.Connected -> success
+        is GoogleSignInState.Disconnected -> com.riders.thelab.core.ui.compose.theme.error
+        else -> Color.Transparent
+    }
 
     TheLabTheme {
-
-        Column(modifier = Modifier.fillMaxSize()) {
-            Button(
-                modifier = Modifier,
-                onClick = {
-                    /*if (googleDriveHelper.isServerClientIDValid(context)) {
-                        googleDriveHelper.googleSignIn(activity.mGoogleSignInRequestLauncher)
-                    }*/
-                    scope.launch { GoogleSignInManager(activity).signIn() }
-
-                    /*startForResult.launch(
-                        uiState.googleDriveHelper.getGoogleSignInClient(context).signInIntent
-                    )*/
-                },
+        AnimatedVisibility(visible = signInState is GoogleSignInState.Disconnected || signInState is GoogleSignInState.Connected) {
+            Row(
+                modifier = Modifier
+                    .background(backgroundColor)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Sign in with Google")
+                Text(
+                    text = when (signInState) {
+                        is GoogleSignInState.Connected -> "You're connected as ${signInState.account.displayName}"
+                        is GoogleSignInState.Disconnected -> "You're disconnected"
+                        else -> ""
+                    },
+                    color = Color.White
+                )
             }
         }
     }
+}
 
+@OptIn(ExperimentalKotoolsTypesApi::class)
+@Composable
+fun GoogleDriveContentSuccess(
+    signInState: GoogleSignInState,
+    hasInternetConnection: Boolean,
+    googleDriveHelper: GoogleDriveHelper<GoogleDriveActivity>?,
+    driveServiceHelper: DriveServiceHelper<GoogleDriveActivity>?,
+    uiEvent: (UiEvent) -> Unit
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    TheLabTheme {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Header(signInState = signInState)
+
+            AnimatedContent(
+                modifier = Modifier.fillMaxSize(),
+                targetState = signInState,
+                transitionSpec = { fadeIn() togetherWith fadeOut() },
+                contentAlignment = Alignment.TopStart,
+                label = "sign_in_content_animation"
+            ) { targetState ->
+                when (targetState) {
+                    is GoogleSignInState.Connected -> {
+
+                        val painter = targetState.account.profilePictureUri?.let { profilUrl ->
+                            getCoilAsyncImagePainter(
+                                context = context,
+                                dataUrl = profilUrl.toString()
+                            )
+                        } ?: run { null }
+
+                        val painterState = painter?.state
+
+                        Column(
+                            modifier = Modifier.padding(top = 24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(
+                                16.dp,
+                                Alignment.Top
+                            )
+                        ) {
+                            if (null != painter && null != painterState) {
+                                Card(modifier = Modifier.clip(CircleShape), shape = CircleShape) {
+                                    AnimatedContent(
+                                        targetState = painterState,
+                                        transitionSpec = { fadeIn() togetherWith fadeOut() },
+                                        label = "animated content state"
+                                    ) { targetState: AsyncImagePainter.State ->
+                                        when (targetState) {
+                                            is AsyncImagePainter.State.Loading -> {
+                                                Timber.i("state is AsyncImagePainter.State.Loading")
+                                                CircularProgressIndicator(
+                                                    modifier = Modifier.size(36.dp),
+                                                    color = MaterialTheme.colorScheme.primary
+                                                )
+                                            }
+
+                                            is AsyncImagePainter.State.Success -> {
+                                                Timber.d("state is AsyncImagePainter.State.Success")
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height))
+                                                        .clip(CircleShape),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Image(
+                                                        modifier = Modifier
+                                                            .fillMaxSize()
+                                                            .defaultMinSize(1.dp),
+                                                        painter = painter,
+                                                        contentDescription = "user_profile_picture",
+                                                        contentScale = ContentScale.Crop,
+                                                    )
+                                                }
+                                            }
+
+                                            is AsyncImagePainter.State.Error -> {
+                                                Timber.e("state is AsyncImagePainter.State.Error | ${targetState.result}")
+                                            }
+
+                                            else -> {
+                                                Timber.e("state | else branch")
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            Text(text = targetState.account.displayName?.toString() ?: "N/A")
+
+                            Text(text = targetState.account.firstName?.toString() ?: "N/A")
+                            Text(text = targetState.account.familyName?.toString() ?: "N/A")
+                            Text(text = targetState.account.emailAddress.toString())
+                        }
+                    }
+
+                    is GoogleSignInState.Disconnected -> {
+                        Box(
+                            modifier = Modifier,
+                            contentAlignment = Alignment.TopStart
+                        ) {
+                            Button(
+                                modifier = Modifier.padding(16.dp),
+                                onClick = {
+                                    scope.launch {
+                                        GoogleSignInManager(context).signIn { account: GoogleAccountModel ->
+                                            uiEvent.invoke(UiEvent.OnHandleAccount(account))
+                                        }
+                                    }
+                                },
+                                enabled = hasInternetConnection
+                            ) {
+                                Text(text = "Sign in with Google")
+                            }
+                        }
+                    }
+
+                    else -> Box(modifier = Modifier)
+                }
+            }
+        }
+    }
 }
 
 
 @Composable
 fun GoogleDriveContent(
     uiState: GoogleDriveUiState,
+    signInState: GoogleSignInState,
     hasInternetConnection: Boolean,
+    googleDriveHelper: GoogleDriveHelper<GoogleDriveActivity>?,
+    driveServiceHelper: DriveServiceHelper<GoogleDriveActivity>?,
     uiEvent: (UiEvent) -> Unit
 ) {
 
@@ -232,23 +317,34 @@ fun GoogleDriveContent(
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TheLabTopAppBar(
                 toolbarSize = ToolbarSize.SMALL,
-                navigationIcon = {
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape),
-                        contentAlignment = Alignment.Center
+                mainCustomContent = {
+                    Row(
+                        modifier = Modifier.fillMaxHeight(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Image(
+                        Box(
                             modifier = Modifier
-                                .fillMaxHeight()
-                                .padding(8.dp),
-                            painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.googleg_color),
-                            contentDescription = "google_icon"
+                                .size(48.dp)
+                                .clip(CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .padding(8.dp),
+                                painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.googleg_color),
+                                contentDescription = "google_icon"
+                            )
+                        }
+
+                        Text(
+                            text = stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_google_drive),
+                            color = Color.White
                         )
                     }
                 },
-                title = stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_google_drive)
+                withGradientBackground = true
             )
         }) { contentPadding ->
             AnimatedContent(
@@ -274,8 +370,11 @@ fun GoogleDriveContent(
 
                     is GoogleDriveUiState.Success -> {
                         GoogleDriveContentSuccess(
-                            uiState = targetState,
-                            hasInternetConnection = hasInternetConnection
+                            signInState = signInState,
+                            hasInternetConnection = hasInternetConnection,
+                            googleDriveHelper = googleDriveHelper,
+                            driveServiceHelper = driveServiceHelper,
+                            uiEvent = uiEvent
                         )
                     }
                 }
@@ -300,11 +399,22 @@ private fun PreviewPlayServicesUnavailableContent() {
 
 @DevicePreviews
 @Composable
-private fun PreviewGoogleDriveContentSuccess(@PreviewParameter(PreviewProviderUiState::class) state: GoogleDriveUiState) {
-    if (state is GoogleDriveUiState.Success) {
-        TheLabTheme {
-            GoogleDriveContentSuccess(uiState = state, hasInternetConnection = true)
-        }
+private fun PreviewHeader(@PreviewParameter(PreviewProviderGoogleSignInState::class) signInState: GoogleSignInState) {
+    TheLabTheme {
+        Header(signInState = signInState)
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewGoogleDriveContentSuccess(@PreviewParameter(PreviewProviderGoogleSignInState::class) signInState: GoogleSignInState) {
+    TheLabTheme {
+        GoogleDriveContentSuccess(
+            signInState = signInState,
+            googleDriveHelper = null,
+            driveServiceHelper = null,
+            hasInternetConnection = true
+        ) {}
     }
 }
 
@@ -312,6 +422,12 @@ private fun PreviewGoogleDriveContentSuccess(@PreviewParameter(PreviewProviderUi
 @Composable
 private fun PreviewGoogleDriveContent(@PreviewParameter(PreviewProviderUiState::class) state: GoogleDriveUiState) {
     TheLabTheme {
-        GoogleDriveContent(uiState = state, hasInternetConnection = true) {}
+        GoogleDriveContent(
+            uiState = state,
+            signInState = GoogleSignInState.Disconnected,
+            googleDriveHelper = null,
+            driveServiceHelper = null,
+            hasInternetConnection = true
+        ) {}
     }
 }

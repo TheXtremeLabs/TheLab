@@ -178,7 +178,7 @@ class KatMainViewModel @Inject constructor(
                     email = mKatUserAuth.email,
                     password = mKatUserAuth.password,
                     onFailure = { throwable ->
-                        Timber.e("signInWithEmailAndPassword | addOnFailureListener | message: ${throwable.message}")
+                        Timber.e("signInWithEmailAndPassword | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                     },
                     onSuccess = { user: FirebaseUser ->
                         Timber.d("checkIfUserSignIn | onSuccess | user: $user")

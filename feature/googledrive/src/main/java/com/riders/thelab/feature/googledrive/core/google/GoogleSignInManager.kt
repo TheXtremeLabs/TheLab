@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.credentials.GetCredentialException
-import android.os.Build
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -14,7 +13,11 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import kotlinx.coroutines.launch
+import com.riders.thelab.core.data.local.model.google.GoogleAccountModel
+import com.riders.thelab.feature.googledrive.BuildConfig
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import kotools.types.text.NotBlankString
+import kotools.types.web.EmailAddress
 import timber.log.Timber
 import java.security.MessageDigest
 import java.util.UUID
@@ -26,7 +29,8 @@ class GoogleSignInManager(private val context: Context) : GoogleKeyValidation() 
     private val credentialManager = CredentialManager.create(context)
 
 
-    suspend fun signIn() {
+    @OptIn(ExperimentalKotoolsTypesApi::class)
+    suspend fun signIn(onAccountFetched: (GoogleAccountModel) -> Unit) {
         Timber.d("signIn()")
 
         val rawNonce = UUID.randomUUID().toString()
@@ -34,6 +38,8 @@ class GoogleSignInManager(private val context: Context) : GoogleKeyValidation() 
         val messageDigest = MessageDigest.getInstance("SHA-256")
         val digest = messageDigest.digest(bytes)
         val hashedNonce = digest.fold("") { str, it -> str + "%02x".format(it) }
+
+        var googleIdToken: String? = null
 
         val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
@@ -47,17 +53,35 @@ class GoogleSignInManager(private val context: Context) : GoogleKeyValidation() 
             .build()
 
         runCatching {
-
-            val result = credentialManager.getCredential(
-                request = request,
-                context = context
-            )
+            val result = credentialManager.getCredential(context = context, request = request)
 
             val credential = result.credential
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-            val googleIdToken = googleIdTokenCredential.idToken
+            googleIdToken = googleIdTokenCredential.idToken
 
-            Timber.d("signIn() | coroutineScope | google ID token: $googleIdToken")
+            onAccountFetched(
+                GoogleAccountModel(
+                    emailAddress = EmailAddress.create(googleIdTokenCredential.id),
+                    idToken = googleIdTokenCredential.idToken,
+                    firstName = if (null == googleIdTokenCredential.givenName) null else NotBlankString.create(
+                        googleIdTokenCredential.givenName
+                    ),
+                    familyName = if (null == googleIdTokenCredential.familyName) null else NotBlankString.create(
+                        googleIdTokenCredential.familyName
+                    ),
+                    displayName = if (null == googleIdTokenCredential.displayName) null else NotBlankString.create(
+                        googleIdTokenCredential.displayName
+                    ),
+                    phoneNumber = if (null == googleIdTokenCredential.phoneNumber) null else NotBlankString.create(
+                        googleIdTokenCredential.phoneNumber
+                    ),
+                    profilePictureUri = if (null == googleIdTokenCredential.profilePictureUri) null else NotBlankString.create(
+                        googleIdTokenCredential.profilePictureUri.toString()
+                    )
+                ).also {
+                    Timber.d("signIn() | account: $it")
+                }
+            )
         }
             .onFailure { exception ->
                 Timber.e("signIn() | onFailure | error caught with message: ${exception.message} (class: ${exception.javaClass.canonicalName})")
@@ -68,15 +92,18 @@ class GoogleSignInManager(private val context: Context) : GoogleKeyValidation() 
                         is GetCredentialException -> exception.printStackTrace()
                     }
                 }
-                
+
                 when (exception) {
                     is GoogleIdTokenParsingException -> exception.printStackTrace()
                     else -> {}
                 }
+
                 // Timber.e("signIn() | onFailure | error caught with message: ${exception.message} (class: ${exception.javaClass.canonicalName})")
             }
             .onSuccess {
-                Timber.d("signIn() | onSuccess | is success: $it")
+                if (BuildConfig.DEBUG) {
+                    Timber.d("signIn() | onSuccess | google id: $googleIdToken")
+                }
             }
     }
 
@@ -94,7 +121,6 @@ class GoogleSignInManager(private val context: Context) : GoogleKeyValidation() 
             } else {
                 // Sign in failed, handle failure and update UI
                 Timber.e("handleGoogleSignInResult() | Sign in failed, handle failure and update UI")
-
                 // ...
             }
         }
