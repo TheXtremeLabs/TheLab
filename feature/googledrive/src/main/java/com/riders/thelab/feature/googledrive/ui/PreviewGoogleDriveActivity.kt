@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,15 +19,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,7 +36,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,23 +51,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
-import com.riders.thelab.core.data.local.model.google.GoogleAccountModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.NoItemFound
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
+import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
 import com.riders.thelab.core.ui.compose.theme.success
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.feature.googledrive.R
-import com.riders.thelab.feature.googledrive.core.google.GoogleSignInManager
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiState
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleSignInState
-import com.riders.thelab.feature.googledrive.utils.DriveServiceHelper
-import com.riders.thelab.feature.googledrive.utils.GoogleDriveHelper
-import kotlinx.coroutines.launch
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import timber.log.Timber
 
@@ -143,7 +141,7 @@ fun PlayServicesUnavailableContent() {
 }
 
 @Composable
-fun Header(signInState: GoogleSignInState) {
+fun Header(signInState: GoogleSignInState, uiEvent: (UiEvent) -> Unit) {
     val backgroundColor: Color = when (signInState) {
         is GoogleSignInState.Connected -> success
         is GoogleSignInState.Disconnected -> com.riders.thelab.core.ui.compose.theme.error
@@ -157,10 +155,11 @@ fun Header(signInState: GoogleSignInState) {
                     .background(backgroundColor)
                     .fillMaxWidth()
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
+                    modifier = Modifier.weight(2f),
                     text = when (signInState) {
                         is GoogleSignInState.Connected -> "You're connected as ${signInState.account.displayName}"
                         is GoogleSignInState.Disconnected -> "You're disconnected"
@@ -168,6 +167,30 @@ fun Header(signInState: GoogleSignInState) {
                     },
                     color = Color.White
                 )
+
+                AnimatedVisibility(
+                    modifier = Modifier.weight(.5f),
+                    visible = signInState is GoogleSignInState.Connected
+                ) {
+                    Box(modifier = Modifier, contentAlignment = Alignment.Center) {
+                        IconButton(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(shape = CircleShape)
+                                .background(if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary),
+                            onClick = { uiEvent.invoke(UiEvent.OnSignOut) }
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(12.dp),
+                                imageVector = Icons.AutoMirrored.Filled.Logout,
+                                contentDescription = null,
+                                tint = if (!isSystemInDarkTheme()) Color.White else Color.Black
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -178,12 +201,9 @@ fun Header(signInState: GoogleSignInState) {
 fun GoogleDriveContentSuccess(
     signInState: GoogleSignInState,
     hasInternetConnection: Boolean,
-    googleDriveHelper: GoogleDriveHelper<GoogleDriveActivity>?,
-    driveServiceHelper: DriveServiceHelper<GoogleDriveActivity>?,
     uiEvent: (UiEvent) -> Unit
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
 
     TheLabTheme {
         Column(
@@ -191,7 +211,7 @@ fun GoogleDriveContentSuccess(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Header(signInState = signInState)
+            Header(signInState = signInState, uiEvent = uiEvent)
 
             AnimatedContent(
                 modifier = Modifier.fillMaxSize(),
@@ -203,10 +223,10 @@ fun GoogleDriveContentSuccess(
                 when (targetState) {
                     is GoogleSignInState.Connected -> {
 
-                        val painter = targetState.account.profilePictureUri?.let { profilUrl ->
+                        val painter = targetState.account.profilePictureUri?.let { profileUrl ->
                             getCoilAsyncImagePainter(
                                 context = context,
-                                dataUrl = profilUrl.toString()
+                                dataUrl = profileUrl.toString()
                             )
                         } ?: run { null }
 
@@ -282,11 +302,12 @@ fun GoogleDriveContentSuccess(
                             Button(
                                 modifier = Modifier.padding(16.dp),
                                 onClick = {
-                                    scope.launch {
+                                    uiEvent.invoke(UiEvent.OnSignIn(context = context))
+                                    /*scope.launch {
                                         GoogleSignInManager(context).signIn { account: GoogleAccountModel ->
                                             uiEvent.invoke(UiEvent.OnHandleAccount(account))
                                         }
-                                    }
+                                    }*/
                                 },
                                 enabled = hasInternetConnection
                             ) {
@@ -308,11 +329,8 @@ fun GoogleDriveContent(
     uiState: GoogleDriveUiState,
     signInState: GoogleSignInState,
     hasInternetConnection: Boolean,
-    googleDriveHelper: GoogleDriveHelper<GoogleDriveActivity>?,
-    driveServiceHelper: DriveServiceHelper<GoogleDriveActivity>?,
     uiEvent: (UiEvent) -> Unit
 ) {
-
     TheLabTheme {
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TheLabTopAppBar(
@@ -372,8 +390,6 @@ fun GoogleDriveContent(
                         GoogleDriveContentSuccess(
                             signInState = signInState,
                             hasInternetConnection = hasInternetConnection,
-                            googleDriveHelper = googleDriveHelper,
-                            driveServiceHelper = driveServiceHelper,
                             uiEvent = uiEvent
                         )
                     }
@@ -401,7 +417,7 @@ private fun PreviewPlayServicesUnavailableContent() {
 @Composable
 private fun PreviewHeader(@PreviewParameter(PreviewProviderGoogleSignInState::class) signInState: GoogleSignInState) {
     TheLabTheme {
-        Header(signInState = signInState)
+        Header(signInState = signInState) {}
     }
 }
 
@@ -411,8 +427,6 @@ private fun PreviewGoogleDriveContentSuccess(@PreviewParameter(PreviewProviderGo
     TheLabTheme {
         GoogleDriveContentSuccess(
             signInState = signInState,
-            googleDriveHelper = null,
-            driveServiceHelper = null,
             hasInternetConnection = true
         ) {}
     }
@@ -425,8 +439,6 @@ private fun PreviewGoogleDriveContent(@PreviewParameter(PreviewProviderUiState::
         GoogleDriveContent(
             uiState = state,
             signInState = GoogleSignInState.Disconnected,
-            googleDriveHelper = null,
-            driveServiceHelper = null,
             hasInternetConnection = true
         ) {}
     }

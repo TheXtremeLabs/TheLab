@@ -1,6 +1,5 @@
 package com.riders.thelab.feature.googledrive.ui
 
-import android.net.Uri
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.google.GoogleAccountModel
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiState
@@ -28,12 +27,12 @@ class PreviewProviderGoogleSignInState : PreviewParameterProvider<GoogleSignInSt
             GoogleSignInState.Connected(
                 GoogleAccountModel(
                     emailAddress = EmailAddress.create("john.smith@test.com"),
-                    idToken = "sdfkvbnimpsdbvSDFVj255edfvedfv754edfved4fv-edfb0defbmW",
+                    idToken = NotBlankString.create("sdfkvbnimpsdbvSDFVj255edfvedfv754edfved4fv-edfb0defbmW"),
                     firstName = NotBlankString.create("John"),
                     familyName = NotBlankString.create("Smith"),
                     displayName = NotBlankString.create("JohnSmith"),
                     phoneNumber = NotBlankString.create("+33658479632"),
-                    profilePictureUri = NotBlankString.create(Uri.Builder().build().toString())
+                    profilePictureUri = NotBlankString.create("N/A")
                 )
             ),
             GoogleSignInState.Disconnected

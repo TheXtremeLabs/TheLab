@@ -10,9 +10,10 @@ import java.io.Serializable
 @Stable
 @Immutable
 @kotlinx.serialization.Serializable
-data class GoogleAccountModel @OptIn(ExperimentalKotoolsTypesApi::class) constructor(
+@OptIn(ExperimentalKotoolsTypesApi::class)
+data class GoogleAccountModel(
     val emailAddress: EmailAddress,
-    val idToken: String,
+    val idToken: NotBlankString,
     val firstName: NotBlankString?,
     val familyName: NotBlankString?,
     val displayName: NotBlankString?,

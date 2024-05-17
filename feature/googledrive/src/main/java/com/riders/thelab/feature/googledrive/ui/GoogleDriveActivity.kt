@@ -1,12 +1,8 @@
 package com.riders.thelab.feature.googledrive.ui
 
-import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -17,92 +13,35 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.internal.OnConnectionFailedListener
-import com.google.android.gms.tasks.Task
-import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.google.api.services.drive.model.FileList
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.data.local.model.Permission
+import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.feature.googledrive.base.BaseGoogleActivity
+import com.riders.thelab.feature.googledrive.core.google.GoogleDriveManager
 import com.riders.thelab.feature.googledrive.core.google.GooglePlayServicesManager
+import com.riders.thelab.feature.googledrive.core.google.GoogleSignInManager
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiState
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleSignInState
+import com.riders.thelab.feature.googledrive.utils.toGoogleAccountModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
 @AndroidEntryPoint
-class GoogleDriveActivity : BaseComponentActivity(), OnConnectionFailedListener {
+class GoogleDriveActivity : BaseGoogleActivity(), OnConnectionFailedListener {
 
     private val mViewModel: GoogleDriveViewModel by viewModels<GoogleDriveViewModel>()
 
     private val mGoogleApiAvailability: GoogleApiAvailability by lazy {
         GoogleApiAvailability.getInstance()
     }
-
-    val mGoogleSignInRequestLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            // Timber.d("Recomposition | ActivityResultContracts.StartActivityForResult | resultCode: ${if (result.resultCode == Activity.RESULT_OK) "Activity.RESULT_OK" else "Activity.RESULT_CANCELED"}, data: ${result.data}")
-
-            val intent: Intent? = result.data
-
-            when (result.resultCode) {
-                RESULT_CANCELED -> {
-                    Timber.e("ActivityResultContracts.StartActivityForResult | Activity.RESULT_CANCELED")
-
-                    if (null == intent) {
-                        UIManager.showToast(this@GoogleDriveActivity, "Google Login Error!")
-                        return@registerForActivityResult
-                    }
-                    Timber.e("ActivityResultContracts.StartActivityForResult | Activity.RESULT_CANCELED | bundle: ${intent.extras?.toString()}")
-                }
-
-                RESULT_OK -> {
-                    Timber.d("ActivityResultContracts.StartActivityForResult | Activity.RESULT_OK")
-
-                    if (null == intent) {
-                        UIManager.showToast(this@GoogleDriveActivity, "Google Login Error!")
-                        return@registerForActivityResult
-                    }
-                    UIManager.showToast(this@GoogleDriveActivity, "Google Login Success!")
-
-                    val task: Task<GoogleSignInAccount> =
-                        GoogleSignIn.getSignedInAccountFromIntent(intent)
-
-                    /**
-                     * handle [task] result
-                     */
-                    Timber.d("ActivityResultContracts.StartActivityForResult | handle [task] result")
-
-                    task
-                        .addOnFailureListener { throwable ->
-                            Timber.e("task | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
-                        }
-                        .addOnSuccessListener {
-                            Timber.d("task | addOnSuccessListener | value: ${it.toString()}")
-                        }
-                        .addOnCompleteListener {
-                            if (!task.isSuccessful) {
-                                Timber.e("task | addOnCompleteListener | Google Sign In Failed")
-                            } else {
-                                Timber.i("task | addOnCompleteListener | Sign in successful")
-                                val account = task.result
-
-                                if (account != null) {
-                                    mViewModel.mGoogleDriveHelper?.setGoogleAccount(account)
-                                }
-                            }
-                        }
-                }
-
-                else -> {
-                    Timber.d("ActivityResultContracts.StartActivityForResult | else branch with result code : ${result.resultCode}")
-                }
-            }
-        }
 
     /////////////////////////////////////
     //
@@ -112,10 +51,9 @@ class GoogleDriveActivity : BaseComponentActivity(), OnConnectionFailedListener 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mViewModel.initNetworkManager(
-            activity = this@GoogleDriveActivity,
-            lifecycle = this.lifecycle
-        )
+        Timber.d("onCreate()")
+
+        mViewModel.initNetworkManager(this@GoogleDriveActivity, this.lifecycle)
 
         if (!GooglePlayServicesManager.checkPlayServices(
                 activity = this@GoogleDriveActivity,
@@ -123,9 +61,9 @@ class GoogleDriveActivity : BaseComponentActivity(), OnConnectionFailedListener 
             )
         ) {
             mViewModel.updateGoogleDriveUiState(GoogleDriveUiState.GooglePlayServicesUnavailable)
-        } else {
-            mViewModel.initHelpers(activity = this@GoogleDriveActivity)
         }
+
+        checkPermissions()
 
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
@@ -144,10 +82,8 @@ class GoogleDriveActivity : BaseComponentActivity(), OnConnectionFailedListener 
                             GoogleDriveContent(
                                 uiState = uiState,
                                 signInState = signInState,
-                                hasInternetConnection = mViewModel.isConnected,
-                                googleDriveHelper = mViewModel.mGoogleDriveHelper,
-                                driveServiceHelper = mViewModel.mDriveServiceHelper,
-                            ) { event -> mViewModel.onEvent(event) }
+                                hasInternetConnection = mViewModel.isConnected
+                            ) { event -> mViewModel.onEvent(this@GoogleDriveActivity, event) }
                         }
                     }
                 }
@@ -157,22 +93,55 @@ class GoogleDriveActivity : BaseComponentActivity(), OnConnectionFailedListener 
 
     override fun onResume() {
         super.onResume()
+        Timber.d("onResume()")
 
-        if (null != mViewModel.mDriveServiceHelper) {
-            mViewModel.mDriveServiceHelper?.queryFiles()
-                ?.addOnFailureListener { throwable ->
-                    Timber.e("task | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
+        val signInManager: GoogleSignInManager = GoogleSignInManager.getInstance(this)
+        val driveManager: GoogleDriveManager = GoogleDriveManager.getInstance(this)
+
+        if (signInManager.isUserSignedInLegacy()) {
+            signInManager.mLastGoogleAccount?.let { account ->
+                mViewModel.updateGoogleSignInState(
+                    GoogleSignInState.Connected(
+                        account
+                            .toGoogleAccountModel()
+                            .also { Timber.d("signIn() | account: ${it.toString()}") }
+                    )
+                )
+            }
+
+            driveManager
+                .getDriveClientLegacy(signInManager.mLastGoogleAccount!!)
+                .apply {
+                    Timber.d("onResume() | drive client: ${this.toString()}")
                 }
-                ?.addOnSuccessListener {
-                    Timber.d("task | addOnSuccessListener | value: ${it.toString()}")
-                }
-                ?.addOnCompleteListener { task ->
-                    if (!task.isSuccessful) {
-                        Timber.e("task | addOnCompleteListener | failed")
-                    } else {
-                        Timber.i("task | addOnCompleteListener | successful, result: ${task.result}")
+
+            driveManager.getDrivesFoldersLegacy()
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            runCatching {
+                GoogleDriveManager.getInstance(this@GoogleDriveActivity)
+                    .queryFiles()
+                    ?.addOnFailureListener(this@GoogleDriveActivity) { throwable ->
+                        Timber.e("task | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                     }
+                    ?.addOnSuccessListener(this@GoogleDriveActivity) {
+                        Timber.d("task | addOnSuccessListener | value: ${it.toString()}")
+                    }
+                    ?.addOnCompleteListener(this@GoogleDriveActivity) { task ->
+                        if (!task.isSuccessful) {
+                            Timber.e("task | addOnCompleteListener | failed")
+                        } else {
+                            Timber.i("task | addOnCompleteListener | successful, result: ${task.result.toString()}")
+                            val filesList: FileList = task.result.also { Timber.d("filesList size : ${it.size}") }
+                        }
+                    }
+            }
+                .onFailure {
+                    it.printStackTrace()
+                    Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
                 }
+
         }
     }
 
@@ -180,13 +149,38 @@ class GoogleDriveActivity : BaseComponentActivity(), OnConnectionFailedListener 
         finish()
     }
 
-    fun launchGoogleSignIn(intent: Intent) {
-        Timber.e("launchGoogleSignIn()")
 
-        mGoogleSignInRequestLauncher.launch(intent)
+    /////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    /////////////////////////////////////
+    private fun checkPermissions() {
+        Timber.e("checkPermissions()")
+
+        PermissionManager
+            .from(this@GoogleDriveActivity)
+            .request(
+                Permission.UserAccounts,
+                if (!LabCompatibilityManager.isTiramisu()) Permission.Storage else Permission.MediaLocationAndroid13
+            )
+            .checkPermission { permissionGranted ->
+                if (!permissionGranted) {
+                    Timber.e("Storage permissions not granted")
+                } else {
+                    Timber.i("Storage permissions granted")
+
+                    mViewModel.updateGoogleDriveUiState(GoogleDriveUiState.Success)
+                }
+            }
     }
 
 
+    /////////////////////////////////////
+    //
+    // IMPLEMENTS
+    //
+    /////////////////////////////////////
     override fun onConnectionFailed(result: ConnectionResult) {
         // An unresolvable error has occurred and a connection to Google APIs
         // could not be established. Display an error message, or handle

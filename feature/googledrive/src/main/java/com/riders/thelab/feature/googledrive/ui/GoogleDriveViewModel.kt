@@ -10,10 +10,9 @@ import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.feature.googledrive.BuildConfig
+import com.riders.thelab.feature.googledrive.core.google.GoogleSignInManager
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiState
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleSignInState
-import com.riders.thelab.feature.googledrive.utils.DriveServiceHelper
-import com.riders.thelab.feature.googledrive.utils.GoogleDriveHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -38,8 +37,6 @@ class GoogleDriveViewModel @Inject constructor() : BaseViewModel(), CoroutineSco
     // Variables
     /////////////////////////////////////////////////
     private var mNetworkManager: LabNetworkManager? = null
-    var mGoogleDriveHelper: GoogleDriveHelper<GoogleDriveActivity>? = null
-    var mDriveServiceHelper: DriveServiceHelper<GoogleDriveActivity>? = null
 
     /////////////////////////////////////////////////
     // Composable states
@@ -127,35 +124,31 @@ class GoogleDriveViewModel @Inject constructor() : BaseViewModel(), CoroutineSco
         }
     }
 
-    fun initHelpers(activity: GoogleDriveActivity) {
-        Timber.d("initHelpers()")
-
-        mGoogleDriveHelper = GoogleDriveHelper(activity)
-        mDriveServiceHelper = DriveServiceHelper(activity)
-
-        updateGoogleDriveUiState(GoogleDriveUiState.Success)
-
-        // Authenticate the user. For most apps, this should be done when the user performs an
-        // action that requires Drive access rather than in onCreate.
-//        requestSignIn()
-    }
-
-    fun onEvent(uiEvent: UiEvent) {
+    fun onEvent(activity: GoogleDriveActivity, uiEvent: UiEvent) {
         Timber.d("onEvent() | event: ${uiEvent.javaClass.simpleName}")
 
         when (uiEvent) {
+            is UiEvent.OnSignIn -> {
+                GoogleSignInManager.getInstance(activity).signInLegacy()
+            }
+
             is UiEvent.OnHandleAccount -> {
                 updateGoogleSignInState(GoogleSignInState.Connected(uiEvent.account))
             }
 
-            is UiEvent.OnHandleSignInResult -> {
-                Timber.d("onEvent() | event: ${uiEvent.task.toString()}")
-
-                // getGoogleDriveFiles()
-            }
-
-            else -> {
-
+            is UiEvent.OnSignOut -> {
+                GoogleSignInManager.getInstance(activity)
+                    .signOut(
+                        activity = activity,
+                        onFailure = {
+                            Timber.e("onEvent() | message: ${it?.message}")
+                        },
+                        onSuccess = { isLoggedOut ->
+                            if (isLoggedOut) {
+                                updateGoogleSignInState(GoogleSignInState.Disconnected)
+                            }
+                        }
+                    )
             }
         }
     }
