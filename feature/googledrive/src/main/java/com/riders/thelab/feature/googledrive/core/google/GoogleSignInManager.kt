@@ -1,35 +1,102 @@
 package com.riders.thelab.feature.googledrive.core.google
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.credentials.GetCredentialException
+import android.widget.Toast
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.tasks.Task
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.Scope
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import com.google.api.services.drive.DriveScopes
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.google.GoogleAccountModel
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.googledrive.BuildConfig
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
-import kotools.types.text.NotBlankString
-import kotools.types.web.EmailAddress
+import com.riders.thelab.feature.googledrive.base.BaseGoogleActivity
+import com.riders.thelab.feature.googledrive.utils.toGoogleAccountModel
 import timber.log.Timber
 import java.security.MessageDigest
 import java.util.UUID
 
 
-class GoogleSignInManager(private val context: Context) : GoogleKeyValidation() {
+class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyValidation() {
 
-    // Use your app or activity context to instantiate a client instance of CredentialManager.
-    private val credentialManager = CredentialManager.create(context)
+    ////////////////////////////////////////////////////////////
+    // Variables
+    ////////////////////////////////////////////////////////////
+    @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
+    var mGoogleSignInClient: GoogleSignInClient? = null
+    @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
+    var mLastGoogleAccount: GoogleSignInAccount? = null
+
+    var mLastGoogleAccountCredential: GoogleIdTokenCredential? = null
 
 
-    @OptIn(ExperimentalKotoolsTypesApi::class)
+    ////////////////////////////////////////////////////////////
+    // Authentication
+    ////////////////////////////////////////////////////////////
+    // TODO: This sign in method will be removed in 2025 by Google. Use Credential Manager instead.
+    @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
+    fun signInLegacy() {
+        Timber.i("googleSignIn()")
+        var message: String
+
+        if (!isUserSignedInLegacy()) {
+            message = "User is NOT signed in"
+            Timber.e("googleSignIn() | $message")
+
+            val googleSignInOptions = GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(activity.getString(com.riders.thelab.core.ui.R.string.server_client_id))
+                .requestEmail()
+                .requestProfile()
+                .requestScopes(
+                    Scope(DriveScopes.DRIVE),
+                    Scope(DriveScopes.DRIVE_FILE),
+                    Scope(DriveScopes.DRIVE_PHOTOS_READONLY),
+                    Scope(DriveScopes.DRIVE_METADATA_READONLY)
+                )
+                .build()
+
+            mGoogleSignInClient = GoogleSignIn.getClient(activity, googleSignInOptions)
+
+            // From the GoogleSignInClient object we can get the signInIntent
+            // which we can use in startActivityForResult to trigger the login flow
+            val signInIntent = mGoogleSignInClient?.signInIntent
+
+            if (null != signInIntent) {
+                activity.mGoogleSignInRequestLauncher.launch(signInIntent)
+            }
+        } else {
+            message = "user is already signed in"
+            Timber.e("googleSignIn() | $message")
+            UIManager.showToast(activity, message)
+        }
+    }
+
+    @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
+    fun getGoogleSignInClientLegacy(): GoogleSignInClient {
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestScopes(
+                Scope(DriveScopes.DRIVE),
+                Scope(DriveScopes.DRIVE_FILE),
+                Scope(DriveScopes.DRIVE_PHOTOS_READONLY),
+                Scope(DriveScopes.DRIVE_METADATA_READONLY)
+            )
+            .build()
+
+        return GoogleSignIn.getClient(activity, signInOptions).also {
+            Timber.d("getGoogleSignInClient() | client: ${it.toString()}")
+        }
+    }
+
     suspend fun signIn(onAccountFetched: (GoogleAccountModel) -> Unit) {
         Timber.d("signIn()")
 
@@ -39,49 +106,44 @@ class GoogleSignInManager(private val context: Context) : GoogleKeyValidation() 
         val digest = messageDigest.digest(bytes)
         val hashedNonce = digest.fold("") { str, it -> str + "%02x".format(it) }
 
-        var googleIdToken: String? = null
-
         val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
-            .setServerClientId(context.getString(com.riders.thelab.core.ui.R.string.server_client_id))
+            .setServerClientId(activity.getString(com.riders.thelab.core.ui.R.string.server_client_id))
             .setAutoSelectEnabled(true)
             .setNonce(hashedNonce)
             .build()
+            .also {
+                Timber.d("signIn() | google Id Option: ${it.toString()}")
+            }
 
         val request: GetCredentialRequest = GetCredentialRequest.Builder()
             .addCredentialOption(googleIdOption)
             .build()
+            .also {
+                Timber.d("signIn() | request: ${it.toString()}")
+            }
+
+        // Use your app or activity context to instantiate a client instance of CredentialManager.
+        val credentialManager = CredentialManager.create(activity)
 
         runCatching {
-            val result = credentialManager.getCredential(context = context, request = request)
-
-            val credential = result.credential
-            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-            googleIdToken = googleIdTokenCredential.idToken
-
-            onAccountFetched(
-                GoogleAccountModel(
-                    emailAddress = EmailAddress.create(googleIdTokenCredential.id),
-                    idToken = googleIdTokenCredential.idToken,
-                    firstName = if (null == googleIdTokenCredential.givenName) null else NotBlankString.create(
-                        googleIdTokenCredential.givenName
-                    ),
-                    familyName = if (null == googleIdTokenCredential.familyName) null else NotBlankString.create(
-                        googleIdTokenCredential.familyName
-                    ),
-                    displayName = if (null == googleIdTokenCredential.displayName) null else NotBlankString.create(
-                        googleIdTokenCredential.displayName
-                    ),
-                    phoneNumber = if (null == googleIdTokenCredential.phoneNumber) null else NotBlankString.create(
-                        googleIdTokenCredential.phoneNumber
-                    ),
-                    profilePictureUri = if (null == googleIdTokenCredential.profilePictureUri) null else NotBlankString.create(
-                        googleIdTokenCredential.profilePictureUri.toString()
-                    )
-                ).also {
-                    Timber.d("signIn() | account: $it")
+            val result = credentialManager.getCredential(context = activity, request = request)
+                .also {
+                    Timber.d("signIn() | result: ${it.toString()}")
                 }
-            )
+
+            val credential = result.credential.also {
+                Timber.d("signIn() | credential: ${it.toString()}")
+            }
+
+            GoogleIdTokenCredential.createFrom(credential.data).also {
+                mLastGoogleAccountCredential = it
+
+                onAccountFetched(
+                    it.toGoogleAccountModel()
+                        .also { Timber.d("signIn() | account: ${it.toString()}") }
+                )
+            }
         }
             .onFailure { exception ->
                 Timber.e("signIn() | onFailure | error caught with message: ${exception.message} (class: ${exception.javaClass.canonicalName})")
@@ -102,13 +164,73 @@ class GoogleSignInManager(private val context: Context) : GoogleKeyValidation() 
             }
             .onSuccess {
                 if (BuildConfig.DEBUG) {
-                    Timber.d("signIn() | onSuccess | google id: $googleIdToken")
+                    Timber.d("signIn() | onSuccess | google id: ${mLastGoogleAccountCredential?.idToken}")
                 }
             }
     }
 
 
-    fun handleGoogleSignInResult(requestCode: Int, intent: Intent) {
+    @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
+    fun signOut(
+        activity: BaseGoogleActivity,
+        onFailure: (throwable: Throwable?) -> Unit,
+        onSuccess: (Boolean) -> Unit
+    ) {
+        Timber.e("signOut()")
+
+        if (null == mGoogleSignInClient) {
+            mGoogleSignInClient = getGoogleSignInClientLegacy()
+        }
+
+        mGoogleSignInClient?.let { signInClient ->
+            signInClient.signOut()
+                .addOnFailureListener(activity) { throwable ->
+                    Timber.e("task | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
+                    onFailure(throwable)
+                }
+                .addOnSuccessListener(activity) {
+                    Timber.d("task | addOnSuccessListener | value: ${it.toString()}")
+                }
+                .addOnCompleteListener(activity) {
+                    Toast.makeText(activity, "Signed Out", Toast.LENGTH_SHORT).show()
+                    mLastGoogleAccount = null
+                    onSuccess(true)
+                }
+        } ?: run {
+            Timber.e("signOut | mGoogleSignInClient object is null")
+
+            mLastGoogleAccount?.let {
+                mLastGoogleAccount = null
+                Toast.makeText(activity, "Signed Out", Toast.LENGTH_SHORT).show()
+                onSuccess(true)
+            } ?: run {
+                Timber.e("signOut | mLastGoogleAccount object is null")
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////
+    // Fetching
+    ////////////////////////////////////////////////////////////
+    fun getLastSignedInAccount(): GoogleIdTokenCredential? = mLastGoogleAccountCredential
+
+
+    ////////////////////////////////////////////////////////////
+    // Checks
+    ////////////////////////////////////////////////////////////
+    @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
+    fun isUserSignedInLegacy(): Boolean = GoogleSignIn.getLastSignedInAccount(activity)
+        .apply {
+            Timber.i("isUserSignedIn() | $this")
+            if (null != this) mLastGoogleAccount = this
+        }
+        .run { this != null }
+
+    fun isUserSignedIn(): Boolean =
+        run { null == mLastGoogleAccountCredential }.also { Timber.i("isUserSignedIn() | $this") }
+
+
+    /*fun handleGoogleSignInResult(requestCode: Int, intent: Intent) {
         Timber.d("handleGoogleSignInResult()")
 
         if (requestCode == RC_SIGN_IN) {
@@ -124,11 +246,18 @@ class GoogleSignInManager(private val context: Context) : GoogleKeyValidation() 
                 // ...
             }
         }
-    }
+    }*/
 
+    fun setGoogleAccount(account: GoogleSignInAccount) {
+        Timber.i("setGoogleAccount() | account: ${account.toString()}")
+        this.mLastGoogleAccount = account
+    }
 
     companion object {
         private const val RC_SIGN_IN: Int = 9001
-    }
 
+        private var mInstance: GoogleSignInManager? = null
+        fun getInstance(activity: BaseGoogleActivity): GoogleSignInManager =
+            mInstance ?: GoogleSignInManager(activity).also { mInstance = it }
+    }
 }
