@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".feature.tabs.OneFragment">
+    tools:context=".fragment.OneFragment">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv"
