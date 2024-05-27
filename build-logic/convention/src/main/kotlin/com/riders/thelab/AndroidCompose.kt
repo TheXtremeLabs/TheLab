@@ -19,10 +19,10 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
             compose = true
         }
 
-        composeOptions {
+        /*composeOptions {
             kotlinCompilerExtensionVersion =
                 libs.findVersion("androidxComposeCompiler").get().toString()
-        }
+        }*/
 
         kotlinOptions {
             freeCompilerArgs = freeCompilerArgs + buildComposeMetricsParameters()

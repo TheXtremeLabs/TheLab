@@ -5,6 +5,7 @@
 [![Kotools Types][kotools-types-badge]][kotools-types-project]
 [![Kotlin][kotlin-badge]][kotlin]
 [![kotlinx.serialization][kotlinx.serialization-badge]][kotlinx.serialization]
+[![ksp][ksp-badge]][ksp]
 
 TheLab is the third version of ***Material Design***, an *Android* application originally developed
 to show several use-cases of Google's Android Material Design components such as (CardView,
@@ -85,17 +86,19 @@ Repository created and maintained by Saint-Honoré Michaël([*@MichaelStH*](http
 ![HotCoffeeLoading](docs/gif/lottie_hot_coffee.gif)
 
 [sem-ver]: https://semver.org/
-[thelab-badge]: https://img.shields.io/static/v1?label=version&message=12.16.0&color=blue
+[thelab-badge]: https://img.shields.io/static/v1?label=version&message=12.17.0&color=blue
 [thelab-project]: https://github.com/TheXtremeLabs/TheLab
 [android-badge]: https://img.shields.io/static/v1?logo=android&label=Android%20SDK&message=API%2034&color=green
 [android-project]: https://www.android.com/intl/fr_fr/
-[kotools-types-badge]: https://img.shields.io/static/v1?label=Kotools&message=4.5.2&color=blue
+[kotools-types-badge]: https://img.shields.io/static/v1?label=Kotools&message=4.5.1&color=blue
 [kotools-types-project]: https://github.com/kotools/types
 [kotlin]: https://kotlinlang.org
-[kotlin-badge]: https://img.shields.io/badge/kotlin-1.9.23-blue?logo=kotlin
+[kotlin-badge]: https://img.shields.io/badge/kotlin-2.0.0-blue?logo=kotlin
 [kotlin.ArithmeticException]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-arithmetic-exception
 [kotlinx.serialization]: https://github.com/Kotlin/kotlinx.serialization
 [kotlinx.serialization-badge]: https://img.shields.io/badge/kotlinx.serialization-1.6.3-blue?logo=kotlin
+[ksp]: https://github.com/google/ksp
+[ksp-badge]: https://img.shields.io/badge/google-2.0.0-1.0.21-blue?logo=google
 [androidx]: https://developer.android.com/jetpack/androidx?hl=fr
 [jetpack-compose]: https://developer.android.com/jetpack/compose?hl=fr
 [google-apis]: https://console.cloud.google.com/apis/library?hl=fr
