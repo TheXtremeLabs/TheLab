@@ -1,7 +1,8 @@
 package com.riders.thelab
 
+/*import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.initialization.InitializationStatus*/
 import android.content.Context
-import android.content.pm.PackageManager
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.lifecycle.Lifecycle
@@ -19,8 +20,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-/*import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.initialization.InitializationStatus*/
 import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
@@ -82,9 +81,9 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
 
-        if (level == TRIM_MEMORY_UI_HIDDEN) {
+        /*if (level == TRIM_MEMORY_UI_HIDDEN) {
             notifyAppInBackground()
-        }
+        }*/
 
         if (level == TRIM_MEMORY_RUNNING_LOW) {
             Timber.e(
@@ -195,16 +194,14 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
             )
     }
 
-    fun getContext(): Context {
-        return super.getApplicationContext()
-    }
+    fun getContext(): Context = super.getApplicationContext()
 
     fun getLabPackageName(): String = packageName
 
-    private fun notifyAppInBackground() {
+    /*private fun notifyAppInBackground() {
         Timber.e("App went in background")
 
-        /*val workRequest: OneTimeWorkRequest =
+        *//*val workRequest: OneTimeWorkRequest =
             OneTimeWorkRequestBuilder<WeatherWorker>().build()
 
         WorkManager
@@ -213,7 +210,33 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
                 "WeatherWorker_when_app_in_background_${workRequest.id}",
                 ExistingWorkPolicy.REPLACE,
                 workRequest
-            )*/
+            )*//*
+    }*/
+
+
+    ////////////////////////////////////////
+    //
+    // LIFECYCLE
+    //
+    ////////////////////////////////////////
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when (event) {
+            Lifecycle.Event.ON_CREATE -> {
+                Timber.d("onStateChanged() | Lifecycle.Event.ON_CREATE")
+            }
+
+            Lifecycle.Event.ON_PAUSE -> {
+                Timber.e("onStateChanged() | Lifecycle.Event.ON_PAUSE | App in background")
+            }
+
+            Lifecycle.Event.ON_RESUME -> {
+                Timber.i("onStateChanged() | Lifecycle.Event.ON_RESUME | App in foreground")
+            }
+
+            else -> {
+                // Do nothing
+            }
+        }
     }
 
     companion object {
@@ -227,55 +250,6 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
             }
 
             return mInstance as TheLabApplication
-        }
-
-        @JvmStatic
-        fun getActivityPackageName(activityName: String): String? {
-            val pManager: PackageManager = getInstance().packageManager
-            val packageName: String = getInstance().applicationContext.packageName
-
-            var returnedActivityPackageToString = ""
-
-            return try {
-                val list =
-                    pManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES).activities
-                for (activityInfo in list) {
-                    val activityNameFound = activityInfo.name
-                    Timber.d("ActivityInfo = " + activityInfo.name)
-                    if (activityNameFound.lowercase().contains(activityName.lowercase())) {
-                        returnedActivityPackageToString = activityInfo.name
-                        break
-                    }
-                }
-                returnedActivityPackageToString
-            } catch (e: PackageManager.NameNotFoundException) {
-                e.printStackTrace()
-                null
-            }
-        }
-    }
-
-
-    ////////////////////////////////////////
-    //
-    // LIFECYCLE
-    //
-    ////////////////////////////////////////
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        when (event) {
-            Lifecycle.Event.ON_CREATE -> {}
-
-            Lifecycle.Event.ON_PAUSE -> {
-                Timber.e("App in background")
-            }
-
-            Lifecycle.Event.ON_RESUME -> {
-                Timber.d("App in foreground")
-            }
-
-            else -> {
-                // Do nothing
-            }
         }
     }
 }

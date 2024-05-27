@@ -133,7 +133,7 @@ class SplashScreenActivity : ComponentActivity() {
         finish()
     }
 
-    fun goToMainActivity() {
+    private fun goToMainActivity() {
         Timber.d("goToMainActivity()")
         Navigator(this).callMainActivity()
         finish()

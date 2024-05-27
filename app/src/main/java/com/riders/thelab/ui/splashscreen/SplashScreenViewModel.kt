@@ -65,10 +65,49 @@ class SplashScreenViewModel @Inject constructor(
     ////////////////////////////////////////
     init {
         runBlocking(coroutineContext + coroutineExceptionHandler) {
-            repository.isActivitiesSplashScreenEnabled().first()
-        }.also {
-            Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
-            updateActivitiesSplashEnabled(it)
+
+            // First time launched
+            repository
+                .isFirstTimeLaunched()
+                .first()
+                .also { isFirstTime ->
+                    Timber.d("init | isFirstTimeLaunched() | is enabled value: $isFirstTime")
+
+                    if (isFirstTime) {
+                        repository
+                            .saveFirstTimeLaunched(false)
+                            .also { updateFirstTimeLaunched(false) }
+                    } else {
+                        Timber.v("init | isFirstTimeLaunched() | application has already been launched once")
+                    }
+                }
+
+            // Vibration
+            repository
+                .isVibration()
+                .first()
+                .also {
+                    Timber.d("init | isVibration() | is enabled value: $it")
+                    updateVibration(it)
+                }
+
+            // Activities Splashscreen
+            repository
+                .isActivitiesSplashScreenEnabled()
+                .first()
+                .also {
+                    Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
+                    updateActivitiesSplashEnabled(it)
+                }
+
+            // Activities Splashscreen
+            repository
+                .isActivitiesSplashScreenEnabled()
+                .first()
+                .also {
+                    Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
+                    updateActivitiesSplashEnabled(it)
+                }
         }
     }
 
