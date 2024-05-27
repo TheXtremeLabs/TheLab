@@ -7,7 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -24,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.riders.thelab.core.common.network.NetworkState
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
@@ -41,7 +40,7 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TheatersContent(
@@ -168,7 +167,7 @@ fun TheatersContent(
     }
 
     LaunchedEffect(key1 = tabRowSelected) {
-        Timber.d("LaunchedEffect | tabRowSelected : ${tabRowSelected} | with: ${this.coroutineContext}")
+        Timber.d("LaunchedEffect | tabRowSelected : $tabRowSelected | with: ${this.coroutineContext}")
 
         scope.launch {
             pagerState.animateScrollToPage(tabRowSelected)

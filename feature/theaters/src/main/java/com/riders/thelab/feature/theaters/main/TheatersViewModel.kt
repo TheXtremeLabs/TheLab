@@ -13,11 +13,11 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
 import com.riders.thelab.core.data.local.bean.MovieEnum
 import com.riders.thelab.core.data.local.model.Movie
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBMoviesUiState
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingMovieItemUiState
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingTvShowItemUiState
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTvShowsUiState
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBUpcomingMoviesUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBMoviesUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBTrendingMovieItemUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBTrendingTvShowItemUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBTvShowsUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBUpcomingMoviesUiState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -56,9 +56,9 @@ class TheatersViewModel @Inject constructor(
 
     var mJosnAssetsMovies: MutableList<Movie> = mutableListOf()
     var mEnumMovies: MutableList<Movie> = mutableListOf()
-    var mTrendingMovies: MutableList<Movie> = mutableListOf()
-    var mUpcomingMovies: MutableList<Movie> = mutableListOf()
-    var mPopularMovies: MutableList<Movie> = mutableListOf()
+    private var mTrendingMovies: MutableList<Movie> = mutableListOf()
+    private var mUpcomingMovies: MutableList<Movie> = mutableListOf()
+    private var mPopularMovies: MutableList<Movie> = mutableListOf()
 
     ////////////////////////////////////////
     // Composable methods
@@ -94,13 +94,13 @@ class TheatersViewModel @Inject constructor(
     var tmdbTrendingTvShowsUiState: StateFlow<TMDBTvShowsUiState> =
         _mTMDBTrendingTvShowsUiState
 
-    var once by mutableStateOf(false)
+    private var once by mutableStateOf(false)
         private set
 
     var tabRowSelected by mutableIntStateOf(0)
         private set
 
-    var hasConnection by mutableStateOf(false)
+    private var hasConnection by mutableStateOf(false)
         private set
 
     var isRefreshing by mutableStateOf(false)
@@ -111,7 +111,7 @@ class TheatersViewModel @Inject constructor(
         once = true
     }
 
-    fun updateTabRowSelected(selected: Int) {
+    private fun updateTabRowSelected(selected: Int) {
         this.tabRowSelected = selected
     }
 

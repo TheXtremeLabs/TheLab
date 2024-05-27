@@ -54,7 +54,9 @@ fun TrendingTMDBItem(trendingItem: TMDBItemModel, uiEvent: (UiEvent) -> Unit) {
         context = LocalContext.current,
         dataUrl = trendingItem.getPosterImageUrl(),
         size = Size.ORIGINAL,
-        scale = Scale.FIT
+        scale = Scale.FIT,
+        isSvg = false,
+        placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
 
     TheLabTheme(darkTheme = true) {
@@ -150,7 +152,9 @@ fun TMDBItem(tmdbItem: TMDBItemModel, uiEvent: (UiEvent) -> Unit) {
     val painter =
         getCoilAsyncImagePainter(
             context = LocalContext.current,
-            dataUrl = "${Constants.BASE_ENDPOINT_TMDB_IMAGE_W_500}${tmdbItem.poster}"
+            dataUrl = "${Constants.BASE_ENDPOINT_TMDB_IMAGE_W_500}${tmdbItem.poster}",
+            isSvg = false,
+            placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
         )
 
     TheLabTheme(darkTheme = true) {

@@ -14,9 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBMoviesUiState
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBTrendingMovieItemUiState
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBUpcomingMoviesUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBMoviesUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBTrendingMovieItemUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBUpcomingMoviesUiState
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.toItemModel
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse

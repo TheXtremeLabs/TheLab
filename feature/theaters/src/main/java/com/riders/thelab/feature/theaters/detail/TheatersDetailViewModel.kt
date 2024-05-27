@@ -8,7 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.IRepository
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBDetailUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBDetailUiState
 import com.riders.thelab.core.data.local.model.tmdb.TDMBCastModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.toCastModel
@@ -106,7 +106,7 @@ class TheatersDetailViewModel @Inject constructor(
         }
     }
 
-    fun getVideos() {
+    private fun getVideos() {
 
         if (null == mTMDBItemModel) {
             Timber.e("getVideos() | tmdbItemModel is null")
@@ -144,7 +144,7 @@ class TheatersDetailViewModel @Inject constructor(
         }
     }
 
-    fun getCast() {
+    private fun getCast() {
         if (null == mTMDBItemModel) {
             Timber.e("getCast() | tmdbItemModel is null")
             return

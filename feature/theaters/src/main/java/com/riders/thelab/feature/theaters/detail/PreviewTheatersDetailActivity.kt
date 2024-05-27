@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import coil.compose.AsyncImagePainter
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState.TMDBDetailUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBDetailUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
@@ -101,7 +101,9 @@ fun TheatersDetailContent(
                                     tmdbState.item.getPosterImageUrl()
                                 } else {
                                     tmdbState.item.getBackdropImageUrl()
-                                }
+                                },
+                                isSvg = false,
+                                placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
                             )
                         val state = painter.state
 

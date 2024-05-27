@@ -1,7 +1,7 @@
 package com.riders.thelab.feature.theaters.previewprovider
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.riders.thelab.core.data.local.model.compose.TMDBUiState
+import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBVideoModel
 import com.riders.thelab.core.data.local.model.tmdb.toItemModel
