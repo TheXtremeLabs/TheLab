@@ -41,11 +41,11 @@ class KatChatViewModel : ViewModel() {
         private set
 
 
-    fun setChatRoomId(chatRoomId: String) {
+    private fun setChatRoomId(chatRoomId: String) {
         this.mChatRoomId = chatRoomId
     }
 
-    fun setOtherKatUser(otherKatUser: KatUserModel) {
+    private fun setOtherKatUser(otherKatUser: KatUserModel) {
         this.mOtherKatUser = otherKatUser
     }
 
@@ -65,15 +65,15 @@ class KatChatViewModel : ViewModel() {
     var chatMessages: List<KatModel> by mutableStateOf(emptyList())
         private set
 
-    fun updateCurrentUserDocument(currentUserDocument: DocumentReference) {
+    private fun updateCurrentUserDocument(currentUserDocument: DocumentReference) {
         this.currentUserDocument = currentUserDocument
     }
 
-    fun updateKatOtherUserId(extraUserId: String) {
+    private fun updateKatOtherUserId(extraUserId: String) {
         this.otherUserId = extraUserId
     }
 
-    fun updateKatOtherUsername(extraUsername: String) {
+    private fun updateKatOtherUsername(extraUsername: String) {
         this.otherUsername = extraUsername
     }
 
@@ -81,7 +81,7 @@ class KatChatViewModel : ViewModel() {
         this.message = newText
     }
 
-    fun updateChatMessages(newMessages: List<KatModel>) {
+    private fun updateChatMessages(newMessages: List<KatModel>) {
         this.chatMessages = newMessages
     }
 
@@ -174,7 +174,7 @@ class KatChatViewModel : ViewModel() {
 
     }
 
-    fun getMessages(context: Activity, chatRoomId: String) {
+    private fun getMessages(context: Activity, chatRoomId: String) {
         Timber.d("getMessages() | for chat room id: $mChatRoomId")
         FirebaseUtils.getMessages(
             context = context,

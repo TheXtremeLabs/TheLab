@@ -58,12 +58,12 @@ class ScheduleViewModel : BaseViewModel() {
         private set
     var isCountDownDone by mutableStateOf(false)
         private set
-    var isLoadingViewVisible by mutableStateOf(false)
+    private var isLoadingViewVisible by mutableStateOf(false)
         private set
     var uiCountDown by mutableLongStateOf(0L)
         private set
 
-    fun updateCountDownQuery(countDown: String) {
+    private fun updateCountDownQuery(countDown: String) {
         countDownQuery = countDown
     }
 
@@ -127,7 +127,7 @@ class ScheduleViewModel : BaseViewModel() {
         }
     }
 
-    fun startAlert(activity: Activity, countDownTime: String) {
+    private fun startAlert(activity: Activity, countDownTime: String) {
         Timber.d("Time entered : %s second(s)", countDownTime)
 
         updateCountDownDone(false)

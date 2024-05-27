@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
@@ -108,7 +107,6 @@ fun CardPlayerActions(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CardPlayer(
     song: SongModel,
@@ -221,7 +219,12 @@ fun CardPlayer(
             } else {
 
                 val imagePainter =
-                    getCoilAsyncImagePainter(context = context, dataUrl = song.drawableUri)
+                    getCoilAsyncImagePainter(
+                        context = context,
+                        dataUrl = song.drawableUri,
+                        isSvg = false,
+                        placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
+                    )
 
                 Column(
                     modifier = Modifier

@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
 import com.riders.thelab.core.data.IRepository
-import com.riders.thelab.core.data.local.model.compose.PaletteUiState
+import com.riders.thelab.core.data.local.model.compose.palette.PaletteUiState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler

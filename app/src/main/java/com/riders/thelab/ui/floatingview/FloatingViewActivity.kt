@@ -42,7 +42,6 @@ class FloatingViewActivity : AppCompatActivity() {
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:$packageName")
             )
-            @Suppress("DEPRECATION")
             startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION)
         }
 

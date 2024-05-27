@@ -4,7 +4,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.compose.LoginFieldsUIState
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
-import com.riders.thelab.core.data.remote.dto.ApiResponse
 
 class PreviewProviderLoginState : PreviewParameterProvider<LoginUiState> {
     override val values: Sequence<LoginUiState>

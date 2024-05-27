@@ -3,7 +3,6 @@ package com.riders.thelab.ui.mainactivity
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.VectorDrawable
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -101,7 +100,7 @@ fun WhatsNew(item: App) {
                                 stringResource(id = R.string.activity_title_google_drive),
                                 stringResource(id = R.string.activity_title_google_sign_in),
                                 stringResource(id = R.string.activity_title_weather),
-                                stringResource(id = R.string.activity_title_compose),
+                                stringResource(id = R.string.activity_title_recycler_view),
                                 stringResource(id = R.string.activity_title_lottie) -> {
                                     darkVibrantSwatch?.rgb?.let {
                                         Color(
@@ -290,7 +289,6 @@ fun WhatsNewTopContent(
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WhatsNewList(
     viewModel: MainActivityViewModel,
@@ -317,7 +315,6 @@ fun WhatsNewList(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WhatsNewContent(
     viewModel: MainActivityViewModel,
@@ -406,12 +403,18 @@ private fun PreviewWhatsNewList() {
     val appList = LabAppManager.getActivityList(context).take(3).let {
         it.map { localApp ->
 
-            val bitmap: Bitmap? = if (localApp.appDrawableIcon is BitmapDrawable) {
-                (localApp.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
-            } else if (localApp.appDrawableIcon is VectorDrawable) {
-                App.getBitmap(localApp.appDrawableIcon as VectorDrawable)!!
-            } else {
-                null
+            val bitmap: Bitmap? = when (localApp.appDrawableIcon) {
+                is BitmapDrawable -> {
+                    (localApp.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
+                }
+
+                is VectorDrawable -> {
+                    App.getBitmap(localApp.appDrawableIcon as VectorDrawable)!!
+                }
+
+                else -> {
+                    null
+                }
             }
 
             LocalApp(

@@ -1,7 +1,7 @@
 package com.riders.thelab.feature.palette
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.riders.thelab.core.data.local.model.compose.PaletteUiState
+import com.riders.thelab.core.data.local.model.compose.palette.PaletteUiState
 
 
 class PreviewProvider : PreviewParameterProvider<PaletteUiState> {

@@ -53,7 +53,7 @@ import com.riders.thelab.core.data.local.model.compose.UserState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
-import kotools.types.web.EmailAddress
+import org.kotools.types.EmailAddress
 import timber.log.Timber
 
 ///////////////////////////////
@@ -116,7 +116,7 @@ fun FormFields(
             },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             ),
@@ -148,7 +148,7 @@ fun FormFields(
             },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             ),
@@ -180,7 +180,7 @@ fun FormFields(
             },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             ),
@@ -201,7 +201,7 @@ fun FormFields(
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
             value = email.toString(),
-            onValueChange = { onUpdateEmail(EmailAddress.create(it)) },
+            onValueChange = { onUpdateEmail(EmailAddress.fromString(it)) },
             label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_email)) },
             placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_email)) },
             leadingIcon = {
@@ -212,7 +212,7 @@ fun FormFields(
             },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
@@ -262,7 +262,7 @@ fun FormFields(
             visualTransformation = if (passwordVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Next
             ),
@@ -318,7 +318,7 @@ fun FormFields(
             visualTransformation = if (passwordConfirmationVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
@@ -497,7 +497,7 @@ private fun PreviewFormFields(@PreviewParameter(PreviewProviderUser::class) user
             onUpdateLastname = {},
             username = user.username,
             onUpdateUsername = {},
-            email = EmailAddress.create(user.email),
+            email = EmailAddress.fromString(user.email),
             onUpdateEmail = {},
             password = user.password,
             onUpdatePassword = {},
@@ -532,7 +532,7 @@ private fun PreviewFormScreen(@PreviewParameter(PreviewProviderUserState::class)
             onUpdateLastname = {},
             username = user.username,
             onUpdateUsername = {},
-            email = EmailAddress.create(user.email),
+            email = EmailAddress.fromString(user.email),
             onUpdateEmail = {},
             password = user.password,
             onUpdatePassword = {},

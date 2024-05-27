@@ -1,7 +1,6 @@
 package com.riders.thelab.feature.songplayer.ui
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +35,6 @@ private val shape = RoundedCornerShape(16.dp)
 // COMPOSE
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SongPlayerItem(
     selectedIndex: Int,

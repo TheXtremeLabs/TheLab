@@ -106,7 +106,7 @@ class FCMMessageService : FirebaseMessagingService() {
 
         // Create a Builder object using NotificationCompat
         // class. This will allow control over all the flags
-        var builder: NotificationCompat.Builder = NotificationCompat.Builder(
+        val builder: NotificationCompat.Builder = NotificationCompat.Builder(
             applicationContext,
             channelID
         )

@@ -79,9 +79,9 @@ class MainActivityViewModel : BaseViewModel() {
         private set
 
     // Network
-    lateinit var networkState: StateFlow<NetworkState>
+    private lateinit var networkState: StateFlow<NetworkState>
 
-    var hasInternetConnection: Boolean by mutableStateOf(false)
+    private var hasInternetConnection: Boolean by mutableStateOf(false)
         private set
 
     // ViewPager Scroll

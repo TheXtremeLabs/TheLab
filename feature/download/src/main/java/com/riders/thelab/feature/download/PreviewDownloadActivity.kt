@@ -2,7 +2,6 @@ package com.riders.thelab.feature.download
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -68,7 +67,6 @@ fun Header(text: String, isButtonEnabled: Boolean, onButtonClicked: () -> Unit) 
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DownloaderContent(
     downloadListState: List<Download>,

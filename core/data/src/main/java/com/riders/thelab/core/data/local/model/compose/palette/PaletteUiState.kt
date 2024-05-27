@@ -1,4 +1,4 @@
-package com.riders.thelab.core.data.local.model.compose
+package com.riders.thelab.core.data.local.model.compose.palette
 
 import androidx.compose.runtime.Stable
 

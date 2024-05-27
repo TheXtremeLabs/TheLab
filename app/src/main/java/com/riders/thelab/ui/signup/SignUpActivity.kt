@@ -18,7 +18,7 @@ import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
-import kotools.types.web.EmailAddress
+import org.kotools.types.EmailAddress
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -62,7 +62,7 @@ class SignUpActivity : BaseComponentActivity() {
                                 onUpdateLastname = mViewModel::updateLastname,
                                 username = mViewModel.username,
                                 onUpdateUsername = mViewModel::updateUsername,
-                                email = EmailAddress.create(mViewModel.email),
+                                email = EmailAddress.fromString(mViewModel.email),
                                 onUpdateEmail = { mViewModel::updateEmail },
                                 password = mViewModel.password,
                                 onUpdatePassword = mViewModel::updatePassword,

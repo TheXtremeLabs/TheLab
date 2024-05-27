@@ -272,12 +272,18 @@ private fun PreviewMainContent(@PreviewParameter(IslandStatePreviewProvider::cla
     val appList = LabAppManager.getActivityList(context).take(3).let {
         it.map { localApp ->
 
-            val bitmap: Bitmap? = if (localApp.appDrawableIcon is BitmapDrawable) {
-                (localApp.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
-            } else if (localApp.appDrawableIcon is VectorDrawable) {
-                App.getBitmap(localApp.appDrawableIcon as VectorDrawable)!!
-            } else {
-                null
+            val bitmap: Bitmap? = when (localApp.appDrawableIcon) {
+                is BitmapDrawable -> {
+                    (localApp.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
+                }
+
+                is VectorDrawable -> {
+                    App.getBitmap(localApp.appDrawableIcon as VectorDrawable)!!
+                }
+
+                else -> {
+                    null
+                }
             }
 
             LocalApp(

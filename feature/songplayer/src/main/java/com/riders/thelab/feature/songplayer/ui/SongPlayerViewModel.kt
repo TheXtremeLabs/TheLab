@@ -526,11 +526,7 @@ class SongPlayerViewModel @Inject constructor(
 
         mServiceMusic.playPause()
 
-        if (!mServiceMusic.isPlaying()) {
-            songList[currentSongIndex].isPlaying = true
-        } else {
-            songList[currentSongIndex].isPlaying = false
-        }
+        songList[currentSongIndex].isPlaying = !mServiceMusic.isPlaying()
 
         /*mp?.let {
             if (!it.isPlaying) {

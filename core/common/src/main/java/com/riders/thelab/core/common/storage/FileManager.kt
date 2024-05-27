@@ -18,7 +18,7 @@ class FileManager private constructor(private val context: Context) {
     private val mDistriDataFolder =
         if (!LabCompatibilityManager.isAndroid10()) "$dataPath/" else "$dataPath/data/${context.packageName}/files/"
 
-    fun getDataDirectoryPath(): String =
+    private fun getDataDirectoryPath(): String =
         if (!LabCompatibilityManager.isAndroid10()) "${Environment.getExternalStorageDirectory()}/SAM_SHARE/${context.packageName}" else "${Environment.getDataDirectory().absolutePath}/data/${context.packageName}/files"
 
     fun createRootFolder(): Boolean = try {

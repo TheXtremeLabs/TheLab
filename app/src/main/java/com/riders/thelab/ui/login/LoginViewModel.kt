@@ -111,7 +111,7 @@ class LoginViewModel @Inject constructor(private val repository: IRepository) : 
         _passwordFieldUiState.value = newPasswordFieldState
     }
 
-    fun updateHasInternetConnection(hasInternet: Boolean) {
+    private fun updateHasInternetConnection(hasInternet: Boolean) {
         this.hasInternetConnection = hasInternet
     }
 

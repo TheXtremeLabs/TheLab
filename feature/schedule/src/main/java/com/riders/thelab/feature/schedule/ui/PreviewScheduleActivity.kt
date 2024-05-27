@@ -226,8 +226,8 @@ private fun PreviewScheduleContent(@PreviewParameter(PreviewProvider::class) sch
             tooltipState,
             "2",
             1000L,
-            true,
-            false
+            isCountDownStarted = true,
+            isCountDownDone = false
         ) {}
     }
 }

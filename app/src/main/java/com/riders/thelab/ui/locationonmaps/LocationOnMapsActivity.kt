@@ -298,7 +298,7 @@ class LocationOnMapsActivity
         mMap.animateCamera(CameraUpdateFactory.zoomTo(750f), 2000, null)
         mMap.uiSettings.isScrollGesturesEnabled = true
 
-        binding?.let { it.tvLocation.text = "Latitude:$latitude\nLongitude:$longitude" }
+        _viewBinding?.let {  binding.tvLocation.text = "Latitude:$latitude\nLongitude:$longitude" }
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -335,14 +335,16 @@ class LocationOnMapsActivity
         }
         mRequestingLocationUpdates = false
         @Suppress("DEPRECATION")
-        mLocationRequest = LocationRequest()
-        mLocationRequest!!.interval = UPDATE_INTERVAL_IN_MILLISECONDS
-        mLocationRequest!!.fastestInterval = FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS
-        mLocationRequest!!.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        mLocationRequest = LocationRequest().apply {
+            interval = UPDATE_INTERVAL_IN_MILLISECONDS
+            fastestInterval = FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
 
-        val builder = LocationSettingsRequest.Builder()
+        val builder = LocationSettingsRequest.Builder().apply {
+            addLocationRequest(mLocationRequest!!)
+        }
 
-        builder.addLocationRequest(mLocationRequest!!)
         mLocationSettingsRequest = builder.build()
         mGeocoder = Geocoder(this, Locale.getDefault())
     }

@@ -227,7 +227,7 @@ class DownloadViewModel @Inject constructor(
         }
     }
 
-    fun getIsoFile() {
+    private fun getIsoFile() {
         Timber.d("getIsoFile()")
 
         val isoUrl = Constants.URL_ISO_TEST

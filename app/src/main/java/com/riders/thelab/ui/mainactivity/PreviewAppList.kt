@@ -122,12 +122,13 @@ fun App(item: App) {
                         containerColor =
                         when (title) {
                             stringResource(id = R.string.activity_title_colors),
+                            stringResource(id = R.string.activity_title_colors),
                             stringResource(id = R.string.activity_title_palette),
                             stringResource(id = R.string.activity_title_youtube_like),
                             stringResource(id = R.string.activity_title_google_drive),
                             stringResource(id = R.string.activity_title_google_sign_in),
                             stringResource(id = R.string.activity_title_weather),
-                            stringResource(id = R.string.activity_title_compose),
+                            stringResource(id = R.string.activity_title_recycler_view),
                             stringResource(id = R.string.activity_title_lottie) -> {
                                 darkVibrantSwatch?.rgb?.let {
                                     Color(

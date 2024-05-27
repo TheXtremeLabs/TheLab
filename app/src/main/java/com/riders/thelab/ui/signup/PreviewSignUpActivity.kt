@@ -31,7 +31,7 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
-import kotools.types.web.EmailAddress
+import org.kotools.types.EmailAddress
 import timber.log.Timber
 
 
@@ -263,7 +263,7 @@ private fun PreviewSignUpNavHost(@PreviewParameter(PreviewProviderUserState::cla
         onUpdateLastname = {},
         username = user.username,
         onUpdateUsername = {},
-        email = EmailAddress.create(user.email),
+        email = EmailAddress.fromString(user.email),
         onUpdateEmail = {},
         password = user.password,
         onUpdatePassword = {},
@@ -299,7 +299,7 @@ private fun PreviewSignUpContent(@PreviewParameter(PreviewProviderUserState::cla
             onUpdateLastname = {},
             username = user.username,
             onUpdateUsername = {},
-            email = EmailAddress.create(user.email),
+            email = EmailAddress.fromString(user.email),
             onUpdateEmail = {},
             password = user.password,
             onUpdatePassword = {},

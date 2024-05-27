@@ -38,7 +38,7 @@ class BluetoothViewModel : BaseViewModel() {
         MutableStateFlow(emptySet())
     val availableDevices: StateFlow<Set<BluetoothDevice>> = _availableDevices.asStateFlow()
 
-    var bluetoothSearchProgress: Boolean by mutableStateOf(false)
+    private var bluetoothSearchProgress: Boolean by mutableStateOf(false)
         private set
     var isSearching: Boolean by mutableStateOf(false)
         private set

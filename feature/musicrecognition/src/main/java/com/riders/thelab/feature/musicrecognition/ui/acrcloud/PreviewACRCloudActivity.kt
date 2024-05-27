@@ -191,7 +191,9 @@ fun RecognitionResult(state: ACRUiState.RecognitionSuccessful) {
 
     val painter: AsyncImagePainter = getCoilAsyncImagePainter(
         context = LocalContext.current,
-        dataUrl = state.songFetched.albumThumbUrl
+        dataUrl = state.songFetched.albumThumbUrl,
+        isSvg = false,
+        placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
 
     val painterState: AsyncImagePainter.State = painter.state
@@ -388,7 +390,7 @@ fun ACRCloudActivityContent(
             }
         ) { contentPadding ->
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                if (isConnected.equals(false)) {
+                if (!isConnected) {
                     NoNetworkConnection()
                 } else {
                     Column(

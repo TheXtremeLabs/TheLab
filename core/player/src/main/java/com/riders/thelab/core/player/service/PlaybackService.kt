@@ -105,7 +105,7 @@ class PlaybackService : MediaSessionService() {
         }
     }
 
-    fun stop() {
+    private fun stop() {
         mMediaSession?.player?.stop()
     }
 
