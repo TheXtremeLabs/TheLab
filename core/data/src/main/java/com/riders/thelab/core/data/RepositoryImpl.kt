@@ -19,7 +19,6 @@ import com.riders.thelab.core.data.preferences.PreferencesImpl
 import com.riders.thelab.core.data.remote.ApiImpl
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.data.remote.dto.UserDto
-import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
@@ -39,6 +38,7 @@ import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.City
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
+import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
 import kotlinx.coroutines.flow.Flow
 import kotools.types.text.NotBlankString
 import okhttp3.ResponseBody
@@ -329,11 +329,20 @@ class RepositoryImpl @Inject constructor(
     // PREFERENCES
     //
     /////////////////////////
+    override fun isFirstTimeLaunched(): Flow<Boolean> = mPreferencesImpl.isFirstTimeLaunched()
+
+    override suspend fun saveFirstTimeLaunched(firstTimeLaunched: Boolean) =
+        mPreferencesImpl.saveFirstTimeLaunched(firstTimeLaunched)
+
     override fun isNightMode(): Flow<Boolean> = mPreferencesImpl.isNightMode()
+    override suspend fun saveNightMode(isNightMode: Boolean) =
+        mPreferencesImpl.saveNightMode(isNightMode)
 
     override suspend fun toggleNightMode() = mPreferencesImpl.toggleNightMode()
 
     override fun isVibration(): Flow<Boolean> = mPreferencesImpl.isVibration()
+    override suspend fun saveVibration(isVibration: Boolean) =
+        mPreferencesImpl.saveVibration(isVibration)
 
     override suspend fun toggleVibration() = mPreferencesImpl.toggleVibration()
 
@@ -358,6 +367,9 @@ class RepositoryImpl @Inject constructor(
 
     override fun isActivitiesSplashScreenEnabled(): Flow<Boolean> =
         mPreferencesImpl.isActivitiesSplashScreenEnabled()
+
+    override suspend fun saveActivitiesSplashScreenEnabled(isActivitiesSplashScreenEnabled: Boolean) =
+        mPreferencesImpl.saveActivitiesSplashScreenEnabled(isActivitiesSplashScreenEnabled)
 
     override suspend fun toggleActivitiesSplashScreenEnabled() =
         mPreferencesImpl.toggleActivitiesSplashScreenEnabled()

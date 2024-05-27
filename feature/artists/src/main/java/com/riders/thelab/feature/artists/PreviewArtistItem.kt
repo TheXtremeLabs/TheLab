@@ -210,7 +210,7 @@ private fun PreviewArtistItem(@PreviewParameter(PreviewProviderArtist::class) ar
             NavHost(
                 modifier = Modifier.fillMaxSize(),
                 navController = navController,
-                startDestination = ArtistScreen.List.route.toString()
+                startDestination = ArtistScreen.List.route
             ) {
                 composable<ArtistScreen.List> {
                     ArtistItem(

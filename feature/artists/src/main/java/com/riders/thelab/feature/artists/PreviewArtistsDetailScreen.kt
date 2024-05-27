@@ -198,7 +198,7 @@ fun ArtistDetailScreen(
 
     /* Get the swatches */
     var lightVibrantSwatch by remember { mutableIntStateOf(0) }
-    var darkVibrantSwatch by remember { mutableIntStateOf(0) }
+    val darkVibrantSwatch by remember { mutableIntStateOf(0) }
     var lightMutedSwatch by remember { mutableIntStateOf(0) }
     var darkMutedSwatch by remember { mutableIntStateOf(0) }
     val artistFullName by remember {

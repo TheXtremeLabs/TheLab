@@ -118,7 +118,7 @@ private fun PreviewArtistMainScreen(@PreviewParameter(PreviewProviderArtists::cl
             NavHost(
                 modifier = Modifier.fillMaxSize(),
                 navController = navController,
-                startDestination = ArtistScreen.List.route.toString()
+                startDestination = ArtistScreen.List.route
             ) {
                 composable<ArtistScreen.List> {
                     ArtistMainScreen(

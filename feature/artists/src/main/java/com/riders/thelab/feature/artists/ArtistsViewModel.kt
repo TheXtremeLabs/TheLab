@@ -50,7 +50,7 @@ class ArtistsViewModel @Inject constructor(
     private var fetchJsonJob: Job? = null
     private var fetchArtistsJob: Job? = null
     private var fetchArtistsThumbJob: Job? = null
-    var mStorageReference: StorageReference? = null
+    private var mStorageReference: StorageReference? = null
 
     //////////////////////////////////////////
     // Compose states
@@ -128,7 +128,7 @@ class ArtistsViewModel @Inject constructor(
                                     Timber.e("getFirebaseJSONURL | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                                 }
                                 .addOnCompleteListener { artistTask: Task<Uri> ->
-                                    Timber.d("getFirebaseJSONURL | addOnCompleteListener| result : ${artistTask.result.toString()}")
+                                    Timber.d("getFirebaseJSONURL | addOnCompleteListener| result : ${artistTask.result}")
                                     val result = artistTask.result.toString()
                                     val url = try {
                                         bucketUrl = result.replace("%3D", "?")

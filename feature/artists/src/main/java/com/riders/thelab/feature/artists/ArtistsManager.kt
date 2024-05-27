@@ -48,7 +48,7 @@ object ArtistsManager {
                 element
                     .downloadUrl
                     .addOnSuccessListener { artistThumbUrl: Uri ->
-                        Timber.i("buildArtistsThumbnailsList() | addOnSuccessListener | uri: ${artistThumbUrl.toString()}")
+                        Timber.i("buildArtistsThumbnailsList() | addOnSuccessListener | uri: $artistThumbUrl")
                         thumbnailsLinks.add(artistThumbUrl.toString())
                         if (storageReferences.size == thumbnailsLinks.size) {
                             trySend(
@@ -76,7 +76,7 @@ object ArtistsManager {
                     itemReference
                         .downloadUrl
                         .addOnSuccessListener { artistThumbUrl: Uri ->
-                            Timber.i("buildArtistsThumbnailsList() | addOnSuccessListener | uri: ${artistThumbUrl.toString()}")
+                            Timber.i("buildArtistsThumbnailsList() | addOnSuccessListener | uri: $artistThumbUrl")
                             thumbnailsLinks.add(artistThumbUrl.toString())
                             if (storageReferences.size == thumbnailsLinks.size) {
                                 trySend(
