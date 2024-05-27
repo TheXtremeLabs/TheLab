@@ -13,9 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -70,14 +70,20 @@ class ACRCloudActivity : BaseComponentActivity() {
         }
 
         override fun onFailure(error: Throwable?) {
-            if (error is NotLoggedInException || error is UserNotAuthorizedException) {
-                // Show login button and trigger the login flow from auth library when clicked
-                Timber.d("Show login button and trigger the login flow from auth library when clicked")
-            } else if (error is CouldNotFindSpotifyApp) {
-                // Show button to download Spotify
-                Timber.d("Show button to download Spotify")
-            } else {
-                Timber.e("onFailure: $error")
+            when (error) {
+                is NotLoggedInException, is UserNotAuthorizedException -> {
+                    // Show login button and trigger the login flow from auth library when clicked
+                    Timber.d("Show login button and trigger the login flow from auth library when clicked")
+                }
+
+                is CouldNotFindSpotifyApp -> {
+                    // Show button to download Spotify
+                    Timber.d("Show button to download Spotify")
+                }
+
+                else -> {
+                    Timber.e("onFailure: $error")
+                }
             }
         }
     }

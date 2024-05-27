@@ -377,7 +377,7 @@ class ACRCloudViewModel @Inject constructor(
         Timber.e("onVolumeChanged() | volume: $volume")
     }
 
-    fun getSpotifyToken() {
+    private fun getSpotifyToken() {
         Timber.d("getSpotifyToken()")
 
         viewModelScope.launch(IO + SupervisorJob() + coroutineExceptionHandler) {
