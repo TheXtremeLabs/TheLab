@@ -98,7 +98,7 @@ Repository created and maintained by Saint-Honoré Michaël([*@MichaelStH*](http
 [kotlinx.serialization]: https://github.com/Kotlin/kotlinx.serialization
 [kotlinx.serialization-badge]: https://img.shields.io/badge/kotlinx.serialization-1.6.3-blue?logo=kotlin
 [ksp]: https://github.com/google/ksp
-[ksp-badge]: https://img.shields.io/static/v1?logo=google&messgae=2.0.0-1.0.21&color=blue
+[ksp-badge]: https://img.shields.io/static/v1?logo=google&label=ksp&messgae=2.0.0-1.0.21&color=blue
 [androidx]: https://developer.android.com/jetpack/androidx?hl=fr
 [jetpack-compose]: https://developer.android.com/jetpack/compose?hl=fr
 [google-apis]: https://console.cloud.google.com/apis/library?hl=fr
