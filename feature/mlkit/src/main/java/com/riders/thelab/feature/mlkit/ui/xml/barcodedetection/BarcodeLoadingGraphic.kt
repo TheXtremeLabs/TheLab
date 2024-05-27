@@ -21,7 +21,6 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.Point
 import android.graphics.PointF
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
 import kotlin.math.abs
 
 /** Draws the graphic to indicate the barcode result is in loading.  */

@@ -48,7 +48,7 @@ class BarcodeResultFragment : BottomSheetDialogFragment() {
                 arguments.getSerializable(
                     ARG_BARCODE_FIELD_LIST,
                     ArrayList::class.java
-                ) as ArrayList<BarcodeField>? ?: ArrayList<BarcodeField>()
+                ) as ArrayList<BarcodeField>? ?: ArrayList()
             } else {
                 Log.e(TAG, "No barcode field list passed in!")
                 ArrayList()

@@ -200,7 +200,9 @@ fun Casting(castList: List<TDMBCastModel>) {
 
                 val painter = getCoilAsyncImagePainter(
                     context = context,
-                    dataUrl = item.getProfileImageUrl()
+                    dataUrl = item.getProfileImageUrl(),
+                    isSvg = false,
+                    placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
                 )
 
                 Box(

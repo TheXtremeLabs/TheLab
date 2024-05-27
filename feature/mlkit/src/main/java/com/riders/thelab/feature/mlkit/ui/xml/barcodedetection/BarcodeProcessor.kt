@@ -30,6 +30,7 @@ import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
 import com.riders.thelab.feature.mlkit.ui.xml.settings.PreferenceUtils
 import com.riders.thelab.feature.mlkit.ui.xml.utils.InputInfo
 import com.riders.thelab.feature.mlkit.viewmodel.WorkflowModel
+import timber.log.Timber
 import java.io.IOException
 
 /** A processor to run the barcode detector.  */
@@ -112,7 +113,7 @@ class BarcodeProcessor(graphicOverlay: GraphicOverlay, private val workflowModel
     }
 
     override fun onFailure(e: Exception) {
-        Log.e(TAG, "Barcode detection failed!", e)
+        Timber.tag(TAG).e(e, "Barcode detection failed!")
     }
 
     override fun stop() {
@@ -120,7 +121,7 @@ class BarcodeProcessor(graphicOverlay: GraphicOverlay, private val workflowModel
         try {
             scanner.close()
         } catch (e: IOException) {
-            Log.e(TAG, "Failed to close barcode detector!", e)
+            Timber.tag(TAG).e(e, "Failed to close barcode detector!")
         }
     }
 

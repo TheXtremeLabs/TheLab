@@ -78,7 +78,7 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
      * Sets the camera attributes for size and facing direction, which informs how to transform image
      * coordinates later.
      */
-    fun setCameraInfo(cameraSource: com.riders.thelab.feature.mlkit.ui.xml.camera.CameraSource) {
+    fun setCameraInfo(cameraSource: CameraSource) {
         val previewSize = cameraSource.previewSize ?: return
         if (Utils.isPortraitMode(context)) {
             // Swap width and height when in portrait, since camera's natural orientation is landscape.

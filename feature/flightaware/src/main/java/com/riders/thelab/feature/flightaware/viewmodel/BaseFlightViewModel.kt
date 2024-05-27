@@ -3,7 +3,6 @@ package com.riders.thelab.feature.flightaware.viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
@@ -20,9 +19,8 @@ open class BaseFlightViewModel: BaseViewModel() {
 
     // Network State
     var hasInternetConnection: Boolean by mutableStateOf(false)
-        private set
 
-    fun updateHasInternetConnection(hasInternet: Boolean) {
+    private fun updateHasInternetConnection(hasInternet: Boolean) {
         this.hasInternetConnection = hasInternet
     }
 

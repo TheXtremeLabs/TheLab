@@ -51,8 +51,8 @@ fun CameraView(modifier: Modifier) {
                 val imageAnalyzer = ImageAnalysis.Builder()
                     .build()
                     .also {
-                        it.setAnalyzer(cameraExecutor, BarcodeAnalyser {
-                            UIManager.showToast(context, "Barcode found, value: $it")
+                        it.setAnalyzer(cameraExecutor, BarcodeAnalyser { barcode ->
+                            UIManager.showToast(context, "Barcode found, value: $barcode")
                         })
                     }
 

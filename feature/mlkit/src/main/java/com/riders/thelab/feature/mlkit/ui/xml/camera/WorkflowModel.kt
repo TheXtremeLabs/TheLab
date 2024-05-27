@@ -16,18 +16,6 @@
 
 package com.riders.thelab.feature.mlkit.ui.xml.camera
 
-import android.app.Application
-import android.content.Context
-import androidx.annotation.MainThread
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import com.google.mlkit.vision.barcode.common.Barcode
-import com.riders.thelab.feature.mlkit.bean.WorkflowState
-import com.riders.thelab.feature.mlkit.ui.xml.objectdetection.DetectedObjectInfo
-import com.riders.thelab.feature.mlkit.ui.xml.productsearch.Product
-import com.riders.thelab.feature.mlkit.ui.xml.productsearch.SearchedObject
-import com.riders.thelab.feature.mlkit.ui.xml.settings.PreferenceUtils
-
 /** View model for handling application workflow based on camera preview.  */
 /*class WorkflowModel(application: Application) : AndroidViewModel(application) {
 

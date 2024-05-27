@@ -39,7 +39,9 @@ import java.util.Locale
 fun MemberItem(member: Members) {
     val painter = getCoilAsyncImagePainter(
         context = LocalContext.current,
-        dataUrl = member.urlThumbnail
+        dataUrl = member.urlThumbnail,
+        isSvg = false,
+        placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
 
     Column(
@@ -86,7 +88,9 @@ fun Director(movie: Movie) {
 
     val painter = getCoilAsyncImagePainter(
         context = LocalContext.current,
-        dataUrl = movie.directors!![0].urlThumbnail
+        dataUrl = movie.directors!![0].urlThumbnail,
+        isSvg = false,
+        placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
 
     TheLabTheme {
