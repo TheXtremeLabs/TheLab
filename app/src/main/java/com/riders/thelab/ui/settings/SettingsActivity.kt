@@ -1,10 +1,10 @@
 package com.riders.thelab.ui.settings
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
+import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +17,15 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        backPressed()
         return true
+    }
+
+    override fun backPressed() {
+        if(supportFragmentManager.popBackStackImmediate()) {
+            supportFragmentManager.popBackStack()
+        } else {
+            finish()
+        }
     }
 }
