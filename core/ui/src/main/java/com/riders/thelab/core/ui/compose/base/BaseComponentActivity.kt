@@ -88,7 +88,7 @@ abstract class BaseComponentActivity : ComponentActivity() {
         launchPermissionRequest(arrayOf(permission))
 
 
-     fun launchPermissionRequest(permissions: Array<String>) {
+     private fun launchPermissionRequest(permissions: Array<String>) {
          Timber.e("requestPermission() | permissions: $permissions")
          permissionLauncher?.launch(permissions) ?: {
              Timber.e("Permission launcher has NOT been initialized")

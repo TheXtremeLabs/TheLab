@@ -20,10 +20,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,7 +35,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
@@ -197,9 +194,9 @@ fun AppBarContent(viewModel: MainActivityViewModel, focusManager: FocusManager) 
                 },
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
-                    autoCorrect = false,
-                    KeyboardType.Text,
-                    ImeAction.Done
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
                 )
             )
 

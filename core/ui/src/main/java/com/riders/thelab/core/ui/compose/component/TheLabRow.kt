@@ -22,8 +22,7 @@ fun <T> TheLabRow(
     horizontalArrangement: Arrangement.Horizontal =
         if (!reverseLayout) Arrangement.Start else Arrangement.End,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
-    itemContent: @Composable (item: T) -> Unit,
-    onItemClicked: ((item: T) -> Unit)? = null
+    itemContent: @Composable (item: T) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 

@@ -608,18 +608,20 @@ fun executeOnBackPressed(context: Context) {
     runCatching {
         Timber.d("runCatching | Attempt to execute backPressed on ComponentActivity()")
         (context as BaseComponentActivity).backPressed()
-    }.onFailure {
-        it.printStackTrace()
-        Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
-
-        runCatching {
-            Timber.d("runCatching | Attempt to execute fallback backPressed on AppCompatActivity()")
-            (context as BaseAppCompatActivity).backPressed()
-        }.onFailure {
-            it.printStackTrace()
-            Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
-        }
     }
+        .onFailure { baseComponentException ->
+            baseComponentException.printStackTrace()
+            Timber.e("runCatching | onFailure | error caught with message: ${baseComponentException.message} (class: ${baseComponentException.javaClass.canonicalName})")
+
+            runCatching {
+                Timber.d("runCatching | Attempt to execute fallback backPressed on AppCompatActivity()")
+                (context as BaseAppCompatActivity).backPressed()
+            }
+                .onFailure { baseAppCompatException ->
+                    baseAppCompatException.printStackTrace()
+                    Timber.e("runCatching | onFailure | error caught with message: ${baseAppCompatException.message} (class: ${baseAppCompatException.javaClass.canonicalName})")
+                }
+        }
 }
 
 ///////////////////////////

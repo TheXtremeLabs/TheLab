@@ -21,8 +21,7 @@ fun <T> TheLabColumn(
     verticalArrangement: Arrangement.Vertical =
         if (!reverseLayout) Arrangement.Top else Arrangement.Bottom,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-    itemContent: @Composable (item: T) -> Unit,
-    onItemClicked: ((item: T) -> Unit)? = null
+    itemContent: @Composable (item: T) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 

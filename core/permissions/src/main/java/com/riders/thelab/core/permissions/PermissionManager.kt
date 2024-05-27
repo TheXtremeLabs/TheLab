@@ -164,7 +164,7 @@ class PermissionManager {
     private fun Permission.requiresRationale(activity: ComponentActivity) =
         permissions.any { activity.shouldShowRequestPermissionRationale(it) }
 
-     fun hasPermission(activity: ComponentActivity, permission: String) =
+    private fun hasPermission(activity: ComponentActivity, permission: String) =
         ContextCompat.checkSelfPermission(
             activity,
             permission

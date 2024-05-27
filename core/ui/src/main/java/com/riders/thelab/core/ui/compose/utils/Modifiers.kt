@@ -10,7 +10,6 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
@@ -245,7 +244,6 @@ fun Modifier.fadeEdge(
 //////////////////////////////////////
 // Pager Transition
 //////////////////////////////////////
-@OptIn(ExperimentalFoundationApi::class)
 fun Modifier.pagerFadeTransition(page: Int, pagerState: PagerState) =
     graphicsLayer {
         val pageOffset = pagerState.calculateCurrentOffsetForPage(page)

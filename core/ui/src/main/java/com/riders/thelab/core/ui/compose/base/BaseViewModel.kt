@@ -50,17 +50,17 @@ abstract class BaseViewModel : ViewModel() {
         private set
     var isVibration: Boolean by mutableStateOf(true)
         private set
-    var isFirstTimeLaunched: Boolean by mutableStateOf(true)
+    private var isFirstTimeLaunched: Boolean by mutableStateOf(true)
         private set
     var isActivitiesSplashEnabled: Boolean by mutableStateOf(true)
         private set
-    var isUserLoggedIn: Boolean by mutableStateOf(false)
+    private var isUserLoggedIn: Boolean by mutableStateOf(false)
         private set
     var viewPagerDotExpanded: Boolean by mutableStateOf(true)
         private set
     var viewPagerDotVisibility: Boolean by mutableStateOf(true)
         private set
-    var viewPagerCurrentIndex: Int by mutableIntStateOf(0)
+    private var viewPagerCurrentIndex: Int by mutableIntStateOf(0)
         private set
 
     fun updateDarkMode(darkMode: Boolean) {

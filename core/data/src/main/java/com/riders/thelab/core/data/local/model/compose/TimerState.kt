@@ -12,7 +12,7 @@ data class TimerState(
         (secondsRemaining ?: textWhenStopped).toString()
 
     // Show 100% if seconds remaining is null
-    val progressPercentage: Float =
+    private val progressPercentage: Float =
         (secondsRemaining ?: totalSeconds) / totalSeconds.toFloat()
 
     // Always implement toString from Effective Java Item 9
