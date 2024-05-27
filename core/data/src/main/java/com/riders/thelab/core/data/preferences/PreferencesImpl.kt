@@ -20,6 +20,34 @@ class PreferencesImpl @Inject constructor(
     private val context: Context
 ) : IPreferences {
 
+    override fun isFirstTimeLaunched(): Flow<Boolean> = context.dataStore.data.catch { exception ->
+        // 1 On the first line, you access the data of DataStore.
+        // This property returns a Flow.
+        // Then you call catch() from the Flow API to handle any errors.
+        // dataStore.data throws an IOException if it can't read the data
+        if (exception is IOException) {
+            // 2 In the lambda block, you check if the exception is an instance of IOException.
+            // If it is, you catch the exception and return an empty instance of Preferences.
+            // If the exception isn’t IOException, you rethrow it or handle it in a way that works for you.
+            emit(emptyPreferences())
+        } else {
+            throw exception
+        }
+    }.map {
+        // 3 Finally, map() returns a Flow which contains the results of applying
+        // the given function to each value of the original Flow.
+        // In your case, you get the data by using a certain key, the PreferencesKeys.NIGHT_MODE_KEY.
+        // If the key isn’t set when you try to read the data it returns null.
+        // You use the Elvis operator to handle this and return false instead.
+        it[PreferencesKeys.DATASTORE_FIRST_TIME_LAUNCHED_KEY] ?: true
+    }
+
+    override suspend fun saveFirstTimeLaunched(firstTimeLaunched: Boolean) {
+        context.dataStore.edit {
+            it[PreferencesKeys.DATASTORE_FIRST_TIME_LAUNCHED_KEY] = firstTimeLaunched
+        }
+    }
+
     override fun isNightMode(): Flow<Boolean> = context.dataStore.data.catch { exception ->
         // 1 On the first line, you access the data of DataStore.
         // This property returns a Flow.
@@ -40,6 +68,12 @@ class PreferencesImpl @Inject constructor(
         // If the key isn’t set when you try to read the data it returns null.
         // You use the Elvis operator to handle this and return false instead.
         it[PreferencesKeys.DATASTORE_DARK_MODE_KEY] ?: false
+    }
+
+    override suspend fun saveNightMode(isNightMode: Boolean) {
+        context.dataStore.edit {
+            it[PreferencesKeys.DATASTORE_DARK_MODE_KEY] = isNightMode
+        }
     }
 
     override suspend fun toggleNightMode() {
@@ -69,6 +103,12 @@ class PreferencesImpl @Inject constructor(
         // If the key isn’t set when you try to read the data it returns null.
         // You use the Elvis operator to handle this and return false instead.
         it[PreferencesKeys.DATASTORE_VIBRATION_KEY] ?: false
+    }
+
+    override suspend fun saveVibration(isVibration: Boolean) {
+        context.dataStore.edit {
+            it[PreferencesKeys.DATASTORE_VIBRATION_KEY] = isVibration
+        }
     }
 
     override suspend fun toggleVibration() {
@@ -194,26 +234,34 @@ class PreferencesImpl @Inject constructor(
         }
     }
 
-    override fun isActivitiesSplashScreenEnabled(): Flow<Boolean> = context.dataStore.data.catch { exception ->
-        // 1 On the first line, you access the data of DataStore.
-        // This property returns a Flow.
-        // Then you call catch() from the Flow API to handle any errors.
-        // dataStore.data throws an IOException if it can't read the data
-        if (exception is IOException) {
-            // 2 In the lambda block, you check if the exception is an instance of IOException.
-            // If it is, you catch the exception and return an empty instance of Preferences.
-            // If the exception isn’t IOException, you rethrow it or handle it in a way that works for you.
-            emit(emptyPreferences())
-        } else {
-            throw exception
+    override fun isActivitiesSplashScreenEnabled(): Flow<Boolean> =
+        context.dataStore.data.catch { exception ->
+            // 1 On the first line, you access the data of DataStore.
+            // This property returns a Flow.
+            // Then you call catch() from the Flow API to handle any errors.
+            // dataStore.data throws an IOException if it can't read the data
+            if (exception is IOException) {
+                // 2 In the lambda block, you check if the exception is an instance of IOException.
+                // If it is, you catch the exception and return an empty instance of Preferences.
+                // If the exception isn’t IOException, you rethrow it or handle it in a way that works for you.
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map {
+            // 3 Finally, map() returns a Flow which contains the results of applying
+            // the given function to each value of the original Flow.
+            // In your case, you get the data by using a certain key, the PreferencesKeys.NIGHT_MODE_KEY.
+            // If the key isn’t set when you try to read the data it returns null.
+            // You use the Elvis operator to handle this and return false instead.
+            it[PreferencesKeys.DATASTORE_ACTIVITIES_SPLASH_SCREEN_KEY] ?: true
         }
-    }.map {
-        // 3 Finally, map() returns a Flow which contains the results of applying
-        // the given function to each value of the original Flow.
-        // In your case, you get the data by using a certain key, the PreferencesKeys.NIGHT_MODE_KEY.
-        // If the key isn’t set when you try to read the data it returns null.
-        // You use the Elvis operator to handle this and return false instead.
-        it[PreferencesKeys.DATASTORE_ACTIVITIES_SPLASH_SCREEN_KEY] ?: true
+
+    override suspend fun saveActivitiesSplashScreenEnabled(isActivitiesSplashScreenEnabled: Boolean) {
+        context.dataStore.edit {
+            it[PreferencesKeys.DATASTORE_ACTIVITIES_SPLASH_SCREEN_KEY] =
+                isActivitiesSplashScreenEnabled
+        }
     }
 
     override suspend fun toggleActivitiesSplashScreenEnabled() {

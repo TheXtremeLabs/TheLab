@@ -1,5 +1,6 @@
-package com.riders.thelab.feature.settings
+package com.riders.thelab.feature.settings.main
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,9 +30,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.data.local.model.User
+import com.riders.thelab.core.data.local.model.compose.settings.UserUiState
+import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
@@ -108,45 +113,73 @@ fun EditProfileCardRowItem(username: String, email: String) {
 }
 
 @Composable
-fun UserSection(username: String, email: String, uiEvent: (UiEvent) -> Unit) {
+fun UserSection(
+    userUiState: UserUiState,
+    uiEvent: (UiEvent) -> Unit
+) {
     TheLabTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(
-                modifier = Modifier.padding(start = 24.dp),
-                text = "User",
-                style = Typography.titleMedium
-            )
+        AnimatedContent(
+            targetState = userUiState,
+            label = "content_transition",
+        ) { targetState ->
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    EditProfileCardRowItem(username = username, email = email)
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 24.dp, vertical = 4.dp),
-                        contentAlignment = Alignment.Center
+            when (targetState) {
+                is UserUiState.Loading -> {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = { uiEvent.invoke(UiEvent.OnLogoutClicked) }
+                        CircularProgressIndicator()
+                        Text(text = "Fetching device's data. Please wait...")
+                    }
+                }
+
+                is UserUiState.Error -> {}
+                is UserUiState.Success -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(start = 24.dp),
+                            text = "User",
+                            style = Typography.titleMedium
+                        )
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp)
                         ) {
-                            Text(
-                                text = stringResource(id = com.riders.thelab.core.ui.R.string.action_logout)
-                                    .uppercase(Locale.getDefault())
-                            )
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                EditProfileCardRowItem(
+                                    username = targetState.user.username,
+                                    email = targetState.user.email
+                                )
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 24.dp, vertical = 4.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Button(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        onClick = { uiEvent.invoke(UiEvent.OnLogoutClicked) }
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.action_logout)
+                                                .uppercase(Locale.getDefault())
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -163,8 +196,7 @@ fun UserSection(username: String, email: String, uiEvent: (UiEvent) -> Unit) {
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewEditProfileCardRowItem() {
-    val user = User.mockUserForTests[0]
+private fun PreviewEditProfileCardRowItem(user: User = User.mockUserForTests[0]) {
     TheLabTheme {
         EditProfileCardRowItem(user.username, user.email)
     }
@@ -172,9 +204,8 @@ private fun PreviewEditProfileCardRowItem() {
 
 @DevicePreviews
 @Composable
-private fun PreviewUserSection() {
-    val user: User = User.mockUserForTests[0]
+private fun PreviewUserSection(@PreviewParameter(PreviewProviderUserUiState::class) userUiState: UserUiState) {
     TheLabTheme {
-        UserSection(user.username, user.email) {}
+        UserSection(userUiState = userUiState) {}
     }
 }

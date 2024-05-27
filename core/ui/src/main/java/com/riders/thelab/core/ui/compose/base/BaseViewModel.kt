@@ -50,6 +50,8 @@ abstract class BaseViewModel : ViewModel() {
         private set
     var isVibration: Boolean by mutableStateOf(true)
         private set
+    var isFirstTimeLaunched: Boolean by mutableStateOf(true)
+        private set
     var isActivitiesSplashEnabled: Boolean by mutableStateOf(true)
         private set
     var isUserLoggedIn: Boolean by mutableStateOf(false)
@@ -71,6 +73,10 @@ abstract class BaseViewModel : ViewModel() {
         this.isVibration = isVibration
     }
 
+    fun updateFirstTimeLaunched(firstTimeLaunched: Boolean) {
+        Timber.d("updateFirstTimeLaunched() | is first Time Launched: $firstTimeLaunched")
+        this.isFirstTimeLaunched = firstTimeLaunched
+    }
     fun updateActivitiesSplashEnabled(isSplashEnabled: Boolean) {
         Timber.d("updateActivitiesSplashEnabled() | isSplashEnabled: $isSplashEnabled")
         this.isActivitiesSplashEnabled = isSplashEnabled

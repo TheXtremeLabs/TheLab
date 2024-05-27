@@ -3,6 +3,7 @@ package com.riders.thelab.navigator
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.riders.thelab.feature.settings.main.SettingsActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.contacts.addcontact.AddContactActivity
 import com.riders.thelab.ui.login.LoginActivity
@@ -44,7 +45,7 @@ class Navigator(private val activity: Activity) {
         activity.startActivity(
             Intent(
                 activity,
-                com.riders.thelab.feature.settings.SettingsActivity::class.java
+                SettingsActivity::class.java
             )
         )
     }

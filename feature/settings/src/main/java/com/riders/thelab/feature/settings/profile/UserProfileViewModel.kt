@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.settings
+package com.riders.thelab.feature.settings.profile
 
 import android.util.Patterns
 import androidx.compose.runtime.getValue

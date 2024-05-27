@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.settings
+package com.riders.thelab.feature.settings.main
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

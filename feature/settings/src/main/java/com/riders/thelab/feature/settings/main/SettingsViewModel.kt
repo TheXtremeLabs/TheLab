@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.settings
+package com.riders.thelab.feature.settings.main
 
 import android.util.DisplayMetrics
 import androidx.compose.runtime.getValue
@@ -10,6 +10,8 @@ import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.DeviceInformation
 import com.riders.thelab.core.data.local.model.User
+import com.riders.thelab.core.data.local.model.compose.settings.DeviceInfoUiState
+import com.riders.thelab.core.data.local.model.compose.settings.UserUiState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -18,6 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -26,10 +30,10 @@ import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-@Suppress("EmptyMethod")
 @HiltViewModel
-class SettingsViewModel @Inject constructor(private val repository: IRepository) : BaseViewModel(),
-    CoroutineScope {
+class SettingsViewModel @Inject constructor(
+    private val repository: IRepository
+) : BaseViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()
@@ -42,21 +46,24 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    var user: User? by mutableStateOf(null)
-        private set
+    private var _deviceInformationUiState: MutableStateFlow<DeviceInfoUiState> =
+        MutableStateFlow(DeviceInfoUiState.Loading)
+    var deviceInformationUiState: StateFlow<DeviceInfoUiState> = _deviceInformationUiState
 
-    var deviceInfo: DeviceInformation? by mutableStateOf(null)
-        private set
+    private var _userUiState: MutableStateFlow<UserUiState> =
+        MutableStateFlow(UserUiState.Loading)
+    var userUiState: StateFlow<UserUiState> = _userUiState
+
     var showMoreInfoOnDevice: Boolean by mutableStateOf(false)
-        private set
 
-    private fun updateUser(user: User) {
-        this.user = user
+    private fun updateDeviceInfoUiState(newDeviceInformationState: DeviceInfoUiState) {
+        this._deviceInformationUiState.value = newDeviceInformationState
     }
 
-    private fun updateDeviceInfo(deviceInformation: DeviceInformation) {
-        this.deviceInfo = deviceInformation
+    private fun updateUserUiState(newUserState: UserUiState) {
+        this._userUiState.value = newUserState
     }
+
 
     private fun updateShowMoreInfoOnDevice(showMore: Boolean) {
         this.showMoreInfoOnDevice = showMore
@@ -110,52 +117,53 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
 
         when (event) {
             is UiEvent.OnThemeSelected -> {
-                if (event.option.contains("light", true)) {
-                    updateDarkMode(false)
-                    updateDarkModeDatastore()
-                } else if (event.option.contains("dark", true)) {
-                    updateDarkMode(true)
-                    updateDarkModeDatastore()
-                } else {
-                    updateDarkMode(isDarkMode)
-                }
+                updateDarkModeDatastore(
+                    if (event.option.contains("light", true)) {
+                        false
+                    } else if (event.option.contains("dark", true)) {
+                        true
+                    } else {
+                        isDarkMode
+                    }
+                )
             }
 
             is UiEvent.OnUpdateVibrationEnable -> {
-                updateVibrationDatastore()
-                updateVibration(event.isVibrationEnable)
+                updateVibrationDatastore(event.isVibrationEnable)
             }
 
             is UiEvent.OnUpdateActivitiesSplashScreenEnable -> {
-                updateActivitiesSplashScreenDatastore()
-                updateActivitiesSplashEnabled(event.isActivitiesSplashScreenEnable)
+                updateActivitiesSplashScreenDatastore(event.isActivitiesSplashScreenEnable)
             }
 
-            is UiEvent.OnUpdateUser -> updateUser(event.user)
-            is UiEvent.OnUpdateDeviceInfo -> updateDeviceInfo(event.deviceInformation)
+            is UiEvent.OnUpdateUser -> updateUserUiState(UserUiState.Success(event.user))
+            is UiEvent.OnUpdateDeviceInfo -> updateDeviceInfoUiState(DeviceInfoUiState.Success(event.deviceInformation))
             is UiEvent.OnUpdateShowMoreInfoOnDevice -> updateShowMoreInfoOnDevice(event.expanded)
             is UiEvent.OnLogoutClicked -> logout()
         }
     }
 
-    private fun updateDarkModeDatastore() {
-        Timber.d("updateDarkModeDatastore()")
+    private fun updateDarkModeDatastore(nightMode: Boolean) {
+        Timber.d("updateDarkModeDatastore() | nightMode")
         viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
-            repository.toggleNightMode()
+            repository.saveNightMode(nightMode).also { updateDarkMode(nightMode) }
         }
     }
 
-    private fun updateVibrationDatastore() {
+
+    private fun updateVibrationDatastore(isVibration: Boolean) {
         Timber.d("updateVibrationDatastore()")
         viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
-            repository.toggleVibration()
+            repository.saveVibration(isVibration).also { updateVibration(isVibration) }
         }
     }
 
-    private fun updateActivitiesSplashScreenDatastore() {
+    private fun updateActivitiesSplashScreenDatastore(isSplashScreenActivitiesEnabled: Boolean) {
         Timber.d("updateActivitiesSplashScreenDatastore()")
         viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
-            repository.toggleActivitiesSplashScreenEnabled()
+            repository
+                .saveActivitiesSplashScreenEnabled(isSplashScreenActivitiesEnabled)
+                .also { updateActivitiesSplashEnabled(isSplashScreenActivitiesEnabled) }
         }
     }
 
@@ -166,7 +174,7 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
             runBlocking(coroutineContext + SupervisorJob() + coroutineExceptionHandler) {
                 repository.getUsersSync().firstOrNull { it.logged }
             }
-        user?.let { updateUser(it) }
+        user?.let { updateUserUiState(UserUiState.Success(it)) }
     }
 
     private fun logout() {
@@ -204,7 +212,7 @@ class SettingsViewModel @Inject constructor(private val repository: IRepository)
             delay(1_500)
 
             withContext(Dispatchers.Main) {
-                updateDeviceInfo(mDeviceInfo)
+                updateDeviceInfoUiState(DeviceInfoUiState.Success(mDeviceInfo))
             }
         }
     }

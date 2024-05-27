@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.settings
+package com.riders.thelab.feature.settings.main
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -21,11 +21,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.DeviceInformation
+import com.riders.thelab.core.data.local.model.compose.settings.DeviceInfoUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
+import com.riders.thelab.feature.settings.R
 
 
 ///////////////////////////////
@@ -62,7 +65,6 @@ fun ShowMoreButton(showMoreInfoOnDevice: Boolean, uiEvent: (UiEvent) -> Unit) {
 
 @Composable
 fun DeviceSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -228,7 +230,7 @@ fun AndroidSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
 
 @Composable
 fun DeviceInfoSection(
-    deviceInformation: DeviceInformation?,
+    deviceInformationUiState: DeviceInfoUiState,
     showModeInfo: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
@@ -256,45 +258,51 @@ fun DeviceInfoSection(
                 ) {
                     AnimatedContent(
                         modifier = Modifier.align(Alignment.TopCenter),
-                        targetState = null != deviceInformation,
+                        targetState = deviceInformationUiState,
                         label = "content_transition",
-                    ) { target ->
-                        if (!target) {
-                            Column(
-                                modifier = Modifier.padding(16.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                CircularProgressIndicator()
-                                Text(text = "Fetching device's data. Please wait...")
+                    ) { targetState ->
+
+                        when (targetState) {
+                            is DeviceInfoUiState.Loading -> {
+                                Column(
+                                    modifier = Modifier.padding(16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    CircularProgressIndicator()
+                                    Text(text = "Fetching device's data. Please wait...")
+                                }
                             }
-                        } else {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(8.dp),
-                                horizontalAlignment = Alignment.End,
-                                verticalArrangement = Arrangement.spacedBy(
-                                    8.dp,
-                                    Alignment.CenterVertically
-                                )
-                            ) {
-                                // Device Specs
-                                DeviceSpecs(
-                                    deviceInfo = deviceInformation!!,
-                                    showMoreInfoOnDevice = showModeInfo
-                                )
 
-                                // Android Specs
-                                AndroidSpecs(
-                                    deviceInfo = deviceInformation,
-                                    showMoreInfoOnDevice = showModeInfo
-                                )
+                            is DeviceInfoUiState.Error -> {}
+                            is DeviceInfoUiState.Success -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(8.dp),
+                                    horizontalAlignment = Alignment.End,
+                                    verticalArrangement = Arrangement.spacedBy(
+                                        8.dp,
+                                        Alignment.CenterVertically
+                                    )
+                                ) {
+                                    // Device Specs
+                                    DeviceSpecs(
+                                        deviceInfo = targetState.deviceInformation,
+                                        showMoreInfoOnDevice = showModeInfo
+                                    )
 
-                                ShowMoreButton(
-                                    showMoreInfoOnDevice = showModeInfo,
-                                    uiEvent = uiEvent
-                                )
+                                    // Android Specs
+                                    AndroidSpecs(
+                                        deviceInfo = targetState.deviceInformation,
+                                        showMoreInfoOnDevice = showModeInfo
+                                    )
+
+                                    ShowMoreButton(
+                                        showMoreInfoOnDevice = showModeInfo,
+                                        uiEvent = uiEvent
+                                    )
+                                }
                             }
                         }
                     }
@@ -312,8 +320,8 @@ fun DeviceInfoSection(
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewDeviceInfoSection() {
+private fun PreviewDeviceInfoSection(@PreviewParameter(PreviewProviderDeviceInfoUiState::class) deviceUiState: DeviceInfoUiState) {
     TheLabTheme {
-        DeviceInfoSection(deviceInformation = DeviceInformation(), showModeInfo = true) {}
+        DeviceInfoSection(deviceInformationUiState = deviceUiState, showModeInfo = true) {}
     }
 }

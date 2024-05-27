@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.settings
+package com.riders.thelab.feature.settings.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.riders.thelab.core.data.local.model.DeviceInformation
-import com.riders.thelab.core.data.local.model.User
+import com.riders.thelab.core.data.local.model.compose.settings.DeviceInfoUiState
+import com.riders.thelab.core.data.local.model.compose.settings.UserUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
@@ -26,14 +26,14 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 ///////////////////////////////
 @Composable
 fun SettingsContent(
+    deviceInformationUiState: DeviceInfoUiState,
+    userUiState: UserUiState,
     isDarkMode: Boolean,
     themeOptions: List<String>,
     version: String,
-    deviceInformation: DeviceInformation?,
     showModeInfo: Boolean,
     isVibration: Boolean,
     isActivitiesSplashEnabled: Boolean,
-    user: User?,
     uiEvent: (UiEvent) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
@@ -69,16 +69,14 @@ fun SettingsContent(
                 }
                 item {
                     DeviceInfoSection(
-                        deviceInformation = deviceInformation,
+                        deviceInformationUiState = deviceInformationUiState,
                         showModeInfo = showModeInfo,
                         uiEvent = uiEvent
                     )
                 }
 
-                if (null != user) {
-                    item {
-                        UserSection(username = user.username, email = user.email, uiEvent = uiEvent)
-                    }
+                item {
+                    UserSection(userUiState = userUiState, uiEvent = uiEvent)
                 }
             }
         }
@@ -96,16 +94,14 @@ fun SettingsContent(
 private fun PreviewSettingsContent() {
     TheLabTheme {
         SettingsContent(
+            deviceInformationUiState = DeviceInfoUiState.Loading,
+            userUiState = UserUiState.Loading,
             isDarkMode = true,
             themeOptions = listOf("Light", "Dark"),
             version = "12.14.11",
-            deviceInformation = DeviceInformation(),
             showModeInfo = true,
             isVibration = true,
-            isActivitiesSplashEnabled = false,
-            user = User()
-        ) {
-
-        }
+            isActivitiesSplashEnabled = false
+        ) {}
     }
 }
