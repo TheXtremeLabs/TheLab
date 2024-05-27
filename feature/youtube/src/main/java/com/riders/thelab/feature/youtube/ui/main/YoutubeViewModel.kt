@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.IRepository
-import com.riders.thelab.core.data.local.model.compose.YoutubeUiState
+import com.riders.thelab.core.data.local.model.compose.youtube.YoutubeUiState
 import com.riders.thelab.core.data.local.model.youtube.toModel
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +36,7 @@ class YoutubeViewModel @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()
 
-    var fetchContentJob: Job? = null
+    private var fetchContentJob: Job? = null
 
     /////////////////////////////////////////////////
     // Composable states
@@ -67,7 +67,7 @@ class YoutubeViewModel @Inject constructor(
 
             updateYoutubeUiState(
                 YoutubeUiState.Error(
-                    message = NotBlankString.create(throwable.message),
+                    message = NotBlankString.create(throwable.message!!),
                     throwable = throwable
                 )
             )

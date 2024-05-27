@@ -20,7 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.riders.thelab.core.data.local.model.compose.YoutubeUiState
+import com.riders.thelab.core.data.local.model.compose.youtube.YoutubeUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.NoItemFound
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
@@ -102,7 +102,7 @@ fun YoutubeContent(uiState: YoutubeUiState) {
                     }
 
                     is YoutubeUiState.Error -> {
-                        NoItemFound("An error occurred while loading\n${targetState.message.toString()}")
+                        NoItemFound("An error occurred while loading\n${targetState.message}")
                     }
 
                     is YoutubeUiState.Success -> {

@@ -84,7 +84,12 @@ fun YoutubeDetailScreen(
     var animateDescription by remember { mutableStateOf(false) }
     var animateGoBack by remember { mutableStateOf(false) }
 
-    val painter = getCoilAsyncImagePainter(context = context, dataUrl = video.imageUrl)
+    val painter = getCoilAsyncImagePainter(
+        context = context,
+        dataUrl = video.imageUrl,
+        isSvg = false,
+        placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
+    )
     val state = painter.state
 
     /* Create the Palette, pass the bitmap to it */

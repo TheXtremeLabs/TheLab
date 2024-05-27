@@ -1,7 +1,7 @@
 package com.riders.thelab.feature.youtube.ui.main
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.riders.thelab.core.data.local.model.compose.YoutubeUiState
+import com.riders.thelab.core.data.local.model.compose.youtube.YoutubeUiState
 import com.riders.thelab.core.data.local.model.youtube.Video
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString

@@ -83,7 +83,12 @@ fun YoutubeItem(
     val interactionSource = remember { MutableInteractionSource() }
     val boundsTransform = { _: Rect, _: Rect -> tween<Rect>(350) }
 
-    val painter = getCoilAsyncImagePainter(context = context, dataUrl = video.imageUrl)
+    val painter = getCoilAsyncImagePainter(
+        context = context,
+        dataUrl = video.imageUrl,
+        isSvg = false,
+        placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
+    )
     val state = painter.state
 
     /* Create the Palette, pass the bitmap to it */

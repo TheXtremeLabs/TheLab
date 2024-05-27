@@ -1,4 +1,4 @@
-package com.riders.thelab.core.data.local.model.compose
+package com.riders.thelab.core.data.local.model.compose.youtube
 
 import com.riders.thelab.core.data.local.model.youtube.Video
 import kotools.types.text.NotBlankString

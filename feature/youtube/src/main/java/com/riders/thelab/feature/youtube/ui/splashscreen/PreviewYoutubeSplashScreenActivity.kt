@@ -73,7 +73,7 @@ fun YoutubeSplashScreenContent() {
     var showPlayLogoAndProgressBar by remember { mutableStateOf(true) }
     var showYoutubeLogo by remember { mutableStateOf(false) }
     var showProgressBar by remember { mutableStateOf(false) }
-    var animatePlayIcon by remember { mutableStateOf(false) }
+    val animatePlayIcon by remember { mutableStateOf(false) }
     var animatePlayLogoRotation by remember { mutableStateOf(false) }
 
     val playLogoScaleAnimation = remember { Animatable(2f) }
