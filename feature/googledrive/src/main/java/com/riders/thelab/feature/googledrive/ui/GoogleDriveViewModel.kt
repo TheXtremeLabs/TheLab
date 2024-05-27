@@ -48,7 +48,7 @@ class GoogleDriveViewModel @Inject constructor() : BaseViewModel(), CoroutineSco
         MutableStateFlow(GoogleSignInState.Disconnected)
     val signInState: StateFlow<GoogleSignInState> = _signInState.asStateFlow()
 
-    var hasInternetConnection: Boolean by mutableStateOf(if (BuildConfig.DEBUG) true else false)
+    private var hasInternetConnection: Boolean by mutableStateOf(BuildConfig.DEBUG)
 
     private val networkState by lazy { this.mNetworkManager!!.networkState }
     val isConnected: Boolean by derivedStateOf { networkState.value is NetworkState.Available }

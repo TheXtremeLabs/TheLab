@@ -6,7 +6,7 @@ import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiSta
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleSignInState
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
-import kotools.types.web.EmailAddress
+import org.kotools.types.EmailAddress
 
 class PreviewProviderUiState : PreviewParameterProvider<GoogleDriveUiState> {
     @OptIn(ExperimentalKotoolsTypesApi::class)
@@ -26,7 +26,7 @@ class PreviewProviderGoogleSignInState : PreviewParameterProvider<GoogleSignInSt
             GoogleSignInState.Loading,
             GoogleSignInState.Connected(
                 GoogleAccountModel(
-                    emailAddress = EmailAddress.create("john.smith@test.com"),
+                    emailAddress = EmailAddress.fromString("john.smith@test.com"),
                     idToken = NotBlankString.create("sdfkvbnimpsdbvSDFVj255edfvedfv754edfved4fv-edfb0defbmW"),
                     firstName = NotBlankString.create("John"),
                     familyName = NotBlankString.create("Smith"),

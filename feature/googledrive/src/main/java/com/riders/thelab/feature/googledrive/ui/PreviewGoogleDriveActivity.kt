@@ -226,7 +226,9 @@ fun GoogleDriveContentSuccess(
                         val painter = targetState.account.profilePictureUri?.let { profileUrl ->
                             getCoilAsyncImagePainter(
                                 context = context,
-                                dataUrl = profileUrl.toString()
+                                dataUrl = profileUrl.toString(),
+                                isSvg = false,
+                                placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
                             )
                         } ?: run { null }
 

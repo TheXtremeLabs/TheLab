@@ -181,7 +181,6 @@ class GoogleDriveActivity
             val signInIntent = mGoogleSignInClient?.signInIntent
 
             if (null != signInIntent) {
-                @Suppress("DEPRECATION")
                 startActivityForResult(signInIntent, CONST_SIGN_IN)
             }
         }
@@ -301,7 +300,6 @@ class GoogleDriveActivity
                     ex.printStackTrace()
 
                     withContext(Dispatchers.Main) {
-                        @Suppress("DEPRECATION")
                         startActivityForResult(ex.intent, REQUEST_SIGN_IN)
                     }
                 } catch (transientEx: IOException) {

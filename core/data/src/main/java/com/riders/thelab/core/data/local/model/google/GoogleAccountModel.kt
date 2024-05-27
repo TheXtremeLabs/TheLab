@@ -2,9 +2,10 @@ package com.riders.thelab.core.data.local.model.google
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import kotlinx.serialization.Contextual
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
-import kotools.types.web.EmailAddress
+import org.kotools.types.EmailAddress
 import java.io.Serializable
 
 @Stable
@@ -12,7 +13,7 @@ import java.io.Serializable
 @kotlinx.serialization.Serializable
 @OptIn(ExperimentalKotoolsTypesApi::class)
 data class GoogleAccountModel(
-    val emailAddress: EmailAddress,
+    @Contextual val emailAddress: EmailAddress,
     val idToken: NotBlankString,
     val firstName: NotBlankString?,
     val familyName: NotBlankString?,

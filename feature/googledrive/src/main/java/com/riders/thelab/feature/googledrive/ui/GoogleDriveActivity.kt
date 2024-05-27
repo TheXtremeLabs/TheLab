@@ -104,7 +104,7 @@ class GoogleDriveActivity : BaseGoogleActivity(), OnConnectionFailedListener {
                     GoogleSignInState.Connected(
                         account
                             .toGoogleAccountModel()
-                            .also { Timber.d("signIn() | account: ${it.toString()}") }
+                            .also { Timber.d("signIn() | account: $it") }
                     )
                 )
             }
@@ -126,13 +126,13 @@ class GoogleDriveActivity : BaseGoogleActivity(), OnConnectionFailedListener {
                         Timber.e("task | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                     }
                     ?.addOnSuccessListener(this@GoogleDriveActivity) {
-                        Timber.d("task | addOnSuccessListener | value: ${it.toString()}")
+                        Timber.d("task | addOnSuccessListener | value: $it")
                     }
                     ?.addOnCompleteListener(this@GoogleDriveActivity) { task ->
                         if (!task.isSuccessful) {
                             Timber.e("task | addOnCompleteListener | failed")
                         } else {
-                            Timber.i("task | addOnCompleteListener | successful, result: ${task.result.toString()}")
+                            Timber.i("task | addOnCompleteListener | successful, result: ${task.result}")
                             val filesList: FileList = task.result.also { Timber.d("filesList size : ${it.size}") }
                         }
                     }

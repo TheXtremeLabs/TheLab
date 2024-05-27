@@ -134,7 +134,7 @@ class GoogleDriveManager private constructor(private val activity: BaseGoogleAct
                 Timber.e("task | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
             }
             ?.addOnSuccessListener(activity) {
-                Timber.d("task | addOnSuccessListener | value: ${it.toString()}")
+                Timber.d("task | addOnSuccessListener | value: $it")
             }
             ?.addOnCompleteListener(activity) { task ->
                 if (!task.isSuccessful) {
@@ -229,7 +229,7 @@ class GoogleDriveManager private constructor(private val activity: BaseGoogleAct
      * request Drive Full Scope in the [Google
      * Developer's Console](https://play.google.com/apps/publish) and be submitted to Google for verification.
      */
-    suspend fun queryFiles(): Task<FileList>? {
+    fun queryFiles(): Task<FileList>? {
         Timber.d("queryFiles()")
 
         return mDriveService?.let { service ->

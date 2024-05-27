@@ -64,7 +64,6 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         // If the GoogleSignInOptions only asks for IDToken and/or profile and/or email then no
         // consent screen will be shown here.
         val signInIntent: Intent = mGoogleSignInClient?.signInIntent!!
-        @Suppress("DEPRECATION")
         startActivityForResult(signInIntent, RC_GET_TOKEN)
     }
 

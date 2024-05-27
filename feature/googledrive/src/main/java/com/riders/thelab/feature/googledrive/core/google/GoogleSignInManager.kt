@@ -35,7 +35,7 @@ class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyV
     @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
     var mLastGoogleAccount: GoogleSignInAccount? = null
 
-    var mLastGoogleAccountCredential: GoogleIdTokenCredential? = null
+    private var mLastGoogleAccountCredential: GoogleIdTokenCredential? = null
 
 
     ////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyV
     @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
     fun signInLegacy() {
         Timber.i("googleSignIn()")
-        var message: String
+        val message: String
 
         if (!isUserSignedInLegacy()) {
             message = "User is NOT signed in"
@@ -93,7 +93,7 @@ class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyV
             .build()
 
         return GoogleSignIn.getClient(activity, signInOptions).also {
-            Timber.d("getGoogleSignInClient() | client: ${it.toString()}")
+            Timber.d("getGoogleSignInClient() | client: $it")
         }
     }
 
@@ -113,14 +113,14 @@ class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyV
             .setNonce(hashedNonce)
             .build()
             .also {
-                Timber.d("signIn() | google Id Option: ${it.toString()}")
+                Timber.d("signIn() | google Id Option: $it")
             }
 
         val request: GetCredentialRequest = GetCredentialRequest.Builder()
             .addCredentialOption(googleIdOption)
             .build()
             .also {
-                Timber.d("signIn() | request: ${it.toString()}")
+                Timber.d("signIn() | request: $it")
             }
 
         // Use your app or activity context to instantiate a client instance of CredentialManager.
@@ -129,11 +129,11 @@ class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyV
         runCatching {
             val result = credentialManager.getCredential(context = activity, request = request)
                 .also {
-                    Timber.d("signIn() | result: ${it.toString()}")
+                    Timber.d("signIn() | result: $it")
                 }
 
             val credential = result.credential.also {
-                Timber.d("signIn() | credential: ${it.toString()}")
+                Timber.d("signIn() | credential: $it")
             }
 
             GoogleIdTokenCredential.createFrom(credential.data).also {
@@ -141,7 +141,7 @@ class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyV
 
                 onAccountFetched(
                     it.toGoogleAccountModel()
-                        .also { Timber.d("signIn() | account: ${it.toString()}") }
+                        .also { Timber.d("signIn() | account: $it") }
                 )
             }
         }
@@ -189,7 +189,7 @@ class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyV
                     onFailure(throwable)
                 }
                 .addOnSuccessListener(activity) {
-                    Timber.d("task | addOnSuccessListener | value: ${it.toString()}")
+                    Timber.d("task | addOnSuccessListener | value: $it")
                 }
                 .addOnCompleteListener(activity) {
                     Toast.makeText(activity, "Signed Out", Toast.LENGTH_SHORT).show()
@@ -249,7 +249,7 @@ class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyV
     }*/
 
     fun setGoogleAccount(account: GoogleSignInAccount) {
-        Timber.i("setGoogleAccount() | account: ${account.toString()}")
+        Timber.i("setGoogleAccount() | account: $account")
         this.mLastGoogleAccount = account
     }
 

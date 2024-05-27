@@ -52,7 +52,7 @@ abstract class BaseGoogleActivity : BaseComponentActivity() {
                             Timber.e("task | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
                         }
                         .addOnSuccessListener {
-                            Timber.d("task | addOnSuccessListener | value: ${it.toString()}")
+                            Timber.d("task | addOnSuccessListener | value: $it")
                         }
                         .addOnCompleteListener {
                             if (!task.isSuccessful) {
