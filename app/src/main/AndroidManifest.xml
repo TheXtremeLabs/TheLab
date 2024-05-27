@@ -173,12 +173,12 @@
         android:allowBackup="true"
         android:enableOnBackInvokedCallback="true"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_lab_twelve"
+        android:icon="@mipmap/ic_lab"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_lab_twelve_round"
+        android:roundIcon="@mipmap/ic_lab_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TheLab"
         android:usesCleartextTraffic="true">
@@ -257,14 +257,10 @@
             android:theme="@style/Theme.TheLab" />
 
         <activity
-            android:name=".ui.recycler.RecyclerViewActivity"
+            android:name=".feature.artists.ArtistsActivity"
             android:label="@string/activity_title_recycler_view"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:theme="@style/Theme.TheLab" />
-        <activity
-            android:name=".ui.recycler.RecyclerViewDetailActivity"
-            android:parentActivityName=".ui.recycler.RecyclerViewActivity"
-            android:theme="@style/Theme.TheLab.NoActionBar" />
 
         <activity
             android:name=".feature.tabs.WorkingTabsActivity"
@@ -483,13 +479,6 @@
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".ui.compose.ComposeActivity"
-            android:label="@string/activity_compose_title"
-            android:parentActivityName=".ui.mainactivity.MainActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-
-        <activity
             android:name=".ui.camera.CameraActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/activity_camera_title"
@@ -550,15 +539,15 @@
         <!-- Google ML Kit -->
 
         <activity
-            android:name=".feature.settings.SettingsActivity"
+            android:name=".feature.settings.main.SettingsActivity"
             android:label="@string/activity_settings_title"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".feature.settings.UserProfileActivity"
+            android:name=".feature.settings.profile.UserProfileActivity"
             android:label="@string/activity_settings_title"
-            android:parentActivityName=".feature.settings.SettingsActivity"
+            android:parentActivityName=".feature.settings.main.SettingsActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 

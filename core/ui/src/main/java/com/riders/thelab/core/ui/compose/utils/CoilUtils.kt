@@ -108,3 +108,28 @@ fun getCoilAsyncImagePainter(
         },
         imageLoader = ImageLoader.Builder(context).logger(DebugLogger()).build()
     )
+
+@Composable
+fun getCoilAsyncImagePainter(
+    context: Context,
+    dataUrl: String,
+    isSvg: Boolean = false,
+    size: Size? = null,
+    scale: Scale? = null,
+    onState: ((AsyncImagePainter.State) -> Unit)? = null,
+): AsyncImagePainter =
+    rememberAsyncImagePainter(
+        model = if (!isSvg) getCoilImageRequest(
+            context = context,
+            dataUrl = dataUrl,
+            size = size,
+            scale = scale
+        ) else getCoilImageRequestSvg(
+            context = context,
+            dataUrl = dataUrl,
+            size = size,
+            scale = scale
+        ),
+        onState = onState,
+        imageLoader = ImageLoader.Builder(context).logger(DebugLogger()).build()
+    )

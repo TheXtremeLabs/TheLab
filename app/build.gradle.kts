@@ -117,6 +117,7 @@ dependencies {
     implementation(project(":core:player"))
     implementation(project(":core:ui"))
     implementation(project(":core:testing"))
+    implementation(project(":feature:artists"))
     implementation(project(":feature:biometric"))
     implementation(project(":feature:bluetooth"))
     implementation(project(":feature:colors"))

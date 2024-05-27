@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.AppBuilder
+import com.riders.thelab.feature.artists.ArtistsActivity
 import com.riders.thelab.feature.biometric.ui.BiometricActivity
 import com.riders.thelab.feature.bluetooth.BluetoothActivity
 import com.riders.thelab.feature.colors.ColorActivity
@@ -29,7 +30,6 @@ import com.riders.thelab.ui.floatingview.FloatingViewActivity
 import com.riders.thelab.ui.googledrive.GoogleDriveActivity
 import com.riders.thelab.ui.googlesignin.GoogleSignInActivity
 import com.riders.thelab.ui.locationonmaps.LocationOnMapsActivity
-import com.riders.thelab.ui.recycler.RecyclerViewActivity
 import com.riders.thelab.ui.screenshot.ScreenShotActivity
 import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
@@ -73,22 +73,22 @@ object AppBuilderUtils {
                         .build()
                 this.add(biometric)
 
-                //Recycler
-                val recycler =
+                // Artists
+                val artists =
                     AppBuilder
                         .withId(2)
-                        .withActivityTitle("Recycler")
-                        .withActivityDescription("Recycler Basics and best practices...")
+                        .withActivityTitle("Artists")
+                        .withActivityDescription("Show Artists info using recycler basics and best practices...")
                         .withActivityIcon(
                             getDrawableFromIntResource(
                                 context,
-                                R.drawable.ic_filter_list
+                                com.riders.thelab.core.ui.R.drawable.ic_microphone_flat
                             )
                         )
-                        .withActivityClass(RecyclerViewActivity::class.java)
-                        .withActivityDate("2023/01/19")
+                        .withActivityClass(ArtistsActivity::class.java)
+                        .withActivityDate("2024/05/27")
                         .build()
-                this.add(recycler)
+                this.add(artists)
 
                 //Tabs
                 val tabs =
