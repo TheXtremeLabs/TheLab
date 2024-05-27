@@ -1,5 +1,6 @@
+package com.riders.thelab.feature.flightaware.ui.main
+
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -64,7 +65,6 @@ import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
 import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchItem
-import com.riders.thelab.feature.flightaware.ui.main.UiEvent
 import kotlinx.coroutines.launch
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
@@ -177,7 +177,6 @@ fun SearchFlightByCode(uiEvent: (UiEvent) -> Unit) {
 }
 
 
-@OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun SearchFlightByDestination(
     onOutsideBoundariesClicked: Boolean,
@@ -229,7 +228,7 @@ fun SearchFlightByDestination(
                     )
 
                     // Departure
-                    LabDropdownMenu2<AirportSearchModel>(
+                    LabDropdownMenu2(
                         modifier = Modifier.fillMaxWidth(),
                         query = departureQuery,
 //                        onUpdateQuery = { uiEvent.invoke(UiEvent.OnUpdateDepartureQuery(it)) },
@@ -367,7 +366,7 @@ fun SearchFlightByDestination(
 
                 Button(
                     onClick = {
-                        if(!BuildConfig.DEBUG) {
+                        if (!BuildConfig.DEBUG) {
                             if (departureQuery.isEmpty() && arrivalQuery.isEmpty()) {
                                 return@Button
                             }
@@ -397,7 +396,6 @@ fun SearchFlightByDestination(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchFlightContent(
     uiEvent: (UiEvent) -> Unit,
@@ -527,7 +525,13 @@ private fun PreviewSearchFlightByDestination() {
 @Composable
 private fun PreviewSearchFlightContent() {
     TheLabTheme {
-        SearchFlightContent(uiEvent = {}, 0, false, false, emptyList(), false, emptyList())
+        SearchFlightContent(uiEvent = {}, 0,
+            onOutsideBoundariesClicked = false,
+            departureExpanded = false,
+            departureSuggestions = emptyList(),
+            arrivalExpanded = false,
+            arrivalSuggestions = emptyList()
+        )
     }
 }
 

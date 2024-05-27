@@ -55,7 +55,7 @@ open class FlightSearchViewModel @Inject constructor(
     // Composable states
     //////////////////////////////////////////
 
-    var departureAirportQuery: String by mutableStateOf("")
+    private var departureAirportQuery: String by mutableStateOf("")
         private set
 
     var departureAirportStateFlow: StateFlow<List<AirportSearchModel>> =
@@ -98,7 +98,7 @@ open class FlightSearchViewModel @Inject constructor(
                 initialValue = emptyList()
             )
 
-    var arrivalAirportQuery: String by mutableStateOf("")
+    private var arrivalAirportQuery: String by mutableStateOf("")
         private set
     var arrivalAirportStateFlow: StateFlow<List<AirportSearchModel>> =
         snapshotFlow { arrivalAirportQuery }
@@ -267,7 +267,7 @@ open class FlightSearchViewModel @Inject constructor(
         departureAirportCode: NotBlankString,
         arrivalAirportCode: NotBlankString
     ) {
-        Timber.d("searchFlightByRoute() | departureAirportCode: ${departureAirportCode.toString()}, arrivalAirportCode: ${arrivalAirportCode.toString()}")
+        Timber.d("searchFlightByRoute() | departureAirportCode: $departureAirportCode, arrivalAirportCode: $arrivalAirportCode")
 
         if (departureAirportCode.toString().isEmpty()) {
             Timber.e("Departure Airport query is null. Cannot perform REST call")

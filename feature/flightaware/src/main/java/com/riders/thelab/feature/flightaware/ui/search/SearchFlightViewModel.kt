@@ -43,7 +43,7 @@ class SearchFlightViewModel : ViewModel() {
                 val flightString: String? = bundle.getString(Constants.EXTRA_FLIGHT)
 
                 flightString?.let {
-                    val extraItem: List<SearchFlightModel>? =
+                    val extraItem: List<SearchFlightModel> =
                         Json.decodeFromString(flightString) as List<SearchFlightModel>
 
                     when (searchType) {

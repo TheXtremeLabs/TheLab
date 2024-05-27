@@ -39,7 +39,7 @@ class FlightViewModel @Inject constructor(
         private set
 
     var airports: SnapshotStateList<AirportModel> = mutableStateListOf()
-    var operators: SnapshotStateList<OperatorModel> = mutableStateListOf()
+    private var operators: SnapshotStateList<OperatorModel> = mutableStateListOf()
 
 
     // Departures
@@ -54,10 +54,10 @@ class FlightViewModel @Inject constructor(
     private var arrivalAirportOptionSelected: AirportSearchModel? by mutableStateOf(null)
         private set
 
-    var currentAirport: AirportModel? by mutableStateOf(null)
+    private var currentAirport: AirportModel? by mutableStateOf(null)
         private set
 
-    var currentOperator: OperatorModel? by mutableStateOf(null)
+    private var currentOperator: OperatorModel? by mutableStateOf(null)
         private set
 
     private fun updateSearchIndex(newIndex: Int) {
@@ -69,17 +69,17 @@ class FlightViewModel @Inject constructor(
         this.departureDropdownExpanded = isExpanded
     }
 
-    fun updateArrivalExpanded(isExpanded: Boolean) {
+    private fun updateArrivalExpanded(isExpanded: Boolean) {
         Timber.d("updateArrivalExpanded() | isExpanded: $isExpanded")
         this.arrivalDropdownExpanded = isExpanded
     }
 
-    fun updateDepartureAirportOption(newAirportOption: AirportSearchModel) {
+    private fun updateDepartureAirportOption(newAirportOption: AirportSearchModel) {
         Timber.d("updateDepartureAirportOption() | newAirportOption: $newAirportOption")
         this.departureAirportOptionSelected = newAirportOption
     }
 
-    fun updateArrivalAirportOption(newAirportOption: AirportSearchModel) {
+    private fun updateArrivalAirportOption(newAirportOption: AirportSearchModel) {
         Timber.d("updateArrivalAirportOption() | newAirportOption: $newAirportOption")
         this.arrivalAirportOptionSelected = newAirportOption
     }

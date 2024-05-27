@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.data.local.model.compose.FlightDetailUiState
+import com.riders.thelab.core.data.local.model.compose.flight.FlightDetailUiState
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.feature.flightaware.ui.main.UiEvent

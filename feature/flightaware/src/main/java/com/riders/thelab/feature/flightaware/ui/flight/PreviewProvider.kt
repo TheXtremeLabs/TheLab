@@ -1,7 +1,7 @@
 package com.riders.thelab.feature.flightaware.ui.flight
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.riders.thelab.core.data.local.model.compose.FlightDetailUiState
+import com.riders.thelab.core.data.local.model.compose.flight.FlightDetailUiState
 import com.riders.thelab.core.data.local.model.flight.OriginDestinationModel
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.data.remote.dto.flight.FlightType

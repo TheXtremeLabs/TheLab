@@ -1,6 +1,5 @@
 package com.riders.thelab.feature.flightaware.ui.main
 
-import SearchFlightContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

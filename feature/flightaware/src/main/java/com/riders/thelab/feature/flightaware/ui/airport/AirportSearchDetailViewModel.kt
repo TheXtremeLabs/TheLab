@@ -30,15 +30,10 @@ class AirportSearchDetailViewModel @Inject constructor(
 ) : BaseViewModel(), DefaultLifecycleObserver {
 
     var airportID: NotBlankString? by mutableStateOf(null)
-        private set
     var airportModel: AirportModel? by mutableStateOf(null)
-        private set
     var departureFlights: List<Departures>? by mutableStateOf(null)
-        private set
     var arrivalFlights: List<Arrivals>? by mutableStateOf(null)
-        private set
     var isFlightsFetched: Boolean by mutableStateOf(false)
-        private set
 
     private fun updateAirportID(newAirportId: NotBlankString) {
         this.airportID = newAirportId
@@ -75,10 +70,6 @@ class AirportSearchDetailViewModel @Inject constructor(
     // OVERRIDE
     //
     ///////////////////////////////
-    override fun onCleared() {
-        super.onCleared()
-    }
-
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
 

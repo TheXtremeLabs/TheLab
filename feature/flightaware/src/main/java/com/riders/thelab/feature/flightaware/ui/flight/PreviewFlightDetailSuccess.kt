@@ -79,7 +79,8 @@ fun FlightStatusCard(
     val painter = getCoilAsyncImagePainter(
         context = context,
         dataUrl = "${Constants.ENDPOINT_FLIGHT_FULL_LOGO}$flightIATA${Constants.EXTENSION_SVG}",
-        isSvg = true
+        isSvg = true,
+        placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
 
     TheLabTheme {
@@ -510,7 +511,6 @@ private fun PreviewFlightInfoContainer(@PreviewParameter(PreviewProviderFlight::
     }
 }
 
-@OptIn(ExperimentalKotoolsTypesApi::class)
 @DevicePreviews
 @Composable
 private fun PreviewFlightDetailSuccessContent(@PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel) {

@@ -35,9 +35,7 @@ class AirportSearchViewModel @Inject constructor(
     // Composable states
     //////////////////////////////////////////
     // var airports: SnapshotStateList<AirportModel> = mutableStateListOf()
-
     var airportQuery: String by mutableStateOf("")
-        private set
 
     var airportStateFlow: StateFlow<List<AirportSearchModel>> =
         snapshotFlow { airportQuery }
@@ -49,7 +47,7 @@ class AirportSearchViewModel @Inject constructor(
                 }
                 updateIsQueryLoading(true)
 
-                Timber.d("departureAirportStateFlow | mapLatest | it: ${latestInput}")
+                Timber.d("departureAirportStateFlow | mapLatest | it: $latestInput")
                 val airportSearchList = getAirportByOmniSearch(latestInput)
                 Timber.d("result: $airportSearchList")
 
@@ -67,7 +65,6 @@ class AirportSearchViewModel @Inject constructor(
             )
 
     var isQueryLoading: Boolean by mutableStateOf(false)
-        private set
 
 
     //////////////////////////////////////////
@@ -82,7 +79,7 @@ class AirportSearchViewModel @Inject constructor(
         }
 
 
-    fun updateIsQueryLoading(loading: Boolean) {
+    private fun updateIsQueryLoading(loading: Boolean) {
         this.isQueryLoading = loading
     }
 

@@ -1,4 +1,4 @@
-package com.riders.thelab.core.data.local.model.compose
+package com.riders.thelab.core.data.local.model.compose.flight
 
 import androidx.compose.runtime.Stable
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel

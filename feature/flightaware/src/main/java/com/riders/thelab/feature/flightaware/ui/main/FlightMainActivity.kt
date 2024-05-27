@@ -32,7 +32,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import timber.log.Timber
 
 // TODO : Package organization
@@ -69,7 +68,6 @@ class FlightMainActivity : BaseComponentActivity() {
     // OVERRIDE
     //
     ///////////////////////////////
-    @OptIn(ExperimentalKotoolsTypesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

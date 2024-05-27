@@ -74,7 +74,8 @@ fun SearchFlightItem(flight: SearchFlightModel, uiEvent: (UiEvent) -> Unit) {
     val painter = getCoilAsyncImagePainter(
         context = context,
         dataUrl = "${Constants.ENDPOINT_FLIGHT_FULL_LOGO}$flightIATA${Constants.EXTENSION_SVG}",
-        isSvg = true
+        isSvg = true,
+        placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
 
     TheLabTheme {
