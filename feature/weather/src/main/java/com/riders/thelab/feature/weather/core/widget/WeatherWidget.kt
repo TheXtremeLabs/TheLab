@@ -70,7 +70,7 @@ class WeatherWidget : GlanceAppWidget() {
 
         fun getImageKey(size: DpSize) = getImageKey(size.width.value.toPx, size.height.value.toPx)
 
-        fun getImageKey(width: Float, height: Float) = stringPreferencesKey(
+        private fun getImageKey(width: Float, height: Float) = stringPreferencesKey(
             "uri-$width-$height"
         )
     }

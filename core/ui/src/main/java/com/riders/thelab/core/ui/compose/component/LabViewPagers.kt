@@ -5,7 +5,6 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,7 +50,6 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 // extension method for current page offset
-@OptIn(ExperimentalFoundationApi::class)
 fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
     return (currentPage - page) + currentPageOffsetFraction
 }
@@ -62,7 +60,6 @@ fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
 // COMPOSE
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabHorizontalViewPager(
     viewModel: BaseViewModel,
@@ -179,7 +176,6 @@ fun LabHorizontalViewPager(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <T : Any> LabHorizontalViewPagerGeneric(
     viewModel: BaseViewModel,
@@ -302,7 +298,6 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <T : Any> LabHorizontalViewPagerGeneric(
     pagerState: PagerState,
@@ -528,7 +523,6 @@ fun LabVerticalViewPager(
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <T : Any> LabVerticalViewPagerGeneric(
     pagerState: PagerState,
@@ -722,7 +716,6 @@ fun VerticalPagerIndicator(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@OptIn(ExperimentalFoundationApi::class)
 @DevicePreviews
 @Composable
 private fun PreviewLabHorizontalViewPagerGeneric() {
@@ -737,7 +730,6 @@ private fun PreviewLabHorizontalViewPagerGeneric() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @DevicePreviews
 @Composable
 private fun PreviewHorizontalPagerIndicator() {
@@ -751,7 +743,6 @@ private fun PreviewHorizontalPagerIndicator() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @DevicePreviews
 @Composable
 private fun PreviewLabVerticalViewPagerGeneric() {
@@ -768,7 +759,6 @@ private fun PreviewLabVerticalViewPagerGeneric() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @DevicePreviews
 @Composable
 private fun PreviewVerticalPagerIndicator() {

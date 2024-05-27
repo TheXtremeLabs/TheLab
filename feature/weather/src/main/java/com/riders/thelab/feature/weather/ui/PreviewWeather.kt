@@ -71,8 +71,8 @@ import androidx.compose.ui.unit.toSize
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.riders.thelab.core.common.utils.DateTimeUtils
-import com.riders.thelab.core.data.local.model.compose.WeatherCityUIState
-import com.riders.thelab.core.data.local.model.compose.WeatherUIState
+import com.riders.thelab.core.data.local.model.compose.weather.WeatherCityUIState
+import com.riders.thelab.core.data.local.model.compose.weather.WeatherUIState
 import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.data.remote.dto.weather.CurrentWeather
 import com.riders.thelab.core.data.remote.dto.weather.DailyWeather

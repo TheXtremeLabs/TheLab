@@ -1,9 +1,8 @@
 package com.riders.thelab.feature.weather.ui
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.riders.thelab.core.data.local.model.compose.WeatherCityUIState
-import com.riders.thelab.core.data.local.model.compose.WeatherUIState
-import com.riders.thelab.core.data.remote.dto.weather.DailyWeather
+import com.riders.thelab.core.data.local.model.compose.weather.WeatherCityUIState
+import com.riders.thelab.core.data.local.model.compose.weather.WeatherUIState
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 
 class PreviewProviderWeather : PreviewParameterProvider<WeatherUIState> {

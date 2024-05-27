@@ -256,7 +256,7 @@ fun <T> LabDropdownMenu(
     LaunchedEffect(focusRequester) {
         Timber.d("LaunchedEffect | focusRequester: $focusRequester | coroutineContext: ${this.coroutineContext}")
 
-        if (keyboardState.equals(true)) {
+        if (keyboardState) {
             focusRequester.requestFocus()
             delay(100) // Make sure you have delay here
             keyboardController?.show()
@@ -284,7 +284,7 @@ fun <T> LabDropdownMenu(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> LabDropdownMenu2(
     modifier: Modifier,

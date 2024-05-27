@@ -16,7 +16,7 @@ import java.io.OutputStream
  * Provides our own definition of "Glance state" using Kotlin serialization.
  */
 object WeatherGlanceStateDefinition : GlanceStateDefinition<WeatherInfo> {
-    const val FILENAME = "widget_preference"
+    private const val FILENAME = "widget_preference"
 
     const val WEATHER_WIDGET_DATA_KEY = "WEATHER_WIDGET_DATA_KEY"
 

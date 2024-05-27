@@ -1,4 +1,4 @@
-package com.riders.thelab.core.data.local.model.compose
+package com.riders.thelab.core.data.local.model.compose.weather
 
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 

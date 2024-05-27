@@ -201,7 +201,7 @@ class WeatherWorker @AssistedInject constructor(
     private fun buildWeatherWidget(response: OneCallWeatherResponse): WeatherWidgetModel? {
         Timber.d("buildWeatherWidget()")
 
-        response.currentWeather?.run {
+        return response.currentWeather?.run {
             val temperature =
                 TemperatureModel(temperature = this.temperature, realFeels = this.feelsLike)
 

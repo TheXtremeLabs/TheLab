@@ -130,12 +130,14 @@ class WeatherWidgetWorker @AssistedInject constructor(
 
                                 val weatherWidgetBundle =
                                     runBlocking {
-                                        oneCallWeatherResponse.toWidgetModel().apply {
-                                            this?.let {
-                                                icon = it.icon.toWeatherIconFullUrl()
-                                                    .getIconUri(context)
+                                        oneCallWeatherResponse
+                                            .toWidgetModel()
+                                            .apply {
+                                                this?.let { model ->
+                                                    icon = model.icon.toWeatherIconFullUrl()
+                                                        .getIconUri(context)
+                                                }
                                             }
-                                        }
                                     }
 
                                 weatherWidgetBundle?.let {

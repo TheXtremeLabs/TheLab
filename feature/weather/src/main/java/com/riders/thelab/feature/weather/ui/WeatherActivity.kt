@@ -29,7 +29,7 @@ import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.local.model.Permission
-import com.riders.thelab.core.data.local.model.compose.WeatherUIState
+import com.riders.thelab.core.data.local.model.compose.weather.WeatherUIState
 import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -334,6 +334,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
         Timber.d("onLocationChanged : $location")
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
         Timber.d("onStatusChanged : $provider, $status")
     }

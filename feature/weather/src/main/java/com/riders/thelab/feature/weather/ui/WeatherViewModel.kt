@@ -28,8 +28,8 @@ import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.IRepository
-import com.riders.thelab.core.data.local.model.compose.WeatherCityUIState
-import com.riders.thelab.core.data.local.model.compose.WeatherUIState
+import com.riders.thelab.core.data.local.model.compose.weather.WeatherCityUIState
+import com.riders.thelab.core.data.local.model.compose.weather.WeatherUIState
 import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.remote.dto.weather.CurrentWeather
@@ -69,7 +69,7 @@ class WeatherViewModel @Inject constructor(
     private var _weatherCityUiState: MutableStateFlow<WeatherCityUIState> =
         MutableStateFlow(WeatherCityUIState.None)
     val weatherCityUiState: StateFlow<WeatherCityUIState> = _weatherCityUiState
-    private var _searchText: MutableStateFlow<String> = MutableStateFlow<String>("")
+    private var _searchText: MutableStateFlow<String> = MutableStateFlow("")
     val searchText: StateFlow<String> = _searchText
 
     // Network
@@ -102,7 +102,7 @@ class WeatherViewModel @Inject constructor(
         _weatherCityUiState.value = cityState
     }
 
-    fun updateHasInternetConnection(hasInternet: Boolean) {
+    private fun updateHasInternetConnection(hasInternet: Boolean) {
         this.hasInternetConnection = hasInternet
     }
 
@@ -129,7 +129,7 @@ class WeatherViewModel @Inject constructor(
         this.expanded = expanded
     }
 
-    fun updateSuggestions(suggestions: List<CityModel>) {
+    private fun updateSuggestions(suggestions: List<CityModel>) {
         this.suggestions.clear()
         this.suggestions.addAll(suggestions)
     }
@@ -463,7 +463,7 @@ class WeatherViewModel @Inject constructor(
 
 
     private fun listenToTheWorker(activity: WeatherActivity, workerId: UUID) {
-        Timber.d("listenToTheWorker : ${workerId.toString()}")
+        Timber.d("listenToTheWorker : $workerId")
 
         WorkManager
             .getInstance(activity)
