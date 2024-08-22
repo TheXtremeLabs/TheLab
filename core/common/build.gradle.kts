@@ -1,7 +1,6 @@
 plugins {
     id("thelab.android.library")
     kotlin("android")
-    kotlin("kapt")
     alias(libs.plugins.ksp)
 }
 

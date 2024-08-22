@@ -92,16 +92,26 @@ object LabAppManager {
                         context.packageManager.getApplicationIcon(appInfo.packageName)
                     val pInfo: PackageInfo =
                         context.packageManager.getPackageInfo(appInfo.packageName, 0)
-                    val version = pInfo.versionName
-                    val packageName = appInfo.packageName
-                    appList.add(
-                        PackageApp(
-                            context.packageManager.getApplicationLabel(appInfo).toString(),
-                            icon,
-                            version,
-                            packageName
-                        )
-                    )
+                    val version: String? = pInfo.versionName
+                    val packageName: String? = appInfo.packageName
+
+                    version?.let { appVersion ->
+                        packageName?.let { appPackageName ->
+                            appList.add(
+                                PackageApp(
+                                    context.packageManager.getApplicationLabel(appInfo).toString(),
+                                    icon,
+                                    appVersion,
+                                    appPackageName
+                                )
+                            )
+                        } ?: run {
+                            Timber.e("Unable to get app package name")
+                        }
+                    } ?: run {
+                        Timber.e("Unable to get app version")
+                    }
+
                 } catch (e: PackageManager.NameNotFoundException) {
                     e.printStackTrace()
                 }

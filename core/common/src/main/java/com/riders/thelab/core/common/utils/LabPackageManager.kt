@@ -17,14 +17,18 @@ class LabPackageManager(private val applicationContext: Context) {
         return try {
             val list =
                 pManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES).activities
-            for (activityInfo in list) {
-                val activityNameFound = activityInfo.name
-                Timber.d("ActivityInfo = " + activityInfo.name)
-                if (activityNameFound.lowercase().contains(activityName.lowercase())) {
-                    returnedActivityPackageToString = activityInfo.name
-                    break
+
+            list?.let {
+                for (activityInfo in it.iterator()) {
+                    val activityNameFound = activityInfo.name
+                    Timber.d("ActivityInfo = " + activityInfo.name)
+                    if (activityNameFound.lowercase().contains(activityName.lowercase())) {
+                        returnedActivityPackageToString = activityInfo.name
+                        break
+                    }
                 }
             }
+
             returnedActivityPackageToString
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
