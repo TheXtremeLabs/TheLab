@@ -1,7 +1,7 @@
 object AndroidConfiguration {
 
     object Sdk {
-        const val COMPILATION: Int = 34
+        const val COMPILATION: Int = 35
         const val MIN: Int = 23
         const val TARGET: Int = COMPILATION
     }

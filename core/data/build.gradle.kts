@@ -67,13 +67,16 @@ dependencies {
 
     // AndroidX
     api(libs.androidx.appsearch)
-    kapt(libs.androidx.appsearch.compiler)
+    ksp(libs.androidx.appsearch.compiler)
     api(libs.androidx.appsearch.local.storage)
     api(libs.androidx.appsearch.platform.storage)
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui.tooling)
+
+    // AndroidX Credentials
+    implementation(libs.google.identity)
 
     // Room
     api(libs.room.ktx)
