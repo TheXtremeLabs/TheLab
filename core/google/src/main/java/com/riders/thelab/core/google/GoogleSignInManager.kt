@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.googledrive.core.google
+package com.riders.thelab.core.google
 
 import android.annotation.SuppressLint
 import android.credentials.GetCredentialException
@@ -16,10 +16,8 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingExcept
 import com.google.api.services.drive.DriveScopes
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.google.GoogleAccountModel
+import com.riders.thelab.core.data.local.model.google.toGoogleAccountModel
 import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.feature.googledrive.BuildConfig
-import com.riders.thelab.feature.googledrive.base.BaseGoogleActivity
-import com.riders.thelab.feature.googledrive.utils.toGoogleAccountModel
 import timber.log.Timber
 import java.security.MessageDigest
 import java.util.UUID
@@ -45,48 +43,25 @@ class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyV
     // TODO: This sign in method will be removed in 2025 by Google. Use Credential Manager instead.
     @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
     fun signInLegacy() {
-        Timber.i("signInLegacy()")
-
-        GoogleSignInOptions
-            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(activity.getString(com.riders.thelab.core.ui.R.string.server_client_id))
-            .requestEmail()
-            .requestProfile()
-            .build()
-            .run {
-                signInLegacy(this)
-            }
-
-    }
-
-    @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
-    fun signInLegacyForDrive() {
-        Timber.i("signInLegacyForDrive()")
-
-        GoogleSignInOptions
-            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(activity.getString(com.riders.thelab.core.ui.R.string.server_client_id))
-            .requestEmail()
-            .requestProfile()
-            .requestScopes(
-                Scope(DriveScopes.DRIVE),
-                Scope(DriveScopes.DRIVE_FILE),
-                Scope(DriveScopes.DRIVE_PHOTOS_READONLY),
-                Scope(DriveScopes.DRIVE_METADATA_READONLY)
-            )
-            .build()
-            .run {
-                signInLegacy(this)
-            }
-    }
-
-    private fun signInLegacy(googleSignInOptions: GoogleSignInOptions) {
-        Timber.i("signInLegacy()")
+        Timber.i("googleSignIn()")
         val message: String
 
         if (!isUserSignedInLegacy()) {
             message = "User is NOT signed in"
-            Timber.e("signInLegacy() | $message")
+            Timber.e("googleSignIn() | $message")
+
+            val googleSignInOptions = GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(activity.getString(com.riders.thelab.core.ui.R.string.server_client_id))
+                .requestEmail()
+                .requestProfile()
+                .requestScopes(
+                    Scope(DriveScopes.DRIVE),
+                    Scope(DriveScopes.DRIVE_FILE),
+                    Scope(DriveScopes.DRIVE_PHOTOS_READONLY),
+                    Scope(DriveScopes.DRIVE_METADATA_READONLY)
+                )
+                .build()
 
             mGoogleSignInClient = GoogleSignIn.getClient(activity, googleSignInOptions)
 
@@ -99,27 +74,25 @@ class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyV
             }
         } else {
             message = "user is already signed in"
-            Timber.e("signInLegacy() | $message")
+            Timber.e("googleSignIn() | $message")
             UIManager.showToast(activity, message)
         }
     }
 
     @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
-    fun getGoogleSignInClientLegacy(): GoogleSignInClient =
-        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+    fun getGoogleSignInClientLegacy(): GoogleSignInClient {
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .build()
-            .apply {
-                Timber.d("getGoogleSignInClientLegacy()")
-            }
-            .run {
-                getGoogleSignInClientLegacy(this)
-            }
 
+        return GoogleSignIn.getClient(activity, signInOptions).also {
+            Timber.d("getGoogleSignInClient() | client: $it")
+        }
+    }
 
     @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
-    fun getGoogleSignInClientLegacyForDrive(): GoogleSignInClient =
-        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+    fun getGoogleSignInClientLegacyForDrive(): GoogleSignInClient {
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestScopes(
                 Scope(DriveScopes.DRIVE),
@@ -128,19 +101,11 @@ class GoogleSignInManager(private val activity: BaseGoogleActivity) : GoogleKeyV
                 Scope(DriveScopes.DRIVE_METADATA_READONLY)
             )
             .build()
-            .apply {
-                Timber.d("getGoogleSignInClientLegacyForDrive()")
-            }
-            .run {
-                getGoogleSignInClientLegacy(this)
-            }
 
-    @Deprecated("This sign in method will be removed in 2025 by Google. Use Credential Manager instead")
-    fun getGoogleSignInClientLegacy(signInOptions: GoogleSignInOptions): GoogleSignInClient =
-        GoogleSignIn.getClient(activity, signInOptions).also {
-            Timber.d("getGoogleSignInClient() | client: $it")
+        return GoogleSignIn.getClient(activity, signInOptions).also {
+            Timber.d("getGoogleSignInClientLegacyForDrive() | client: $it")
         }
-
+    }
 
     suspend fun signIn(onAccountFetched: (GoogleAccountModel) -> Unit) {
         Timber.d("signIn()")

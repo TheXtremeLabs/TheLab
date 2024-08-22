@@ -114,7 +114,7 @@ abstract class BaseViewModel : ViewModel() {
                     .getPackageInfo(activity.packageName, 0)
             val version = pInfo.versionName
 
-            updateVersion(version)
+            version?.let{ updateVersion(it) }
 
         } catch (error: PackageManager.NameNotFoundException) {
             Timber.e("retrieveAppVersion() | Error caught: $error")

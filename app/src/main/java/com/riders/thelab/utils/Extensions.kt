@@ -34,3 +34,5 @@ fun tickerFlow(period: Duration, initialDelay: Duration = Duration.ZERO) = flow 
         delay(period)
     }
 }
+
+fun String.isLetterOrDigits(): Boolean = this.matches("^[a-zA-Z0-9]*$".toRegex())

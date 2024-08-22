@@ -12,6 +12,10 @@ android {
     namespace = "com.riders.thelab.core.ui"
 }
 
+composeCompiler {
+    enableStrongSkippingMode = true
+}
+
 dependencies {
 
     ///////////////////////////////////
@@ -83,7 +87,7 @@ dependencies {
 
     // Glide
     api(libs.glide)
-    kapt(libs.glide.compiler)
+    ksp(libs.glide.compiler)
     api(libs.glide.blurry)
     api(libs.glide.transformation)
     api(libs.glide.landscapist)

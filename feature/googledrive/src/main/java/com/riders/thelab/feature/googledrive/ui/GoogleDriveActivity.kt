@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.googledrive.ui
 
+import android.annotation.SuppressLint
 import android.content.IntentSender
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -155,6 +156,7 @@ class GoogleDriveActivity : BaseGoogleActivity(), OnConnectionFailedListener {
     // CLASS METHODS
     //
     /////////////////////////////////////
+    @SuppressLint("NewApi")
     private fun checkPermissions() {
         Timber.e("checkPermissions()")
 
