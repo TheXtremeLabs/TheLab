@@ -57,6 +57,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.compose.LoginFieldsUIState
@@ -79,9 +80,9 @@ fun Login(
     loginFieldState: LoginFieldsUIState.Login,
     focusRequester: FocusRequester,
     login: String,
-    onUpdateLogin: (String) -> Unit,
     loginHasError: Boolean,
-    loginHasLocalError: Boolean
+    loginHasLocalError: Boolean,
+    uiEvent: (UiEvent) -> Unit
 ) {
 
     TheLabTheme {
@@ -91,7 +92,7 @@ fun Login(
                     .fillMaxWidth()
                     .focusRequester(focusRequester),
                 value = login,
-                onValueChange = { onUpdateLogin(it) },
+                onValueChange = { uiEvent.invoke(UiEvent.OnUpdateLogin(it)) },
                 placeholder = { Text(text = "Login") },
                 leadingIcon = {
                     Icon(
@@ -138,9 +139,8 @@ fun Password(
     passwordFieldState: LoginFieldsUIState.Password,
     focusRequester: FocusRequester,
     password: String,
-    onUpdatePassword: (String) -> Unit,
+    uiEvent: (UiEvent) -> Unit
 ) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val passwordVisible = remember { mutableStateOf(false) }
 
@@ -150,7 +150,7 @@ fun Password(
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
             value = password,
-            onValueChange = { onUpdatePassword(it) },
+            onValueChange = { uiEvent.invoke(UiEvent.OnUpdatePassword(it)) },
             placeholder = { Text(text = "Password (6+ characters") },
             leadingIcon = { Icon(imageVector = Icons.Filled.Lock, contentDescription = null) },
             trailingIcon = {
@@ -176,6 +176,8 @@ fun Password(
                 }
             ),
             shape = RoundedCornerShape(bottomStart = 35.dp, bottomEnd = 35.dp),
+            maxLines = 1,
+            singleLine = true,
             // Change different colors of the text field view
             colors = TextFieldDefaults.colors(
                 // containerColor = if (!focus.value) Color.DarkGray else lightBlue,
@@ -220,7 +222,7 @@ fun ErrorMessage(uiState: LoginUiState) {
 fun RememberUser(
     modifier: Modifier,
     isRememberCredentialsChecked: Boolean,
-    onUpdateIsRememberCredentials: (Boolean) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     Box(modifier = modifier, contentAlignment = CenterStart) {
         Row(
@@ -232,7 +234,7 @@ fun RememberUser(
         ) {
             Checkbox(
                 checked = isRememberCredentialsChecked,
-                onCheckedChange = { onUpdateIsRememberCredentials(it) }
+                onCheckedChange = { uiEvent.invoke(UiEvent.OnUpdateIsRememberCredentials(it)) }
             )
 
             Text(
@@ -247,7 +249,7 @@ fun RememberUser(
 }
 
 @Composable
-fun Submit(modifier: Modifier, uiState: LoginUiState, onLoginButtonClicked: () -> Unit) {
+fun Submit(modifier: Modifier, uiState: LoginUiState, uiEvent: (UiEvent) -> Unit) {
 
     val buttonContainerColor =
         if (!isSystemInDarkTheme()) md_theme_light_primaryContainer else md_theme_dark_primaryContainer
@@ -264,7 +266,7 @@ fun Submit(modifier: Modifier, uiState: LoginUiState, onLoginButtonClicked: () -
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(40.dp),
-                    onClick = onLoginButtonClicked,
+                    onClick = { uiEvent.invoke(UiEvent.OnLoginClicked) },
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     enabled = uiState !is LoginUiState.Connecting,
                     colors = ButtonDefaults.buttonColors(containerColor = buttonContainerColor)
@@ -327,15 +329,12 @@ fun Form(
     loginUiState: LoginUiState,
     loginFieldState: LoginFieldsUIState.Login,
     login: String,
-    onUpdateLogin: (String) -> Unit,
     loginHasError: Boolean,
     loginHasLocalError: Boolean,
     passwordFieldState: LoginFieldsUIState.Password,
     password: String,
-    onUpdatePassword: (String) -> Unit,
     isRememberCredentialsChecked: Boolean,
-    onUpdateIsRememberCredentials: (Boolean) -> Unit,
-    onLoginButtonClicked: () -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -379,14 +378,14 @@ fun Form(
                 login = login,
                 loginHasError = loginHasError,
                 loginHasLocalError = loginHasLocalError,
-                onUpdateLogin = onUpdateLogin
+                uiEvent = uiEvent
             )
 
             Password(
                 passwordFieldState = passwordFieldState,
                 focusRequester = focusRequester,
                 password = password,
-                onUpdatePassword = onUpdatePassword
+                uiEvent = uiEvent
             )
 
             AnimatedVisibility(visible = loginUiState is LoginUiState.UserError) {
@@ -405,13 +404,13 @@ fun Form(
                 RememberUser(
                     modifier = Modifier.weight(2f),
                     isRememberCredentialsChecked = isRememberCredentialsChecked,
-                    onUpdateIsRememberCredentials = onUpdateIsRememberCredentials
+                    uiEvent = uiEvent
                 )
 
                 Submit(
                     modifier = Modifier.weight(1f),
                     uiState = loginUiState,
-                    onLoginButtonClicked = onLoginButtonClicked
+                    uiEvent = uiEvent
                 )
             }
         }
@@ -433,8 +432,8 @@ fun PreviewLogin(@PreviewParameter(PreviewProviderLoginFieldsUIState::class) uiS
             login = "John5521",
             focusRequester = FocusRequester(),
             loginHasError = false,
-            loginHasLocalError = false,
-            onUpdateLogin = {})
+            loginHasLocalError = false
+        ) {}
     }
 }
 
@@ -445,8 +444,8 @@ fun PreviewPassword(@PreviewParameter(PreviewProviderPasswordFieldsUIState::clas
         Password(
             passwordFieldState = uiState,
             password = "test1234",
-            focusRequester = FocusRequester(),
-            onUpdatePassword = {})
+            focusRequester = FocusRequester()
+        ) {}
     }
 }
 
@@ -478,16 +477,12 @@ fun PreviewForm(@PreviewParameter(PreviewProviderLoginState::class) uiState: Log
                 loginUiState = uiState,
                 loginFieldState = loginFieldUiState,
                 login = login,
-                onUpdateLogin = {},
                 loginHasError = false,
                 loginHasLocalError = false,
                 passwordFieldState = passwordUiState,
                 password = password,
-                onUpdatePassword = {},
-                isRememberCredentialsChecked = true,
-                onUpdateIsRememberCredentials = {},
-                onLoginButtonClicked = {}
-            )
+                isRememberCredentialsChecked = true
+            ) {}
         }
     }
 }

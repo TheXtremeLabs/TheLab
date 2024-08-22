@@ -14,10 +14,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.WindowMetricsCalculator
+import com.google.android.gms.common.GoogleApiAvailability
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
-import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.google.BaseGoogleActivity
+import com.riders.thelab.core.google.GooglePlayServicesManager
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +28,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class LoginActivity : BaseComponentActivity() {
+class LoginActivity : BaseGoogleActivity() {
 
     //TODO : Due to Heroku back-end free services ending,
     // Use of the database to store and log users
@@ -35,6 +38,10 @@ class LoginActivity : BaseComponentActivity() {
     private var mNavigator: Navigator? = null
 
     private var windowSize: WindowSizeClass? = null
+
+    private val mGoogleApiAvailability: GoogleApiAvailability by lazy {
+        GoogleApiAvailability.getInstance()
+    }
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,15 +77,23 @@ class LoginActivity : BaseComponentActivity() {
                                 loginUiState = loginUiState,
                                 loginFieldState = loginFieldState,
                                 login = mViewModel.login,
-                                onUpdateLogin = mViewModel::updateLogin,
-                                loginHasLocalError = mViewModel.loginHasLocalError,
                                 loginHasError = loginHasError,
+                                loginHasLocalError = mViewModel.loginHasLocalError,
                                 passwordFieldState = passwordFieldState,
                                 password = mViewModel.password,
-                                onUpdatePassword = mViewModel::updatePassword,
                                 isRememberCredentialsChecked = mViewModel.isRememberCredentials,
-                                onUpdateIsRememberCredentials = mViewModel::updateIsRememberCredentials,
-                                onLoginButtonClicked = mViewModel::login
+                                uiEvent = { event ->
+                                    when (event) {
+                                        is UiEvent.OnSignUpClicked -> mNavigator?.callSignUpActivity()
+                                        is UiEvent.OnGoogleButtonLoginClicked -> authenticateWithGoogle()
+                                        is UiEvent.OnLaunchMainActivity -> {
+                                            mNavigator?.callMainActivity()
+                                            this@LoginActivity.finish()
+                                        }
+
+                                        else -> mViewModel.onEvent(event)
+                                    }
+                                }
                             )
                         }
                     }
@@ -95,6 +110,18 @@ class LoginActivity : BaseComponentActivity() {
                     )
                 }
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (!GooglePlayServicesManager.checkPlayServices(
+                activity = this@LoginActivity,
+                googleApiAvailability = mGoogleApiAvailability
+            )
+        ) {
+            Timber.e("Play services are NOT available")
         }
     }
 
@@ -149,10 +176,16 @@ class LoginActivity : BaseComponentActivity() {
         return windowSize!!
     }
 
-    fun launchSignUpActivity() = mNavigator?.callSignUpActivity()
+    private fun authenticateWithGoogle() {
+        Timber.d("authenticateWithGoogle()")
 
-    fun launchMainActivity() {
-        mNavigator?.callMainActivity()
-        finish()
+    }
+
+    override fun onConnected() {
+        Timber.d("onConnected()")
+    }
+
+    override fun onDisconnected() {
+        Timber.e("onDisconnected()")
     }
 }

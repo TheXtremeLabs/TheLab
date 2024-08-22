@@ -113,6 +113,7 @@ dependencies {
     implementation(project(":core:analytics"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
+    implementation(project(":core:google"))
     implementation(project(":core:permissions"))
     implementation(project(":core:player"))
     implementation(project(":core:ui"))
@@ -195,7 +196,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewModel.ktx)
     implementation(libs.androidx.lifecycle.viewModel.savedState)
     implementation(libs.androidx.lifecycle.livedata.ktx)
-    kapt(libs.androidx.lifecycle.compiler)
+    ksp(libs.androidx.lifecycle.compiler)
     implementation(libs.androidx.lifecycle.service)
     implementation(libs.androidx.lifecycle.process)
 
@@ -248,7 +249,7 @@ dependencies {
 
     // Glide
     implementation(libs.glide)
-    kapt(libs.glide.compiler)
+    ksp(libs.glide.compiler)
     implementation(libs.glide.blurry)
     implementation(libs.glide.transformation)
     implementation(libs.glide.landscapist)
@@ -273,13 +274,13 @@ dependencies {
         debugImplementation(libs.androidx.compose.ui.testManifest)*/
 
     androidTestImplementation(libs.hilt.android.testing)
-    kaptAndroidTest(libs.hilt.compiler)
-    kaptAndroidTest(libs.hilt.ext.compiler)
+    kspAndroidTest(libs.hilt.compiler)
+    kspAndroidTest(libs.hilt.ext.compiler)
 }
 
-kapt {
+/*kapt {
     correctErrorTypes = true
-}
+}*/
 
 // Aggregating Task
 // The Hilt Gradle plugin offers an option for performing Hilt’s classpath aggregation in a dedicated Gradle task.

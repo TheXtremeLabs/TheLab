@@ -9,6 +9,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,6 +53,7 @@ import com.riders.thelab.core.ui.compose.utils.animatePlacement
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 
 ///////////////////////////////
@@ -59,7 +62,7 @@ import kotlinx.coroutines.launch
 //
 ///////////////////////////////
 @Composable
-fun SignUpButton(onClick: () -> Unit) {
+fun GoogleButton(uiEvent: (UiEvent) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -67,7 +70,37 @@ fun SignUpButton(onClick: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Button(
-            onClick = onClick,
+            onClick = { uiEvent.invoke(UiEvent.OnGoogleButtonLoginClicked) },
+            colors = ButtonDefaults.buttonColors(containerColor = if (!isSystemInDarkTheme()) md_theme_dark_onPrimaryContainer else md_theme_light_onPrimaryContainer),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.googleg_color),
+                    contentDescription = "google_icon"
+                )
+                Text(
+                    text = "Continue with Google".uppercase(Locale.getDefault()),
+                    style = TextStyle(color = if (!isSystemInDarkTheme()) Color.Black else Color.White)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SignUpButton(uiEvent: (UiEvent) -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Button(
+            onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) },
             colors = ButtonDefaults.buttonColors(containerColor = if (!isSystemInDarkTheme()) md_theme_dark_onPrimaryContainer else md_theme_light_onPrimaryContainer),
         ) {
             Box(
@@ -78,7 +111,7 @@ fun SignUpButton(onClick: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     stringResId = com.riders.thelab.core.ui.R.string.no_account_register,
                     textAlignment = View.TEXT_ALIGNMENT_CENTER,
-                    onClick = onClick
+                    onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) }
                 )
             }
         }
@@ -92,15 +125,12 @@ fun LoginContent(
     loginUiState: LoginUiState,
     loginFieldState: LoginFieldsUIState.Login,
     login: String,
-    onUpdateLogin: (String) -> Unit,
     loginHasError: Boolean,
     loginHasLocalError: Boolean,
     passwordFieldState: LoginFieldsUIState.Password,
     password: String,
-    onUpdatePassword: (String) -> Unit,
     isRememberCredentialsChecked: Boolean,
-    onUpdateIsRememberCredentials: (Boolean) -> Unit,
-    onLoginButtonClicked: () -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -152,7 +182,7 @@ fun LoginContent(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .align(Alignment.CenterHorizontally),
-                    visible = if (LocalInspectionMode.current) true else versionVisibility.value,
+                    visible = if (LocalInspectionMode.current) false else versionVisibility.value,
                     exit = fadeOut()
                 ) {
                     Text(
@@ -171,21 +201,18 @@ fun LoginContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(2f),
-                visible = if (LocalInspectionMode.current) false else formVisibility.value
+                visible = if (LocalInspectionMode.current) true else formVisibility.value
             ) {
                 Form(
                     loginUiState = loginUiState,
                     loginFieldState = loginFieldState,
                     login = login,
-                    onUpdateLogin = onUpdateLogin,
                     loginHasError = loginHasError,
                     loginHasLocalError = loginHasLocalError,
                     passwordFieldState = passwordFieldState,
                     password = password,
-                    onUpdatePassword = onUpdatePassword,
                     isRememberCredentialsChecked = isRememberCredentialsChecked,
-                    onUpdateIsRememberCredentials = onUpdateIsRememberCredentials,
-                    onLoginButtonClicked = onLoginButtonClicked
+                    uiEvent = uiEvent
                 )
             }
 
@@ -201,12 +228,13 @@ fun LoginContent(
                 Column(
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    SignUpButton {
-                        // Should register user
-                        (context.findActivity() as LoginActivity).launchSignUpActivity()
-                    }
+                    GoogleButton(uiEvent = uiEvent)
+
+                    HorizontalDivider(modifier = Modifier.fillMaxWidth(.85f))
+
+                    SignUpButton(uiEvent = uiEvent)
                 }
             }
         }
@@ -223,14 +251,14 @@ fun LoginContent(
             arrangement = Arrangement.Bottom
 
             if (BuildConfig.DEBUG) {
-                onLoginButtonClicked()
+                uiEvent.invoke(UiEvent.OnLoginClicked)
             }
         }
     }
 
     if (loginUiState is LoginUiState.UserSuccess) {
         LaunchedEffect(Unit) {
-            (context.findActivity() as LoginActivity).launchMainActivity()
+            uiEvent.invoke(UiEvent.OnLaunchMainActivity)
         }
     }
 }
@@ -272,16 +300,12 @@ fun PreviewLoginContent(@PreviewParameter(PreviewProviderLoginState::class) logi
             version = "12.10.3",
             loginUiState = loginUiState,
             loginFieldState = loginFieldUiState,
-            loginHasError = false,
             login = login,
-            onUpdateLogin = {},
+            loginHasError = false,
             loginHasLocalError = false,
             passwordFieldState = passwordUiState,
             password = password,
-            onUpdatePassword = {},
-            isRememberCredentialsChecked = true,
-            onUpdateIsRememberCredentials = {},
-            onLoginButtonClicked = {}
-        )
+            isRememberCredentialsChecked = true
+        ) {}
     }
 }

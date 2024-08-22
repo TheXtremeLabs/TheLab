@@ -127,9 +127,7 @@ class LoginViewModel @Inject constructor(private val repository: IRepository) : 
         this.isRememberCredentials = remember
 
         viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-            repository.saveRememberCredentialsPref(
-                remember
-            )
+            repository.saveRememberCredentialsPref(remember)
         }
     }
 
@@ -299,6 +297,18 @@ class LoginViewModel @Inject constructor(private val repository: IRepository) : 
             .onFailure {
                 Timber.e("runCatching | onFailure | error caught with message: ${it.message}")
             }
-}
 
-fun String.isLetterOrDigits(): Boolean = this.matches("^[a-zA-Z0-9]*$".toRegex())
+    fun onEvent(event: UiEvent) {
+        Timber.d("onEvent() | $event")
+
+        when(event) {
+            is UiEvent.OnUpdateLogin -> { updateLogin(event.newLogin)}
+            is UiEvent.OnUpdatePassword -> { updatePassword(event.newPassword)}
+            is UiEvent.OnUpdateIsRememberCredentials -> { updateIsRememberCredentials(event.checked)}
+            is UiEvent.OnLoginClicked -> { login() }
+            else -> {
+                Timber.e("onEvent() | Else branch")
+            }
+        }
+    }
+}
