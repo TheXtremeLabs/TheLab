@@ -100,7 +100,7 @@ jacoco = "0.8.7"
 junit = "1.1.5"
 junit4 = "4.13.2"
 # Kotlin (for gradle plugin version and dependency)
-kotlin = "2.0.20"
+kotlin = "2.0.0"
 kotlinxCoroutines = "1.8.1"
 kotlinxDatetime = "0.6.0"
 kotlinPlayServices = "1.8.1"

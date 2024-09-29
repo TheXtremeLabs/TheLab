@@ -1,6 +1,6 @@
 plugins {
-    id("thelab.android.library")
-    kotlin("android")
+    alias(libs.plugins.thelab.library)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
 }
 

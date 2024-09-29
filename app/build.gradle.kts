@@ -10,13 +10,12 @@ plugins {
     /**
      * Defined in build-logic/convention/build.gradle.kts class
      */
-    id("thelab.android.application")
-    id("thelab.android.application.compose")
-    id("thelab.android.application.jacoco")
-    id("thelab.android.hilt")
+    alias(libs.plugins.thelab.application)
+    alias(libs.plugins.thelab.application.compose)
+    alias(libs.plugins.thelab.application.jacoco)
+    alias(libs.plugins.thelab.hilt)
+    alias(libs.plugins.thelab.firebase)
     id("jacoco")
-    id("thelab.firebase")
-    alias(libs.plugins.ksp)
 }
 
 android {
