@@ -1,31 +1,31 @@
 [versions]
 # Gradle version
-androidGradlePlugin = "8.5.2"
+androidGradlePlugin = "8.6.1"
 # Google Services
 playServicesGradlePlugin = "4.4.2"
 crashlyticsGradlePlugin = "3.0.2"
 # Performance Monitoring plugin
 performancesGradlePlugin = "1.4.2"
-navigationGradlePlugin = "2.7.7"
+navigationGradlePlugin = "2.8.1"
 
 # Dependencies version
 accompanist = "0.34.0"
-androidDesugarJdkLibs = "2.0.4"
-androidxActivity = "1.9.1"
+androidDesugarJdkLibs = "2.1.2"
+androidxActivity = "1.9.2"
 androidxAppCompat = "1.7.0"
-androidxAppSearch = "1.1.0-alpha04"
+androidxAppSearch = "1.1.0-alpha05"
 androidxAutoFill = "1.1.0"
 androidxBiometric = "1.1.0"
 androidxBrowser = "1.8.0"
 # Camera
 androidxCamera = "1.3.4"
 # Compose
-androidxComposeBom = "2024.08.00"
+androidxComposeBom = "2024.09.02"
 androidxComposeAlpha = "1.7.0-alpha08"
 androidxComposeCompiler = "1.5.15"
-androidxComposeMaterial3 = "1.2.1"
-androidxComposeMaterial3Adaptative = "1.0.0-rc01"
-androidxComposeUiTooling = "1.6.8"
+androidxComposeMaterial3 = "1.3.0"
+androidxComposeMaterial3Adaptative = "1.0.0"
+androidxComposeUiTooling = "1.7.2"
 androidxComposeRuntimeTracing = "1.0.0-beta01"
 androidxCardView = "1.0.0"
 androidxConstraintLayout = "2.1.4"
@@ -39,18 +39,18 @@ androidxDynamicAnimation = "1.0.0"
 # espresso version {strictly 3.5.0}
 #noinspection GradleDependency
 androidxEspresso = "3.5.0"
-androidxFragment = "1.8.2"
+androidxFragment = "1.8.3"
 androidxGlance = "1.1.0"
 androidxHiltNavigationCompose = "1.2.0"
-androidxLifecycle = "2.8.4"
-androidxMacroBenchmark = "1.3.0"
+androidxLifecycle = "2.8.6"
+androidxMacroBenchmark = "1.3.1"
 androidxMetrics = "1.0.0-beta01"
 androidxMultiDex = "2.0.1"
-androidxNavigation = "2.8.0-rc01"
+androidxNavigation = "2.8.1"
 androidxPalette = "1.0.0"
-androidxProfileinstaller = "1.3.1"
+androidxProfileinstaller = "1.4.0"
 androidxRecyclerView = "1.3.2"
-androidxStartup = "1.1.1"
+androidxStartup = "1.2.0"
 androidxTestCore = "1.6.1"
 androidxTestExt = "1.2.1"
 androidxTestRules = "1.6.1"
@@ -70,7 +70,7 @@ coil = "2.6.0"
 # dexter = "6.2.3"
 eventbus = "3.3.1"
 # Firebase
-firebaseBom = "33.1.2"
+firebaseBom = "33.3.0"
 firebaseAds = "23.3.0"
 # Google Api
 googleApiClient = "2.1.2"
@@ -78,11 +78,12 @@ googleApiClientAndroid = "2.1.2"
 googleApiClientOAuth = "1.34.1"
 googleApiDriveV3 = "v3-rev20221219-2.0.0"
 googleApiClientJackson2 = "2.1.2"
-googleHttpClient = "1.44.1"
+googleHttpClient = "1.45.0"
+googleHttpClientGson = "1.44.2"
 googleIdentity = "1.1.1"
 # Google ML Kit
 googleBarcodeScanning = "17.3.0"
-googleGuava = "33.0.0-jre"
+googleGuava = "33.2.1-jre"
 googleGuavaListenableFuture = "9999.0-empty-to-avoid-conflict-with-guava"
 googleObjectDetection = "17.0.2"
 # Google Play Services
@@ -93,13 +94,13 @@ googlePlayServicesTasks = "18.2.0"
 glide = "4.16.0"
 glideTransformation = "4.3.0"
 # Hilt (for gradle plugin version and dependency)
-hilt = "2.51.1"
+hilt = "2.52"
 hiltExt = "1.2.0"
 jacoco = "0.8.7"
 junit = "1.1.5"
 junit4 = "4.13.2"
 # Kotlin (for gradle plugin version and dependency)
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 kotlinxCoroutines = "1.8.1"
 kotlinxDatetime = "0.6.0"
 kotlinPlayServices = "1.8.1"
@@ -107,7 +108,7 @@ kotlinxSerializationJson = "1.6.3"
 # KSP - Kotlin Symbol Processing (for gradle plugin version and dependency)
 ksp = "2.0.0-1.0.21"
 landscapist = "2.2.13"
-lint = "31.5.2"
+lint = "31.6.1"
 location = "21.3.0"
 lottie = "6.4.0"
 maps = "19.0.0"
@@ -117,12 +118,12 @@ mapsUtils = "3.5.3"
 # Media Exo Player
 media = "1.7.0"
 mediaRouter = "1.7.0"
-media3 = "1.4.0"
+media3 = "1.4.1"
 mockito = "5.11.0"
 moshi = "1.15.1"
 mpAndroidChart = "3.1.0"
 okhttp = "4.12.0"
-places = "3.5.0"
+places = "4.0.0"
 protobuf = "4.26.0"
 protobufPlugin = "0.9.4"
 retrofit = "2.11.0"
@@ -286,7 +287,7 @@ google-api-client-oauth-java6 = { group = "com.google.oauth-client", name = "goo
 google-api-client-jetty = { group = "com.google.oauth-client", name = "google-oauth-client-jetty", version.ref = "googleApiClientOAuth" }
 google-api-drive = { group = "com.google.apis", name = "google-api-services-drive", version.ref = "googleApiDriveV3" }
 google-http-client = { group = "com.google.http-client", name = "google-http-client-android", version.ref = "googleHttpClient" }
-google-http-client-gson = { group = "com.google.http-client", name = "google-http-client-gson", version.ref = "googleHttpClient" }
+google-http-client-gson = { group = "com.google.http-client", name = "google-http-client-gson", version.ref = "googleHttpClientGson" }
 google-identity = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleIdentity" }
 google-play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "googlePlayServicesBase" }
 google-play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googlePlayServicesAuth" }
@@ -386,3 +387,15 @@ playservices = { id = "com.google.gms.google-services", version.ref = "playServi
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsGradlePlugin" }
 performances = { id = "com.google.firebase.firebase-perf", version.ref = "performancesGradlePlugin" }
 navigation = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationGradlePlugin" }
+
+thelab-application-compose = { id = "thelab.android.application.compose", version= "unspecified"}
+thelab-application = { id = "thelab.android.application", version= "unspecified"}
+thelab-application-jacoco = { id = "thelab.android.application.jacoco", version= "unspecified"}
+thelab-library-compose = { id = "thelab.android.library.compose", version= "unspecified"}
+thelab-library = { id = "thelab.android.library", version= "unspecified"}
+thelab-feature = { id = "thelab.android.feature", version= "unspecified"}
+thelab-library-jacoco = { id = "thelab.android.library.jacoco", version= "unspecified"}
+thelab-test = { id = "thelab.android.test", version= "unspecified"}
+thelab-hilt = { id = "thelab.android.hilt", version= "unspecified"}
+thelab-room = { id = "thelab.android.room", version= "unspecified"}
+thelab-firebase = { id = "thelab.firebase", version= "unspecified"}
