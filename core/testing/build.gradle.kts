@@ -1,9 +1,8 @@
 plugins {
-    id(libs.plugins.thelab.library)
-    id(libs.plugins.thelab.library.compose)
-    id(libs.plugins.thelab.library.jacoco)
-    id(libs.plugins.thelab.hilt)
-    id(libs.plugins.thelab.test)
+    alias(libs.plugins.thelab.library)
+    alias(libs.plugins.thelab.library.compose)
+    alias(libs.plugins.thelab.library.jacoco)
+    alias(libs.plugins.thelab.hilt)
 }
 
 android {
