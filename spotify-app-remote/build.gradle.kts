@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.riders.spotify_app_remote"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 23

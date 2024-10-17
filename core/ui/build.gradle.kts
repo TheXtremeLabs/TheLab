@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+
 plugins {
     id("thelab.android.library")
     id("thelab.android.library.compose")
@@ -13,7 +15,10 @@ android {
 }
 
 composeCompiler {
-    enableStrongSkippingMode = true
+    featureFlags.addAll(
+        ComposeFeatureFlag.StrongSkipping,
+        ComposeFeatureFlag.OptimizeNonSkippingGroups
+    )
 }
 
 dependencies {
