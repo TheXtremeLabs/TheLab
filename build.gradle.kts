@@ -18,8 +18,6 @@ plugins {
     // Firebase
     alias(libs.plugins.crashlytics) apply false
     alias(libs.plugins.performances) apply false
-    // Protobuf
-    alias(libs.plugins.protobuf) apply false
 }
 
 tasks.register("clean", Delete::class) {

@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.thelab.library)
-    alias(libs.plugins.protobuf)
 }
 
 android {
@@ -8,6 +7,36 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
+    lint {
+        // Turns off checks for the issue IDs you specify.
+        disable += "TypographyFractions" + "TypographyQuotes"
+        // Turns on checks for the issue IDs you specify. These checks are in
+        // addition to the default lint checks.
+        enable += "RtlHardcoded" + "RtlCompat" + "RtlEnabled"
+        // To enable checks for only a subset of issue IDs and ignore all others,
+        // list the issue IDs with the 'check' property instead. This property overrides
+        // any issue IDs you enable or disable using the properties above.
+        checkOnly += "NewApi" + "InlinedApi"
+        // If set to true, turns off analysis progress reporting by lint.
+        quiet = true
+        // If set to true (default), stops the build if errors are found.
+        abortOnError = true
+        // If set to true, lint only reports errors.
+        ignoreWarnings = true
+        // If set to true, lint also checks all dependencies as part of its analysis.
+        // Recommended for projects consisting of an app with library dependencies.
+        checkDependencies = true
+
+        checkReleaseBuilds = false
+    }
+
+    packaging {
+        resources {
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/INDEX.LIST"
+        }
+    }
+
     namespace = "com.riders.thelab.core.speechtotext"
 }
 
@@ -30,11 +59,6 @@ dependencies {
     implementation(libs.grpc.okhttp)
     implementation(libs.grpc.stub)
     implementation(libs.jflac.codec)
-
-    // Protobuf
-    implementation(libs.protobuf.protoc)
-    implementation(libs.protobuf.kotlin.lite)
-
 
     /////////////////////////////
     // Tests Dependencies
