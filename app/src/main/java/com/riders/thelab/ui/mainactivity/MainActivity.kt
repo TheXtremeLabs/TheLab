@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -38,7 +39,6 @@ import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
-import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
 import com.riders.thelab.core.permissions.PermissionManager
@@ -46,8 +46,10 @@ import com.riders.thelab.core.service.TheLabVoiceAssistantService
 import com.riders.thelab.core.speechtotext.SpeechRecognizerError
 import com.riders.thelab.core.speechtotext.SpeechToTextManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import com.riders.thelab.utils.Constants.GPS_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
@@ -107,6 +109,8 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
+
+                    mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
                     val dynamicIslandUiState by mViewModel.dynamicIslandState.collectAsStateWithLifecycle()
 
@@ -196,7 +200,8 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         lifecycleScope.launch {
             mViewModel.speechToTextRepository.commandsFlow.collect {
                 if (it.second.contains("the lab")) {
-                    mViewModel.updateDynamicIslandState(IslandState.SearchState())
+                    // mViewModel.updateDynamicIslandState(IslandState.SearchState())
+                    Navigator.callVoiceAssistantActivity(this@MainActivity)
                 }
             }
         }

@@ -13,6 +13,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
@@ -46,8 +48,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-   val speechToTextRepository: SpeechToTextRepository
-) : VoiceManagedViewModel(speechToTextRepository) {
+    val speechToTextRepository: SpeechToTextRepository
+) : VoiceManagedViewModel(speechToTextRepository), DefaultLifecycleObserver {
 
     //////////////////////////////////////////
     // Variables
@@ -174,6 +176,7 @@ class MainActivityViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         Timber.e("onCleared()")
+        speechToTextRepository.release()
     }
 
 
@@ -200,6 +203,8 @@ class MainActivityViewModel @Inject constructor(
 
                         updateKeyboardVisible(true)
                         updateDynamicIslandState(IslandState.NetworkState.Available)
+
+                        speechToTextRepository.startRecognition()
                     }
 
                     is NetworkState.Losing -> {
@@ -425,5 +430,37 @@ class MainActivityViewModel @Inject constructor(
 
     private fun launchActivity(activity: Class<out Activity>) {
         mNavigator?.callIntentActivity(activity)
+    }
+
+
+    //////////////////////////////////
+    //
+    // IMPLEMENTS METHODS
+    //
+    //////////////////////////////////
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
+        Timber.d("onStart()")
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        Timber.e("onPause()")
+    }
+
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        Timber.d("onResume()")
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        super.onStop(owner)
+        Timber.e("onStop()")
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onStop(owner)
+        Timber.e("onDestroy()")
     }
 }

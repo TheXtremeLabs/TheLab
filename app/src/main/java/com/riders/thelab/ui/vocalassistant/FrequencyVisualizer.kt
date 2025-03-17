@@ -19,6 +19,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 fun FrequencyVisualizer(frequencies: List<Double>) {
     val barWidth = 5.dp
     val spacing = 2.dp
+
     Box(
         modifier = Modifier
             .fillMaxWidth()

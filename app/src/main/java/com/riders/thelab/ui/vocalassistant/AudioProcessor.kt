@@ -1,14 +1,10 @@
 package com.riders.thelab.ui.vocalassistant
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.pm.PackageManager
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.os.Process
-import androidx.core.app.ActivityCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -68,6 +64,7 @@ class AudioProcessor(private val onFrequenciesUpdated: (List<Double>) -> Unit) {
                         val frequencies = calculateFrequencies(fftData)
 
                         withContext(Dispatchers.Main) {
+                            Timber.i("startRecording() | frequencies : $frequencies")
                             onFrequenciesUpdated(frequencies)
                         }
                     }
@@ -81,13 +78,15 @@ class AudioProcessor(private val onFrequenciesUpdated: (List<Double>) -> Unit) {
     }
 
     fun stopRecording() {
+        Timber.e("stopRecording()")
         isRecording.set(false)
-        recordingJob?.cancel()
-        recordingJob = null
 
         audioRecord?.stop()
         audioRecord?.release()
         audioRecord = null
+
+        recordingJob?.cancel()
+        recordingJob = null
     }
 
     private fun calculateFrequencies(fftData: DoubleArray): List<Double> {
