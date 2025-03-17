@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.thelab.library)
+    alias(libs.plugins.thelab.hilt)
 }
 
 android {
@@ -48,17 +49,18 @@ dependencies {
     implementation(project(":core:ui"))
 
     // AndroidX
-    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.media)
     implementation(libs.androidx.media.common)
 
+    // Google
+    api(libs.google.auth.library.oauth2.http)
     // Google Cloud Speech API
-    implementation(platform(libs.google.cloud.bom))
-    implementation(libs.google.cloud.texttospeech)
-    implementation(libs.google.cloud.speech)
-    implementation(libs.grpc.okhttp)
-    implementation(libs.grpc.stub)
-    implementation(libs.jflac.codec)
+    /*api(platform(libs.google.cloud.bom))
+    api(libs.google.cloud.texttospeech)*/
+    api(libs.google.cloud.speech)
+    api(libs.grpc.okhttp)
+     api(libs.grpc.stub)
+    api(libs.jflac.codec)
 
     /////////////////////////////
     // Tests Dependencies

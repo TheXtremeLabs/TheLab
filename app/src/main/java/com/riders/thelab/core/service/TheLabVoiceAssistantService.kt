@@ -4,17 +4,29 @@ import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.os.Binder
 import android.os.Bundle
 import android.os.IBinder
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import com.google.api.gax.rpc.ClientStream
+import com.google.api.gax.rpc.ResponseObserver
+import com.google.api.gax.rpc.StreamController
+import com.google.cloud.speech.v1.SpeechClient
+import com.google.cloud.speech.v1.StreamingRecognizeRequest
+import com.google.cloud.speech.v1.StreamingRecognizeResponse
+import com.google.cloud.speech.v1.stub.GrpcSpeechStub
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabNotificationManager
+import com.riders.thelab.core.speechtotext.SpeechToTextRepository
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class TheLabVoiceAssistantService : Service(), RecognitionListener {
 
     private var speechRecognizer: SpeechRecognizer? = null
@@ -63,7 +75,11 @@ class TheLabVoiceAssistantService : Service(), RecognitionListener {
         override fun onResults(results: Bundle?) {
             val spokenWords = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             spokenWords?.forEach { word ->
-                if (word.contains(getString(R.string.voice_assistant_service_trigger_phrase), ignoreCase = true)) {
+                if (word.contains(
+                        getString(R.string.voice_assistant_service_trigger_phrase),
+                        ignoreCase = true
+                    )
+                ) {
                     Navigator.callVoiceAssistantActivity(this@TheLabVoiceAssistantService)
                     stopListening() // Stop listening after launching activity
                 }
@@ -75,12 +91,25 @@ class TheLabVoiceAssistantService : Service(), RecognitionListener {
         override fun onPartialResults(partialResults: Bundle?) {
             val partialResults =
                 partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-            Timber.i("recognitionListener.onPartialResults() | partial results = ${partialResults?.joinToString(",")}")
+            Timber.i(
+                "recognitionListener.onPartialResults() | partial results = ${
+                    partialResults?.joinToString(
+                        ","
+                    )
+                }"
+            )
         }
 
         override fun onEvent(eventType: Int, params: Bundle?) {}
     }
 
+    @Inject
+    lateinit var mSpeechToTextRepository: SpeechToTextRepository
+
+
+    inner class SpeechBinder : Binder() {
+        val service: TheLabVoiceAssistantService get() = this@TheLabVoiceAssistantService
+    }
 
     ///////////////////////////////
     //
@@ -185,6 +214,7 @@ class TheLabVoiceAssistantService : Service(), RecognitionListener {
         }
     }
 
+
     ///////////////////////////////
     //
     // IMPLEMENTS
@@ -229,7 +259,11 @@ class TheLabVoiceAssistantService : Service(), RecognitionListener {
     override fun onResults(results: Bundle?) {
         val spokenWords = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
         spokenWords?.forEach { word ->
-            if (word.contains(getString(R.string.voice_assistant_service_trigger_phrase), ignoreCase = true)) {
+            if (word.contains(
+                    getString(R.string.voice_assistant_service_trigger_phrase),
+                    ignoreCase = true
+                )
+            ) {
                 Navigator.callVoiceAssistantActivity(this)
                 stopListening() // Stop listening after launching activity
             }
@@ -241,4 +275,10 @@ class TheLabVoiceAssistantService : Service(), RecognitionListener {
     override fun onPartialResults(partialResults: Bundle?) {}
 
     override fun onEvent(eventType: Int, params: Bundle?) {}
+
+    companion object {
+        fun from(binder: IBinder): TheLabVoiceAssistantService {
+            return (binder as SpeechBinder).service
+        }
+    }
 }

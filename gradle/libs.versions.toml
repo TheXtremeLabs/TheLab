@@ -72,15 +72,15 @@ coil = "2.6.0"
 firebaseBom = "33.10.0"
 firebaseAds = "24.1.0"
 # Google Api
-googleApiClient = "2.1.2"
-googleApiClientAndroid = "2.1.2"
-googleApiClientOAuth = "1.34.1"
+googleApiClient = "2.7.1"
+googleApiClientAndroid = "2.7.1"
+googleApiClientOAuth = "1.37.0"
 googleApiDriveV3 = "v3-rev20221219-2.0.0"
-googleApiClientJackson2 = "2.1.2"
-googleAuthLibraryOauth2Http = "0.26.0"
+googleApiClientJackson2 = "2.7.1"
+googleAuthLibraryOauth2Http = "1.30.1"
 googleCloudBom = "26.53.0"
 googleCloudTextToSpeech = "2.57.0"
-googleCloudSpeech = "1.29.1"
+googleCloudSpeech = "4.51.0"
 googleHttpClient = "1.45.3"
 googleHttpClientGson = "1.45.3"
 googleIdentity = "1.1.1"
@@ -101,7 +101,7 @@ glide = "4.16.0"
 glideCompose = "1.0.0-beta01"
 glideTransformation = "4.3.0"
 # GRPC
-grpcOkHttp = "1.69.0"
+grpcOkHttp = "1.69.1"
 grpcStub = "1.69.1"
 # Hilt (for gradle plugin version and dependency)
 hilt = "2.54"
@@ -121,7 +121,7 @@ kotlinxMetadataJvm = "0.4.0"
 kotlinxSerializationJson = "1.7.3"
 ktor = "3.0.2"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
-ksp = "2.1.10-1.0.30"
+ksp = "2.1.10-1.0.31"
 landscapist = "2.2.13"
 lint = "31.9.0"
 location = "21.3.0"
@@ -141,14 +141,14 @@ mockito = "5.14.2"
 mpAndroidChart = "3.1.0"
 okhttp = "4.12.0"
 places = "4.1.0"
-protobufKotlin = "4.29.0"
+protobufKotlin = "4.26.0"
 protobufProtoc = "4.26.0"
 retrofit = "2.11.0"
 retrofitKotlinxSerializationJson = "1.0.0"
 room = "2.6.1"
 spotify = "1.2.5"
 secrets = "2.0.1"
-threeten = "1.4.4"
+threeten = "1.4.9"
 timber = "5.0.1"
 turbine = "1.1.0"
 volley = "1.2.1"
@@ -305,8 +305,8 @@ google-api-client-jetty = { group = "com.google.oauth-client", name = "google-oa
 google-api-drive = { group = "com.google.apis", name = "google-api-services-drive", version.ref = "googleApiDriveV3" }
 google-auth-library-oauth2-http = { group = "com.google.auth", name = "google-auth-library-oauth2-http", version.ref = "googleAuthLibraryOauth2Http" }
 google-cloud-bom = { group = "com.google.cloud", name = "libraries-bom", version.ref = "googleCloudBom" }
-google-cloud-texttospeech = { group = "com.google.cloud", name = "google-cloud-texttospeech" }
-google-cloud-speech = { group = "com.google.cloud", name = "google-cloud-speech" }
+google-cloud-texttospeech = { group = "com.google.cloud", name = "google-cloud-texttospeech", version.ref = "googleCloudTextToSpeech" }
+google-cloud-speech = { group = "com.google.cloud", name = "google-cloud-speech", version.ref = "googleCloudSpeech" }
 google-guava = { group = "com.google.guava", name = "guava", version.ref = "googleGuava" }
 google-guava-listenablefuture = { group = "com.google.guava", name = "listenablefuture", version.ref = "googleGuavaListenableFuture" }
 google-http-client = { group = "com.google.http-client", name = "google-http-client-android", version.ref = "googleHttpClient" }
@@ -329,6 +329,7 @@ glide-blurry = { group = "jp.wasabeef", name = "blurry", version.ref = "blurry" 
 glide-landscapist = { group = "com.github.skydoves", name = "landscapist-glide", version.ref = "landscapist" }
 glide-transformation = { group = "jp.wasabeef", name = "glide-transformations", version.ref = "glideTransformation" }
 grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpcOkHttp" }
+grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf", version.ref = "grpcOkHttp" }
 grpc-stub = { group = "io.grpc", name = "grpc-stub", version.ref = "grpcStub" }
 # Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
@@ -405,6 +406,7 @@ okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref 
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
+protobuf-java = { group = "com.google.protobuf", name = "protobuf-java", version.ref = "protobufKotlin" }
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobufKotlin" }
 protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobufProtoc" }
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }

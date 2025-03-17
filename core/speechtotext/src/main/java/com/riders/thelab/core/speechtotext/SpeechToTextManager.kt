@@ -15,7 +15,6 @@ import android.speech.SpeechRecognizer
 import androidx.core.content.ContextCompat
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import timber.log.Timber
-import java.util.Locale
 import java.util.concurrent.Executors
 
 /*

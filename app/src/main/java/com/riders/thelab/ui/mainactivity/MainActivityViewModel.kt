@@ -25,9 +25,11 @@ import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.data.local.model.weather.ProcessedWeather
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
-import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.speechtotext.SpeechToTextRepository
+import com.riders.thelab.core.speechtotext.VoiceManagedViewModel
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.LabAppManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -40,9 +42,12 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.net.UnknownHostException
 import java.util.Locale
+import javax.inject.Inject
 
-
-class MainActivityViewModel : BaseViewModel() {
+@HiltViewModel
+class MainActivityViewModel @Inject constructor(
+   val speechToTextRepository: SpeechToTextRepository
+) : VoiceManagedViewModel(speechToTextRepository) {
 
     //////////////////////////////////////////
     // Variables

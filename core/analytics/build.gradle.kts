@@ -28,10 +28,23 @@ android {
 
     packaging {
         resources{
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/LICENSE"
             excludes += "META-INF/INDEX.LIST"
+            excludes += "google/protobuf/*.proto"
         }
+
+        jniLibs.pickFirsts.add("protobuf.meta")
     }
+
+    configurations.all {
+        exclude(module = "protobuf-javalite")
+        exclude(module = "protobuf-java")
+        exclude(module = "proto-google-common-protos")
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+    }
+
     namespace = "com.riders.thelab.core.analytics"
 }
 
@@ -42,12 +55,20 @@ dependencies {
     // Firebase
     api(platform(libs.firebase.bom))
 //    api(libs.firebase.ads)
-    api(libs.firebase.analytics)
+    api(libs.firebase.analytics) {
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+    }
     api(libs.firebase.auth)
     api(libs.firebase.crashlytics)
     api(libs.firebase.database)
-    api(libs.firebase.firestore)
+    api(libs.firebase.firestore) {
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+    }
     api(libs.firebase.messaging)
-    api(libs.firebase.perf)
-    api(libs.firebase.storage)
+    api(libs.firebase.perf) {
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+    }
+    api(libs.firebase.storage) {
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+    }
 }

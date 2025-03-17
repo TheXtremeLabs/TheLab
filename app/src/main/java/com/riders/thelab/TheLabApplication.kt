@@ -23,7 +23,7 @@ import androidx.work.WorkManager
 import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
-import com.jakewharton.threetenabp.AndroidThreeTen
+// import com.jakewharton.threetenabp.AndroidThreeTen
 import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
 import com.riders.thelab.feature.weather.core.worker.WeatherWidgetWorker
@@ -131,7 +131,7 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
         }
 
         // ThreeTen Date Time Library
-        AndroidThreeTen.init(this)
+        // AndroidThreeTen.init(this)
     }
 
     private fun initAdsAndFirebase() {

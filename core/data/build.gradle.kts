@@ -97,8 +97,18 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
+    implementation(libs.firebase.firestore) {
+        exclude(module = "protobuf-javalite")
+        exclude(module = "protobuf-java")
+        exclude(module = "proto-google-common-protos")
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+    }
+    implementation(libs.firebase.storage) {
+        exclude(module = "protobuf-javalite")
+        exclude(module = "protobuf-java")
+        exclude(module = "proto-google-common-protos")
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+    }
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Gson, Moshi, Serialization  */
     api(libs.retrofit.core)

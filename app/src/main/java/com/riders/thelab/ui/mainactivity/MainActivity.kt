@@ -38,6 +38,7 @@ import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
+import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
 import com.riders.thelab.core.permissions.PermissionManager
@@ -49,10 +50,11 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
 import com.riders.thelab.utils.Constants.GPS_REQUEST
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
+@AndroidEntryPoint
 class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, RecognitionListener {
 
     private val mViewModel: MainActivityViewModel by viewModels()
@@ -190,6 +192,14 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         // add data source
 //        mViewModel.addDataSource(locationReceiver.getLocationStatus())
 //        registerReceiver(locationReceiver, intentFilter)
+
+        lifecycleScope.launch {
+            mViewModel.speechToTextRepository.commandsFlow.collect {
+                if (it.second.contains("the lab")) {
+                    mViewModel.updateDynamicIslandState(IslandState.SearchState())
+                }
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -216,9 +226,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
             Timber.e("NetworkCallback was already unregistered")
         }
 
-//        if (speech != null) speech!!.stopListening()
         mSpeechToTextManager?.stopListening()
-
 
         super.onDestroy()
     }
@@ -266,7 +274,9 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                             TheLabApplication.getInstance().getContext()
                         )
 
-                        startVoiceService()
+                        mViewModel.startRecognition()
+
+                        // startVoiceService()
                     }
                 }
         }
@@ -371,7 +381,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                     // Start listening (TTS)
                     Timber.i("launchSpeechToText() | startListeningLegacy() ... ")
 //                    speech?.startListeningLegacy(recognizerIntent)
-                    mSpeechToTextManager?.startListeningLegacy()
+                    mSpeechToTextManager?.startListening()
                 }
             }
     }

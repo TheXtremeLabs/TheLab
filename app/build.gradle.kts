@@ -102,8 +102,12 @@ android {
     packaging {
         resources {
             excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/INDEX.LIST"
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "google/protobuf/*.proto"
         }
+
+        jniLibs.pickFirsts.add("protobuf.meta")
     }
 
     buildFeatures {
@@ -149,6 +153,24 @@ android {
                 output.outputFileName = fileName
             }
     }
+
+    configurations.all {
+        /*
+         exclude(module = "protobuf-javalite")
+         exclude(module = "protobuf-java")
+         exclude(module = "proto-google-common-protos")
+         exclude(module = "protolite-well-known-types")
+         */
+
+        exclude(group = "org.threeten", module = "threetenbp")
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            force("com.jakewharton.threetenabp:threetenabp:1.4.9") // Force a specific version
+        }
+    }
+
     namespace = "com.riders.thelab"
 }
 
@@ -165,7 +187,13 @@ dependencies {
     ///////////////////////////////////
     // Project
     ///////////////////////////////////
-    implementation(project(":core:analytics"))
+    implementation(project(":core:analytics")) {
+        exclude(module = "protobuf-javalite")
+        exclude(module = "protobuf-java")
+        exclude(module = "proto-google-common-protos")
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+    }
+
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:google"))
@@ -253,8 +281,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewModel.savedState)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     ksp(libs.androidx.lifecycle.compiler)
-    implementation(libs.androidx.lifecycle.service)
+    implementation(libs.androidx.lifecycle.extensions)
     implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.lifecycle.service)
 
     // Datastore and Preferences: provided by data module
 
@@ -308,7 +337,9 @@ dependencies {
     implementation(libs.glide.landscapist)
 
     //ThreeTen : Alternative to Android Calendar API
-    implementation(libs.threeten)
+    /*implementation(libs.threeten) {
+        exclude(group = "org.threeten", module = "threetenbp")
+    }*/
 
     // Kotools Types: provided by data module
 

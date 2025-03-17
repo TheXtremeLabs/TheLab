@@ -21,7 +21,12 @@ dependencies {
     implementation(project(":core:ui"))
 
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.storage)
+    implementation(libs.firebase.storage) {
+        exclude(module = "protobuf-javalite")
+        exclude(module = "protobuf-java")
+        exclude(module = "proto-google-common-protos")
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+    }
 
     ///////////////////////////////////
     // General Dependencies
