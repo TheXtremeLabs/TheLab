@@ -1,18 +1,10 @@
-/*
-package com.riders.thelab.core.ui.compose.theme
+package com.riders.thelab.core.ui.compose.color
 
 import androidx.compose.ui.graphics.Color
 
-// Default Theme
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
-
-
+/**
+ * Linked to DefaultTheme file
+ */
 // The Lab custom Theme
 val md_theme_light_primary = Color(0xFFC00016)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
@@ -77,7 +69,7 @@ val md_theme_dark_outlineVariant = Color(0xFF534341)
 val md_theme_dark_scrim = Color(0xFF000000)
 
 
-val seed = Color(0xFFC00016)
+val theLabDefaultSeed = Color(0xFFC00016)
 val CustomColor1 = Color(0xFFC90021)
 val light_CustomColor1 = Color(0xFFC0001F)
 val light_onCustomColor1 = Color(0xFFFFFFFF)
@@ -87,17 +79,3 @@ val dark_CustomColor1 = Color(0xFFFFB3AE)
 val dark_onCustomColor1 = Color(0xFF68000C)
 val dark_CustomColor1Container = Color(0xFF930015)
 val dark_onCustomColor1Container = Color(0xFFFFDAD7)
-
-val Orange = Color(0xFFBD5B05)
-
-val success = Color(0xEE38810C)
-val warning = Color(0xEE886E0F)
-val error = Color(0xEE9B0606)
-
-
-// Colors for shimmer effect
-val ShimmerColorShades = listOf(
-    Color.LightGray.copy(0.9f),
-    Color.LightGray.copy(0.2f),
-    Color.LightGray.copy(0.9f)
-)*/

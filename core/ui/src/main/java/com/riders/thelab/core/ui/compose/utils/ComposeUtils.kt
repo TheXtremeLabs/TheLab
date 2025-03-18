@@ -6,6 +6,8 @@ import android.content.ContextWrapper
 import android.content.res.Resources
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,6 +19,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
@@ -114,3 +117,17 @@ fun hideTooltip(scope: CoroutineScope, tooltipState: TooltipState) = scope.launc
         tooltipState.dismiss()
     }
 }
+
+
+/**
+ * Animate current color to target color
+ *
+ * @param targetValue represents the target color
+ *
+ */
+@Composable
+fun animateColor(targetValue: Color) = animateColorAsState(
+    targetValue = targetValue,
+    animationSpec = tween(durationMillis = 2000),
+    label = "color_animation"
+).value
