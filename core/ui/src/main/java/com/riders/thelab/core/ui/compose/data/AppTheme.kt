@@ -14,6 +14,7 @@ import com.riders.thelab.core.ui.compose.color.md_red_theme_light_surfaceVariant
 import com.riders.thelab.core.ui.compose.color.md_theme_light_primary
 import com.riders.thelab.core.ui.compose.color.md_theme_light_secondary
 import com.riders.thelab.core.ui.compose.color.md_theme_light_surfaceVariant
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * This class represents the themes
@@ -53,3 +54,23 @@ sealed class AppTheme(
         md_green_theme_light_secondary
     )
 }
+
+
+///////////////////////////////////////////////////////////////////////
+//
+// Extensions
+//
+///////////////////////////////////////////////////////////////////////
+inline fun <reified T : AppTheme> valueOf(value: String): T? {
+    return T::class.nestedClasses
+        .filter { clazz -> clazz.isSubclassOf(T::class) }
+        .map { clazz -> clazz.objectInstance }
+        .filterIsInstance<T>()
+        .associateBy { it.name }[value]
+}
+
+inline fun <reified T : AppTheme> values(): List<T> =
+    T::class.nestedClasses
+        .filter { clazz -> clazz.isSubclassOf(T::class) }
+        .map { clazz -> clazz.objectInstance }
+        .filterIsInstance<T>()

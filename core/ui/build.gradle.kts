@@ -35,6 +35,8 @@ dependencies {
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
+    implementation(platform(libs.kotlin.bom))
+    implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.datetime)
 
     // AndroidX
