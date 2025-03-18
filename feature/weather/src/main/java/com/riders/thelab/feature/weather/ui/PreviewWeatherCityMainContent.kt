@@ -48,8 +48,7 @@ import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
-import com.riders.thelab.core.ui.data.WindDirection
-import com.riders.thelab.feature.weather.utils.WeatherUtils
+import com.riders.thelab.core.ui.data.local.bean.WindDirection
 import kotlin.math.roundToInt
 
 

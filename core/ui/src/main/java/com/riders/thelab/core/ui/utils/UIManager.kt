@@ -29,7 +29,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.utils.executeOnBackPressed
-import com.riders.thelab.core.ui.data.SnackBarType
+import com.riders.thelab.core.ui.data.local.bean.SnackBarType
 import timber.log.Timber
 
 object UIManager {

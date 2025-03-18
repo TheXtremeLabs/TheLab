@@ -36,7 +36,7 @@ import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.local.model.weather.WeatherModel
 import com.riders.thelab.core.data.local.model.weather.toModel
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
-import com.riders.thelab.core.ui.data.SnackBarType
+import com.riders.thelab.core.ui.data.local.bean.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
 import com.riders.thelab.feature.weather.utils.Constants

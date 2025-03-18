@@ -1,4 +1,4 @@
-package com.riders.thelab.core.ui.data
+package com.riders.thelab.core.ui.data.local.bean
 
 import com.riders.thelab.core.ui.R
 

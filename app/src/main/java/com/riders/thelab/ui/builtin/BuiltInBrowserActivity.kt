@@ -15,7 +15,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
-import com.riders.thelab.core.ui.data.SnackBarType
+import com.riders.thelab.core.ui.data.local.bean.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.core.utils.BrowserUtils
 import com.riders.thelab.databinding.ActivityBuiltInBrowserBinding
