@@ -24,8 +24,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -89,6 +91,7 @@ fun WhatsNew(theme: AppTheme, darkTheme: Boolean, item: App) {
                 .width(width = dimensionResource(id = R.dimen.max_card_image_width))
                 .height(height = dimensionResource(id = R.dimen.max_card_image_height)),
             onClick = { (context.findActivity() as MainActivity).launchApp(item) },
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(
@@ -174,6 +177,7 @@ fun WhatsNew(theme: AppTheme, darkTheme: Boolean, item: App, pageOffset: Float) 
                 .width(width = dimensionResource(id = R.dimen.max_card_image_width))
                 .height(height = dimensionResource(id = R.dimen.max_card_image_height)),
             onClick = { (context.findActivity() as MainActivity).launchApp(item) },
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         ) {
 
             Column(modifier = Modifier.fillMaxSize()) {

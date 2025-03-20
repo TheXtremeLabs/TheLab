@@ -252,7 +252,7 @@ fun RememberUser(
                 text = stringResource(id = R.string.remember_me),
                 fontSize = 12.sp,
                 maxLines = 2,
-                color = if (!isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -266,8 +266,6 @@ fun Submit(
     uiState: LoginUiState,
     uiEvent: (UiEvent) -> Unit
 ) {
-    val buttonContentColor = if (!isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(modifier = modifier, contentAlignment = Alignment.CenterEnd) {
             Column(
@@ -275,7 +273,6 @@ fun Submit(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.Center
             ) {
-
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -297,7 +294,7 @@ fun Submit(
                                 ) {
                                     CircularProgressIndicator(
                                         modifier = Modifier.size(24.dp),
-                                        color = MaterialTheme.colorScheme.primary
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                 }
                             }
@@ -315,9 +312,8 @@ fun Submit(
                                         text = "Log In",
                                         fontSize = 14.sp,
                                         maxLines = 1,
-                                        color = buttonContentColor
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
-
 
                                     Icon(
                                         modifier = Modifier
@@ -325,7 +321,7 @@ fun Submit(
                                             .weight(.5f),
                                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                         contentDescription = null,
-                                        tint = buttonContentColor
+                                        tint = MaterialTheme.colorScheme.onSurface
                                     )
                                 }
                             }
@@ -448,9 +444,9 @@ fun Form(
 @DevicePreviews
 @Composable
 fun PreviewLogin(@PreviewParameter(PreviewProviderLoginFieldsUIState::class) uiState: LoginFieldsUIState.Login) {
-    TheLabTheme(theme = AppTheme.Default) {
+    TheLabTheme(theme = AppTheme.Blue) {
         Login(
-            theme = AppTheme.Default,
+            theme = AppTheme.Blue,
             darkTheme = isSystemInDarkTheme(),
             loginFieldState = uiState,
             login = "John5521",
@@ -464,9 +460,9 @@ fun PreviewLogin(@PreviewParameter(PreviewProviderLoginFieldsUIState::class) uiS
 @DevicePreviews
 @Composable
 fun PreviewPassword(@PreviewParameter(PreviewProviderPasswordFieldsUIState::class) uiState: LoginFieldsUIState.Password) {
-    TheLabTheme(theme = AppTheme.Default) {
+    TheLabTheme(theme = AppTheme.Blue) {
         Password(
-            theme = AppTheme.Default,
+            theme = AppTheme.Blue,
             darkTheme = isSystemInDarkTheme(),
             passwordFieldState = uiState,
             password = "test1234",
@@ -489,10 +485,12 @@ fun PreviewRememberUser(@PreviewParameter(AppThemePreviewProvider::class) appThe
 @DevicePreviews
 @Composable
 fun PreviewSubmit(@PreviewParameter(PreviewProviderLoginState::class) uiState: LoginUiState) {
-    TheLabTheme(theme = AppTheme.Default) {
+    TheLabTheme(theme = AppTheme.Blue) {
         Submit(
-            theme = AppTheme.Default,
-            darkTheme = isSystemInDarkTheme(), modifier = Modifier, uiState = uiState
+            theme = AppTheme.Blue,
+            darkTheme = isSystemInDarkTheme(),
+            modifier = Modifier,
+            uiState = uiState
         ) {}
     }
 }

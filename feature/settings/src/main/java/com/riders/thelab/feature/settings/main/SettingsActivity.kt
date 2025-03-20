@@ -54,7 +54,8 @@ class SettingsActivity : BaseGoogleActivity() {
                             color = MaterialTheme.colorScheme.background
                         ) {
                             SettingsContent(
-                                theme = theme, darkTheme = isDarkTheme,
+                                theme = theme,
+                                darkTheme = isDarkTheme,
                                 deviceInformationUiState = deviceInformationUiState,
                                 userUiState = userUiState,
                                 themeOptions = mViewModel.themeOptions,

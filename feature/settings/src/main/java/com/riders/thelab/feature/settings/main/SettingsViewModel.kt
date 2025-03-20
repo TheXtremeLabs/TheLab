@@ -79,7 +79,7 @@ class SettingsViewModel @Inject constructor(
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
-            Timber.e("coroutineExceptionHandler | ${throwable.message}")
+            Timber.e("Coroutine Exception caught with message: ${throwable.message} (${throwable.javaClass.canonicalName})")
         }
 
     init {
@@ -126,7 +126,10 @@ class SettingsViewModel @Inject constructor(
         Timber.d("onEvent() | event: $event")
 
         when (event) {
-            is UiEvent.OnThemeSelected -> {
+            is UiEvent.OnThemeSelected -> viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+                uiRepository.updateTheme(event.newAppTheme)
+            }
+            is UiEvent.OnDarkModeSelected -> {
                 updateDarkModeDatastore(
                     if (event.option.contains("light", true)) {
                         false
@@ -156,7 +159,7 @@ class SettingsViewModel @Inject constructor(
     private fun updateDarkModeDatastore(nightMode: Boolean) {
         Timber.d("updateDarkModeDatastore() | nightMode")
         viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
-            repository.saveNightMode(nightMode).also { updateDarkMode(nightMode) }
+            uiRepository.updateThemeDarkMode(nightMode).also { updateDarkMode(nightMode) }
         }
     }
 

@@ -324,9 +324,7 @@ fun ArtistDetailScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
                         text = artistFullName,
-                        color = if (LocalInspectionMode.current) Color.Black else {
-                            if (!isSystemInDarkTheme()) Color.Black else Color.White
-                        }
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -336,9 +334,7 @@ fun ArtistDetailScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
                         text = "Activities: ${artist.activities}",
-                        color = if (LocalInspectionMode.current) Color.Black else {
-                            if (!isSystemInDarkTheme()) Color.Black else Color.White
-                        }
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 item {
@@ -347,9 +343,7 @@ fun ArtistDetailScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
                         text = "Since: ${artist.debutes}",
-                        color = if (LocalInspectionMode.current) Color.Black else {
-                            if (!isSystemInDarkTheme()) Color.Black else Color.White
-                        }
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -364,9 +358,7 @@ fun ArtistDetailScreen(
                                 .fillMaxWidth()
                                 .padding(start = 16.dp, end = 16.dp, bottom = 64.dp),
                             text = artist.description,
-                            color = if (LocalInspectionMode.current) Color.Black else {
-                                if (!isSystemInDarkTheme()) Color.Black else Color.White
-                            }
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }

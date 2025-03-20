@@ -40,18 +40,18 @@ sealed class AppTheme(
         md_blue_theme_light_secondary
     )
 
-    data object Red : AppTheme(
-        "Red",
-        md_red_theme_light_primary,
-        md_red_theme_light_surfaceVariant,
-        md_red_theme_light_secondary
-    )
-
     data object Green : AppTheme(
         "Green",
         md_green_theme_light_primary,
         md_green_theme_light_surfaceVariant,
         md_green_theme_light_secondary
+    )
+
+    data object Red : AppTheme(
+        "Red",
+        md_red_theme_light_primary,
+        md_red_theme_light_surfaceVariant,
+        md_red_theme_light_secondary
     )
 }
 

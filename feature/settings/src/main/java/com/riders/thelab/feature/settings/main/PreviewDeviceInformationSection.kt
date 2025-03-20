@@ -14,9 +14,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,6 +31,8 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.feature.settings.R
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import kotools.types.text.NotBlankString
 
 
 ///////////////////////////////
@@ -89,7 +91,7 @@ fun DeviceSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
 
                 Text(
                     text = stringResource(id = com.riders.thelab.core.ui.R.string.device_specification_header),
-                    style = Typography.titleMedium
+                    style = Typography.titleMedium, color = MaterialTheme.colorScheme.onSurface
                 )
 
                 // Name
@@ -97,8 +99,16 @@ fun DeviceSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(modifier = Modifier.weight(1f), text = "Device Name")
-                    Text(modifier = Modifier.weight(1f), text = deviceInfo.name)
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "Device Name",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = deviceInfo.name,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }
@@ -107,16 +117,32 @@ fun DeviceSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(modifier = Modifier.weight(1f), text = "Brand")
-            Text(modifier = Modifier.weight(1f), text = deviceInfo.brand)
+            Text(
+                modifier = Modifier.weight(1f),
+                text = "Brand",
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                modifier = Modifier.weight(1f),
+                text = deviceInfo.brand,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
         // Model
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(modifier = Modifier.weight(1f), text = "Model")
-            Text(modifier = Modifier.weight(1f), text = deviceInfo.model)
+            Text(
+                modifier = Modifier.weight(1f),
+                text = "Model",
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                modifier = Modifier.weight(1f),
+                text = deviceInfo.model,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
 
         AnimatedVisibility(
@@ -133,18 +159,31 @@ fun DeviceSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(modifier = Modifier.weight(1f), text = "Hardware")
-                    Text(modifier = Modifier.weight(1f), text = deviceInfo.hardware)
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "Hardware",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = deviceInfo.hardware,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
                 // Screen Dimension
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(modifier = Modifier.weight(1f), text = "Screen Dimension")
                     Text(
                         modifier = Modifier.weight(1f),
-                        text = "${deviceInfo.screenWidth} x ${deviceInfo.screenHeight}"
+                        text = "Screen Dimension",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "${deviceInfo.screenWidth} x ${deviceInfo.screenHeight}",
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 // Serial
@@ -152,8 +191,16 @@ fun DeviceSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(modifier = Modifier.weight(1f), text = "Serial")
-                    Text(modifier = Modifier.weight(1f), text = deviceInfo.serial)
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "Serial",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = deviceInfo.serial,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
 
                 }
                 // Fingerprint
@@ -161,8 +208,16 @@ fun DeviceSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(modifier = Modifier.weight(1f), text = "Fingerprint")
-                    Text(modifier = Modifier.weight(1f), text = deviceInfo.fingerPrint)
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "Fingerprint",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = deviceInfo.fingerPrint,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }
@@ -189,25 +244,37 @@ fun AndroidSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
 
                 Text(
                     text = stringResource(id = com.riders.thelab.core.ui.R.string.device_android_specification_header),
-                    style = Typography.titleMedium
+                    style = Typography.titleMedium, color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
         // Name
         Row {
-            Text(modifier = Modifier.weight(1f), text = "Name")
-            Text(modifier = Modifier.weight(1f), text = deviceInfo.androidVersionName)
+            Text(
+                modifier = Modifier.weight(1f),
+                text = "Name",
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                modifier = Modifier.weight(1f),
+                text = deviceInfo.androidVersionName,
+                color = MaterialTheme.colorScheme.onSurface
+            )
 
         }
         // Version
         Row {
-            Text(modifier = Modifier.weight(1f), text = "Version")
+            Text(
+                modifier = Modifier.weight(1f),
+                text = "Version",
+                color = MaterialTheme.colorScheme.onSurface
+            )
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(
                     id = R.string.placeholder_android_version,
                     deviceInfo.sdkVersion
-                )
+                ), color = MaterialTheme.colorScheme.onSurface
             )
         }
 
@@ -221,97 +288,105 @@ fun AndroidSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
             ) {
                 // Release
                 Row {
-                    Text(modifier = Modifier.weight(1f), text = "Release")
-                    Text(modifier = Modifier.weight(1f), text = deviceInfo.androidRelease)
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "Release",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = deviceInfo.androidRelease,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
 
                 }
                 // Rooted
                 Row {
-                    Text(modifier = Modifier.weight(1f), text = "Rooted")
-                    Text(modifier = Modifier.weight(1f), text = "${deviceInfo.rooted}")
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "Rooted",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "${deviceInfo.rooted}",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun DeviceInfoSection(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     deviceInformationUiState: DeviceInfoUiState,
     showModeInfo: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        SettingsSectionWithTitle(
+            theme = theme,
+            darkTheme = darkTheme,
+            title = NotBlankString.create(stringResource(id = R.string.placeholder_device_information))
         ) {
-            Text(
-                modifier = Modifier.padding(start = 24.dp),
-                text = stringResource(id = R.string.placeholder_device_information),
-                style = Typography.titleMedium
-            )
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.TopCenter
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    AnimatedContent(
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        targetState = deviceInformationUiState,
-                        label = "content_transition",
-                    ) { targetState ->
+                AnimatedContent(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    targetState = deviceInformationUiState,
+                    label = "content_transition",
+                ) { targetState ->
 
-                        when (targetState) {
-                            is DeviceInfoUiState.Loading -> {
-                                Column(
-                                    modifier = Modifier.padding(16.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    CircularProgressIndicator()
-                                    Text(text = "Fetching device's data. Please wait...")
-                                }
+                    when (targetState) {
+                        is DeviceInfoUiState.Loading -> {
+                            Column(
+                                modifier = Modifier.padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                CircularProgressIndicator()
+                                Text(
+                                    text = "Fetching device's data. Please wait...",
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
                             }
+                        }
 
-                            is DeviceInfoUiState.Error -> {}
-                            is DeviceInfoUiState.Success -> {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(8.dp),
-                                    horizontalAlignment = Alignment.End,
-                                    verticalArrangement = Arrangement.spacedBy(
-                                        8.dp,
-                                        Alignment.CenterVertically
-                                    )
-                                ) {
-                                    // Device Specs
-                                    DeviceSpecs(
-                                        deviceInfo = targetState.deviceInformation,
-                                        showMoreInfoOnDevice = showModeInfo
-                                    )
+                        is DeviceInfoUiState.Error -> {}
+                        is DeviceInfoUiState.Success -> {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(8.dp),
+                                horizontalAlignment = Alignment.End,
+                                verticalArrangement = Arrangement.spacedBy(
+                                    8.dp,
+                                    Alignment.CenterVertically
+                                )
+                            ) {
+                                // Device Specs
+                                DeviceSpecs(
+                                    deviceInfo = targetState.deviceInformation,
+                                    showMoreInfoOnDevice = showModeInfo
+                                )
 
-                                    // Android Specs
-                                    AndroidSpecs(
-                                        deviceInfo = targetState.deviceInformation,
-                                        showMoreInfoOnDevice = showModeInfo
-                                    )
+                                // Android Specs
+                                AndroidSpecs(
+                                    deviceInfo = targetState.deviceInformation,
+                                    showMoreInfoOnDevice = showModeInfo
+                                )
 
-                                    ShowMoreButton(
-                                        theme = theme, darkTheme = darkTheme,
-                                        showMoreInfoOnDevice = showModeInfo,
-                                        uiEvent = uiEvent
-                                    )
-                                }
+                                ShowMoreButton(
+                                    theme = theme, darkTheme = darkTheme,
+                                    showMoreInfoOnDevice = showModeInfo,
+                                    uiEvent = uiEvent
+                                )
                             }
                         }
                     }
@@ -330,9 +405,9 @@ fun DeviceInfoSection(
 @DevicePreviews
 @Composable
 private fun PreviewDeviceInfoSection(@PreviewParameter(PreviewProviderDeviceInfoUiState::class) deviceUiState: DeviceInfoUiState) {
-    TheLabTheme(theme = AppTheme.Default) {
+    TheLabTheme(theme = AppTheme.Red) {
         DeviceInfoSection(
-            theme = AppTheme.Default,
+            theme = AppTheme.Red,
             darkTheme = isSystemInDarkTheme(),
             deviceInformationUiState = deviceUiState,
             showModeInfo = true

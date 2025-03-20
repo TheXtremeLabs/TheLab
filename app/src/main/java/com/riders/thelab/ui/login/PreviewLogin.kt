@@ -61,7 +61,12 @@ import java.util.Locale
 //
 ///////////////////////////////
 @Composable
-fun GoogleButton(uiEvent: (UiEvent) -> Unit) {
+fun GoogleButton(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    uiEvent: (UiEvent) -> Unit
+) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -87,11 +92,16 @@ fun GoogleButton(uiEvent: (UiEvent) -> Unit) {
                 )
             }
         }
-    }
+    }}
 }
 
 @Composable
-fun SignUpButton(uiEvent: (UiEvent) -> Unit) {
+fun SignUpButton(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    uiEvent: (UiEvent) -> Unit
+) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -114,7 +124,7 @@ fun SignUpButton(uiEvent: (UiEvent) -> Unit) {
                 )
             }
         }
-    }
+    }}
 }
 
 @SuppressLint("NewApi")
@@ -233,11 +243,11 @@ fun LoginContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    GoogleButton(uiEvent = uiEvent)
+                    GoogleButton(theme = theme, darkTheme = darkTheme, uiEvent = uiEvent)
 
                     HorizontalDivider(modifier = Modifier.fillMaxWidth(.85f))
 
-                    SignUpButton(uiEvent = uiEvent)
+                    SignUpButton(theme = theme, darkTheme = darkTheme, uiEvent = uiEvent)
                 }
             }
         }
@@ -282,7 +292,7 @@ fun PreviewSignUpButton(@PreviewParameter(AppThemePreviewProvider::class) appThe
                 .height(40.dp),
             contentAlignment = Alignment.Center
         ) {
-            SignUpButton {}
+            SignUpButton(theme = appTheme, darkTheme = isSystemInDarkTheme()) {}
         }
     }
 }

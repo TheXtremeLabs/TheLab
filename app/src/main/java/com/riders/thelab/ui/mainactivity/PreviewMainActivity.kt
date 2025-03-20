@@ -117,6 +117,7 @@ fun MainContent(
                             }
                         }
                     },
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 ) {
                     Icon(
                         Icons.Filled.Info,

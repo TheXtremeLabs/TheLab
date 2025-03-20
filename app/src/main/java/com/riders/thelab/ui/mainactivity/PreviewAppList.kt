@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -30,7 +31,6 @@ import androidx.palette.graphics.Palette
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.color.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
@@ -59,11 +59,11 @@ fun NoItemFound(
 
             Text(
                 text = "Oops! No item found for value \"$searchValue\"",
-                color = if (!isSystemInDarkTheme()) Color.Black else Color.White
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = "Please retry...",
-                color = if (!isSystemInDarkTheme()) Color.Black else Color.White
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -114,7 +114,7 @@ fun App(
                 .height(dimensionResource(id = R.dimen.max_card_image_height))
                 .fillMaxWidth(),
             onClick = { onAppItemClick.invoke(item) },
-            // colors = CardDefaults.cardColors(containerColor = md_theme_dark_background),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
             elevation = CardDefaults.cardElevation(0.dp)
         ) {
             Column(
@@ -142,19 +142,16 @@ fun App(
                                         Color(
                                             it
                                         )
-                                    } ?: md_theme_dark_background
+                                    } ?: MaterialTheme.colorScheme.primaryContainer
                                 }
 
                                 stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_flight) -> {
                                     Color(0xFF002f5d)
                                 }
 
-                                else -> {
-                                    md_theme_dark_background
-                                }
+                                else -> MaterialTheme.colorScheme.primaryContainer
                             }
                     )
-
                 ) {
                     Column(
                         modifier = Modifier
@@ -189,14 +186,14 @@ fun App(
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = title,
-                        color = if (!isSystemInDarkTheme()) Color.Black else Color.White
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = description,
                         maxLines = 2,
-                        color = if (!isSystemInDarkTheme()) Color.Black else Color.White
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -230,7 +227,8 @@ private fun PreviewApp(@PreviewParameter(AppThemePreviewProvider::class) appThem
     TheLabTheme(theme = appTheme) {
         App(
             theme = appTheme,
-            darkTheme = isSystemInDarkTheme(), appItem
+            darkTheme = isSystemInDarkTheme(),
+            appItem
         ) {}
     }
 }

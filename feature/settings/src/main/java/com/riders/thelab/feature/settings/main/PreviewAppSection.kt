@@ -13,14 +13,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -41,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -48,11 +51,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.BiColorCard
 import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.data.values
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.Typography
 import kotlinx.coroutines.launch
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import kotools.types.text.NotBlankString
 
 
 ///////////////////////////////
@@ -60,6 +66,91 @@ import kotlinx.coroutines.launch
 // COMPOSE
 //
 ///////////////////////////////
+@Composable
+fun ThemeSelectorCardRowItem(selectedTheme: AppTheme, uiEvent: (UiEvent) -> Unit) {
+    val availableThemes: List<AppTheme> by remember { mutableStateOf(values<AppTheme>()) }
+    var expanded by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1.5f),
+            verticalArrangement = Arrangement.spacedBy(
+                8.dp,
+                Alignment.CenterVertically
+            )
+        ) {
+            Text(text = "Theme selector", color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(
+                text = "Current theme : ${selectedTheme.name}",
+                style = TextStyle(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontSize = 12.sp
+                )
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1f),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box {
+                Row(
+                    modifier = Modifier.clickable { expanded = true },
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(selectedTheme.name, modifier = Modifier.clickable { expanded = true })
+                    BiColorCard(
+                        firstColor = selectedTheme.primaryVariant,
+                        secondColor = selectedTheme.primaryColor
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = if (LocalInspectionMode.current) true else expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    availableThemes.forEach { theme ->
+                        DropdownMenuItem(
+                            text = { Text(text = theme.name) },
+                            leadingIcon = {
+                                if (selectedTheme == theme) {
+                                    Icon(
+                                        modifier = Modifier.size(8.dp),
+                                        imageVector = Icons.Filled.Circle,
+                                        contentDescription = null,
+                                        tint = if (!isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+                                    )
+                                }
+                            },
+                            trailingIcon = {
+                                BiColorCard(
+                                    firstColor = theme.primaryVariant,
+                                    secondColor = theme.primaryColor
+                                )
+                            },
+                            onClick = {
+                                uiEvent.invoke(UiEvent.OnThemeSelected(newAppTheme = theme))
+                                expanded = false
+                            })
+                    }
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppThemeCardRowItem(
@@ -87,7 +178,11 @@ fun AppThemeCardRowItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Text(modifier = Modifier.weight(1f), text = "Dark Mode")
+        Text(
+            modifier = Modifier.weight(1f),
+            text = "Dark Mode",
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
 
         ExposedDropdownMenuBox(
             modifier = Modifier.weight(1f),
@@ -144,7 +239,7 @@ fun AppThemeCardRowItem(
                     DropdownMenuItem(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            uiEvent.invoke(UiEvent.OnThemeSelected(option))
+                            uiEvent.invoke(UiEvent.OnDarkModeSelected(option))
                             selectedText.value = option
                             expanded.value = false
                             focusManager.clearFocus(true)
@@ -175,11 +270,11 @@ fun VibrationCardRowItem(isVibration: Boolean, uiEvent: (UiEvent) -> Unit) {
                 Alignment.CenterVertically
             )
         ) {
-            Text(text = "Vibration")
+            Text(text = "Vibration", color = MaterialTheme.colorScheme.onPrimaryContainer)
             Text(
                 text = if (isVibration) "Disable Vibration" else "Enable Vibration",
                 style = TextStyle(
-                    fontSize = 12.sp
+                    fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         }
@@ -227,11 +322,14 @@ fun ActivitiesSplashScreenCardRowItem(isEnabled: Boolean, uiEvent: (UiEvent) -> 
                 Alignment.CenterVertically
             )
         ) {
-            Text(text = "Activities splashscreen")
+            Text(
+                text = "Activities splashscreen",
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
             Text(
                 text = if (isEnabled) "Disable Splash screens" else "Enable Splash screens",
                 style = TextStyle(
-                    fontSize = 12.sp
+                    fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         }
@@ -261,6 +359,8 @@ fun ActivitiesSplashScreenCardRowItem(isEnabled: Boolean, uiEvent: (UiEvent) -> 
     }
 }
 
+
+@OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun AppSettingsSection(
     theme: AppTheme,
@@ -272,55 +372,43 @@ fun AppSettingsSection(
     uiEvent: (UiEvent) -> Unit
 ) {
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        SettingsSectionWithTitle(
+            theme = theme,
+            darkTheme = darkTheme,
+            title = NotBlankString.create("App Settings")
         ) {
-            Text(
-                modifier = Modifier.padding(start = 24.dp),
-                text = "App Settings",
-                style = Typography.titleMedium
-            )
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-            ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(40.dp)
-                            .padding(horizontal = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = "App version")
-                        Text(text = version)
-                    }
-
-                    AppThemeCardRowItem(
-                        preselectedThemeOptions = if (darkTheme) themeOptions.first {
-                            it.contains(
-                                "Dark",
-                                true
-                            )
-                        } else themeOptions[1],
-                        themeOptions = themeOptions,
-                        uiEvent = uiEvent
-                    )
-
-                    VibrationCardRowItem(isVibration = isVibration, uiEvent = uiEvent)
-
-                    ActivitiesSplashScreenCardRowItem(
-                        isEnabled = isActivitiesSplashEnabled,
-                        uiEvent = uiEvent
-                    )
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .padding(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "App version", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Text(text = version, color = MaterialTheme.colorScheme.onPrimaryContainer)
                 }
+
+                ThemeSelectorCardRowItem(selectedTheme = theme, uiEvent = uiEvent)
+
+                AppThemeCardRowItem(
+                    preselectedThemeOptions = if (darkTheme) themeOptions.first {
+                        it.contains(
+                            "Dark",
+                            true
+                        )
+                    } else themeOptions[1],
+                    themeOptions = themeOptions,
+                    uiEvent = uiEvent
+                )
+
+                VibrationCardRowItem(isVibration = isVibration, uiEvent = uiEvent)
+
+                ActivitiesSplashScreenCardRowItem(
+                    isEnabled = isActivitiesSplashEnabled,
+                    uiEvent = uiEvent
+                )
             }
         }
     }
@@ -332,6 +420,14 @@ fun AppSettingsSection(
 // PREVIEWS
 //
 ///////////////////////////////
+@DevicePreviews
+@Composable
+private fun PreviewThemeSelectorCardRowItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        ThemeSelectorCardRowItem(appTheme) {}
+    }
+}
+
 @DevicePreviews
 @Composable
 private fun PreviewAppThemeCardRowItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {

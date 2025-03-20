@@ -50,9 +50,10 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
+import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import kotools.types.text.NotBlankString
 import java.util.Locale
 
 
@@ -153,91 +154,79 @@ fun EditProfileCardRowItem(username: String, email: String, photoUrl: String? = 
     }
 }
 
+@OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun UserSection(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     userUiState: UserUiState,
     uiEvent: (UiEvent) -> Unit
 ) {
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        SettingsSectionWithTitle(
+            theme = theme,
+            darkTheme = darkTheme,
+            title = NotBlankString.create("User")
         ) {
-            Text(
-                modifier = Modifier.padding(start = 24.dp),
-                text = "User",
-                style = Typography.titleMedium
-            )
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-            ) {
-                AnimatedContent(
-                    targetState = userUiState,
-                    label = "content_transition",
-                    contentAlignment = Alignment.Center
-                ) { targetState ->
-                    when (targetState) {
-                        is UserUiState.Loading -> {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                CircularProgressIndicator()
-                                Text(text = "Fetching user's data. Please wait...")
-                            }
+            AnimatedContent(
+                targetState = userUiState,
+                label = "content_transition",
+                contentAlignment = Alignment.Center
+            ) { targetState ->
+                when (targetState) {
+                    is UserUiState.Loading -> {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            CircularProgressIndicator()
+                            Text(text = "Fetching user's data. Please wait...")
                         }
+                    }
 
-                        is UserUiState.Error -> {}
-                        is UserUiState.Success -> {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.Center
+                    is UserUiState.Error -> {}
+                    is UserUiState.Success -> {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            EditProfileCardRowItem(
+                                photoUrl = targetState.user.profilePictureUri.toString(),
+                                username = targetState.user.username,
+                                email = targetState.user.email
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 24.dp, vertical = 4.dp),
+                                contentAlignment = Alignment.Center
                             ) {
-                                EditProfileCardRowItem(
-                                    photoUrl = targetState.user.profilePictureUri.toString(),
-                                    username = targetState.user.username,
-                                    email = targetState.user.email
-                                )
-
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(horizontal = 24.dp, vertical = 4.dp),
-                                    contentAlignment = Alignment.Center
+                                Button(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onClick = { uiEvent.invoke(UiEvent.OnLogoutClicked) }
                                 ) {
-                                    Button(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        onClick = { uiEvent.invoke(UiEvent.OnLogoutClicked) }
-                                    ) {
-                                        Text(
-                                            text = stringResource(id = R.string.action_logout)
-                                                .uppercase(Locale.getDefault())
-                                        )
-                                    }
+                                    Text(
+                                        text = stringResource(id = R.string.action_logout)
+                                            .uppercase(Locale.getDefault())
+                                    )
                                 }
                             }
                         }
+                    }
 
-                        is UserUiState.NotConnected -> {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                horizontalAlignment = Alignment.Start,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(text = "No account connected")
-                            }
+                    is UserUiState.NotConnected -> {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = "No account connected")
                         }
                     }
                 }
