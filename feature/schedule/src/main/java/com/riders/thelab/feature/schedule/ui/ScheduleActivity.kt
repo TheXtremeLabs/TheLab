@@ -17,16 +17,29 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.bus.KotlinBus
 import com.riders.thelab.core.common.bus.Listen
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.schedule.core.ScheduleAlarmReceiver
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ScheduleActivity : BaseComponentActivity() {
 
     private val mViewModel: ScheduleViewModel by viewModels<ScheduleViewModel>()
 
+    @Inject
+    lateinit var uiRepository: IUiRepository
+
+    /////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    /////////////////////////////////////
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,15 +52,24 @@ class ScheduleActivity : BaseComponentActivity() {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
+
+                    val theme: AppTheme by uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
                     val scheduleState by mViewModel.scheduleJobUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             ScheduleContent(
+                                theme = theme, darkTheme = isDarkTheme,
                                 scheduleState = scheduleState,
                                 tooltipState = mViewModel.tooltipState,
                                 countDownQuery = mViewModel.countDownQuery,

@@ -8,19 +8,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.google.firebase.Timestamp
 import com.riders.thelab.core.data.local.model.kat.KatModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_tertiary
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_tertiary
 import com.riders.thelab.feature.kat.utils.FirebaseUtils
 
 
@@ -30,8 +32,8 @@ import com.riders.thelab.feature.kat.utils.FirebaseUtils
 //
 ///////////////////////////////
 @Composable
-fun OtherSender(message: String) {
-    TheLabTheme {
+fun OtherSender(theme: AppTheme, darkTheme: Boolean, message: String) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -48,13 +50,13 @@ fun OtherSender(message: String) {
             ) {
                 Column(modifier = Modifier.weight(.4f), verticalArrangement = Arrangement.Bottom) {
                     UserIcon(
-                        card = if (!isSystemInDarkTheme()) md_theme_light_tertiary else md_theme_dark_tertiary,
-                        iconColor = if (!isSystemInDarkTheme()) md_theme_dark_tertiary else md_theme_light_tertiary
+                        card = MaterialTheme.colorScheme.tertiary,
+                        iconColor = MaterialTheme.colorScheme.onTertiary,
                     )
                 }
                 Card(
                     modifier = Modifier.weight(2f),
-                    colors = CardDefaults.cardColors(containerColor = if (!isSystemInDarkTheme()) md_theme_light_tertiary else md_theme_dark_tertiary)
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
                 ) {
                     Text(
                         modifier = Modifier.padding(16.dp),
@@ -68,8 +70,8 @@ fun OtherSender(message: String) {
 }
 
 @Composable
-fun Me(message: String) {
-    TheLabTheme {
+fun Me(theme: AppTheme, darkTheme: Boolean, message: String) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End),
@@ -94,13 +96,13 @@ fun Me(message: String) {
 }
 
 @Composable
-fun KatItem(isValid: Boolean, chatItem: KatModel) {
-    TheLabTheme {
+fun KatItem(theme: AppTheme, darkTheme: Boolean, isValid: Boolean, chatItem: KatModel) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         if (isValid) {
             if (FirebaseUtils.getCurrentUserID()!! == chatItem.senderId) {
-                Me(message = chatItem.message)
+                Me(theme = theme, darkTheme = darkTheme, message = chatItem.message)
             } else {
-                OtherSender(message = chatItem.message)
+                OtherSender(theme = theme, darkTheme = darkTheme, message = chatItem.message)
             }
         } else {
             Text(text = "Error", color = Color.Red, fontWeight = FontWeight.ExtraBold)
@@ -116,28 +118,36 @@ fun KatItem(isValid: Boolean, chatItem: KatModel) {
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewOtherSender() {
-    TheLabTheme {
-        OtherSender("Hi how are you today? It is just a quick reminder to tell you that the sun light is very hitting hard right now. With high temperature and so on, we need to stay hydrated")
+private fun PreviewOtherSender(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        OtherSender(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            "Hi how are you today? It is just a quick reminder to tell you that the sun light is very hitting hard right now. With high temperature and so on, we need to stay hydrated"
+        )
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewMe() {
-    TheLabTheme {
-        Me("I'm fine and you. How are you doing?")
+private fun PreviewMe(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        Me(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            "I'm fine and you. How are you doing?"
+        )
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewKatItem() {
+private fun PreviewKatItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val chatItem = KatModel("Hello How are you?", "ksdjbnsdkjnvojbdshuovbsdjbvsdv", Timestamp.now())
-    TheLabTheme {
+    TheLabTheme(theme = appTheme) {
         Column {
-            KatItem(true, chatItem)
-            KatItem(false, chatItem)
+            KatItem(theme = appTheme, darkTheme = isSystemInDarkTheme(), true, chatItem)
+            KatItem(theme = appTheme, darkTheme = isSystemInDarkTheme(), false, chatItem)
         }
     }
 }

@@ -49,6 +49,7 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImagePainter
 import com.riders.thelab.core.data.local.model.music.SongModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 
@@ -321,7 +322,7 @@ fun CardPlayer(
 @DevicePreviews
 @Composable
 private fun PreviewCardPlayerCollapsed(@PreviewParameter(PreviewProviderSong::class) item: SongModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         CardPlayer(item, .4f, false, {}, {}, {}, {})
     }
 }
@@ -329,7 +330,7 @@ private fun PreviewCardPlayerCollapsed(@PreviewParameter(PreviewProviderSong::cl
 @DevicePreviews
 @Composable
 private fun PreviewCardPlayerExpanded(@PreviewParameter(PreviewProviderSong::class) item: SongModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         CardPlayer(item, .93f, true, {}, {}, {}, {})
     }
 }

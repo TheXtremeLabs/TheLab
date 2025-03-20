@@ -10,6 +10,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -24,11 +25,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.utils.LabAppManager
 
 
@@ -39,6 +43,8 @@ import com.riders.thelab.utils.LabAppManager
 ///////////////////////////////
 @Composable
 fun Header(
+    theme: AppTheme,
+    darkTheme: Boolean,
     whatsNewList: List<LocalApp>,
     isKeyboardVisible: Boolean,
     pagerAutoScroll: Boolean,
@@ -77,6 +83,8 @@ fun Header(
         ) {
 
             WhatsNewContent(
+                theme = theme,
+                darkTheme = darkTheme,
                 whatsNewList = whatsNewList,
                 pagerAutoScroll = pagerAutoScroll,
                 onSearchClicked = onSearchClicked,
@@ -113,7 +121,7 @@ fun Header(
 ///////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewHeader() {
+fun PreviewHeader(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
     val appList = LabAppManager.getActivityList(context).take(3).let {
         it.map { localApp ->
@@ -146,6 +154,8 @@ fun PreviewHeader() {
     }
 
     Header(
+        theme = appTheme,
+        darkTheme = isSystemInDarkTheme(),
         whatsNewList = appList,
         isKeyboardVisible = true,
         pagerAutoScroll = true,

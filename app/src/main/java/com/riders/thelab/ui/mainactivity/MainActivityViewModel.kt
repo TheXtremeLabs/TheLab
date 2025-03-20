@@ -29,6 +29,7 @@ import com.riders.thelab.core.data.local.model.weather.ProcessedWeather
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.speechtotext.SpeechToTextRepository
 import com.riders.thelab.core.speechtotext.VoiceManagedViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.LabAppManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,6 +49,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
+    val uiRepository: IUiRepository,
     val speechToTextRepository: SpeechToTextRepository
 ) : VoiceManagedViewModel(speechToTextRepository), DefaultLifecycleObserver {
 

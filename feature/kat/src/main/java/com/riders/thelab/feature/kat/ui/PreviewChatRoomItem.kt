@@ -22,12 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onPrimaryContainer
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_onPrimaryContainer
 
 
 ///////////////////////////////
@@ -36,8 +37,8 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_light_onPrimaryContainer
 //
 ///////////////////////////////
 @Composable
-fun ChatRoomItem(username: String, phoneNumber: String, onChatRoomClicked: () -> Unit) {
-    TheLabTheme {
+fun ChatRoomItem(theme: AppTheme, darkTheme: Boolean, username: String, phoneNumber: String, onChatRoomClicked: () -> Unit) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -66,11 +67,7 @@ fun ChatRoomItem(username: String, phoneNumber: String, onChatRoomClicked: () ->
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Row {
-                        Text(
-                            text = username,
-                            color = if (!isSystemInDarkTheme()) md_theme_light_onPrimaryContainer else md_theme_dark_onPrimaryContainer
-                        )
-
+                        Text(text = username, color = MaterialTheme.colorScheme.primaryContainer)
 //                        Text(text = lastMessageTimestamp)
                     }
                     Text(
@@ -90,8 +87,8 @@ fun ChatRoomItem(username: String, phoneNumber: String, onChatRoomClicked: () ->
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewChatRoomItem() {
-    TheLabTheme {
-        ChatRoomItem(User.mockUserForTests[0].email, "0699885541") {}
+private fun PreviewChatRoomItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        ChatRoomItem(theme = appTheme, darkTheme = isSystemInDarkTheme(), User.mockUserForTests[0].email, "0699885541") {}
     }
 }

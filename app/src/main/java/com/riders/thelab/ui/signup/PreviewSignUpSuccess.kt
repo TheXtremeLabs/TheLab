@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,35 +26,20 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHtmlText
 import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_surfaceVariant
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_surfaceVariant
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
-private val lightGradient =
-    listOf(
-        Color.Transparent,
-        md_theme_light_background,
-        md_theme_light_surfaceVariant,
-        md_theme_light_surfaceVariant
-    )
-private val darkGradient =
-    listOf(
-        Color.Transparent,
-        md_theme_dark_background,
-        md_theme_dark_surfaceVariant,
-        md_theme_dark_surfaceVariant
-    )
 
 ///////////////////////////////
 //
@@ -63,10 +49,18 @@ private val darkGradient =
 @DevicePreviews
 @Composable
 fun SignUpBackground() {
+
+    val gradient = listOf(
+        Color.Transparent,
+        MaterialTheme.colorScheme.background,
+        MaterialTheme.colorScheme.surfaceVariant,
+        MaterialTheme.colorScheme.surfaceVariant
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(brush = Brush.verticalGradient(if (!isSystemInDarkTheme()) lightGradient else darkGradient))
+            .background(brush = Brush.verticalGradient(gradient))
             .zIndex(1f)
     )
 }
@@ -135,11 +129,12 @@ fun SignUpSuccessContent(
 
 @Composable
 fun SignUpSuccessScreen(
-    isDarkMode: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     username: String,
     onNavigateToSignUpSuccessScreen: () -> Unit
 ) {
-    TheLabTheme(darkTheme = isDarkMode) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(modifier = Modifier.fillMaxSize()) {
             // Background lottie animation
             Box(
@@ -184,8 +179,8 @@ fun SignUpSuccessScreen(
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewSignUpSuccessContent() {
-    TheLabTheme {
+private fun PreviewSignUpSuccessContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         SignUpSuccessContent(
             modifier = Modifier
                 .background(color = if (!isSystemInDarkTheme()) Color.Black else Color.White),
@@ -197,8 +192,12 @@ private fun PreviewSignUpSuccessContent() {
 
 @DevicePreviews
 @Composable
-private fun PreviewSignUpSuccessScreen() {
-    TheLabTheme {
-        SignUpSuccessScreen(isDarkMode = isSystemInDarkTheme(), username = "JaneDoe") {}
+private fun PreviewSignUpSuccessScreen(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        SignUpSuccessScreen(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            username = "JaneDoe"
+        ) {}
     }
 }

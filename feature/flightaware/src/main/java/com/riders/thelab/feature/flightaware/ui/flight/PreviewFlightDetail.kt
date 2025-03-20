@@ -2,6 +2,7 @@ package com.riders.thelab.feature.flightaware.ui.flight
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import com.riders.thelab.core.data.local.model.compose.flight.FlightDetailUiStat
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 
@@ -27,12 +29,13 @@ import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 //
 ///////////////////////////////////////
 @Composable
-fun FlightDetailContent(uiState: FlightDetailUiState) {
-    TheLabTheme {
+fun FlightDetailContent(theme: AppTheme, darkTheme: Boolean, uiState: FlightDetailUiState) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TheLabTopAppBar(
+                    theme = theme,
                     navigationIconColor = Color.White,
                     backgroundColor = backgroundColor
                 )
@@ -57,11 +60,19 @@ fun FlightDetailContent(uiState: FlightDetailUiState) {
                         }
 
                         is FlightDetailUiState.Error -> {
-                            FlightDetailErrorContent(reason = targetState.message)
+                            FlightDetailErrorContent(
+                                theme = theme,
+                                darkTheme = darkTheme,
+                                reason = targetState.message
+                            )
                         }
 
                         is FlightDetailUiState.Success -> {
-                            FlightDetailSuccessContent(flight = targetState.flight)
+                            FlightDetailSuccessContent(
+                                theme = theme,
+                                darkTheme = darkTheme,
+                                flight = targetState.flight
+                            )
                         }
                     }
                 }
@@ -78,8 +89,12 @@ fun FlightDetailContent(uiState: FlightDetailUiState) {
 @DevicePreviews
 @Composable
 private fun PreviewFlightDetailContent(@PreviewParameter(PreviewProviderFlightDetailUiState::class) uiState: FlightDetailUiState) {
-    TheLabTheme {
-        FlightDetailContent(uiState = uiState)
+    TheLabTheme(theme = AppTheme.Default) {
+        FlightDetailContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            uiState = uiState
+        )
     }
 }
 

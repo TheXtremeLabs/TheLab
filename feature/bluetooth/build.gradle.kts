@@ -1,6 +1,6 @@
 plugins {
-    id("thelab.android.feature")
-    id("thelab.android.library.compose")
+    alias(libs.plugins.thelab.feature)
+    alias(libs.plugins.thelab.library.compose)
     alias(libs.plugins.kotlin.serialization)
 }
 

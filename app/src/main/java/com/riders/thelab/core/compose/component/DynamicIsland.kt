@@ -33,6 +33,7 @@ import com.riders.thelab.core.ui.compose.component.dynamicisland.MetaContainer
 import com.riders.thelab.core.ui.compose.component.dynamicisland.MetaEntity
 import com.riders.thelab.core.ui.compose.component.dynamicisland.bubbleEnterTransition
 import com.riders.thelab.core.ui.compose.component.dynamicisland.bubbleExitTransition
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
@@ -150,7 +151,7 @@ fun DynamicIsland(
 @DevicePreviews
 @Composable
 private fun PreviewDynamicIsland(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             DynamicIsland(
                 islandState = state,

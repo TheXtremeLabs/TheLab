@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.transitions.chooser
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
@@ -31,10 +35,16 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 //
 ///////////////////////////////////////
 @Composable
-fun TransitionsChooserContent(uiEvent: (UiEvent) -> Unit) {
-    TheLabTheme {
-        Scaffold(modifier = Modifier.fillMaxSize(),
-            topBar = { TheLabTopAppBar(title = stringResource(id = R.string.activity_title_transition)) }) { contentPadding ->
+fun TransitionsChooserContent(theme: AppTheme, darkTheme: Boolean, uiEvent: (UiEvent) -> Unit) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TheLabTopAppBar(
+                    theme = theme,
+                    title = stringResource(id = R.string.activity_title_transition)
+                )
+            }) { contentPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -97,8 +107,8 @@ fun TransitionsChooserContent(uiEvent: (UiEvent) -> Unit) {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewTransitionsChooserContent() {
-    TheLabTheme {
-        TransitionsChooserContent {}
+private fun PreviewTransitionsChooserContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        TransitionsChooserContent(theme = appTheme, darkTheme = isSystemInDarkTheme()) {}
     }
 }

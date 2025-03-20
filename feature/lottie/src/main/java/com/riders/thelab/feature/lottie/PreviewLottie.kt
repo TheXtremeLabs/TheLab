@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.lottie
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,21 +16,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-
 
 ///////////////////////////////////////
 //
 // COMPOSE
 //
 ///////////////////////////////////////
-@DevicePreviews
 @Composable
-fun LottieContent() {
+fun LottieContent(theme: AppTheme, darkTheme: Boolean) {
 
     val verticalScroll = rememberScrollState()
 
@@ -55,9 +57,13 @@ fun LottieContent() {
         "https://assets7.lottiefiles.com/packages/lf20_ym8w5cx4.json",
     )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
-            topBar = { TheLabTopAppBar(title = stringResource(R.string.activity_title_lottie)) }
+            topBar = {
+                TheLabTopAppBar(
+                    theme = theme, title = stringResource(R.string.activity_title_lottie)
+                )
+            }
         ) { contentPadding ->
             Column(
                 modifier = Modifier
@@ -87,3 +93,10 @@ fun LottieContent() {
 // PREVIEWS
 //
 ///////////////////////////////////////
+@DevicePreviews
+@Composable
+private fun PreviewLottieContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        LottieContent(theme = appTheme, darkTheme = isSystemInDarkTheme())
+    }
+}

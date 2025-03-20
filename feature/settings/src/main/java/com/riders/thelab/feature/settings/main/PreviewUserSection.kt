@@ -3,6 +3,7 @@ package com.riders.thelab.feature.settings.main
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,6 +47,8 @@ import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.compose.settings.UserUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.core.ui.compose.utils.findActivity
@@ -152,10 +155,11 @@ fun EditProfileCardRowItem(username: String, email: String, photoUrl: String? = 
 
 @Composable
 fun UserSection(
+    theme: AppTheme, darkTheme: Boolean,
     userUiState: UserUiState,
     uiEvent: (UiEvent) -> Unit
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
 
         Column(
             modifier = Modifier
@@ -250,8 +254,9 @@ fun UserSection(
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewEditProfileCardRowItem(user: User = User.mockUserForTests[0]) {
-    TheLabTheme {
+private fun PreviewEditProfileCardRowItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    val user: User = User.mockUserForTests[0]
+    TheLabTheme(theme = appTheme) {
         EditProfileCardRowItem(user.username, user.email)
     }
 }
@@ -259,7 +264,11 @@ private fun PreviewEditProfileCardRowItem(user: User = User.mockUserForTests[0])
 @DevicePreviews
 @Composable
 private fun PreviewUserSection(@PreviewParameter(PreviewProviderUserUiState::class) userUiState: UserUiState) {
-    TheLabTheme {
-        UserSection(userUiState = userUiState) {}
+    TheLabTheme(theme = AppTheme.Default) {
+        UserSection(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            userUiState = userUiState
+        ) {}
     }
 }

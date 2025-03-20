@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,15 +39,26 @@ class YoutubeActivity : BaseComponentActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
 
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
                     val uiState by mViewModel.youtubeUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme(mViewModel.isDarkMode) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            YoutubeContent(uiState = uiState)
+                            YoutubeContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme,
+                                uiState = uiState
+                            )
                         }
                     }
                 }

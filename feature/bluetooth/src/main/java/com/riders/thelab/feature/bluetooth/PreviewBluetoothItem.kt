@@ -23,11 +23,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 @SuppressLint("MissingPermission")
 @Composable
-fun BluetoothItem(index: Int, bluetoothDevice: BluetoothDevice, totalItemsCount: Int) {
+fun BluetoothItem(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    index: Int,
+    bluetoothDevice: BluetoothDevice,
+    totalItemsCount: Int
+) {
 
     val deviceName = bluetoothDevice.name
     val macAddress = bluetoothDevice.address
@@ -47,7 +54,7 @@ fun BluetoothItem(index: Int, bluetoothDevice: BluetoothDevice, totalItemsCount:
         }
     }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()

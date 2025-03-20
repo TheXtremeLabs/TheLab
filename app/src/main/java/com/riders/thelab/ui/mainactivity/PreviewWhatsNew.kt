@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
@@ -51,6 +52,8 @@ import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
@@ -64,7 +67,7 @@ import com.riders.thelab.utils.LabAppManager
 ///////////////////////////////
 
 @Composable
-fun WhatsNew(item: App) {
+fun WhatsNew(theme: AppTheme, darkTheme: Boolean, item: App) {
 
     val context = LocalContext.current
 
@@ -80,7 +83,7 @@ fun WhatsNew(item: App) {
     /* Get the dark vibrant swatch */
     val darkVibrantSwatch = palette.darkVibrantSwatch
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .width(width = dimensionResource(id = R.dimen.max_card_image_width))
@@ -149,7 +152,7 @@ fun WhatsNew(item: App) {
 }
 
 @Composable
-fun WhatsNew(item: App, pageOffset: Float) {
+fun WhatsNew(theme: AppTheme, darkTheme: Boolean, item: App, pageOffset: Float) {
 
     val context = LocalContext.current
 
@@ -165,7 +168,7 @@ fun WhatsNew(item: App, pageOffset: Float) {
 
     val colorMatrix = remember { ColorMatrix() }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .width(width = dimensionResource(id = R.dimen.max_card_image_width))
@@ -291,6 +294,8 @@ fun WhatsNewTopContent(
 
 @Composable
 fun WhatsNewList(
+    theme: AppTheme,
+    darkTheme: Boolean,
     viewModel: MainActivityViewModel,
     whatsNewList: List<LocalApp>,
     pagerAutoScroll: Boolean
@@ -298,15 +303,18 @@ fun WhatsNewList(
     val pagerState: PagerState =
         rememberPagerState(initialPageOffsetFraction = .25f) { whatsNewList.size }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Row(modifier = Modifier.fillMaxWidth()) {
             LabHorizontalViewPagerGeneric(
+                theme = theme,
                 viewModel = viewModel,
                 pagerState = pagerState,
                 items = whatsNewList,
                 autoScroll = pagerAutoScroll
             ) { page, pageOffset ->
                 WhatsNew(
+                    theme = theme,
+                    darkTheme = darkTheme,
                     item = whatsNewList[page],
                     pageOffset = pageOffset
                 )
@@ -317,6 +325,8 @@ fun WhatsNewList(
 
 @Composable
 fun WhatsNewContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
     whatsNewList: List<LocalApp>,
     pagerAutoScroll: Boolean,
     onSearchClicked: () -> Unit,
@@ -325,7 +335,7 @@ fun WhatsNewContent(
     val pagerState: PagerState =
         rememberPagerState { whatsNewList.size }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.size(24.dp))
 
@@ -337,6 +347,7 @@ fun WhatsNewContent(
             // Whats New ViewPager
             Row(modifier = Modifier.fillMaxWidth()) {
                 LabHorizontalViewPagerGeneric(
+                    theme = theme,
                     pagerState = pagerState,
                     items = whatsNewList,
                     onCurrentPageChanged = {},
@@ -348,6 +359,8 @@ fun WhatsNewContent(
                     autoScroll = pagerAutoScroll
                 ) { page: Int, pageOffset: Float ->
                     WhatsNew(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         item = whatsNewList[page],
                         pageOffset = pageOffset
                     )
@@ -365,43 +378,43 @@ fun WhatsNewContent(
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewActionsButtons() {
-    TheLabTheme {
+private fun PreviewActionsButtons(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         ActionsButtons({}, {})
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewWhatsNewTopContent() {
-    TheLabTheme {
+private fun PreviewWhatsNewTopContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         WhatsNewTopContent({}) {}
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewWhatsNew() {
+private fun PreviewWhatsNew(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
     val appItem = LabAppManager.getActivityList(context)[0]
-    TheLabTheme {
-        WhatsNew(item = appItem)
+    TheLabTheme(theme = appTheme) {
+        WhatsNew(theme = appTheme, darkTheme = isSystemInDarkTheme(), item = appItem)
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewWhatsNewForPager() {
+private fun PreviewWhatsNewForPager(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
     val appItem = LabAppManager.getActivityList(context)[12]
-    TheLabTheme {
-        WhatsNew(appItem, 2f)
+    TheLabTheme(theme = appTheme) {
+        WhatsNew(theme = appTheme, darkTheme = isSystemInDarkTheme(), appItem, 2f)
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewWhatsNewList() {
+private fun PreviewWhatsNewList(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
     val viewModel: MainActivityViewModel = hiltViewModel()
     val appList = LabAppManager.getActivityList(context).take(3).let {
@@ -434,7 +447,13 @@ private fun PreviewWhatsNewList() {
         }
     }
 
-    TheLabTheme {
-        WhatsNewList(viewModel = viewModel, whatsNewList = appList, pagerAutoScroll = true)
+    TheLabTheme(theme = appTheme) {
+        WhatsNewList(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            viewModel = viewModel,
+            whatsNewList = appList,
+            pagerAutoScroll = true
+        )
     }
 }

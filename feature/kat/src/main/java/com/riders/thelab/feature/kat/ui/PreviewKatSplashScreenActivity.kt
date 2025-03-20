@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,13 +30,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.delay
 
@@ -46,7 +48,7 @@ import kotlinx.coroutines.delay
 //
 ///////////////////////////////
 @Composable
-fun KatSplashScreenContent() {
+fun KatSplashScreenContent(theme: AppTheme, darkTheme: Boolean) {
     val context = LocalContext.current
 
     val scaleAnimatedVisibility = remember { Animatable(1.5f) }
@@ -56,11 +58,11 @@ fun KatSplashScreenContent() {
     val textSize: TextUnit = 36.sp
     val textAndIconColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+                .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
             Row(
@@ -123,8 +125,8 @@ fun KatSplashScreenContent() {
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewKatSplashScreenContent() {
-    TheLabTheme {
-        KatSplashScreenContent()
+private fun PreviewKatSplashScreenContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        KatSplashScreenContent(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }

@@ -3,6 +3,7 @@ package com.riders.thelab.feature.flightaware.ui.search
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import com.riders.thelab.core.data.local.model.compose.SearchFlightsUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
@@ -33,6 +35,8 @@ import kotools.types.text.NotBlankString
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun SearchFlightsContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
     currentDate: NotBlankString,
     uiState: SearchFlightsUiState,
     uiEvent: (UiEvent) -> Unit
@@ -45,11 +49,12 @@ fun SearchFlightsContent(
         label = "toolbar_color_animation"
     )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TheLabTopAppBar(
+                    theme = theme,
                     navigationIconColor = Color.White,
                     withGradientBackground = false,
                     backgroundColor = toolbarColor
@@ -76,11 +81,17 @@ fun SearchFlightsContent(
                         }
 
                         is SearchFlightsUiState.Error -> {
-                            SearchFlightsErrorContent(reason = NotBlankString.create("Error occurred while getting value"))
+                            SearchFlightsErrorContent(
+                                theme = theme,
+                                darkTheme = darkTheme,
+                                reason = NotBlankString.create("Error occurred while getting value")
+                            )
                         }
 
                         is SearchFlightsUiState.Success -> {
                             SearchFlightsSuccessContent(
+                                theme = theme,
+                                darkTheme = darkTheme,
                                 currentDate = currentDate,
                                 flights = targetState.flights,
                                 uiEvent = uiEvent
@@ -102,8 +113,10 @@ fun SearchFlightsContent(
 @DevicePreviews
 @Composable
 private fun PreviewSearchFlightsContent(@PreviewParameter(PreviewProviderSearchFlightsUiState::class) uiState: SearchFlightsUiState) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         SearchFlightsContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             currentDate = NotBlankString.create("24/04/2024"),
             uiState = uiState
         ) {}

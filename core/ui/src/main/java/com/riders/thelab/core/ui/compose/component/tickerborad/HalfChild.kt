@@ -6,8 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 ///////////////////////////////////////
@@ -50,8 +53,8 @@ fun HalfChild(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewHalfChild() {
-    TheLabTheme {
+private fun PreviewHalfChild(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         HalfChild(modifier = Modifier.height(72.dp)) {
             CenteredText(modifier = Modifier.fillMaxHeight(), letter = 'C')
         }

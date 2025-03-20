@@ -3,6 +3,7 @@ package com.riders.thelab.feature.theaters.splashscreen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,12 +26,15 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_primaryContainer
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
 import com.riders.thelab.core.ui.compose.theme.samsungSangFamily
 import kotlinx.coroutines.delay
 
@@ -41,12 +45,12 @@ import kotlinx.coroutines.delay
 //
 ///////////////////////////////////////
 @Composable
-fun TheatersSplash() {
+fun TheatersSplash(theme: AppTheme, darkTheme: Boolean, ) {
     val scale = remember { Animatable(initialValue = 2f) }
     val theaterAdditionalTextVisibility = remember { mutableStateOf(false) }
     val visible = remember { mutableStateOf(false) }
 
-    TheLabTheme(darkTheme = true) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(.7f)
@@ -146,8 +150,8 @@ fun TheatersSplash() {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewTheatersSplash() {
-    TheLabTheme(darkTheme = true) {
-        TheatersSplash()
+private fun PreviewTheatersSplash(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        TheatersSplash(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }

@@ -3,6 +3,7 @@ package com.riders.thelab.feature.flightaware.ui.search
 import androidx.compose.foundation.background
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,7 @@ import com.riders.thelab.core.data.local.model.flight.FlightModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.ui.flight.FlightInfoContainer
@@ -37,16 +39,22 @@ import kotools.types.text.NotBlankString
 ///////////////////////////////////////
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
-fun SearchFlightByNumberContent(flight: FlightModel, uiEvent: (UiEvent) -> Unit) {
+fun SearchFlightByNumberContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    flight: FlightModel,
+    uiEvent: (UiEvent) -> Unit
+) {
     val lazyListState = rememberLazyListState()
     // this is to disable the ripple effect
     val interactionSource = remember { MutableInteractionSource() }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TheLabTopAppBar(
+                    theme = theme,
                     toolbarSize = ToolbarSize.SMALL,
                     title = "Flight Details",
                     mainCustomContent = null,
@@ -76,6 +84,8 @@ fun SearchFlightByNumberContent(flight: FlightModel, uiEvent: (UiEvent) -> Unit)
                 ) {
                     item {
                         FlightStatusCard(
+                            theme = theme,
+                            darkTheme = darkTheme,
                             flightId = NotBlankString.create(
                                 flight.faFlightID.toString().split("-")[0]
                             ),
@@ -90,6 +100,8 @@ fun SearchFlightByNumberContent(flight: FlightModel, uiEvent: (UiEvent) -> Unit)
 
                     item {
                         FlightInfoContainer(
+                            theme = theme,
+                            darkTheme = darkTheme,
                             airline = flight.operatorID,
                             aircraftType = flight.aircraftType ?: NotBlankString.create("N/A"),
                             estimatedDepartureDate = flight.estimatedOut
@@ -108,7 +120,7 @@ fun SearchFlightByNumberContent(flight: FlightModel, uiEvent: (UiEvent) -> Unit)
                     }
 
                     item {
-                        Footer()
+                        Footer(theme = theme)
                     }
                 }
             }
@@ -125,8 +137,12 @@ fun SearchFlightByNumberContent(flight: FlightModel, uiEvent: (UiEvent) -> Unit)
 @DevicePreviews
 @Composable
 private fun PreviewSearchFlightByNumberContent(@PreviewParameter(PreviewProviderFlight::class) flight: FlightModel) {
-    TheLabTheme {
-        SearchFlightByNumberContent(flight = flight) {
+    TheLabTheme(theme = AppTheme.Default) {
+        SearchFlightByNumberContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            flight = flight
+        ) {
         }
     }
 }

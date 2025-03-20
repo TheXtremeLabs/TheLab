@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,18 +20,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onPrimaryContainer
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_onPrimaryContainer
 
 
 @Composable
-fun ExitSignUp(onConfirmed: () -> Unit, onDismiss: () -> Unit) {
-    TheLabTheme {
+fun ExitSignUp(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    onConfirmed: () -> Unit,
+    onDismiss: () -> Unit
+) {
+
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(modifier = Modifier.fillMaxWidth(.8f)) {
             Column(
                 modifier = Modifier
@@ -66,7 +74,7 @@ fun ExitSignUp(onConfirmed: () -> Unit, onDismiss: () -> Unit) {
                     ) {
                         Text(
                             text = stringResource(id = R.string.action_yes),
-                            color = if (!isSystemInDarkTheme()) md_theme_light_onPrimaryContainer else md_theme_dark_onPrimaryContainer,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             maxLines = 1
                         )
                     }
@@ -84,10 +92,10 @@ fun ExitSignUp(onConfirmed: () -> Unit, onDismiss: () -> Unit) {
 
 @DevicePreviews
 @Composable
-private fun PreviewExit() {
-    TheLabTheme {
+private fun PreviewExit(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = AppTheme.Default) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            ExitSignUp({}, {})
+            ExitSignUp(theme = appTheme, darkTheme = isSystemInDarkTheme(), {}, {})
         }
     }
 }

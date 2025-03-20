@@ -8,6 +8,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -60,8 +61,9 @@ import com.riders.thelab.core.data.local.model.compose.palette.PaletteUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
-import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.snackbar.SnackbarVisualsCustom
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.loadImage
 import kotlinx.coroutines.launch
@@ -76,9 +78,11 @@ import timber.log.Timber
 @DevicePreviews
 @Composable
 fun PaletteLoader() {
-    Box(modifier = Modifier
-        .size(72.dp)
-        .zIndex(5f), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .size(72.dp)
+            .zIndex(5f), contentAlignment = Alignment.Center
+    ) {
         Lottie(
             modifier = Modifier.fillMaxSize(),
             url = "https://assets2.lottiefiles.com/packages/lf20_kk62um5v.json"
@@ -89,6 +93,8 @@ fun PaletteLoader() {
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun PaletteContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
     paletteUiState: PaletteUiState,
     paletteNameList: List<String>,
     onRefreshedClicked: () -> Unit,
@@ -106,6 +112,7 @@ fun PaletteContent(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TheLabTopAppBar(
+                theme = theme,
                 title = stringResource(id = R.string.activity_title_palette),
                 withGradientBackground = true,
                 actions = {
@@ -326,7 +333,14 @@ private fun PreviewPaletteContent(@PreviewParameter(PreviewProvider::class) pale
         "Light Muted"
     )
 
-    TheLabTheme {
-        PaletteContent(palette, paletteNameList, {}, true)
+    TheLabTheme(theme = AppTheme.Default) {
+        PaletteContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            palette,
+            paletteNameList,
+            {},
+            true
+        )
     }
 }

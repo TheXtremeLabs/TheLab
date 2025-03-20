@@ -8,21 +8,22 @@ import com.riders.thelab.core.ui.data.local.preferences.PreferencesImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ActivityRetainedScoped
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object UIModule {
 
     @Provides
     @Singleton
-    fun provideUiPreferencesImpl(@ApplicationContext context: Context): IPreferences =
-        PreferencesImpl(context = context)
+    fun provideUiPreferences(@ApplicationContext context: Context): IPreferences =
+        PreferencesImpl(context = context) as IPreferences
 
     @Provides
     @Singleton
-    fun provideUiRepository(uiPreferences: PreferencesImpl): IUiRepository =
-        UiRepository(preferencesImpl = uiPreferences)
+    fun provideUiRepository(uiPreferences: IPreferences): IUiRepository =
+        UiRepository(uiPreferences) as IUiRepository
 }

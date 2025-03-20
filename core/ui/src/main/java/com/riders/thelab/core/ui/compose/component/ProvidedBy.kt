@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,13 +21,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 
 @Composable
 fun ProvidedBy(
@@ -67,10 +69,10 @@ fun ProvidedBy(
 
 @DevicePreviews
 @Composable
-private fun PreviewProvidedBy() {
-    TheLabTheme {
+private fun PreviewProvidedBy(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         ProvidedBy(
-            modifier = Modifier.background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
             placeholderProvidedBy = R.string.weather_data_provided_by,
             providerIcon = R.drawable.openweathermap_logo_white
         )
@@ -79,10 +81,10 @@ private fun PreviewProvidedBy() {
 
 @DevicePreviews
 @Composable
-private fun PreviewProvidedByWeather() {
-    TheLabTheme {
+private fun PreviewProvidedByWeather(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         ProvidedBy(
-            modifier = Modifier.background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
             placeholderProvidedBy = R.string.weather_data_provided_by,
             providerIcon = R.drawable.openweathermap_logo_white
         )
@@ -91,10 +93,10 @@ private fun PreviewProvidedByWeather() {
 
 @DevicePreviews
 @Composable
-private fun PreviewProvidedByTMDB() {
-    TheLabTheme {
+private fun PreviewProvidedByTMDB(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         ProvidedBy(
-            modifier = Modifier.background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
             providerIcon = R.drawable.tmdb_logo,
             hasRoundedCorners = true
         )
@@ -103,10 +105,10 @@ private fun PreviewProvidedByTMDB() {
 
 @DevicePreviews
 @Composable
-private fun PreviewProvidedByFlightAware() {
-    TheLabTheme {
+private fun PreviewProvidedByFlightAware(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         ProvidedBy(
-            modifier = Modifier.background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
             providerIcon = R.drawable.ic_flightaware_logo,
             hasRoundedCorners = true,
             hasPadding = true,

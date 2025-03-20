@@ -17,41 +17,38 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.component.Lottie
-import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 
 @DevicePreviews
 @Composable
 fun NoNetworkConnection() {
-    TheLabTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = md_theme_dark_background) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Lottie(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 24.dp)
-                        .weight(1.5f),
-                    rawResId = R.raw.lottie_hot_coffee_loading
-                )
+    Surface(modifier = Modifier.fillMaxSize(), color = md_theme_dark_background) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Lottie(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp)
+                    .weight(1.5f),
+                rawResId = R.raw.lottie_hot_coffee_loading
+            )
 
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(.8f)
-                        .weight(1f),
-                    text = "${stringResource(id = R.string.network_status_disconnected)}\n${
-                        stringResource(
-                            id = R.string.network_check_connection
-                        )
-                    }",
-                    style = TextStyle(textAlign = TextAlign.Center),
-                    color = Color.LightGray
-                )
-            }
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(.8f)
+                    .weight(1f),
+                text = "${stringResource(id = R.string.network_status_disconnected)}\n${
+                    stringResource(
+                        id = R.string.network_check_connection
+                    )
+                }",
+                style = TextStyle(textAlign = TextAlign.Center),
+                color = Color.LightGray
+            )
         }
     }
 }

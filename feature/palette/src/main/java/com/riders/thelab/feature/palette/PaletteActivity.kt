@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -24,6 +25,11 @@ class PaletteActivity : BaseComponentActivity() {
 
     private val viewModel: PaletteViewModel by viewModels()
 
+    /////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    /////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -33,15 +39,23 @@ class PaletteActivity : BaseComponentActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
 
+                    val theme: AppTheme by viewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by viewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
                     val paletteState by viewModel.paletteUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme(viewModel.isDarkMode) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             PaletteContent(
+                                theme = theme, darkTheme = isDarkTheme,
                                 paletteUiState = paletteState,
                                 paletteNameList = viewModel.paletteNameList,
                                 onRefreshedClicked = {
@@ -62,6 +76,12 @@ class PaletteActivity : BaseComponentActivity() {
         showAppClosingDialog()
     }
 
+
+    /////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    /////////////////////////////////////
     private fun showAppClosingDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Warning")

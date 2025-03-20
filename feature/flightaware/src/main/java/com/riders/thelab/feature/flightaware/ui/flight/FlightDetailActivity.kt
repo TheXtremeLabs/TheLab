@@ -13,12 +13,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.data.local.IUiRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class FlightDetailActivity : BaseComponentActivity() {
 
     private val mViewModel: FlightDetailViewModel by viewModels<FlightDetailViewModel>()
+
+    @Inject
+    lateinit var uiRepository: IUiRepository
 
     ///////////////////////////////
     //
@@ -33,16 +41,26 @@ class FlightDetailActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
+                    val theme: AppTheme by uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
 
                     val uiState by mViewModel.flightDetailUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            FlightDetailContent(uiState = uiState)
+                            FlightDetailContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme,
+                                uiState = uiState
+                            )
                         }
                     }
                 }

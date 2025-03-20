@@ -25,6 +25,7 @@ import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -63,7 +64,8 @@ fun <viewModel : LifecycleObserver> viewModel.observeLifecycleEvents(lifecycle: 
 @Suppress("EmptyMethod")
 @HiltViewModel
 class ACRCloudViewModel @Inject constructor(
-    private val repository: IRepository
+    private val repository: IRepository,
+    val uiRepository: IUiRepository
 ) : ViewModel(), DefaultLifecycleObserver, IACRCloudListener {
 
     // Network

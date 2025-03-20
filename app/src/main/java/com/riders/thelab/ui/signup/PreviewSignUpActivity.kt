@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,9 +27,8 @@ import androidx.navigation.compose.rememberNavController
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.compose.UserState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import org.kotools.types.EmailAddress
@@ -43,11 +43,12 @@ import timber.log.Timber
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun SignUpNavHost(
+    theme: AppTheme,
+    darkTheme: Boolean,
     modifier: Modifier = Modifier,
     navController: NavHostController,
     startDestination: String,
     onUpdateCurrentNavDestination: (NavDestination) -> Unit,
-    isDarkMode: Boolean,
     userUiState: UserState,
     userFormButtonEnabled: Boolean,
     onSubmitForm: () -> Unit,
@@ -81,14 +82,16 @@ fun SignUpNavHost(
     ) {
         composable(SignUpScreen.EULA.route) {
             EULAScreen(
-                isDarkMode = isDarkMode,
+                theme = theme,
+                darkTheme = darkTheme,
                 onNavigateToUserFormScreen = { navController.navigate(SignUpScreen.Form.route) }
             )
         }
         composable(SignUpScreen.Form.route) {
             FormScreen(
+                theme = theme,
+                darkTheme = darkTheme,
                 userUiState = userUiState,
-                isDarkMode = isDarkMode,
                 emailHasError = emailHasError,
                 passwordsHasError = passwordsHasError,
                 firstname = firstname,
@@ -114,7 +117,7 @@ fun SignUpNavHost(
         }
         composable(SignUpScreen.SignUpSuccess.route) {
             SignUpSuccessScreen(
-                isDarkMode = isDarkMode,
+                theme = theme, darkTheme = darkTheme,
                 username = username,
                 onNavigateToSignUpSuccessScreen = { (context.findActivity() as SignUpActivity).launchMainActivity() }
             )
@@ -130,7 +133,8 @@ fun SignUpNavHost(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SignUpContent(
-    isDarkMode: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     currentDestination: NavDestination?,
     onUpdateCurrentNavDestination: (NavDestination) -> Unit,
     userUiState: UserState,
@@ -161,7 +165,7 @@ fun SignUpContent(
     val navController: NavHostController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    TheLabTheme(darkTheme = isDarkMode) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(modifier = Modifier.fillMaxSize()) {
             // Main Container
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -169,12 +173,12 @@ fun SignUpContent(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background)
+                        .background(MaterialTheme.colorScheme.background)
                 ) {
                     // Header
                     currentDestination?.let {
                         SignUpHeader(
-                            isDarkMode = isDarkMode,
+                            theme = theme, darkTheme = darkTheme,
                             currentDestination = it,
                             onUpdateShouldShowExitDialogConfirmation = onUpdateShouldShowExitDialogConfirmation
                         )
@@ -182,10 +186,16 @@ fun SignUpContent(
 
                     // Content
                     SignUpNavHost(
+                        theme = theme, darkTheme = darkTheme,
                         modifier = Modifier.fillMaxWidth(),
-                        isDarkMode = isDarkMode,
                         navController = navController,
                         startDestination = SignUpScreen.EULA.route,
+                        onUpdateCurrentNavDestination = onUpdateCurrentNavDestination,
+                        userUiState = userUiState,
+                        userFormButtonEnabled = userFormButtonEnabled,
+                        onSubmitForm = onSubmitForm,
+                        isSubmitSuccess = isSubmitSuccess,
+                        message = message,
                         emailHasError = emailHasError,
                         passwordsHasError = passwordsHasError,
                         firstname = firstname,
@@ -200,12 +210,6 @@ fun SignUpContent(
                         onUpdatePassword = onUpdatePassword,
                         passwordConfirmation = passwordConfirmation,
                         onUpdatePasswordConfirmation = onUpdatePasswordConfirmation,
-                        userUiState = userUiState,
-                        onUpdateCurrentNavDestination = onUpdateCurrentNavDestination,
-                        userFormButtonEnabled = userFormButtonEnabled,
-                        onSubmitForm = onSubmitForm,
-                        isSubmitSuccess = isSubmitSuccess,
-                        message = message,
                         shouldShowSaveOrErrorView = shouldShowSaveOrErrorView,
                         onUpdateShouldShowExitDialogConfirmation = onUpdateShouldShowExitDialogConfirmation
                     )
@@ -221,6 +225,8 @@ fun SignUpContent(
                     ) {
                         AnimatedVisibility(visible = shouldShowExitDialogConfirmation) {
                             ExitSignUp(
+                                theme = theme,
+                                darkTheme = darkTheme,
                                 onConfirmed = { (context.findActivity() as SignUpActivity).finish() },
                                 onDismiss = { onUpdateShouldShowExitDialogConfirmation(false) }
                             )
@@ -250,10 +256,11 @@ private fun PreviewSignUpNavHost(@PreviewParameter(PreviewProviderUserState::cla
     val user: User = User.mockUserForTests[0]
 
     SignUpNavHost(
+        theme = AppTheme.Default,
+        darkTheme = isSystemInDarkTheme(),
         modifier = Modifier.fillMaxSize(),
         navController = rememberNavController(),
         startDestination = SignUpScreen.EULA.route,
-        isDarkMode = isSystemInDarkTheme(),
         userUiState = state,
         emailHasError = false,
         passwordsHasError = false,
@@ -285,9 +292,10 @@ private fun PreviewSignUpNavHost(@PreviewParameter(PreviewProviderUserState::cla
 private fun PreviewSignUpContent(@PreviewParameter(PreviewProviderUserState::class) state: UserState) {
     val user: User = User.mockUserForTests[0]
 
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         SignUpContent(
-            isDarkMode = isSystemInDarkTheme(),
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             currentDestination = NavDestination(""),
             onUpdateCurrentNavDestination = {},
             userUiState = state,

@@ -19,7 +19,6 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
 ///////////////////////////////////////
@@ -46,25 +45,23 @@ fun GoogleMap(
         position = CameraPosition.fromLatLngZoom(userPosition, 12.5f)
     }
 
-    TheLabTheme {
-        GoogleMap(
-            modifier = modifier,
-            cameraPositionState = cameraPositionState,
-            properties = mapProperties,
-            uiSettings = mapUiSettings,
-            onMapLoaded = { onMapLoaded() }
-        ) {
-            if (null == markerTitle && null == markerSnippet) {
-                Marker(
-                    state = MarkerState(position = userPosition)
-                )
-            } else {
-                Marker(
-                    state = MarkerState(position = userPosition),
-                    title = markerTitle,
-                    snippet = markerSnippet
-                )
-            }
+    GoogleMap(
+        modifier = modifier,
+        cameraPositionState = cameraPositionState,
+        properties = mapProperties,
+        uiSettings = mapUiSettings,
+        onMapLoaded = { onMapLoaded() }
+    ) {
+        if (null == markerTitle && null == markerSnippet) {
+            Marker(
+                state = MarkerState(position = userPosition)
+            )
+        } else {
+            Marker(
+                state = MarkerState(position = userPosition),
+                title = markerTitle,
+                snippet = markerSnippet
+            )
         }
     }
 }
@@ -80,17 +77,15 @@ private fun PreviewGoogleMap() {
     val uiSettings by remember { mutableStateOf(MapUiSettings()) }
     val properties by remember { mutableStateOf(MapProperties(mapType = MapType.SATELLITE)) }
 
-    TheLabTheme {
-        Box(modifier = Modifier.fillMaxSize()) {
-            GoogleMap(
-                modifier = Modifier.matchParentSize(),
-                properties = properties,
-                uiSettings = uiSettings,
-                location = (1.35 to 103.87).toLocation(),
-                markerTitle = "Singapore",
-                markerSnippet = "Marker in Singapore",
-                onMapLoaded = {}
-            )
-        }
+    Box(modifier = Modifier.fillMaxSize()) {
+        GoogleMap(
+            modifier = Modifier.matchParentSize(),
+            properties = properties,
+            uiSettings = uiSettings,
+            location = (1.35 to 103.87).toLocation(),
+            markerTitle = "Singapore",
+            markerSnippet = "Marker in Singapore",
+            onMapLoaded = {}
+        )
     }
 }

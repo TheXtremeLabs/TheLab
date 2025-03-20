@@ -51,6 +51,7 @@ import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.compose.UserState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import org.kotools.types.EmailAddress
@@ -367,8 +368,9 @@ fun SubmitFormButton(
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun FormScreen(
+    theme: AppTheme,
+    darkTheme: Boolean,
     userUiState: UserState,
-    isDarkMode: Boolean,
     emailHasError: Boolean,
     passwordsHasError: Boolean,
     firstname: String,
@@ -391,7 +393,7 @@ fun FormScreen(
     onUpdateShouldShowExitDialogConfirmation: (Boolean) -> Unit,
     onNavigateToSignUpSuccessScreen: () -> Unit
 ) {
-    TheLabTheme(darkTheme = isDarkMode) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
             // Form Content
             Column(
@@ -402,7 +404,7 @@ fun FormScreen(
             ) {
                 Text(
                     text = "Please fill this form to register",
-                    color = if (!isDarkMode) Color.Black else Color.White
+                    color = if (!darkTheme) Color.Black else Color.White
                 )
 
                 FormFields(
@@ -477,7 +479,7 @@ fun FormScreen(
 @DevicePreviews
 @Composable
 private fun PreviewSubmitFormButton(@PreviewParameter(PreviewProviderUserState::class) state: UserState) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         SubmitFormButton(userState = state, userFormButtonEnabled = state !is UserState.Saving) {}
     }
 }
@@ -486,7 +488,8 @@ private fun PreviewSubmitFormButton(@PreviewParameter(PreviewProviderUserState::
 @DevicePreviews
 @Composable
 private fun PreviewFormFields(@PreviewParameter(PreviewProviderUser::class) user: User) {
-    TheLabTheme {
+
+    TheLabTheme(theme = AppTheme.Default) {
         FormFields(
             modifier = Modifier.fillMaxSize(),
             emailHasError = false,
@@ -513,17 +516,11 @@ private fun PreviewFormFields(@PreviewParameter(PreviewProviderUser::class) user
 private fun PreviewFormScreen(@PreviewParameter(PreviewProviderUserState::class) state: UserState) {
     val user: User = User.mockUserForTests[0]
 
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         FormScreen(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             userUiState = state,
-            isDarkMode = isSystemInDarkTheme(),
-            userFormButtonEnabled = state !is UserState.Saving,
-            onSubmitForm = {},
-            isSubmitSuccess = state is UserState.Saved,
-            message = "Please enter",
-            shouldShowSaveOrErrorView = false,
-            onUpdateShouldShowExitDialogConfirmation = {},
-            onNavigateToSignUpSuccessScreen = {},
             emailHasError = false,
             passwordsHasError = false,
             firstname = user.firstname,
@@ -537,7 +534,14 @@ private fun PreviewFormScreen(@PreviewParameter(PreviewProviderUserState::class)
             password = user.password,
             onUpdatePassword = {},
             passwordConfirmation = user.password,
-            onUpdatePasswordConfirmation = {}
+            onUpdatePasswordConfirmation = {},
+            userFormButtonEnabled = state !is UserState.Saving,
+            onSubmitForm = {},
+            isSubmitSuccess = state is UserState.Saved,
+            message = "Please enter",
+            shouldShowSaveOrErrorView = false,
+            onUpdateShouldShowExitDialogConfirmation = {},
+            onNavigateToSignUpSuccessScreen = {}
         )
     }
 }

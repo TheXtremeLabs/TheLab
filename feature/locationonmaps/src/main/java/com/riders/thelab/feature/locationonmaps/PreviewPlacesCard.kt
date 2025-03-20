@@ -3,6 +3,7 @@ package com.riders.thelab.feature.locationonmaps
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,11 +28,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityOptionsCompat
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -43,7 +47,7 @@ import timber.log.Timber
 //
 ///////////////////////////////////////
 @Composable
-fun PlacesCard(uiEvent: (UiEvent) -> Unit) {
+fun PlacesCard(theme: AppTheme, darkTheme: Boolean, uiEvent: (UiEvent) -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var addressString by remember { mutableStateOf("Search for a place...") }
@@ -82,7 +86,7 @@ fun PlacesCard(uiEvent: (UiEvent) -> Unit) {
         }
     }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -136,6 +140,11 @@ fun PlacesCard(uiEvent: (UiEvent) -> Unit) {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewPlacesCard() {
-    TheLabTheme { PlacesCard {} }
+private fun PreviewPlacesCard(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        PlacesCard(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme()
+        ) {}
+    }
 }

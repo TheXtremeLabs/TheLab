@@ -35,12 +35,14 @@ import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ArtistMainScreen(
+    theme: AppTheme, darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
@@ -49,7 +51,7 @@ fun ArtistMainScreen(
 ) {
     val lazyGridState = rememberLazyGridState()
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -57,6 +59,7 @@ fun ArtistMainScreen(
             horizontalAlignment = Alignment.Start
         ) {
             TheLabTopAppBar(
+                theme = theme,
                 toolbarSize = ToolbarSize.SMALL,
                 withGradientBackground = false,
                 mainCustomContent = {
@@ -94,6 +97,7 @@ fun ArtistMainScreen(
             ) {
                 itemsIndexed(items = artists) { index, item ->
                     ArtistItem(
+                        theme = theme, darkTheme = darkTheme,
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope,
                         artist = item,
@@ -113,7 +117,7 @@ fun ArtistMainScreen(
 private fun PreviewArtistMainScreen(@PreviewParameter(PreviewProviderArtists::class) artists: List<ArtistModel>) {
     val navController = rememberNavController()
 
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
             NavHost(
                 modifier = Modifier.fillMaxSize(),
@@ -122,6 +126,7 @@ private fun PreviewArtistMainScreen(@PreviewParameter(PreviewProviderArtists::cl
             ) {
                 composable<ArtistScreen.List> {
                     ArtistMainScreen(
+                        theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this,
                         modifier = Modifier.fillMaxSize(),

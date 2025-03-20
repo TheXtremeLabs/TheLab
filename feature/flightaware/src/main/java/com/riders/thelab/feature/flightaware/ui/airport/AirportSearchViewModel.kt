@@ -12,6 +12,7 @@ import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.toAirportModel
 import com.riders.thelab.core.data.local.model.flight.toAirportSearchModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +29,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AirportSearchViewModel @Inject constructor(
-    private val repository: IRepository
+    private val repository: IRepository,
+    val  uiRepository: IUiRepository
 ) : ViewModel() {
 
     //////////////////////////////////////////

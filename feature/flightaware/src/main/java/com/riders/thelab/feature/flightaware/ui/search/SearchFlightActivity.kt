@@ -15,9 +15,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.flightaware.ui.flight.FlightDetailActivity
 import com.riders.thelab.feature.flightaware.utils.Constants
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotools.types.experimental.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
@@ -25,11 +28,16 @@ import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class SearchFlightActivity : BaseComponentActivity() {
 
     private val mViewModel: SearchFlightViewModel by viewModels<SearchFlightViewModel>()
+
+    @Inject
+    lateinit var uiRepository: IUiRepository
+
     private val locale = Locale.getDefault()
     private var currentDate: NotBlankString? = null
 
@@ -47,17 +55,26 @@ class SearchFlightActivity : BaseComponentActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+
                 setContent {
+                    val theme: AppTheme by uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
 
                     val uiState by mViewModel.searchFlightUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             SearchFlightsContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme,
                                 currentDate = currentDate!!,
                                 uiState = uiState
                             ) { event ->

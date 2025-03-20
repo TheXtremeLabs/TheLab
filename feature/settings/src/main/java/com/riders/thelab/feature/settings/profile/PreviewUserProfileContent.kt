@@ -3,6 +3,7 @@ package com.riders.thelab.feature.settings.profile
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +53,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -59,28 +61,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_surfaceVariant
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_surfaceVariant
 import com.riders.thelab.feature.settings.R
 import java.util.Locale
 
-private val lightGradient =
-    listOf(
-        Color.Transparent,
-        md_theme_light_background,
-        md_theme_light_surfaceVariant,
-        md_theme_light_surfaceVariant
-    )
-private val darkGradient =
-    listOf(
-        Color.Transparent,
-        md_theme_dark_background,
-        md_theme_dark_surfaceVariant,
-        md_theme_dark_surfaceVariant
-    )
 
 ///////////////////////////////
 //
@@ -268,14 +254,22 @@ fun FormFields(viewModel: UserProfileViewModel) {
 }
 
 @Composable
-fun UserProfileContent(viewModel: UserProfileViewModel) {
+fun UserProfileContent(theme: AppTheme, darkTheme: Boolean, viewModel: UserProfileViewModel) {
     val lazyListState = rememberLazyListState()
 
-    TheLabTheme(viewModel.isDarkMode) {
+    val gradient = listOf(
+        Color.Transparent,
+        MaterialTheme.colorScheme.background,
+        MaterialTheme.colorScheme.surfaceVariant,
+        MaterialTheme.colorScheme.surfaceVariant
+    )
+
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TheLabTopAppBar(
+                    theme = theme,
                     viewModel = viewModel,
                     title = stringResource(id = R.string.title_activity_user_information)
                 )
@@ -285,7 +279,7 @@ fun UserProfileContent(viewModel: UserProfileViewModel) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(brush = Brush.verticalGradient(if (!viewModel.isDarkMode) lightGradient else darkGradient))
+                    .background(brush = Brush.verticalGradient(gradient))
                     .zIndex(1f)
             )
 
@@ -387,9 +381,13 @@ fun UserProfileContent(viewModel: UserProfileViewModel) {
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewUserProfileContent() {
+private fun PreviewUserProfileContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val viewModel: UserProfileViewModel = hiltViewModel()
-    TheLabTheme {
-        UserProfileContent(viewModel = viewModel)
+    TheLabTheme(theme = appTheme) {
+        UserProfileContent(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            viewModel = viewModel
+        )
     }
 }

@@ -3,6 +3,7 @@ package com.riders.thelab.feature.youtube.ui.main
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,6 +25,7 @@ import com.riders.thelab.core.data.local.model.compose.youtube.YoutubeUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.NoItemFound
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import timber.log.Timber
 
@@ -35,7 +37,7 @@ import timber.log.Timber
 ///////////////////////////////////////
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun YoutubeContentSuccess(uiState: YoutubeUiState.Success) {
+fun YoutubeContentSuccess(theme: AppTheme, darkTheme: Boolean, uiState: YoutubeUiState.Success) {
     val navController = rememberNavController()
     val backstackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backstackEntry?.destination?.route
@@ -48,6 +50,7 @@ fun YoutubeContentSuccess(uiState: YoutubeUiState.Success) {
         ) {
             composable(route = YoutubeScreen.List.route.toString()) {
                 YoutubeListScreen(
+                    theme = theme, darkTheme = darkTheme,
                     sharedTransitionScope = this@SharedTransitionLayout,
                     animatedVisibilityScope = this@composable,
                     videos = uiState.videos,
@@ -65,6 +68,7 @@ fun YoutubeContentSuccess(uiState: YoutubeUiState.Success) {
                     backstackEntry.arguments?.getInt("id") ?: error("No URL")
 
                 YoutubeDetailScreen(
+                    theme = theme, darkTheme = darkTheme,
                     sharedTransitionScope = this@SharedTransitionLayout,
                     animatedVisibilityScope = this@composable,
                     modifier = Modifier.fillMaxSize(),
@@ -85,8 +89,8 @@ fun YoutubeContentSuccess(uiState: YoutubeUiState.Success) {
 }
 
 @Composable
-fun YoutubeContent(uiState: YoutubeUiState) {
-    TheLabTheme {
+fun YoutubeContent(theme: AppTheme, darkTheme: Boolean, uiState: YoutubeUiState) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(modifier = Modifier.fillMaxSize()) { contentPadding ->
             AnimatedContent(
                 modifier = Modifier
@@ -106,7 +110,11 @@ fun YoutubeContent(uiState: YoutubeUiState) {
                     }
 
                     is YoutubeUiState.Success -> {
-                        YoutubeContentSuccess(uiState = targetState)
+                        YoutubeContentSuccess(
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            uiState = targetState
+                        )
                     }
                 }
             }
@@ -122,7 +130,11 @@ fun YoutubeContent(uiState: YoutubeUiState) {
 @DevicePreviews
 @Composable
 private fun PreviewYoutubeContent(@PreviewParameter(PreviewProviderYoutube::class) uiState: YoutubeUiState) {
-    TheLabTheme {
-        YoutubeContent(uiState)
+    TheLabTheme(theme = AppTheme.Default) {
+        YoutubeContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            uiState = uiState
+        )
     }
 }

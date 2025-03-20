@@ -14,6 +14,7 @@ import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.Arrivals
 import com.riders.thelab.core.data.remote.dto.flight.Departures
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +27,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AirportSearchDetailViewModel @Inject constructor(
-    private val repository: IRepository
+    private val repository: IRepository,
+    val  uiRepository: IUiRepository
 ) : BaseViewModel(), DefaultLifecycleObserver {
 
     var airportID: NotBlankString? by mutableStateOf(null)

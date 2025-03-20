@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,14 +35,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
 import com.riders.thelab.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -54,14 +56,15 @@ import timber.log.Timber
 ///////////////////////////////
 @Composable
 fun SignUpHeader(
-    isDarkMode: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     currentDestination: NavDestination,
     onUpdateShouldShowExitDialogConfirmation: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    val headerTextColor = if (!isDarkMode) Color.Black else Color.White
+    val headerTextColor = if (!darkTheme) Color.Black else Color.White
 
     val progressBarEULA = remember { mutableFloatStateOf(0f) }
     val animatedProgressBarEULA = remember { Animatable(progressBarEULA.value) }
@@ -71,12 +74,12 @@ fun SignUpHeader(
     val animatedProgressBarSignUpSuccess = remember { Animatable(progressBarSignUpSuccess.value) }
 
 
-    TheLabTheme(darkTheme = isDarkMode) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background)
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -243,10 +246,11 @@ fun increaseProgressBar(
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewSignUpHeader() {
-    TheLabTheme {
+private fun PreviewSignUpHeader(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         SignUpHeader(
-            isDarkMode = isSystemInDarkTheme(),
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
             currentDestination = NavDestination(""),
             onUpdateShouldShowExitDialogConfirmation = {}
         )

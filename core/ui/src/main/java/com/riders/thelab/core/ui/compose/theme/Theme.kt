@@ -15,7 +15,6 @@ import androidx.core.view.WindowCompat
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.utils.switch
 
-
 @Composable
 fun TheLabTheme(
     // Specify the theme here

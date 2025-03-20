@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.theaters.main
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBItemModel
 
@@ -30,12 +32,14 @@ import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBIte
 ///////////////////////////////////////
 @Composable
 fun TheaterTMDBList(
+    theme: AppTheme,
+    darkTheme: Boolean,
     rowListState: LazyListState,
     categoryTitle: String,
     tmdbList: List<TMDBItemModel>,
     uiEvent: (UiEvent) -> Unit
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
                 modifier = Modifier.padding(start = 16.dp),
@@ -55,7 +59,12 @@ fun TheaterTMDBList(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 items(items = tmdbList) { tmdbItem ->
-                    TMDBItem(tmdbItem = tmdbItem, uiEvent = uiEvent)
+                    TMDBItem(
+                        theme = theme,
+                        darkTheme = darkTheme,
+                        tmdbItem = tmdbItem,
+                        uiEvent = uiEvent
+                    )
                 }
             }
         }
@@ -71,8 +80,10 @@ fun TheaterTMDBList(
 @DevicePreviews
 @Composable
 private fun PreviewTheaterTMDBList(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         TheaterTMDBList(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             rowListState = rememberLazyListState(),
             categoryTitle = "Trending Movies",
             tmdbList = listOf(item),

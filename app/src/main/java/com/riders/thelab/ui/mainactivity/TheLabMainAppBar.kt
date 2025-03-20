@@ -49,8 +49,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_primary
 
 @DevicePreviews
 @Composable
@@ -215,15 +214,13 @@ fun AppBarContent(viewModel: MainActivityViewModel, focusManager: FocusManager) 
 
 @Composable
 fun TheLabMainTopAppBar(viewModel: MainActivityViewModel, focusManager: FocusManager) {
-    TheLabTheme {
-        Box(
-            modifier = Modifier
-                .height(80.dp)
-                .fillMaxWidth()
-                .padding(0.dp)
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            AppBarContent(viewModel, focusManager)
-        }
+    Box(
+        modifier = Modifier
+            .height(80.dp)
+            .fillMaxWidth()
+            .padding(0.dp)
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        AppBarContent(viewModel, focusManager)
     }
 }

@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.theaters.main
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
 import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBMoviesUiState
@@ -23,6 +25,8 @@ import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
@@ -33,6 +37,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 ///////////////////////////////////////
 @Composable
 fun ScreenMovieContent(
+    theme: AppTheme, darkTheme: Boolean,
     trendingMovieItem: TMDBTrendingMovieItemUiState,
     movies: TMDBMoviesUiState,
     upcomingMovies: TMDBUpcomingMoviesUiState,
@@ -43,8 +48,7 @@ fun ScreenMovieContent(
     val lazyRowUpcomingListState = rememberLazyListState()
     val lazyRowPopularListState = rememberLazyListState()
 
-    TheLabTheme {
-
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
@@ -63,7 +67,12 @@ fun ScreenMovieContent(
                             val item: TMDBItemModel =
                                 targetState.response.results.map { it.toItemModel() }[0]
 
-                            TrendingTMDBItem(trendingItem = item, uiEvent = uiEvent)
+                            TrendingTMDBItem(
+                                theme = theme,
+                                darkTheme = darkTheme,
+                                trendingItem = item,
+                                uiEvent = uiEvent
+                            )
                         }
                     }
                 }
@@ -77,6 +86,8 @@ fun ScreenMovieContent(
                                 targetState.response.results.map { it.toItemModel() }
 
                             TheaterTMDBList(
+                                theme = theme,
+                                darkTheme = darkTheme,
                                 rowListState = lazyRowTrendingListState,
                                 categoryTitle = MovieCategoryEnum.TRENDING.value,
                                 tmdbList = tmdbList,
@@ -96,6 +107,8 @@ fun ScreenMovieContent(
                                 targetState.response.results.map { it.toItemModel() }
 
                             TheaterTMDBList(
+                                theme = theme,
+                                darkTheme = darkTheme,
                                 rowListState = lazyRowUpcomingListState,
                                 categoryTitle = MovieCategoryEnum.UPCOMING.value,
                                 tmdbList = tmdbList,
@@ -114,6 +127,8 @@ fun ScreenMovieContent(
                                 targetState.response.results.map { it.toItemModel() }
 
                             TheaterTMDBList(
+                                theme = theme,
+                                darkTheme = darkTheme,
                                 rowListState = lazyRowPopularListState,
                                 categoryTitle = MovieCategoryEnum.POPULAR.value,
                                 tmdbList = tmdbList,
@@ -146,9 +161,10 @@ fun ScreenMovieContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewScreenMoviesContent() {
-    TheLabTheme {
+private fun PreviewScreenMoviesContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         ScreenMovieContent(
+            theme = appTheme, darkTheme = isSystemInDarkTheme(),
             trendingMovieItem = TMDBTrendingMovieItemUiState.Success(
                 TMDBMovieResponse.mockTMDBMovieResponse
             ),

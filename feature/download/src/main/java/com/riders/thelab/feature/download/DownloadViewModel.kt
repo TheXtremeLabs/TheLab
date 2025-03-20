@@ -12,6 +12,7 @@ import com.riders.thelab.core.common.storage.FileManager
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.Download
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -34,7 +35,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DownloadViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val repository: IRepository
+    private val repository: IRepository,
+    val uiRepository: IUiRepository
 ) : BaseViewModel() {
 
     private var errorCount: Int = 0

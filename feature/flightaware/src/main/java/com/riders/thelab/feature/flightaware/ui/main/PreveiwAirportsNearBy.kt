@@ -11,6 +11,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +53,8 @@ import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.R
 import com.riders.thelab.feature.flightaware.core.component.GoogleMap
@@ -68,10 +71,10 @@ import timber.log.Timber
 //
 ///////////////////////////////////////
 @Composable
-fun AirportNearByItem(airport: AirportModel) {
+fun AirportNearByItem(theme: AppTheme, darkTheme: Boolean, airport: AirportModel) {
     val context = LocalContext.current
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -193,6 +196,8 @@ fun AirportNearByItem(airport: AirportModel) {
 
 @Composable
 fun AirportNearByContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
     modifier: Modifier,
     hasInternetConnection: Boolean,
     airports: List<AirportModel>,
@@ -201,7 +206,7 @@ fun AirportNearByContent(
 ) {
     val configuration = LocalConfiguration.current
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -269,7 +274,11 @@ fun AirportNearByContent(
 
                         LazyColumn(modifier = Modifier.fillMaxWidth(), state = lazyListState) {
                             items(items = airports) {
-                                AirportNearByItem(airport = it)
+                                AirportNearByItem(
+                                    theme = theme,
+                                    darkTheme = darkTheme,
+                                    airport = it
+                                )
                             }
                         }
                     }
@@ -287,25 +296,26 @@ fun AirportNearByContent(
 @DevicePreviews
 @Composable
 private fun PreviewAirportNearByItem(@PreviewParameter(PreviewProviderAirport::class) airport: AirportModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         Box(
             modifier = Modifier.background(cardBackgroundColor),
             contentAlignment = Alignment.Center
         ) {
-            AirportNearByItem(airport)
+            AirportNearByItem(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), airport)
         }
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewAirportNearByContentEmptyList() {
-    TheLabTheme {
+private fun PreviewAirportNearByContentEmptyList(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Box(
             modifier = Modifier.background(cardBackgroundColor),
             contentAlignment = Alignment.Center
         ) {
             AirportNearByContent(
+                theme = appTheme, darkTheme = isSystemInDarkTheme(),
                 modifier = Modifier,
                 hasInternetConnection = true,
                 airports = emptyList(),
@@ -319,12 +329,14 @@ private fun PreviewAirportNearByContentEmptyList() {
 @DevicePreviews
 @Composable
 private fun PreviewAirportNearByContent(@PreviewParameter(PreviewProviderAirport::class) airport: AirportModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         Box(
             modifier = Modifier.background(cardBackgroundColor),
             contentAlignment = Alignment.Center
         ) {
             AirportNearByContent(
+                theme = AppTheme.Default,
+                darkTheme = isSystemInDarkTheme(),
                 modifier = Modifier,
                 hasInternetConnection = true,
                 airports = listOf(airport),

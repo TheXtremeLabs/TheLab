@@ -8,11 +8,14 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.youtube.ui.main.YoutubeActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,13 +48,21 @@ class YoutubeSplashScreenActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-                    TheLabTheme {
+
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            YoutubeSplashScreenContent()
+                            YoutubeSplashScreenContent(theme = theme, darkTheme = isDarkTheme)
                         }
                     }
                 }
@@ -70,17 +81,18 @@ class YoutubeSplashScreenActivity : BaseComponentActivity() {
     // CLASS METHODS
     //
     /////////////////////////////////////
-    fun launchYoutubeActivity() = Intent(this@YoutubeSplashScreenActivity, YoutubeActivity::class.java)
-        .apply {
-            Timber.d("launchYoutubeActivity()")
-        }
-        .runCatching {
-            startActivity(this)
-        }
-        .onFailure { throwable ->
-            Timber.e("launchKatActivity() | onFailure | error caught with message: ${throwable.message} (class: ${throwable.javaClass.canonicalName})")
-        }
-        .onSuccess {
-            Timber.d("launchKatActivity() | onSuccess | Activity launched successfully")
-        }
+    fun launchYoutubeActivity() =
+        Intent(this@YoutubeSplashScreenActivity, YoutubeActivity::class.java)
+            .apply {
+                Timber.d("launchYoutubeActivity()")
+            }
+            .runCatching {
+                startActivity(this)
+            }
+            .onFailure { throwable ->
+                Timber.e("launchKatActivity() | onFailure | error caught with message: ${throwable.message} (class: ${throwable.javaClass.canonicalName})")
+            }
+            .onSuccess {
+                Timber.d("launchKatActivity() | onSuccess | Activity launched successfully")
+            }
 }

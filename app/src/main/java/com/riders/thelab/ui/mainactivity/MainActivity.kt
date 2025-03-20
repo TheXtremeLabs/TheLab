@@ -47,6 +47,7 @@ import com.riders.thelab.core.speechtotext.SpeechRecognizerError
 import com.riders.thelab.core.speechtotext.SpeechToTextManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.navigator.Navigator
@@ -112,15 +113,24 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 
                     mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
                     val dynamicIslandUiState by mViewModel.dynamicIslandState.collectAsStateWithLifecycle()
 
-                    TheLabTheme {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             MainContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme,
                                 dynamicIslandUiState = dynamicIslandUiState,
                                 isDynamicIslandVisible = mViewModel.isDynamicIslandVisible,
                                 searchedAppRequest = mViewModel.searchedAppRequest,

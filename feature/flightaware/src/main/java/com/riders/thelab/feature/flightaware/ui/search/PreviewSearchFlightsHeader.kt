@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.flightaware.ui.search
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.ui.zIndex
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.component.DottedLink
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
@@ -38,8 +40,13 @@ import kotools.types.text.NotBlankString
 //
 ///////////////////////////////////////
 @Composable
-fun SearchFlightsHeader(currentDate: NotBlankString, flight: SearchFlightModel) {
-    TheLabTheme {
+fun SearchFlightsHeader(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    currentDate: NotBlankString,
+    flight: SearchFlightModel
+) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.elevatedCardElevation(defaultElevation = 16.dp),
@@ -66,6 +73,8 @@ fun SearchFlightsHeader(currentDate: NotBlankString, flight: SearchFlightModel) 
 
                 // Top Flight Icon
                 DottedLink(
+                    theme = theme,
+                    darkTheme = darkTheme,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(.85f)
@@ -152,7 +161,12 @@ fun SearchFlightsHeader(currentDate: NotBlankString, flight: SearchFlightModel) 
 @DevicePreviews
 @Composable
 private fun PreviewSearchFlightsHeader(@PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel) {
-    TheLabTheme {
-        SearchFlightsHeader(currentDate = NotBlankString.create("24/04/2024"), flight = flight)
+    TheLabTheme(theme = AppTheme.Default) {
+        SearchFlightsHeader(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            currentDate = NotBlankString.create("24/04/2024"),
+            flight = flight
+        )
     }
 }

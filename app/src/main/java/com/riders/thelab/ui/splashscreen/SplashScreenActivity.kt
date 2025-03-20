@@ -15,12 +15,15 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,13 +78,22 @@ class SplashScreenActivity : ComponentActivity() {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-                    TheLabTheme {
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             SplashScreenContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme,
                                 version = mViewModel.version,
                                 videoPath = mViewModel.videoPath,
                                 switchContent = mViewModel.switchContent,

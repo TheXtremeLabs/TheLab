@@ -10,6 +10,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,10 +31,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.delay
 
@@ -45,7 +49,7 @@ import kotlinx.coroutines.delay
 ///////////////////////////////////////
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun MLKitComposeContent() {
+fun MLKitComposeContent(theme: AppTheme, darkTheme: Boolean) {
     val animationDelay = 1500
 
     var border by remember { mutableStateOf(0.dp) }
@@ -86,59 +90,65 @@ fun MLKitComposeContent() {
         }
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = { TheLabTopAppBar(withGradientBackground = true) }
-    ) { contentPadding ->
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TheLabTopAppBar(
+                    theme = theme, withGradientBackground = true
+                )
+            }
+        ) { contentPadding ->
 
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding)
-        ) {
-            Box(
+            BoxWithConstraints(
                 modifier = Modifier
-                    //.size(width, height)
-                    .align(Alignment.Center)
-                    //.wrapContentSize()
-                    .clip(RoundedCornerShape(16.dp)),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .padding(contentPadding)
             ) {
-                // animating circles
-                ripples.forEachIndexed { index, animatable ->
-                    Box(
-                        modifier = Modifier
-                            .scale(scale = animatable.value)
-                            .size(size = 500.dp)
-                            .clip(shape = RoundedCornerShape(16.dp))
-                            .background(color = Color.White.copy(alpha = (1 - animatable.value)))
-                    ) {
+                Box(
+                    modifier = Modifier
+                        //.size(width, height)
+                        .align(Alignment.Center)
+                        //.wrapContentSize()
+                        .clip(RoundedCornerShape(16.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // animating circles
+                    ripples.forEachIndexed { index, animatable ->
+                        Box(
+                            modifier = Modifier
+                                .scale(scale = animatable.value)
+                                .size(size = 500.dp)
+                                .clip(shape = RoundedCornerShape(16.dp))
+                                .background(color = Color.White.copy(alpha = (1 - animatable.value)))
+                        ) {
+                        }
                     }
+
+                    CameraView(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .clip(RoundedCornerShape(16.dp))
+                            .border(
+                                width = borderAnimation,
+                                color = Color.White,
+                                shape = RoundedCornerShape(16.dp)
+                            )
+                            .onGloballyPositioned {
+                                /*if (it.isAttached) {
+                                    boxSize = it.size
+                                }*/
+                            })
                 }
 
-                CameraView(
+                Text(
                     modifier = Modifier
-                        .align(Alignment.Center)
-                        .clip(RoundedCornerShape(16.dp))
-                        .border(
-                            width = borderAnimation,
-                            color = Color.White,
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                        .onGloballyPositioned {
-                            /*if (it.isAttached) {
-                                boxSize = it.size
-                            }*/
-                        })
+                        .align(Alignment.TopCenter)
+                        .padding(top = 48.dp)
+                        .zIndex(2f),
+                    text = "Scan QR Code"
+                )
             }
-
-            Text(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 48.dp)
-                    .zIndex(2f),
-                text = "Scan QR Code"
-            )
         }
     }
 }
@@ -150,8 +160,8 @@ fun MLKitComposeContent() {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewMLKitComposeContent() {
-    TheLabTheme {
-        MLKitComposeContent()
+private fun PreviewMLKitComposeContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        MLKitComposeContent(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }

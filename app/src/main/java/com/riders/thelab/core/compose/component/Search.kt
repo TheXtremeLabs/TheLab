@@ -47,10 +47,11 @@ import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_primary
 import com.riders.thelab.core.ui.compose.component.dynamicisland.CallWaveform
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.ui.mainactivity.MainActivity
 import timber.log.Timber
@@ -199,7 +200,7 @@ fun Search(
 @DevicePreviews
 @Composable
 fun PreviewSearch(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         Search(
             dynamicIslandState = state,
             searchedAppRequest = "Colors",

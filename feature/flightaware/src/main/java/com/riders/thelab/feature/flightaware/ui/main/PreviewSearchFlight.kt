@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
@@ -56,6 +57,8 @@ import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.dropdown.LabDropdownMenu2
 import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
 import com.riders.thelab.core.ui.compose.component.textfield.LabOutlinedTextField
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.BuildConfig
 import com.riders.thelab.feature.flightaware.R
@@ -77,11 +80,11 @@ import timber.log.Timber
 ///////////////////////////////////////
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
-fun SearchFlightByCode(uiEvent: (UiEvent) -> Unit) {
+fun SearchFlightByCode(theme: AppTheme, darkTheme: Boolean, uiEvent: (UiEvent) -> Unit) {
     val context = LocalContext.current
     var flightNumber by remember { mutableStateOf("") }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -109,6 +112,7 @@ fun SearchFlightByCode(uiEvent: (UiEvent) -> Unit) {
                     contentAlignment = Alignment.CenterStart
                 ) {
                     LabOutlinedTextField(
+                        theme = theme,
                         modifier = Modifier.fillMaxSize(),
                         onOutsideBoundariesClicked = false,
                         query = flightNumber,
@@ -179,6 +183,8 @@ fun SearchFlightByCode(uiEvent: (UiEvent) -> Unit) {
 
 @Composable
 fun SearchFlightByDestination(
+    theme: AppTheme,
+    darkTheme: Boolean,
     onOutsideBoundariesClicked: Boolean,
     departureExpanded: Boolean,
     departureSuggestions: List<AirportSearchModel>,
@@ -190,7 +196,7 @@ fun SearchFlightByDestination(
     var departureQuery by remember { mutableStateOf("") }
     var arrivalQuery by remember { mutableStateOf("") }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -229,6 +235,7 @@ fun SearchFlightByDestination(
 
                     // Departure
                     LabDropdownMenu2(
+                        theme = theme,
                         modifier = Modifier.fillMaxWidth(),
                         query = departureQuery,
 //                        onUpdateQuery = { uiEvent.invoke(UiEvent.OnUpdateDepartureQuery(it)) },
@@ -264,7 +271,12 @@ fun SearchFlightByDestination(
                             }
                         },
                         dropdownItemContent = {
-                            AirportSearchItem(item = departureSuggestions[it], isSuggestion = true)
+                            AirportSearchItem(
+                                theme = theme,
+                                darkTheme = darkTheme,
+                                item = departureSuggestions[it],
+                                isSuggestion = true
+                            )
                         }
                     )
                 }
@@ -324,6 +336,7 @@ fun SearchFlightByDestination(
 
                     // Arrival
                     LabDropdownMenu2(
+                        theme = theme,
                         modifier = Modifier.fillMaxWidth(),
                         query = arrivalQuery,
 //                        onUpdateQuery = { uiEvent.invoke(UiEvent.OnUpdateArrivalQuery(it)) },
@@ -359,7 +372,12 @@ fun SearchFlightByDestination(
                             }
                         },
                         dropdownItemContent = {
-                            AirportSearchItem(item = arrivalSuggestions[it], isSuggestion = true)
+                            AirportSearchItem(
+                                theme = theme,
+                                darkTheme = darkTheme,
+                                item = arrivalSuggestions[it],
+                                isSuggestion = true
+                            )
                         }
                     )
                 }
@@ -398,6 +416,8 @@ fun SearchFlightByDestination(
 
 @Composable
 fun SearchFlightContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
     uiEvent: (UiEvent) -> Unit,
     searchPageIndex: Int,
     onOutsideBoundariesClicked: Boolean,
@@ -418,7 +438,7 @@ fun SearchFlightContent(
 
     val pagerState = rememberPagerState { tabs.size }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -434,6 +454,7 @@ fun SearchFlightContent(
             BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     LabTabRow(
+                        theme = theme,
                         modifier = Modifier.fillMaxWidth(),
                         items = tabs,
                         selectedItemIndex = searchPageIndex,
@@ -449,16 +470,21 @@ fun SearchFlightContent(
                     }
 
                     LabHorizontalViewPagerGeneric(
+                        theme = theme,
                         pagerState = pagerState,
                         items = tabs,
                         onCurrentPageChanged = {}
                     ) { page, _ ->
                         when (page) {
                             0 -> SearchFlightByCode(
+                                theme = theme,
+                                darkTheme = darkTheme,
                                 uiEvent = uiEvent
                             )
 
                             1 -> SearchFlightByDestination(
+                                theme = theme,
+                                darkTheme = darkTheme,
                                 onOutsideBoundariesClicked = onOutsideBoundariesClicked,
                                 departureExpanded = departureExpanded,
                                 departureSuggestions = departureSuggestions,
@@ -487,23 +513,23 @@ fun SearchFlightContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewSearchFlightByCode() {
-    TheLabTheme {
+private fun PreviewSearchFlightByCode(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = backgroundColor),
             contentAlignment = Alignment.Center
         ) {
-            SearchFlightByCode(uiEvent = {})
+            SearchFlightByCode(theme = appTheme, darkTheme = isSystemInDarkTheme(), uiEvent = {})
         }
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewSearchFlightByDestination() {
-    TheLabTheme {
+private fun PreviewSearchFlightByDestination(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -511,6 +537,8 @@ private fun PreviewSearchFlightByDestination() {
             contentAlignment = Alignment.Center
         ) {
             SearchFlightByDestination(
+                theme = appTheme,
+                darkTheme = isSystemInDarkTheme(),
                 onOutsideBoundariesClicked = false,
                 departureExpanded = false,
                 departureSuggestions = listOf(),
@@ -523,10 +551,13 @@ private fun PreviewSearchFlightByDestination() {
 
 @DevicePreviews
 @Composable
-private fun PreviewSearchFlightContent() {
-    TheLabTheme {
+private fun PreviewSearchFlightContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         SearchFlightContent(
-            uiEvent = {}, 0,
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            uiEvent = {},
+            0,
             onOutsideBoundariesClicked = false,
             departureExpanded = false,
             departureSuggestions = emptyList(),
@@ -538,9 +569,11 @@ private fun PreviewSearchFlightContent() {
 
 @DevicePreviews
 @Composable
-private fun PreviewSearchFlightContentPage() {
-    TheLabTheme {
+private fun PreviewSearchFlightContentPage(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         SearchFlightContent(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
             searchPageIndex = 1,
             onOutsideBoundariesClicked = false,
             departureExpanded = false,

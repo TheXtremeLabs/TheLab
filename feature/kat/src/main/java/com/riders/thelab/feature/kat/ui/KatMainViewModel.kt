@@ -16,6 +16,7 @@ import com.riders.thelab.core.data.local.model.kat.toKatDto
 import com.riders.thelab.core.data.remote.dto.kat.FCDKatUser
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.kat.BuildConfig
 import com.riders.thelab.feature.kat.utils.FirebaseUtils
@@ -28,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 @SuppressLint("StaticFieldLeak")
 class KatMainViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    val uiRepository: IUiRepository
 ) : BaseViewModel() {
 
     /////////////////////////

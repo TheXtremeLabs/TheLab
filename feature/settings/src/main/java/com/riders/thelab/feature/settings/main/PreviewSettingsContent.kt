@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.settings.main
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,12 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.compose.settings.DeviceInfoUiState
 import com.riders.thelab.core.data.local.model.compose.settings.UserUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
@@ -26,9 +30,9 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 ///////////////////////////////
 @Composable
 fun SettingsContent(
+    theme: AppTheme, darkTheme: Boolean,
     deviceInformationUiState: DeviceInfoUiState,
     userUiState: UserUiState,
-    isDarkMode: Boolean,
     themeOptions: List<String>,
     version: String,
     showModeInfo: Boolean,
@@ -38,12 +42,13 @@ fun SettingsContent(
 ) {
     val lazyListState = rememberLazyListState()
 
-    TheLabTheme(darkTheme = isDarkMode) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TheLabTopAppBar(
-                    isDarkMode = isDarkMode,
+                    theme = theme,
+                    isDarkMode = darkTheme,
                     title = stringResource(id = R.string.activity_settings_title)
                 )
             }
@@ -59,7 +64,7 @@ fun SettingsContent(
             ) {
                 item {
                     AppSettingsSection(
-                        isDarkMode = isDarkMode,
+                        theme = theme, darkTheme = darkTheme,
                         themeOptions = themeOptions,
                         version = version,
                         isVibration = isVibration,
@@ -69,6 +74,7 @@ fun SettingsContent(
                 }
                 item {
                     DeviceInfoSection(
+                        theme = theme, darkTheme = darkTheme,
                         deviceInformationUiState = deviceInformationUiState,
                         showModeInfo = showModeInfo,
                         uiEvent = uiEvent
@@ -76,7 +82,12 @@ fun SettingsContent(
                 }
 
                 item {
-                    UserSection(userUiState = userUiState, uiEvent = uiEvent)
+                    UserSection(
+                        theme = theme,
+                        darkTheme = darkTheme,
+                        userUiState = userUiState,
+                        uiEvent = uiEvent
+                    )
                 }
             }
         }
@@ -91,12 +102,12 @@ fun SettingsContent(
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewSettingsContent() {
-    TheLabTheme {
+private fun PreviewSettingsContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         SettingsContent(
+            theme = appTheme, darkTheme = isSystemInDarkTheme(),
             deviceInformationUiState = DeviceInfoUiState.Loading,
             userUiState = UserUiState.Loading,
-            isDarkMode = true,
             themeOptions = listOf("Light", "Dark"),
             version = "12.14.11",
             showModeInfo = true,

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.feature.flightaware.core.component.DottedLink
@@ -67,6 +69,7 @@ private fun NotBlankString.toLocalDateTime(): LocalDateTime =
 ///////////////////////////////////////
 @Composable
 fun FlightStatusCard(
+    theme: AppTheme, darkTheme: Boolean,
     flightId: NotBlankString,
     airlineIATA: NotBlankString,
     departureAirportIataCode: NotBlankString,
@@ -83,7 +86,7 @@ fun FlightStatusCard(
         placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -150,6 +153,8 @@ fun FlightStatusCard(
                     )
 
                     DottedLink(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         modifier = Modifier
                             .weight(1f)
                             .padding(horizontal = 16.dp)
@@ -189,12 +194,14 @@ fun FlightStatusCard(
 
 @Composable
 fun InfoContainerTitleDescription(
+    theme: AppTheme,
+    darkTheme: Boolean,
     modifier: Modifier = Modifier,
     title: NotBlankString,
     description: NotBlankString,
     isRightSide: Boolean = false
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier.then(modifier),
             horizontalAlignment = if (isRightSide) Alignment.End else Alignment.Start,
@@ -225,6 +232,8 @@ fun InfoContainerTitleDescription(
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun FlightInfoContainer(
+    theme: AppTheme,
+    darkTheme: Boolean,
     airline: NotBlankString,
     aircraftType: NotBlankString,
     estimatedDepartureDate: NotBlankString,
@@ -239,7 +248,7 @@ fun FlightInfoContainer(
     val locale by remember { mutableStateOf(Locale.getDefault()) }
     val formatter = DateTimeFormatter.ofPattern(SearchFlightActivity.DATE_FORMAT_PATTERN, locale)
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -261,11 +270,15 @@ fun FlightInfoContainer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     InfoContainerTitleDescription(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         title = NotBlankString.create("Airline"),
                         description = airline
                     )
 
                     InfoContainerTitleDescription(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         title = NotBlankString.create("Aircraft type"),
                         description = aircraftType,
                         isRightSide = true
@@ -279,6 +292,8 @@ fun FlightInfoContainer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     InfoContainerTitleDescription(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         modifier = Modifier.weight(1f),
                         title = NotBlankString.create("Estimated Departure date"),
                         description = NotBlankString.create(
@@ -288,6 +303,8 @@ fun FlightInfoContainer(
                     )
 
                     InfoContainerTitleDescription(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         modifier = Modifier.weight(1f),
                         title = NotBlankString.create("Estimated Arrival date"),
                         description = NotBlankString.create(
@@ -306,6 +323,8 @@ fun FlightInfoContainer(
                 ) {
 
                     InfoContainerTitleDescription(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         title = NotBlankString.create("Departure time"),
                         description = NotBlankString.create(
                             if (estimatedDepartureTime.toString() == "N/A") "N/A" else estimatedDepartureTime.toLocalDateTime()
@@ -314,6 +333,8 @@ fun FlightInfoContainer(
                     )
 
                     InfoContainerTitleDescription(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         title = NotBlankString.create("Arrival time"),
                         description = NotBlankString.create(
                             if (estimatedArrivalTime.toString() == "N/A") "N/A" else estimatedArrivalTime.toLocalDateTime()
@@ -330,6 +351,8 @@ fun FlightInfoContainer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     InfoContainerTitleDescription(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         modifier = Modifier.weight(1f),
                         title = NotBlankString.create("Actual Departure date"),
                         description = NotBlankString.create(
@@ -339,6 +362,8 @@ fun FlightInfoContainer(
                     )
 
                     InfoContainerTitleDescription(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         modifier = Modifier.weight(1f),
                         title = NotBlankString.create("Actual Arrival date"),
                         description = NotBlankString.create(
@@ -357,6 +382,8 @@ fun FlightInfoContainer(
                 ) {
 
                     InfoContainerTitleDescription(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         title = NotBlankString.create("Actual Departure time"),
                         description = NotBlankString.create(
                             if (actualDepartureTime.toString() == "N/A") "N/A" else actualDepartureTime.toLocalDateTime()
@@ -365,6 +392,8 @@ fun FlightInfoContainer(
                     )
 
                     InfoContainerTitleDescription(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         title = NotBlankString.create("Actual Arrival time"),
                         description = NotBlankString.create(
                             if (actualArrivalTime.toString() == "N/A") "N/A" else actualArrivalTime.toLocalDateTime()
@@ -380,13 +409,13 @@ fun FlightInfoContainer(
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
-fun FlightDetailSuccessContent(flight: SearchFlightModel) {
+fun FlightDetailSuccessContent(theme: AppTheme, darkTheme: Boolean, flight: SearchFlightModel) {
     val lazyListState = rememberLazyListState()
 
     // this is to disable the ripple effect
     val interactionSource = remember { MutableInteractionSource() }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -399,6 +428,8 @@ fun FlightDetailSuccessContent(flight: SearchFlightModel) {
         ) {
             item {
                 FlightStatusCard(
+                    theme = theme,
+                    darkTheme = darkTheme,
                     flightId = NotBlankString.create(
                         flight.faFlightID.toString().split("-")[0]
                     ),
@@ -413,6 +444,8 @@ fun FlightDetailSuccessContent(flight: SearchFlightModel) {
 
             item {
                 FlightInfoContainer(
+                    theme = theme,
+                    darkTheme = darkTheme,
                     airline = flight.operatorID,
                     aircraftType = flight.aircraftType ?: NotBlankString.create("N/A"),
                     estimatedDepartureDate = flight.estimatedOut
@@ -443,7 +476,7 @@ fun FlightDetailSuccessContent(flight: SearchFlightModel) {
 @DevicePreviews
 @Composable
 private fun PreviewFlightStatusCard(@PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -451,6 +484,8 @@ private fun PreviewFlightStatusCard(@PreviewParameter(PreviewProviderFlight::cla
             contentAlignment = Alignment.Center
         ) {
             FlightStatusCard(
+                theme = AppTheme.Default,
+                darkTheme = isSystemInDarkTheme(),
                 flightId = NotBlankString.create(flight.faFlightID.toString().split("-")[0]),
                 airlineIATA = flight.operatorID,
                 departureAirportIataCode = flight.origin?.codeIata ?: NotBlankString.create("N/A"),
@@ -465,8 +500,10 @@ private fun PreviewFlightStatusCard(@PreviewParameter(PreviewProviderFlight::cla
 @DevicePreviews
 @Composable
 private fun PreviewInfoContainerTitleDescription(@PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         InfoContainerTitleDescription(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             modifier = Modifier.background(backgroundColor),
             title = flight.estimatedOut!!,
             description = flight.scheduledOut!!
@@ -477,8 +514,10 @@ private fun PreviewInfoContainerTitleDescription(@PreviewParameter(PreviewProvid
 @DevicePreviews
 @Composable
 private fun PreviewInfoContainerTitleDescriptionRightSide(@PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         InfoContainerTitleDescription(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             modifier = Modifier.background(backgroundColor),
             title = flight.estimatedIn!!,
             description = flight.scheduledIn!!,
@@ -491,8 +530,10 @@ private fun PreviewInfoContainerTitleDescriptionRightSide(@PreviewParameter(Prev
 @DevicePreviews
 @Composable
 private fun PreviewFlightInfoContainer(@PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         FlightInfoContainer(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             airline = flight.operatorID,
             aircraftType = flight.aircraftType ?: NotBlankString.create("N/A"),
             estimatedDepartureDate = flight.estimatedOut
@@ -514,7 +555,11 @@ private fun PreviewFlightInfoContainer(@PreviewParameter(PreviewProviderFlight::
 @DevicePreviews
 @Composable
 private fun PreviewFlightDetailSuccessContent(@PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel) {
-    TheLabTheme {
-        FlightDetailSuccessContent(flight = flight)
+    TheLabTheme(theme = AppTheme.Default) {
+        FlightDetailSuccessContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            flight = flight
+        )
     }
 }

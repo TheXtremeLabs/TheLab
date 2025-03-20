@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 ///////////////////////////////////////
@@ -91,16 +94,16 @@ fun TickerBoard(
 
 @DevicePreviews
 @Composable
-private fun PreviewTickerBoard() {
-    TheLabTheme {
+private fun PreviewTickerBoard(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         TickerBoard("This is a Ticker Board", 5, 3, Modifier.fillMaxWidth())
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewTickerBoardWithCarriageReturn() {
-    TheLabTheme {
+private fun PreviewTickerBoardWithCarriageReturn(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         TickerBoard("This is a\nTicker Board", 5, 3, Modifier.fillMaxWidth())
     }
 }

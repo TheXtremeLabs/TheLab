@@ -2,6 +2,7 @@ package com.riders.thelab.feature.settings.main
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.DeviceInformation
 import com.riders.thelab.core.data.local.model.compose.settings.DeviceInfoUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.feature.settings.R
@@ -37,8 +39,13 @@ import com.riders.thelab.feature.settings.R
 //
 ///////////////////////////////
 @Composable
-fun ShowMoreButton(showMoreInfoOnDevice: Boolean, uiEvent: (UiEvent) -> Unit) {
-    TheLabTheme {
+fun ShowMoreButton(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    showMoreInfoOnDevice: Boolean,
+    uiEvent: (UiEvent) -> Unit
+) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Button(onClick = { uiEvent.invoke(UiEvent.OnUpdateShowMoreInfoOnDevice(!showMoreInfoOnDevice)) }) {
             AnimatedContent(
                 targetState = showMoreInfoOnDevice,
@@ -230,11 +237,12 @@ fun AndroidSpecs(deviceInfo: DeviceInformation, showMoreInfoOnDevice: Boolean) {
 
 @Composable
 fun DeviceInfoSection(
+    theme: AppTheme, darkTheme: Boolean,
     deviceInformationUiState: DeviceInfoUiState,
     showModeInfo: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -299,6 +307,7 @@ fun DeviceInfoSection(
                                     )
 
                                     ShowMoreButton(
+                                        theme = theme, darkTheme = darkTheme,
                                         showMoreInfoOnDevice = showModeInfo,
                                         uiEvent = uiEvent
                                     )
@@ -321,7 +330,12 @@ fun DeviceInfoSection(
 @DevicePreviews
 @Composable
 private fun PreviewDeviceInfoSection(@PreviewParameter(PreviewProviderDeviceInfoUiState::class) deviceUiState: DeviceInfoUiState) {
-    TheLabTheme {
-        DeviceInfoSection(deviceInformationUiState = deviceUiState, showModeInfo = true) {}
+    TheLabTheme(theme = AppTheme.Default) {
+        DeviceInfoSection(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            deviceInformationUiState = deviceUiState,
+            showModeInfo = true
+        ) {}
     }
 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +27,8 @@ import javax.inject.Inject
 @Suppress("EmptyMethod")
 @HiltViewModel
 class UserProfileViewModel @Inject constructor(
-    private val repository: IRepository
+    private val repository: IRepository,
+    val uiRepository: IUiRepository
 ) : BaseViewModel() {
 
     //////////////////////////////////////////

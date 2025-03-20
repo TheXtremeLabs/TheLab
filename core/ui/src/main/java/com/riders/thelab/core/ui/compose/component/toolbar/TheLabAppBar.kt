@@ -1,7 +1,6 @@
 package com.riders.thelab.core.ui.compose.component.toolbar
 
 import android.annotation.SuppressLint
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -49,9 +48,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.executeOnBackPressed
@@ -65,10 +65,10 @@ import timber.log.Timber
 ///////////////////////////
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
-@DevicePreviews
 @Composable
 fun TheLabTopAppBar(
-    @PreviewParameter(TextContentPreviewProvider::class) title: String,
+    theme: AppTheme,
+    title: String,
     toolbarHeight: Dp = 96.dp,
     hasTransparentBackground: Boolean = false,
     isDarkThemeForced: Boolean = false,
@@ -78,7 +78,10 @@ fun TheLabTopAppBar(
 ) {
     val context = LocalContext.current
 
-    TheLabTheme(if (isDarkThemeForced) isDarkTheme else isSystemInDarkTheme()) {
+    TheLabTheme(
+        theme = theme,
+        darkTheme = if (isDarkThemeForced) isDarkTheme else isSystemInDarkTheme()
+    ) {
         TopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -117,10 +120,10 @@ fun TheLabTopAppBar(
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TheLabTopAppBar(viewModel: BaseViewModel, title: String) {
+fun TheLabTopAppBar(theme: AppTheme, viewModel: BaseViewModel, title: String) {
     val context = LocalContext.current
 
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
+    TheLabTheme(theme = theme, darkTheme = viewModel.isDarkMode) {
         TopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -159,10 +162,10 @@ fun TheLabTopAppBar(viewModel: BaseViewModel, title: String) {
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TheLabTopAppBar(isDarkMode: Boolean, title: String) {
+fun TheLabTopAppBar(theme: AppTheme, isDarkMode: Boolean, title: String) {
     val context = LocalContext.current
 
-    TheLabTheme(darkTheme = isDarkMode) {
+    TheLabTheme(theme = theme, darkTheme = isDarkMode) {
         TopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -203,7 +206,8 @@ fun TheLabTopAppBar(isDarkMode: Boolean, title: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheLabTopAppBar(
-    @PreviewParameter(TextContentPreviewProvider::class) title: String? = null,
+    theme: AppTheme,
+    title: String? = null,
     toolbarMaxHeight: Dp = 96.dp,
     mainCustomContent: @Composable (() -> Unit)? = null,
     withGradientBackground: Boolean = false,
@@ -215,7 +219,7 @@ fun TheLabTopAppBar(
 ) {
     val context = LocalContext.current
 
-    TheLabTheme(viewModel?.isDarkMode ?: isSystemInDarkTheme()) {
+    TheLabTheme(theme = theme, darkTheme = viewModel?.isDarkMode ?: isSystemInDarkTheme()) {
         TopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -275,6 +279,7 @@ fun TheLabTopAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheLabTopAppBar(
+    theme: AppTheme,
     toolbarSize: ToolbarSize,
     title: String? = null,
     titleColor: Color = Color.White,
@@ -289,7 +294,7 @@ fun TheLabTopAppBar(
 ) {
     val context = LocalContext.current
 
-    TheLabTheme(viewModel?.isDarkMode ?: isSystemInDarkTheme()) {
+    TheLabTheme(theme = theme, darkTheme = viewModel?.isDarkMode ?: isSystemInDarkTheme()) {
         when (toolbarSize) {
             ToolbarSize.SMALL -> {
                 TopAppBar(
@@ -471,13 +476,14 @@ fun TheLabTopAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheLabTopAppBar(
-    @PreviewParameter(TextContentPreviewProvider::class) title: String,
+    theme: AppTheme,
+    title: String,
     iconState: Boolean,
     actionBlock: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         TopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -534,12 +540,11 @@ fun TheLabTopAppBar(
 
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
-@DevicePreviews
 @Composable
-fun TheLabTopAppBarLarge() {
+fun TheLabTopAppBarLarge(theme: AppTheme) {
     val context = LocalContext.current
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         LargeTopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -611,8 +616,9 @@ fun TheLabTopAppBarLarge() {
 @DevicePreviews
 @Composable
 private fun PreviewTheLabTopAppBar(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         TheLabTopAppBar(
+            theme = AppTheme.Default,
             title = title,
             toolbarHeight = 56.dp,
             navigationIcon = {
@@ -629,8 +635,9 @@ private fun PreviewTheLabTopAppBar(@PreviewParameter(TextContentPreviewProvider:
 @DevicePreviews
 @Composable
 private fun PreviewTheLabTopAppBarDarkThemeForced(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         TheLabTopAppBar(
+            theme = AppTheme.Default,
             title = title,
             toolbarHeight = 56.dp,
             navigationIcon = {
@@ -649,8 +656,8 @@ private fun PreviewTheLabTopAppBarDarkThemeForced(@PreviewParameter(TextContentP
 @DevicePreviews
 @Composable
 private fun PreviewTheLabTopAppBarNoNavigationIcon(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
-    TheLabTheme {
-        TheLabTopAppBar(title = title, navigationIcon = null)
+    TheLabTheme(theme = AppTheme.Default) {
+        TheLabTopAppBar(theme = AppTheme.Default, title = title, navigationIcon = null)
     }
 }
 
@@ -670,8 +677,9 @@ private fun PreviewTheLabTopAppBarWithToolbarSizeTitleString(
         PreviewProviderToolbarSize::class
     ) toolbarSize: ToolbarSize
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         TheLabTopAppBar(
+            theme = AppTheme.Default,
             toolbarSize = toolbarSize,
             toolbarMaxHeight = if (ToolbarSize.LARGE == toolbarSize) dimensionResource(id = R.dimen.max_card_image_height) else 96.dp,
             title = "Palette",
@@ -689,8 +697,9 @@ private fun PreviewTheLabTopAppBarWithToolbarSizeCustomContent(
         PreviewProviderToolbarSize::class
     ) toolbarSize: ToolbarSize
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         TheLabTopAppBar(
+            theme = AppTheme.Default,
             toolbarSize = toolbarSize,
             toolbarMaxHeight = if (ToolbarSize.LARGE == toolbarSize) dimensionResource(id = R.dimen.max_card_image_height) else 96.dp,
             mainCustomContent = {
@@ -716,23 +725,27 @@ private fun PreviewTheLabTopAppBarWithToolbarSizeCustomContent(
 @DevicePreviews
 @Composable
 private fun PreviewTheLabTopAppBarWeatherGpsOn(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
-    TheLabTheme {
-        TheLabTopAppBar(title = title, iconState = true, actionBlock = {})
+    TheLabTheme(theme = AppTheme.Default) {
+        TheLabTopAppBar(theme = AppTheme.Default, title = title, iconState = true, actionBlock = {})
     }
 }
 
 @DevicePreviews
 @Composable
 private fun PreviewTheLabTopAppBarWeatherGpsOff(@PreviewParameter(TextContentPreviewProvider::class) title: String) {
-    TheLabTheme {
-        TheLabTopAppBar(title = title, iconState = false, actionBlock = {})
+    TheLabTheme(theme = AppTheme.Default) {
+        TheLabTopAppBar(
+            theme = AppTheme.Default,
+            title = title,
+            iconState = false,
+            actionBlock = {})
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewTheLabTopAppBarLarge() {
-    TheLabTheme {
-        TheLabTopAppBarLarge()
+private fun PreviewTheLabTopAppBarLarge(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        TheLabTopAppBarLarge(appTheme)
     }
 }

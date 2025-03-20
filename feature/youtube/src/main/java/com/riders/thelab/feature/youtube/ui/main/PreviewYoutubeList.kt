@@ -31,18 +31,20 @@ import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun YoutubeListScreen(
+    theme: AppTheme, darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
     videos: List<Video>,
     onVideoClicked: (Int) -> Unit
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -50,6 +52,7 @@ fun YoutubeListScreen(
             horizontalAlignment = Alignment.Start
         ) {
             TheLabTopAppBar(
+                theme = theme,
                 toolbarSize = ToolbarSize.SMALL,
                 withGradientBackground = false,
                 navigationIcon = {
@@ -74,6 +77,7 @@ fun YoutubeListScreen(
             ) {
                 itemsIndexed(items = videos) { index, item ->
                     YoutubeItem(
+                        theme = theme, darkTheme = darkTheme,
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope,
                         video = item,
@@ -93,7 +97,7 @@ fun YoutubeListScreen(
 private fun PreviewYoutubeListScreen(@PreviewParameter(PreviewProviderVideos::class) videos: List<Video>) {
     val navController = rememberNavController()
 
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
             NavHost(
                 modifier = Modifier.fillMaxSize(),
@@ -102,6 +106,7 @@ private fun PreviewYoutubeListScreen(@PreviewParameter(PreviewProviderVideos::cl
             ) {
                 composable(route = YoutubeScreen.List.route.toString()) {
                     YoutubeListScreen(
+                        theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this,
                         modifier = Modifier.fillMaxSize(),

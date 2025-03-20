@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,11 +35,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.Message
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
@@ -187,10 +191,17 @@ fun Conversation(messages: List<Message>) {
 
 
 @Composable
-fun ConversationContent() {
+fun ConversationContent(theme: AppTheme, darkTheme: Boolean) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { TheLabTopAppBar(title = stringResource(id = R.string.activity_compose_title)) }
+        topBar = {
+            TheLabTopAppBar(
+                theme = theme,
+                isDarkThemeForced = darkTheme,
+                isDarkTheme = darkTheme,
+                title = stringResource(id = R.string.activity_compose_title)
+            )
+        }
     ) { contentPadding ->
         Column(
             modifier = Modifier
@@ -204,8 +215,8 @@ fun ConversationContent() {
 
 @DevicePreviews
 @Composable
-fun PreviewConversation() {
-    TheLabTheme {
-        ConversationContent()
+fun PreviewConversation(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        ConversationContent(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }

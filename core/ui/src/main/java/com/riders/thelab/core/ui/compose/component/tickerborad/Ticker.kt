@@ -11,12 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.tickerborad.utils.AlphabetMapper
 import com.riders.thelab.core.ui.compose.component.tickerborad.utils.TickerStateHolder
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 @Composable
@@ -100,8 +103,8 @@ fun Ticker(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewTicker() {
-    TheLabTheme {
+private fun PreviewTicker(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Ticker(modifier = Modifier.height(72.dp), letter = 'T')
     }
 }

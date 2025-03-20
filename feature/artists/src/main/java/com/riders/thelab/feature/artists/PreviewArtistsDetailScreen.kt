@@ -68,6 +68,7 @@ import coil.compose.AsyncImagePainter
 import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.utils.loadImage
@@ -83,6 +84,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ArtistThumb(
+    theme: AppTheme, darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     boundsTransform: (Rect, Rect) -> TweenSpec<Rect>,
@@ -108,7 +110,7 @@ fun ArtistThumb(
     /* Create the Palette, pass the bitmap to it */
     var palette: Palette
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -175,6 +177,7 @@ fun ArtistThumb(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ArtistDetailScreen(
+    theme: AppTheme, darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier,
@@ -214,7 +217,7 @@ fun ArtistDetailScreen(
         })
     }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(modifier = modifier) {
             LazyColumn(
                 modifier = Modifier
@@ -227,6 +230,7 @@ fun ArtistDetailScreen(
                 item {
                     Box(modifier = Modifier.fillMaxSize()) {
                         ArtistThumb(
+                            theme = theme, darkTheme = darkTheme,
                             sharedTransitionScope = sharedTransitionScope,
                             animatedVisibilityScope = animatedVisibilityScope,
                             urlThumb = artist.urlThumb,
@@ -406,7 +410,7 @@ fun ArtistDetailScreen(
 @Composable
 private fun PreviewYoutubeDetailScreen(@PreviewParameter(PreviewProviderArtist::class) artist: ArtistModel) {
     val navController = rememberNavController()
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
             NavHost(
                 modifier = Modifier.fillMaxSize(),
@@ -415,6 +419,7 @@ private fun PreviewYoutubeDetailScreen(@PreviewParameter(PreviewProviderArtist::
             ) {
                 composable<ArtistScreen.Detail> {
                     ArtistDetailScreen(
+                        theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this,
                         modifier = Modifier.fillMaxSize(),

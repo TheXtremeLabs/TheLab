@@ -28,8 +28,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.success
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
-import com.riders.thelab.core.ui.compose.theme.success
 
 ///////////////////////////////////////
 //
@@ -65,7 +65,7 @@ fun NetworkAvailable() = NetworkStateContainer(
 @Composable
 fun NetworkLost() = NetworkStateContainer(
     icon = Icons.Filled.WifiOff,
-    networkStateColor = com.riders.thelab.core.ui.compose.theme.error
+    networkStateColor = com.riders.thelab.core.ui.compose.color.error
 )
 
 

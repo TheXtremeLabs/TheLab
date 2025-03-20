@@ -46,7 +46,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.utils.appWidgetBackgroundCornerRadius
 import com.riders.thelab.feature.weather.core.worker.WeatherWidgetWorker
 import com.riders.thelab.feature.weather.ui.WeatherActivity

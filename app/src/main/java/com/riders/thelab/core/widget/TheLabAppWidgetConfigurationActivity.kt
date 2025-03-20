@@ -11,8 +11,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.ui.mainactivity.MainActivity
 import timber.log.Timber
@@ -24,7 +27,7 @@ class TheLabAppWidgetConfigurationActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate()")
         setContent {
-            TheLabTheme {
+            TheLabTheme(theme = AppTheme.Default) {
                 Greeting()
             }
         }
@@ -62,10 +65,10 @@ fun Greeting() {
 }
 
 @ExperimentalMaterial3Api
-@Preview(showBackground = true)
+@DevicePreviews
 @Composable
-fun DefaultPreview() {
-    TheLabTheme {
+fun DefaultPreview(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Greeting()
     }
 }

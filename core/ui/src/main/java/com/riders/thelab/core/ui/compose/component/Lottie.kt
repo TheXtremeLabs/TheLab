@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -14,6 +15,8 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 ///////////////////////////////////////
@@ -64,8 +67,8 @@ fun Lottie(modifier: Modifier, url: String) {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewLottie() {
-    TheLabTheme {
+fun PreviewLottie(@PreviewParameter(AppThemePreviewProvider::class) appTheme:AppTheme) {
+    TheLabTheme(theme = AppTheme.Default) {
         Lottie(modifier = Modifier, rawResId = R.raw.error_rolling_dark_theme)
     }
 }

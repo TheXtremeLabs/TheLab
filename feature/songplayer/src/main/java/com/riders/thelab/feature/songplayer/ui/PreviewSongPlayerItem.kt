@@ -3,6 +3,7 @@ package com.riders.thelab.feature.songplayer.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.music.SongModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.dynamicisland.CallWaveform
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 private val shape = RoundedCornerShape(16.dp)
@@ -37,12 +39,13 @@ private val shape = RoundedCornerShape(16.dp)
 ///////////////////////////////////////
 @Composable
 fun SongPlayerItem(
+    theme: AppTheme, darkTheme: Boolean,
     selectedIndex: Int,
     index: Int,
     song: SongModel,
     onSelectedIndex: (Int) -> Unit
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .heightIn(50.dp, 90.dp)
@@ -104,7 +107,10 @@ fun SongPlayerItem(
 @DevicePreviews
 @Composable
 private fun PreviewSongPlayerItem(@PreviewParameter(PreviewProviderSong::class) song: SongModel) {
-    TheLabTheme {
-        SongPlayerItem(2, 2, song) {}
+    TheLabTheme(theme = AppTheme.Default) {
+        SongPlayerItem(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(), 2, 2, song
+        ) {}
     }
 }

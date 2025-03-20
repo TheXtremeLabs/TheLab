@@ -10,10 +10,13 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import timber.log.Timber
@@ -86,8 +89,8 @@ fun CameraView(modifier: Modifier) {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewCameraView() {
-    TheLabTheme {
+private fun PreviewCameraView(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         CameraView(Modifier)
     }
 }

@@ -28,6 +28,8 @@ import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.NoItemFound
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
@@ -38,6 +40,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 ///////////////////////////////////////
 @Composable
 fun SongPlayerContent(
+    theme: AppTheme, darkTheme: Boolean,
     songList: List<SongModel>,
     currentSongIndex: Int,
     isSongPlaying: Boolean,
@@ -53,10 +56,11 @@ fun SongPlayerContent(
     val darkModeForced = true
     val lazyListState = rememberLazyListState()
 
-    TheLabTheme(darkModeForced) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             topBar = {
                 TheLabTopAppBar(
+                    theme = theme,
                     title = stringResource(id = R.string.activity_title_music),
                     isDarkThemeForced = darkModeForced,
                     navigationIcon = {}
@@ -97,6 +101,7 @@ fun SongPlayerContent(
                         ) {
                             itemsIndexed(items = songList) { index: Int, item: SongModel ->
                                 SongPlayerItem(
+                                    theme = theme, darkTheme = darkTheme,
                                     selectedIndex = currentSongIndex,
                                     index = index,
                                     song = item
@@ -148,9 +153,11 @@ fun SongPlayerContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewSongPlayerContentEmpty() {
-    TheLabTheme(true) {
+private fun PreviewSongPlayerContentEmpty(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         SongPlayerContent(
+            theme = appTheme,
+            darkTheme = true,
             songList = emptyList(),
             currentSongIndex = -1,
             isSongPlaying = false,
@@ -168,8 +175,10 @@ private fun PreviewSongPlayerContentEmpty() {
 @DevicePreviews
 @Composable
 private fun PreviewSongPlayerContentIdle(@PreviewParameter(PreviewProviderSongList::class) songs: List<SongModel>) {
-    TheLabTheme(true) {
+    TheLabTheme(theme = AppTheme.Default) {
         SongPlayerContent(
+            theme = AppTheme.Default,
+            darkTheme = true,
             songList = songs,
             currentSongIndex = -1,
             isSongPlaying = false,
@@ -187,8 +196,10 @@ private fun PreviewSongPlayerContentIdle(@PreviewParameter(PreviewProviderSongLi
 @DevicePreviews
 @Composable
 private fun PreviewSongPlayerContentPlaying(@PreviewParameter(PreviewProviderSongList::class) songs: List<SongModel>) {
-    TheLabTheme(true) {
+    TheLabTheme(theme = AppTheme.Default) {
         SongPlayerContent(
+            theme = AppTheme.Default,
+            darkTheme = true,
             songList = songs,
             currentSongIndex = 2,
             isSongPlaying = true,

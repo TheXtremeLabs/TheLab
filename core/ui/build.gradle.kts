@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 
 plugins {
-    id("thelab.android.library")
-    id("thelab.android.library.compose")
-    id("thelab.android.hilt")
-    id("thelab.android.library.jacoco")
+    alias(libs.plugins.thelab.library)
+    alias(libs.plugins.thelab.library.compose)
+    alias(libs.plugins.thelab.hilt)
+    alias(libs.plugins.thelab.library.jacoco)
 }
 
 android {

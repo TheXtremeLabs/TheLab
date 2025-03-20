@@ -3,6 +3,7 @@ package com.riders.thelab.feature.flightaware.ui.airport
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -24,10 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.remote.dto.flight.Arrivals
 import com.riders.thelab.core.data.remote.dto.flight.Departures
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
@@ -42,10 +46,9 @@ import kotools.types.text.NotBlankString
 // COMPOSE
 //
 ///////////////////////////////////////
-
 @Composable
-fun FlightHeader(title: String, headerItems: List<String>) {
-    TheLabTheme {
+fun FlightHeader(theme: AppTheme, darkTheme: Boolean, title: String, headerItems: List<String>) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -77,6 +80,8 @@ fun FlightHeader(title: String, headerItems: List<String>) {
 
 @Composable
 fun DeparturesArrivalsItem(
+    theme: AppTheme,
+    darkTheme: Boolean,
     flightId: NotBlankString,
     departureAirportId: NotBlankString,
     departureAirportName: NotBlankString,
@@ -87,7 +92,7 @@ fun DeparturesArrivalsItem(
     arrivalGate: NotBlankString,
     arrivalTerminal: NotBlankString
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Row(modifier = Modifier.fillMaxWidth()) {
 
             Text(modifier = Modifier.weight(1f), text = flightId.toString(), color = textColor)
@@ -117,13 +122,18 @@ fun DeparturesArrivalsItem(
 @OptIn(ExperimentalKotoolsTypesApi::class, ExperimentalFoundationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DeparturesArrivals(departureFlights: List<Departures>, arrivalFlights: List<Arrivals>) {
+fun DeparturesArrivals(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    departureFlights: List<Departures>,
+    arrivalFlights: List<Arrivals>
+) {
     val airportFlightsLazyListState = rememberLazyListState()
 
     val departuresArrivalsHeader = listOf("Flight ID", "Departure", " ", "Arrival")
     val naValue: NotBlankString = NotBlankString.create("N/A")
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -141,11 +151,17 @@ fun DeparturesArrivals(departureFlights: List<Departures>, arrivalFlights: List<
                     state = airportFlightsLazyListState
                 ) {
                     stickyHeader {
-                        FlightHeader(title = "Departures", headerItems = departuresArrivalsHeader)
+                        FlightHeader(
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            title = "Departures",
+                            headerItems = departuresArrivalsHeader
+                        )
                     }
 
                     items(items = departureFlights) {
                         DeparturesArrivalsItem(
+                            theme = theme, darkTheme = darkTheme,
                             flightId = it.flightNumber ?: naValue,
                             departureAirportId = it.identIATA ?: naValue,
                             departureAirportName = it.identIATA ?: naValue,
@@ -159,11 +175,17 @@ fun DeparturesArrivals(departureFlights: List<Departures>, arrivalFlights: List<
                     }
 
                     stickyHeader {
-                        FlightHeader(title = "Arrivals", headerItems = departuresArrivalsHeader)
+                        FlightHeader(
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            title = "Arrivals",
+                            headerItems = departuresArrivalsHeader
+                        )
                     }
 
                     items(items = arrivalFlights) {
                         DeparturesArrivalsItem(
+                            theme = theme, darkTheme = darkTheme,
                             flightId = it.flightNumber ?: naValue,
                             departureAirportId = it.identIATA ?: naValue,
                             departureAirportName = it.identIATA ?: naValue,
@@ -189,19 +211,26 @@ fun DeparturesArrivals(departureFlights: List<Departures>, arrivalFlights: List<
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewFlightHeader() {
-    TheLabTheme {
-        FlightHeader("Departures", listOf("Flight ID", "Departure", " ", "Arrival"))
+private fun PreviewFlightHeader(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        FlightHeader(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            "Departures",
+            listOf("Flight ID", "Departure", " ", "Arrival")
+        )
     }
 }
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewDeparturesArrivalsItem() {
-    TheLabTheme {
+private fun PreviewDeparturesArrivalsItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Box(modifier = Modifier.background(color = cardBackgroundColor)) {
             DeparturesArrivalsItem(
+                theme = appTheme,
+                darkTheme = isSystemInDarkTheme(),
                 flightId = NotBlankString.create("EZ1515FR"),
                 departureAirportId = NotBlankString.create("CDG"),
                 departureAirportName = NotBlankString.create("Paris-Charles-de-Gaulle"),
@@ -219,8 +248,13 @@ private fun PreviewDeparturesArrivalsItem() {
 
 @DevicePreviews
 @Composable
-private fun PreviewDeparturesArrivals() {
-    TheLabTheme {
-        DeparturesArrivals(emptyList(), emptyList())
+private fun PreviewDeparturesArrivals(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        DeparturesArrivals(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            emptyList(),
+            emptyList()
+        )
     }
 }

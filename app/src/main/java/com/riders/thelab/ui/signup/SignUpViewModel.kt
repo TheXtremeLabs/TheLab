@@ -15,6 +15,7 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.compose.UserState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.core.ui.utils.UIManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -38,7 +39,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     @ApplicationContext context: Context,
-    private val repository: IRepository
+    private val repository: IRepository,
+    val uiRepository: IUiRepository
 ) : BaseViewModel() {
     /////////////////////////////////////
     // Composable states

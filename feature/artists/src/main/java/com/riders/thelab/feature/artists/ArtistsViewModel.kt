@@ -11,6 +11,7 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.artists.ArtistsUiState
 import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -34,7 +35,8 @@ import kotlin.coroutines.CoroutineContext
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @HiltViewModel
 class ArtistsViewModel @Inject constructor(
-    private val repository: IRepository
+    private val repository: IRepository,
+    val  uiRepository: IUiRepository
 ) : BaseViewModel(), CoroutineScope, DefaultLifecycleObserver {
 
     override val coroutineContext: CoroutineContext

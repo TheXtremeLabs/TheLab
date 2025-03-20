@@ -19,9 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 
 ///////////////////////////////////////
 //
@@ -67,7 +67,7 @@ fun PaletteItem(text: String, color: Color? = MaterialTheme.colorScheme.backgrou
 @DevicePreviews
 @Composable
 private fun PreviewPaletteItem(@PreviewParameter(TextContentPreviewProvider::class) text: String) {
-    TheLabTheme {
-        PaletteItem(text = text, color = md_theme_dark_primary)
+    TheLabTheme(theme = AppTheme.Default) {
+        PaletteItem(text = text, color = MaterialTheme.colorScheme.primary)
     }
 }

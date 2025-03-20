@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.android.libraries.places.api.Places
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LocationOnMapsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
+    val uiRepository: IUiRepository
 ) : BaseViewModel() {
     // Define a Place ID.
     private var placeId by mutableStateOf("")

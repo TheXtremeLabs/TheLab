@@ -6,6 +6,7 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
@@ -35,6 +37,8 @@ import androidx.navigation.compose.rememberNavController
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import timber.log.Timber
 
@@ -48,12 +52,13 @@ private val boundsTransform = { _: Rect, _: Rect -> tween<Rect>(350) }
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MainScreen(
+    theme: AppTheme, darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
     onClicked: () -> Unit
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -108,12 +113,13 @@ fun MainScreen(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun DetailScreen(
+    theme: AppTheme, darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -165,15 +171,15 @@ fun DetailScreen(
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun TransitionsComposeContent() {
+fun TransitionsComposeContent(theme: AppTheme, darkTheme: Boolean) {
     val navController = rememberNavController()
     val backstackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backstackEntry?.destination?.route
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = { TheLabTopAppBar(title = "Transitions with Compose") }
+            topBar = { TheLabTopAppBar(theme = theme, title = "Transitions with Compose") }
         ) { contentPadding ->
             SharedTransitionLayout(
                 modifier = Modifier
@@ -187,6 +193,7 @@ fun TransitionsComposeContent() {
                 ) {
                     composable(route = Screen.Main.route.toString()) {
                         MainScreen(
+                            theme = theme, darkTheme = darkTheme,
                             sharedTransitionScope = this@SharedTransitionLayout,
                             animatedVisibilityScope = this@composable,
                             onClicked = { navController.navigate(route = Screen.Detail.route.toString()) }
@@ -195,6 +202,7 @@ fun TransitionsComposeContent() {
 
                     composable(route = "detail") {
                         DetailScreen(
+                            theme = theme, darkTheme = darkTheme,
                             sharedTransitionScope = this@SharedTransitionLayout,
                             animatedVisibilityScope = this@composable,
                             modifier = Modifier.fillMaxSize(),
@@ -223,9 +231,9 @@ fun TransitionsComposeContent() {
 @OptIn(ExperimentalSharedTransitionApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewMainScreen() {
+private fun PreviewMainScreen(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val navController = rememberNavController()
-    TheLabTheme {
+    TheLabTheme(theme = appTheme) {
         SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
             NavHost(
                 modifier = Modifier.fillMaxSize(),
@@ -234,6 +242,7 @@ private fun PreviewMainScreen() {
             ) {
                 composable(route = Screen.Main.route.toString()) {
                     MainScreen(
+                        theme = appTheme, darkTheme = isSystemInDarkTheme(),
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this,
                         modifier = Modifier.fillMaxSize(),
@@ -248,9 +257,9 @@ private fun PreviewMainScreen() {
 @OptIn(ExperimentalSharedTransitionApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewDetailScreen() {
+private fun PreviewDetailScreen(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val navController = rememberNavController()
-    TheLabTheme {
+    TheLabTheme(theme = appTheme) {
         SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
             NavHost(
                 modifier = Modifier.fillMaxSize(),
@@ -259,6 +268,7 @@ private fun PreviewDetailScreen() {
             ) {
                 composable(route = Screen.Detail.route.toString()) {
                     DetailScreen(
+                        theme = appTheme, darkTheme = isSystemInDarkTheme(),
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this,
                         modifier = Modifier.fillMaxSize(),
@@ -272,8 +282,8 @@ private fun PreviewDetailScreen() {
 
 @DevicePreviews
 @Composable
-private fun PreviewTransitionsComposeContent() {
-    TheLabTheme {
-        TransitionsComposeContent()
+private fun PreviewTransitionsComposeContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        TransitionsComposeContent(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }

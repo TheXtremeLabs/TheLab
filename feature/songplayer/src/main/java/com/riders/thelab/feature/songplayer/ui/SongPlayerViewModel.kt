@@ -31,6 +31,7 @@ import com.riders.thelab.core.common.utils.LabNotificationManager
 import com.riders.thelab.core.data.local.model.music.SongModel
 import com.riders.thelab.core.data.utils.Constants
 import com.riders.thelab.core.player.service.PlaybackService
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.songplayer.core.SongsManager
 import com.riders.thelab.feature.songplayer.utils.SongPlayerUtils
 import com.riders.thelab.feature.songplayer.utils.parseSongName
@@ -44,7 +45,8 @@ import javax.inject.Inject
 @SuppressLint("StaticFieldLeak")
 @HiltViewModel
 class SongPlayerViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    val  uiRepository: IUiRepository
 ) : ViewModel(), DefaultLifecycleObserver,
     MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 

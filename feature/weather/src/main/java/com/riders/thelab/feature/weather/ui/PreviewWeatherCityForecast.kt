@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.weather.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +31,7 @@ import com.riders.thelab.core.common.utils.DateTimeUtils
 import com.riders.thelab.core.data.local.model.weather.WeatherModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
@@ -39,10 +41,15 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 //
 ///////////////////////////////////////////////////
 @Composable
-fun WeatherDailyForecast(modifier: Modifier = Modifier, dailyWeatherList: List<WeatherModel>) {
+fun WeatherDailyForecast(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    modifier: Modifier = Modifier,
+    dailyWeatherList: List<WeatherModel>
+) {
     val listState = rememberLazyListState()
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -135,9 +142,9 @@ fun WeatherDailyForecast(modifier: Modifier = Modifier, dailyWeatherList: List<W
 @DevicePreviews
 @Composable
 private fun PreviewWeatherDailyForecast(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
-
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         WeatherDailyForecast(
+            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
             modifier = Modifier.fillMaxSize(),
             dailyWeatherList = weather.dailyWeather!!
         )

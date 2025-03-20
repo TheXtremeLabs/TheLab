@@ -23,9 +23,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.executeOnBackPressed
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
@@ -41,10 +44,10 @@ import kotools.types.text.NotBlankString
 //
 ///////////////////////////////////////
 @Composable
-fun SearchFlightsErrorContent(reason: NotBlankString) {
+fun SearchFlightsErrorContent(theme: AppTheme, darkTheme: Boolean, reason: NotBlankString) {
     val context = LocalContext.current
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -97,8 +100,12 @@ fun SearchFlightsErrorContent(reason: NotBlankString) {
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewSearchFlightsError() {
-    TheLabTheme {
-        SearchFlightsErrorContent(reason = NotBlankString.create("Error occurred while getting value"))
+private fun PreviewSearchFlightsError(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        SearchFlightsErrorContent(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            reason = NotBlankString.create("Error occurred while getting value")
+        )
     }
 }

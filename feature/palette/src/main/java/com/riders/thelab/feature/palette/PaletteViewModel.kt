@@ -11,6 +11,7 @@ import com.google.firebase.storage.StorageReference
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.palette.PaletteUiState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,7 @@ import javax.inject.Inject
 import kotlin.random.Random
 
 @HiltViewModel
-class PaletteViewModel @Inject constructor(private val repository: IRepository) : BaseViewModel() {
+class PaletteViewModel @Inject constructor(private val repository: IRepository,val uiRepository: IUiRepository) : BaseViewModel() {
 
     val paletteNameList = listOf(
         "Vibrant",

@@ -18,6 +18,7 @@ import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -46,7 +47,14 @@ class LocationOnMapsActivity : BaseComponentActivity() {
 
                     val location by mLocationManager.locationState.collectAsStateWithLifecycle()
 
-                    TheLabTheme {
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -56,6 +64,7 @@ class LocationOnMapsActivity : BaseComponentActivity() {
                                 LabLoader(modifier = Modifier.size(30.dp))
                             } else {
                                 LocationOnMapsContent(
+                                    theme = theme, darkTheme = isDarkTheme,
                                     location = location!!,
                                     isSearchPlaceVisible = mViewModel.isSearchPlaceVisible,
                                     uiEvent = { event ->

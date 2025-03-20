@@ -15,6 +15,7 @@ import com.riders.thelab.core.data.local.model.flight.toAirportModel
 import com.riders.thelab.core.data.local.model.flight.toOperatorModel
 import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.flightaware.BuildConfig
 import com.riders.thelab.feature.flightaware.ui.airport.PreviewProviderAirportSearch
 import com.riders.thelab.feature.flightaware.viewmodel.FlightSearchViewModel
@@ -28,7 +29,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FlightViewModel @Inject constructor(
-    private val repository: IRepository
+    private val repository: IRepository,
+    val uiRepository: IUiRepository
 ) : FlightSearchViewModel(repository) {
 
 

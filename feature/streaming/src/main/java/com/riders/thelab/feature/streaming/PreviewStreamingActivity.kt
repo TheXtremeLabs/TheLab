@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.streaming
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,17 +13,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.riders.thelab.core.player.ExoPlayer
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabVerticalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import timber.log.Timber
 
 @Composable
-fun StreamingContent() {
+fun StreamingContent(theme: AppTheme, darkTheme: Boolean) {
     val context = LocalContext.current
 
     val mediaList: List<String> = listOf(
@@ -35,10 +39,11 @@ fun StreamingContent() {
 
     val pagerState: PagerState = rememberPagerState { mediaList.size }
 
-    TheLabTheme(true) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             topBar = {
                 TheLabTopAppBar(
+                    theme = theme,
                     title = stringResource(id = R.string.activity_title_streaming),
                     isDarkThemeForced = true,
                     navigationIcon = {}
@@ -52,6 +57,7 @@ fun StreamingContent() {
                 contentAlignment = Alignment.Center
             ) {
                 LabVerticalViewPagerGeneric(
+                    theme = theme,
                     pagerState = pagerState,
                     items = mediaList,
                     viewPagerDotExpanded = true,
@@ -86,8 +92,8 @@ fun StreamingContent() {
 
 @DevicePreviews
 @Composable
-private fun PreviewStreamingContent() {
-    TheLabTheme(true) {
-        StreamingContent()
+private fun PreviewStreamingContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        StreamingContent(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }

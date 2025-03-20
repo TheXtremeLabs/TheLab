@@ -2,10 +2,10 @@ package com.riders.thelab.feature.weather.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import coil.compose.rememberAsyncImagePainter
@@ -44,6 +45,8 @@ import coil.request.ImageRequest
 import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.weather.utils.Constants
 import java.util.UUID
@@ -57,6 +60,7 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherCitySearchField(
+    theme: AppTheme, darkTheme: Boolean,
     suggestions: List<CityModel>,
     searchCityQuery: String,
     onSearchTextChange: (String) -> Unit,
@@ -74,7 +78,7 @@ fun WeatherCitySearchField(
     else
         Icons.Filled.ArrowDropDown
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
             // Weather city search field
@@ -180,9 +184,10 @@ fun WeatherCitySearchField(
 ///////////////////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewWeatherCitySearchField() {
-    TheLabTheme {
+private fun PreviewWeatherCitySearchField(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         WeatherCitySearchField(
+            theme = appTheme, darkTheme = isSystemInDarkTheme(),
             suggestions = listOf(
                 CityModel(
                     id = 1,

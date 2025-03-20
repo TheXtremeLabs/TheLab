@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -45,6 +46,7 @@ import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.compose.utils.toColor
@@ -63,6 +65,7 @@ import timber.log.Timber
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedBoxWithConstraintsScope")
 @Composable
 fun TheatersDetailContent(
+    theme: AppTheme, darkTheme: Boolean,
     tmdbState: TMDBDetailUiState,
     isTrailerVisible: Boolean,
     onTrailerVisible: (Boolean) -> Unit
@@ -81,11 +84,12 @@ fun TheatersDetailContent(
 
     Timber.d("TheatersDetailContent() | Recomposition")
 
-    TheLabTheme(darkTheme = true) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TheLabTopAppBar(
+                    theme = theme,
                     title = "",
                     navigationIconColor = animateNavigationButtonColor.value
                 )
@@ -286,6 +290,7 @@ fun TheatersDetailContent(
                                 contentAlignment = Alignment.Center
                             ) {
                                 PopUpTrailer(
+                                    theme = theme, darkTheme = darkTheme,
                                     itemName = tmdbState.item.title,
                                     tmdbVideoModel = tmdbState.item.videos.first {
                                         it.name.contains("official trailer", true) ||
@@ -326,7 +331,12 @@ fun TheatersDetailContent(
 @DevicePreviews
 @Composable
 private fun PreviewTheatersDetailContent(@PreviewParameter(PreviewProviderTMDBDetailUiState::class) uiState: TMDBDetailUiState) {
-    TheLabTheme(darkTheme = true) {
-        TheatersDetailContent(uiState, isTrailerVisible = true) {}
+    TheLabTheme(theme = AppTheme.Default) {
+        TheatersDetailContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            uiState,
+            isTrailerVisible = true
+        ) {}
     }
 }

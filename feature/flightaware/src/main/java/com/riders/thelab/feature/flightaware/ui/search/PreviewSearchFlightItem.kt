@@ -2,6 +2,7 @@ package com.riders.thelab.feature.flightaware.ui.search
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.feature.flightaware.core.component.DottedLink
@@ -50,7 +52,12 @@ import java.time.temporal.ChronoUnit
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
-fun SearchFlightItem(flight: SearchFlightModel, uiEvent: (UiEvent) -> Unit) {
+fun SearchFlightItem(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    flight: SearchFlightModel,
+    uiEvent: (UiEvent) -> Unit
+) {
     val context = LocalContext.current
     val zoneId by remember { mutableStateOf(ZoneId.systemDefault()) }
     val departureLocalDateTime by remember {
@@ -78,7 +85,7 @@ fun SearchFlightItem(flight: SearchFlightModel, uiEvent: (UiEvent) -> Unit) {
         placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             onClick = { uiEvent.invoke(UiEvent.OnFlightClicked(flight)) },
@@ -181,6 +188,8 @@ fun SearchFlightItem(flight: SearchFlightModel, uiEvent: (UiEvent) -> Unit) {
                     )
 
                     DottedLink(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         modifier = Modifier
                             .weight(1f)
                             .padding(horizontal = 24.dp)
@@ -221,6 +230,8 @@ fun SearchFlightItem(flight: SearchFlightModel, uiEvent: (UiEvent) -> Unit) {
                     }
 
                     InfoContainerTitleDescription(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         title = NotBlankString.create("Status"),
                         description = flight.status,
                         isRightSide = true
@@ -234,7 +245,10 @@ fun SearchFlightItem(flight: SearchFlightModel, uiEvent: (UiEvent) -> Unit) {
 @DevicePreviews
 @Composable
 private fun PreviewSearchFlightItem(@PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel) {
-    TheLabTheme {
-        SearchFlightItem(flight) {}
+    TheLabTheme(theme = AppTheme.Default) {
+        SearchFlightItem(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(), flight
+        ) {}
     }
 }

@@ -24,22 +24,27 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.utils.LabAppManager
 
 
 @Composable
-fun NoItemFound(searchValue: String) {
-    TheLabTheme {
+fun NoItemFound(
+    theme: AppTheme,
+    darkTheme: Boolean, searchValue: String
+) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -66,7 +71,10 @@ fun NoItemFound(searchValue: String) {
 
 
 @Composable
-fun App(item: App, onAppItemClick:(App) -> Unit) {
+fun App(
+    theme: AppTheme,
+    darkTheme: Boolean, item: App, onAppItemClick: (App) -> Unit
+) {
 
     val context = LocalContext.current
 
@@ -100,7 +108,7 @@ fun App(item: App, onAppItemClick:(App) -> Unit) {
     /* Get the dark vibrant swatch */
     val darkVibrantSwatch = palette.darkVibrantSwatch
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .height(dimensionResource(id = R.dimen.max_card_image_height))
@@ -120,31 +128,31 @@ fun App(item: App, onAppItemClick:(App) -> Unit) {
                     shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
                     colors = CardDefaults.cardColors(
                         containerColor =
-                        when (title) {
-                            stringResource(id = R.string.activity_title_colors),
-                            stringResource(id = R.string.activity_title_colors),
-                            stringResource(id = R.string.activity_title_palette),
-                            stringResource(id = R.string.activity_title_youtube_like),
-                            stringResource(id = R.string.activity_title_google_drive),
-                            stringResource(id = R.string.activity_title_google_sign_in),
-                            stringResource(id = R.string.activity_title_weather),
-                            stringResource(id = R.string.activity_title_recycler_view),
-                            stringResource(id = R.string.activity_title_lottie) -> {
-                                darkVibrantSwatch?.rgb?.let {
-                                    Color(
-                                        it
-                                    )
-                                } ?: md_theme_dark_background
-                            }
+                            when (title) {
+                                stringResource(id = R.string.activity_title_colors),
+                                stringResource(id = R.string.activity_title_colors),
+                                stringResource(id = R.string.activity_title_palette),
+                                stringResource(id = R.string.activity_title_youtube_like),
+                                stringResource(id = R.string.activity_title_google_drive),
+                                stringResource(id = R.string.activity_title_google_sign_in),
+                                stringResource(id = R.string.activity_title_weather),
+                                stringResource(id = R.string.activity_title_recycler_view),
+                                stringResource(id = R.string.activity_title_lottie) -> {
+                                    darkVibrantSwatch?.rgb?.let {
+                                        Color(
+                                            it
+                                        )
+                                    } ?: md_theme_dark_background
+                                }
 
-                            stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_flight) -> {
-                                Color(0xFF002f5d)
-                            }
+                                stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_flight) -> {
+                                    Color(0xFF002f5d)
+                                }
 
-                            else -> {
-                                md_theme_dark_background
+                                else -> {
+                                    md_theme_dark_background
+                                }
                             }
-                        }
                     )
 
                 ) {
@@ -204,18 +212,25 @@ fun App(item: App, onAppItemClick:(App) -> Unit) {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewNoItemFound() {
-    TheLabTheme {
-        NoItemFound("Cool")
+private fun PreviewNoItemFound(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        NoItemFound(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(), "Cool"
+        )
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewApp() {
+private fun PreviewApp(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
     val appItem = LabAppManager.getActivityList(context)[12]
-    TheLabTheme {
-        App(appItem) {}
+
+    TheLabTheme(theme = appTheme) {
+        App(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(), appItem
+        ) {}
     }
 }

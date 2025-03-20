@@ -54,6 +54,7 @@ import androidx.palette.graphics.Palette
 import coil.compose.AsyncImagePainter
 import com.riders.thelab.core.data.local.model.youtube.Video
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.utils.loadImage
@@ -69,6 +70,7 @@ import timber.log.Timber
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun YoutubeDetailScreen(
+    theme: AppTheme, darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier,
@@ -133,7 +135,7 @@ fun YoutubeDetailScreen(
         }
     }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = modifier,
@@ -261,7 +263,8 @@ fun YoutubeDetailScreen(
 @Composable
 private fun PreviewYoutubeDetailScreen(@PreviewParameter(PreviewProviderVideo::class) video: Video) {
     val navController = rememberNavController()
-    TheLabTheme {
+
+    TheLabTheme(theme = AppTheme.Default) {
         SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
             NavHost(
                 modifier = Modifier.fillMaxSize(),
@@ -270,6 +273,7 @@ private fun PreviewYoutubeDetailScreen(@PreviewParameter(PreviewProviderVideo::c
             ) {
                 composable(route = YoutubeScreen.Detail.route.toString()) {
                     YoutubeDetailScreen(
+                        theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this,
                         modifier = Modifier.fillMaxSize(),

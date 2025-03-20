@@ -20,6 +20,7 @@ import com.riders.thelab.core.data.local.model.compose.LoginUiState
 import com.riders.thelab.core.data.local.model.toModel
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -40,7 +41,10 @@ import javax.inject.Inject
 
 @Suppress("EmptyMethod")
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val repository: IRepository) : BaseViewModel() {
+class LoginViewModel @Inject constructor(
+    private val repository: IRepository,
+    val uiRepository: IUiRepository
+) : BaseViewModel() {
 
     val list = listOf("test", "mike", "chronopost", "john")
 

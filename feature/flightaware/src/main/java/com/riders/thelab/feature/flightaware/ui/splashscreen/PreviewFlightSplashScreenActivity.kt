@@ -24,11 +24,14 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
 import com.riders.thelab.core.ui.compose.component.tickerborad.TickerBoard
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.feature.flightaware.R
@@ -42,13 +45,13 @@ import kotlinx.coroutines.delay
 //
 ///////////////////////////////////////
 @Composable
-fun FlightSplashScreenContent() {
+fun FlightSplashScreenContent(theme: AppTheme, darkTheme: Boolean) {
 
     val context = LocalContext.current
     var newsFlightTitle by remember { mutableStateOf("") }
     var switchProvidedBy by remember { mutableStateOf(false) }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
 
             Image(
@@ -111,8 +114,8 @@ fun FlightSplashScreenContent() {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewFlightSplashScreenContent() {
-    TheLabTheme {
-        FlightSplashScreenContent()
+private fun PreviewFlightSplashScreenContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        FlightSplashScreenContent(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }

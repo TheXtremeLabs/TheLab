@@ -56,14 +56,14 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import com.google.api.services.drive.model.File
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.success
 import com.riders.thelab.core.ui.compose.component.NoItemFound
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
-import com.riders.thelab.core.ui.compose.theme.success
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.compose.utils.getGlideImage
@@ -79,11 +79,11 @@ import timber.log.Timber
 //
 ///////////////////////////////////////
 @Composable
-fun PlayServicesUnavailableContent() {
+fun PlayServicesUnavailableContent(theme: AppTheme, darkTheme: Boolean) {
     val context = LocalContext.current
     val hue: Float by remember { mutableFloatStateOf(50f) }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -146,14 +146,19 @@ fun PlayServicesUnavailableContent() {
 }
 
 @Composable
-fun Header(signInState: GoogleSignInState, uiEvent: (UiEvent) -> Unit) {
+fun Header(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    signInState: GoogleSignInState,
+    uiEvent: (UiEvent) -> Unit
+) {
     val backgroundColor: Color = when (signInState) {
         is GoogleSignInState.Connected -> success
-        is GoogleSignInState.Disconnected -> com.riders.thelab.core.ui.compose.theme.error
+        is GoogleSignInState.Disconnected -> com.riders.thelab.core.ui.compose.color.error
         else -> Color.Transparent
     }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         AnimatedVisibility(visible = signInState is GoogleSignInState.Disconnected || signInState is GoogleSignInState.Connected) {
             Row(
                 modifier = Modifier
@@ -182,7 +187,7 @@ fun Header(signInState: GoogleSignInState, uiEvent: (UiEvent) -> Unit) {
                             modifier = Modifier
                                 .size(48.dp)
                                 .clip(shape = CircleShape)
-                                .background(if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary),
+                                .background(MaterialTheme.colorScheme.primary),
                             onClick = { uiEvent.invoke(UiEvent.OnSignOut) }
                         ) {
                             Icon(
@@ -202,14 +207,14 @@ fun Header(signInState: GoogleSignInState, uiEvent: (UiEvent) -> Unit) {
 }
 
 @Composable
-fun GoogleDriveImage(fileId: String) {
+fun GoogleDriveImage(theme: AppTheme, darkTheme: Boolean, fileId: String) {
     val context = LocalContext.current
 //    val imageUrl =   "https://drive.google.com/file/d/${file.id}/view?usp=sharing"
     val imageUrl = "https://drive.google.com/uc?export=view&id=${fileId}"
 //    val imageUrl =   "https://drive.usercontent.google.com/download?export=view&id=${file.id}"
 //    val imageUrl =    "${Constants.BASE_ENDPOINT_GOOGLE_DRIVE_VIEW}${file.id}"
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         /*  val driveFilePainter = getCoilAsyncImagePainter(
               context,
               dataUrl = imageUrl,
@@ -261,6 +266,7 @@ fun GoogleDriveImage(fileId: String) {
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @Composable
 fun GoogleDriveContentSuccess(
+    theme: AppTheme, darkTheme: Boolean,
     signInState: GoogleSignInState,
     hasInternetConnection: Boolean,
     driveFileList: List<File>,
@@ -270,13 +276,18 @@ fun GoogleDriveContentSuccess(
 
     val driveListState = rememberLazyListState()
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Header(signInState = signInState, uiEvent = uiEvent)
+            Header(
+                theme = theme,
+                darkTheme = darkTheme,
+                signInState = signInState,
+                uiEvent = uiEvent
+            )
 
             AnimatedContent(
                 modifier = Modifier.fillMaxSize(),
@@ -384,7 +395,11 @@ fun GoogleDriveContentSuccess(
                                         val file = driveFileList[index]
 
                                         if (file.mimeType.contains("image", true)) {
-                                            GoogleDriveImage(file.id)
+                                            GoogleDriveImage(
+                                                theme = theme,
+                                                darkTheme = darkTheme,
+                                                file.id
+                                            )
                                         }
 
                                         Text(text = "${file.name} | ${file.mimeType}")
@@ -426,15 +441,17 @@ fun GoogleDriveContentSuccess(
 
 @Composable
 fun GoogleDriveContent(
+    theme: AppTheme, darkTheme: Boolean,
     uiState: GoogleDriveUiState,
     signInState: GoogleSignInState,
     hasInternetConnection: Boolean,
     driveFileList: List<File>,
     uiEvent: (UiEvent) -> Unit
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TheLabTopAppBar(
+                theme = theme,
                 toolbarSize = ToolbarSize.SMALL,
                 mainCustomContent = {
                     Row(
@@ -484,11 +501,12 @@ fun GoogleDriveContent(
                     }
 
                     is GoogleDriveUiState.GooglePlayServicesUnavailable -> {
-                        PlayServicesUnavailableContent()
+                        PlayServicesUnavailableContent(theme = theme, darkTheme = darkTheme)
                     }
 
                     is GoogleDriveUiState.Success -> {
                         GoogleDriveContentSuccess(
+                            theme = theme, darkTheme = darkTheme,
                             signInState = signInState,
                             hasInternetConnection = hasInternetConnection,
                             driveFileList = driveFileList,
@@ -509,25 +527,30 @@ fun GoogleDriveContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewPlayServicesUnavailableContent() {
-    TheLabTheme {
-        PlayServicesUnavailableContent()
+private fun PreviewPlayServicesUnavailableContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        PlayServicesUnavailableContent(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }
 
 @DevicePreviews
 @Composable
 private fun PreviewHeader(@PreviewParameter(PreviewProviderGoogleSignInState::class) signInState: GoogleSignInState) {
-    TheLabTheme {
-        Header(signInState = signInState) {}
+    TheLabTheme(theme = AppTheme.Default) {
+        Header(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            signInState = signInState
+        ) {}
     }
 }
 
 @DevicePreviews
 @Composable
 private fun PreviewGoogleDriveContentSuccess(@PreviewParameter(PreviewProviderGoogleSignInState::class) signInState: GoogleSignInState) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         GoogleDriveContentSuccess(
+            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
             signInState = signInState,
             driveFileList = emptyList(),
             hasInternetConnection = true
@@ -538,8 +561,9 @@ private fun PreviewGoogleDriveContentSuccess(@PreviewParameter(PreviewProviderGo
 @DevicePreviews
 @Composable
 private fun PreviewGoogleDriveContent(@PreviewParameter(PreviewProviderUiState::class) state: GoogleDriveUiState) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         GoogleDriveContent(
+            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
             uiState = state,
             signInState = GoogleSignInState.Disconnected,
             driveFileList = emptyList(),

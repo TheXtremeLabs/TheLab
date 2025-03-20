@@ -1,7 +1,6 @@
 package com.riders.thelab.core.ui.compose.component.tab
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -10,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,12 +24,14 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_primaryContainer
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_primaryContainer
 
 fun drawTicketPath(size: Size, cornerRadius: Float): Path {
     return Path().apply {
@@ -79,7 +81,7 @@ fun drawTicketPath(size: Size, cornerRadius: Float): Path {
 fun LabTabIndicator(
     indicatorWidth: Dp,
     indicatorOffset: Dp,
-    indicatorColor: Color = if (!isSystemInDarkTheme()) md_theme_light_primaryContainer else md_theme_dark_primaryContainer,
+    indicatorColor: Color = MaterialTheme.colorScheme.primaryContainer,
     hasCustomShape: Boolean = false,
     shape: Shape = if (!hasCustomShape) RoundedCornerShape(8.dp) else RoundedCornerShape(
         topStart = 8.dp,
@@ -131,8 +133,8 @@ fun LabTabIndicator(
 
 @DevicePreviews
 @Composable
-private fun PreviewLabTabIndicator() {
-    TheLabTheme {
+private fun PreviewLabTabIndicator(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
@@ -150,8 +152,8 @@ private fun PreviewLabTabIndicator() {
 
 @DevicePreviews
 @Composable
-private fun PreviewLabTabIndicatorWithCustomShape() {
-    TheLabTheme {
+private fun PreviewLabTabIndicatorWithCustomShape(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()

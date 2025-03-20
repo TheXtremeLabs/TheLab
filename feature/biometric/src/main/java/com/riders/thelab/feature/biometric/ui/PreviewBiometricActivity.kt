@@ -2,6 +2,7 @@ package com.riders.thelab.feature.biometric.ui
 
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.CryptoObject
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +30,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.data.local.model.biometric.AuthError
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.feature.biometric.R
@@ -72,7 +76,7 @@ fun BiometricPromptContainer(
 
 
 @Composable
-fun BiometricContent(viewModel: BiometricViewModel) {
+fun BiometricContent(theme: AppTheme, darkTheme: Boolean, viewModel: BiometricViewModel) {
     val uiState: LoginUiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     // Create the state
@@ -95,9 +99,14 @@ fun BiometricContent(viewModel: BiometricViewModel) {
         }
     }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
-            topBar = { TheLabTopAppBar(title = stringResource(R.string.activity_title_biometric)) }
+            topBar = {
+                TheLabTopAppBar(
+                    theme = theme,
+                    title = stringResource(R.string.activity_title_biometric)
+                )
+            }
         ) { contentPadding ->
             Column(
                 modifier = Modifier
@@ -109,8 +118,7 @@ fun BiometricContent(viewModel: BiometricViewModel) {
 
                 // Add the @Composable contaier
                 BiometricPromptContainer(
-                    viewModel,
-                    promptContainerState,
+                    viewModel, promptContainerState,
                     onAuthSucceeded = { cryptoObj ->
                         //notify your viewmodel about the succeeded auth (passing the cryptoObj)
                         viewModel.onAuthSucceeded(cryptoObject = cryptoObj)
@@ -150,9 +158,9 @@ fun BiometricContent(viewModel: BiometricViewModel) {
 
 @DevicePreviews
 @Composable
-fun PreviewBiometricContent() {
+fun PreviewBiometricContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val viewModel: BiometricViewModel = hiltViewModel()
-    TheLabTheme {
-        BiometricContent(viewModel)
+    TheLabTheme(theme = appTheme) {
+        BiometricContent(theme = appTheme, darkTheme = isSystemInDarkTheme(), viewModel)
     }
 }

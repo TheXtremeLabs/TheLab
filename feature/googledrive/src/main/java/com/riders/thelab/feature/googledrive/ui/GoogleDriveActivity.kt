@@ -21,6 +21,7 @@ import com.google.api.services.drive.model.FileList
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.permissions.PermissionManager
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.googledrive.base.BaseGoogleActivity
 import com.riders.thelab.feature.googledrive.core.google.GoogleDriveManager
@@ -70,17 +71,24 @@ class GoogleDriveActivity : BaseGoogleActivity(), OnConnectionFailedListener {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
 
                     val uiState: GoogleDriveUiState by mViewModel.googleDriveUiState.collectAsStateWithLifecycle()
                     val signInState: GoogleSignInState by mViewModel.signInState.collectAsStateWithLifecycle()
 
-                    TheLabTheme {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             GoogleDriveContent(
+                                theme = theme, darkTheme = isDarkTheme,
                                 uiState = uiState,
                                 signInState = signInState,
                                 driveFileList = mViewModel.driveFileList,

@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.locationonmaps
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -20,12 +21,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.StreetViewPanoramaOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.maps.android.compose.streetview.StreetView
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
@@ -37,6 +41,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun PlaceBottomSheetContent(
+    theme: AppTheme, darkTheme: Boolean,
     type: PlaceBottomSheetType,
     place: Place? = null,
     userPosition: LatLng,
@@ -45,7 +50,7 @@ fun PlaceBottomSheetContent(
     uiEvent: (UiEvent) -> Unit,
 ) {
     // TODO : Add Shimmer effect when place object is null
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(topStart = 35.dp, topEnd = 35.dp)
@@ -122,9 +127,10 @@ fun PlaceBottomSheetContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewPlaceBottomSheetContent() {
-    TheLabTheme {
+private fun PreviewPlaceBottomSheetContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         PlaceBottomSheetContent(
+            theme = appTheme, darkTheme = isSystemInDarkTheme(),
             type = PlaceBottomSheetType.SEARCH_LOCATION,
             userPosition = LatLng(1.35, 103.87),
             isHalfExpanded = true,

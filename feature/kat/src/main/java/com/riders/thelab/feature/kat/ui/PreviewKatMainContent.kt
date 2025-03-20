@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -45,11 +46,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
 import com.riders.thelab.feature.kat.data.local.compose.KatScreenRoute
 
 
@@ -81,8 +80,8 @@ fun UserIcon(
 }
 
 @Composable
-fun KatHeader(modelName: String, userEmail: String) {
-    TheLabTheme {
+fun KatHeader(theme: AppTheme, darkTheme: Boolean, modelName: String, userEmail: String) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -127,6 +126,7 @@ fun KatHeader(modelName: String, userEmail: String) {
 
 @Composable
 fun KatNavHost(
+    theme: AppTheme, darkTheme: Boolean,
     modifier: Modifier,
     navController: NavHostController,
     startDestination: String = KatScreenRoute.Chat.route,
@@ -140,13 +140,26 @@ fun KatNavHost(
         enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Down) },
         exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Up) },
     ) {
-        composable(KatScreenRoute.Chat.route) { KatChatScreen(viewModel.chatRooms) }
-        composable(KatScreenRoute.Profile.route) { KatUserScreen(profileViewModel) }
+        composable(KatScreenRoute.Chat.route) {
+            KatChatScreen(
+                theme = theme,
+                darkTheme = darkTheme,
+                viewModel.chatRooms
+            )
+        }
+        composable(KatScreenRoute.Profile.route) {
+            KatUserScreen(
+                theme = theme,
+                darkTheme = darkTheme,
+                profileViewModel
+            )
+        }
     }
 }
 
 @Composable
 fun KatMainContent(
+    theme: AppTheme, darkTheme: Boolean,
     viewModel: KatMainViewModel,
     profileViewModel: KatProfileViewModel
 ) {
@@ -158,18 +171,18 @@ fun KatMainContent(
         KatScreenRoute.Profile
     )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             bottomBar = {
-                BottomNavigation(backgroundColor = if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background) {
+                BottomNavigation(backgroundColor = MaterialTheme.colorScheme.background) {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentDestination = navBackStackEntry?.destination
                     items.forEach { screen ->
 
                         val textAndIconColor: Color =
                             if (currentDestination?.hierarchy?.any { it.route == screen.route } == true) {
-                                if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary
+                                MaterialTheme.colorScheme.primary
                             } else {
                                 if (!isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
                             }
@@ -204,7 +217,7 @@ fun KatMainContent(
                                     restoreState = true
                                 }
                             },
-                            selectedContentColor = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
+                            selectedContentColor = MaterialTheme.colorScheme.primary,
                             unselectedContentColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                                 LocalAbsoluteTonalElevation.current
                             )
@@ -219,10 +232,16 @@ fun KatMainContent(
                     .padding(contentPadding)
             ) {
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    KatHeader(viewModel.modelName, viewModel.userEmail)
+                    KatHeader(
+                        theme = theme,
+                        darkTheme = darkTheme,
+                        viewModel.modelName,
+                        viewModel.userEmail
+                    )
                 }
                 Box(modifier = Modifier.fillMaxWidth()) {
                     KatNavHost(
+                        theme = theme, darkTheme = darkTheme,
                         modifier = Modifier.fillMaxSize(),
                         navController = navController,
                         viewModel = viewModel,
@@ -242,21 +261,28 @@ fun KatMainContent(
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewKatHeader() {
-    TheLabTheme {
-        KatHeader(modelName = "Zebra TC58", userEmail = "test@test.fr")
+private fun PreviewKatHeader(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        KatHeader(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            modelName = "Zebra TC58",
+            userEmail = "test@test.fr"
+        )
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewKatNavHost() {
+private fun PreviewKatNavHost(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val viewModel: KatMainViewModel = hiltViewModel()
     val profileViewModel: KatProfileViewModel = hiltViewModel()
     val navController = rememberNavController()
 
-    TheLabTheme {
+    TheLabTheme(theme = appTheme) {
         KatNavHost(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
             viewModel = viewModel,
             profileViewModel = profileViewModel,
             modifier = Modifier.fillMaxSize(),
@@ -267,10 +293,16 @@ private fun PreviewKatNavHost() {
 
 @DevicePreviews
 @Composable
-private fun PreviewKatMainContent() {
+private fun PreviewKatMainContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val viewModel: KatMainViewModel = hiltViewModel()
     val profileViewModel: KatProfileViewModel = hiltViewModel()
-    TheLabTheme {
-        KatMainContent(viewModel = viewModel, profileViewModel = profileViewModel)
+
+    TheLabTheme(theme = appTheme) {
+        KatMainContent(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            viewModel = viewModel,
+            profileViewModel = profileViewModel
+        )
     }
 }

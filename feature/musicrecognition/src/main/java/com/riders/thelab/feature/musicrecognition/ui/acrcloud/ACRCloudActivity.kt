@@ -8,8 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,9 +21,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector.ConnectionListener
 import com.spotify.android.appremote.api.SpotifyAppRemote
@@ -108,17 +107,25 @@ class ACRCloudActivity : BaseComponentActivity() {
                     // Register lifecycle events
                     mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
                     val acrUiState by mViewModel.uiState.collectAsStateWithLifecycle()
                     val mNetworkState by mViewModel.mNetworkState.collectAsStateWithLifecycle()
 
-                    TheLabTheme {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
 //                            color = MaterialTheme.colorScheme.background
-                            color = if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background
+                            color = MaterialTheme.colorScheme.background
                         ) {
                             ACRCloudActivityContent(
+                                theme = theme, darkTheme = isDarkTheme,
                                 acrUiState = acrUiState,
                                 networkState = mNetworkState,
                                 result = mViewModel.result ?: "",

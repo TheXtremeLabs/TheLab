@@ -14,16 +14,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,7 +54,14 @@ class AirportSearchDetailActivity : BaseComponentActivity() {
                     // Register lifecycle events
                     mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-                    TheLabTheme {
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -70,6 +80,7 @@ class AirportSearchDetailActivity : BaseComponentActivity() {
                                     LabLoader(modifier = Modifier.size(72.dp))
                                 } else {
                                     AirportDetailContent(
+                                        theme = theme, darkTheme = isDarkTheme,
                                         airportModel = mViewModel.airportModel!!,
                                         departureFlights = mViewModel.departureFlights,
                                         arrivalFlights = mViewModel.arrivalFlights,

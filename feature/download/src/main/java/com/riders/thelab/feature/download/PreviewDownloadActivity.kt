@@ -2,6 +2,7 @@ package com.riders.thelab.feature.download
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,8 @@ import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.data.local.model.compose.Download
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 
@@ -69,6 +72,7 @@ fun Header(text: String, isButtonEnabled: Boolean, onButtonClicked: () -> Unit) 
 
 @Composable
 fun DownloaderContent(
+    theme: AppTheme, darkTheme: Boolean,
     downloadListState: List<Download>,
     buttonText: String,
     isButtonEnabled: Boolean,
@@ -77,10 +81,13 @@ fun DownloaderContent(
 
     val lazyListState = rememberLazyListState()
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             topBar = {
-                TheLabTopAppBar(title = stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_download))
+                TheLabTopAppBar(
+                    theme = theme,
+                    title = stringResource(id = com.riders.thelab.core.ui.R.string.activity_title_download)
+                )
             }
         ) { contentPadding ->
             Column(
@@ -108,6 +115,7 @@ fun DownloaderContent(
                         key = { _, item -> item.id }
                     ) { _, item ->
                         DownloadItem(
+                            theme = theme, darkTheme = darkTheme,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(48.dp)
@@ -146,8 +154,8 @@ fun DownloaderContent(
 ////////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewHeader() {
-    TheLabTheme {
+private fun PreviewHeader(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Header("Launch Download", true) {}
     }
 }
@@ -155,7 +163,13 @@ private fun PreviewHeader() {
 @DevicePreviews
 @Composable
 private fun PreviewDownloaderContent(@PreviewParameter(PreviewListProvider::class) itemList: List<Download>) {
-    TheLabTheme {
-        DownloaderContent(itemList, "Launch Download", true) {}
+    TheLabTheme(theme = AppTheme.Default) {
+        DownloaderContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            itemList,
+            "Launch Download",
+            true
+        ) {}
     }
 }

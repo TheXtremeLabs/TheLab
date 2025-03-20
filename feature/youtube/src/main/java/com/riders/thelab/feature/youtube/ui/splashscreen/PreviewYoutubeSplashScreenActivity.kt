@@ -11,6 +11,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -43,10 +44,13 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
@@ -60,7 +64,7 @@ import kotlinx.coroutines.launch
 //
 ///////////////////////////////////////
 @Composable
-fun YoutubeSplashScreenContent() {
+fun YoutubeSplashScreenContent(theme: AppTheme, darkTheme: Boolean) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -109,7 +113,7 @@ fun YoutubeSplashScreenContent() {
         }
     }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
@@ -198,8 +202,8 @@ fun YoutubeSplashScreenContent() {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewYoutubeSplashScreenContent() {
-    TheLabTheme {
-        YoutubeSplashScreenContent()
+private fun PreviewYoutubeSplashScreenContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        YoutubeSplashScreenContent(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }

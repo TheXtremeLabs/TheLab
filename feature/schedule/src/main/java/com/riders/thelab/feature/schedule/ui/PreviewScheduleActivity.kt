@@ -19,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -46,15 +47,16 @@ import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_surfaceTint
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_surfaceTint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
     scheduleState: ScheduleJobAlarmUiState,
     tooltipState: TooltipState,
     countDownQuery: String,
@@ -69,10 +71,15 @@ fun ScheduleContent(
     val focusRequester = remember { FocusRequester() }
     val focusManager: FocusManager = LocalFocusManager.current
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = { TheLabTopAppBar(stringResource(id = R.string.activity_title_schedule_jobs)) }
+            topBar = {
+                TheLabTopAppBar(
+                    theme = theme,
+                    title = stringResource(id = R.string.activity_title_schedule_jobs)
+                )
+            }
         ) { contentPadding ->
 
             Box(
@@ -132,7 +139,7 @@ fun ScheduleContent(
                                         Icon(
                                             imageVector = Icons.Outlined.QuestionMark,
                                             contentDescription = null,
-                                            tint = if (countDownQuery.isEmpty()) com.riders.thelab.core.ui.compose.theme.error else if (!isSystemInDarkTheme()) md_theme_light_surfaceTint else md_theme_dark_surfaceTint
+                                            tint = if (countDownQuery.isEmpty()) com.riders.thelab.core.ui.compose.color.error else MaterialTheme.colorScheme.surfaceTint
                                         )
                                     }
                                 }
@@ -220,8 +227,9 @@ fun ScheduleContent(
 private fun PreviewScheduleContent(@PreviewParameter(PreviewProvider::class) scheduleState: ScheduleJobAlarmUiState) {
     val tooltipState = TooltipState()
 
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme()) {
         ScheduleContent(
+            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
             scheduleState,
             tooltipState,
             "2",

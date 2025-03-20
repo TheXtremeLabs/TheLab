@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,13 +19,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
 
 @Composable
 fun LabTabItem(
@@ -32,7 +34,7 @@ fun LabTabItem(
     tabWidth: Dp,
     text: String,
     shape: Shape = RoundedCornerShape(8.dp),
-    selectedTextColor: Color = if (!isSystemInDarkTheme()) md_theme_dark_primary else md_theme_light_primary,
+    selectedTextColor: Color = MaterialTheme.colorScheme.primary,
     unselectedTextColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
     onClick: () -> Unit
 ) {
@@ -61,8 +63,8 @@ fun LabTabItem(
 
 @DevicePreviews
 @Composable
-private fun PreviewLabTabItem() {
-    TheLabTheme {
+private fun PreviewLabTabItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Box(modifier = Modifier.background(if (!isSystemInDarkTheme()) Color.White else Color.Black)) {
             LabTabItem(
                 isSelected = true,

@@ -36,6 +36,7 @@ import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.local.model.weather.WeatherModel
 import com.riders.thelab.core.data.local.model.weather.toModel
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.core.ui.data.local.bean.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
@@ -61,7 +62,8 @@ import javax.inject.Inject
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val repository: IRepository
+    private val repository: IRepository,
+     val uiRepository: IUiRepository
 ) : ViewModel() {
     //////////////////////////////////////////
     // Variables

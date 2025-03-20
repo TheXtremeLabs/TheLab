@@ -16,9 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.feature.musicrecognition.R
@@ -30,11 +33,17 @@ import com.riders.thelab.feature.musicrecognition.R
 //
 ///////////////////////////////////////////////////
 @Composable
-fun MusicRecognitionContent() {
+fun MusicRecognitionContent(theme: AppTheme, darkTheme: Boolean) {
     val context = LocalContext.current
 
-    TheLabTheme {
-        Scaffold(topBar = { TheLabTopAppBar(navigationIcon = {}) }
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
+        Scaffold(
+            topBar = {
+                TheLabTopAppBar(
+                    theme = theme,
+                    navigationIcon = {}
+                )
+            }
         ) { contentPadding ->
             Column(
                 modifier = Modifier
@@ -96,8 +105,8 @@ fun MusicRecognitionContent() {
 ///////////////////////////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewMusicRecognitionContent() {
-    TheLabTheme {
-        MusicRecognitionContent()
+fun PreviewMusicRecognitionContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        MusicRecognitionContent(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }

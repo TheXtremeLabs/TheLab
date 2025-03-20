@@ -6,8 +6,11 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -19,13 +22,21 @@ class ColorActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TheLabTheme {
+
+            val theme: AppTheme by mViewModel.uiRepository
+                .getTheme()
+                .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+            val isDarkTheme: Boolean by mViewModel.uiRepository
+                .isThemeDarkMode()
+                .collectAsStateWithLifecycle(initialValue = false)
+
+            TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Color(viewModel = mViewModel)
+                    Color(theme = theme, darkTheme = isDarkTheme, viewModel = mViewModel)
                 }
             }
         }

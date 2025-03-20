@@ -36,11 +36,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.success
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.success
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -51,11 +54,16 @@ import kotlinx.coroutines.launch
 //
 ///////////////////////////////////////////////////
 @Composable
-fun Toast(message: String, imageVector: ImageVector? = null, containerColor: Color? = null) {
+fun Toast(
+    theme: AppTheme,
+    message: String,
+    imageVector: ImageVector? = null,
+    containerColor: Color? = null
+) {
     val scope = rememberCoroutineScope()
     var animated by remember { mutableStateOf(false) }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -133,17 +141,18 @@ fun Toast(message: String, imageVector: ImageVector? = null, containerColor: Col
 ///////////////////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewToast() {
-    TheLabTheme {
-        Toast(message = "This is a toast from TheLab")
+private fun PreviewToast(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        Toast(theme = appTheme, message = "This is a toast from TheLab")
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewToastWithIcon() {
-    TheLabTheme {
+private fun PreviewToastWithIcon(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Toast(
+            theme = appTheme,
             message = "This is a toast from TheLab",
             imageVector = Icons.Filled.BatteryFull,
             containerColor = success

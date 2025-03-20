@@ -16,8 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.executeOnBackPressed
 
@@ -28,6 +31,7 @@ import com.riders.thelab.core.ui.compose.utils.executeOnBackPressed
 ///////////////////////////////////////////////////////////
 @Composable
 fun LabBackButton(
+    theme: AppTheme,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.background,
     icon: ImageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
@@ -35,7 +39,7 @@ fun LabBackButton(
 ) {
     val context = LocalContext.current
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         Card(
             modifier = Modifier
                 .size(48.dp)
@@ -59,8 +63,8 @@ fun LabBackButton(
 ///////////////////////////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewLabBackButton() {
-    TheLabTheme {
-        LabBackButton(icon = Icons.AutoMirrored.Rounded.KeyboardArrowLeft)
+private fun PreviewLabBackButton(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        LabBackButton(theme = appTheme, icon = Icons.AutoMirrored.Rounded.KeyboardArrowLeft)
     }
 }

@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.kat.ui
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,9 +23,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.feature.kat.utils.FirebaseUtils
@@ -37,12 +41,12 @@ import timber.log.Timber
 //
 ///////////////////////////////
 @Composable
-fun KatUserScreen(viewModel: KatProfileViewModel) {
+fun KatUserScreen(theme: AppTheme, darkTheme: Boolean, viewModel: KatProfileViewModel) {
 
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -132,9 +136,9 @@ fun KatUserScreen(viewModel: KatProfileViewModel) {
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewKaUserScreen() {
+private fun PreviewKaUserScreen(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val viewModel: KatProfileViewModel = hiltViewModel()
-    TheLabTheme {
-        KatUserScreen(viewModel)
+    TheLabTheme(theme = appTheme) {
+        KatUserScreen(theme = appTheme, darkTheme = isSystemInDarkTheme(), viewModel)
     }
 }

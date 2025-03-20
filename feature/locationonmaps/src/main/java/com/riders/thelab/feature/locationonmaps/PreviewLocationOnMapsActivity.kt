@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.zIndex
@@ -42,6 +44,8 @@ import com.google.maps.android.compose.widgets.DisappearingScaleBar
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabBackButton
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -55,6 +59,7 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationOnMapsContent(
+    theme: AppTheme, darkTheme: Boolean,
     location: Location,
     isSearchPlaceVisible: Boolean,
     uiEvent: (UiEvent) -> Unit,
@@ -90,17 +95,19 @@ fun LocationOnMapsContent(
     }
 //    val location = (1.35 to 103.87).toLocation()
     val userPosition = LatLng(location.latitude, location.longitude)
-    val cameraPositionState = rememberCameraPositionState(key = "location_on_maps_camera_position_state") {
-        position = CameraPosition.fromLatLngZoom(userPosition, 10f)
-    }
+    val cameraPositionState =
+        rememberCameraPositionState(key = "location_on_maps_camera_position_state") {
+            position = CameraPosition.fromLatLngZoom(userPosition, 10f)
+        }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         BottomSheetScaffold(
             modifier = Modifier.fillMaxSize(),
             scaffoldState = scaffoldState,
             sheetShape = RoundedCornerShape(topStart = 35.dp, topEnd = 35.dp),
             sheetContent = {
                 PlaceBottomSheetContent(
+                    theme = theme, darkTheme = darkTheme,
                     type = PlaceBottomSheetType.POI,
                     userPosition = userPosition,
                     isHalfExpanded = scaffoldState.bottomSheetState.hasPartiallyExpandedState,
@@ -143,6 +150,7 @@ fun LocationOnMapsContent(
                 }
 
                 LabBackButton(
+                    theme = theme,
                     modifier = Modifier
                         .zIndex(2f)
                         .statusBarsPadding()
@@ -180,6 +188,7 @@ fun LocationOnMapsContent(
                     exit = fadeOut() + slideOutVertically()
                 ) {
                     PlacesCard(
+                        theme = theme, darkTheme = darkTheme,
                         uiEvent = {
                             when (it) {
                                 is UiEvent.OnPlaceSelected -> {
@@ -212,9 +221,10 @@ fun LocationOnMapsContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewLocationOnMapsContent() {
-    TheLabTheme {
+private fun PreviewLocationOnMapsContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         LocationOnMapsContent(
+            theme = appTheme, darkTheme = isSystemInDarkTheme(),
             location = (1.35 to 103.87).toLocation(),
             isSearchPlaceVisible = true,
             uiEvent = {},

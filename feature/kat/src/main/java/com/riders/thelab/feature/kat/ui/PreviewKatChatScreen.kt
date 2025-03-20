@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.kat.ui
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,10 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.google.firebase.Timestamp
 import com.riders.thelab.core.data.local.model.kat.KatUserModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.feature.kat.utils.FirebaseUtils
@@ -28,11 +32,11 @@ import com.riders.thelab.feature.kat.utils.FirebaseUtils
 //
 ///////////////////////////////
 @Composable
-fun KatChatScreen(users: List<KatUserModel>) {
+fun KatChatScreen(theme: AppTheme, darkTheme: Boolean, users: List<KatUserModel>) {
     val context = LocalContext.current
     val lazyListState = rememberLazyListState()
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
             targetState = users.isNotEmpty(),
@@ -52,6 +56,7 @@ fun KatChatScreen(users: List<KatUserModel>) {
                 ) {
                     itemsIndexed(items = users) { _, item ->
                         ChatRoomItem(
+                            theme = theme, darkTheme = darkTheme,
                             username = if (item.userId == FirebaseUtils.getCurrentUserID()) "${item.username} (Me)" else item.username,
                             phoneNumber = item.phone
                         ) {
@@ -75,7 +80,7 @@ fun KatChatScreen(users: List<KatUserModel>) {
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewKaChatScreen() {
+private fun PreviewKaChatScreen(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val list = listOf(
         KatUserModel(
             FirebaseUtils.getCurrentUserID(),
@@ -98,7 +103,7 @@ private fun PreviewKaChatScreen() {
         )
     )
 
-    TheLabTheme {
-        KatChatScreen(list)
+    TheLabTheme(theme = appTheme) {
+        KatChatScreen(theme = appTheme, darkTheme = isSystemInDarkTheme(), list)
     }
 }

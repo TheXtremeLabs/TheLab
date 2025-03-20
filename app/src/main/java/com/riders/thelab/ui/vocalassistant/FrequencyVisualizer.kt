@@ -11,8 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 @Composable
@@ -59,8 +62,8 @@ fun FrequencyVisualizer(frequencies: List<Double>) {
 
 @DevicePreviews
 @Composable
-private fun PreviewFrequencyVisualizer() {
-    TheLabTheme {
+private fun PreviewFrequencyVisualizer(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         FrequencyVisualizer(
             listOf(
                 3.0, 16.0, 12.0,

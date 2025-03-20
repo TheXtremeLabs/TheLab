@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -30,6 +31,7 @@ import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
 import com.riders.thelab.core.ui.compose.component.network.PreviewProviderNetworkState
 import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -44,6 +46,7 @@ import timber.log.Timber
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TheatersContent(
+    theme: AppTheme, darkTheme: Boolean,
     networkState: NetworkState,
     categories: List<String>,
     tabRowSelected: Int,
@@ -77,10 +80,11 @@ fun TheatersContent(
         )
     }
 
-    TheLabTheme(darkTheme = true) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             topBar = {
                 TheLabTopAppBar(
+                    theme = theme,
                     mainCustomContent = {
                         AnimatedContent(
                             targetState = networkState,
@@ -90,6 +94,7 @@ fun TheatersContent(
                             when (targetState) {
                                 is NetworkState.Available -> {
                                     LabTabRow(
+                                        theme = theme,
                                         selectedItemIndex = tabRowSelected,
                                         items = categories,
                                         onClick = { index ->
@@ -124,6 +129,7 @@ fun TheatersContent(
                             )
                         ) {
                             LabHorizontalViewPagerGeneric(
+                                theme = theme,
                                 pagerState = pagerState,
                                 items = categories,
                                 onCurrentPageChanged = { index ->
@@ -134,6 +140,7 @@ fun TheatersContent(
                                 when (page) {
                                     0 -> {
                                         ScreenMovieContent(
+                                            theme = theme, darkTheme = darkTheme,
                                             trendingMovieItem,
                                             movies,
                                             upcomingMovies,
@@ -143,6 +150,7 @@ fun TheatersContent(
 
                                     1 -> {
                                         ScreenTvShowsContent(
+                                            theme = theme, darkTheme = darkTheme,
                                             trendingTvShowItem,
                                             trendingTvShows,
                                             uiEvent = uiEvent
@@ -195,9 +203,9 @@ fun TheatersContent(
 @DevicePreviews
 @Composable
 private fun PreviewTheatersContent(@PreviewParameter(PreviewProviderNetworkState::class) networkState: NetworkState) {
-
-    TheLabTheme(darkTheme = true) {
+    TheLabTheme(theme = AppTheme.Default) {
         TheatersContent(
+            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
             networkState = networkState,
             categories = listOf("Movies", "Tv Shows"),
             tabRowSelected = 0,

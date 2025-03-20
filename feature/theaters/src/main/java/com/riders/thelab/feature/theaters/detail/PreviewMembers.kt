@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.theaters.detail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,12 +24,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.bean.MovieEnum
 import com.riders.thelab.core.data.local.model.Members
 import com.riders.thelab.core.data.local.model.Movie
 import com.riders.thelab.core.data.local.model.Scenarist
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import timber.log.Timber
@@ -80,7 +84,7 @@ fun MemberItem(member: Members) {
 
 
 @Composable
-fun Director(movie: Movie) {
+fun Director(theme: AppTheme, darkTheme: Boolean, movie: Movie) {
     if (null == movie.directors) {
         Timber.e("Unable to get Director thumbnail url")
         return
@@ -93,7 +97,7 @@ fun Director(movie: Movie) {
         placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -126,7 +130,7 @@ fun Director(movie: Movie) {
 }
 
 @Composable
-fun Scenarists(movie: Movie) {
+fun Scenarists(theme: AppTheme, darkTheme: Boolean, movie: Movie) {
     val lazyRowListState = rememberLazyListState()
 
     if (null == movie.scenarists) {
@@ -134,7 +138,7 @@ fun Scenarists(movie: Movie) {
         return
     }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -160,7 +164,7 @@ fun Scenarists(movie: Movie) {
 }
 
 @Composable
-fun Casting(movie: Movie) {
+fun Casting(theme: AppTheme, darkTheme: Boolean, movie: Movie) {
     val lazyRowListState = rememberLazyListState()
 
     if (null == movie.cast) {
@@ -168,7 +172,7 @@ fun Casting(movie: Movie) {
         return
     }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -198,40 +202,41 @@ fun Casting(movie: Movie) {
 ///////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewMemberItem() {
+fun PreviewMemberItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val member: Members = Scenarist(
         "Di Caprio",
         "Leonardo",
         "https://wwww.google.com"
     )
-    TheLabTheme {
+
+    TheLabTheme(theme = appTheme) {
         MemberItem(member = member)
     }
 }
 
 @DevicePreviews
 @Composable
-fun PreviewDirector() {
+fun PreviewDirector(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val movie = MovieEnum.GUARDIANS_OF_THE_GALAXY.toMovie()
-    TheLabTheme {
-        Director(movie = movie)
+    TheLabTheme(theme = appTheme) {
+        Director(theme = appTheme, darkTheme = isSystemInDarkTheme(), movie = movie)
     }
 }
 
 @DevicePreviews
 @Composable
-fun PreviewScenarists() {
+fun PreviewScenarists(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val movie = MovieEnum.GUARDIANS_OF_THE_GALAXY.toMovie()
-    TheLabTheme {
-        Scenarists(movie = movie)
+    TheLabTheme(theme = appTheme) {
+        Scenarists(theme = appTheme, darkTheme = isSystemInDarkTheme(), movie = movie)
     }
 }
 
 @DevicePreviews
 @Composable
-fun PreviewCasting() {
+fun PreviewCasting(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val movie = MovieEnum.GUARDIANS_OF_THE_GALAXY.toMovie()
-    TheLabTheme {
-        Casting(movie = movie)
+    TheLabTheme(theme = appTheme) {
+        Casting(theme = appTheme, darkTheme = isSystemInDarkTheme(), movie = movie)
     }
 }

@@ -46,6 +46,7 @@ import com.riders.thelab.core.data.local.model.compose.weather.WeatherUIState
 import com.riders.thelab.core.data.local.model.weather.WeatherModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.core.ui.data.local.bean.WindDirection
@@ -58,7 +59,7 @@ import kotlin.math.roundToInt
 //
 ///////////////////////////////////////////////////
 @Composable
-fun WeatherMoreData(weather: WeatherModel) {
+fun WeatherMoreData(theme: AppTheme, darkTheme: Boolean, weather: WeatherModel) {
     val gridState = rememberLazyGridState()
 
     val realFeels =
@@ -80,7 +81,7 @@ fun WeatherMoreData(weather: WeatherModel) {
         weather.sunrise
     )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
             Row(
@@ -198,11 +199,12 @@ fun WeatherMoreData(weather: WeatherModel) {
 
 @Composable
 fun WeatherMainCityContent(
+    theme: AppTheme, darkTheme: Boolean,
     weatherUIState: WeatherUIState,
     isWeatherMoreDataVisible: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         AnimatedContent(
             modifier = Modifier.fillMaxWidth(),
             targetState = weatherUIState
@@ -219,7 +221,7 @@ fun WeatherMainCityContent(
                     val painter = rememberAsyncImagePainter(
                         model = ImageRequest
                             .Builder(LocalContext.current)
-                            .data( weather.weatherIconUrl.toString())
+                            .data(weather.weatherIconUrl.toString())
                             .apply {
                                 crossfade(true)
                                 allowHardware(false)
@@ -237,129 +239,135 @@ fun WeatherMainCityContent(
 
                     // weather.hourlyWeather?.let { onGetMaxMinTemperature(it) }
 
-                    TheLabTheme {
-                        AnimatedVisibility(visible = true) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center,
+                    AnimatedVisibility(visible = true) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
                             ) {
-                                Card(
+                                Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(16.dp)
+                                        .padding(8.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
                                 ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(8.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.spacedBy(16.dp)
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
+                                        // Weather icon
+                                        Image(
+                                            modifier = Modifier
+                                                .size(72.dp)
+                                                .clip(RoundedCornerShape(12.dp)),
+                                            painter = painter,
+                                            contentDescription = "weather icon wth coil",
+                                            contentScale = ContentScale.Fit,
+                                        )
 
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        // Colum with city name country and weather state
+                                        Column(
+                                            horizontalAlignment = Alignment.End,
+                                            verticalArrangement = Arrangement.Center
                                         ) {
-                                            // Weather icon
-                                            Image(
-                                                modifier = Modifier
-                                                    .size(72.dp)
-                                                    .clip(RoundedCornerShape(12.dp)),
-                                                painter = painter,
-                                                contentDescription = "weather icon wth coil",
-                                                contentScale = ContentScale.Fit,
-                                            )
-
-                                            // Colum with city name country and weather state
-                                            Column(
-                                                horizontalAlignment = Alignment.End,
-                                                verticalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(text = "$cityName, $country")
-                                                Text(
-                                                    text = weather.mainWeather.toString(),
-                                                    style = Typography.titleSmall,
-                                                    fontWeight = FontWeight.ExtraBold
-                                                )
-                                            }
-                                        }
-
-                                        // Temperature row container
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Column(modifier = Modifier) {
-                                                // current temperature
-                                                Text(
-                                                    text = temperature,
-                                                    style = Typography.titleLarge,
-                                                    fontWeight = FontWeight.Bold
-                                                )
-
-                                                // Min | Max Temperatures
-                                                Row(
-                                                    modifier = Modifier,
-                                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-                                                    Text(
-                                                        text = weather.temperature?.max?.toInt().toString(),
-                                                        fontWeight = FontWeight.Bold
-                                                    )
-                                                    Text(
-                                                        text = "|"
-                                                    )
-                                                    Text(
-                                                        text = weather.temperature?.min?.toInt().toString()
-                                                    )
-                                                }
-                                            }
-
-                                            Button(
-                                                onClick = {
-                                                    uiEvent.invoke(
-                                                        UiEvent.OnUpdateMoreWeatherDataVisible(
-                                                            !isWeatherMoreDataVisible
-                                                        )
-                                                    )
-                                                }) {
-                                                AnimatedContent(
-                                                    targetState = isWeatherMoreDataVisible,
-                                                    label = "weather_visibility_animation"
-                                                ) { targetState ->
-                                                    Row(
-                                                        modifier = Modifier,
-                                                        horizontalArrangement = Arrangement.spacedBy(
-                                                            16.dp,
-                                                            Alignment.CenterHorizontally
-                                                        ),
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
-                                                        Text(text = if (!targetState) "Show More" else "Close Panel")
-                                                        Icon(
-                                                            imageVector = if (!targetState) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
-                                                            contentDescription = "more icon"
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        AnimatedVisibility(visible = isWeatherMoreDataVisible) {
-                                            WeatherMoreData(weather)
-                                        }
-
-                                        AnimatedVisibility(visible = !weather.dailyWeather.isNullOrEmpty()) {
-                                            // Forecast
-                                            WeatherDailyForecast(
-                                                dailyWeatherList = weather.dailyWeather!!
+                                            Text(text = "$cityName, $country")
+                                            Text(
+                                                text = weather.mainWeather.toString(),
+                                                style = Typography.titleSmall,
+                                                fontWeight = FontWeight.ExtraBold
                                             )
                                         }
                                     }
+
+                                    // Temperature row container
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Column(modifier = Modifier) {
+                                            // current temperature
+                                            Text(
+                                                text = temperature,
+                                                style = Typography.titleLarge,
+                                                fontWeight = FontWeight.Bold
+                                            )
+
+                                            // Min | Max Temperatures
+                                            Row(
+                                                modifier = Modifier,
+                                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(
+                                                    text = weather.temperature?.max?.toInt()
+                                                        .toString(),
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                                Text(
+                                                    text = "|"
+                                                )
+                                                Text(
+                                                    text = weather.temperature?.min?.toInt()
+                                                        .toString()
+                                                )
+                                            }
+                                        }
+
+                                        Button(
+                                            onClick = {
+                                                uiEvent.invoke(
+                                                    UiEvent.OnUpdateMoreWeatherDataVisible(
+                                                        !isWeatherMoreDataVisible
+                                                    )
+                                                )
+                                            }) {
+                                            AnimatedContent(
+                                                targetState = isWeatherMoreDataVisible,
+                                                label = "weather_visibility_animation"
+                                            ) { targetState ->
+                                                Row(
+                                                    modifier = Modifier,
+                                                    horizontalArrangement = Arrangement.spacedBy(
+                                                        16.dp,
+                                                        Alignment.CenterHorizontally
+                                                    ),
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Text(text = if (!targetState) "Show More" else "Close Panel")
+                                                    Icon(
+                                                        imageVector = if (!targetState) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
+                                                        contentDescription = "more icon"
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    AnimatedVisibility(visible = isWeatherMoreDataVisible) {
+                                        WeatherMoreData(
+                                            theme = theme,
+                                            darkTheme = darkTheme,
+                                            weather
+                                        )
+                                    }
+
+                                    AnimatedVisibility(visible = !weather.dailyWeather.isNullOrEmpty()) {
+                                        // Forecast
+                                        WeatherDailyForecast(
+                                            theme = theme, darkTheme = darkTheme,
+                                            dailyWeatherList = weather.dailyWeather!!
+                                        )
+                                    }
                                 }
+
 
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -394,8 +402,8 @@ fun WeatherMainCityContent(
 @DevicePreviews
 @Composable
 fun PreviewWeatherMoreData(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
-    TheLabTheme {
-        WeatherMoreData(weather)
+    TheLabTheme(theme = AppTheme.Default) {
+        WeatherMoreData(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), weather)
     }
 }
 
@@ -404,8 +412,9 @@ fun PreviewWeatherMoreData(@PreviewParameter(PreviewProviderWeather::class) weat
 private fun PreviewWeatherMainCityContent(
     @PreviewParameter(PreviewProviderWeatherUIState::class) weatherUiState: WeatherUIState
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         WeatherMainCityContent(
+            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
             weatherUIState = weatherUiState,
             isWeatherMoreDataVisible = false
         ) {}

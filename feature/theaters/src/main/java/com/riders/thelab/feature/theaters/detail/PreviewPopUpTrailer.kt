@@ -3,6 +3,7 @@ package com.riders.thelab.feature.theaters.detail
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,12 +34,14 @@ import com.riders.thelab.core.data.utils.Constants
 import com.riders.thelab.core.player.YoutubeVideoPlayer
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBVideoModel
 import timber.log.Timber
 
 @Composable
 fun PopUpTrailer(
+    theme: AppTheme, darkTheme: Boolean,
     modifier: Modifier = Modifier,
     itemName: String,
     tmdbVideoModel: TMDBVideoModel,
@@ -49,7 +52,7 @@ fun PopUpTrailer(
     val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
 
-    val mModifier:Modifier = when (orientation) {
+    val mModifier: Modifier = when (orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
             Modifier
                 .fillMaxWidth()
@@ -72,7 +75,7 @@ fun PopUpTrailer(
 
     Timber.d("PopUpTrailer() | Recomposition | ")
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = mModifier.then(modifier),
             colors = CardDefaults.cardColors(containerColor = Color.DarkGray)
@@ -148,8 +151,9 @@ fun PopUpTrailer(
 @DevicePreviews
 @Composable
 private fun PreviewPopUpTrailer(@PreviewParameter(PreviewProviderTMDBVideoModel::class) videoModel: TMDBVideoModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         PopUpTrailer(
+            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
             modifier = Modifier.fillMaxSize(),
             itemName = "Dummy title example",
             tmdbVideoModel = videoModel,

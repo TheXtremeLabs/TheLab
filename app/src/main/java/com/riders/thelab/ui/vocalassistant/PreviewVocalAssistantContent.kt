@@ -23,9 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 @Composable
@@ -49,43 +52,40 @@ fun VocalAssistantContent() {
     }
 
     LaunchedEffect(isRecording) {
-        
     }
 
-    TheLabTheme {
-        Box(
-            modifier = Modifier
-                .background(color = Color.Transparent)
-                .fillMaxSize()
+    Box(
+        modifier = Modifier
+            .background(color = Color.Transparent)
+            .fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                FrequencyVisualizer(frequencies = frequencies)
-                Spacer(modifier = Modifier.height(30.dp))
-                Button(onClick = {
-                    when {
-                        ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.RECORD_AUDIO
-                        ) == PackageManager.PERMISSION_GRANTED -> {
-                            if (isRecording) {
-                                audioProcessor.stopRecording()
-                            } else {
-                                audioProcessor.startRecording()
-                            }
-                            isRecording = !isRecording
+            FrequencyVisualizer(frequencies = frequencies)
+            Spacer(modifier = Modifier.height(30.dp))
+            Button(onClick = {
+                when {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.RECORD_AUDIO
+                    ) == PackageManager.PERMISSION_GRANTED -> {
+                        if (isRecording) {
+                            audioProcessor.stopRecording()
+                        } else {
+                            audioProcessor.startRecording()
                         }
-
-                        else -> {
-                            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-                        }
+                        isRecording = !isRecording
                     }
-                }) {
-                    Text(if (isRecording) "Stop Recording" else "Start Recording")
+
+                    else -> {
+                        requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                    }
                 }
+            }) {
+                Text(if (isRecording) "Stop Recording" else "Start Recording")
             }
         }
     }
@@ -93,8 +93,8 @@ fun VocalAssistantContent() {
 
 @DevicePreviews
 @Composable
-private fun PreviewVocalAssistantContent() {
-    TheLabTheme {
+private fun PreviewVocalAssistantContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         VocalAssistantContent()
     }
 }

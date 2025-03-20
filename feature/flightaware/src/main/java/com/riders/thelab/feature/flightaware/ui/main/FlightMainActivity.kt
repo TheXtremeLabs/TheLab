@@ -23,6 +23,7 @@ import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchActivity
 import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchDetailActivity
@@ -81,16 +82,24 @@ class FlightMainActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
                     val departureAirportsFlow by mViewModel.departureAirportStateFlow.collectAsStateWithLifecycle()
                     val arrivalAirportsFlow by mViewModel.arrivalAirportStateFlow.collectAsStateWithLifecycle()
 
-                    TheLabTheme {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             FlightMainContent(
+                                theme = theme, darkTheme = isDarkTheme,
                                 hasConnection = mViewModel.hasInternetConnection,
                                 searchPageIndex = mViewModel.searchPageIndex,
                                 airportsNearBy = mViewModel.airportsNearBy,

@@ -10,6 +10,7 @@ import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
@@ -73,6 +75,7 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AirportSearchContent(
+    theme: AppTheme, darkTheme: Boolean,
     airportQuery: String,
     onUpdateAirportQuery: (String) -> Unit,
     isQueryLoading: Boolean,
@@ -96,7 +99,7 @@ fun AirportSearchContent(
 
     val airportFoundCount = airportList.size
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -244,13 +247,15 @@ fun AirportSearchContent(
 
                 items(items = airportList) { item ->
                     AirportSearchItem(
+                        theme = theme,
+                        darkTheme = darkTheme,
                         item = item,
                         isSuggestion = false
                     )
                 }
 
                 item {
-                    Footer()
+                    Footer(theme = theme)
                 }
             }
 
@@ -281,8 +286,10 @@ fun AirportSearchContent(
 @DevicePreviews
 @Composable
 private fun PreviewAirportSearchContent(@PreviewParameter(PreviewProviderAirports::class) airports: List<AirportSearchModel>) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         AirportSearchContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             airportQuery = "Paris Charles de Gaulle (CDG)",
             onUpdateAirportQuery = {},
             isQueryLoading = true,

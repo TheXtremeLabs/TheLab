@@ -10,6 +10,7 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.youtube.YoutubeUiState
 import com.riders.thelab.core.data.local.model.youtube.toModel
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -30,7 +31,8 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class YoutubeViewModel @Inject constructor(
-    private val repository: IRepository
+    private val repository: IRepository,
+    val uiRepository: IUiRepository
 ) : BaseViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext

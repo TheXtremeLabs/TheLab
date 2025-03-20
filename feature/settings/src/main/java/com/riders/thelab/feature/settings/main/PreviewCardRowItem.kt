@@ -19,8 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 ///////////////////////////////
@@ -36,7 +39,7 @@ fun CardRowItem(title: String, subtitle: String? = null, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .clickable (onClick = onClick)
+            .clickable(onClick = onClick)
             .then(modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -78,8 +81,8 @@ fun CardRowItem(title: String, subtitle: String? = null, onClick: () -> Unit) {
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewCardRowItem() {
-    TheLabTheme {
+private fun PreviewCardRowItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         CardRowItem("Card Settings", "Subtitle for card settings") {}
     }
 }

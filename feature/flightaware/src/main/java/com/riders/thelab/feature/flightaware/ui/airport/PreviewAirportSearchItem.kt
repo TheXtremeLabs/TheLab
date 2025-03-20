@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.flightaware.ui.airport
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
@@ -36,10 +38,14 @@ import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 //
 ///////////////////////////////////////
 @Composable
-fun AirportSearchItemForSearchScreen(item: AirportSearchModel) {
+fun AirportSearchItemForSearchScreen(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    item: AirportSearchModel
+) {
     val context = LocalContext.current
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -129,8 +135,8 @@ fun AirportSearchItemForSearchScreen(item: AirportSearchModel) {
 }
 
 @Composable
-fun AirportSearchItemForSuggestion(item: AirportSearchModel) {
-    TheLabTheme {
+fun AirportSearchItemForSuggestion(theme: AppTheme, darkTheme: Boolean, item: AirportSearchModel) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -201,11 +207,16 @@ fun AirportSearchItemForSuggestion(item: AirportSearchModel) {
 }
 
 @Composable
-fun AirportSearchItem(item: AirportSearchModel, isSuggestion: Boolean) {
+fun AirportSearchItem(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    item: AirportSearchModel,
+    isSuggestion: Boolean
+) {
     if (!isSuggestion) {
-        AirportSearchItemForSearchScreen(item = item)
+        AirportSearchItemForSearchScreen(theme = theme, darkTheme = darkTheme, item = item)
     } else {
-        AirportSearchItemForSuggestion(item = item)
+        AirportSearchItemForSuggestion(theme = theme, darkTheme = darkTheme, item = item)
     }
 }
 
@@ -218,15 +229,21 @@ fun AirportSearchItem(item: AirportSearchModel, isSuggestion: Boolean) {
 @DevicePreviews
 @Composable
 private fun PreviewAirportSearchItemForSearchScreen(@PreviewParameter(PreviewProviderAirportSearch::class) item: AirportSearchModel) {
-    TheLabTheme {
-        AirportSearchItemForSearchScreen(item)
+    TheLabTheme(theme = AppTheme.Default) {
+        AirportSearchItemForSearchScreen(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(), item
+        )
     }
 }
 
 @DevicePreviews
 @Composable
 private fun PreviewAirportSearchItemForSuggestion(@PreviewParameter(PreviewProviderAirportSearch::class) item: AirportSearchModel) {
-    TheLabTheme {
-        AirportSearchItemForSuggestion(item)
+    TheLabTheme(theme = AppTheme.Default) {
+        AirportSearchItemForSuggestion(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(), item
+        )
     }
 }

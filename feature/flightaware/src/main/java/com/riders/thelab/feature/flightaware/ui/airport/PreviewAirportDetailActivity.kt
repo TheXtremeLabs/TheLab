@@ -3,6 +3,7 @@ package com.riders.thelab.feature.flightaware.ui.airport
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.google.maps.android.compose.MapProperties
@@ -42,6 +44,8 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.feature.flightaware.core.component.GoogleMap
@@ -59,6 +63,7 @@ import timber.log.Timber
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AirportDetailContent(
+    theme: AppTheme, darkTheme: Boolean,
     airportModel: AirportModel,
     departureFlights: List<Departures>?,
     arrivalFlights: List<Arrivals>?,
@@ -80,13 +85,14 @@ fun AirportDetailContent(
     val properties by remember { mutableStateOf(MapProperties(mapType = MapType.NORMAL)) }
     var isLoadingVisible by remember { mutableStateOf(false) }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = backgroundColor),
             topBar = {
                 TheLabTopAppBar(
+                    theme = theme,
                     toolbarSize = ToolbarSize.SMALL,
                     withGradientBackground = false,
                     navigationIconColor = if (LocalInspectionMode.current) Color.White else backgroundColor,
@@ -193,6 +199,7 @@ fun AirportDetailContent(
                         visible = isFlightsFetched && !departureFlights.isNullOrEmpty() && !arrivalFlights.isNullOrEmpty()
                     ) {
                         DeparturesArrivals(
+                            theme = theme, darkTheme = darkTheme,
                             departureFlights = departureFlights!!,
                             arrivalFlights = arrivalFlights!!
                         )
@@ -215,7 +222,7 @@ fun AirportDetailContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewAirportDetailContent() {
+private fun PreviewAirportDetailContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
 
     val airport = AirportModel(
         airportId = "LFPG",
@@ -234,7 +241,15 @@ private fun PreviewAirportDetailContent() {
         wikiUrl = "https://en.wikipedia.org/wiki/Charles_de_Gaulle_Airport",
         airportFlightUrl = "/airports/LFPG/flights"
     )
-    TheLabTheme {
-        AirportDetailContent(airport, null, null, false) {}
+
+    TheLabTheme(theme = appTheme) {
+        AirportDetailContent(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            airport,
+            null,
+            null,
+            false
+        ) {}
     }
 }

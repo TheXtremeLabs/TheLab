@@ -2,6 +2,7 @@ package com.riders.thelab.feature.theaters.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,7 @@ import coil.size.Size
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.utils.Constants
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
@@ -49,7 +51,12 @@ import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBIte
 //
 ///////////////////////////////////////
 @Composable
-fun TrendingTMDBItem(trendingItem: TMDBItemModel, uiEvent: (UiEvent) -> Unit) {
+fun TrendingTMDBItem(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    trendingItem: TMDBItemModel,
+    uiEvent: (UiEvent) -> Unit
+) {
     val painter = getCoilAsyncImagePainter(
         context = LocalContext.current,
         dataUrl = trendingItem.getPosterImageUrl(),
@@ -59,7 +66,7 @@ fun TrendingTMDBItem(trendingItem: TMDBItemModel, uiEvent: (UiEvent) -> Unit) {
         placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
 
-    TheLabTheme(darkTheme = true) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(
             modifier = Modifier
                 .defaultMinSize(1.dp)
@@ -148,7 +155,12 @@ fun TrendingTMDBItem(trendingItem: TMDBItemModel, uiEvent: (UiEvent) -> Unit) {
 
 
 @Composable
-fun TMDBItem(tmdbItem: TMDBItemModel, uiEvent: (UiEvent) -> Unit) {
+fun TMDBItem(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    tmdbItem: TMDBItemModel,
+    uiEvent: (UiEvent) -> Unit
+) {
     val painter =
         getCoilAsyncImagePainter(
             context = LocalContext.current,
@@ -157,7 +169,7 @@ fun TMDBItem(tmdbItem: TMDBItemModel, uiEvent: (UiEvent) -> Unit) {
             placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
         )
 
-    TheLabTheme(darkTheme = true) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier.size(
                 width = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height),
@@ -204,15 +216,15 @@ fun TMDBItem(tmdbItem: TMDBItemModel, uiEvent: (UiEvent) -> Unit) {
 @DevicePreviews
 @Composable
 private fun PreviewTrendingTMDBItem(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
-    TheLabTheme {
-        TrendingTMDBItem(item) { }
+    TheLabTheme(theme = AppTheme.Default) {
+        TrendingTMDBItem(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), item) { }
     }
 }
 
 @DevicePreviews
 @Composable
 private fun PreviewTMDBItem(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
-    TheLabTheme {
-        TMDBItem(item) { }
+    TheLabTheme(theme = AppTheme.Default) {
+        TMDBItem(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), item) { }
     }
 }

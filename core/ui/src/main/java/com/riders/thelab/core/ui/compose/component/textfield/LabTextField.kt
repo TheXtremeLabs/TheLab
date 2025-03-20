@@ -63,9 +63,12 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.keyboardAsState
 import com.riders.thelab.core.ui.utils.UIManager
@@ -84,6 +87,7 @@ import timber.log.Timber
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabTextField(
+    theme: AppTheme,
     modifier: Modifier,
     onOutsideBoundariesClicked: Boolean,
     query: String,
@@ -115,7 +119,7 @@ fun LabTextField(
     var isFieldFocused: Boolean by remember { mutableStateOf(false) }
 
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         TextField(
             modifier = Modifier
                 .then(modifier)
@@ -229,6 +233,7 @@ fun LabTextField(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabOutlinedTextField(
+    theme: AppTheme,
     modifier: Modifier,
     onOutsideBoundariesClicked: Boolean,
     query: String,
@@ -258,7 +263,7 @@ fun LabOutlinedTextField(
     var isFieldFocused: Boolean by remember { mutableStateOf(false) }
 
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -359,6 +364,7 @@ fun LabOutlinedTextField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabTextField2(
+    theme: AppTheme,
     modifier: Modifier,
     onOutsideBoundariesClicked: Boolean,
     textFieldState: TextFieldState,
@@ -379,7 +385,7 @@ fun LabTextField2(
     val isPressed by interactionSource.collectIsPressedAsState()
     val isFocus by interactionSource.collectIsFocusedAsState()
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         BasicTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -491,6 +497,7 @@ fun LabTextField2(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabTextField2(
+    theme: AppTheme,
     modifier: Modifier,
     onOutsideBoundariesClicked: Boolean,
     query: String,
@@ -518,7 +525,7 @@ fun LabTextField2(
     var isFieldFocused: Boolean by remember { mutableStateOf(false) }
 
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         BasicTextField(
             modifier = Modifier
                 .then(modifier)
@@ -697,8 +704,8 @@ fun LabTextField2(
 ///////////////////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewLabTextField() {
-    TheLabTheme {
+private fun PreviewLabTextField(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -708,6 +715,7 @@ private fun PreviewLabTextField() {
             contentAlignment = Alignment.Center
         ) {
             LabTextField(
+                theme = appTheme,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
@@ -723,10 +731,10 @@ private fun PreviewLabTextField() {
 
 @DevicePreviews
 @Composable
-private fun PreviewLabTextField2TextFieldState() {
+private fun PreviewLabTextField2TextFieldState(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val textFieldState = rememberTextFieldState()
 
-    TheLabTheme {
+    TheLabTheme(theme = appTheme) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -736,6 +744,7 @@ private fun PreviewLabTextField2TextFieldState() {
             contentAlignment = Alignment.Center
         ) {
             LabTextField2(
+                theme = appTheme,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
@@ -753,8 +762,8 @@ private fun PreviewLabTextField2TextFieldState() {
 
 @DevicePreviews
 @Composable
-private fun PreviewLabTextField2() {
-    TheLabTheme {
+private fun PreviewLabTextField2(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -764,6 +773,7 @@ private fun PreviewLabTextField2() {
             contentAlignment = Alignment.Center
         ) {
             LabTextField2(
+                theme = appTheme,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),

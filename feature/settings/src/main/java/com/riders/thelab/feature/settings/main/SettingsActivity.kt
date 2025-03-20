@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.riders.thelab.core.google.BaseGoogleActivity
 import com.riders.thelab.core.google.GoogleSignInManager
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.settings.profile.UserProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,24 +37,31 @@ class SettingsActivity : BaseGoogleActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
                     val deviceInformationUiState by mViewModel.deviceInformationUiState.collectAsStateWithLifecycle()
                     val userUiState by mViewModel.userUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme(darkTheme = mViewModel.isDarkMode) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             SettingsContent(
+                                theme = theme, darkTheme = isDarkTheme,
                                 deviceInformationUiState = deviceInformationUiState,
                                 userUiState = userUiState,
-                                version = mViewModel.version,
                                 themeOptions = mViewModel.themeOptions,
-                                isDarkMode = mViewModel.isDarkMode,
+                                version = mViewModel.version,
+                                showModeInfo = mViewModel.showMoreInfoOnDevice,
                                 isVibration = mViewModel.isVibration,
                                 isActivitiesSplashEnabled = mViewModel.isActivitiesSplashEnabled,
-                                showModeInfo = mViewModel.showMoreInfoOnDevice,
                                 uiEvent = mViewModel::onEvent
                             )
                         }

@@ -13,16 +13,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_background
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 
 @DevicePreviews
 @Composable
 fun NoItemFound(message: String? = null) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         Surface(modifier = Modifier.fillMaxSize(), color = md_theme_dark_background) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -52,8 +55,8 @@ fun NoItemFound(message: String? = null) {
 
 @DevicePreviews
 @Composable
-private fun PreviewNoItemFound() {
-    TheLabTheme {
+private fun PreviewNoItemFound(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = AppTheme.Default) {
         NoItemFound("No song item found")
     }
 }

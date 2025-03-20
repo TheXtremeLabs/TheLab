@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -44,6 +45,8 @@ import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -63,6 +66,7 @@ fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
 @Composable
 fun LabHorizontalViewPager(
     viewModel: BaseViewModel,
+    theme: AppTheme,
     pagerState: PagerState,
     items: List<App>,
     pageCount: Int = items.size,
@@ -93,7 +97,7 @@ fun LabHorizontalViewPager(
             label = ""
         )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -178,6 +182,7 @@ fun LabHorizontalViewPager(
 
 @Composable
 fun <T : Any> LabHorizontalViewPagerGeneric(
+    theme: AppTheme,
     viewModel: BaseViewModel,
     pagerState: PagerState,
     items: List<T>,
@@ -210,7 +215,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
             label = ""
         )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -300,6 +305,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
 
 @Composable
 fun <T : Any> LabHorizontalViewPagerGeneric(
+    theme: AppTheme,
     pagerState: PagerState,
     items: List<T>,
     onCurrentPageChanged: (Int) -> Unit,
@@ -337,7 +343,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
             label = ""
         )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         Column(
             modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -488,12 +494,13 @@ fun HorizontalPagerIndicator(
 
 @Composable
 fun LabVerticalViewPager(
+    theme: AppTheme,
     viewModel: BaseViewModel,
     items: List<App>,
     pageCount: Int = items.size,
     pagerState: PagerState = rememberPagerState { items.size },
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
 
         Row(modifier = Modifier.fillMaxWidth()) {
             VerticalPager(
@@ -525,6 +532,7 @@ fun LabVerticalViewPager(
 
 @Composable
 fun <T : Any> LabVerticalViewPagerGeneric(
+    theme: AppTheme,
     pagerState: PagerState,
     items: List<T>,
     pageCount: Int = items.size,
@@ -561,7 +569,7 @@ fun <T : Any> LabVerticalViewPagerGeneric(
             label = ""
         )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -718,9 +726,10 @@ fun VerticalPagerIndicator(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewLabHorizontalViewPagerGeneric() {
-    TheLabTheme {
+private fun PreviewLabHorizontalViewPagerGeneric(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = AppTheme.Default) {
         LabHorizontalViewPagerGeneric(
+            theme = AppTheme.Default,
             viewModel = hiltViewModel<BaseViewModel>(),
             pagerState = rememberPagerState { 10 },
             items = listOf("1", "2", "3", "4", "5", "6")
@@ -732,8 +741,8 @@ private fun PreviewLabHorizontalViewPagerGeneric() {
 
 @DevicePreviews
 @Composable
-private fun PreviewHorizontalPagerIndicator() {
-    TheLabTheme {
+private fun PreviewHorizontalPagerIndicator(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = AppTheme.Default) {
         HorizontalPagerIndicator(
             pageCount = listOf("1", "2", "3", "4", "5", "6").size,
             currentPage = 2,
@@ -745,9 +754,10 @@ private fun PreviewHorizontalPagerIndicator() {
 
 @DevicePreviews
 @Composable
-private fun PreviewLabVerticalViewPagerGeneric() {
-    TheLabTheme {
+private fun PreviewLabVerticalViewPagerGeneric(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         LabVerticalViewPagerGeneric(
+            theme = appTheme,
             pagerState = rememberPagerState { 10 },
             items = listOf("1", "2", "3", "4", "5", "6"),
             onUpdateViewPagerExpanded = {},
@@ -761,8 +771,8 @@ private fun PreviewLabVerticalViewPagerGeneric() {
 
 @DevicePreviews
 @Composable
-private fun PreviewVerticalPagerIndicator() {
-    TheLabTheme {
+private fun PreviewVerticalPagerIndicator(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         VerticalPagerIndicator(
             pageCount = listOf("1", "2", "3", "4", "5", "6").size,
             currentPage = 2,

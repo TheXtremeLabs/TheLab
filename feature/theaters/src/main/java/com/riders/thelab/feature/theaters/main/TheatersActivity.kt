@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.theaters.detail.TheatersDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,19 +48,27 @@ class TheatersActivity : BaseComponentActivity() {
 
                     val networkState by mNetworkManager.networkState.collectAsStateWithLifecycle()
 
+                    val theme: AppTheme by mTheatersViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mTheatersViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
                     val trendingMovieItem by mTheatersViewModel.tmdbTrendingMovieItemUiState.collectAsStateWithLifecycle()
                     val movies by mTheatersViewModel.tmdbMoviesUiState.collectAsStateWithLifecycle()
                     val upcomingMovies by mTheatersViewModel.tmdbUpcomingMoviesUiState.collectAsStateWithLifecycle()
                     val trendingTvShowItem by mTheatersViewModel.tmdbTrendingTvShowItemUiState.collectAsStateWithLifecycle()
                     val trendingTvShows by mTheatersViewModel.tmdbTrendingTvShowsUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             TheatersContainer(
+                                theme = theme, darkTheme = isDarkTheme,
                                 networkState = networkState,
                                 isActivitiesSplashScreenEnable = mTheatersViewModel.isActivitiesSplashEnabled,
                                 categories = mTheatersViewModel.categories,

@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.C
@@ -44,10 +46,12 @@ import androidx.media3.ui.PlayerView
 import com.riders.thelab.BuildConfig
 import com.riders.thelab.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_primary
 import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.Shapes
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -60,9 +64,10 @@ import java.util.Locale
 //
 ///////////////////////////////////////
 @Composable
-fun NoContentFound() {
+fun NoContentFound(theme: AppTheme, darkTheme: Boolean) {
     val context = LocalContext.current
-    TheLabTheme {
+
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier.fillMaxWidth(.8f),
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
@@ -148,12 +153,15 @@ fun VideoView(videoPath: String, uiEvent: (UiEvent) -> Unit) {
 }
 
 @Composable
-fun LoadingContent(version: String) {
+fun LoadingContent(
+    theme: AppTheme,
+    darkTheme: Boolean, version: String
+) {
 
     val scope = rememberCoroutineScope()
     val progressBarVisibility = remember { mutableStateOf(false) }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
@@ -212,6 +220,8 @@ fun LoadingContent(version: String) {
 
 @Composable
 fun SplashScreenContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
     version: String,
     videoPath: String?,
     switchContent: Boolean,
@@ -220,7 +230,7 @@ fun SplashScreenContent(
 ) {
     val context = LocalContext.current
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -228,7 +238,7 @@ fun SplashScreenContent(
         ) {
 
             if (null == videoPath) {
-                NoContentFound()
+                NoContentFound(theme = theme, darkTheme = darkTheme)
             } else {
                 AnimatedContent(
                     targetState = switchContent,
@@ -238,7 +248,7 @@ fun SplashScreenContent(
                     if (!targetState) {
                         VideoView(videoPath = videoPath, uiEvent = uiEvent)
                     } else {
-                        LoadingContent(version)
+                        LoadingContent(theme = theme, darkTheme = darkTheme, version)
                     }
                 }
             }
@@ -263,33 +273,39 @@ fun SplashScreenContent(
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewNoContentFound() {
-    TheLabTheme {
-        NoContentFound()
+private fun PreviewNoContentFound(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        NoContentFound(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewLoadingContent() {
-    TheLabTheme {
-        LoadingContent(version = BuildConfig.VERSION_NAME)
+private fun PreviewLoadingContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        LoadingContent(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            version = BuildConfig.VERSION_NAME
+        )
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewVideoContent() {
-    TheLabTheme {
+private fun PreviewVideoContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         VideoView(videoPath = "") {}
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewSplashScreenContent() {
-    TheLabTheme {
+private fun PreviewSplashScreenContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         SplashScreenContent(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
             version = BuildConfig.VERSION_NAME,
             videoPath = "",
             switchContent = true,

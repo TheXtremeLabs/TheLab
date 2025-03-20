@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -19,25 +20,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_primary
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_tertiaryContainer
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_tertiaryContainer
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
 import timber.log.Timber
 import java.util.Locale
 
 @Composable
 fun LabTabRow(
+    theme: AppTheme,
     selectedItemIndex: Int,
     items: List<String>,
     modifier: Modifier = Modifier,
     tabWidth: Dp = 150.dp,
-    indicatorColor: Color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
-    backgroundColor: Color = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary,
-    selectedTextColor: Color = if (!isSystemInDarkTheme()) md_theme_dark_primary else md_theme_light_primary,
+    indicatorColor: Color = MaterialTheme.colorScheme.primary,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    selectedTextColor: Color = MaterialTheme.colorScheme.inversePrimary,
     unselectedTextColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
     hasCustomShape: Boolean = false,
     shape: Shape = if (!hasCustomShape) RoundedCornerShape(16.dp) else RoundedCornerShape(
@@ -53,7 +57,7 @@ fun LabTabRow(
         label = "indicator animation",
     )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         Box(
             modifier = modifier
                 .clip(shape)
@@ -95,11 +99,12 @@ fun LabTabRow(
 
 @DevicePreviews
 @Composable
-private fun PreviewLabTabRow() {
+private fun PreviewLabTabRow(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val selectedIndex = remember { mutableIntStateOf(1) }
 
-    TheLabTheme {
+    TheLabTheme(theme = appTheme) {
         LabTabRow(
+            theme = appTheme,
             selectedItemIndex = selectedIndex.intValue,
             items = listOf(
                 "details".uppercase(Locale.getDefault()),
@@ -117,11 +122,12 @@ private fun PreviewLabTabRow() {
 
 @DevicePreviews
 @Composable
-private fun PreviewLabTabRowWithCustomShape() {
+private fun PreviewLabTabRowWithCustomShape(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val selectedIndex = remember { mutableIntStateOf(1) }
 
-    TheLabTheme {
+    TheLabTheme(theme = appTheme) {
         LabTabRow(
+            theme = appTheme,
             selectedItemIndex = selectedIndex.intValue,
             items = listOf(
                 "details".uppercase(Locale.getDefault()),

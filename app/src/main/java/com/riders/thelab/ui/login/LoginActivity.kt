@@ -21,6 +21,7 @@ import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
 import com.riders.thelab.core.google.BaseGoogleActivity
 import com.riders.thelab.core.google.GooglePlayServicesManager
 import com.riders.thelab.core.google.GoogleSignInManager
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.navigator.Navigator
@@ -62,18 +63,27 @@ class LoginActivity : BaseGoogleActivity() {
                 computeWindowSizeClasses()
 
                 setContent {
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
                     val loginUiState by mViewModel.loginUiState.collectAsStateWithLifecycle()
                     val loginFieldState by mViewModel.loginFieldUiState.collectAsStateWithLifecycle()
                     val loginHasError by mViewModel.loginHasError.collectAsStateWithLifecycle()
                     val passwordFieldState by mViewModel.passwordFieldUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             LoginContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme,
                                 version = mViewModel.version,
                                 loginUiState = loginUiState,
                                 loginFieldState = loginFieldState,

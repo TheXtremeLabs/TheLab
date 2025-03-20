@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -44,12 +45,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.hideTooltip
 import com.riders.thelab.core.ui.compose.utils.showTooltip
@@ -70,6 +74,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlightMainContent(
+    theme: AppTheme, darkTheme: Boolean,
     hasConnection: Boolean,
     uiEvent: (UiEvent) -> Unit,
     searchPageIndex: Int,
@@ -90,11 +95,12 @@ fun FlightMainContent(
 
     var onOutsideBoundariesClicked by remember { mutableStateOf(false) }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TheLabTopAppBar(
+                    theme = theme,
                     navigationIconColor = Color.White,
                     actions = {
                         AnimatedVisibility(visible = !hasConnection) {
@@ -165,6 +171,8 @@ fun FlightMainContent(
                 ) {
                     item {
                         SearchFlightContent(
+                            theme = theme,
+                            darkTheme = darkTheme,
                             uiEvent = uiEvent,
                             searchPageIndex = searchPageIndex,
                             onOutsideBoundariesClicked = onOutsideBoundariesClicked,
@@ -214,6 +222,8 @@ fun FlightMainContent(
 
                     item {
                         AirportNearByContent(
+                            theme = theme,
+                            darkTheme = darkTheme,
                             modifier = Modifier.clickable {
                                 scope.launch {
                                     onOutsideBoundariesClicked = true
@@ -229,7 +239,7 @@ fun FlightMainContent(
                     }
 
                     item {
-                        Footer()
+                        Footer(theme = theme)
                     }
                 }
             }
@@ -244,8 +254,8 @@ fun FlightMainContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-fun Footer() {
-    TheLabTheme {
+fun Footer(@PreviewParameter(AppThemePreviewProvider::class) theme: AppTheme) {
+    TheLabTheme(theme = theme) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             ProvidedBy(
                 providerIcon = R.drawable.ic_flightaware_logo,
@@ -260,9 +270,10 @@ fun Footer() {
 
 @DevicePreviews
 @Composable
-private fun PreviewFlightMainContent() {
-    TheLabTheme {
+private fun PreviewFlightMainContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         FlightMainContent(
+            theme = appTheme, darkTheme = isSystemInDarkTheme(),
             hasConnection = true,
             uiEvent = {},
             searchPageIndex = 0,
@@ -279,9 +290,10 @@ private fun PreviewFlightMainContent() {
 
 @DevicePreviews
 @Composable
-private fun PreviewFlightMainContentNoConnection() {
-    TheLabTheme {
+private fun PreviewFlightMainContentNoConnection(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = AppTheme.Default) {
         FlightMainContent(
+            theme = appTheme, darkTheme = isSystemInDarkTheme(),
             hasConnection = false,
             uiEvent = {},
             searchPageIndex = 1,

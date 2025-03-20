@@ -20,9 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.theme.Orange
+import com.riders.thelab.core.ui.compose.color.Orange
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlin.random.Random
 
@@ -74,8 +77,8 @@ fun Waveform(color: Color, limit: Float = 1f) {
 
 @DevicePreviews
 @Composable
-private fun PreviewCallWaveform() {
-    TheLabTheme {
+private fun PreviewCallWaveform(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Card {
             Box(
                 modifier = Modifier.padding(12.dp)

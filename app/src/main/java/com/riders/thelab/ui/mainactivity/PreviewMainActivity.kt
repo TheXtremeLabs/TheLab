@@ -31,6 +31,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,10 +52,9 @@ import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.utils.LabAppManager
 import kotlinx.coroutines.launch
@@ -62,6 +62,8 @@ import timber.log.Timber
 
 @Composable
 fun MainContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
     dynamicIslandUiState: IslandState,
     isDynamicIslandVisible: Boolean,
     searchedAppRequest: String,
@@ -98,13 +100,12 @@ fun MainContent(
             )
         )
 
-
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+                .background(MaterialTheme.colorScheme.background),
             floatingActionButtonPosition = androidx.compose.material.FabPosition.End,
             floatingActionButton = {
                 androidx.compose.material3.FloatingActionButton(
@@ -124,7 +125,7 @@ fun MainContent(
                 }
             },
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            sheetContent = { BottomSheetContent() },
+            sheetContent = { BottomSheetContent(theme = theme, darkTheme = darkTheme) },
             sheetPeekHeight = 0.dp,
             sheetElevation = 8.dp,
             // Defaults to true
@@ -134,7 +135,7 @@ fun MainContent(
                 LazyVerticalGrid(
                     state = lazyState,
                     modifier = Modifier
-                        .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background)
+                        .background(MaterialTheme.colorScheme.background)
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                         .pointerInput(key1 = "user input") {
@@ -177,6 +178,8 @@ fun MainContent(
                         GridItemSpan(maxCurrentLineSpan)
                     }) {
                         Header(
+                            theme = theme,
+                            darkTheme = darkTheme,
                             whatsNewList = whatsNewList,
                             isKeyboardVisible = isKeyboardVisible,
                             pagerAutoScroll = isPagerAutoScroll,
@@ -189,6 +192,7 @@ fun MainContent(
                         key = { it.id }
                     ) { appItem ->
                         App(
+                            theme = theme, darkTheme = darkTheme,
                             item = appItem,
                             onAppItemClick = { uiEvent.invoke(UiEvent.OnAppItemClicked(it)) }
                         )
@@ -200,7 +204,7 @@ fun MainContent(
                             // Use "maxCurrentLineSpan" if you want to take full width.
                             GridItemSpan(maxCurrentLineSpan)
                         }) {
-                            NoItemFound(searchedAppRequest)
+                            NoItemFound(theme = theme, darkTheme = darkTheme, searchedAppRequest)
                         }
                     }
                 }
@@ -306,8 +310,10 @@ private fun PreviewMainContent(@PreviewParameter(IslandStatePreviewProvider::cla
         }
     }
 
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         MainContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             dynamicIslandUiState = state,
             isDynamicIslandVisible = true,
             searchedAppRequest = "Colors",

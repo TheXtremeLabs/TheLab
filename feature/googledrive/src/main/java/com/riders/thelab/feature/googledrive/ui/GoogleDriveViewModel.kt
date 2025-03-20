@@ -12,6 +12,7 @@ import com.google.api.services.drive.model.File
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.googledrive.BuildConfig
 import com.riders.thelab.feature.googledrive.core.google.GoogleSignInManager
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiState
@@ -30,7 +31,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
-class GoogleDriveViewModel @Inject constructor() : BaseViewModel(), CoroutineScope {
+class GoogleDriveViewModel @Inject constructor(val uiRepository: IUiRepository) : BaseViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()

@@ -3,6 +3,7 @@ package com.riders.thelab.feature.flightaware.ui.search
 import androidx.compose.foundation.background
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
@@ -36,6 +38,7 @@ import kotools.types.text.NotBlankString
 ///////////////////////////////////////
 @Composable
 fun SearchFlightsSuccessContent(
+    theme: AppTheme, darkTheme: Boolean,
     currentDate: NotBlankString,
     flights: List<SearchFlightModel>,
     uiEvent: (UiEvent) -> Unit
@@ -45,13 +48,18 @@ fun SearchFlightsSuccessContent(
     // this is to disable the ripple effect
     val interactionSource = remember { MutableInteractionSource() }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            SearchFlightsHeader(currentDate = currentDate, flight = flights[0])
+            SearchFlightsHeader(
+                theme = theme,
+                darkTheme = darkTheme,
+                currentDate = currentDate,
+                flight = flights[0]
+            )
 
             BoxWithConstraints(
                 modifier = Modifier
@@ -78,11 +86,16 @@ fun SearchFlightsSuccessContent(
                     }
 
                     itemsIndexed(items = flights) { _, item ->
-                        SearchFlightItem(flight = item, uiEvent = uiEvent)
+                        SearchFlightItem(
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            flight = item,
+                            uiEvent = uiEvent
+                        )
                     }
 
                     item {
-                        Footer()
+                        Footer(theme = theme)
                     }
                 }
             }
@@ -99,8 +112,10 @@ fun SearchFlightsSuccessContent(
 @DevicePreviews
 @Composable
 private fun PreviewSearchFlightsSuccess(@PreviewParameter(PreviewProviderFlights::class) flights: List<SearchFlightModel>) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         SearchFlightsSuccessContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             currentDate = NotBlankString.create("24/04/2024"),
             flights = flights
         ) {}

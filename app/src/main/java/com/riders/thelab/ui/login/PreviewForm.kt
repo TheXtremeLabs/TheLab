@@ -32,6 +32,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -64,11 +65,9 @@ import com.riders.thelab.core.data.local.model.compose.LoginFieldsUIState
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
 import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primary
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_primary
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_primaryContainer
 
 ///////////////////////////////////////////////////
 //
@@ -77,6 +76,8 @@ import com.riders.thelab.core.ui.compose.theme.md_theme_light_primaryContainer
 ///////////////////////////////////////////////////
 @Composable
 fun Login(
+    theme: AppTheme,
+    darkTheme: Boolean,
     loginFieldState: LoginFieldsUIState.Login,
     focusRequester: FocusRequester,
     login: String,
@@ -84,8 +85,7 @@ fun Login(
     loginHasLocalError: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
-
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(modifier = Modifier.fillMaxWidth()) {
             TextField(
                 modifier = Modifier
@@ -136,6 +136,8 @@ fun Login(
 
 @Composable
 fun Password(
+    theme: AppTheme,
+    darkTheme: Boolean,
     passwordFieldState: LoginFieldsUIState.Password,
     focusRequester: FocusRequester,
     password: String,
@@ -144,7 +146,7 @@ fun Password(
     val keyboardController = LocalSoftwareKeyboardController.current
     val passwordVisible = remember { mutableStateOf(false) }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         TextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -204,17 +206,17 @@ fun ErrorMessage(uiState: LoginUiState) {
     )
 
     // if (uiState is LoginUiState.UserError) {
-        LaunchedEffect(uiState) {
-            when (uiState) {
-                is LoginUiState.UserError -> {
-                    alphaAnimation.animateTo(1f)
-                }
+    LaunchedEffect(uiState) {
+        when (uiState) {
+            is LoginUiState.UserError -> {
+                alphaAnimation.animateTo(1f)
+            }
 
-                else -> {
-                    alphaAnimation.animateTo(0f)
-                }
+            else -> {
+                alphaAnimation.animateTo(0f)
             }
         }
+    }
     // }
 }
 
@@ -257,12 +259,16 @@ fun RememberUser(
 }
 
 @Composable
-fun Submit(modifier: Modifier, uiState: LoginUiState, uiEvent: (UiEvent) -> Unit) {
-
-    val buttonContainerColor =
-        if (!isSystemInDarkTheme()) md_theme_light_primaryContainer else md_theme_dark_primaryContainer
+fun Submit(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    modifier: Modifier,
+    uiState: LoginUiState,
+    uiEvent: (UiEvent) -> Unit
+) {
     val buttonContentColor = if (!isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-    TheLabTheme {
+
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(modifier = modifier, contentAlignment = Alignment.CenterEnd) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -277,7 +283,7 @@ fun Submit(modifier: Modifier, uiState: LoginUiState, uiEvent: (UiEvent) -> Unit
                     onClick = { uiEvent.invoke(UiEvent.OnLoginClicked) },
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     enabled = uiState !is LoginUiState.Connecting,
-                    colors = ButtonDefaults.buttonColors(containerColor = buttonContainerColor)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     AnimatedContent(
                         targetState = uiState,
@@ -291,7 +297,7 @@ fun Submit(modifier: Modifier, uiState: LoginUiState, uiEvent: (UiEvent) -> Unit
                                 ) {
                                     CircularProgressIndicator(
                                         modifier = Modifier.size(24.dp),
-                                        color = if (!isSystemInDarkTheme()) md_theme_dark_primary else md_theme_light_primary
+                                        color = MaterialTheme.colorScheme.primary
                                     )
                                 }
                             }
@@ -334,6 +340,8 @@ fun Submit(modifier: Modifier, uiState: LoginUiState, uiEvent: (UiEvent) -> Unit
 
 @Composable
 fun Form(
+    theme: AppTheme,
+    darkTheme: Boolean,
     loginUiState: LoginUiState,
     loginFieldState: LoginFieldsUIState.Login,
     login: String,
@@ -354,7 +362,7 @@ fun Form(
         (context as LoginActivity).getDeviceWindowsSizeClass()
     }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -381,6 +389,8 @@ fun Form(
             verticalArrangement = Arrangement.Center
         ) {
             Login(
+                theme = theme,
+                darkTheme = darkTheme,
                 loginFieldState = loginFieldState,
                 focusRequester = focusRequester,
                 login = login,
@@ -390,6 +400,8 @@ fun Form(
             )
 
             Password(
+                theme = theme,
+                darkTheme = darkTheme,
                 passwordFieldState = passwordFieldState,
                 focusRequester = focusRequester,
                 password = password,
@@ -416,6 +428,8 @@ fun Form(
                 )
 
                 Submit(
+                    theme = theme,
+                    darkTheme = darkTheme,
                     modifier = Modifier.weight(1f),
                     uiState = loginUiState,
                     uiEvent = uiEvent
@@ -434,8 +448,10 @@ fun Form(
 @DevicePreviews
 @Composable
 fun PreviewLogin(@PreviewParameter(PreviewProviderLoginFieldsUIState::class) uiState: LoginFieldsUIState.Login) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         Login(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             loginFieldState = uiState,
             login = "John5521",
             focusRequester = FocusRequester(),
@@ -448,8 +464,10 @@ fun PreviewLogin(@PreviewParameter(PreviewProviderLoginFieldsUIState::class) uiS
 @DevicePreviews
 @Composable
 fun PreviewPassword(@PreviewParameter(PreviewProviderPasswordFieldsUIState::class) uiState: LoginFieldsUIState.Password) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         Password(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             passwordFieldState = uiState,
             password = "test1234",
             focusRequester = FocusRequester()
@@ -459,8 +477,8 @@ fun PreviewPassword(@PreviewParameter(PreviewProviderPasswordFieldsUIState::clas
 
 @DevicePreviews
 @Composable
-fun PreviewRememberUser() {
-    TheLabTheme {
+fun PreviewRememberUser(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = AppTheme.Default) {
         RememberUser(
             modifier = Modifier.height(56.dp),
             isRememberCredentialsChecked = true
@@ -471,7 +489,12 @@ fun PreviewRememberUser() {
 @DevicePreviews
 @Composable
 fun PreviewSubmit(@PreviewParameter(PreviewProviderLoginState::class) uiState: LoginUiState) {
-    TheLabTheme { Submit(modifier = Modifier, uiState = uiState) {} }
+    TheLabTheme(theme = AppTheme.Default) {
+        Submit(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(), modifier = Modifier, uiState = uiState
+        ) {}
+    }
 }
 
 @DevicePreviews
@@ -484,9 +507,11 @@ fun PreviewForm(@PreviewParameter(PreviewProviderLoginState::class) uiState: Log
         if (uiState is LoginUiState.UserSuccess) uiState.user.email else "john.smith@test.com"
     val password = if (uiState is LoginUiState.UserSuccess) uiState.user.password else "test1234"
 
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         Box(modifier = Modifier.fillMaxSize()) {
             Form(
+                theme = AppTheme.Default,
+                darkTheme = isSystemInDarkTheme(),
                 loginUiState = uiState,
                 loginFieldState = loginFieldUiState,
                 login = login,

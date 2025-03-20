@@ -35,6 +35,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,26 +62,21 @@ import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_onError
+import com.riders.thelab.core.ui.compose.color.md_theme_light_onPrimaryContainer
+import com.riders.thelab.core.ui.compose.color.success
 import com.riders.thelab.core.ui.compose.component.Lottie
-import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.fab.PulsarFab
 import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
 import com.riders.thelab.core.ui.compose.component.toast.Toast
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onBackground
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onError
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_primaryContainer
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_onBackground
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_onPrimaryContainer
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_primaryContainer
-import com.riders.thelab.core.ui.compose.theme.success
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.feature.musicrecognition.R
 import kotlinx.coroutines.delay
 import timber.log.Timber
-
 
 ///////////////////////////////
 //
@@ -89,12 +85,13 @@ import timber.log.Timber
 ///////////////////////////////
 @Composable
 fun Idle(
+    theme: AppTheme, darkTheme: Boolean,
     result: String,
     canLaunchAudioRecognition: Boolean,
     onStartRecognition: () -> Unit,
     isRecognizing: Boolean
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
@@ -119,10 +116,11 @@ fun Idle(
 
 @Composable
 fun ACRError(
+    theme: AppTheme, darkTheme: Boolean,
     canLaunchAudioRecognition: Boolean,
     onStartRecognition: () -> Unit
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -153,8 +151,8 @@ fun ACRError(
 }
 
 @Composable
-fun Searching(result: String) {
-    TheLabTheme {
+fun Searching(theme: AppTheme, darkTheme: Boolean, result: String) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -173,8 +171,8 @@ fun Searching(result: String) {
 }
 
 @Composable
-fun RecognitionError() {
-    TheLabTheme {
+fun RecognitionError(theme: AppTheme, darkTheme: Boolean) {
+    TheLabTheme(theme = theme) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -186,7 +184,11 @@ fun RecognitionError() {
 }
 
 @Composable
-fun RecognitionResult(state: ACRUiState.RecognitionSuccessful) {
+fun RecognitionResult(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    state: ACRUiState.RecognitionSuccessful
+) {
     val expanded = remember { mutableStateOf(false) }
 
     val painter: AsyncImagePainter = getCoilAsyncImagePainter(
@@ -198,7 +200,7 @@ fun RecognitionResult(state: ACRUiState.RecognitionSuccessful) {
 
     val painterState: AsyncImagePainter.State = painter.state
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxSize()
@@ -305,6 +307,7 @@ fun RecognitionResult(state: ACRUiState.RecognitionSuccessful) {
 
 @Composable
 fun ACRCloudActivityContent(
+    theme: AppTheme, darkTheme: Boolean,
     acrUiState: ACRUiState,
     networkState: NetworkState,
     result: String,
@@ -315,7 +318,7 @@ fun ACRCloudActivityContent(
 
     val isConnected = networkState == NetworkState.Available
     var currentCapabilityChangedCount by remember { mutableIntStateOf(0) }
-   //  val maxCapabilitiesCountTaken = 1
+    //  val maxCapabilitiesCountTaken = 1
 
     val animatedHeight by animateDpAsState(
         targetValue = when (acrUiState) {
@@ -332,16 +335,16 @@ fun ACRCloudActivityContent(
     )
 
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         androidx.compose.material.Scaffold(
-            modifier = Modifier.background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
             topBar = {
                 TheLabTopAppBar(
+                    theme = theme,
                     title = stringResource(id = R.string.acr_cloud_app_name),
                     navigationIcon = {})
             },
             floatingActionButton = {
-
                 AnimatedContent(
                     targetState = isRecognizing,
                     label = "something"
@@ -351,7 +354,7 @@ fun ACRCloudActivityContent(
                             backgroundColor = if (!isRecognizing) {
                                 md_theme_light_onPrimaryContainer
                             } else {
-                                if (!isSystemInDarkTheme()) md_theme_light_onBackground else md_theme_dark_onBackground
+                                MaterialTheme.colorScheme.background
                             },
                             onClick = {
                                 if (!isRecognizing) {
@@ -381,8 +384,8 @@ fun ACRCloudActivityContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(animatedHeight)
-                        .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
-                    backgroundColor = if (!isSystemInDarkTheme()) md_theme_light_primaryContainer else md_theme_dark_primaryContainer,
+                        .background(MaterialTheme.colorScheme.background),
+                    backgroundColor = MaterialTheme.colorScheme.primaryContainer,
                     cutoutShape = CircleShape
                 ) {
 
@@ -397,7 +400,7 @@ fun ACRCloudActivityContent(
                         modifier = Modifier
                             .padding(contentPadding)
                             .fillMaxSize()
-                            .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+                            .background(MaterialTheme.colorScheme.background),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Bottom
                     ) {
@@ -424,6 +427,7 @@ fun ACRCloudActivityContent(
                             when (targetState) {
                                 is ACRUiState.Idle -> {
                                     Idle(
+                                        theme = theme, darkTheme = darkTheme,
                                         result = result,
                                         canLaunchAudioRecognition = canLaunchAudioRecognition,
                                         onStartRecognition = onStartRecognition,
@@ -432,19 +436,24 @@ fun ACRCloudActivityContent(
                                 }
 
                                 is ACRUiState.ProcessRecognition -> {
-                                    Searching(result = result)
+                                    Searching(theme = theme, darkTheme = darkTheme, result = result)
                                 }
 
                                 is ACRUiState.RecognitionSuccessful -> {
-                                    RecognitionResult(state = targetState)
+                                    RecognitionResult(
+                                        theme = theme,
+                                        darkTheme = darkTheme,
+                                        state = targetState
+                                    )
                                 }
 
                                 is ACRUiState.RecognitionError -> {
-                                    RecognitionError()
+                                    RecognitionError(theme = theme, darkTheme = darkTheme)
                                 }
 
                                 is ACRUiState.Error -> {
                                     ACRError(
+                                        theme = theme, darkTheme = darkTheme,
                                         canLaunchAudioRecognition = canLaunchAudioRecognition,
                                         onStartRecognition = onStartRecognition
                                     )
@@ -461,6 +470,7 @@ fun ACRCloudActivityContent(
                     when (targetState) {
                         is NetworkState.Available -> {
                             Toast(
+                                theme = theme,
                                 message = "You are connected to the internet",
                                 imageVector = Icons.Filled.Check,
                                 containerColor = success
@@ -482,6 +492,7 @@ fun ACRCloudActivityContent(
 
                         is NetworkState.Losing -> {
                             Toast(
+                                theme = theme,
                                 message = "Losing Internet connection !",
                                 imageVector = Icons.Filled.SignalWifiConnectedNoInternet4,
                                 containerColor = md_theme_dark_onError
@@ -491,6 +502,7 @@ fun ACRCloudActivityContent(
                         is NetworkState.Lost,
                         is NetworkState.Unavailable -> {
                             Toast(
+                                theme = theme,
                                 message = "Internet is unavailable",
                                 imageVector = Icons.Filled.AirplanemodeActive,
                                 containerColor = md_theme_dark_onError
@@ -514,9 +526,10 @@ fun ACRCloudActivityContent(
 ///////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewIdle() {
-    TheLabTheme {
+fun PreviewIdle(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Idle(
+            theme = appTheme, darkTheme = isSystemInDarkTheme(),
             result = "Wheezy feat. Gunna",
             canLaunchAudioRecognition = true,
             onStartRecognition = {},
@@ -527,25 +540,34 @@ fun PreviewIdle() {
 
 @DevicePreviews
 @Composable
-fun PreviewACRError() {
-    TheLabTheme {
-        ACRError(canLaunchAudioRecognition = true, onStartRecognition = {})
+fun PreviewACRError(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        ACRError(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            canLaunchAudioRecognition = true,
+            onStartRecognition = {})
     }
 }
 
 @DevicePreviews
 @Composable
-fun PreviewSearching() {
-    TheLabTheme {
-        Searching(result = "Wheezy feat. Gunna")
+fun PreviewSearching(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        Searching(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            result = "Wheezy feat. Gunna"
+        )
     }
 }
 
 @DevicePreviews
 @Composable
-fun PreviewRecognitionResult() {
-    TheLabTheme {
+fun PreviewRecognitionResult(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         RecognitionResult(
+            theme = appTheme, darkTheme = isSystemInDarkTheme(),
             state = ACRUiState.RecognitionSuccessful(songFetched = Song.mock)
         )
     }
@@ -553,16 +575,21 @@ fun PreviewRecognitionResult() {
 
 @DevicePreviews
 @Composable
-fun PreviewRecognitionError() {
-    TheLabTheme { RecognitionError() }
+fun PreviewRecognitionError(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        RecognitionError(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme()
+        )
+    }
 }
 
 @DevicePreviews
 @Composable
 fun PreviewMainActivityContent(@PreviewParameter(PreviewProviderACRCloud::class) acrUiState: ACRUiState) {
-
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         ACRCloudActivityContent(
+            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
             acrUiState = acrUiState,
             networkState = NetworkState.Available,
             result = "Wheezy feat. Gunna",

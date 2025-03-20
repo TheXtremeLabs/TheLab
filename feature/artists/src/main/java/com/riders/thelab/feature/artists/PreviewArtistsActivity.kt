@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,7 @@ import com.riders.thelab.core.ui.compose.component.NoItemFound
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import timber.log.Timber
 
@@ -42,7 +44,7 @@ import timber.log.Timber
 ///////////////////////////////////////
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ArtistsContentSuccess(artists: List<ArtistModel>) {
+fun ArtistsContentSuccess(theme: AppTheme, darkTheme: Boolean, artists: List<ArtistModel>) {
     val navController = rememberNavController()
     val backstackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backstackEntry?.destination?.route
@@ -55,6 +57,7 @@ fun ArtistsContentSuccess(artists: List<ArtistModel>) {
         ) {
             composable<ArtistScreen.List> {
                 ArtistMainScreen(
+                    theme = theme, darkTheme = darkTheme,
                     sharedTransitionScope = this@SharedTransitionLayout,
                     animatedVisibilityScope = this@composable,
                     artists = artists,
@@ -75,6 +78,7 @@ fun ArtistsContentSuccess(artists: List<ArtistModel>) {
                 val detail = backStackEntry.toRoute<ArtistScreen.Detail>()
 
                 ArtistDetailScreen(
+                    theme = theme, darkTheme = darkTheme,
                     sharedTransitionScope = this@SharedTransitionLayout,
                     animatedVisibilityScope = this@composable,
                     modifier = Modifier.fillMaxSize(),
@@ -95,13 +99,14 @@ fun ArtistsContentSuccess(artists: List<ArtistModel>) {
 }
 
 @Composable
-fun ArtistsContent(state: ArtistsUiState) {
-    TheLabTheme {
+fun ArtistsContent(theme: AppTheme, darkTheme: Boolean, state: ArtistsUiState) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 AnimatedVisibility(visible = state !is ArtistsUiState.Success) {
                     TheLabTopAppBar(
+                        theme = theme,
                         toolbarSize = ToolbarSize.SMALL,
                         title = stringResource(R.string.app_name_artists),
                         withGradientBackground = true,
@@ -137,7 +142,11 @@ fun ArtistsContent(state: ArtistsUiState) {
                     }
 
                     is ArtistsUiState.Success -> {
-                        ArtistsContentSuccess(targetState.artists)
+                        ArtistsContentSuccess(
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            targetState.artists
+                        )
                     }
                 }
             }
@@ -153,15 +162,15 @@ fun ArtistsContent(state: ArtistsUiState) {
 @DevicePreviews
 @Composable
 private fun PreviewArtistsContentSuccess(@PreviewParameter(PreviewProviderArtists::class) artists: List<ArtistModel>) {
-    TheLabTheme {
-        ArtistsContentSuccess(artists)
+    TheLabTheme(theme = AppTheme.Default) {
+        ArtistsContentSuccess(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), artists)
     }
 }
 
 @DevicePreviews
 @Composable
 fun PreviewArtistsContent(@PreviewParameter(PreviewProviderArtistUiState::class) state: ArtistsUiState) {
-    TheLabTheme {
-        ArtistsContent(state)
+    TheLabTheme(theme = AppTheme.Default) {
+        ArtistsContent(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), state)
     }
 }

@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.kat.ui
 
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,10 +44,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.data.local.model.kat.KatModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.CoroutineScope
@@ -62,8 +66,13 @@ import timber.log.Timber
 ///////////////////////////////
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KatTopAppBar(title: String, onNavigationBackClicked: () -> Unit) {
-    TheLabTheme {
+fun KatTopAppBar(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    title: String,
+    onNavigationBackClicked: () -> Unit
+) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         TopAppBar(
             title = {
                 Row(
@@ -112,17 +121,21 @@ fun KatSendButton(onSendClicked: () -> Unit) {
 }
 
 @Composable
-fun KatChatRoomContent(viewModel: KatChatViewModel) {
+fun KatChatRoomContent(theme: AppTheme, darkTheme: Boolean, viewModel: KatChatViewModel) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     val lazyListState = rememberLazyListState()
     val focusRequester = remember { FocusRequester() }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             topBar = {
-                KatTopAppBar(title = viewModel.otherUsername) {
+                KatTopAppBar(
+                    theme = theme,
+                    darkTheme = darkTheme,
+                    title = viewModel.otherUsername
+                ) {
                     (context.findActivity() as KatChatActivity).backPressed()
                 }
             }
@@ -147,7 +160,12 @@ fun KatChatRoomContent(viewModel: KatChatViewModel) {
                     state = lazyListState
                 ) {
                     itemsIndexed(items = viewModel.chatMessages.reversed()) { _, item ->
-                        KatItem(isValid = null != viewModel.currentUserDocument, chatItem = item)
+                        KatItem(
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            isValid = null != viewModel.currentUserDocument,
+                            chatItem = item
+                        )
                     }
                 }
 
@@ -212,9 +230,9 @@ fun scrollToBottom(scope: CoroutineScope, lazyListState: LazyListState, items: L
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewKatTopAppBar() {
-    TheLabTheme {
-        KatTopAppBar("JaneDoe255") {
+private fun PreviewKatTopAppBar(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        KatTopAppBar(theme = appTheme, darkTheme = isSystemInDarkTheme(), "JaneDoe255") {
 
         }
     }
@@ -222,17 +240,21 @@ private fun PreviewKatTopAppBar() {
 
 @DevicePreviews
 @Composable
-private fun PreviewKatSendButton() {
-    TheLabTheme {
+private fun PreviewKatSendButton(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         KatSendButton {}
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewKatContent() {
+private fun PreviewKatContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val viewModel: KatChatViewModel = hiltViewModel()
-    TheLabTheme {
-        KatChatRoomContent(viewModel = viewModel)
+    TheLabTheme(theme = appTheme) {
+        KatChatRoomContent(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            viewModel = viewModel
+        )
     }
 }

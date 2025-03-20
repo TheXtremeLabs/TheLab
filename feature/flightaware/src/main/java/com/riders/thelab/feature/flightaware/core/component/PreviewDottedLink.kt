@@ -2,6 +2,7 @@ package com.riders.thelab.feature.flightaware.core.component
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,15 +20,18 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 
 @Composable
-fun DottedLink(modifier: Modifier) {
-    TheLabTheme {
+fun DottedLink(theme: AppTheme, darkTheme: Boolean, modifier: Modifier) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(
             modifier = modifier,
             contentAlignment = Alignment.Center
@@ -82,10 +86,12 @@ fun DottedLink(modifier: Modifier) {
 
 @DevicePreviews
 @Composable
-private fun PreviewDottedLink() {
-    TheLabTheme {
+private fun PreviewDottedLink(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Column(modifier = Modifier.background(cardBackgroundColor)) {
             DottedLink(
+                theme = appTheme,
+                darkTheme = isSystemInDarkTheme(),
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 16.dp)

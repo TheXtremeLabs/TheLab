@@ -2,6 +2,7 @@ package com.riders.thelab.feature.download
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -35,8 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.riders.thelab.core.data.local.model.compose.Download
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.color.success
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.success
 import timber.log.Timber
 
 ////////////////////////////////////////
@@ -45,7 +47,7 @@ import timber.log.Timber
 //
 ////////////////////////////////////////
 @Composable
-fun DownloadItem(modifier: Modifier, item: Download) {
+fun DownloadItem(theme: AppTheme, darkTheme: Boolean, modifier: Modifier, item: Download) {
     Timber.d("Recomposition | DownloadItem() | progress: ${item.progress}")
 
     val progress = remember { mutableFloatStateOf(0f) }
@@ -56,7 +58,7 @@ fun DownloadItem(modifier: Modifier, item: Download) {
         label = "progress bar animation progress value"
     )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(modifier = modifier) {
             Row(
                 modifier = Modifier
@@ -106,7 +108,7 @@ fun DownloadItem(modifier: Modifier, item: Download) {
                     } else {
                         Card(
                             modifier = Modifier.size(30.dp),
-                            colors = CardDefaults.cardColors(containerColor = if (null != item.isError) com.riders.thelab.core.ui.compose.theme.error else success),
+                            colors = CardDefaults.cardColors(containerColor = if (null != item.isError) com.riders.thelab.core.ui.compose.color.error else success),
                             shape = CircleShape
                         ) {
                             Box(
@@ -143,8 +145,10 @@ fun DownloadItem(modifier: Modifier, item: Download) {
 @DevicePreviews
 @Composable
 private fun PreviewDownloadItem(@PreviewParameter(PreviewProvider::class) item: Download) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         DownloadItem(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),

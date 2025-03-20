@@ -13,6 +13,7 @@ import com.riders.thelab.core.data.local.model.tmdb.TDMBCastModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.toCastModel
 import com.riders.thelab.core.data.local.model.tmdb.toVideoModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +28,8 @@ import javax.inject.Inject
 @Suppress("EmptyMethod")
 @HiltViewModel
 class TheatersDetailViewModel @Inject constructor(
-    private val repository: IRepository
+    private val repository: IRepository,
+    val uiRepository: IUiRepository
 ) : ViewModel() {
 
     ////////////////////////////////////////

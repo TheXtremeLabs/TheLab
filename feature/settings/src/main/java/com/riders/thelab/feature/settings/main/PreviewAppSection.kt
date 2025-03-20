@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.settings.main
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,10 +43,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import kotlinx.coroutines.launch
@@ -100,7 +104,7 @@ fun AppThemeCardRowItem(
                         textFieldSize = coordinates.size.toSize()
                     }
                     // .focusRequester(focusRequester)
-                    .menuAnchor(type= MenuAnchorType.PrimaryEditable),
+                    .menuAnchor(type = MenuAnchorType.PrimaryEditable),
                 textStyle = TextStyle(textAlign = TextAlign.End),
                 trailingIcon = {
                     IconButton(
@@ -259,14 +263,15 @@ fun ActivitiesSplashScreenCardRowItem(isEnabled: Boolean, uiEvent: (UiEvent) -> 
 
 @Composable
 fun AppSettingsSection(
+    theme: AppTheme,
+    darkTheme: Boolean,
     version: String,
-    isDarkMode: Boolean,
     themeOptions: List<String>,
     isVibration: Boolean,
     isActivitiesSplashEnabled: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -299,7 +304,7 @@ fun AppSettingsSection(
                     }
 
                     AppThemeCardRowItem(
-                        preselectedThemeOptions = if (isDarkMode) themeOptions.first {
+                        preselectedThemeOptions = if (darkTheme) themeOptions.first {
                             it.contains(
                                 "Dark",
                                 true
@@ -329,28 +334,28 @@ fun AppSettingsSection(
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewAppThemeCardRowItem() {
+private fun PreviewAppThemeCardRowItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val themeOptions: List<String> = listOf("Light", "Dark", "Use System")
-    TheLabTheme {
+    TheLabTheme(theme = appTheme) {
         AppThemeCardRowItem("Dark", themeOptions) {}
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewVibrationCardRowItem() {
-    TheLabTheme {
+private fun PreviewVibrationCardRowItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         VibrationCardRowItem(isVibration = true) {}
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewAppSettingsSection() {
-    TheLabTheme {
+private fun PreviewAppSettingsSection(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         AppSettingsSection(
+            theme = appTheme, darkTheme = isSystemInDarkTheme(),
             version = "12.14.11",
-            isDarkMode = true,
             themeOptions = listOf("Light", "Dark", "Use System"),
             isVibration = true,
             isActivitiesSplashEnabled = false

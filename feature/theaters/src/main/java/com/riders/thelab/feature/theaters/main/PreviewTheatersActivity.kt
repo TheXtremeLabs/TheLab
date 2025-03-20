@@ -7,8 +7,10 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -24,8 +26,8 @@ import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.network.PreviewProviderNetworkState
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
 import com.riders.thelab.feature.theaters.splashscreen.TheatersSplash
 import kotlinx.coroutines.delay
 
@@ -40,6 +42,7 @@ val trendingItemImageHeight: Dp = 550.dp
 ///////////////////////////////////////
 @Composable
 fun TheatersContainer(
+    theme: AppTheme, darkTheme: Boolean,
     networkState: NetworkState,
     isActivitiesSplashScreenEnable: Boolean,
     categories: List<String>,
@@ -54,11 +57,11 @@ fun TheatersContainer(
 ) {
     val switch = remember { mutableStateOf(false) }
 
-    TheLabTheme(darkTheme = true) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(md_theme_dark_background)
+                .background(MaterialTheme.colorScheme.background)
         ) {
             if (isActivitiesSplashScreenEnable) {
                 AnimatedContent(
@@ -71,9 +74,10 @@ fun TheatersContainer(
                     label = "splashscreen animation"
                 ) { targetState ->
                     if (!targetState) {
-                        TheatersSplash()
+                        TheatersSplash(theme = theme, darkTheme = darkTheme)
                     } else {
                         TheatersContent(
+                            theme = theme, darkTheme = darkTheme,
                             networkState = networkState,
                             categories = categories,
                             tabRowSelected = tabRowSelected,
@@ -89,6 +93,7 @@ fun TheatersContainer(
                 }
             } else {
                 TheatersContent(
+                    theme = theme, darkTheme = darkTheme,
                     networkState = networkState,
                     categories = categories,
                     tabRowSelected = tabRowSelected,
@@ -120,8 +125,9 @@ fun TheatersContainer(
 @DevicePreviews
 @Composable
 private fun PreviewTheatersContainer(@PreviewParameter(PreviewProviderNetworkState::class) networkState: NetworkState) {
-    TheLabTheme(darkTheme = true) {
+    TheLabTheme(theme = AppTheme.Default) {
         TheatersContainer(
+            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
             isActivitiesSplashScreenEnable = false,
             networkState = networkState,
             categories = listOf("Movies", "Tv Shows"),

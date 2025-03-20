@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -25,14 +26,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHtmlText
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_background
 import com.riders.thelab.core.ui.utils.UIManager
 
 
@@ -42,7 +44,7 @@ import com.riders.thelab.core.ui.utils.UIManager
 //
 ///////////////////////////////
 @Composable
-fun EULAScreen(isDarkMode: Boolean, onNavigateToUserFormScreen: () -> Unit) {
+fun EULAScreen(theme: AppTheme, darkTheme: Boolean, onNavigateToUserFormScreen: () -> Unit) {
 
     val context = LocalContext.current
     val verticalScroll: ScrollState = rememberScrollState()
@@ -53,11 +55,11 @@ fun EULAScreen(isDarkMode: Boolean, onNavigateToUserFormScreen: () -> Unit) {
         if (LabCompatibilityManager.isNougat()) HtmlCompat.FROM_HTML_MODE_COMPACT else 0
     )*/
 
-    TheLabTheme(darkTheme = isDarkMode) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background),
+                .background(color = MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
@@ -122,8 +124,8 @@ fun EULAScreen(isDarkMode: Boolean, onNavigateToUserFormScreen: () -> Unit) {
 ///////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewEULAScreen() {
-    TheLabTheme {
-        EULAScreen(isSystemInDarkTheme()) {}
+private fun PreviewEULAScreen(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        EULAScreen(theme = appTheme, darkTheme = isSystemInDarkTheme()) {}
     }
 }

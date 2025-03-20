@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,10 +45,10 @@ import com.riders.thelab.core.data.local.model.compose.LoginFieldsUIState
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.LabHtmlText
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.Shapes
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.md_theme_dark_onPrimaryContainer
-import com.riders.thelab.core.ui.compose.theme.md_theme_light_onPrimaryContainer
 import com.riders.thelab.core.ui.compose.utils.animatePlacement
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -69,7 +70,7 @@ fun GoogleButton(uiEvent: (UiEvent) -> Unit) {
     ) {
         Button(
             onClick = { uiEvent.invoke(UiEvent.OnGoogleButtonLoginClicked) },
-            colors = ButtonDefaults.buttonColors(containerColor = if (!isSystemInDarkTheme()) md_theme_dark_onPrimaryContainer else md_theme_light_onPrimaryContainer),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -99,7 +100,7 @@ fun SignUpButton(uiEvent: (UiEvent) -> Unit) {
     ) {
         Button(
             onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) },
-            colors = ButtonDefaults.buttonColors(containerColor = if (!isSystemInDarkTheme()) md_theme_dark_onPrimaryContainer else md_theme_light_onPrimaryContainer),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -119,6 +120,8 @@ fun SignUpButton(uiEvent: (UiEvent) -> Unit) {
 @SuppressLint("NewApi")
 @Composable
 fun LoginContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
     version: String,
     loginUiState: LoginUiState,
     loginFieldState: LoginFieldsUIState.Login,
@@ -139,7 +142,7 @@ fun LoginContent(
 
     var arrangement: Arrangement.Vertical by remember { mutableStateOf(Arrangement.Center) }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
 
         // Main column
         Column(
@@ -202,6 +205,8 @@ fun LoginContent(
                 visible = if (LocalInspectionMode.current) true else formVisibility.value
             ) {
                 Form(
+                    theme = theme,
+                    darkTheme = darkTheme,
                     loginUiState = loginUiState,
                     loginFieldState = loginFieldState,
                     login = login,
@@ -269,8 +274,8 @@ fun LoginContent(
 ///////////////////////////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewSignUpButton() {
-    TheLabTheme {
+fun PreviewSignUpButton(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = AppTheme.Default) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -293,8 +298,10 @@ fun PreviewLoginContent(@PreviewParameter(PreviewProviderLoginState::class) logi
     val password =
         if (loginUiState is LoginUiState.UserSuccess) loginUiState.user.password else "test1234"
 
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         LoginContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             version = "12.10.3",
             loginUiState = loginUiState,
             loginFieldState = loginFieldUiState,

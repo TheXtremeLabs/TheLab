@@ -9,6 +9,7 @@ import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,11 +42,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -56,7 +60,12 @@ import timber.log.Timber
 //
 ///////////////////////////////////////////////////
 @Composable
-fun ColorsButton(currentColor: Int, onButtonClicked: () -> Unit) {
+fun ColorsButton(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    currentColor: Int,
+    onButtonClicked: () -> Unit
+) {
 
     // Hoist the MutableInteractionSource that we will provide to interactions
     val interactionSource = remember { MutableInteractionSource() }
@@ -81,7 +90,7 @@ fun ColorsButton(currentColor: Int, onButtonClicked: () -> Unit) {
 
     var clickNumber = 0
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Button(
             modifier = Modifier
                 .fillMaxWidth(.85f)
@@ -133,14 +142,14 @@ fun ColorsButton(currentColor: Int, onButtonClicked: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Color(viewModel: ColorViewModel) {
+fun Color(theme: AppTheme, darkTheme: Boolean, viewModel: ColorViewModel) {
 
     // get current Context and coroutineScope
     val colorActivity = LocalContext.current
 
     var expanded by remember { mutableStateOf(false) }
 
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -184,7 +193,11 @@ fun Color(viewModel: ColorViewModel) {
                 )
 
                 AnimatedVisibility(visible = expanded) {
-                    ColorsButton(viewModel.randomColor) { viewModel.updateRandomColor() }
+                    ColorsButton(
+                        theme = theme,
+                        darkTheme = darkTheme,
+                        viewModel.randomColor
+                    ) { viewModel.updateRandomColor() }
                 }
             }
         }
@@ -204,18 +217,18 @@ fun Color(viewModel: ColorViewModel) {
 ///////////////////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewColorsButton() {
-    TheLabTheme {
-        ColorsButton(R.color.tabColorAccent) {
+private fun PreviewColorsButton(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        ColorsButton(theme = appTheme, darkTheme = isSystemInDarkTheme(), R.color.tabColorAccent) {
         }
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewColor() {
+private fun PreviewColor(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val viewModel: ColorViewModel = hiltViewModel()
-    TheLabTheme(darkTheme = viewModel.isDarkMode) {
-        Color(viewModel = viewModel)
+    TheLabTheme(theme = appTheme, darkTheme = isSystemInDarkTheme()) {
+        Color(theme = appTheme, darkTheme = isSystemInDarkTheme(), viewModel = viewModel)
     }
 }

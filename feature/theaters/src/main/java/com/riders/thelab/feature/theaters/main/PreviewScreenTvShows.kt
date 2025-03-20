@@ -21,6 +21,7 @@ import com.riders.thelab.core.data.local.model.tmdb.toItemModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
@@ -32,6 +33,8 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun ScreenTvShowsContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
     trendingTvShowItem: TMDBTrendingTvShowItemUiState,
     trendingTvShows: TMDBTvShowsUiState,
     uiEvent: (UiEvent) -> Unit
@@ -39,7 +42,7 @@ fun ScreenTvShowsContent(
     val lazyListState = rememberLazyListState()
     val lazyRowTrendingListState = rememberLazyListState()
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
@@ -57,7 +60,12 @@ fun ScreenTvShowsContent(
                             val item: TMDBItemModel =
                                 targetState.response.results.map { it.toItemModel() }[0]
 
-                            TrendingTMDBItem(trendingItem = item, uiEvent = uiEvent)
+                            TrendingTMDBItem(
+                                theme = theme,
+                                darkTheme = darkTheme,
+                                trendingItem = item,
+                                uiEvent = uiEvent
+                            )
                         }
                     }
                 }
@@ -71,6 +79,7 @@ fun ScreenTvShowsContent(
                                 targetState.response.results.map { it.toItemModel() }
 
                             TheaterTMDBList(
+                                theme = theme, darkTheme = darkTheme,
                                 rowListState = lazyRowTrendingListState,
                                 categoryTitle = MovieCategoryEnum.TRENDING.value,
                                 tmdbList = tmdbList,

@@ -60,10 +60,13 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.executeOnBackPressed
 import com.riders.thelab.core.ui.compose.utils.findActivity
@@ -77,6 +80,7 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun <T> LabDropdownMenu(
+    theme: AppTheme,
     modifier: Modifier,
     onOutsideBoundariesClicked: Boolean,
     query: String,
@@ -121,7 +125,7 @@ fun <T> LabDropdownMenu(
         label = "border animation animation"
     )
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         ExposedDropdownMenuBox(
             modifier = modifier,
             expanded = expanded,
@@ -141,7 +145,7 @@ fun <T> LabDropdownMenu(
                         //This value is used to assign to the DropDown the same width
                         textFieldSize = coordinates.size.toSize()
                     }
-                    .menuAnchor(type= MenuAnchorType.PrimaryEditable)
+                    .menuAnchor(type = MenuAnchorType.PrimaryEditable)
                     .focusRequester(focusRequester)
                     .onFocusChanged {
                         Timber.d("Recomposition | BasicTextField2.onFocusChanged | onFocusChanged: isFieldFocused $isFieldFocused, it.isFocused: ${it.isFocused}")
@@ -288,6 +292,7 @@ fun <T> LabDropdownMenu(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> LabDropdownMenu2(
+    theme: AppTheme,
     modifier: Modifier,
     onOutsideBoundariesClicked: Boolean,
     query: String,
@@ -315,7 +320,7 @@ fun <T> LabDropdownMenu2(
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme) {
         ExposedDropdownMenuBox(
             modifier = modifier,
             expanded = expanded,
@@ -339,7 +344,7 @@ fun <T> LabDropdownMenu2(
                         //This value is used to assign to the DropDown the same width
                         textFieldSize = coordinates.size.toSize()
                     }
-                    .menuAnchor(type= MenuAnchorType.PrimaryEditable)
+                    .menuAnchor(type = MenuAnchorType.PrimaryEditable)
                     .focusRequester(focusRequester)
                     /*.onFocusChanged {
                         Timber.d("Recomposition | BasicTextField2.onFocusChanged | onFocusChanged: isFieldFocused $isFieldFocused, it.isFocused: ${it.isFocused}")
@@ -513,8 +518,8 @@ fun <T> LabDropdownMenu2(
 
 @DevicePreviews
 @Composable
-private fun PreviewLabDropdownMenu() {
-    TheLabTheme {
+private fun PreviewLabDropdownMenu(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -524,6 +529,7 @@ private fun PreviewLabDropdownMenu() {
             contentAlignment = Alignment.Center
         ) {
             LabDropdownMenu<List<String>>(
+                theme = appTheme,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
@@ -542,8 +548,8 @@ private fun PreviewLabDropdownMenu() {
 
 @DevicePreviews
 @Composable
-private fun PreviewLabDropdownMenu2() {
-    TheLabTheme {
+private fun PreviewLabDropdownMenu2(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -553,6 +559,7 @@ private fun PreviewLabDropdownMenu2() {
             contentAlignment = Alignment.Center
         ) {
             LabDropdownMenu2(
+                theme = appTheme,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),

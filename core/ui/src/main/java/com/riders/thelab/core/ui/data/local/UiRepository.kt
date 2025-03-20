@@ -1,13 +1,14 @@
 package com.riders.thelab.core.ui.data.local
 
 import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.data.local.preferences.IPreferences
 import com.riders.thelab.core.ui.data.local.preferences.PreferencesImpl
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class UiRepository @Inject constructor(preferencesImpl: PreferencesImpl) : IUiRepository {
+class UiRepository @Inject constructor(preferences: IPreferences) : IUiRepository {
 
-    private val mPreferencesImpl: PreferencesImpl = preferencesImpl
+    private val mPreferencesImpl: IPreferences = preferences
 
     // Implement methods here for data operations
     override suspend fun updateThemeDarkMode(isDarkMode: Boolean) =

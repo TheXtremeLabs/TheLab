@@ -58,6 +58,7 @@ import androidx.palette.graphics.Palette
 import coil.compose.AsyncImagePainter
 import com.riders.thelab.core.data.local.model.youtube.Video
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.utils.loadImage
@@ -72,6 +73,7 @@ import timber.log.Timber
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun YoutubeItem(
+    theme: AppTheme, darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     video: Video,
@@ -99,7 +101,7 @@ fun YoutubeItem(
     var lightMutedSwatch by remember { mutableIntStateOf(0) }
     var darkMutedSwatch by remember { mutableIntStateOf(0) }
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -258,7 +260,8 @@ fun YoutubeItem(
 @Composable
 private fun PreviewYoutubeItem(@PreviewParameter(PreviewProviderVideo::class) video: Video) {
     val navController = rememberNavController()
-    TheLabTheme {
+
+    TheLabTheme(theme = AppTheme.Default) {
         SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
             NavHost(
                 modifier = Modifier.fillMaxSize(),
@@ -267,6 +270,7 @@ private fun PreviewYoutubeItem(@PreviewParameter(PreviewProviderVideo::class) vi
             ) {
                 composable(route = YoutubeScreen.List.route.toString()) {
                     YoutubeItem(
+                        theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this,
                         video = video,

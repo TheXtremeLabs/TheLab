@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.bluetooth
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,9 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
@@ -26,10 +30,10 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 //
 ///////////////////////////////////////
 @Composable
-fun BluetoothDisabledContent(viewModel: BluetoothViewModel) {
+fun BluetoothDisabledContent(theme: AppTheme, darkTheme: Boolean, viewModel: BluetoothViewModel) {
     val bluetoothEnabled by viewModel.isBluetoothEnabled.collectAsStateWithLifecycle()
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -80,8 +84,12 @@ fun BluetoothDisabledContent(viewModel: BluetoothViewModel) {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewBluetoothDisabled() {
-    TheLabTheme {
-        BluetoothDisabledContent(viewModel = BluetoothViewModel())
+private fun PreviewBluetoothDisabled(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        BluetoothDisabledContent(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            viewModel = BluetoothViewModel()
+        )
     }
 }

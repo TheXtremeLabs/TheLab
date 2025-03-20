@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.bluetooth
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,9 +21,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 ///////////////////////////////////////
@@ -31,12 +35,12 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 //
 ///////////////////////////////////////
 @Composable
-fun BluetoothEnabledContent(viewModel: BluetoothViewModel) {
+fun BluetoothEnabledContent(theme: AppTheme, darkTheme: Boolean, viewModel: BluetoothViewModel) {
     val listState: LazyListState = rememberLazyListState()
     val boundedDevices by viewModel.boundedDevices.collectAsStateWithLifecycle()
     val availableDevices by viewModel.availableDevices.collectAsStateWithLifecycle()
 
-    TheLabTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = listState,
@@ -76,6 +80,7 @@ fun BluetoothEnabledContent(viewModel: BluetoothViewModel) {
 
             itemsIndexed(items = boundedDevices.toList()) { index, item ->
                 BluetoothItem(
+                    theme = theme, darkTheme = darkTheme,
                     index = index,
                     bluetoothDevice = item,
                     totalItemsCount = boundedDevices.size
@@ -105,6 +110,7 @@ fun BluetoothEnabledContent(viewModel: BluetoothViewModel) {
 
                 itemsIndexed(items = availableDevices.toList()) { index, item ->
                     BluetoothItem(
+                        theme = theme, darkTheme = darkTheme,
                         index = index,
                         bluetoothDevice = item,
                         totalItemsCount = availableDevices.size
@@ -122,10 +128,13 @@ fun BluetoothEnabledContent(viewModel: BluetoothViewModel) {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewPreviewBluetoothEnabled() {
+private fun PreviewPreviewBluetoothEnabled(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val viewModel = BluetoothViewModel()
-
-    TheLabTheme {
-        BluetoothEnabledContent(viewModel = viewModel)
+    TheLabTheme(theme = appTheme) {
+        BluetoothEnabledContent(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            viewModel = viewModel
+        )
     }
 }

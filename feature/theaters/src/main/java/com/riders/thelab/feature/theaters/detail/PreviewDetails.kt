@@ -43,6 +43,8 @@ import com.riders.thelab.core.data.local.model.tmdb.TDMBCastModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBItemModel
@@ -256,7 +258,7 @@ fun Casting(castList: List<TDMBCastModel>) {
 @DevicePreviews
 @Composable
 private fun PreviewTMDBTitles(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
-    TheLabTheme(true) {
+    TheLabTheme(theme = AppTheme.Default) {
         Titles(item.title, item.originalTitle, MaterialTheme.colorScheme.primary)
     }
 }
@@ -264,15 +266,15 @@ private fun PreviewTMDBTitles(@PreviewParameter(PreviewProviderTMDBItemModel::cl
 @DevicePreviews
 @Composable
 private fun PreviewTMDBPopularityAndRating(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         PopularityAndRating(tmdbItem = item)
     }
 }
 
 @DevicePreviews
 @Composable
-private fun PreviewTMDBTrailer() {
-    TheLabTheme {
+private fun PreviewTMDBTrailer(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         Trailer {}
     }
 }
@@ -280,7 +282,7 @@ private fun PreviewTMDBTrailer() {
 @DevicePreviews
 @Composable
 private fun PreviewTMDBOverview(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         Overview(tmdbItem = item)
     }
 }
@@ -288,7 +290,7 @@ private fun PreviewTMDBOverview(@PreviewParameter(PreviewProviderTMDBItemModel::
 @DevicePreviews
 @Composable
 private fun PreviewTMDBCasting(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
-    TheLabTheme {
+    TheLabTheme(theme = AppTheme.Default) {
         Casting(castList = item.cast)
     }
 }

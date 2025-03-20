@@ -13,6 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,18 +40,26 @@ class SignUpActivity : BaseComponentActivity() {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
+                    val theme: AppTheme by mViewModel.uiRepository
+                        .getTheme()
+                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
+                        .isThemeDarkMode()
+                        .collectAsStateWithLifecycle(initialValue = false)
+
                     val userState by mViewModel.userState.collectAsStateWithLifecycle()
                     val emailHasError by mViewModel.emailHasError.collectAsStateWithLifecycle()
                     val passwordsHasError by mViewModel.passwordsHasError.collectAsStateWithLifecycle()
 
-                    TheLabTheme(mViewModel.isDarkMode) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             SignUpContent(
-                                isDarkMode = mViewModel.isDarkMode,
+                                theme = theme,
+                                darkTheme = isDarkTheme,
                                 currentDestination = mViewModel.currentDestination,
                                 onUpdateCurrentNavDestination = mViewModel::updateCurrentNavDestination,
                                 userUiState = userState,
