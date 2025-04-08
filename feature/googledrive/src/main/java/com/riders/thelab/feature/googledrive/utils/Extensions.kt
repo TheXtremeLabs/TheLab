@@ -3,7 +3,7 @@ package com.riders.thelab.feature.googledrive.utils
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.riders.thelab.core.data.local.model.google.GoogleAccountModel
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import org.kotools.types.EmailAddress
 

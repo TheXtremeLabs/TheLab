@@ -3,7 +3,7 @@ package com.riders.thelab.feature.youtube.ui.main
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.compose.youtube.YoutubeUiState
 import com.riders.thelab.core.data.local.model.youtube.Video
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
 class PreviewProviderYoutube : PreviewParameterProvider<YoutubeUiState> {

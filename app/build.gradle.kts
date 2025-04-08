@@ -196,6 +196,7 @@ dependencies {
 
     implementation(project(":core:common"))
     implementation(project(":core:data"))
+    implementation(project(":core:datastore"))
     implementation(project(":core:google"))
     implementation(project(":core:permissions"))
     implementation(project(":core:player"))
@@ -210,6 +211,7 @@ dependencies {
     implementation(project(":feature:flightaware"))
     implementation(project(":feature:googledrive"))
     implementation(project(":feature:kat"))
+    implementation(project(":feature:koin"))
     implementation(project(":feature:locationonmaps"))
     implementation(project(":feature:lottie"))
     implementation(project(":feature:lottie"))

@@ -10,7 +10,7 @@ import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.feature.flightaware.ui.main.UiEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import timber.log.Timber
 

@@ -30,7 +30,7 @@ import com.riders.thelab.feature.flightaware.core.component.DottedLink
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
 

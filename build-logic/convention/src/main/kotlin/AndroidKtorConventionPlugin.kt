@@ -8,11 +8,18 @@ class AndroidKtorConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target) {
+
+            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
+            /*pluginManager.findPlugin("io.ktor.plugin").apply {
+                version = libs.findVersion("ktorGradlePlugin").get()
+            }*/
             with(pluginManager) {
                 apply("io.ktor.plugin")
             }
 
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+            // val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
             dependencies {
                 "implementation"(libs.findLibrary("ktor.client.android").get())
                 "implementation"(libs.findLibrary("ktor.client.core").get())

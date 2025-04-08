@@ -2,7 +2,7 @@ package com.riders.thelab.feature.flightaware.ui.airport
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
 class PreviewProviderAirportSearch : PreviewParameterProvider<AirportSearchModel> {

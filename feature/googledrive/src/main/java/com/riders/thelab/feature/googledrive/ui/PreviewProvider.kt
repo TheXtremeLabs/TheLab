@@ -4,7 +4,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.google.GoogleAccountModel
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiState
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleSignInState
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import org.kotools.types.EmailAddress
 

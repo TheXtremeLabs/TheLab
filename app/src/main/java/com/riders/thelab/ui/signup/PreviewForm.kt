@@ -53,7 +53,7 @@ import com.riders.thelab.core.data.local.model.compose.UserState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import org.kotools.types.EmailAddress
 import timber.log.Timber
 

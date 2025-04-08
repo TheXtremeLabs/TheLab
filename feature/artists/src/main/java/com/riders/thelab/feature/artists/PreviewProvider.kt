@@ -3,7 +3,7 @@ package com.riders.thelab.feature.artists
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.compose.artists.ArtistsUiState
 import com.riders.thelab.core.data.local.model.music.ArtistModel
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
 class PreviewProviderArtistUiState : PreviewParameterProvider<ArtistsUiState> {

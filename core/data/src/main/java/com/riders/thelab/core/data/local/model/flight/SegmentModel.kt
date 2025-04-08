@@ -2,7 +2,7 @@ package com.riders.thelab.core.data.local.model.flight
 
 import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import com.riders.thelab.core.data.remote.dto.flight.Segment
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import java.io.Serializable
 

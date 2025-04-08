@@ -5,7 +5,7 @@ import androidx.compose.runtime.Stable
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import kotlinx.serialization.Contextual
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import org.kotools.types.EmailAddress
 import java.io.Serializable

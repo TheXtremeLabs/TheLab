@@ -49,7 +49,7 @@ import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
 import com.riders.thelab.feature.flightaware.ui.search.SearchFlightActivity
 import com.riders.thelab.feature.flightaware.utils.Constants
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import java.time.Instant
 import java.time.LocalDateTime

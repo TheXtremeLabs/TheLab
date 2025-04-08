@@ -1,6 +1,6 @@
 package com.riders.thelab.feature.youtube.ui.main
 
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
 sealed class YoutubeScreen(val route: NotBlankString) {

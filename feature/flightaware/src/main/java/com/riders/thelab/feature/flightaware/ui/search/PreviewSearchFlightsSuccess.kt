@@ -28,7 +28,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
 import com.riders.thelab.feature.flightaware.ui.main.Footer
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
 ///////////////////////////////////////

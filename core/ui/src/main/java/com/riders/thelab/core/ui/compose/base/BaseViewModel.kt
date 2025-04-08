@@ -77,6 +77,7 @@ abstract class BaseViewModel : ViewModel() {
         Timber.d("updateFirstTimeLaunched() | is first Time Launched: $firstTimeLaunched")
         this.isFirstTimeLaunched = firstTimeLaunched
     }
+
     fun updateActivitiesSplashEnabled(isSplashEnabled: Boolean) {
         Timber.d("updateActivitiesSplashEnabled() | isSplashEnabled: $isSplashEnabled")
         this.isActivitiesSplashEnabled = isSplashEnabled
@@ -114,7 +115,7 @@ abstract class BaseViewModel : ViewModel() {
                     .getPackageInfo(activity.packageName, 0)
             val version = pInfo.versionName
 
-            version?.let{ updateVersion(it) }
+            version?.let { updateVersion(it) }
 
         } catch (error: PackageManager.NameNotFoundException) {
             Timber.e("retrieveAppVersion() | Error caught: $error")

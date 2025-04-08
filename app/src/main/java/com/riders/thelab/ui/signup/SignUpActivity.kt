@@ -18,7 +18,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import org.kotools.types.EmailAddress
 import timber.log.Timber
 

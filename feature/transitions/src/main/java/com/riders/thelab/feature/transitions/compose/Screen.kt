@@ -1,6 +1,6 @@
 package com.riders.thelab.feature.transitions.compose
 
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
 sealed class Screen(val route: NotBlankString) {

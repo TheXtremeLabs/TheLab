@@ -43,7 +43,7 @@ import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
 import com.riders.thelab.feature.flightaware.ui.flight.InfoContainerTitleDescription
 import com.riders.thelab.feature.flightaware.utils.Constants
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import java.time.Instant
 import java.time.LocalDateTime

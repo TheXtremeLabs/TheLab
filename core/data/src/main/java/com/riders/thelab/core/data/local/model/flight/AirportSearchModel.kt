@@ -3,7 +3,7 @@ package com.riders.thelab.core.data.local.model.flight
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
 /**

@@ -6,7 +6,7 @@ import com.riders.thelab.core.data.local.model.flight.OriginDestinationModel
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import com.riders.thelab.feature.flightaware.ui.flight.PreviewProviderFlight
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
 class PreviewProviderSearchFlightsUiState : PreviewParameterProvider<SearchFlightsUiState> {

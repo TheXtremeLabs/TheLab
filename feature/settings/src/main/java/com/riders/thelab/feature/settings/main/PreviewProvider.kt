@@ -5,7 +5,7 @@ import com.riders.thelab.core.data.local.model.DeviceInformation
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.compose.settings.DeviceInfoUiState
 import com.riders.thelab.core.data.local.model.compose.settings.UserUiState
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 
 class PreviewProviderDeviceInfoUiState : PreviewParameterProvider<DeviceInfoUiState> {

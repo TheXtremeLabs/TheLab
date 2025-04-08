@@ -70,7 +70,7 @@ import com.riders.thelab.core.ui.compose.utils.getGlideImage
 import com.riders.thelab.feature.googledrive.R
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiState
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleSignInState
-import kotools.types.experimental.ExperimentalKotoolsTypesApi
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import timber.log.Timber
 
 ///////////////////////////////////////
