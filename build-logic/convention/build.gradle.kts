@@ -66,6 +66,10 @@ gradlePlugin {
             id = "thelab.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
         }
+        register("androidKtor") {
+            id = "thelab.android.ktor"
+            implementationClass = "AndroidKtorConventionPlugin"
+        }
         register("androidRoom") {
             id = "thelab.android.room"
             implementationClass = "AndroidRoomConventionPlugin"

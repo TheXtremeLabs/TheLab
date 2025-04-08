@@ -147,6 +147,7 @@ mockito = "5.17.0"
 # Moshi - Deprecated change by kotlin serialization json
 # moshi = "1.15.1"
 mpAndroidChart = "3.1.0"
+napier = "2.7.1"
 okhttp = "4.12.0"
 okhttpMockWebServer = "4.12.0"
 places = "4.2.0"
@@ -155,6 +156,7 @@ protobufProtoc = "4.30.2"
 retrofit = "2.11.0"
 retrofitKotlinxSerializationJson = "1.0.0"
 room = "2.6.1"
+slf4j = "1.7.36"
 spotify = "2.1.2"
 secrets = "2.0.1"
 threeten = "1.4.9"
@@ -399,6 +401,7 @@ ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializatio
 ktor-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-timeout = { group = "io.ktor", name = "ktor-client-timeout", version.ref = "ktor" }
 logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
+slf4j-android = { group = "org.slf4j", name = "slf4j-android", version.ref = "slf4j" }
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "lint" }
 location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "location" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
@@ -416,6 +419,8 @@ mockito-android = { group = "org.mockito", name = "mockito-android", version.ref
 #moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 #moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpAndroidChart" }
+# Napier : A Kotlin Multiplatform Logging Library
+napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
@@ -454,11 +459,12 @@ firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "fir
 firebase-performances-gradlePlugin = { group = "com.google.firebase", name = "perf-plugin", version.ref = "performancesGradlePlugin" }
 
 
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+androidx-navigation = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationGradlePlugin" }
+androidx-room = { id = "androidx.room", version.ref = "room" }
 # Compose Compiler comes with Kotlin 2.0
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
@@ -467,12 +473,11 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktorGradlePlugin" }
-protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 playservices = { id = "com.google.gms.google-services", version.ref = "playServicesGradlePlugin" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsGradlePlugin" }
 performances = { id = "com.google.firebase.firebase-perf", version.ref = "performancesGradlePlugin" }
-navigation = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationGradlePlugin" }
+protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
+secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 
 thelab-application-compose = { id = "thelab.android.application.compose", version = "unspecified" }
 thelab-application = { id = "thelab.android.application", version = "unspecified" }
@@ -483,5 +488,6 @@ thelab-feature = { id = "thelab.android.feature", version = "unspecified" }
 thelab-library-jacoco = { id = "thelab.android.library.jacoco", version = "unspecified" }
 thelab-test = { id = "thelab.android.test", version = "unspecified" }
 thelab-hilt = { id = "thelab.android.hilt", version = "unspecified" }
+thelab-ktor = { id = "thelab.android.ktor", version = "unspecified" }
 thelab-room = { id = "thelab.android.room", version = "unspecified" }
 thelab-firebase = { id = "thelab.firebase", version = "unspecified" }

@@ -3,6 +3,8 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
+    // AndroidX
+    alias(libs.plugins.androidx.room) apply false
     // Compose Compiler comes with Kotlin 2.0
     alias(libs.plugins.compose.compiler) apply false
     // Kotlin
@@ -18,6 +20,8 @@ plugins {
     // Firebase
     alias(libs.plugins.crashlytics) apply false
     alias(libs.plugins.performances) apply false
+    // Ktor
+    alias(libs.plugins.ktor) apply false
 }
 
 tasks.register("clean", Delete::class) {
