@@ -35,6 +35,10 @@ dependencies {
     api(libs.androidx.datastore.preferences)
     api(libs.androidx.preferences)
 
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////
@@ -42,4 +46,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.test.truth)
+
+    // Kotlin
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 }
