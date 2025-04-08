@@ -1,27 +1,34 @@
 [versions]
 # Gradle version
+# Android
 androidGradlePlugin = "8.9.0"
+navigationGradlePlugin = "2.8.9"
 # Google Services
 playServicesGradlePlugin = "4.4.2"
+# Firebase
+# Crashlytics
 crashlyticsGradlePlugin = "3.0.3"
 # Performance Monitoring plugin
 performancesGradlePlugin = "1.4.2"
-navigationGradlePlugin = "2.8.9"
-protobufPlugin = "0.9.4"
+# Ktor
+ktorGradlePlugin = "3.1.2"
+# Protobuf
+protobufPlugin = "0.9.5"
 
 # Dependencies version
-accompanist = "0.34.0"
+accompanist = "0.36.0"
 androidDesugarJdkLibs = "2.1.5"
 androidxActivity = "1.10.1"
 androidxAppCompat = "1.7.0"
 androidxAppSearch = "1.1.0-beta01"
+androidxArch = "2.2.0"
 androidxAutoFill = "1.1.0"
 androidxBiometric = "1.1.0"
 androidxBrowser = "1.8.0"
 # Camera
 androidxCamera = "1.5.0-alpha06"
 # Compose
-androidxComposeBom = "2025.03.00"
+androidxComposeBom = "2025.03.01"
 androidxComposeCompiler = "1.5.15"
 androidxComposeMaterial3 = "1.3.1"
 androidxComposeMaterial3Adaptative = "1.1.0"
@@ -33,7 +40,7 @@ androidxConcurrent = "1.2.0"
 androidxCore = "1.15.0"
 androidxCoreSplashscreen = "1.0.1"
 androidxCredentials = "1.5.0"
-androidxDataStore = "1.1.3"
+androidxDataStore = "1.1.4"
 androidxDataStorePreference = "1.2.1"
 androidxDynamicAnimation = "1.0.0"
 # espresso version {strictly 3.5.0}
@@ -44,7 +51,7 @@ androidxGlance = "1.1.1"
 androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.8.7"
 androidxLifecycleExtensions = "2.2.0"
-androidxMacroBenchmark = "1.3.3"
+androidxMacroBenchmark = "1.3.4"
 androidxMetrics = "1.0.0-beta02"
 androidxMultiDex = "2.0.1"
 androidxNavigation = "2.8.9"
@@ -67,93 +74,95 @@ androidxWindowManager = "1.3.0"
 androidxWindowExtensions = "1.0.0-alpha01"
 androidxWork = "2.10.0"
 blurry = "4.0.1"
-coil = "2.6.0"
+coil = "2.7.0"
 # Firebase
-firebaseBom = "33.10.0"
-firebaseAds = "24.1.0"
+firebaseBom = "33.12.0"
+firebaseAds = "24.2.0"
 # Google Api
-googleApiClient = "2.7.1"
-googleApiClientAndroid = "2.7.1"
-googleApiClientOAuth = "1.37.0"
+googleApiClient = "2.7.2"
+googleApiClientAndroid = "2.7.2"
+googleApiClientOAuth = "1.39.0"
 googleApiDriveV3 = "v3-rev20221219-2.0.0"
-googleApiClientJackson2 = "2.7.1"
-googleAuthLibraryOauth2Http = "1.30.1"
-googleCloudBom = "26.53.0"
-googleCloudTextToSpeech = "2.57.0"
-googleCloudSpeech = "4.51.0"
-googleHttpClient = "1.45.3"
-googleHttpClientGson = "1.45.3"
+googleApiClientJackson2 = "2.7.2"
+googleAuthLibraryOauth2Http = "1.33.1"
+googleCloudBom = "26.59.0"
+googleCloudTextToSpeech = "2.61.0"
+googleCloudSpeech = "4.55.0"
+googleHttpClient = "1.46.3"
+googleHttpClientGson = "1.46.3"
 googleIdentity = "1.1.1"
 # Google ML Kit
 googleBarcodeScanning = "17.3.0"
-googleGuava = "33.4.0-jre"
+googleGuava = "33.4.6-jre"
 googleGuavaListenableFuture = "9999.0-empty-to-avoid-conflict-with-guava"
 googleObjectDetection = "17.0.2"
 googleVisionCommon = "17.3.0"
 # Google Play Services
-googlePlayServicesBase = "18.5.0"
+googlePlayServicesBase = "18.6.0"
 googlePlayServicesAuth = "21.3.0"
 googlePlayServicesDrive = "17.0.0"
-googlePlayServicesTasks = "18.2.0"
+googlePlayServicesTasks = "18.2.1"
 googlePlayServicesVision = "20.1.3"
 googlePlayServicesVisionCommon = "19.1.3"
 glide = "4.16.0"
 glideCompose = "1.0.0-beta01"
 glideTransformation = "4.3.0"
 # GRPC
-grpcOkHttp = "1.69.1"
-grpcStub = "1.69.1"
+grpc = "1.71.0"
+grpcOkHttp = "1.71.0"
+grpcStub = "1.71.0"
 # Hilt (for gradle plugin version and dependency)
-hilt = "2.54"
+hilt = "2.56.1"
 hiltExt = "1.2.0"
 jacoco = "0.8.7"
 jflacCodec = "1.5.2"
 jtransforms = "3.1"
 junit = "1.1.5"
 junit4 = "4.13.2"
-koin = "4.1.0-Beta5"
+koin = "4.1.0-Beta6"
 # Kotlin (for gradle plugin version and dependency)
-kotlin = "2.1.10"
-kotlinxCoroutines = "1.10.1"
-kotlinxDatetime = "0.6.1"
-kotlinPlayServices = "1.10.1"
-kotlinxMetadataJvm = "0.4.0"
-kotlinxSerializationJson = "1.7.3"
-ktor = "3.0.2"
+kotlin = "2.1.20"
+kotlinxCoroutines = "1.10.2"
+kotlinxDatetime = "0.6.2"
+kotlinPlayServices = "1.10.2"
+kotlinxMetadataJvm = "0.9.0"
+kotlinxSerializationJson = "1.8.1"
+ktor = "3.1.2"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
-ksp = "2.1.10-1.0.31"
-landscapist = "2.2.13"
-lint = "31.9.0"
+ksp = "2.1.20-1.0.32"
+landscapist = "2.4.7"
+lint = "31.9.1"
 location = "21.3.0"
-logback = "1.0.0"
-lottie = "6.5.2"
+logback = "1.5.18"
+lottie = "6.6.4"
 maps = "19.1.0"
-mapsCompose = "3.1.1"
+mapsCompose = "6.5.2"
 material = "1.12.0"
-mapsUtils = "3.5.3"
+mapsUtils = "3.11.2"
 # Media Exo Player
 media = "1.7.0"
 mediaRouter = "1.7.0"
-media3 = "1.5.1"
-mockito = "5.14.2"
+media3 = "1.6.0"
+mockito = "5.17.0"
 # Moshi - Deprecated change by kotlin serialization json
 # moshi = "1.15.1"
 mpAndroidChart = "3.1.0"
 okhttp = "4.12.0"
-places = "4.1.0"
-protobufKotlin = "4.26.0"
-protobufProtoc = "4.26.0"
+okhttpMockWebServer = "4.12.0"
+places = "4.2.0"
+protobufKotlin = "4.30.2"
+protobufProtoc = "4.30.2"
 retrofit = "2.11.0"
 retrofitKotlinxSerializationJson = "1.0.0"
 room = "2.6.1"
-spotify = "1.2.5"
+spotify = "2.1.2"
 secrets = "2.0.1"
 threeten = "1.4.9"
 timber = "5.0.1"
-turbine = "1.1.0"
+turbine = "1.2.0"
 volley = "1.2.1"
-types = "4.5.1"
-youtubePlayer = "12.1.0"
+types = "5.0.0"
+youtubePlayer = "12.1.1"
 zxing = "3.5.3"
 zxingAndroid = "3.3.0"
 junitVersion = "1.2.1"
@@ -176,6 +185,7 @@ androidx-appsearch = { group = "androidx.appsearch", name = "appsearch", version
 androidx-appsearch-compiler = { group = "androidx.appsearch", name = "appsearch-compiler", version.ref = "androidxAppSearch" }
 androidx-appsearch-local-storage = { group = "androidx.appsearch", name = "appsearch-local-storage", version.ref = "androidxAppSearch" }
 androidx-appsearch-platform-storage = { group = "androidx.appsearch", name = "appsearch-platform-storage", version.ref = "androidxAppSearch" }
+androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidxArch" }
 androidx-autofill = { group = "androidx.autofill", name = "autofill", version.ref = "androidxAutoFill" }
 androidx-benchmark-macro = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "androidxMacroBenchmark" }
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "androidxBiometric" }
@@ -271,6 +281,10 @@ androidx-recyclerView = { group = "androidx.recyclerview", name = "recyclerview"
 androidx-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "androidxStartup" }
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
+androidx-test-espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "androidxEspresso" }
+androidx-test-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "androidxEspresso" }
+androidx-test-espresso-idling-concurrent = { group = "androidx.test.espresso.idling", name = "idling-concurrent", version.ref = "androidxEspresso" }
+androidx-test-espresso-idling-resources = { group = "androidx.test.espresso", name = "espresso-idling-resource", version.ref = "androidxEspresso" }
 androidx-test-ext = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxTestExt" }
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTestRules" }
@@ -328,16 +342,16 @@ glide-compose = { group = "com.github.bumptech.glide", name = "compose", version
 glide-blurry = { group = "jp.wasabeef", name = "blurry", version.ref = "blurry" }
 glide-landscapist = { group = "com.github.skydoves", name = "landscapist-glide", version.ref = "landscapist" }
 glide-transformation = { group = "jp.wasabeef", name = "glide-transformations", version.ref = "glideTransformation" }
-grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpcOkHttp" }
-grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf", version.ref = "grpcOkHttp" }
-grpc-stub = { group = "io.grpc", name = "grpc-stub", version.ref = "grpcStub" }
+grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpc" }
+grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf", version.ref = "grpc" }
+grpc-stub = { group = "io.grpc", name = "grpc-stub", version.ref = "grpc" }
 # Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltExt" }
 hilt-ext-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltExt" }
-jflac-codec = {group = "org.jflac", name ="jflac-codec", version.ref="jflacCodec"}
+jflac-codec = { group = "org.jflac", name = "jflac-codec", version.ref = "jflacCodec" }
 # Fast Fourier Transform (FFT)
 jtransforms = { group = "com.github.wendykierp", name = "JTransforms", version.ref = "jtransforms" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
@@ -405,6 +419,8 @@ mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", versio
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+# MockWebServer
+okhttp-mock-web-server = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttpMockWebServer" }
 places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
 protobuf-java = { group = "com.google.protobuf", name = "protobuf-java", version.ref = "protobufKotlin" }
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobufKotlin" }
@@ -450,6 +466,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ktor = { id = "io.ktor.plugin", version.ref = "ktorGradlePlugin" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 playservices = { id = "com.google.gms.google-services", version.ref = "playServicesGradlePlugin" }
