@@ -14,11 +14,20 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
+
+        // Kotlin plugin org
+        maven { url = uri("https://plugins.gradle.org/m2/") }
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
-
+        maven {
+            url = uri("http://files.couchbase.com/maven2/")
+            isAllowInsecureProtocol = true
+        }
+        maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
     }
+
     versionCatalogs {
         create("libs") {
             from(files("../gradle/libs.versions.toml"))

@@ -25,7 +25,14 @@ pluginManagement {
 
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
+        maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+        maven {
+            url = uri("http://files.couchbase.com/maven2/")
+            isAllowInsecureProtocol = true
+        }
+        // Kotlin plugin org
+        maven { url = uri("https://plugins.gradle.org/m2/") }
         // Android Build Server
         maven { url = uri("../nowinandroid-prebuilts/m2repository") }
     }
@@ -48,10 +55,18 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
 
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
+        maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+        maven {
+            url = uri("http://files.couchbase.com/maven2/")
+            isAllowInsecureProtocol = true
+        }
+        // Kotlin plugin org
+        maven { url = uri("https://plugins.gradle.org/m2/") }
         // Android Build Server
         maven { url = uri("../nowinandroid-prebuilts/m2repository") }
     }
@@ -78,6 +93,7 @@ include(":feature:download")
 include(":feature:flightaware")
 include(":feature:googledrive")
 include(":feature:kat")
+include(":feature:koin")
 include(":feature:locationonmaps")
 include(":feature:lottie")
 include(":feature:mlkit")
