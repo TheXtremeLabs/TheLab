@@ -26,9 +26,7 @@ dependencies {
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
-    api(libs.kotlinx.coroutines.android)
-    api(libs.androidx.core.ktx)
-    api(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.android)
 
     // Datastore and Preferences
     api(libs.androidx.datastore.core)
