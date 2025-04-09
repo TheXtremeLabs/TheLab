@@ -50,6 +50,13 @@ android {
     namespace = "com.riders.thelab.core.data"
 }
 
+configurations.forEach { configuration ->
+    configuration.exclude("protolite-well-known-types")
+    configuration.exclude("protobuf-javalite")
+    configuration.exclude("protobuf-java")
+    configuration.exclude("protobuf-java-util")
+}
+
 dependencies {
 
     ///////////////////////////////////

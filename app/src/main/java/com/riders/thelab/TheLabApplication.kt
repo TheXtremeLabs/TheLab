@@ -160,7 +160,7 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
     }
 
     /**
-     * Setup one time worker to fetch cities in json
+     * Setup one-time worker to fetch cities in json
      */
     private fun createWeatherCityDownloadWorker() {
         Timber.d("createWeatherCityDownloadWorker()")
