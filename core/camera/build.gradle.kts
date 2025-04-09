@@ -11,6 +11,10 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -23,7 +27,6 @@ android {
 }
 
 dependencies {
-
     ///////////////////////////////////
     // Project
     ///////////////////////////////////
@@ -39,13 +42,16 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
-    implementation(libs.androidx.camera)
-    implementation(libs.androidx.camera.lifecycle)
-    implementation(libs.androidx.camera.view)
-    implementation(libs.androidx.camera.extensions)
+    api(libs.androidx.camera)
+    api(libs.androidx.camera.compose)
+    api(libs.androidx.camera.effects)
+    api(libs.androidx.camera.extensions)
+    api(libs.androidx.camera.lifecycle)
+    api(libs.androidx.camera.view)
+    api(libs.androidx.camera.video)
 
     // Google
-    implementation(libs.google.guava)
+    api(libs.google.guava)
     implementation(libs.google.mlkit.vision.common)
     implementation(libs.google.play.services.vision)
     implementation(libs.google.play.services.vision.common)

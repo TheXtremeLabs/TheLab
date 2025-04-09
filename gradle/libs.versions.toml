@@ -27,6 +27,7 @@ androidxBiometric = "1.1.0"
 androidxBrowser = "1.8.0"
 # Camera
 androidxCamera = "1.5.0-alpha06"
+androidxCameraViewFinder = "1.4.0-alpha07"
 # Compose
 androidxComposeBom = "2025.03.01"
 androidxComposeCompiler = "1.5.15"
@@ -195,9 +196,16 @@ androidx-benchmark-macro = { group = "androidx.benchmark", name = "benchmark-mac
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "androidxBiometric" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
 androidx-camera = { group = "androidx.camera", name = "camera-camera2", version.ref = "androidxCamera" }
-androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "androidxCamera" }
-androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "androidxCamera" }
+androidx-camera-compose = { group = "androidx.camera", name = "camera-compose", version.ref = "androidxCamera" }
+androidx-camera-effects  = { group = "androidx.camera", name = "camera-effects", version.ref = "androidxCamera" }
 androidx-camera-extensions = { group = "androidx.camera", name = "camera-extensions", version.ref = "androidxCamera" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "androidxCamera" }
+androidx-camera-mlkit-vision = { group = "androidx.camera", name = "camera-mlkit-vision", version.ref = "androidxCamera" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "androidxCamera" }
+androidx-camera-viewfinder = { group = "androidx.camera", name = "camera-viewfinder", version.ref = "androidxCameraViewFinder" }
+androidx-camera-viewfinder-compose = { group = "androidx.camera", name = "camera-viewfinder-compose", version.ref = "androidxCameraViewFinder" }
+androidx-camera-viewfinder-core = { group = "androidx.camera", name = "camera-viewfinder-core", version.ref = "androidxCamera" }
+androidx-camera-video = { group = "androidx.camera", name = "camera-video", version.ref = "androidxCamera" }
 androidx-cardview = { group = "androidx.cardview", name = "cardview", version.ref = "androidxCardView" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
@@ -396,15 +404,15 @@ kotools-types = { group = "org.kotools", name = "types", version.ref = "types" }
 # Ktor
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktor-client-ios = { group = "io.ktor", name = "ktor-client-ios", version.ref = "ktor" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+# ktor-client-timeout = { group = "io.ktor", name = "ktor-client-timeout", version.ref = "ktor" }
 ktor-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
-ktor-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
-ktor-timeout = { group = "io.ktor", name = "ktor-client-timeout", version.ref = "ktor" }
 logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
 slf4j-android = { group = "org.slf4j", name = "slf4j-android", version.ref = "slf4j" }
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "lint" }
