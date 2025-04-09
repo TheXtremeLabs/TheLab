@@ -27,6 +27,7 @@ import com.google.android.gms.maps.StreetViewPanoramaOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.maps.android.compose.streetview.StreetView
+import com.google.maps.android.ktx.MapsExperimentalFeature
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
@@ -38,6 +39,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 // COMPOSE
 //
 ///////////////////////////////////////
+@OptIn(MapsExperimentalFeature::class)
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun PlaceBottomSheetContent(

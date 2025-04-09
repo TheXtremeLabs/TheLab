@@ -202,7 +202,7 @@ fun FormFields(
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
             value = email.toString(),
-            onValueChange = { onUpdateEmail(EmailAddress.fromString(it)) },
+            onValueChange = { onUpdateEmail(EmailAddress.orThrow(it)) },
             label = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_email)) },
             placeholder = { Text(text = stringResource(id = com.riders.thelab.core.ui.R.string.hint_email)) },
             leadingIcon = {
@@ -500,7 +500,7 @@ private fun PreviewFormFields(@PreviewParameter(PreviewProviderUser::class) user
             onUpdateLastname = {},
             username = user.username,
             onUpdateUsername = {},
-            email = EmailAddress.fromString(user.email),
+            email = EmailAddress.orThrow(user.email),
             onUpdateEmail = {},
             password = user.password,
             onUpdatePassword = {},
@@ -529,7 +529,7 @@ private fun PreviewFormScreen(@PreviewParameter(PreviewProviderUserState::class)
             onUpdateLastname = {},
             username = user.username,
             onUpdateUsername = {},
-            email = EmailAddress.fromString(user.email),
+            email = EmailAddress.orThrow(user.email),
             onUpdateEmail = {},
             password = user.password,
             onUpdatePassword = {},
