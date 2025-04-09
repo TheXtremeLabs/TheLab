@@ -33,6 +33,13 @@ import com.riders.thelab.core.ui.compose.color.md_theme_dark_scrim
 import com.riders.thelab.core.ui.compose.color.md_theme_dark_secondary
 import com.riders.thelab.core.ui.compose.color.md_theme_dark_secondaryContainer
 import com.riders.thelab.core.ui.compose.color.md_theme_dark_surface
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_surfaceBright
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_surfaceContainer
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_surfaceContainerHigh
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_surfaceContainerHighest
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_surfaceContainerLow
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_surfaceContainerLowest
+import com.riders.thelab.core.ui.compose.color.md_theme_dark_surfaceDim
 import com.riders.thelab.core.ui.compose.color.md_theme_dark_surfaceVariant
 import com.riders.thelab.core.ui.compose.color.md_theme_dark_tertiary
 import com.riders.thelab.core.ui.compose.color.md_theme_dark_tertiaryContainer
@@ -61,6 +68,13 @@ import com.riders.thelab.core.ui.compose.color.md_theme_light_scrim
 import com.riders.thelab.core.ui.compose.color.md_theme_light_secondary
 import com.riders.thelab.core.ui.compose.color.md_theme_light_secondaryContainer
 import com.riders.thelab.core.ui.compose.color.md_theme_light_surface
+import com.riders.thelab.core.ui.compose.color.md_theme_light_surfaceBright
+import com.riders.thelab.core.ui.compose.color.md_theme_light_surfaceContainer
+import com.riders.thelab.core.ui.compose.color.md_theme_light_surfaceContainerHigh
+import com.riders.thelab.core.ui.compose.color.md_theme_light_surfaceContainerHighest
+import com.riders.thelab.core.ui.compose.color.md_theme_light_surfaceContainerLow
+import com.riders.thelab.core.ui.compose.color.md_theme_light_surfaceContainerLowest
+import com.riders.thelab.core.ui.compose.color.md_theme_light_surfaceDim
 import com.riders.thelab.core.ui.compose.color.md_theme_light_surfaceVariant
 import com.riders.thelab.core.ui.compose.color.md_theme_light_tertiary
 import com.riders.thelab.core.ui.compose.color.md_theme_light_tertiaryContainer
@@ -97,13 +111,13 @@ val TheLabThemeLightColorScheme = lightColorScheme(
     inverseSurface = md_theme_light_inverseSurface,
     inverseOnSurface = md_theme_light_inverseOnSurface,
     inversePrimary = md_theme_light_inversePrimary,
-    /*surfaceDim = md_theme_light_surfaceDim,
+    surfaceDim = md_theme_light_surfaceDim,
     surfaceBright = md_theme_light_surfaceBright,
     surfaceContainerLowest = md_theme_light_surfaceContainerLowest,
     surfaceContainerLow = md_theme_light_surfaceContainerLow,
     surfaceContainer = md_theme_light_surfaceContainer,
     surfaceContainerHigh = md_theme_light_surfaceContainerHigh,
-    surfaceContainerHighest = md_theme_light_surfaceContainerHighest,*/
+    surfaceContainerHighest = md_theme_light_surfaceContainerHighest,
 )
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -137,13 +151,13 @@ fun theLabThemeDynamicLightColorScheme(context: Context): ColorScheme =
         inverseSurface = md_theme_light_inverseSurface,
         inverseOnSurface = md_theme_light_inverseOnSurface,
         inversePrimary = md_theme_light_inversePrimary,
-        /*surfaceDim = md_theme_light_surfaceDim,
+        surfaceDim = md_theme_light_surfaceDim,
         surfaceBright = md_theme_light_surfaceBright,
         surfaceContainerLowest = md_theme_light_surfaceContainerLowest,
         surfaceContainerLow = md_theme_light_surfaceContainerLow,
         surfaceContainer = md_theme_light_surfaceContainer,
         surfaceContainerHigh = md_theme_light_surfaceContainerHigh,
-        surfaceContainerHighest = md_theme_light_surfaceContainerHighest,*/
+        surfaceContainerHighest = md_theme_light_surfaceContainerHighest,
     )
 
 val TheLabThemeDarkColorScheme = darkColorScheme(
@@ -175,13 +189,13 @@ val TheLabThemeDarkColorScheme = darkColorScheme(
     inverseSurface = md_theme_dark_inverseSurface,
     inverseOnSurface = md_theme_dark_inverseOnSurface,
     inversePrimary = md_theme_dark_inversePrimary,
-    /*surfaceDim = md_theme_dark_surfaceDim,
+    surfaceDim = md_theme_dark_surfaceDim,
     surfaceBright = md_theme_dark_surfaceBright,
     surfaceContainerLowest = md_theme_dark_surfaceContainerLowest,
     surfaceContainerLow = md_theme_dark_surfaceContainerLow,
     surfaceContainer = md_theme_dark_surfaceContainer,
     surfaceContainerHigh = md_theme_dark_surfaceContainerHigh,
-    surfaceContainerHighest = md_theme_dark_surfaceContainerHighest,*/
+    surfaceContainerHighest = md_theme_dark_surfaceContainerHighest,
 )
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -214,11 +228,11 @@ fun theLabThemeDynamicDarkColorScheme(context: Context) = dynamicDarkColorScheme
     inverseSurface = md_theme_dark_inverseSurface,
     inverseOnSurface = md_theme_dark_inverseOnSurface,
     inversePrimary = md_theme_dark_inversePrimary,
-    /*surfaceDim = md_theme_dark_surfaceDim,
+    surfaceDim = md_theme_dark_surfaceDim,
     surfaceBright = md_theme_dark_surfaceBright,
     surfaceContainerLowest = md_theme_dark_surfaceContainerLowest,
     surfaceContainerLow = md_theme_dark_surfaceContainerLow,
     surfaceContainer = md_theme_dark_surfaceContainer,
     surfaceContainerHigh = md_theme_dark_surfaceContainerHigh,
-    surfaceContainerHighest = md_theme_dark_surfaceContainerHighest,*/
+    surfaceContainerHighest = md_theme_dark_surfaceContainerHighest,
 )

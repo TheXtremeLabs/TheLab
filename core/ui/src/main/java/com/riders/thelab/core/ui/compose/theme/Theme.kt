@@ -74,7 +74,7 @@ fun TheLabTheme(
 
     MaterialTheme(
         colorScheme = colorScheme.switch(),
-        typography = Typography,
+        typography = AppTypography,
         content = content
     )
 }
