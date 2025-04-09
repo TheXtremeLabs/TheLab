@@ -20,8 +20,6 @@ plugins {
     // Firebase
     alias(libs.plugins.crashlytics) apply false
     alias(libs.plugins.performances) apply false
-    // Ktor
-    alias(libs.plugins.ktor) apply false
 }
 
 tasks.register("clean", Delete::class) {

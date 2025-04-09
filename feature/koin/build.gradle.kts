@@ -1,9 +1,10 @@
 plugins {
     alias(libs.plugins.thelab.feature)
     alias(libs.plugins.thelab.library.compose)
-    alias(libs.plugins.ksp)
-    //id("thelab.android.ktor")
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.thelab.ktor)
+    alias(libs.plugins.ksp)
+    //alias(libs.plugins.ktor)
 }
 
 android {

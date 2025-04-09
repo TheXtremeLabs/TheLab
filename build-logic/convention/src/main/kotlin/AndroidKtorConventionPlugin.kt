@@ -11,25 +11,17 @@ class AndroidKtorConventionPlugin : Plugin<Project> {
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-            /*pluginManager.findPlugin("io.ktor.plugin").apply {
-                version = libs.findVersion("ktorGradlePlugin").get()
-            }*/
-            with(pluginManager) {
-                apply("io.ktor.plugin")
-            }
-
-            // val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-
             dependencies {
-                "implementation"(libs.findLibrary("ktor.client.android").get())
-                "implementation"(libs.findLibrary("ktor.client.core").get())
-                "implementation"(libs.findLibrary("ktor.client.content.negotiation").get())
-                "implementation"(libs.findLibrary("ktor.client.cio").get())
-                "implementation"(libs.findLibrary("ktor.client.logging").get())
-                "implementation"(libs.findLibrary("ktor.client.okhttp").get())
-                "implementation"(libs.findLibrary("ktor.client.serialization.kotlinx.json").get())
-                "implementation"(libs.findLibrary("slf4j.android").get())
-                "implementation"(libs.findLibrary("napier").get())
+                add("implementation", libs.findLibrary("ktor.client.android").get())
+                add("implementation", libs.findLibrary("ktor.client.core").get())
+                add("implementation", libs.findLibrary("ktor.client.content.negotiation").get())
+                add("implementation", libs.findLibrary("ktor.client.cio").get())
+                add("implementation", libs.findLibrary("ktor.client.logging").get())
+                add("implementation", libs.findLibrary("ktor.client.okhttp").get())
+                // add("implementation", libs.findLibrary("ktor.client.timeout").get())
+                add("implementation", libs.findLibrary("ktor.serialization.kotlinx.json").get())
+                add("implementation", libs.findLibrary("slf4j.android").get())
+                add("implementation", libs.findLibrary("napier").get())
             }
         }
     }

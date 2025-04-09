@@ -25,6 +25,8 @@ pluginManagement {
 
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
+        // Ktor
+        maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev") }
         maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
         maven {
@@ -59,6 +61,8 @@ dependencyResolutionManagement {
 
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
+        // Ktor
+        maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev") }
         maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
         maven {
