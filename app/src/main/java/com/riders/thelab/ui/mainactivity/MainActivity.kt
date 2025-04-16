@@ -153,14 +153,18 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                 }
             }
 
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            /*repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 if (mViewModel.appList.toList().isEmpty()) {
 
                     // Retrieve applications
                     mViewModel.retrieveApplications(TheLabApplication.getInstance().getContext())
+
+                    delay(Duration.ofMillis(300L))
                     mViewModel.retrieveRecentApps(TheLabApplication.getInstance().getContext())
+
+                    delay(Duration.ofMillis(300L))
                 }
-            }
+            }*/
         }
 
         checkPermissions()
