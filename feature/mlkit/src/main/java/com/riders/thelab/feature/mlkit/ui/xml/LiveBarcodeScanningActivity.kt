@@ -9,24 +9,23 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.chip.Chip
 import com.google.common.base.Objects
+import com.riders.thelab.core.camera.CameraSource
+import com.riders.thelab.core.camera.CameraSourcePreview
+import com.riders.thelab.core.camera.GraphicOverlay
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.Permission
 import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.bean.WorkflowState
+import com.riders.thelab.core.camera.bean.WorkflowState
 import com.riders.thelab.feature.mlkit.databinding.ActivityLiveBarcodeBinding
 import com.riders.thelab.feature.mlkit.ui.xml.barcodedetection.BarcodeField
 import com.riders.thelab.feature.mlkit.ui.xml.barcodedetection.BarcodeProcessor
 import com.riders.thelab.feature.mlkit.ui.xml.barcodedetection.BarcodeResultFragment
-import com.riders.thelab.feature.mlkit.ui.xml.camera.CameraSource
-import com.riders.thelab.feature.mlkit.ui.xml.camera.CameraSourcePreview
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
 import com.riders.thelab.feature.mlkit.ui.xml.settings.SettingsActivity
 import com.riders.thelab.feature.mlkit.viewmodel.WorkflowModel
 import timber.log.Timber
@@ -114,12 +113,12 @@ class LiveBarcodeScanningActivity : BaseAppCompatActivity(), OnClickListener {
         Timber.d("initViews()")
 
         preview = binding.cameraPreview
-        graphicOverlay = findViewById<GraphicOverlay>(R.id.camera_preview_graphic_overlay).apply {
+        graphicOverlay = findViewById<GraphicOverlay>(com.riders.thelab.core.camera.R.id.camera_preview_graphic_overlay).apply {
             setOnClickListener(this@LiveBarcodeScanningActivity)
             cameraSource = CameraSource(this)
         }
 
-        promptChip = findViewById(R.id.bottom_prompt_chip)
+        promptChip = findViewById(com.riders.thelab.core.camera.R.id.bottom_prompt_chip)
         promptChipAnimator =
             (AnimatorInflater.loadAnimator(
                 this,

@@ -22,9 +22,9 @@ import android.graphics.Paint.Cap
 import android.graphics.Paint.Style
 import android.graphics.RectF
 import androidx.core.content.ContextCompat
+import com.riders.thelab.core.camera.GraphicOverlay
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay.Graphic
+
 import com.riders.thelab.feature.mlkit.ui.xml.settings.PreferenceUtils
 
 /**
@@ -34,7 +34,7 @@ import com.riders.thelab.feature.mlkit.ui.xml.settings.PreferenceUtils
 class ObjectConfirmationGraphic internal constructor(
     overlay: GraphicOverlay,
     private val confirmationController: ObjectConfirmationController
-) : Graphic(overlay) {
+) : GraphicOverlay.Graphic(overlay) {
 
     private val outerRingFillPaint: Paint
     private val outerRingStrokePaint: Paint
@@ -81,7 +81,8 @@ class ObjectConfirmationGraphic internal constructor(
                 resources.getDimensionPixelOffset(R.dimen.object_reticle_inner_ring_stroke_width)
                     .toFloat()
             innerRingPaint.strokeCap = Cap.ROUND
-            innerRingPaint.color = ContextCompat.getColor(context, com.riders.thelab.core.ui.R.color.white)
+            innerRingPaint.color =
+                ContextCompat.getColor(context, com.riders.thelab.core.ui.R.color.white)
         }
 
         outerRingFillRadius =

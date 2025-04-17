@@ -6,7 +6,7 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.mlkit.vision.barcode.common.Barcode
-import com.riders.thelab.feature.mlkit.bean.WorkflowState
+import com.riders.thelab.core.camera.bean.WorkflowState
 import com.riders.thelab.feature.mlkit.ui.xml.objectdetection.DetectedObjectInfo
 import com.riders.thelab.feature.mlkit.ui.xml.productsearch.Product
 import com.riders.thelab.feature.mlkit.ui.xml.productsearch.SearchedObject

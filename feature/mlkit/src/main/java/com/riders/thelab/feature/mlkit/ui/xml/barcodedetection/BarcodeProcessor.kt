@@ -17,25 +17,26 @@
 package com.riders.thelab.feature.mlkit.ui.xml.barcodedetection
 
 import android.animation.ValueAnimator
-import android.util.Log
 import androidx.annotation.MainThread
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import com.riders.thelab.feature.mlkit.bean.WorkflowState
-import com.riders.thelab.feature.mlkit.ui.xml.camera.CameraReticleAnimator
-import com.riders.thelab.feature.mlkit.ui.xml.camera.FrameProcessorBase
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
+import com.riders.thelab.core.camera.CameraReticleAnimator
+import com.riders.thelab.core.camera.FrameProcessorBase
+import com.riders.thelab.core.camera.GraphicOverlay
+import com.riders.thelab.core.camera.bean.WorkflowState
+import com.riders.thelab.core.camera.utils.InputInfo
 import com.riders.thelab.feature.mlkit.ui.xml.settings.PreferenceUtils
-import com.riders.thelab.feature.mlkit.ui.xml.utils.InputInfo
 import com.riders.thelab.feature.mlkit.viewmodel.WorkflowModel
 import timber.log.Timber
 import java.io.IOException
 
 /** A processor to run the barcode detector.  */
-class BarcodeProcessor(graphicOverlay: GraphicOverlay, private val workflowModel: WorkflowModel) :
-    FrameProcessorBase<List<Barcode>>() {
+class BarcodeProcessor(
+    graphicOverlay: GraphicOverlay,
+    private val workflowModel: WorkflowModel
+) : FrameProcessorBase<List<Barcode>>() {
 
     private val scanner = BarcodeScanning.getClient()
     private val cameraReticleAnimator: CameraReticleAnimator = CameraReticleAnimator(graphicOverlay)
@@ -52,7 +53,7 @@ class BarcodeProcessor(graphicOverlay: GraphicOverlay, private val workflowModel
 
         if (!workflowModel.isCameraLive) return
 
-        Log.d(TAG, "Barcode result size: ${results.size}")
+        Timber.tag(TAG).d("Barcode result size: ${results.size}")
 
         // Picks the barcode, if exists, that covers the center of graphic overlay.
 

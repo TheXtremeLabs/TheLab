@@ -19,9 +19,9 @@ package com.riders.thelab.feature.mlkit.ui.xml.productsearch
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Rect
+import com.riders.thelab.core.camera.utils.Utils
 import com.riders.thelab.feature.mlkit.R
 import com.riders.thelab.feature.mlkit.ui.xml.objectdetection.DetectedObjectInfo
-import com.riders.thelab.feature.mlkit.ui.xml.utils.Utils
 
 /** Hosts the detected object info and its search result.  */
 class SearchedObject(
@@ -42,7 +42,8 @@ class SearchedObject(
 
     @Synchronized
     fun getObjectThumbnail(): Bitmap = objectThumbnail ?: let {
-        Utils.getCornerRoundedBitmap(detectedObject.getBitmap(), objectThumbnailCornerRadius)
+        Utils
+            .getCornerRoundedBitmap(detectedObject.getBitmap(), objectThumbnailCornerRadius)
             .also { objectThumbnail = it }
     }
 }

@@ -26,8 +26,8 @@ import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.WindowManager
 import com.google.android.gms.common.images.Size
+import com.riders.thelab.core.camera.utils.PreferenceUtils
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.feature.mlkit.ui.xml.settings.PreferenceUtils
 import com.riders.thelab.core.camera.utils.Utils
 import java.io.IOException
 import java.nio.ByteBuffer

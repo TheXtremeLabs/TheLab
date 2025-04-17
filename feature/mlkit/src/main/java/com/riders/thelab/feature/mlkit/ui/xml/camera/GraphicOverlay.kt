@@ -12,7 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.riders.thelab.feature.mlkit.ui.xml.camera
 
@@ -25,6 +26,7 @@ import android.view.View
 import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay.Graphic
 import com.riders.thelab.feature.mlkit.ui.xml.utils.Utils
 
+*/
 /**
  * A view which renders a series of custom graphics to be overlaid on top of an associated preview
  * (i.e., the camera preview). The creator can add graphics objects, update the objects, and remove
@@ -37,7 +39,8 @@ import com.riders.thelab.feature.mlkit.ui.xml.utils.Utils
  *
  *
  * Associated [Graphic] items should use [.translateX] and [ ][.translateY] to convert to view coordinate from the preview's coordinate.
- */
+ *//*
+
 class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private val lock = Any()
 
@@ -47,19 +50,25 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
     private var heightScaleFactor = 1.0f
     private val graphics = ArrayList<Graphic>()
 
-    /**
+    */
+/**
      * Base class for a custom graphics object to be rendered within the graphic overlay. Subclass
      * this and implement the [Graphic.draw] method to define the graphics element. Add
      * instances to the overlay using [GraphicOverlay.add].
-     */
+     *//*
+
     abstract class Graphic protected constructor(protected val overlay: GraphicOverlay) {
         protected val context: Context = overlay.context
 
-        /** Draws the graphic on the supplied canvas.  */
+        */
+/** Draws the graphic on the supplied canvas.  *//*
+
         abstract fun draw(canvas: Canvas)
     }
 
-    /** Removes all graphics from the overlay.  */
+    */
+/** Removes all graphics from the overlay.  *//*
+
     fun clear() {
         synchronized(lock) {
             graphics.clear()
@@ -67,17 +76,21 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
         postInvalidate()
     }
 
-    /** Adds a graphic to the overlay.  */
+    */
+/** Adds a graphic to the overlay.  *//*
+
     fun add(graphic: Graphic) {
         synchronized(lock) {
             graphics.add(graphic)
         }
     }
 
-    /**
+    */
+/**
      * Sets the camera attributes for size and facing direction, which informs how to transform image
      * coordinates later.
-     */
+     *//*
+
     fun setCameraInfo(cameraSource: CameraSource) {
         val previewSize = cameraSource.previewSize ?: return
         if (Utils.isPortraitMode(context)) {
@@ -93,10 +106,12 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
     fun translateX(x: Float): Float = x * widthScaleFactor
     fun translateY(y: Float): Float = y * heightScaleFactor
 
-    /**
+    */
+/**
      * Adjusts the `rect`'s coordinate from the preview's coordinate system to the view
      * coordinate system.
-     */
+     *//*
+
     fun translateRect(rect: Rect) = RectF(
         translateX(rect.left.toFloat()),
         translateY(rect.top.toFloat()),
@@ -104,7 +119,9 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
         translateY(rect.bottom.toFloat())
     )
 
-    /** Draws the overlay with its associated graphic objects.  */
+    */
+/** Draws the overlay with its associated graphic objects.  *//*
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -118,3 +135,4 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
         }
     }
 }
+*/

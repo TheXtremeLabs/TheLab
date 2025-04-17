@@ -22,8 +22,8 @@ import android.graphics.Paint
 import android.graphics.Paint.Style
 import android.graphics.PointF
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay.Graphic
+import  com.riders.thelab.core.camera.GraphicOverlay
+import  com.riders.thelab.core.camera.GraphicOverlay.Graphic
 
 /** A dot to indicate a detected object used by multiple objects detection mode.  */
 internal class ObjectDotGraphic(

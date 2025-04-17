@@ -52,7 +52,6 @@ class SpeechToTextManager internal constructor(builder: Builder) {
 
     @SuppressLint("NewApi")
     fun startListening() {
-        Timber.i("startListening()")
 
         if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(
                 mContext,
@@ -101,21 +100,19 @@ class SpeechToTextManager internal constructor(builder: Builder) {
     fun stopListening() {
         Timber.e("stopListening()")
         if (isListening) {
-            mSpeechRecognizer?.stopListening()
+            mSpeechRecognizer.stopListening()
             isListening = false
             Timber.e("Stop listening")
         }
     }
 
-    companion object {
-        @Volatile
-        @JvmStatic
-        private var mInstance: SpeechToTextManager? = null
-
-        /*fun getInstance(context: Context) = mInstance ?: synchronized(this) {
-            mInstance ?: TextToSpeechManager(context)
-        }*/
+    fun releaseResources() {
+        Timber.e("releaseResources()")
+        mSpeechRecognizer.cancel()
+        mSpeechRecognizer.destroy()
+        isListening = false
     }
+
 
     class Builder(internal val context: Context) {
         internal var speechRecognizer: SpeechRecognizer =

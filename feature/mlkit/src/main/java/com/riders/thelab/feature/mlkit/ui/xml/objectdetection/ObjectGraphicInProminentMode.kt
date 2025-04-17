@@ -28,8 +28,8 @@ import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.google.mlkit.vision.objects.DetectedObject
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay.Graphic
+import  com.riders.thelab.core.camera.GraphicOverlay
+import  com.riders.thelab.core.camera.GraphicOverlay.Graphic
 
 /**
  * Draws the detected visionObject info over the camera preview for prominent visionObject detection mode.

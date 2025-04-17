@@ -12,7 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.riders.thelab.feature.mlkit.ui.xml.camera
 
@@ -20,18 +21,26 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 
-/** Custom animator for the object or barcode reticle in live camera.  */
+*/
+/** Custom animator for the object or barcode reticle in live camera.  *//*
+
 class CameraReticleAnimator(graphicOverlay: GraphicOverlay) {
 
-    /** Returns the scale value of ripple alpha ranges in [0, 1].  */
+    */
+/** Returns the scale value of ripple alpha ranges in [0, 1].  *//*
+
     var rippleAlphaScale = 0f
         private set
 
-    /** Returns the scale value of ripple size ranges in [0, 1].  */
+    */
+/** Returns the scale value of ripple size ranges in [0, 1].  *//*
+
     var rippleSizeScale = 0f
         private set
 
-    /** Returns the scale value of ripple stroke width ranges in [0, 1].  */
+    */
+/** Returns the scale value of ripple stroke width ranges in [0, 1].  *//*
+
     var rippleStrokeWidthScale = 1f
         private set
 
@@ -108,3 +117,4 @@ class CameraReticleAnimator(graphicOverlay: GraphicOverlay) {
         private const val START_DELAY_RESTART_DORMANCY_MS: Long = 1167
     }
 }
+*/

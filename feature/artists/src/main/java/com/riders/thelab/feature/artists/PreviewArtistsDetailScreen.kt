@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.artists
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -84,7 +85,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ArtistThumb(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     boundsTransform: (Rect, Rect) -> TweenSpec<Rect>,
@@ -177,7 +179,8 @@ fun ArtistThumb(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ArtistDetailScreen(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier,
@@ -397,6 +400,7 @@ fun ArtistDetailScreen(
 // PREVIEWS
 //
 ///////////////////////////////////////
+@SuppressLint("WrongStartDestinationType")
 @OptIn(ExperimentalSharedTransitionApi::class)
 @DevicePreviews
 @Composable

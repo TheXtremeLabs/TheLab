@@ -17,18 +17,16 @@
 package com.riders.thelab.feature.mlkit.ui.xml.objectdetection
 
 import android.os.CountDownTimer
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
+import  com.riders.thelab.core.camera.GraphicOverlay
 import com.riders.thelab.feature.mlkit.ui.xml.settings.PreferenceUtils
 
 /**
  * Controls the progress of object confirmation before performing additional operation on the
  * detected object.
- */
-internal class ObjectConfirmationController
-/**
+ *
  * @param graphicOverlay Used to refresh camera overlay when the confirmation progress updates.
  */
-    (graphicOverlay: GraphicOverlay) {
+internal class ObjectConfirmationController(graphicOverlay: GraphicOverlay) {
 
     private val countDownTimer: CountDownTimer
 

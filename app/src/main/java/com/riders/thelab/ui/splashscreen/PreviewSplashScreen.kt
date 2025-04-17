@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -29,11 +30,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -45,6 +48,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.riders.thelab.BuildConfig
 import com.riders.thelab.R
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.color.md_theme_dark_primary
 import com.riders.thelab.core.ui.compose.component.Lottie
@@ -53,6 +57,7 @@ import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.Shapes
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
+import com.riders.thelab.utils.Constants
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -75,7 +80,10 @@ fun NoContentFound(theme: AppTheme, darkTheme: Boolean) {
         ) {
             Lottie(modifier = Modifier.fillMaxSize(.5f), rawResId = R.raw.error_rolling_dark_theme)
 
-            Text(text = "Unable to play splashscreen video.")
+            Text(
+                text = "Unable to play splashscreen video.",
+                color = MaterialTheme.colorScheme.onSurface
+            )
 
             Button(
                 modifier = Modifier.fillMaxWidth(.6f),
@@ -179,16 +187,17 @@ fun LoadingContent(
                     Image(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(8.dp),
-                        painter = painterResource(id = R.drawable.ic_the_lab_12_logo_white),
-                        contentDescription = "Lab Icon"
+                            .padding(12.dp),
+                        painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_lab_6_lab),
+                        contentDescription = "Lab Icon",
+                        colorFilter = ColorFilter.tint(color = Color.White)
                     )
                 }
 
                 Text(
                     modifier = Modifier.padding(8.dp),
                     text = if (LocalInspectionMode.current) "12.0.0" else version,
-                    //style = TextStyle(color = if (isSystemInDarkTheme()) Color.White else Color.Black)
+                    style = TextStyle(color = MaterialTheme.colorScheme.onSurface)
                 )
             }
 
@@ -294,20 +303,36 @@ private fun PreviewLoadingContent(@PreviewParameter(AppThemePreviewProvider::cla
 @DevicePreviews
 @Composable
 private fun PreviewVideoContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    val activity = LocalContext.current
+    val videoPath =
+        Constants.ANDROID_RES_PATH +
+                activity.packageName.toString() +
+                Constants.SEPARATOR +
+                //Smartphone portrait video or Tablet landscape video
+                if (!LabCompatibilityManager.isTablet(activity)) R.raw.splash_intro_testing_sound_2 else R.raw.splash_intro_testing_no_sound_tablet
+
     TheLabTheme(theme = appTheme) {
-        VideoView(videoPath = "") {}
+        VideoView(videoPath = videoPath) {}
     }
 }
 
 @DevicePreviews
 @Composable
 private fun PreviewSplashScreenContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    val activity = LocalContext.current
+    val videoPath =
+        Constants.ANDROID_RES_PATH +
+                activity.packageName.toString() +
+                Constants.SEPARATOR +
+                //Smartphone portrait video or Tablet landscape video
+                if (!LabCompatibilityManager.isTablet(activity)) R.raw.splash_intro_testing_sound_2 else R.raw.splash_intro_testing_no_sound_tablet
+
     TheLabTheme(theme = appTheme) {
         SplashScreenContent(
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
             version = BuildConfig.VERSION_NAME,
-            videoPath = "",
+            videoPath = videoPath,
             switchContent = true,
             startCountDown = false
         ) {}

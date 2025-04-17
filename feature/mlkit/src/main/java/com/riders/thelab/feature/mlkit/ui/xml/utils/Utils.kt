@@ -12,7 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.riders.thelab.feature.mlkit.ui.xml.utils
 
@@ -38,13 +39,17 @@ import java.nio.ByteBuffer
 import kotlin.math.abs
 import kotlin.math.max
 
-/** Utility class to provide helper methods.  */
+*/
+/** Utility class to provide helper methods.  *//*
+
 object Utils {
 
-    /**
+    */
+/**
      * If the absolute difference between aspect ratios is less than this tolerance, they are
      * considered to be the same aspect ratio.
-     */
+     *//*
+
     const val ASPECT_RATIO_TOLERANCE = 0.01f
 
     private const val REQUEST_CODE_PHOTO_LIBRARY = 1
@@ -59,7 +64,9 @@ object Utils {
 
         if (allNeededPermissions.isNotEmpty()) {
             ActivityCompat.requestPermissions(
-                activity, allNeededPermissions.toTypedArray(), /* requestCode= */ 0
+                activity, allNeededPermissions.toTypedArray(), */
+/* requestCode= *//*
+ 0
             )
         }
     }
@@ -85,7 +92,8 @@ object Utils {
     fun isPortraitMode(context: Context): Boolean =
         context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    /**
+    */
+/**
      * Generates a list of acceptable preview sizes. Preview sizes are not acceptable if there is not
      * a corresponding picture size of the same aspect ratio. If there is a corresponding picture size
      * of the same aspect ratio, the picture size is paired up with the preview size.
@@ -94,7 +102,8 @@ object Utils {
      * This is necessary because even if we don't use still pictures, the still picture size must
      * be set to a size that is the same aspect ratio as the preview size we choose. Otherwise, the
      * preview images may be distorted on some devices.
-     */
+     *//*
+
     fun generateValidPreviewSizeList(camera: Camera): List<CameraSizePair> {
         val parameters = camera.parameters
         val supportedPreviewSizes = parameters.supportedPreviewSizes
@@ -142,7 +151,9 @@ object Utils {
         return dstBitmap
     }
 
-    /** Convert NV21 format byte buffer to bitmap. */
+    */
+/** Convert NV21 format byte buffer to bitmap. *//*
+
     fun convertToBitmap(data: ByteBuffer, width: Int, height: Int, rotationDegrees: Int): Bitmap? {
         data.rewind()
         val imageInBuffer = ByteArray(data.limit())
@@ -181,7 +192,9 @@ object Utils {
             inputStreamForSize = context.contentResolver.openInputStream(imageUri)
             var opts = BitmapFactory.Options()
             opts.inJustDecodeBounds = true
-            BitmapFactory.decodeStream(inputStreamForSize, null, opts)/* outPadding= */
+            BitmapFactory.decodeStream(inputStreamForSize, null, opts)*/
+/* outPadding= *//*
+
             val inSampleSize =
                 max(opts.outWidth / maxImageDimension, opts.outHeight / maxImageDimension)
 
@@ -189,7 +202,9 @@ object Utils {
             opts.inSampleSize = inSampleSize
             inputStreamForImage = context.contentResolver.openInputStream(imageUri)
             val decodedBitmap =
-                BitmapFactory.decodeStream(inputStreamForImage, null, opts)/* outPadding= */
+                BitmapFactory.decodeStream(inputStreamForImage, null, opts)*/
+/* outPadding= *//*
+
             return maybeTransformBitmap(
                 context.contentResolver,
                 imageUri,
@@ -255,3 +270,4 @@ object Utils {
         }
     }
 }
+*/

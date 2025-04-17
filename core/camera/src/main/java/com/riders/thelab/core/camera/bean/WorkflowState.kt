@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.mlkit.bean
+package com.riders.thelab.core.camera.bean
 
 /**
  * State set of the application workflow.

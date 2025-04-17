@@ -21,7 +21,7 @@ import android.content.Context
 import androidx.annotation.MainThread
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.riders.thelab.feature.mlkit.bean.WorkflowState
+import com.riders.thelab.core.camera.bean.WorkflowState
 
 /** View model for handling application workflow based on camera preview.  */
 class CameraWorkflowModel(application: Application) : AndroidViewModel(application) {

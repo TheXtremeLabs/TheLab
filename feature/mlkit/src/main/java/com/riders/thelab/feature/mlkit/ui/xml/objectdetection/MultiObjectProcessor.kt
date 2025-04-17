@@ -31,13 +31,13 @@ import com.google.mlkit.vision.objects.ObjectDetector
 import com.google.mlkit.vision.objects.ObjectDetectorOptionsBase
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
+import com.riders.thelab.core.camera.CameraReticleAnimator
+import com.riders.thelab.core.camera.FrameProcessorBase
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.bean.WorkflowState
-import com.riders.thelab.feature.mlkit.ui.xml.camera.CameraReticleAnimator
-import com.riders.thelab.feature.mlkit.ui.xml.camera.FrameProcessorBase
+import com.riders.thelab.core.camera.bean.WorkflowState
 import com.riders.thelab.feature.mlkit.ui.xml.settings.PreferenceUtils
-import com.riders.thelab.feature.mlkit.ui.xml.utils.InputInfo
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
+import  com.riders.thelab.core.camera.GraphicOverlay
+import com.riders.thelab.core.camera.utils.InputInfo
 import com.riders.thelab.feature.mlkit.viewmodel.WorkflowModel
 import java.io.IOException
 import kotlin.math.hypot
@@ -47,8 +47,8 @@ class MultiObjectProcessor(
     graphicOverlay: GraphicOverlay,
     private val workflowModel: WorkflowModel,
     private val customModelPath: String? = null
-) :
-    FrameProcessorBase<List<DetectedObject>>() {
+) : FrameProcessorBase<List<DetectedObject>>() {
+
     private val confirmationController: ObjectConfirmationController =
         ObjectConfirmationController(graphicOverlay)
     private val cameraReticleAnimator: CameraReticleAnimator = CameraReticleAnimator(graphicOverlay)

@@ -28,22 +28,22 @@ import com.google.mlkit.vision.objects.ObjectDetector
 import com.google.mlkit.vision.objects.ObjectDetectorOptionsBase
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
+import com.riders.thelab.core.camera.CameraReticleAnimator
+import com.riders.thelab.core.camera.FrameProcessorBase
+import com.riders.thelab.core.camera.GraphicOverlay
+import com.riders.thelab.core.camera.bean.WorkflowState
+import com.riders.thelab.core.camera.utils.InputInfo
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.bean.WorkflowState
-import com.riders.thelab.feature.mlkit.ui.xml.camera.CameraReticleAnimator
-import com.riders.thelab.feature.mlkit.ui.xml.camera.FrameProcessorBase
 import com.riders.thelab.feature.mlkit.ui.xml.settings.PreferenceUtils
-import com.riders.thelab.feature.mlkit.ui.xml.utils.InputInfo
 import com.riders.thelab.feature.mlkit.viewmodel.WorkflowModel
 import java.io.IOException
 
 /** A processor to run object detector in prominent object only mode.  */
 class ProminentObjectProcessor(
-    graphicOverlay: com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay,
+    graphicOverlay: GraphicOverlay,
     private val workflowModel: WorkflowModel,
     private val customModelPath: String? = null
-) :
-    FrameProcessorBase<List<DetectedObject>>() {
+) : FrameProcessorBase<List<DetectedObject>>() {
 
     private val detector: ObjectDetector
     private val confirmationController: ObjectConfirmationController =
@@ -94,7 +94,7 @@ class ProminentObjectProcessor(
     override fun onSuccess(
         inputInfo: InputInfo,
         results: List<DetectedObject>,
-        graphicOverlay: com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
+        graphicOverlay: GraphicOverlay
     ) {
         var objects = results
         if (!workflowModel.isCameraLive) {
@@ -166,7 +166,7 @@ class ProminentObjectProcessor(
     }
 
     private fun objectBoxOverlapsConfirmationReticle(
-        graphicOverlay: com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay,
+        graphicOverlay: GraphicOverlay,
         visionObject: DetectedObject
     ): Boolean {
         val boxRect = graphicOverlay.translateRect(visionObject.boundingBox)

@@ -12,7 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.riders.thelab.feature.mlkit.ui.xml.utils
 
@@ -23,10 +24,12 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import java.util.concurrent.Executor
 
+*/
 /**
  * Quality-of-life helper to allow using trailing lambda syntax for adding a success listener to a
  * [Task].
- */
+ *//*
+
 fun <TResult> Task<TResult>.addOnSuccessListener(
     executor: Executor,
     listener: (TResult) -> Unit
@@ -34,10 +37,12 @@ fun <TResult> Task<TResult>.addOnSuccessListener(
     return addOnSuccessListener(executor, OnSuccessListener(listener))
 }
 
+*/
 /**
  * Quality-of-life helper to allow using trailing lambda syntax for adding a failure listener to a
  * [Task].
- */
+ *//*
+
 fun <TResult> Task<TResult>.addOnFailureListener(
     executor: Executor,
     listener: (Exception) -> Unit
@@ -45,10 +50,12 @@ fun <TResult> Task<TResult>.addOnFailureListener(
     return addOnFailureListener(executor, OnFailureListener(listener))
 }
 
+*/
 /**
  * Quality-of-life helper to allow using trailing lambda syntax for adding a completion listener to
  * a [Task].
- */
+ *//*
+
 fun <TResult> Task<TResult>.addOnCompleteListener(
     executor: Executor,
     listener: (Task<TResult>) -> Unit
@@ -56,13 +63,16 @@ fun <TResult> Task<TResult>.addOnCompleteListener(
     return addOnCompleteListener(executor, OnCompleteListener(listener))
 }
 
+*/
 /**
  * Quality-of-life helper to allow using trailing lambda syntax for adding a cancellation listener
  * to a [Task].
- */
+ *//*
+
 fun <TResult> Task<TResult>.addOnCanceledListener(
     executor: Executor,
     listener: () -> Unit
 ): Task<TResult> {
     return addOnCanceledListener(executor, OnCanceledListener(listener))
 }
+*/

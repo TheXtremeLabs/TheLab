@@ -20,7 +20,7 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
+import  com.riders.thelab.core.camera.GraphicOverlay
 
 /**
  * Custom animator for the object dot.

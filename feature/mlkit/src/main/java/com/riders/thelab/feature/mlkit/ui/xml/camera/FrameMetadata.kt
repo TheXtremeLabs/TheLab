@@ -12,9 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.riders.thelab.feature.mlkit.ui.xml.camera
 
-/** Metadata info of a camera frame.  */
+*/
+/** Metadata info of a camera frame.  *//*
+
 class FrameMetadata(val width: Int, val height: Int, val rotation: Int)
+*/

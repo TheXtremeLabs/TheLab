@@ -19,7 +19,7 @@ package com.riders.thelab.feature.mlkit.ui.xml.barcodedetection
 import android.graphics.Canvas
 import android.graphics.Path
 import com.google.mlkit.vision.barcode.common.Barcode
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
+import com.riders.thelab.core.camera.GraphicOverlay
 import com.riders.thelab.feature.mlkit.ui.xml.settings.PreferenceUtils
 
 /** Guides user to move camera closer to confirm the detected barcode.  */

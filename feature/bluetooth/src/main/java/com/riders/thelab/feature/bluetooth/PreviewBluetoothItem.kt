@@ -35,7 +35,6 @@ fun BluetoothItem(
     bluetoothDevice: BluetoothDevice,
     totalItemsCount: Int
 ) {
-
     val deviceName = bluetoothDevice.name
     val macAddress = bluetoothDevice.address
     val type = bluetoothDevice.bluetoothClass.deviceClass

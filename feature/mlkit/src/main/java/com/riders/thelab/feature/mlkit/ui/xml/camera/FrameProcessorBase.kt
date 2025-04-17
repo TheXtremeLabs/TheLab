@@ -12,7 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.riders.thelab.feature.mlkit.ui.xml.camera
 
@@ -28,7 +29,9 @@ import com.riders.thelab.feature.mlkit.ui.xml.utils.InputInfo
 import com.riders.thelab.feature.mlkit.ui.xml.utils.ScopedExecutor
 import java.nio.ByteBuffer
 
-/** Abstract base class of [FrameProcessor].  */
+*/
+/** Abstract base class of [FrameProcessor].  *//*
+
 abstract class FrameProcessorBase<T> : FrameProcessor {
 
     // To keep the latest frame and its metadata.
@@ -100,7 +103,9 @@ abstract class FrameProcessorBase<T> : FrameProcessor {
 
     protected abstract fun detectInImage(image: InputImage): Task<T>
 
-    /** Be called when the detection succeeds.  */
+    */
+/** Be called when the detection succeeds.  *//*
+
     protected abstract fun onSuccess(
         inputInfo: InputInfo,
         results: T,
@@ -113,3 +118,4 @@ abstract class FrameProcessorBase<T> : FrameProcessor {
         private const val TAG = "FrameProcessorBase"
     }
 }
+*/

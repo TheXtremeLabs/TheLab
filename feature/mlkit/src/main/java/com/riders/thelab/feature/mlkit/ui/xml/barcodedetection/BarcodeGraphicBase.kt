@@ -25,12 +25,11 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
 import androidx.core.content.ContextCompat
+import com.riders.thelab.core.camera.GraphicOverlay
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay.Graphic
 import com.riders.thelab.feature.mlkit.ui.xml.settings.PreferenceUtils
 
-internal abstract class BarcodeGraphicBase(overlay: GraphicOverlay) : Graphic(overlay) {
+internal abstract class BarcodeGraphicBase(overlay: GraphicOverlay) : GraphicOverlay.Graphic(overlay) {
 
     private val boxPaint: Paint = Paint().apply {
         color = ContextCompat.getColor(context, R.color.barcode_reticle_stroke)

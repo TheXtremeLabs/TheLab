@@ -12,19 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.riders.thelab.feature.mlkit.ui.xml.camera
 
 import android.hardware.Camera
 import com.google.android.gms.common.images.Size
 
+*/
 /**
  * Stores a preview size and a corresponding same-aspect-ratio picture size. To avoid distorted
  * preview images on some devices, the picture size must be set to a size that is the same aspect
  * ratio as the preview size or the preview may end up being distorted. If the picture size is null,
  * then there is no picture size with the same aspect ratio as the preview size.
- */
+ *//*
+
 class CameraSizePair {
     val preview: Size
     val picture: Size?
@@ -39,3 +42,4 @@ class CameraSizePair {
         picture = pictureSize
     }
 }
+*/

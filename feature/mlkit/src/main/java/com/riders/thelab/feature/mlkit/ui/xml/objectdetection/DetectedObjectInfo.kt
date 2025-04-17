@@ -20,7 +20,7 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.Rect
 import com.google.mlkit.vision.objects.DetectedObject
-import com.riders.thelab.feature.mlkit.ui.xml.utils.InputInfo
+import com.riders.thelab.core.camera.utils.InputInfo
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.IOException

@@ -28,8 +28,8 @@ import android.graphics.Shader.TileMode
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay.Graphic
+import  com.riders.thelab.core.camera.GraphicOverlay
+import  com.riders.thelab.core.camera.GraphicOverlay.Graphic
 
 /**
  * Draws the detected detectedObject info over the camera preview for multiple objects detection mode.

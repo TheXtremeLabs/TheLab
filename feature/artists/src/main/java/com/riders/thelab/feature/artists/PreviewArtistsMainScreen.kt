@@ -42,7 +42,8 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ArtistMainScreen(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
@@ -126,7 +127,8 @@ private fun PreviewArtistMainScreen(@PreviewParameter(PreviewProviderArtists::cl
             ) {
                 composable<ArtistScreen.List> {
                     ArtistMainScreen(
-                        theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
+                        theme = AppTheme.Default,
+                        darkTheme = isSystemInDarkTheme(),
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this,
                         modifier = Modifier.fillMaxSize(),

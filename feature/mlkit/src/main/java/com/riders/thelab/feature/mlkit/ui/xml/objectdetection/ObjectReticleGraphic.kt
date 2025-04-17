@@ -21,10 +21,10 @@ import android.graphics.Paint
 import android.graphics.Paint.Cap
 import android.graphics.Paint.Style
 import androidx.core.content.ContextCompat
+import com.riders.thelab.core.camera.CameraReticleAnimator
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.ui.xml.camera.CameraReticleAnimator
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay.Graphic
+import  com.riders.thelab.core.camera.GraphicOverlay
+import  com.riders.thelab.core.camera.GraphicOverlay.Graphic
 
 /**
  * A camera reticle that locates at the center of canvas to indicate the system is active but has

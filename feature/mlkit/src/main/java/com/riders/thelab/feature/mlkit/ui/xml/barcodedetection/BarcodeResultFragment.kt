@@ -28,7 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.bean.WorkflowState
+import com.riders.thelab.core.camera.bean.WorkflowState
 import com.riders.thelab.feature.mlkit.viewmodel.WorkflowModel
 
 /** Displays the bottom sheet to present barcode fields contained in the detected barcode.  */

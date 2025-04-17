@@ -12,17 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.riders.thelab.feature.mlkit.ui.xml.utils
 
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicBoolean
 
+*/
 /**
  * Wraps an existing executor to provide a [.shutdown] method that allows subsequent
  * cancellation of submitted runnables.
- */
+ *//*
+
 class ScopedExecutor(private val executor: Executor) : Executor {
     private val shutdown = AtomicBoolean()
     override fun execute(command: Runnable) {
@@ -41,14 +44,16 @@ class ScopedExecutor(private val executor: Executor) : Executor {
         }
     }
 
-    /**
+    */
+/**
      * After this method is called, no runnables that have been submitted or are subsequently
      * submitted will start to execute, turning this executor into a no-op.
      *
      *
      * Runnables that have already started to execute will continue.
-     */
+     *//*
+
     fun shutdown() {
         shutdown.set(true)
     }
-}
+}*/

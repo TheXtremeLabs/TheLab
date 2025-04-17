@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.riders.thelab.feature.mlkit.ui.xml.settings
+package com.riders.thelab.core.camera.utils
 
 import android.content.Context
 import android.graphics.RectF
 import android.preference.PreferenceManager
 import androidx.annotation.StringRes
 import com.google.android.gms.common.images.Size
-import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.android.gms.vision.barcode.Barcode
 import com.riders.thelab.core.camera.CameraSizePair
 import com.riders.thelab.core.camera.GraphicOverlay
-import com.riders.thelab.feature.mlkit.R
+import com.riders.thelab.core.ui.R
 
 /** Utility class to retrieve shared preferences.  */
 object PreferenceUtils {

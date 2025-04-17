@@ -1,6 +1,6 @@
 plugins {
-    id("thelab.android.feature")
-    id("thelab.android.library.compose")
+    alias(libs.plugins.thelab.feature)
+    alias(libs.plugins.thelab.library.compose)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -11,27 +11,29 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    packaging {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
     namespace = "com.riders.thelab.feature.mlkit"
 }
 
 dependencies {
-
     ///////////////////////////////////
     // Project
     ///////////////////////////////////
+    implementation(project(":core:camera"))
     implementation(project(":core:permissions"))
     implementation(project(":core:ui"))
-
 
     ///////////////////////////////////
     // General Dependencies
     ///////////////////////////////////
     implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.androidx.camera)
-    implementation(libs.androidx.camera.extensions)
-    implementation(libs.androidx.camera.lifecycle)
-    implementation(libs.androidx.camera.view)
 
     implementation(libs.google.guava)
     

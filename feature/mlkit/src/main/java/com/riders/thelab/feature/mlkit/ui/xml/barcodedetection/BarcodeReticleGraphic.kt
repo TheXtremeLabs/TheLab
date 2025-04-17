@@ -21,9 +21,9 @@ import android.graphics.Paint
 import android.graphics.Paint.Style
 import android.graphics.RectF
 import androidx.core.content.ContextCompat
+import com.riders.thelab.core.camera.CameraReticleAnimator
+import com.riders.thelab.core.camera.GraphicOverlay
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.ui.xml.camera.CameraReticleAnimator
-import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
 
 /**
  * A camera reticle that locates at the center of canvas to indicate the system is active but has
@@ -32,8 +32,7 @@ import com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay
 internal class BarcodeReticleGraphic(
     overlay: GraphicOverlay,
     private val animator: CameraReticleAnimator
-) :
-    BarcodeGraphicBase(overlay) {
+) : BarcodeGraphicBase(overlay) {
 
     private val ripplePaint: Paint
     private val rippleSizeOffset: Int

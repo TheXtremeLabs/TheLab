@@ -12,7 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.riders.thelab.feature.mlkit.ui.xml.camera
 
@@ -27,7 +28,9 @@ import com.riders.thelab.feature.mlkit.R
 import com.riders.thelab.feature.mlkit.ui.xml.utils.Utils
 import java.io.IOException
 
-/** Preview the camera image in the screen.  */
+*/
+/** Preview the camera image in the screen.  *//*
+
 class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
 
     private val surfaceView: SurfaceView = SurfaceView(context).apply {
@@ -147,3 +150,4 @@ class CameraSourcePreview(context: Context, attrs: AttributeSet) : FrameLayout(c
         private const val TAG = "CameraSourcePreview"
     }
 }
+*/

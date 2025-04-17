@@ -21,14 +21,14 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.Point
 import android.graphics.PointF
+import com.riders.thelab.core.camera.GraphicOverlay
 import kotlin.math.abs
 
 /** Draws the graphic to indicate the barcode result is in loading.  */
 internal class BarcodeLoadingGraphic(
-    overlay: com.riders.thelab.feature.mlkit.ui.xml.camera.GraphicOverlay,
+    overlay: GraphicOverlay,
     private val loadingAnimator: ValueAnimator
-) :
-    BarcodeGraphicBase(overlay) {
+) : BarcodeGraphicBase(overlay) {
 
     private val boxClockwiseCoordinates: Array<PointF> = arrayOf(
         PointF(boxRect.left, boxRect.top),

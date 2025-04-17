@@ -62,6 +62,11 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders += mapOf(
+            "redirectHostName" to "com.riders.thelab",
+            "redirectSchemeName" to "com.riders.thelab"
+        )
     }
 
     buildTypes {
@@ -172,6 +177,14 @@ android {
     }
 
     namespace = "com.riders.thelab"
+}
+
+configurations.forEach { configuration ->
+    configuration.exclude("protolite-well-known-types")
+    configuration.exclude("protobuf-javalite")
+    configuration.exclude("protobuf-java")
+    configuration.exclude("protobuf-java-util")
+    configuration.exclude(group = "org.threeten", module = "threetenbp")
 }
 
 composeCompiler {

@@ -20,9 +20,9 @@ import android.hardware.Camera
 import android.os.Bundle
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
+import com.riders.thelab.core.camera.CameraSource
+import com.riders.thelab.core.camera.utils.Utils
 import com.riders.thelab.feature.mlkit.R
-import com.riders.thelab.feature.mlkit.ui.xml.camera.CameraSource
-import com.riders.thelab.feature.mlkit.ui.xml.utils.Utils
 
 /** Configures App settings.  */
 class SettingsFragment : PreferenceFragmentCompat() {
