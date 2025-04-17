@@ -12,6 +12,7 @@ import com.riders.thelab.feature.bluetooth.BluetoothActivity
 import com.riders.thelab.feature.colors.ColorActivity
 import com.riders.thelab.feature.download.DownloadActivity
 import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
+import com.riders.thelab.feature.koin.ui.KoinActivity
 import com.riders.thelab.feature.lottie.LottieActivity
 import com.riders.thelab.feature.mlkit.ui.chooser.MLKitChooserActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
@@ -132,7 +133,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(ContactsActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityDate("2019/01/20")
                         .build()
                 this.add(contactList)
 
@@ -149,7 +150,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(LocationOnMapsActivity::class.java)
-                        .withActivityDate("01/20/2015")
+                        .withActivityDate("2024/10/03")
                         .build()
                 this.add(locationOnMaps)
 
@@ -377,7 +378,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(GoogleDriveActivity::class.java)
-                        .withActivityDate("2015/20/01")
+                        .withActivityDate("2024/12/27")
                         .build()
                 this.add(googleDrive)
 
@@ -567,6 +568,23 @@ object AppBuilderUtils {
                         .withActivityDate("2024/03/06")
                         .build()
                 this.add(flight)
+
+                // Koin
+                val koin =
+                    AppBuilder
+                        .withId(37)
+                        .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_koin))
+                        .withActivityDescription("See the magic of dependency injection with Koin...")
+                        .withActivityIcon(
+                            getDrawableFromIntResource(
+                                context,
+                                com.riders.thelab.core.ui.R.drawable.koin_logo
+                            )
+                        )
+                        .withActivityClass(KoinActivity::class.java)
+                        .withActivityDate("2025/04/15")
+                        .build()
+                this.add(koin)
 
                 // Wip
                 val wip =

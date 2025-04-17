@@ -33,6 +33,7 @@ import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.utils.LabAppManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -49,6 +50,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     val uiRepository: IUiRepository,
     val speechToTextRepository: SpeechToTextRepository
 ) : VoiceManagedViewModel(speechToTextRepository), DefaultLifecycleObserver {
@@ -454,6 +456,14 @@ class MainActivityViewModel @Inject constructor(
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
         Timber.d("onResume()")
+
+        viewModelScope.launch {
+            // Retrieve applications
+            retrieveApplications(context = context)
+
+            delay(300L)
+            retrieveRecentApps(context = context)
+        }
     }
 
     override fun onStop(owner: LifecycleOwner) {

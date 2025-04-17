@@ -28,7 +28,6 @@ import com.riders.thelab.core.data.remote.api.WikimediaApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
 import com.riders.thelab.core.data.remote.dto.ApiResponse
 import com.riders.thelab.core.data.remote.dto.UserDto
-import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import com.riders.thelab.core.data.remote.dto.flight.Airport
 import com.riders.thelab.core.data.remote.dto.flight.AirportFlightsResponse
@@ -47,6 +46,7 @@ import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
+import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
