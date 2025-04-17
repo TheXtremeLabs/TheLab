@@ -1,7 +1,7 @@
 [versions]
 # Gradle version
 # Android
-androidGradlePlugin = "8.9.0"
+androidGradlePlugin = "8.9.1"
 navigationGradlePlugin = "2.8.9"
 # Google Services
 playServicesGradlePlugin = "4.4.2"
@@ -29,21 +29,21 @@ androidxBrowser = "1.8.0"
 androidxCamera = "1.5.0-alpha06"
 androidxCameraViewFinder = "1.4.0-alpha07"
 # Compose
-androidxComposeBom = "2025.03.01"
+androidxComposeBom = "2025.04.00"
 androidxComposeCompiler = "1.5.15"
-androidxComposeMaterial3 = "1.3.1"
+androidxComposeMaterial3 = "1.3.2"
 androidxComposeMaterial3Adaptative = "1.1.0"
 androidxComposeUiTooling = "1.7.8"
 androidxComposeRuntimeTracing = "1.7.8"
 androidxCardView = "1.0.0"
 androidxConstraintLayout = "2.2.1"
 androidxConcurrent = "1.2.0"
-androidxCore = "1.15.0"
+androidxCore = "1.16.0"
 androidxCoreSplashscreen = "1.0.1"
 androidxCredentials = "1.5.0"
 androidxDataStore = "1.1.4"
 androidxDataStorePreference = "1.2.1"
-androidxDynamicAnimation = "1.0.0"
+androidxDynamicAnimation = "1.1.0"
 # espresso version {strictly 3.5.0}
 #noinspection GradleDependency
 androidxEspresso = "3.5.0"
@@ -99,10 +99,10 @@ googleGuavaListenableFuture = "9999.0-empty-to-avoid-conflict-with-guava"
 googleObjectDetection = "17.0.2"
 googleVisionCommon = "17.3.0"
 # Google Play Services
-googlePlayServicesBase = "18.6.0"
+googlePlayServicesBase = "18.7.0"
 googlePlayServicesAuth = "21.3.0"
 googlePlayServicesDrive = "17.0.0"
-googlePlayServicesTasks = "18.2.1"
+googlePlayServicesTasks = "18.3.0"
 googlePlayServicesVision = "20.1.3"
 googlePlayServicesVisionCommon = "19.1.3"
 glide = "4.16.0"
@@ -138,14 +138,14 @@ lint = "31.9.1"
 location = "21.3.0"
 logback = "1.5.18"
 lottie = "6.6.4"
-maps = "19.1.0"
+maps = "19.2.0"
 mapsCompose = "6.5.2"
 material = "1.12.0"
 mapsUtils = "3.11.2"
 # Media Exo Player
 media = "1.7.0"
 mediaRouter = "1.7.0"
-media3 = "1.6.0"
+media3 = "1.6.1"
 mockito = "5.17.0"
 # Moshi - Deprecated change by kotlin serialization json
 # moshi = "1.15.1"
@@ -158,7 +158,7 @@ protobufKotlin = "4.30.2"
 protobufProtoc = "4.30.2"
 retrofit = "2.11.0"
 retrofitKotlinxSerializationJson = "1.0.0"
-room = "2.6.1"
+room = "2.7.0"
 slf4j = "1.7.36"
 spotify = "2.1.2"
 secrets = "2.0.1"
@@ -402,11 +402,10 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinPlayServices" }
 kotools-types = { group = "org.kotools", name = "types", version.ref = "types" }
 # Ktor
+ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
-ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
-ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktor-client-ios = { group = "io.ktor", name = "ktor-client-ios", version.ref = "ktor" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
@@ -487,7 +486,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-ktor = { id = "io.ktor.plugin", version.ref = "ktorGradlePlugin" }
+# ktor = { id = "io.ktor.plugin", version.ref = "ktorGradlePlugin" }
 playservices = { id = "com.google.gms.google-services", version.ref = "playServicesGradlePlugin" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsGradlePlugin" }
 performances = { id = "com.google.firebase.firebase-perf", version.ref = "performancesGradlePlugin" }

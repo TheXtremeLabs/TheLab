@@ -76,7 +76,7 @@ dependencies {
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.okhttp)
-    implementation(libs.ktor.client.serialization.kotlinx.json)
+    implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.slf4j.android)
     implementation(libs.napier)
 
