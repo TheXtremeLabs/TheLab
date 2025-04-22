@@ -2,6 +2,7 @@ package com.riders.thelab.feature.colors
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -17,12 +18,14 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class ColorActivity : BaseComponentActivity() {
-    private val mViewModel: ColorViewModel by viewModels()
+    private val mViewModel: ColorViewModel by viewModels<ColorViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
 
+        enableEdgeToEdge()
+
+        setContent {
             val theme: AppTheme by mViewModel.uiRepository
                 .getTheme()
                 .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
@@ -36,7 +39,12 @@ class ColorActivity : BaseComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Color(theme = theme, darkTheme = isDarkTheme, viewModel = mViewModel)
+                    Color(
+                        theme = theme,
+                        darkTheme = isDarkTheme,
+                        randomColor = mViewModel.randomColor,
+                        onUpdateRandomColor = mViewModel::updateRandomColor
+                    )
                 }
             }
         }

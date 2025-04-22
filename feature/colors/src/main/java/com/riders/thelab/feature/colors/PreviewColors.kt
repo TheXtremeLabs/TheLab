@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -38,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -45,12 +47,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.utils.LabColorsManager
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -142,7 +144,12 @@ fun ColorsButton(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Color(theme: AppTheme, darkTheme: Boolean, viewModel: ColorViewModel) {
+fun Color(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    randomColor: Int,
+    onUpdateRandomColor: () -> Unit
+) {
 
     // get current Context and coroutineScope
     val colorActivity = LocalContext.current
@@ -151,12 +158,15 @@ fun Color(theme: AppTheme, darkTheme: Boolean, viewModel: ColorViewModel) {
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding(),
             topBar = {
                 TopAppBar(
                     title = {
                         Text(
                             text = stringResource(id = R.string.activity_title_colors),
-                            color = colorResource(id = viewModel.randomColor)
+                            color = colorResource(id = randomColor)
                         )
                     },
                     navigationIcon = {
@@ -164,7 +174,7 @@ fun Color(theme: AppTheme, darkTheme: Boolean, viewModel: ColorViewModel) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                                 contentDescription = "Back",
-                                tint = colorResource(id = viewModel.randomColor)
+                                tint = colorResource(id = randomColor)
                             )
                         }
                     },
@@ -188,16 +198,16 @@ fun Color(theme: AppTheme, darkTheme: Boolean, viewModel: ColorViewModel) {
                     style = TextStyle(
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center,
-                        color = colorResource(id = viewModel.randomColor),
+                        color = colorResource(id = randomColor),
                     )
                 )
 
-                AnimatedVisibility(visible = expanded) {
+                AnimatedVisibility(visible = if (LocalInspectionMode.current) true else expanded) {
                     ColorsButton(
                         theme = theme,
                         darkTheme = darkTheme,
-                        viewModel.randomColor
-                    ) { viewModel.updateRandomColor() }
+                        randomColor
+                    ) { onUpdateRandomColor() }
                 }
             }
         }
@@ -219,7 +229,11 @@ fun Color(theme: AppTheme, darkTheme: Boolean, viewModel: ColorViewModel) {
 @Composable
 private fun PreviewColorsButton(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
-        ColorsButton(theme = appTheme, darkTheme = isSystemInDarkTheme(), R.color.tabColorAccent) {
+        ColorsButton(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            currentColor = LabColorsManager.getRandomColor()
+        ) {
         }
     }
 }
@@ -227,8 +241,11 @@ private fun PreviewColorsButton(@PreviewParameter(AppThemePreviewProvider::class
 @DevicePreviews
 @Composable
 private fun PreviewColor(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
-    val viewModel: ColorViewModel = hiltViewModel()
     TheLabTheme(theme = appTheme, darkTheme = isSystemInDarkTheme()) {
-        Color(theme = appTheme, darkTheme = isSystemInDarkTheme(), viewModel = viewModel)
+        Color(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            randomColor = LabColorsManager.getRandomColor()
+        ) {}
     }
 }
