@@ -20,7 +20,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSession.ConnectionResult.AcceptedResultBuilder
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.data.local.model.Permission
+import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents

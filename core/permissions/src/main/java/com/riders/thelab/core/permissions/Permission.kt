@@ -1,4 +1,4 @@
-package com.riders.thelab.core.data.local.model
+package com.riders.thelab.core.permissions
 
 import android.Manifest
 import android.annotation.SuppressLint

@@ -16,7 +16,7 @@ import com.riders.thelab.core.camera.CameraSource
 import com.riders.thelab.core.camera.CameraSourcePreview
 import com.riders.thelab.core.camera.GraphicOverlay
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.data.local.model.Permission
+import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
 import com.riders.thelab.core.ui.utils.UIManager

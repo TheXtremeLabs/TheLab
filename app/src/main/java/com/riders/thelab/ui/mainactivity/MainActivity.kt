@@ -35,7 +35,7 @@ import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
-import com.riders.thelab.core.data.local.model.Permission
+import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp

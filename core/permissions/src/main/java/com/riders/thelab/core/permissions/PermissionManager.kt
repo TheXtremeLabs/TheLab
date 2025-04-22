@@ -11,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.riders.thelab.core.data.local.model.Permission
 import timber.log.Timber
 import java.lang.ref.WeakReference
 

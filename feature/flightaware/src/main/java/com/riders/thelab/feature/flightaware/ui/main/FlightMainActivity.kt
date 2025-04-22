@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.data.local.model.Permission
+import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -31,7 +31,6 @@ import com.riders.thelab.feature.flightaware.ui.search.SearchFlightActivity
 import com.riders.thelab.feature.flightaware.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 

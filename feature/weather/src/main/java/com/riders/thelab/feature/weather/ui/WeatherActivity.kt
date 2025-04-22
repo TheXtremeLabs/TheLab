@@ -28,7 +28,7 @@ import androidx.work.WorkInfo
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
-import com.riders.thelab.core.data.local.model.Permission
+import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.data.local.model.compose.weather.WeatherDataState
 import com.riders.thelab.core.data.local.model.compose.weather.WeatherUIState
 import com.riders.thelab.core.permissions.PermissionManager
