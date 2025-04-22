@@ -125,7 +125,7 @@ class ApiImpl() : IApi {
                     .apply {
                         if (200 != this.status.value && !this.status.isSuccess()) {
                             Timber.e("fetchGoogle() | response code : ${this.status.value}")
-                            return@use Resource.Error(ErrorType.Api.Network)
+                            return@use Resource.ErrorWithType(ErrorType.Api.Network)
                         } else {
                             Timber.v("fetchGoogle() | response code : ${this.status.value}")
                         }
@@ -139,12 +139,12 @@ class ApiImpl() : IApi {
                 .onFailure { exception ->
                     exception.printStackTrace()
                     Timber.e("fetchGoogle() | Error caught with message : ${exception.message} (class : ${exception.javaClass.canonicalName})")
-                    return@use Resource.Error(exception.toErrorType())
+                    return@use Resource.ErrorWithType(exception.toErrorType())
                 }
                 .onSuccess {
                     Timber.d("fetchGoogle() | Operation successfully executed")
                 }
-                .getOrElse { Resource.Error(it.toErrorType()) }
+                .getOrElse { Resource.ErrorWithType(it.toErrorType()) }
         }
     }
 }

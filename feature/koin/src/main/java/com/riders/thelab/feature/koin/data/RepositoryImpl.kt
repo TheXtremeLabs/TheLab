@@ -16,7 +16,7 @@ class RepositoryImpl(apiImpl: ApiImpl) : IRepository {
 
     override suspend fun fetchPowerBooks(): Flow<Resource<List<PowerBook>>> = mApiImpl
         .fetchPowerBooks()
-        .catch { emit(Resource.Error(it.toErrorType())) }
+        .catch { emit(Resource.ErrorWithType(it.toErrorType())) }
 
 
     override suspend fun fetchGoogle(): Resource<String> = this.mApiImpl.fetchGoogle()

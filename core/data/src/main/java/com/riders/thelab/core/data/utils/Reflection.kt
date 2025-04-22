@@ -1,7 +1,7 @@
 package com.riders.thelab.core.data.utils
 
 import kotlin.reflect.KClass
-
+import kotlin.reflect.full.isSubclassOf
 
 fun <T : Any> T.getClass(): KClass<T> {
     return javaClass.kotlin
