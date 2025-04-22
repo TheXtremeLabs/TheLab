@@ -15,7 +15,9 @@ import org.koin.android.annotation.KoinViewModel
 import timber.log.Timber
 
 @KoinViewModel
-class KoinViewModel(private val repository: RepositoryImpl) : BaseViewModel(), DefaultLifecycleObserver {
+class KoinViewModel(
+    private val repository: RepositoryImpl
+) : BaseViewModel(), DefaultLifecycleObserver {
 
     var htmlContent: String by mutableStateOf("")
 
@@ -30,13 +32,17 @@ class KoinViewModel(private val repository: RepositoryImpl) : BaseViewModel(), D
 
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = repository.fetchGoogle()) {
-                is Resource.Error -> {
+                is Resource.ErrorWithType -> {
                     Timber.d("fetchGoogle() | Error: ${result.error}")
                 }
 
                 is Resource.Success -> {
                     Timber.d("fetchGoogle() | Response:\nSnippet: ${result.data.take(250)}...\nData length: ${result.data.length}")
                     htmlContent = result.data
+                }
+
+                else -> {
+                    Timber.d("fetchGoogle() | Unknown error")
                 }
             }
         }

@@ -27,13 +27,13 @@ data class GoogleAccountModel(
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 fun GoogleIdTokenCredential.toGoogleAccountModel() = GoogleAccountModel(
-    emailAddress = org.kotools.types.EmailAddress.orThrow(id),
-    idToken = kotools.types.text.NotBlankString.create(idToken),
-    firstName = if (null == givenName) null else kotools.types.text.NotBlankString.create(givenName!!),
-    familyName = if (null == familyName) null else kotools.types.text.NotBlankString.create(familyName!!),
-    displayName = if (null == displayName) null else kotools.types.text.NotBlankString.create(displayName!!),
-    phoneNumber = if (null == phoneNumber) null else kotools.types.text.NotBlankString.create(phoneNumber!!),
-    profilePictureUri = if (null == profilePictureUri) null else kotools.types.text.NotBlankString.create(
+    emailAddress = EmailAddress.orThrow(id),
+    idToken = NotBlankString.create(idToken),
+    firstName = if (null == givenName) null else NotBlankString.create(givenName!!),
+    familyName = if (null == familyName) null else NotBlankString.create(familyName!!),
+    displayName = if (null == displayName) null else NotBlankString.create(displayName!!),
+    phoneNumber = if (null == phoneNumber) null else NotBlankString.create(phoneNumber!!),
+    profilePictureUri = if (null == profilePictureUri) null else NotBlankString.create(
         profilePictureUri.toString()
     )
 )

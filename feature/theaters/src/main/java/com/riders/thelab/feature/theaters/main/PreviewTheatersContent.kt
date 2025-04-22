@@ -205,7 +205,8 @@ fun TheatersContent(
 private fun PreviewTheatersContent(@PreviewParameter(PreviewProviderNetworkState::class) networkState: NetworkState) {
     TheLabTheme(theme = AppTheme.Default) {
         TheatersContent(
-            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             networkState = networkState,
             categories = listOf("Movies", "Tv Shows"),
             tabRowSelected = 0,

@@ -206,7 +206,7 @@ class ArtistsViewModel @Inject constructor(
 
                                         viewModelScope.launch {
                                             ArtistsManager
-                                                .buildArtistsThumbnailsList(taskResult.result.items)
+                                                .buildArtistsThumbnailsListWithFlow(taskResult.result.items)
                                                 .collect { thumbList ->
                                                     if (thumbList.isEmpty()) {
                                                         withContext(Dispatchers.Main) {

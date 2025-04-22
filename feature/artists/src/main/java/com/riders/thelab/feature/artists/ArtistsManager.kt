@@ -7,6 +7,7 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.data.local.model.music.toModel
 import com.riders.thelab.core.data.remote.dto.artist.Artist
+import com.riders.thelab.core.data.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -106,4 +107,83 @@ object ArtistsManager {
         }
         .flowOn(Dispatchers.Main)
 
+    @SuppressLint("NewApi")
+    fun buildArtistsThumbnailsListWithFlow(
+        storageReferences: List<StorageReference>
+    ): Flow<List<String>> = callbackFlow {
+        Timber.d("buildArtistsThumbnailsListWithFlow()")
+
+        val thumbnailsLinks: MutableList<String> = mutableListOf()
+
+        if (!LabCompatibilityManager.isNougat()) {
+            Timber.i("buildArtistsThumbnailsListWithFlow() | below Android Nougat (API 24)")
+
+            for (element in storageReferences) {
+                element
+                    .downloadUrl
+                    .getTaskFlow<Uri>()
+                    .collect { resourceResult ->
+                        when (resourceResult) {
+                            is Resource.Error -> {
+                                Timber.e("buildArtistsThumbnailsListWithFlow | addOnFailureListener | message: ${resourceResult.message} (class: ${resourceResult.throwable?.javaClass?.canonicalName})")
+                                return@collect
+                            }
+
+                            is Resource.ErrorWithType -> {
+                                Timber.e("buildArtistsThumbnailsListWithFlow | addOnFailureListener | message: ${resourceResult.error} (class: ${resourceResult.error::class.java.canonicalName})")
+                                return@collect
+                            }
+
+                            is Resource.Success -> {
+                                Timber.i("buildArtistsThumbnailsListWithFlow() | addOnSuccessListener | uri: ${resourceResult.data.toString()}")
+                                thumbnailsLinks.add(resourceResult.data.toString())
+                                if (storageReferences.size == thumbnailsLinks.size) {
+                                    trySend(
+                                        thumbnailsLinks
+                                            .also { Timber.d("buildArtistsThumbnailsListWithFlow | thumbnails Links size: ${thumbnailsLinks.size}") }
+                                            .run { this.toList() }
+                                    )
+                                }
+                            }
+                        }
+                    }
+            }
+        } else {
+            Timber.i("buildArtistsThumbnailsListWithFlow() | above Android Nougat (API 24+)")
+
+            storageReferences
+                .stream()
+                .forEach { itemReference: StorageReference ->
+                    itemReference
+                        .downloadUrl
+                        .addOnSuccessListener { artistThumbUrl: Uri ->
+                            Timber.i("buildArtistsThumbnailsListWithFlow() | addOnSuccessListener | uri: $artistThumbUrl")
+                            thumbnailsLinks.add(artistThumbUrl.toString())
+                            if (storageReferences.size == thumbnailsLinks.size) {
+                                trySend(
+                                    thumbnailsLinks
+                                        .also { Timber.d("buildArtistsThumbnailsListWithFlow | thumbnails Links size: ${thumbnailsLinks.size}") }
+                                        .run { this.toList() }
+                                )
+                            }
+                        }
+                        .addOnFailureListener { throwable ->
+                            Timber.e(throwable)
+                            Timber.e("buildArtistsThumbnailsListWithFlow | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
+                            return@addOnFailureListener
+                        }
+                        .addOnCompleteListener {
+                            return@addOnCompleteListener
+                        }
+                }
+        }
+
+        awaitClose {
+            Timber.d("buildArtistsThumbnailsListWithFlow | awaitClose")
+        }
+    }
+        .catch {
+            Timber.e("buildArtistsThumbnailsListWithFlow | catch | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
+        }
+        .flowOn(Dispatchers.Main)
 }

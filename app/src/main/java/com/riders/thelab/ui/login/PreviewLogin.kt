@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.colorResource
@@ -67,32 +68,33 @@ fun GoogleButton(
     uiEvent: (UiEvent) -> Unit
 ) {
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Button(
-            onClick = { uiEvent.invoke(UiEvent.OnGoogleButtonLoginClicked) },
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Button(
+                onClick = { uiEvent.invoke(UiEvent.OnGoogleButtonLoginClicked) },
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
             ) {
-                Image(
-                    painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.googleg_color),
-                    contentDescription = "google_icon"
-                )
-                Text(
-                    text = "Continue with Google".uppercase(Locale.getDefault()),
-                    style = TextStyle(color = if (!isSystemInDarkTheme()) Color.Black else Color.White)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.googleg_color),
+                        contentDescription = "google_icon"
+                    )
+                    Text(
+                        text = "Continue with Google".uppercase(Locale.getDefault()),
+                        style = TextStyle(color = if (!isSystemInDarkTheme()) Color.Black else Color.White)
+                    )
+                }
             }
         }
-    }}
+    }
 }
 
 @Composable
@@ -102,29 +104,30 @@ fun SignUpButton(
     uiEvent: (UiEvent) -> Unit
 ) {
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Button(
-            onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) },
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+            Button(
+                onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) },
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
             ) {
-                LabHtmlText(
-                    modifier = Modifier.fillMaxWidth(),
-                    stringResId = com.riders.thelab.core.ui.R.string.no_account_register,
-                    textAlignment = View.TEXT_ALIGNMENT_CENTER,
-                    onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) }
-                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LabHtmlText(
+                        modifier = Modifier.fillMaxWidth(),
+                        stringResId = com.riders.thelab.core.ui.R.string.no_account_register,
+                        textAlignment = View.TEXT_ALIGNMENT_CENTER,
+                        onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) }
+                    )
+                }
             }
         }
-    }}
+    }
 }
 
 @SuppressLint("NewApi")
@@ -182,8 +185,9 @@ fun LoginContent(
                     Image(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(8.dp),
-                        painter = painterResource(id = R.drawable.ic_the_lab_12_logo_white),
+                            .padding(12.dp),
+                        painter = painterResource(id = R.drawable.ic_lab_6_lab),
+                        colorFilter = ColorFilter.tint(Color.White),
                         contentDescription = "Lab Icon"
                     )
                 }

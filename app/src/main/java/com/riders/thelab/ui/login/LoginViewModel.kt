@@ -51,9 +51,9 @@ class LoginViewModel @Inject constructor(
     //////////////////////////////////////////
     // DataStore
     //////////////////////////////////////////
-    private val dataStoreEmail = repository.getEmailPref().asLiveData()
-    private val dataStorePassword = repository.getPasswordPref().asLiveData()
-    private val dataStoreRememberCredentials = repository.isRememberCredentialsPref().asLiveData()
+    private val dataStoreEmail = repository.getEmailPref()
+    private val dataStorePassword = repository.getPasswordPref()
+    private val dataStoreRememberCredentials = repository.isRememberCredentialsPref()
 
     //////////////////////////////////////////
     // Compose states
@@ -181,10 +181,16 @@ class LoginViewModel @Inject constructor(
     //
     ///////////////////////////////
     init {
-        if (true == dataStoreRememberCredentials.value) {
-            dataStoreEmail.value?.let { updateLogin(it) }
-            dataStorePassword.value?.let { updatePassword(it) }
-            dataStoreRememberCredentials.value?.let { updateIsRememberCredentials(it) }
+        viewModelScope.launch {
+            if (dataStoreRememberCredentials.first()) {
+                isRememberCredentials = true
+                if (dataStoreEmail.first().trim().isNotBlank()) {
+                    updateLogin(dataStoreEmail.first())
+                }
+                if (dataStorePassword.first().trim().isNotBlank()) {
+                    updatePassword(dataStorePassword.first())
+                }
+            }
         }
     }
 

@@ -42,7 +42,8 @@ val trendingItemImageHeight: Dp = 550.dp
 ///////////////////////////////////////
 @Composable
 fun TheatersContainer(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     networkState: NetworkState,
     isActivitiesSplashScreenEnable: Boolean,
     categories: List<String>,
