@@ -1,7 +1,7 @@
 [versions]
 # Gradle version
 # Android
-androidGradlePlugin = "8.9.1"
+androidGradlePlugin = "8.9.2"
 navigationGradlePlugin = "2.8.9"
 # Google Services
 playServicesGradlePlugin = "4.4.2"
@@ -79,6 +79,7 @@ coil = "2.7.0"
 # Firebase
 firebaseBom = "33.12.0"
 firebaseAds = "24.2.0"
+firebaseAppCheck = "18.0.0"
 # Google Api
 googleApiClient = "2.7.2"
 googleApiClientAndroid = "2.7.2"
@@ -134,7 +135,7 @@ ktor = "3.1.2"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
 ksp = "2.1.20-1.0.32"
 landscapist = "2.4.7"
-lint = "31.9.1"
+lint = "31.9.2"
 location = "21.3.0"
 logback = "1.5.18"
 lottie = "6.6.4"
@@ -153,6 +154,7 @@ mpAndroidChart = "3.1.0"
 napier = "2.7.1"
 okhttp = "4.12.0"
 okhttpMockWebServer = "4.12.0"
+playIntegrity = "1.4.0"
 places = "4.2.0"
 protobufKotlin = "4.30.2"
 protobufProtoc = "4.30.2"
@@ -170,8 +172,6 @@ types = "5.0.0"
 youtubePlayer = "12.1.1"
 zxing = "3.5.3"
 zxingAndroid = "3.3.0"
-junitVersion = "1.2.1"
-
 
 [libraries]
 accompanist-adaptive = { group = "com.google.accompanist", name = "accompanist-adaptive", version.ref = "accompanist" }
@@ -197,7 +197,7 @@ androidx-biometric = { group = "androidx.biometric", name = "biometric", version
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
 androidx-camera = { group = "androidx.camera", name = "camera-camera2", version.ref = "androidxCamera" }
 androidx-camera-compose = { group = "androidx.camera", name = "camera-compose", version.ref = "androidxCamera" }
-androidx-camera-effects  = { group = "androidx.camera", name = "camera-effects", version.ref = "androidxCamera" }
+androidx-camera-effects = { group = "androidx.camera", name = "camera-effects", version.ref = "androidxCamera" }
 androidx-camera-extensions = { group = "androidx.camera", name = "camera-extensions", version.ref = "androidxCamera" }
 androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "androidxCamera" }
 androidx-camera-mlkit-vision = { group = "androidx.camera", name = "camera-mlkit-vision", version.ref = "androidxCamera" }
@@ -315,6 +315,9 @@ coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "
 coil-kt-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug", version.ref = "firebaseAppCheck" }
+firebase-appcheck-ktx = { group = "com.google.firebase", name = "firebase-appcheck-ktx", version.ref = "firebaseAppCheck" }
+firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity", version.ref = "firebaseAppCheck" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database-ktx" }
@@ -342,6 +345,7 @@ google-mlkit-barcode-scanning = { group = "com.google.mlkit", name = "barcode-sc
 google-mlkit-objectdetection = { group = "com.google.mlkit", name = "object-detection", version.ref = "googleObjectDetection" }
 google-mlkit-objectdetection-custom = { group = "com.google.mlkit", name = "object-detection-custom", version.ref = "googleObjectDetection" }
 google-mlkit-vision-common = { group = "com.google.mlkit", name = "vision-common", version.ref = "googleVisionCommon" }
+google-play-integrity = { group = "com.google.android.play", name = "integrity", version.ref = "playIntegrity" }
 google-play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "googlePlayServicesBase" }
 google-play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googlePlayServicesAuth" }
 google-play-services-drive = { group = "com.google.android.gms", name = "play-services-drive", version.ref = "googlePlayServicesDrive" }

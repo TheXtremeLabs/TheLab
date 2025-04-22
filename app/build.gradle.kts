@@ -302,7 +302,6 @@ dependencies {
 
     // Datastore and Preferences: provided by data module
 
-    // Firebase BOM and Dependencies: provided by analytics module
 
     /* Hilt - We are going to use hilt.android which includes
      * support for Activity and fragment injection so we need to include
@@ -335,6 +334,11 @@ dependencies {
     implementation(libs.google.mlkit.barcode.scanning)
     implementation(libs.google.mlkit.objectdetection)
     implementation(libs.google.mlkit.objectdetection.custom)
+
+    // Firebase BOM and Dependencies: provided by analytics module
+    implementation(libs.firebase.appcheck.ktx)
+    implementation(libs.firebase.appcheck.debug)
+    implementation(libs.firebase.appcheck.playintegrity)
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
     // Retrofit: provided by data module

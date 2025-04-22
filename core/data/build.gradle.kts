@@ -70,8 +70,9 @@ dependencies {
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
+    implementation(platform(libs.kotlin.bom))
+    api(libs.kotlin.reflect)
     api(libs.kotlinx.coroutines.android)
-    api(libs.androidx.core.ktx)
     api(libs.kotlinx.serialization.json)
 
     // AndroidX
@@ -79,6 +80,7 @@ dependencies {
     ksp(libs.androidx.appsearch.compiler)
     api(libs.androidx.appsearch.local.storage)
     api(libs.androidx.appsearch.platform.storage)
+    api(libs.androidx.core.ktx)
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))
