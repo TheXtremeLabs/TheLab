@@ -45,7 +45,7 @@ fun WeatherLoading(theme: AppTheme, darkTheme: Boolean, modifier: Modifier = Mod
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(
             modifier = Modifier
-                .size(72.dp)
+                .size(56.dp)
                 .then(modifier),
             contentAlignment = Alignment.Center
         ) {
@@ -229,7 +229,8 @@ private fun PreviewWeatherError(@PreviewParameter(AppThemePreviewProvider::class
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
             modifier = Modifier,
-            onRetryButtonClicked = {})
+            onRetryButtonClicked = {}
+        )
     }
 }
 

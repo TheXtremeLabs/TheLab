@@ -67,7 +67,7 @@ interface WeatherDao {
 
     /* Method to fetch contacts stored locally */
     @Query("SELECT * FROM weather_data LIMIT 1")
-    fun getWeatherData(): WeatherData
+    fun getWeatherData(): WeatherData?
 
     @Query("SELECT * FROM city")
     fun getCities(): List<CityModel>

@@ -8,10 +8,10 @@ import androidx.room.PrimaryKey
 data class WeatherData(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("_id")
-    var id: Int = 0,
+    val id: Int = 0,
 
     @ColumnInfo(name = "isWeatherData")
-    var isWeatherData: Boolean = false
+    val isWeatherData: Boolean = false
 ) {
     constructor(isWeatherData: Boolean) : this(0, isWeatherData)
 

@@ -370,7 +370,13 @@ fun WeatherMainCityContent(
 
 
                                 Row(
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(
+                                        space = 16.dp,
+                                        alignment = Alignment.End
+                                    ),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(

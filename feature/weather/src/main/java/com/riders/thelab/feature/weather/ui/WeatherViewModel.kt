@@ -63,7 +63,7 @@ import javax.inject.Inject
 class WeatherViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val repository: IRepository,
-     val uiRepository: IUiRepository
+    val uiRepository: IUiRepository
 ) : ViewModel() {
     //////////////////////////////////////////
     // Variables
@@ -304,6 +304,10 @@ class WeatherViewModel @Inject constructor(
     fun retry() {
         Timber.d("Retrying...")
         updateWeatherDataState(WeatherDataState.Loading)
+
+        mWeakReference?.get()?.let { startWork(it) } ?: run {
+            Timber.e("retry() | Activity object is null")
+        }
     }
 
     @SuppressLint("NewApi")
