@@ -9,6 +9,7 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
@@ -53,6 +54,9 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
                         .isThemeDarkMode()
                         .collectAsStateWithLifecycle(initialValue = false)
 
+                    val songPlayerUiState by viewModel.songUiState.collectAsStateWithLifecycle()
+                    val cardPlayerUiState by viewModel.cardPlayerUiState.collectAsStateWithLifecycle()
+
                     TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
@@ -61,9 +65,10 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
                         ) {
                             SongPlayerContent(
                                 theme = theme, darkTheme = isDarkTheme,
-                                songList = viewModel.songList,
+                                songPlayerUiState = songPlayerUiState,
+                                cardPlayerState = cardPlayerUiState,
                                 currentSongIndex = viewModel.currentSongIndex,
-                                isSongPlaying = viewModel.isAnySongPlaying,
+                                isSongPlaying = viewModel.playPauseState,
                                 isCardExpanded = viewModel.isPlayerCardExpanded,
                                 songProgress = viewModel.currentSongProgress,
                                 onCardViewClicked = { viewModel.toggleViewToggle(it) },

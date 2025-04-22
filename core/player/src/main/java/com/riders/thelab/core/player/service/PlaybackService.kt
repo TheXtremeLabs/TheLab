@@ -76,15 +76,13 @@ class PlaybackService : MediaSessionService() {
         Timber.i("onTrimMemory()")
     }
 
-    fun getMediaSssion(): MediaSession? = mMediaSession
+    fun getMediaSession(): MediaSession? = mMediaSession
 
     fun playSong(mediaItem: MediaItem) {
-        Timber.d("playSong(mediaItem)")
+        Timber.d("playSong($mediaItem)")
 
         mMediaSession?.player?.let { player ->
-            if (player.isPlaying) {
-                stop()
-            }
+            if (player.isPlaying) { stop() }
 
             player.setMediaItem(mediaItem)
             player.prepare()

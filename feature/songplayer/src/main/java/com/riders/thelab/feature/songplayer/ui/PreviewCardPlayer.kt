@@ -23,7 +23,6 @@ import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -33,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -73,7 +73,7 @@ fun CardPlayerActions(
             Icon(
                 imageVector = Icons.Rounded.SkipPrevious,
                 contentDescription = "previous icon",
-                tint = MaterialTheme.colorScheme.background
+                tint = MaterialTheme.colorScheme.onSurface,
             )
         }
 
@@ -86,13 +86,13 @@ fun CardPlayerActions(
                     Icon(
                         imageVector = Icons.Rounded.PlayArrow,
                         contentDescription = "previous icon",
-                        tint = MaterialTheme.colorScheme.background
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Rounded.Pause,
                         contentDescription = "previous icon",
-                        tint = MaterialTheme.colorScheme.background
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
@@ -102,7 +102,7 @@ fun CardPlayerActions(
             Icon(
                 imageVector = Icons.Rounded.SkipNext,
                 contentDescription = "previous icon",
-                tint = MaterialTheme.colorScheme.background
+                tint = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -121,13 +121,14 @@ fun CardPlayer(
     val context = LocalContext.current
     val orientation = LocalConfiguration.current.orientation
 
+    val isPlaying by remember { mutableStateOf(song.isPlaying) }
+
     var progress by remember { mutableFloatStateOf(0f) }
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
         label = "",
         animationSpec = tween(easing = LinearEasing, durationMillis = 300)
     )
-
 
     Card(
         modifier = if (!isCardExpanded) {
@@ -141,7 +142,7 @@ fun CardPlayer(
                 .padding(top = 24.dp, start = 0.dp, end = 0.dp, bottom = 0.dp)
                 .zIndex(5f)
                 .shadow(
-                    elevation = if (song.isPlaying) 4.dp else 0.dp,
+                    elevation = if (isPlaying) 4.dp else 0.dp,
                     shape = RoundedCornerShape(12.dp)
                 )
         },
@@ -151,8 +152,7 @@ fun CardPlayer(
             topEndPercent = 10,
             bottomStartPercent = 0,
             bottomEndPercent = 0
-        ),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onSecondaryContainer)
+        )
     ) {
         AnimatedContent(targetState = isCardExpanded, label = "") { targetState ->
             if (!targetState) {
@@ -179,21 +179,20 @@ fun CardPlayer(
                             Text(
                                 modifier = Modifier.basicMarquee(),
                                 text = song.name,
-                                maxLines = 1,
-                                color = Color.Black
+                                maxLines = 1
                             )
                             Text(
                                 modifier = Modifier.basicMarquee(),
                                 text = song.path,
                                 maxLines = 1,
-                                color = Color.DarkGray
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 
                         // Actions
                         CardPlayerActions(
                             modifier = Modifier.weight(1f),
-                            isPlaying = song.isPlaying,
+                            isPlaying = isPlaying,
                             onPreviousClicked = { onPreviousClicked(it) },
                             onPlayPauseClicked = { onPlayPauseClicked(it) },
                             onNextClicked = { onNextClicked(it) }
@@ -256,14 +255,14 @@ fun CardPlayer(
                     ) {
                         Text(
                             modifier = Modifier.basicMarquee(), text = song.name,
-                            color = Color.Black, maxLines = 1
+                            maxLines = 1
                         )
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth(.85f)
                                 .basicMarquee(),
                             text = song.path,
-                            color = Color.DarkGray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 2
                         )
                     }
@@ -290,21 +289,15 @@ fun CardPlayer(
                         modifier = Modifier
                             .weight(1f)
                             .padding(
-                                start = 72.dp, end = 72.dp, bottom = when (orientation) {
-                                    Configuration.ORIENTATION_PORTRAIT -> {
-                                        96.dp
-                                    }
-
-                                    Configuration.ORIENTATION_LANDSCAPE -> {
-                                        56.dp
-                                    }
-
-                                    else -> {
-                                        56.dp
-                                    }
+                                start = 72.dp,
+                                end = 72.dp,
+                                bottom = when (orientation) {
+                                    Configuration.ORIENTATION_PORTRAIT -> 96.dp
+                                    Configuration.ORIENTATION_LANDSCAPE -> 56.dp
+                                    else -> 56.dp
                                 }
                             ),
-                        isPlaying = song.isPlaying,
+                        isPlaying = isPlaying,
                         onPreviousClicked = { onPreviousClicked(it) },
                         onPlayPauseClicked = { onPlayPauseClicked(it) },
                         onNextClicked = { onNextClicked(it) }

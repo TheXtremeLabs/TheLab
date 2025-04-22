@@ -16,11 +16,8 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.util.fastAny
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -33,10 +30,15 @@ import com.riders.thelab.core.data.utils.Constants
 import com.riders.thelab.core.player.service.PlaybackService
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.songplayer.core.SongsManager
+import com.riders.thelab.feature.songplayer.data.CardPlayerState
+import com.riders.thelab.feature.songplayer.data.SongPlayerUiState
 import com.riders.thelab.feature.songplayer.utils.SongPlayerUtils
 import com.riders.thelab.feature.songplayer.utils.parseSongName
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import timber.log.Timber
 import java.io.File
 import java.util.Random
@@ -46,7 +48,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SongPlayerViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    val  uiRepository: IUiRepository
+    val uiRepository: IUiRepository
 ) : ViewModel(), DefaultLifecycleObserver,
     MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
@@ -122,11 +124,16 @@ class SongPlayerViewModel @Inject constructor(
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    // Songs list
-    val songList: SnapshotStateList<SongModel> = mutableStateListOf()
+    private var _songUiState: MutableStateFlow<SongPlayerUiState> =
+        MutableStateFlow(SongPlayerUiState.Loading)
+    val songUiState: StateFlow<SongPlayerUiState> = _songUiState
+
+    private var _cardPlayerUiState: MutableStateFlow<CardPlayerState> =
+        MutableStateFlow(CardPlayerState.Hidden)
+    val cardPlayerUiState: StateFlow<CardPlayerState> = _cardPlayerUiState
+
     var currentSongIndex: Int by mutableIntStateOf(-1)
         private set
-    private var isPlayerCardVisible: Boolean by mutableStateOf(false)
     var isPlayerCardExpanded: Boolean by mutableStateOf(false)
         private set
     private var isPlaying: Boolean by mutableStateOf(false)
@@ -136,26 +143,18 @@ class SongPlayerViewModel @Inject constructor(
 
     val playPauseState: Boolean by derivedStateOf { isPlaying }
 
-    val isAnySongPlaying: Boolean by derivedStateOf {
-        if (songList.isEmpty()) {
-            false
-        } else {
-            songList.fastAny { it.isPlaying }
-        }
+    private fun updateSongPlayerUiState(newUiState: SongPlayerUiState) {
+        Timber.d("updateSongPlayerUiState() | newUiState: $newUiState")
+        this._songUiState.update { newUiState }
     }
 
-
-    private fun updateSongList(newSongList: List<SongModel>) {
-        songList.addAll(newSongList)
+    private fun updateCardPlayerUiState(newUiState: CardPlayerState) {
+        this._cardPlayerUiState.update { newUiState }
     }
 
     fun updateCurrentSongIndex(newIndex: Int) {
         Timber.d("updateCurrentSongIndex() | newIndex: $newIndex")
         this.currentSongIndex = newIndex
-    }
-
-    private fun updateIsPlayerCardVisible(cardVisible: Boolean) {
-        this.isPlayerCardVisible = cardVisible
     }
 
     fun toggleViewToggle(cardExpanded: Boolean) {
@@ -205,32 +204,33 @@ class SongPlayerViewModel @Inject constructor(
                 val musicFiles: String =
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).absolutePath
 
-
                 fullList.addAll(scCardFiles ?: emptyList())
                 fullList.add(downloadFiles)
                 fullList.add(musicFiles)
             }
 
+            var songsList: List<SongModel> = emptyList()
+
             fullList.forEach { volumePath ->
                 Timber.e("volumePath: $volumePath")
                 if (volumePath.contains("download", true)) {
-                    updateSongList(getFilesWithPath(volumePath))
+                    songsList += getFilesWithPath(volumePath)
                 }
                 if (volumePath.contains("music", true)) {
-                    updateSongList(getFilesWithPath(volumePath))
+                    songsList += getFilesWithPath(volumePath)
                 }
-
                 if (volumePath.contains("0000")) {
-                    updateSongList(getFilesWithPath(volumePath))
+                    songsList += getFilesWithPath(volumePath)
                 }
             }
 
+            updateSongPlayerUiState(SongPlayerUiState.Loaded(songsList))
         }
             .onFailure {
-                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+                Timber.e("retrieveSongFiles() | onFailure | Error caught: ${it.message}")
             }
             .onSuccess {
-                Timber.d("runCatching - onSuccess() | app list fetched successfully")
+                Timber.d("retrieveSongFiles() | onSuccess | app list fetched successfully")
             }
 
     }
@@ -262,7 +262,6 @@ class SongPlayerViewModel @Inject constructor(
                 }
             }
         }
-
 
         // Root Music directory path
         val musicPath =
@@ -321,90 +320,93 @@ class SongPlayerViewModel @Inject constructor(
 
     @SuppressLint("InlinedApi")
     fun playSong(context: Context, songId: Int) {
+        if (_songUiState.value is SongPlayerUiState.Loaded) {
+            val songList = (_songUiState.value as SongPlayerUiState.Loaded).songs
 
-        songList.forEach {
-            if (it.id != songId) {
-                it.isPlaying = false
-            }
-        }
-
-        songList.firstOrNull { it.id == songId }?.let { songModel ->
-            runCatching {
-                Timber.d("playSong() | ${songModel.path}")
-
-                if (!isPlayerCardVisible) {
-                    isPlayerCardVisible = true
+            songList.forEach {
+                if (it.id != songId) {
+                    it.isPlaying = false
                 }
+            }
 
-                /*mp?.let { player ->
-                    player.reset()
-                    player.setDataSource(songModel.path)
-                    player.prepare()
-                    // Play song
-                    player.start()
-                }*/
+            songList.firstOrNull { it.id == songId }?.let { songModel ->
+                runCatching {
+                    Timber.d("playSong() | ${songModel.toString()}")
 
+                    if (_cardPlayerUiState.value !is CardPlayerState.Visible) {
+                        updateCardPlayerUiState(CardPlayerState.Visible(songModel))
+                    }
 
-                songModel.isPlaying = true
+                    /*mp?.let { player ->
+                        player.reset()
+                        player.setDataSource(songModel.path)
+                        player.prepare()
+                        // Play song
+                        player.start()
+                    }*/
 
-                // Displaying Song title via Notification
-                LabNotificationManager.createNotificationChannel(
-                    context,
-                    context.getString(com.riders.thelab.core.ui.R.string.music_channel_name),
-                    context.getString(com.riders.thelab.core.ui.R.string.music_channel_description),
-                    NotificationManager.IMPORTANCE_HIGH,
-                    Constants.NOTIFICATION_MUSIC_CHANNEL_ID
-                )
+                    songModel.isPlaying = true
 
-                mServiceMusic.playSong(
-                    SongPlayerUtils.getMediaItem(
-                        songModel.name,
-                        songModel.path,
-                        songModel.path
-                    )
-                )
-
-                /*val mediaSession = mp?.run {
-                    SongPlayerUtils.createMediaSession(
+                    // Displaying Song title via Notification
+                    LabNotificationManager.createNotificationChannel(
                         context,
-                        this,
-                        songModel.name,
-                        songModel.path,
-                        LabFileManager.getDrawableURI(
-                            context,
-                            com.riders.thelab.core.ui.R.drawable.ic_music
+                        context.getString(com.riders.thelab.core.ui.R.string.music_channel_name),
+                        context.getString(com.riders.thelab.core.ui.R.string.music_channel_description),
+                        NotificationManager.IMPORTANCE_HIGH,
+                        Constants.NOTIFICATION_MUSIC_CHANNEL_ID
+                    )
+
+                    mServiceMusic.playSong(
+                        SongPlayerUtils.getMediaItem(
+                            songTitle = songModel.name,
+                            songArtists = songModel.name,
+                            songUri = songModel.uri,
+                            songThumbUri = songModel.path
                         )
                     )
-                }*/
 
-                /*val mediaController =
-                    mServiceMusic.getMediaSssion()?.run { SongPlayerUtils.createMediaController(this) }*/
+                    /*val mediaSession = mp?.run {
+                        SongPlayerUtils.createMediaSession(
+                            context,
+                            this,
+                            songModel.name,
+                            songModel.path,
+                            LabFileManager.getDrawableURI(
+                                context,
+                                com.riders.thelab.core.ui.R.drawable.ic_music
+                            )
+                        )
+                    }*/
 
-                mServiceMusic.getMediaSssion()?.let { session ->
-                    //mediaController?.let { controller ->
-                    LabNotificationManager.displayMusicNotification(
-                        context = context,
-                        session,
-                        // controller,
-                        mServiceMusic,
-                        smallIcon = com.riders.thelab.core.ui.R.drawable.ic_music,
-                        contentTitle = songModel.name,
-                        contentText = songModel.path,
-                        largeIcon = com.riders.thelab.core.ui.R.drawable.ic_music,
-                        actionIcon = if (!mServiceMusic.isPlaying()) com.riders.thelab.core.ui.R.drawable.img_play else com.riders.thelab.core.ui.R.drawable.img_pause,
-                        actionTitle = if (!mServiceMusic.isPlaying()) com.riders.thelab.core.ui.R.string.action_play else com.riders.thelab.core.ui.R.string.action_pause
-                    )
+                    /*val mediaController =
+                        mServiceMusic.getMediaSession()?.run { SongPlayerUtils.createMediaController(this) }*/
 
-                    // Updating progress bar
-                    updateProgressBar()
-                    // }
+                    mServiceMusic.getMediaSession()?.let { session ->
+                        //mediaController?.let { controller ->
+                        LabNotificationManager.displayMusicNotification(
+                            context = context,
+                            session,
+                            // controller,
+                            mServiceMusic,
+                            smallIcon = com.riders.thelab.core.ui.R.drawable.ic_music,
+                            contentTitle = songModel.name,
+                            contentText = songModel.path,
+                            largeIcon = com.riders.thelab.core.ui.R.drawable.ic_music,
+                            actionIcon = if (!mServiceMusic.isPlaying()) com.riders.thelab.core.ui.R.drawable.img_play else com.riders.thelab.core.ui.R.drawable.img_pause,
+                            actionTitle = if (!mServiceMusic.isPlaying()) com.riders.thelab.core.ui.R.string.action_play else com.riders.thelab.core.ui.R.string.action_pause
+                        )
+
+                        // Updating progress bar
+                        updateProgressBar()
+                        // }
+                    }
                 }
-            }
-                .onFailure {
-                    it.printStackTrace()
-                    Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
-                }
-        } ?: run { Timber.e("Unable to find song item with id $songId") }
+                    .onFailure {
+                        it.printStackTrace()
+                        Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
+                    }
+            } ?: run { Timber.e("Unable to find song item with id $songId") }
+        }
     }
 
     /**
@@ -414,7 +416,6 @@ class SongPlayerViewModel @Inject constructor(
         if (null == mHandler) {
             mHandler = Handler(Looper.getMainLooper())
         }
-
         // mHandler?.postDelayed(mUpdateTimeTask, 100)
     }
 
@@ -455,10 +456,10 @@ class SongPlayerViewModel @Inject constructor(
             context.registerReceiver(mMediaButtonReceiver, IntentFilter(Intent.ACTION_MEDIA_BUTTON))
         }
             .onFailure {
-                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+                Timber.e("onResume() | onFailure | Error caught: ${it.message}")
             }
             .onSuccess {
-                Timber.d("runCatching - onSuccess() | app list fetched successfully")
+                Timber.d("onResume() | onSuccess | app list fetched successfully")
             }
     }
 
@@ -481,10 +482,10 @@ class SongPlayerViewModel @Inject constructor(
             }*/
         }
             .onFailure {
-                Timber.e("runCatching - onFailure() | Error caught: ${it.message}")
+                Timber.e("onDestroy | onFailure | Error caught: ${it.message}")
             }
             .onSuccess {
-                Timber.d("runCatching - onSuccess()")
+                Timber.d("onDestroy() | onSuccess")
 //                mp = null
             }
 
@@ -507,19 +508,23 @@ class SongPlayerViewModel @Inject constructor(
     override fun onCompletion(mp: MediaPlayer?) {
         Timber.i("onCompletion()")
 
-        // check for repeat is ON or OFF
-        if (isRepeat) {
-            // repeat is on play same song again
-            playSong(context, songList[currentSongIndex].id)
-        } else if (isShuffle) {
-            // shuffle is on - play a random song
-            val rand = Random()
-            currentSongIndex = rand.nextInt(songList.size - 1 - 0 + 1) + 0
-            playSong(context, songList[currentSongIndex].id)
-        } else {
-            // no repeat or shuffle ON - play next song
-            updateCurrentSongIndex(if (currentSongIndex < songList.size - 1) currentSongIndex + 1 else 0)
-            playSong(context, songList[currentSongIndex].id)
+        if (_songUiState.value is SongPlayerUiState.Loaded) {
+            val songList = (_songUiState.value as SongPlayerUiState.Loaded).songs
+
+            // check for repeat is ON or OFF
+            if (isRepeat) {
+                // repeat is on play same song again
+                playSong(context, songList[currentSongIndex].id)
+            } else if (isShuffle) {
+                // shuffle is on - play a random song
+                val rand = Random()
+                currentSongIndex = rand.nextInt(songList.size - 1 - 0 + 1) + 0
+                playSong(context, songList[currentSongIndex].id)
+            } else {
+                // no repeat or shuffle ON - play next song
+                updateCurrentSongIndex(if (currentSongIndex < songList.size - 1) currentSongIndex + 1 else 0)
+                playSong(context, songList[currentSongIndex].id)
+            }
         }
     }
 
@@ -528,7 +533,15 @@ class SongPlayerViewModel @Inject constructor(
 
         mServiceMusic.playPause()
 
-        songList[currentSongIndex].isPlaying = !mServiceMusic.isPlaying()
+        mServiceMusic.isPlaying().let {
+            if (_songUiState.value is SongPlayerUiState.Loaded) {
+                val songList = (_songUiState.value as SongPlayerUiState.Loaded).songs
+
+
+                songList[currentSongIndex].isPlaying = !it
+            }
+            isPlaying = it
+        }
 
         /*mp?.let {
             if (!it.isPlaying) {
@@ -547,22 +560,32 @@ class SongPlayerViewModel @Inject constructor(
             playSong(context, currentSongIndex - 1)
             currentSongIndex -= 1
         } else {
-            // play last song
-            updateCurrentSongIndex(songList.last().id)
-            playSong(context, songList.last().id)
+            if (_songUiState.value is SongPlayerUiState.Loaded) {
+                val songList = (_songUiState.value as SongPlayerUiState.Loaded).songs
+
+
+                // play last song
+                updateCurrentSongIndex(songList.last().id)
+                playSong(context, songList.last().id)
+            }
         }
     }
 
     fun playNextSong(context: Context) {
         Timber.d("playPreviousSong()")
-        // check if next song is there or not
-        if (currentSongIndex < (songList.size - 1)) {
-            playSong(context, currentSongIndex + 1)
-            currentSongIndex += 1
-        } else {
-            // play first song
-            updateCurrentSongIndex(songList.first().id)
-            playSong(context, songList.first().id)
+
+        if (_songUiState.value is SongPlayerUiState.Loaded) {
+            val songList = (_songUiState.value as SongPlayerUiState.Loaded).songs
+
+            // check if next song is there or not
+            if (currentSongIndex < (songList.size - 1)) {
+                playSong(context, currentSongIndex + 1)
+                currentSongIndex += 1
+            } else {
+                // play first song
+                updateCurrentSongIndex(songList.first().id)
+                playSong(context, songList.first().id)
+            }
         }
     }
 

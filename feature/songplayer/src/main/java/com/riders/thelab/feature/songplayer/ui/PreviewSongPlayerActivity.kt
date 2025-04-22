@@ -1,12 +1,13 @@
 package com.riders.thelab.feature.songplayer.ui
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,8 @@ import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.songplayer.data.CardPlayerState
+import com.riders.thelab.feature.songplayer.data.SongPlayerUiState
 
 
 ///////////////////////////////////////
@@ -40,8 +43,10 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 ///////////////////////////////////////
 @Composable
 fun SongPlayerContent(
-    theme: AppTheme, darkTheme: Boolean,
-    songList: List<SongModel>,
+    theme: AppTheme,
+    darkTheme: Boolean,
+    songPlayerUiState: SongPlayerUiState,
+    cardPlayerState: CardPlayerState,
     currentSongIndex: Int,
     isSongPlaying: Boolean,
     isCardExpanded: Boolean,
@@ -68,76 +73,130 @@ fun SongPlayerContent(
             }
         ) { contentPadding ->
             AnimatedContent(
-                targetState = songList.isNotEmpty(),
+                targetState = songPlayerUiState,
                 label = ""
-            ) { targetState: Boolean ->
-                if (!targetState) {
-                    NoItemFound("No song item found")
-                } else {
-                    val animatedBottomPadding = animateDpAsState(
-                        targetValue = if (currentSongIndex == -1) 0.dp else 120.dp,
-                        label = "bottom animation"
-                    ).value
+            ) { targetState ->
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(contentPadding),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        LazyColumn(
+                when (targetState) {
+                    is SongPlayerUiState.Loading -> {
+                        NoItemFound("Loading...")
+                    }
+
+                    is SongPlayerUiState.Empty -> {
+                        NoItemFound("No song item found")
+                    }
+
+                    is SongPlayerUiState.Loaded -> {
+                        val animatedBottomPadding = animateDpAsState(
+                            targetValue = if (currentSongIndex == -1) 0.dp else 120.dp,
+                            label = "bottom animation"
+                        ).value
+
+                        Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(
-                                    start = 16.dp,
-                                    end = 16.dp,
-                                    bottom = animatedBottomPadding
-                                )
-                                .zIndex(1f),
-                            state = lazyListState,
-                            userScrollEnabled = !isCardExpanded,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                                .padding(contentPadding),
+                            contentAlignment = Alignment.BottomCenter
                         ) {
-                            itemsIndexed(items = songList) { index: Int, item: SongModel ->
-                                SongPlayerItem(
-                                    theme = theme, darkTheme = darkTheme,
-                                    selectedIndex = currentSongIndex,
-                                    index = index,
-                                    song = item
-                                ) { onItemClicked(it) }
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(
+                                        start = 16.dp,
+                                        end = 16.dp,
+                                        bottom = animatedBottomPadding
+                                    )
+                                    .zIndex(1f),
+                                state = lazyListState,
+                                userScrollEnabled = !isCardExpanded,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                itemsIndexed(items = targetState.songs) { index: Int, item: SongModel ->
+                                    SongPlayerItem(
+                                        theme = theme, darkTheme = darkTheme,
+                                        selectedIndex = currentSongIndex,
+                                        index = index,
+                                        song = item
+                                    ) { onItemClicked(it) }
+                                }
                             }
-                        }
 
-                        AnimatedVisibility(
-                            modifier = Modifier.zIndex(5f),
-                            visible = currentSongIndex != -1,
-                            enter = slideInVertically {
-                                // Slide in from 40 dp from the top.
-                                with(density) { 40.dp.roundToPx() }
-                            } + fadeIn(
-                                // Fade in with the initial alpha of 0.3f.
-                                initialAlpha = 0.3f
-                            ),
-                            exit = slideOutVertically {
-                                // Slide in from 40 dp from the top.
-                                with(density) { -40.dp.roundToPx() }
-                            } + fadeOut()
-                        ) {
-                            CardPlayer(
-                                song = songList[currentSongIndex],
-                                songProgress = songProgress,
-                                isCardExpanded = isCardExpanded,
-                                onCardViewClicked = { expanded -> onCardViewClicked(expanded) },
-                                onPreviousClicked = { previousClicked ->
-                                    onPreviousClicked(previousClicked)
-                                },
-                                onPlayPauseClicked = { playPauseClicked ->
-                                    onPlayPauseClicked(playPauseClicked)
-                                },
-                                onNextClicked = { nextClicked -> onNextClicked(nextClicked) }
-                            )
+                            AnimatedContent(
+                                modifier = Modifier.zIndex(5f),
+                                targetState = cardPlayerState,
+                                transitionSpec = {
+                                    slideInVertically {
+                                        // Slide in from 40 dp from the top.
+                                        with(density) { 40.dp.roundToPx() }
+                                    } + fadeIn(
+                                        // Fade in with the initial alpha of 0.3f.
+                                        initialAlpha = 0.3f
+                                    ) togetherWith slideOutVertically {
+                                        // Slide in from 40 dp from the top.
+                                        with(density) { -40.dp.roundToPx() }
+                                    } + fadeOut()
+                                }
+                            ) { targetState: CardPlayerState ->
+                                when (targetState) {
+                                    is CardPlayerState.Idle -> {}
+                                    is CardPlayerState.Hidden -> {}
+                                    is CardPlayerState.Visible -> {
+                                        CardPlayer(
+                                            song = targetState.songModel,
+                                            songProgress = songProgress,
+                                            isCardExpanded = isCardExpanded,
+                                            onCardViewClicked = { expanded ->
+                                                onCardViewClicked(expanded)
+                                            },
+                                            onPreviousClicked = { previousClicked ->
+                                                onPreviousClicked(previousClicked)
+                                            },
+                                            onPlayPauseClicked = { playPauseClicked ->
+                                                onPlayPauseClicked(playPauseClicked)
+                                            },
+                                            onNextClicked = { nextClicked ->
+                                                onNextClicked(nextClicked)
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+
+                            /*AnimatedVisibility(
+                                modifier = Modifier.zIndex(5f),
+                                visible = currentSongIndex != -1,
+                                enter = slideInVertically {
+                                    // Slide in from 40 dp from the top.
+                                    with(density) { 40.dp.roundToPx() }
+                                } + fadeIn(
+                                    // Fade in with the initial alpha of 0.3f.
+                                    initialAlpha = 0.3f
+                                ),
+                                exit = slideOutVertically {
+                                    // Slide in from 40 dp from the top.
+                                    with(density) { -40.dp.roundToPx() }
+                                } + fadeOut()
+                            ) {
+                                CardPlayer(
+                                    song = targetState.songs[currentSongIndex],
+                                    songProgress = songProgress,
+                                    isCardExpanded = isCardExpanded,
+                                    onCardViewClicked = { expanded -> onCardViewClicked(expanded) },
+                                    onPreviousClicked = { previousClicked ->
+                                        onPreviousClicked(previousClicked)
+                                    },
+                                    onPlayPauseClicked = { playPauseClicked ->
+                                        onPlayPauseClicked(playPauseClicked)
+                                    },
+                                    onNextClicked = { nextClicked -> onNextClicked(nextClicked) }
+                                )
+                            }*/
                         }
+                    }
+
+                    is SongPlayerUiState.Error -> {
+
                     }
                 }
             }
@@ -157,8 +216,9 @@ private fun PreviewSongPlayerContentEmpty(@PreviewParameter(AppThemePreviewProvi
     TheLabTheme(theme = appTheme) {
         SongPlayerContent(
             theme = appTheme,
-            darkTheme = true,
-            songList = emptyList(),
+            darkTheme = isSystemInDarkTheme(),
+            songPlayerUiState = SongPlayerUiState.Loaded(mutableListOf()),
+            cardPlayerState = CardPlayerState.Hidden,
             currentSongIndex = -1,
             isSongPlaying = false,
             isCardExpanded = false,
@@ -178,8 +238,9 @@ private fun PreviewSongPlayerContentIdle(@PreviewParameter(PreviewProviderSongLi
     TheLabTheme(theme = AppTheme.Default) {
         SongPlayerContent(
             theme = AppTheme.Default,
-            darkTheme = true,
-            songList = songs,
+            darkTheme = isSystemInDarkTheme(),
+            songPlayerUiState = SongPlayerUiState.Loaded(songs.toMutableList()),
+            cardPlayerState = CardPlayerState.Hidden,
             currentSongIndex = -1,
             isSongPlaying = false,
             isCardExpanded = false,
@@ -199,8 +260,9 @@ private fun PreviewSongPlayerContentPlaying(@PreviewParameter(PreviewProviderSon
     TheLabTheme(theme = AppTheme.Default) {
         SongPlayerContent(
             theme = AppTheme.Default,
-            darkTheme = true,
-            songList = songs,
+            darkTheme = isSystemInDarkTheme(),
+            songPlayerUiState = SongPlayerUiState.Loaded(songs.toMutableList()),
+            cardPlayerState = CardPlayerState.Visible(songs[2]),
             currentSongIndex = 2,
             isSongPlaying = true,
             isCardExpanded = false,

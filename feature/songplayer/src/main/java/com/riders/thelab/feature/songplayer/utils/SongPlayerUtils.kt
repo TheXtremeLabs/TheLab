@@ -10,6 +10,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.core.net.toUri
 import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.MediaItem
 import com.riders.thelab.core.common.storage.LabFileManager
@@ -54,20 +55,24 @@ object SongPlayerUtils {
     fun getMediaItem(
         songTitle: String,
         songArtists: String,
-        songPath: String,
+        songPath: String? = null,
+        songUri: Uri? = null,
         songThumbUri: String? = null
     ): MediaItem = MediaItem.Builder()
-        .setMediaId("media-1")
-        .setUri(songPath)
-        .setMediaMetadata(
-            androidx.media3.common.MediaMetadata.Builder().apply {
-                setArtist(songArtists)
-                setTitle(songTitle)
+        .apply {
+            setMediaId("media-1")
+            songPath?.let { setUri(it) }
+            songUri?.let { setUri(it) }
+            setMediaMetadata(
+                androidx.media3.common.MediaMetadata.Builder().apply {
+                    setArtist(songArtists)
+                    setTitle(songTitle)
 
-                songThumbUri?.let { this.setArtworkUri(Uri.parse(it)) }
-            }
-                .build()
-        )
+                    songThumbUri?.let { this.setArtworkUri(it.toUri()) }
+                }
+                    .build()
+            )
+        }
         .build()
 
     fun createMediaSession(
