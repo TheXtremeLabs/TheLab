@@ -21,6 +21,8 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 // import com.jakewharton.threetenabp.AndroidThreeTen
@@ -34,7 +36,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
 
 @HiltAndroidApp
 class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configuration.Provider {
@@ -143,6 +144,14 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
             isCrashlyticsCollectionEnabled = true
             setUserId("wayne")
         }
+
+        //  Gets the instance of the Firebase App Check SDK.
+        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        // Tells App Check to use the Play Integrity provider to obtain tokens.
+        firebaseAppCheck.installAppCheckProviderFactory(
+            // Gets the Play Integrity App Check provider factory.
+            PlayIntegrityAppCheckProviderFactory.getInstance()
+        )
 
         // Mobile ADS
         /*MobileAds.initialize(this) { initializationStatus: InitializationStatus ->
