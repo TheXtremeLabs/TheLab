@@ -89,7 +89,7 @@ fun GoogleButton(
                     )
                     Text(
                         text = "Continue with Google".uppercase(Locale.getDefault()),
-                        style = TextStyle(color = if (!isSystemInDarkTheme()) Color.Black else Color.White)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }

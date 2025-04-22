@@ -23,6 +23,7 @@ class DbImpl @Inject constructor(
     private var mUserDao: UserDao = userDao
     private var mContactDao: ContactDao = contactDao
     private var mWeatherDao: WeatherDao = weatherDao
+
     override fun insertUser(user: User): Long {
         val maybeAdminUser: User = user
 
@@ -122,9 +123,7 @@ class DbImpl @Inject constructor(
         return mWeatherDao.searchCity(cityQuery)
     }
 
-    override suspend fun getWeatherData(): WeatherData? {
-        return mWeatherDao.getWeatherData()
-    }
+    override suspend fun getWeatherData(): WeatherData? =mWeatherDao.getWeatherData()
 
     override suspend fun getCities(): List<CityModel> {
         return mWeatherDao.getCities()

@@ -302,7 +302,7 @@ class LocationOnMapsActivity
         mMap.animateCamera(CameraUpdateFactory.zoomTo(750f), 2000, null)
         mMap.uiSettings.isScrollGesturesEnabled = true
 
-        _viewBinding?.let {  binding.tvLocation.text = "Latitude:$latitude\nLongitude:$longitude" }
+        _viewBinding?.let { binding.tvLocation.text = "Latitude:$latitude\nLongitude:$longitude" }
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -365,8 +365,15 @@ class LocationOnMapsActivity
     private fun setLocationSettings() {
         Timber.i("setLocationSettings()")
         mLocationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        @Suppress("DEPRECATION")
         mCriteria = Criteria()
+
+        if (null == mCriteria) {
+            Timber.e("setLocationSettings() | Cannot get location please enable position")
+            return
+        }
         mProvider = mLocationManager.getBestProvider(mCriteria!!, true)!!
+
         if (null == mProvider) {
             Timber.e("Cannot get location please enable position")
             val labLocationManager =

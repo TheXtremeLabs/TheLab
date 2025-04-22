@@ -140,9 +140,7 @@ class RepositoryImpl @Inject constructor(
     override suspend fun searchCity(cityQuery: String): List<CityModel> =
         mDbImpl.searchCity(cityQuery)
 
-    override suspend fun getWeatherData(): WeatherData? {
-        return mDbImpl.getWeatherData()
-    }
+    override suspend fun getWeatherData(): WeatherData? = mDbImpl.getWeatherData()
 
     override suspend fun getCities(): List<CityModel> {
         return mDbImpl.getCities()
@@ -152,9 +150,7 @@ class RepositoryImpl @Inject constructor(
         return mDbImpl.getCitiesCursor(query)
     }
 
-    override fun deleteAll() {
-        mDbImpl.deleteAll()
-    }
+    override fun deleteAll() =  mDbImpl.deleteAll()
 
     /////////////////////////
     //

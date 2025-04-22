@@ -188,8 +188,8 @@ object FirebaseUtils {
                     val token = task.result
                     Timber.d("token: $token")
 
-                    currentUserDetails()?.let {
-                        it.update("fcmToken", token)
+                    currentUserDetails()?.let { userDetails ->
+                        userDetails.update("fcmToken", token)
                         onSuccess(token)
                     }
                         ?: run { Timber.e("getFcmToken | currentUserDetails Document reference object is null") }

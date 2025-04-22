@@ -9,11 +9,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -26,8 +28,6 @@ import com.google.android.material.textview.MaterialTextView
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.color.md_theme_dark_background
-import com.riders.thelab.core.ui.compose.color.md_theme_light_background
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -93,16 +93,8 @@ fun LabHtmlText(
     textAlignment: Int = View.TEXT_ALIGNMENT_TEXT_START,
     onClick: () -> Unit = { }
 ) {
-    val context = LocalContext.current
-    val textColor = ContextCompat.getColor(
-        context,
-        if (!isSystemInDarkTheme()) R.color.black else R.color.white
-    )
-
-    val linksTextColor = ContextCompat.getColor(
-        context,
-        if (!isSystemInDarkTheme()) R.color.blue_grey_500 else R.color.tabColorAccent
-    )
+    val textColor: Int = MaterialTheme.colorScheme.onSurface.toArgb()
+    val linksTextColor = MaterialTheme.colorScheme.onSurface.toArgb()
 
     // parsing html string using the HtmlCompat class
     val spannedText = HtmlCompat.fromHtml(
@@ -125,7 +117,7 @@ fun LabHtmlText(
                     this.autoLinkMask = Linkify.WEB_URLS
                     this.linksClickable = true
                     this.movementMethod = LinkMovementMethodCompat.getInstance()
-                    // setting the color to use forr highlihting the links
+                    // setting the color to use for highlighting the links
                     this.setLinkTextColor(linksTextColor)
                     this.setOnClickListener { onClick() }
                 }
@@ -153,7 +145,7 @@ private fun PreviewLabHtmlText(@PreviewParameter(AppThemePreviewProvider::class)
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-                .background(color =  MaterialTheme.colorScheme.background),
+                .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.TopStart
         ) {
             LabHtmlText(
@@ -172,7 +164,7 @@ private fun PreviewLabHtmlTextEULA(@PreviewParameter(AppThemePreviewProvider::cl
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-                .background(color =  MaterialTheme.colorScheme.background),
+                .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.TopStart
         ) {
             LabHtmlText(
@@ -189,12 +181,12 @@ private fun PreviewLabHtmlTextSignUp(@PreviewParameter(AppThemePreviewProvider::
     TheLabTheme(theme = AppTheme.Default) {
         Box(
             modifier = Modifier
-                .padding(16.dp)
-                .background(color = MaterialTheme.colorScheme.background),
+                .fillMaxWidth()
+                .height(56.dp),
             contentAlignment = Alignment.TopStart
         ) {
             LabHtmlText(
-                modifier = Modifier,
+                modifier = Modifier.padding(16.dp),
                 stringResId = R.string.no_account_register
             )
         }
