@@ -224,7 +224,11 @@ class SongPlayerViewModel @Inject constructor(
                 }
             }
 
-            updateSongPlayerUiState(SongPlayerUiState.Loaded(songsList))
+            updateSongPlayerUiState(
+                if (songsList.isEmpty()) SongPlayerUiState.Empty else SongPlayerUiState.Loaded(
+                    songsList
+                )
+            )
         }
             .onFailure {
                 Timber.e("retrieveSongFiles() | onFailure | Error caught: ${it.message}")

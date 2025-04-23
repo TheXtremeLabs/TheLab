@@ -19,7 +19,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -49,8 +48,6 @@ class ACRCloudActivity : BaseComponentActivity() {
                 }
             }
         }
-
-    private var mLabNetworkManager: LabNetworkManager? = null
 
     private val clientId = "1714852f79e04b24afd8a49d04068558"
     private val redirectUri = "http://com.yourdomain.yourapp/callback"
@@ -96,10 +93,6 @@ class ACRCloudActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mLabNetworkManager = LabNetworkManager
-            .getInstance(this, lifecycle)
-            .also { mViewModel.observeNetworkState(it) }
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
@@ -115,7 +108,7 @@ class ACRCloudActivity : BaseComponentActivity() {
                         .collectAsStateWithLifecycle(initialValue = false)
 
                     val acrUiState by mViewModel.uiState.collectAsStateWithLifecycle()
-                    val mNetworkState by mViewModel.mNetworkState.collectAsStateWithLifecycle()
+                    val hasNetworkConnection by mViewModel.hasInternetConnection.collectAsStateWithLifecycle()
 
                     TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
@@ -125,9 +118,10 @@ class ACRCloudActivity : BaseComponentActivity() {
                             color = MaterialTheme.colorScheme.background
                         ) {
                             ACRCloudActivityContent(
-                                theme = theme, darkTheme = isDarkTheme,
+                                theme = theme,
+                                darkTheme = isDarkTheme,
                                 acrUiState = acrUiState,
-                                networkState = mNetworkState,
+                                hasNetworkConnection = hasNetworkConnection,
                                 result = mViewModel.result ?: "",
                                 canLaunchAudioRecognition = mViewModel.canLaunchAudioRecognition,
                                 onStartRecognition = {

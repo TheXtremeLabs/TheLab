@@ -37,7 +37,6 @@ fun ExitSignUp(
     onConfirmed: () -> Unit,
     onDismiss: () -> Unit
 ) {
-
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(modifier = Modifier.fillMaxWidth(.8f)) {
             Column(

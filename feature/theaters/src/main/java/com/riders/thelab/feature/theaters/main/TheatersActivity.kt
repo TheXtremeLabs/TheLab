@@ -15,7 +15,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -32,21 +31,15 @@ class TheatersActivity : BaseComponentActivity() {
 
     private val mTheatersViewModel: TheatersViewModel by viewModels()
 
-    private val mNetworkManager: LabNetworkManager by lazy {
-        LabNetworkManager(context = this@TheatersActivity, lifecycle = this.lifecycle)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        mTheatersViewModel.observeNetworkState(mNetworkManager)
 
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
 
                 setContent {
-                    val networkState by mNetworkManager.networkState.collectAsStateWithLifecycle()
+                    val hasNetworkConnection by mTheatersViewModel.hasInternetConnection.collectAsStateWithLifecycle()
 
                     val theme: AppTheme by mTheatersViewModel.uiRepository
                         .getTheme()
@@ -68,7 +61,7 @@ class TheatersActivity : BaseComponentActivity() {
                             TheatersContainer(
                                 theme = theme,
                                 darkTheme = isDarkTheme,
-                                networkState = networkState,
+                                hasNetworkConnection = hasNetworkConnection,
                                 isActivitiesSplashScreenEnable = mTheatersViewModel.isActivitiesSplashEnabled,
                                 categories = mTheatersViewModel.categories,
                                 tabRowSelected = mTheatersViewModel.tabRowSelected,
@@ -93,6 +86,11 @@ class TheatersActivity : BaseComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mTheatersViewModel.fetchTMDBData()
     }
 
     override fun backPressed() {

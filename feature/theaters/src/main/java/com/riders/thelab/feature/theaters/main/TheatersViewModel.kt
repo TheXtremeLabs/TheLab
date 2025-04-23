@@ -27,8 +27,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -39,9 +41,10 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class TheatersViewModel @Inject constructor(
+    labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
     val uiRepository: IUiRepository
-) : BaseViewModel(), CoroutineScope {
+) : BaseViewModel(), CoroutineScope{
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()
@@ -102,8 +105,12 @@ class TheatersViewModel @Inject constructor(
     var tabRowSelected by mutableIntStateOf(0)
         private set
 
-    private var hasConnection by mutableStateOf(false)
-        private set
+    // Network State
+    val hasInternetConnection: StateFlow<Boolean> = labNetworkManager.isConnectedFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = false
+    )
 
     var isRefreshing by mutableStateOf(false)
         private set
@@ -149,10 +156,6 @@ class TheatersViewModel @Inject constructor(
         this.mPopularMovies.addAll(popularMovies)
     }
 
-    private fun updateHasInternetConnection(hasConnection: Boolean) {
-        this.hasConnection = hasConnection
-    }
-
     private fun updateIsRefreshing(isRefreshing: Boolean) {
         this.isRefreshing = isRefreshing
     }
@@ -192,43 +195,6 @@ class TheatersViewModel @Inject constructor(
     // CLASS METHODS
     //
     ////////////////////////////////////////
-    fun observeNetworkState(networkManager: LabNetworkManager) {
-        Timber.d("observeNetworkState()")
-
-        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-            networkManager.getNetworkState().collect { networkState ->
-                when (networkState) {
-                    is NetworkState.Available -> {
-                        Timber.d("network state is Available. All set.")
-                        updateHasInternetConnection(true)
-
-                        fetchTMDBData()
-                    }
-
-                    is NetworkState.Losing -> {
-                        Timber.w("network state is Losing. Internet connection about to be lost")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Lost -> {
-                        Timber.e("network state is Lost. Should not allow network calls initialization")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Unavailable -> {
-                        Timber.e("network state is Unavailable. Should not allow network calls initialization")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Undefined -> {
-                        Timber.i("network state is Undefined. Do nothing")
-                        updateHasInternetConnection(false)
-                    }
-                }
-            }
-        }
-    }
-
     fun onEvent(event: UiEvent) {
         Timber.d("onEvent() | event: $event")
 
@@ -242,7 +208,7 @@ class TheatersViewModel @Inject constructor(
         }
     }
 
-    private fun fetchTMDBData() {
+     fun fetchTMDBData() {
         Timber.d("fetchTMDBData()")
 
         // Trending Movie

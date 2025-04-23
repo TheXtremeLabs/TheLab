@@ -6,12 +6,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.riders.thelab.BuildConfig
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.utils.encodeToSha256
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.User
@@ -36,12 +34,12 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 @Suppress("EmptyMethod")
 @HiltViewModel
 class LoginViewModel @Inject constructor(
+    labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
     val uiRepository: IUiRepository
 ) : BaseViewModel() {
@@ -74,8 +72,11 @@ class LoginViewModel @Inject constructor(
     val passwordFieldUiState: StateFlow<LoginFieldsUIState.Password> = _passwordFieldUiState
 
     // Network State
-    var hasInternetConnection: Boolean by mutableStateOf(false)
-        private set
+    var hasInternetConnection: StateFlow<Boolean> = labNetworkManager.isConnectedFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = false
+    )
 
     var login by mutableStateOf(if (BuildConfig.DEBUG) "jane.doe@test.com" else "")
         private set
@@ -120,10 +121,6 @@ class LoginViewModel @Inject constructor(
         _passwordFieldUiState.value = newPasswordFieldState
     }
 
-    private fun updateHasInternetConnection(hasInternet: Boolean) {
-        this.hasInternetConnection = hasInternet
-    }
-
     private fun updateLogin(value: String) {
         login = value
     }
@@ -149,10 +146,6 @@ class LoginViewModel @Inject constructor(
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
             Timber.e("coroutineExceptionHandler | ${throwable.message}")
-
-            if (throwable is UnknownHostException) {
-                updateHasInternetConnection(false)
-            }
 
             val cs404: CharSequence = "404".subSequence(0, 3)
             val cs503: CharSequence = "503".subSequence(0, 3)
@@ -205,38 +198,6 @@ class LoginViewModel @Inject constructor(
     // CLASS METHODS
     //
     ///////////////////////////////
-    fun observeNetworkState(networkManager: LabNetworkManager) {
-        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-            networkManager.getNetworkState().collect { networkState ->
-                when (networkState) {
-                    is NetworkState.Available -> {
-                        Timber.d("observeNetworkState() | network state is Available. All set.")
-                        updateHasInternetConnection(true)
-                    }
-
-                    is NetworkState.Losing -> {
-                        Timber.w("observeNetworkState() | network state is Losing. Internet connection about to be lost")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Lost -> {
-                        Timber.e("observeNetworkState() | network state is Lost. Should not allow network calls initialization")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Unavailable -> {
-                        Timber.e("observeNetworkState() | network state is Unavailable. Should not allow network calls initialization")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Undefined -> {
-                        Timber.i("observeNetworkState() | network state is Undefined. Do nothing")
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * logging in user. Will make http post request with name, email
      * as parameters

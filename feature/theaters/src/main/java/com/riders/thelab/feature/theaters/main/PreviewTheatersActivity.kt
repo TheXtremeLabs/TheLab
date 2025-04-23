@@ -21,12 +21,11 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.component.network.PreviewProviderNetworkState
 import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.theaters.splashscreen.TheatersSplash
 import kotlinx.coroutines.delay
@@ -44,7 +43,7 @@ val trendingItemImageHeight: Dp = 550.dp
 fun TheatersContainer(
     theme: AppTheme,
     darkTheme: Boolean,
-    networkState: NetworkState,
+    hasNetworkConnection: Boolean,
     isActivitiesSplashScreenEnable: Boolean,
     categories: List<String>,
     tabRowSelected: Int,
@@ -78,8 +77,9 @@ fun TheatersContainer(
                         TheatersSplash(theme = theme, darkTheme = darkTheme)
                     } else {
                         TheatersContent(
-                            theme = theme, darkTheme = darkTheme,
-                            networkState = networkState,
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            hasNetworkConnection = hasNetworkConnection,
                             categories = categories,
                             tabRowSelected = tabRowSelected,
                             trendingMovieItem = trendingMovieItem,
@@ -95,7 +95,7 @@ fun TheatersContainer(
             } else {
                 TheatersContent(
                     theme = theme, darkTheme = darkTheme,
-                    networkState = networkState,
+                    hasNetworkConnection = hasNetworkConnection,
                     categories = categories,
                     tabRowSelected = tabRowSelected,
                     trendingMovieItem = trendingMovieItem,
@@ -125,12 +125,35 @@ fun TheatersContainer(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewTheatersContainer(@PreviewParameter(PreviewProviderNetworkState::class) networkState: NetworkState) {
-    TheLabTheme(theme = AppTheme.Default) {
+private fun PreviewTheatersContainerWithoutConnection(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         TheatersContainer(
-            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
             isActivitiesSplashScreenEnable = false,
-            networkState = networkState,
+            hasNetworkConnection = false,
+            categories = listOf("Movies", "Tv Shows"),
+            tabRowSelected = 0,
+            trendingMovieItem = TMDBUiState.TMDBTrendingMovieItemUiState.Loading,
+            movies = TMDBUiState.TMDBMoviesUiState.Success(TMDBMovieResponse.mockTMDBMovieResponse),
+            upcomingMovies = TMDBUiState.TMDBUpcomingMoviesUiState.Loading,
+            trendingTvShowItem = TMDBUiState.TMDBTrendingTvShowItemUiState.Loading,
+            trendingTvShows = TMDBUiState.TMDBTvShowsUiState.Loading,
+            isRefreshing = false,
+            uiEvent = {}
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewTheatersContainerWithConnection(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        TheatersContainer(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            isActivitiesSplashScreenEnable = false,
+            hasNetworkConnection = true,
             categories = listOf("Movies", "Tv Shows"),
             tabRowSelected = 0,
             trendingMovieItem = TMDBUiState.TMDBTrendingMovieItemUiState.Loading,

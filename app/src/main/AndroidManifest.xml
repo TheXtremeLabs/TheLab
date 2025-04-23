@@ -124,6 +124,9 @@
         android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"
         android:minSdkVersion="34"
         tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"
+        android:minSdkVersion="34"
+        tools:ignore="ProtectedPermissions" />
 
     <!-- Required only if your app targets Android 13 or higher. -->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
@@ -721,7 +724,6 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>-->
-
 
         <service
             android:name=".feature.kat.core.FCMMessageService"

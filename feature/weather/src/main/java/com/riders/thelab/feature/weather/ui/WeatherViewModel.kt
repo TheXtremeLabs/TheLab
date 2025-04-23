@@ -50,7 +50,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -62,6 +64,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
+    labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
     val uiRepository: IUiRepository
 ) : ViewModel() {
@@ -82,10 +85,12 @@ class WeatherViewModel @Inject constructor(
     private var _searchText: MutableStateFlow<String> = MutableStateFlow("")
     val searchText: StateFlow<String> = _searchText
 
-    // Network
-    private lateinit var mNetworkState: StateFlow<NetworkState>
-    private var hasInternetConnection: Boolean by mutableStateOf(false)
-        private set
+    // Network State
+    var hasInternetConnection: StateFlow<Boolean> = labNetworkManager.isConnectedFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = false
+    )
 
     var expanded by mutableStateOf(false)
         private set
@@ -105,10 +110,6 @@ class WeatherViewModel @Inject constructor(
 
     private fun updateWeatherUIState(state: WeatherUIState) {
         _weatherUiState.value = state
-    }
-
-    private fun updateHasInternetConnection(hasInternet: Boolean) {
-        this.hasInternetConnection = hasInternet
     }
 
 
@@ -193,42 +194,6 @@ class WeatherViewModel @Inject constructor(
     fun initWeakReference(activity: WeatherActivity) {
         if (null == mWeakReference) {
             mWeakReference = WeakReference(activity)
-        }
-    }
-
-    fun observeNetworkState(networkManager: LabNetworkManager) {
-        Timber.d("observeNetworkState()")
-        mNetworkState = networkManager.networkState
-
-
-        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-            networkManager.getNetworkState().collect { networkState ->
-                when (networkState) {
-                    is NetworkState.Available -> {
-                        Timber.d("network state is Available. All set.")
-                        updateHasInternetConnection(true)
-                    }
-
-                    is NetworkState.Losing -> {
-                        Timber.w("network state is Losing. Internet connection about to be lost")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Lost -> {
-                        Timber.e("network state is Lost. Should not allow network calls initialization")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Unavailable -> {
-                        Timber.e("network state is Unavailable. Should not allow network calls initialization")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Undefined -> {
-                        Timber.i("network state is Undefined. Do nothing")
-                    }
-                }
-            }
         }
     }
 
@@ -343,7 +308,7 @@ class WeatherViewModel @Inject constructor(
     fun fetchCities(activity: WeatherActivity) {
         Timber.d("fetchCities()")
 
-        if (mNetworkState.value !is NetworkState.Available) {
+        if (!hasInternetConnection.value) {
             updateWeatherDataState(WeatherDataState.Error())
             return
         } else {

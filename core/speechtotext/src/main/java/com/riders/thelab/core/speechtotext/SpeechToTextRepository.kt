@@ -109,7 +109,8 @@ class SpeechToTextRepository @Inject constructor(
         if (!_isStreaming) return
         _clientStream?.send(
             StreamingRecognizeRequest.newBuilder()
-                .setAudioContent(ByteString.copyFrom(data, 0, size)).build()
+                .setAudioContent(ByteString.copyFrom(data, 0, size))
+                .build()
         )
     }
 

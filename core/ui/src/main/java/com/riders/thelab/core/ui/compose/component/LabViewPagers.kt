@@ -422,7 +422,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
                     if (pagerState.currentPage == pageCount - 1) {
                         pagerState.animateScrollToPage(0)
                     } else {
-                        if (items.size > 1)
+                        if (items.isNotEmpty())
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     }
                 }

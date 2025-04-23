@@ -52,10 +52,7 @@ class GoogleDriveActivity : BaseGoogleActivity(), OnConnectionFailedListener {
     /////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         Timber.d("onCreate()")
-
-        mViewModel.initNetworkManager(this@GoogleDriveActivity, this.lifecycle)
 
         if (!GooglePlayServicesManager.checkPlayServices(
                 activity = this@GoogleDriveActivity,
@@ -78,6 +75,7 @@ class GoogleDriveActivity : BaseGoogleActivity(), OnConnectionFailedListener {
                         .isThemeDarkMode()
                         .collectAsStateWithLifecycle(initialValue = false)
 
+                    val hasInternetConnection by mViewModel.hasInternetConnection.collectAsStateWithLifecycle()
                     val uiState: GoogleDriveUiState by mViewModel.googleDriveUiState.collectAsStateWithLifecycle()
                     val signInState: GoogleSignInState by mViewModel.signInState.collectAsStateWithLifecycle()
 
@@ -92,7 +90,7 @@ class GoogleDriveActivity : BaseGoogleActivity(), OnConnectionFailedListener {
                                 uiState = uiState,
                                 signInState = signInState,
                                 driveFileList = mViewModel.driveFileList,
-                                hasInternetConnection = mViewModel.isConnected
+                                hasInternetConnection = hasInternetConnection
                             ) { event -> mViewModel.onEvent(this@GoogleDriveActivity, event) }
                         }
                     }

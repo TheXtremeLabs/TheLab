@@ -12,29 +12,24 @@ import android.net.NetworkInfo
 import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.provider.Settings
-import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 
 @SuppressLint("MissingPermission")
-class LabNetworkManager(
-    private val context: Context,
-    private val lifecycle: Lifecycle
-) : ConnectivityManager.NetworkCallback() {
+class LabNetworkManager(context: Context) : ConnectivityManager.NetworkCallback() {
 
     // Connectivity manager
     private val connectivityManager: ConnectivityManager =
         context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
 
     private val currentNetwork: Network? = connectivityManager.activeNetwork
-    private val capabilities: NetworkCapabilities? =
+    private var capabilities: NetworkCapabilities? =
         connectivityManager.getNetworkCapabilities(currentNetwork)
     val linkProperties = connectivityManager.getLinkProperties(currentNetwork)
 
@@ -43,6 +38,60 @@ class LabNetworkManager(
         MutableStateFlow(NetworkState.Undefined)
     var networkState: StateFlow<NetworkState> = _networkState
 
+    val isConnectedFlow: Flow<Boolean>
+        @SuppressLint("NewApi")
+        get() = callbackFlow {
+            val networkCallback = object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    connectivityManager.getNetworkCapabilities(network)?.let {
+                        if (it.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+                            trySend(true)
+                        }
+                    }
+                }
+
+                override fun onLost(network: Network) {
+                    trySend(false)
+                }
+
+                override fun onUnavailable() {
+                    trySend(false)
+                }
+
+                override fun onCapabilitiesChanged(
+                    network: Network,
+                    capabilities: NetworkCapabilities
+                ) {
+                    super.onCapabilitiesChanged(network, capabilities)
+
+                    this@LabNetworkManager.capabilities = capabilities
+
+                    if (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {
+                        trySend(true)
+                    } else {
+                        trySend(false)
+                    }
+                }
+            }
+
+            val networkRequest = NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .build()
+
+            if (LabCompatibilityManager.isNougat()) {
+                connectivityManager.registerDefaultNetworkCallback(networkCallback)
+            } else {
+                connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+            }
+
+            awaitClose {
+                connectivityManager.unregisterNetworkCallback(networkCallback)
+            }
+        }
+
     //////////////////////////////////
     //
     // OVERRIDE
@@ -50,8 +99,8 @@ class LabNetworkManager(
     //////////////////////////////////
     init {
         Timber.d("init method")
-        registerLifecycle()
-        registerCallback()
+        // registerLifecycle()
+        // registerCallback()
     }
 
     override fun onAvailable(network: Network) {
@@ -105,47 +154,6 @@ class LabNetworkManager(
     // CLASS METHODS
     //
     //////////////////////////////////
-    private fun registerLifecycle() {
-        Timber.d("registerLifecycle()")
-
-        (context as ComponentActivity).lifecycleScope.launch {
-            when (lifecycle.currentState) {
-                Lifecycle.State.STARTED -> {
-                    Timber.d("Lifecycle.State.STARTED")
-                }
-
-                Lifecycle.State.RESUMED -> {
-                    Timber.d("Lifecycle.State.RESUMED")
-                }
-
-                Lifecycle.State.DESTROYED -> {
-                    Timber.e("Lifecycle.State.DESTROYED")
-                    connectivityManager.unregisterNetworkCallback(this@LabNetworkManager)
-                }
-
-                else -> {
-                    Timber.e("else branch")
-                }
-            }
-        }
-    }
-
-    @SuppressLint("NewApi")
-    private fun registerCallback() {
-        Timber.d("registerLifecycle()")
-        if (!LabCompatibilityManager.isNougat()) {
-            val networkRequest = NetworkRequest.Builder()
-                .apply {
-                    addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                    addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                }
-                .build()
-            connectivityManager.registerNetworkCallback(networkRequest, this)
-        } else {
-            connectivityManager.registerDefaultNetworkCallback(this)
-        }
-    }
-
     @SuppressLint("NewApi")
     fun isNetworkAvailable(): Boolean = if (LabCompatibilityManager.isMarshmallow()) {
         Timber.d("isNetworkAvailable()")
@@ -229,7 +237,7 @@ class LabNetworkManager(
         @SuppressLint("StaticFieldLeak")
         private var mInstance: LabNetworkManager? = null
 
-        fun getInstance(context: Context, lifecycle: Lifecycle): LabNetworkManager =
-            mInstance ?: LabNetworkManager(context, lifecycle)
+        fun getInstance(context: Context): LabNetworkManager =
+            mInstance ?: synchronized(this) { mInstance ?: LabNetworkManager(context) }
     }
 }

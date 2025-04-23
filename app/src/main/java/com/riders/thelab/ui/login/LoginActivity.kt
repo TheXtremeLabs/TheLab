@@ -36,7 +36,6 @@ class LoginActivity : BaseGoogleActivity() {
     // Use of the database to store and log users
     private val mViewModel: LoginViewModel by viewModels()
 
-    private var mLabNetworkManager: LabNetworkManager? = null
     private var mNavigator: Navigator? = null
 
     private var windowSize: WindowSizeClass? = null
@@ -48,10 +47,6 @@ class LoginActivity : BaseGoogleActivity() {
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        mLabNetworkManager = LabNetworkManager
-            .getInstance(this, lifecycle)
-            .also { mViewModel.observeNetworkState(it) }
 
         mNavigator = Navigator(this)
 
@@ -114,7 +109,7 @@ class LoginActivity : BaseGoogleActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                if (mViewModel.hasInternetConnection) {
+                if (mViewModel.hasInternetConnection.value) {
                     UIManager.showConnectionStatusInSnackBar(
                         this@LoginActivity,
                         true

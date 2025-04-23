@@ -39,7 +39,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
@@ -51,6 +53,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
+    labNetworkManager: LabNetworkManager,
     val uiRepository: IUiRepository,
     val speechToTextRepository: SpeechToTextRepository
 ) : VoiceManagedViewModel(speechToTextRepository), DefaultLifecycleObserver {
@@ -91,8 +94,12 @@ class MainActivityViewModel @Inject constructor(
     // Network
     private lateinit var networkState: StateFlow<NetworkState>
 
-    private var hasInternetConnection: Boolean by mutableStateOf(false)
-        private set
+    // Network State
+    var hasInternetConnection: StateFlow<Boolean> = labNetworkManager.isConnectedFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = false
+    )
 
     // ViewPager Scroll
     var isPagerAutoScroll: Boolean by mutableStateOf(false)
@@ -132,12 +139,6 @@ class MainActivityViewModel @Inject constructor(
                 updateKeyboardVisible(false)
             }
         }
-    }
-
-
-    // Network
-    private fun updateHasInternetConnection(hasConnection: Boolean) {
-        this.hasInternetConnection = hasConnection
     }
 
     // Search
@@ -194,49 +195,6 @@ class MainActivityViewModel @Inject constructor(
         mNavigator = Navigator(activity)
     }
 
-    fun observeNetworkState(networkManager: LabNetworkManager) {
-        networkState = networkManager.networkState
-
-        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-            networkManager.getNetworkState().collect { networkState ->
-                when (networkState) {
-                    is NetworkState.Available -> {
-                        Timber.d("observeNetworkState() | network state is Available. All set.")
-
-                        updateHasInternetConnection(true)
-
-                        updateKeyboardVisible(true)
-                        updateDynamicIslandState(IslandState.NetworkState.Available)
-
-                        speechToTextRepository.startRecognition()
-                    }
-
-                    is NetworkState.Losing -> {
-                        Timber.w("observeNetworkState() | network state is Losing. Internet connection about to be lost")
-                        updateKeyboardVisible(true)
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Lost -> {
-                        Timber.e("observeNetworkState() | network state is Lost. Should not allow network calls initialization")
-                        updateKeyboardVisible(true)
-                        updateHasInternetConnection(false)
-                        updateDynamicIslandState(IslandState.NetworkState.Lost)
-                    }
-
-                    is NetworkState.Unavailable -> {
-                        Timber.e("observeNetworkState() | network state is Unavailable. Should not allow network calls initialization")
-                        updateHasInternetConnection(false)
-                        updateDynamicIslandState(IslandState.NetworkState.Unavailable)
-                    }
-
-                    is NetworkState.Undefined -> {
-                        Timber.i("observeNetworkState() | network state is Undefined. Do nothing")
-                    }
-                }
-            }
-        }
-    }
 
     fun onEvent(event: UiEvent) {
         Timber.d("onEvent() | event : $event")
@@ -445,6 +403,7 @@ class MainActivityViewModel @Inject constructor(
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
         Timber.d("onStart()")
+        speechToTextRepository.startRecognition()
     }
 
     override fun onPause(owner: LifecycleOwner) {

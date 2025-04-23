@@ -3,6 +3,8 @@ package com.riders.thelab.feature.youtube.ui.main
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
@@ -18,8 +20,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
@@ -31,9 +35,10 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class YoutubeViewModel @Inject constructor(
+    labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
     val uiRepository: IUiRepository
-) : BaseViewModel(), CoroutineScope {
+) : BaseViewModel(), CoroutineScope, DefaultLifecycleObserver {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()
@@ -47,15 +52,15 @@ class YoutubeViewModel @Inject constructor(
         MutableStateFlow(YoutubeUiState.Loading)
     val youtubeUiState: StateFlow<YoutubeUiState> = _youtubeUiState.asStateFlow()
 
-    var hasInternetConnection: Boolean by mutableStateOf(false)
-
+    // Network State
+    val hasInternetConnection: StateFlow<Boolean> = labNetworkManager.isConnectedFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = false
+    )
 
     private fun updateYoutubeUiState(newState: YoutubeUiState) {
         this._youtubeUiState.value = newState
-    }
-
-    private fun updateHasInternetConnection(hasInternet: Boolean) {
-        this.hasInternetConnection = hasInternet
     }
 
     //////////////////////////////////////////
@@ -96,42 +101,6 @@ class YoutubeViewModel @Inject constructor(
     // CLASS METHODS
     //
     /////////////////////////////////////////////////
-    fun observeNetworkState(networkManager: LabNetworkManager) {
-        Timber.d("observeNetworkState()")
-
-        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-            networkManager.getNetworkState().collect { networkState ->
-                when (networkState) {
-                    is NetworkState.Available -> {
-                        Timber.d("network state is Available. All set.")
-                        updateHasInternetConnection(true)
-
-                        fetchVideos()
-                    }
-
-                    is NetworkState.Losing -> {
-                        Timber.w("network state is Losing. Internet connection about to be lost")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Lost -> {
-                        Timber.e("network state is Lost. Should not allow network calls initialization")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Unavailable -> {
-                        Timber.e("network state is Unavailable. Should not allow network calls initialization")
-                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Undefined -> {
-                        Timber.i("network state is Undefined. Do nothing")
-                    }
-                }
-            }
-        }
-    }
-
     @OptIn(ExperimentalKotoolsTypesApi::class)
     fun fetchVideos() {
         Timber.d("fetchVideos() | Fetch Content")
@@ -165,6 +134,5 @@ class YoutubeViewModel @Inject constructor(
                     }
                 }
             }
-
     }
 }

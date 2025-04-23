@@ -345,7 +345,7 @@ object AppBuilderUtils {
                         .withActivityDescription("Play music that is stored on your phone (Live Streaming wip)...")
                         .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_music))
                         .withActivityClass(SongPlayerActivity::class.java)
-                        .withActivityDate("2024/02/17")
+                        .withActivityDate("2025/04/22")
                         .build()
                 this.add(songPlayer)
 

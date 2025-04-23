@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,14 +44,14 @@ import java.util.UUID
 @Composable
 fun WeatherLoading(theme: AppTheme, darkTheme: Boolean, modifier: Modifier = Modifier) {
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .size(56.dp)
                 .then(modifier),
             contentAlignment = Alignment.Center
         ) {
             Lottie(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.size(this.maxWidth, this.maxHeight),
                 url = "https://assets2.lottiefiles.com/packages/lf20_kk62um5v.json"
             )
         }

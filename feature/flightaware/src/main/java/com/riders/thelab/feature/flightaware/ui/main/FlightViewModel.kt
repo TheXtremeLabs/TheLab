@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
@@ -29,10 +30,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FlightViewModel @Inject constructor(
+    labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
     val uiRepository: IUiRepository
-) : FlightSearchViewModel(repository) {
-
+) : FlightSearchViewModel(labNetworkManager = labNetworkManager, repository = repository) {
 
     //////////////////////////////////////////
     // Composable states

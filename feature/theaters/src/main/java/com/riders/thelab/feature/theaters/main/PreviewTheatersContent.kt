@@ -46,8 +46,9 @@ import timber.log.Timber
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TheatersContent(
-    theme: AppTheme, darkTheme: Boolean,
-    networkState: NetworkState,
+    theme: AppTheme,
+    darkTheme: Boolean,
+    hasNetworkConnection: Boolean,
     categories: List<String>,
     tabRowSelected: Int,
     trendingMovieItem: TMDBUiState.TMDBTrendingMovieItemUiState,
@@ -87,25 +88,22 @@ fun TheatersContent(
                     theme = theme,
                     mainCustomContent = {
                         AnimatedContent(
-                            targetState = networkState,
+                            targetState = hasNetworkConnection,
                             transitionSpec = { transitionSpec.invoke() },
                             label = "network state animation"
-                        ) { targetState: NetworkState ->
-                            when (targetState) {
-                                is NetworkState.Available -> {
-                                    LabTabRow(
-                                        theme = theme,
-                                        selectedItemIndex = tabRowSelected,
-                                        items = categories,
-                                        onClick = { index ->
-                                            uiEvent.invoke(UiEvent.OnUpdateTabRowSelected(index))
-                                        }
-                                    )
-                                }
+                        ) { targetState ->
+                            if (!targetState) {
+                                Box() {}
+                            } else {
 
-                                else -> {
-                                    Box {}
-                                }
+                                LabTabRow(
+                                    theme = theme,
+                                    selectedItemIndex = tabRowSelected,
+                                    items = categories,
+                                    onClick = { index ->
+                                        uiEvent.invoke(UiEvent.OnUpdateTabRowSelected(index))
+                                    }
+                                )
                             }
                         }
                     },
@@ -116,62 +114,57 @@ fun TheatersContent(
         ) { /*paddingContent ->*/
             AnimatedContent(
                 // modifier = Modifier.fillMaxSize().padding(paddingContent),
-                targetState = networkState,
+                targetState = hasNetworkConnection,
                 transitionSpec = { transitionSpec() },
                 label = "network state animation"
-            ) { targetState: NetworkState ->
-                when (targetState) {
-                    is NetworkState.Available -> {
-                        Box(
-                            modifier = Modifier.pullRefresh(
-                                state = pullRefreshState,
-                                enabled = true
-                            )
-                        ) {
-                            LabHorizontalViewPagerGeneric(
-                                theme = theme,
-                                pagerState = pagerState,
-                                items = categories,
-                                onCurrentPageChanged = { index ->
-                                    uiEvent.invoke(UiEvent.OnUpdateTabRowSelected(index))
+            ) { targetState ->
+                if (!targetState) {
+                    NoNetworkConnection()
+                } else {
+                    Box(
+                        modifier = Modifier.pullRefresh(
+                            state = pullRefreshState,
+                            enabled = true
+                        )
+                    ) {
+                        LabHorizontalViewPagerGeneric(
+                            theme = theme,
+                            pagerState = pagerState,
+                            items = categories,
+                            onCurrentPageChanged = { index ->
+                                uiEvent.invoke(UiEvent.OnUpdateTabRowSelected(index))
+                            }
+                        ) { page, _ ->
+
+                            when (page) {
+                                0 -> {
+                                    ScreenMovieContent(
+                                        theme = theme, darkTheme = darkTheme,
+                                        trendingMovieItem,
+                                        movies,
+                                        upcomingMovies,
+                                        uiEvent = uiEvent
+                                    )
                                 }
-                            ) { page, _ ->
 
-                                when (page) {
-                                    0 -> {
-                                        ScreenMovieContent(
-                                            theme = theme, darkTheme = darkTheme,
-                                            trendingMovieItem,
-                                            movies,
-                                            upcomingMovies,
-                                            uiEvent = uiEvent
-                                        )
-                                    }
-
-                                    1 -> {
-                                        ScreenTvShowsContent(
-                                            theme = theme, darkTheme = darkTheme,
-                                            trendingTvShowItem,
-                                            trendingTvShows,
-                                            uiEvent = uiEvent
-                                        )
-                                    }
+                                1 -> {
+                                    ScreenTvShowsContent(
+                                        theme = theme, darkTheme = darkTheme,
+                                        trendingTvShowItem,
+                                        trendingTvShows,
+                                        uiEvent = uiEvent
+                                    )
                                 }
                             }
-
-                            PullRefreshIndicator(
-                                modifier = Modifier.align(Alignment.TopCenter),
-                                refreshing = isRefreshing,
-                                state = pullRefreshState
-                            )
                         }
-                    }
 
-                    else -> {
-                        NoNetworkConnection()
+                        PullRefreshIndicator(
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            refreshing = isRefreshing,
+                            state = pullRefreshState
+                        )
                     }
                 }
-
             }
         }
     }
@@ -207,7 +200,7 @@ private fun PreviewTheatersContent(@PreviewParameter(PreviewProviderNetworkState
         TheatersContent(
             theme = AppTheme.Default,
             darkTheme = isSystemInDarkTheme(),
-            networkState = networkState,
+            hasNetworkConnection = true,
             categories = listOf("Movies", "Tv Shows"),
             tabRowSelected = 0,
             trendingMovieItem = TMDBUiState.TMDBTrendingMovieItemUiState.Loading,

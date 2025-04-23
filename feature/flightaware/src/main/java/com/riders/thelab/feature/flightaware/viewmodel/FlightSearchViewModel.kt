@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.IRepository
@@ -42,8 +43,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 open class FlightSearchViewModel @Inject constructor(
+    labNetworkManager: LabNetworkManager,
     private val repository: IRepository
-) : BaseFlightViewModel() {
+) : BaseFlightViewModel(labNetworkManager) {
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
@@ -63,7 +65,7 @@ open class FlightSearchViewModel @Inject constructor(
             .debounce(750)
             .distinctUntilChanged()
             .mapLatest { latestDepartureAirportInput ->
-                if (!hasInternetConnection) {
+                if (!hasInternetConnection.value) {
                     Timber.e("Internet connection not available. Make sure that you are connected to the internet to proceed to the search")
                     return@mapLatest emptyList()
                 }
@@ -105,7 +107,7 @@ open class FlightSearchViewModel @Inject constructor(
             .debounce(750)
             .distinctUntilChanged()
             .mapLatest { latestArrivalAirportInput ->
-                if (!hasInternetConnection) {
+                if (!hasInternetConnection.value) {
                     Timber.e("Internet connection not available. Make sure that you are connected to the internet to proceed to the search")
                     return@mapLatest emptyList()
                 }
@@ -203,7 +205,7 @@ open class FlightSearchViewModel @Inject constructor(
 
     @OptIn(ExperimentalKotoolsTypesApi::class)
     open fun onEvent(uiEvent: UiEvent, activity: Activity? = null) {
-        if (!hasInternetConnection) {
+        if (!hasInternetConnection.value) {
             Timber.e("Internet connection not available. Make sure that you are connected to the internet to proceed to the search")
             return
         }

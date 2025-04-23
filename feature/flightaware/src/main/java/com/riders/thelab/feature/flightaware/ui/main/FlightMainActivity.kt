@@ -19,9 +19,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
+import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -42,8 +41,6 @@ import timber.log.Timber
 class FlightMainActivity : BaseComponentActivity() {
 
     private val mViewModel: FlightViewModel by viewModels<FlightViewModel>()
-
-    private var mLabNetworkManager: LabNetworkManager? = null
 
     private var continueWithBlock: Pair<Boolean, () -> Unit> = false to {}
 
@@ -71,13 +68,6 @@ class FlightMainActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mLabNetworkManager = LabNetworkManager
-            .getInstance(this, lifecycle)
-            .also {
-                mViewModel.observeNetworkState(it)
-                // mFlightSearchViewModel.observeNetworkState(it)
-            }
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
@@ -88,6 +78,7 @@ class FlightMainActivity : BaseComponentActivity() {
                         .isThemeDarkMode()
                         .collectAsStateWithLifecycle(initialValue = false)
 
+                    val hasInternetConnection by mViewModel.hasInternetConnection.collectAsStateWithLifecycle()
                     val departureAirportsFlow by mViewModel.departureAirportStateFlow.collectAsStateWithLifecycle()
                     val arrivalAirportsFlow by mViewModel.arrivalAirportStateFlow.collectAsStateWithLifecycle()
 
@@ -98,8 +89,9 @@ class FlightMainActivity : BaseComponentActivity() {
                             color = MaterialTheme.colorScheme.background
                         ) {
                             FlightMainContent(
-                                theme = theme, darkTheme = isDarkTheme,
-                                hasConnection = mViewModel.hasInternetConnection,
+                                theme = theme,
+                                darkTheme = isDarkTheme,
+                                hasConnection = hasInternetConnection,
                                 searchPageIndex = mViewModel.searchPageIndex,
                                 airportsNearBy = mViewModel.airportsNearBy,
                                 isLoading = mViewModel.isAirportsNearByLoading,

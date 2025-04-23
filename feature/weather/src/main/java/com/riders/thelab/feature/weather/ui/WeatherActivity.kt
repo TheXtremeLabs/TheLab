@@ -46,8 +46,6 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
 
     private val mWeatherViewModel: WeatherViewModel by viewModels<WeatherViewModel>()
 
-    // Network
-    private var mLabNetworkManager: LabNetworkManager? = null
     private var mLabLocationManager: LabLocationManager? = null
 
     private val mGpsSwitchStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -143,11 +141,6 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                         "Permissions are denied. User may access to app with limited location related features"
                     )
                 } else {
-
-                    mLabNetworkManager = LabNetworkManager
-                        .getInstance(this, lifecycle)
-                        .also { mWeatherViewModel.observeNetworkState(it) }
-
                     initViewModelObservers()
 
                     // Start a coroutine in the lifecycle scope

@@ -35,12 +35,12 @@ import com.riders.thelab.core.broadcast.LocationBroadcastReceiver
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
-import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.location.GpsUtils
 import com.riders.thelab.core.location.OnGpsListener
+import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.service.TheLabVoiceAssistantService
 import com.riders.thelab.core.speechtotext.SpeechRecognizerError
@@ -120,6 +120,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                         .isThemeDarkMode()
                         .collectAsStateWithLifecycle(initialValue = false)
 
+                    val hasInternetConnection by mViewModel.hasInternetConnection.collectAsStateWithLifecycle()
                     val dynamicIslandUiState by mViewModel.dynamicIslandState.collectAsStateWithLifecycle()
 
                     TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
@@ -131,6 +132,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                             MainContent(
                                 theme = theme,
                                 darkTheme = isDarkTheme,
+                                hasInternetConnection = hasInternetConnection,
                                 dynamicIslandUiState = dynamicIslandUiState,
                                 isDynamicIslandVisible = mViewModel.isDynamicIslandVisible,
                                 searchedAppRequest = mViewModel.searchedAppRequest,
@@ -303,10 +305,6 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 
     private fun initActivityVariables() {
         mViewModel.initNavigator(this@MainActivity)
-
-        mLabNetworkManager = LabNetworkManager
-            .getInstance(this@MainActivity, lifecycle)
-            .also { mViewModel.observeNetworkState(it) }
 
         /*locationReceiver = LocationBroadcastReceiver()
         mGpsUtils = GpsUtils(this@MainActivity)

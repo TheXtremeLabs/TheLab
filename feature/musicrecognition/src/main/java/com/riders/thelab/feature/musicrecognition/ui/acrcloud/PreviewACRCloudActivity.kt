@@ -24,12 +24,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.FabPosition
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AirplanemodeActive
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.SignalWifiConnectedNoInternet4
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -48,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -58,17 +56,14 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
-import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.color.md_theme_dark_onError
 import com.riders.thelab.core.ui.compose.color.md_theme_light_onPrimaryContainer
 import com.riders.thelab.core.ui.compose.color.success
 import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.component.fab.PulsarFab
 import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
-import com.riders.thelab.core.ui.compose.component.toast.Toast
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
@@ -162,8 +157,9 @@ fun Searching(theme: AppTheme, darkTheme: Boolean, result: String) {
             PulsarFab {
                 Image(
                     modifier = Modifier.size(72.dp),
-                    painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_the_lab_12_logo_white),
-                    contentDescription = null,
+                    painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_lab_6_lab),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                    contentDescription = null
                 )
             }
         }
@@ -309,14 +305,12 @@ fun RecognitionResult(
 fun ACRCloudActivityContent(
     theme: AppTheme, darkTheme: Boolean,
     acrUiState: ACRUiState,
-    networkState: NetworkState,
+    hasNetworkConnection: Boolean,
     result: String,
     canLaunchAudioRecognition: Boolean,
     onStartRecognition: () -> Unit,
     isRecognizing: Boolean
 ) {
-
-    val isConnected = networkState == NetworkState.Available
     var currentCapabilityChangedCount by remember { mutableIntStateOf(0) }
     //  val maxCapabilitiesCountTaken = 1
 
@@ -393,7 +387,7 @@ fun ACRCloudActivityContent(
             }
         ) { contentPadding ->
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                if (!isConnected) {
+                if (!hasNetworkConnection) {
                     NoNetworkConnection()
                 } else {
                     Column(
@@ -463,8 +457,9 @@ fun ACRCloudActivityContent(
                     }
                 }
 
-                AnimatedContent(
-                    targetState = networkState,
+                // TODO : Refactor this part
+                /*AnimatedContent(
+                    targetState = hasNetworkConnection,
                     label = "Toast animation content"
                 ) { targetState ->
                     when (targetState) {
@@ -478,7 +473,7 @@ fun ACRCloudActivityContent(
                             currentCapabilityChangedCount = 0
                         }
 
-                        /*is NetworkConnectionState.OnCapabilitiesChanged -> {
+                        *//*is NetworkConnectionState.OnCapabilitiesChanged -> {
                             currentCapabilityChangedCount += 1
 
                             if (currentCapabilityChangedCount < maxCapabilitiesCountTaken) {
@@ -488,7 +483,7 @@ fun ACRCloudActivityContent(
                                     containerColor = Orange
                                 )
                             }
-                        }*/
+                        }*//*
 
                         is NetworkState.Losing -> {
                             Toast(
@@ -512,7 +507,7 @@ fun ACRCloudActivityContent(
 
                         else -> {}
                     }
-                }
+                }*/
             }
         }
     }
@@ -586,12 +581,30 @@ fun PreviewRecognitionError(@PreviewParameter(AppThemePreviewProvider::class) ap
 
 @DevicePreviews
 @Composable
-fun PreviewMainActivityContent(@PreviewParameter(PreviewProviderACRCloud::class) acrUiState: ACRUiState) {
+fun PreviewMainActivityContentWithoutInternetConnection(@PreviewParameter(PreviewProviderACRCloud::class) acrUiState: ACRUiState) {
     TheLabTheme(theme = AppTheme.Default) {
         ACRCloudActivityContent(
-            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
             acrUiState = acrUiState,
-            networkState = NetworkState.Available,
+            hasNetworkConnection = false,
+            result = "Wheezy feat. Gunna",
+            canLaunchAudioRecognition = true,
+            onStartRecognition = {},
+            isRecognizing = false
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewMainActivityContentWithInternetConnection(@PreviewParameter(PreviewProviderACRCloud::class) acrUiState: ACRUiState) {
+    TheLabTheme(theme = AppTheme.Default) {
+        ACRCloudActivityContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            acrUiState = acrUiState,
+            hasNetworkConnection = true,
             result = "Wheezy feat. Gunna",
             canLaunchAudioRecognition = true,
             onStartRecognition = {},

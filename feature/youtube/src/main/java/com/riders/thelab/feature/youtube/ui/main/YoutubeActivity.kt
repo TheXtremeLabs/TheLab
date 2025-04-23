@@ -26,14 +26,8 @@ class YoutubeActivity : BaseComponentActivity() {
 
     private val mViewModel: YoutubeViewModel by viewModels<YoutubeViewModel>()
 
-    private val mNetworkManager: LabNetworkManager by lazy {
-        LabNetworkManager(context = this@YoutubeActivity, lifecycle = this.lifecycle)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        mViewModel.observeNetworkState(mNetworkManager)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -70,7 +64,7 @@ class YoutubeActivity : BaseComponentActivity() {
         super.onStart()
 
         //Test the internet's connection
-        if (!mViewModel.hasInternetConnection) {
+        if (!mViewModel.hasInternetConnection.value) {
             Timber.e("No Internet connection")
             UIManager.showToast(
                 this@YoutubeActivity,

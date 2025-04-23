@@ -64,6 +64,7 @@ import timber.log.Timber
 fun MainContent(
     theme: AppTheme,
     darkTheme: Boolean,
+    hasInternetConnection: Boolean,
     dynamicIslandUiState: IslandState,
     isDynamicIslandVisible: Boolean,
     searchedAppRequest: String,
@@ -254,6 +255,14 @@ fun MainContent(
         }
     }
 
+    LaunchedEffect(hasInternetConnection) {
+        if (!hasInternetConnection) {
+            uiEvent.invoke(UiEvent.OnUpdateDynamicIslandState(IslandState.NetworkState.Unavailable))
+        } else {
+            uiEvent.invoke(UiEvent.OnUpdateDynamicIslandState(IslandState.NetworkState.Available))
+        }
+    }
+
     /*LaunchedEffect(dynamicIslandUiState) {
         Timber.d("LaunchedEffect | dynamic island state: ${dynamicIslandUiState.javaClass.simpleName}")
         if ((dynamicIslandUiState is IslandState.SearchState ||
@@ -278,8 +287,7 @@ fun MainContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewMainContent(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
-
+private fun PreviewMainContentWithoutInternetConnection(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
     val context = LocalContext.current
     val appList = LabAppManager.getActivityList(context).take(3).let {
         it.map { localApp ->
@@ -315,6 +323,61 @@ private fun PreviewMainContent(@PreviewParameter(IslandStatePreviewProvider::cla
         MainContent(
             theme = AppTheme.Default,
             darkTheme = isSystemInDarkTheme(),
+            hasInternetConnection = false,
+            dynamicIslandUiState = state,
+            isDynamicIslandVisible = true,
+            searchedAppRequest = "Colors",
+            onSearchAppRequestChanged = { },
+            filteredList = appList,
+            whatsNewList = appList,
+            isMicrophoneEnabled = false,
+            onUpdateMicrophoneEnabled = {},
+            isKeyboardVisible = true,
+            onUpdateKeyboardVisible = {},
+            isPagerAutoScroll = true
+        ) {}
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewMainContentWithInternetConnection(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
+    val context = LocalContext.current
+    val appList = LabAppManager.getActivityList(context).take(3).let {
+        it.map { localApp ->
+
+            val bitmap: Bitmap? = when (localApp.appDrawableIcon) {
+                is BitmapDrawable -> {
+                    (localApp.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
+                }
+
+                is VectorDrawable -> {
+                    App.getBitmap(localApp.appDrawableIcon as VectorDrawable)!!
+                }
+
+                else -> {
+                    null
+                }
+            }
+
+            LocalApp(
+                localApp.id,
+                localApp.appTitle!!,
+                localApp.appDescription!!,
+                null,
+                localApp.appActivity,
+                localApp.appDate!!
+            ).apply {
+                this.bitmap = bitmap
+            }
+        }
+    }
+
+    TheLabTheme(theme = AppTheme.Default) {
+        MainContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            hasInternetConnection = true,
             dynamicIslandUiState = state,
             isDynamicIslandVisible = true,
             searchedAppRequest = "Colors",

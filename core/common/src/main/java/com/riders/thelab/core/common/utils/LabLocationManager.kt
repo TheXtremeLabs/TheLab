@@ -173,7 +173,7 @@ class LabLocationManager(val context: Context) : LocationListener {
     }
 
     /**
-     * Function to check GPS/wifi enabled
+     * Function to check GPS/Wi-Fi enabled
      *
      * @return boolean
      */

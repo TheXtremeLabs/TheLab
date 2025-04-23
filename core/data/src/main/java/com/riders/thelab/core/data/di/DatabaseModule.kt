@@ -19,7 +19,7 @@ import java.util.concurrent.Executors
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal object AppModule {
+internal object DatabaseModule {
 
     /*@Singleton
     @Provides

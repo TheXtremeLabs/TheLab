@@ -520,11 +520,14 @@ fun TheLabTopAppBar(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Bottom
                 ) {
-                    IconButton(onClick = {
-                        if (null != actionBlock) {
-                            actionBlock()
-                        }
-                    }) {
+                    IconButton(
+                        onClick = {
+                            if (null != actionBlock) {
+                                actionBlock()
+                            }
+                        },
+                        enabled = iconState
+                    ) {
                         Icon(
                             imageVector = if (!iconState) Icons.Filled.GpsOff else Icons.Filled.GpsFixed,
                             contentDescription = "action icon "

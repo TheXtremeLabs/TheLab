@@ -31,7 +31,9 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -64,12 +66,17 @@ fun <viewModel : LifecycleObserver> viewModel.observeLifecycleEvents(lifecycle: 
 @Suppress("EmptyMethod")
 @HiltViewModel
 class ACRCloudViewModel @Inject constructor(
+    labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
     val uiRepository: IUiRepository
 ) : ViewModel(), DefaultLifecycleObserver, IACRCloudListener {
 
-    // Network
-    lateinit var mNetworkState: StateFlow<NetworkState>
+    // Network State
+    var hasInternetConnection: StateFlow<Boolean> = labNetworkManager.isConnectedFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = false
+    )
 
     private var mClient: ACRCloudClient? = null
     private var mConfig: ACRCloudConfig? = null
@@ -139,47 +146,6 @@ class ACRCloudViewModel @Inject constructor(
     // CLASS METHODS
     //
     ///////////////////////////////
-    fun observeNetworkState(networkManager: LabNetworkManager) {
-        Timber.d("observeNetworkState()")
-        mNetworkState = networkManager.networkState
-
-
-        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-            networkManager.getNetworkState().collect { networkState ->
-                when (networkState) {
-                    is NetworkState.Available -> {
-                        Timber.d("network state is Available. All set.")
-//                        updateHasInternetConnection(true)
-
-                        if (spotifyToken.isNullOrBlank()) {
-                            getSpotifyToken()
-                        }
-                    }
-
-                    is NetworkState.Losing -> {
-                        Timber.w("network state is Losing. Internet connection about to be lost")
-//                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Lost -> {
-                        Timber.e("network state is Lost. Should not allow network calls initialization")
-//                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Unavailable -> {
-                        Timber.e("network state is Unavailable. Should not allow network calls initialization")
-//                        updateHasInternetConnection(false)
-                    }
-
-                    is NetworkState.Undefined -> {
-                        Timber.i("network state is Undefined. Do nothing")
-                    }
-                }
-            }
-        }
-    }
-
-
     fun initACRCloud(context: Context) {
         Timber.d("initACRCloud()")
         if (null == mConfig) {
@@ -336,6 +302,13 @@ class ACRCloudViewModel @Inject constructor(
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
         Timber.d("onStart()")
+
+        if(hasInternetConnection.value){
+
+            if (spotifyToken.isNullOrBlank()) {
+                getSpotifyToken()
+            }
+        }
     }
 
     override fun onPause(owner: LifecycleOwner) {
