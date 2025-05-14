@@ -1,7 +1,7 @@
 [versions]
 # Gradle version
 # Android
-androidGradlePlugin = "8.9.2"
+androidGradlePlugin = "8.10.0"
 navigationGradlePlugin = "2.8.9"
 # Google Services
 playServicesGradlePlugin = "4.4.2"
@@ -125,7 +125,7 @@ koin = "4.1.0-Beta6"
 koinAnnotationsBom = "2.0.0"
 koinKspCompiler = "2.0.0"
 # Kotlin (for gradle plugin version and dependency)
-kotlin = "2.1.20"
+kotlin = "2.1.21"
 kotlinxCoroutines = "1.10.2"
 kotlinxDatetime = "0.6.2"
 kotlinPlayServices = "1.10.2"
@@ -133,7 +133,7 @@ kotlinxMetadataJvm = "0.9.0"
 kotlinxSerializationJson = "1.8.1"
 ktor = "3.1.2"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
-ksp = "2.1.20-1.0.32"
+ksp = "2.1.21-2.0.1"
 landscapist = "2.4.7"
 lint = "31.9.2"
 location = "21.3.0"
