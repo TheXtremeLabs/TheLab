@@ -19,6 +19,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.ResolvableApiException
@@ -48,8 +49,6 @@ import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseAppCompatActivity
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.databinding.ActivityLocationOnMapsBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -242,7 +241,7 @@ class LocationOnMapsActivity
         mMap.setMaxZoomPreference(MapsEnum.DEFAULT_MAX_ZOOM.distance)
         mMap.moveCamera(CameraUpdateFactory.zoomTo(MapsEnum.WORLD.distance))
 
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             delay(3000)
             setLocationSettings()
             delay(800)
@@ -400,7 +399,7 @@ class LocationOnMapsActivity
     }
 
     private fun hideLoading() {
-        if (binding.rlMapsLoading.visibility == View.VISIBLE)
+        if (null != _viewBinding && binding.rlMapsLoading.visibility == View.VISIBLE)
             startAnimation(binding.rlMapsLoading)
 
     }
