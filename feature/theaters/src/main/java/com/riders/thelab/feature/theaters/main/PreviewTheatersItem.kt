@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -39,6 +40,7 @@ import coil.size.Size
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.utils.Constants
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.ticket.TicketShape
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
@@ -171,10 +173,12 @@ fun TMDBItem(
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
-            modifier = Modifier.size(
-                width = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height),
-                height = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width)
-            ),
+            modifier = Modifier
+                .size(
+                    width = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height),
+                    height = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width)
+                )
+                .clip(TicketShape(circleRadius = 8.dp, cornerSize = CornerSize(8.dp))),
             onClick = { uiEvent.invoke(UiEvent.OnItemDetailClicked(tmdbItem)) }
         ) {
             Column(
@@ -186,7 +190,6 @@ fun TMDBItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width))
-                        .padding(horizontal = 0.dp)
                         .weight(2.5f)
                         .clip(RoundedCornerShape(12.dp)),
                     painter = painter,

@@ -110,7 +110,7 @@ fun ThemeSelectorCardRowItem(selectedTheme: AppTheme, uiEvent: (UiEvent) -> Unit
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(selectedTheme.name, modifier = Modifier.clickable { expanded = true })
+                    Text(selectedTheme.name, modifier = Modifier.clickable { expanded = true }, color = MaterialTheme.colorScheme.onPrimaryContainer)
                     BiColorCard(
                         firstColor = selectedTheme.primaryVariant,
                         secondColor = selectedTheme.primaryColor

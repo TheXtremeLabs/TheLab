@@ -52,8 +52,8 @@ import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
-import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import java.util.Locale
 
 
@@ -129,13 +129,20 @@ fun EditProfileCardRowItem(username: String, email: String, photoUrl: String? = 
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = username,
-                style = TextStyle(fontWeight = FontWeight.W600),
+                style = TextStyle(
+                    fontWeight = FontWeight.W600,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = email,
-                style = TextStyle(fontWeight = FontWeight.W200, fontSize = 11.sp),
+                style = TextStyle(
+                    fontWeight = FontWeight.W200,
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
                 overflow = TextOverflow.Ellipsis
             )
         }
@@ -183,7 +190,10 @@ fun UserSection(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             CircularProgressIndicator()
-                            Text(text = "Fetching user's data. Please wait...")
+                            Text(
+                                text = "Fetching user's data. Please wait...",
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
                         }
                     }
 
@@ -226,7 +236,10 @@ fun UserSection(
                             horizontalAlignment = Alignment.Start,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            Text(text = "No account connected")
+                            Text(
+                                text = "No account connected",
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
                         }
                     }
                 }
