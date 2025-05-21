@@ -11,7 +11,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.acrcloud.rec.ACRCloudClient
 import com.acrcloud.rec.ACRCloudConfig
@@ -19,12 +18,12 @@ import com.acrcloud.rec.ACRCloudResult
 import com.acrcloud.rec.IACRCloudListener
 import com.acrcloud.rec.utils.ACRCloudLogger
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -69,7 +68,7 @@ class ACRCloudViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
     val uiRepository: IUiRepository
-) : ViewModel(), DefaultLifecycleObserver, IACRCloudListener {
+) : BaseViewModel(), DefaultLifecycleObserver, IACRCloudListener {
 
     // Network State
     var hasInternetConnection: StateFlow<Boolean> = labNetworkManager.isConnectedFlow.stateIn(
@@ -303,11 +302,8 @@ class ACRCloudViewModel @Inject constructor(
         super.onStart(owner)
         Timber.d("onStart()")
 
-        if(hasInternetConnection.value){
-
-            if (spotifyToken.isNullOrBlank()) {
-                getSpotifyToken()
-            }
+        if (spotifyToken.isNullOrBlank()) {
+            getSpotifyToken()
         }
     }
 
