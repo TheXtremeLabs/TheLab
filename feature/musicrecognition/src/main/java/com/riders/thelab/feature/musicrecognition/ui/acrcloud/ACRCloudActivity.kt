@@ -2,6 +2,7 @@ package com.riders.thelab.feature.musicrecognition.ui.acrcloud
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -14,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -132,7 +134,11 @@ class ACRCloudActivity : BaseComponentActivity() {
                                         mViewModel.startRecognition()
                                     }
                                 },
-                                isRecognizing = mViewModel.isRecognizing
+                                isRecognizing = mViewModel.isRecognizing,
+                                uiEvent = { event -> when(event){
+                                    is UiEvent.OpenInSpotify-> openSpotify(event.song.externalMetadata["trackID"].toString())
+                                    else -> mViewModel.onEvent(event)
+                                } }
                             )
                         }
                     }
@@ -207,6 +213,22 @@ class ACRCloudActivity : BaseComponentActivity() {
         }
     }
 
+    private fun openSpotify(songId: String) {
+        if (songId.isBlank()){
+            Timber.e("openSpotify() | Invalid song ID")
+            return
+        }
+
+        runCatching {
+            val spotifyIntent = Intent(Intent.ACTION_VIEW, "spotify:track:$songId".toUri())
+            startActivity(spotifyIntent)
+        }
+            .onFailure { exception ->
+                exception.printStackTrace()
+                Timber.e("openSpotify() | Error caught with message : ${exception.message} (class: ${exception.javaClass.canonicalName})")
+            }
+            .onSuccess { Timber.i("openSpotify() | Spotify successfully opened with track id : $songId") }
+    }
 
     companion object {
         // Request code will be used to verify if result comes from the login activity. Can be set to any integer.

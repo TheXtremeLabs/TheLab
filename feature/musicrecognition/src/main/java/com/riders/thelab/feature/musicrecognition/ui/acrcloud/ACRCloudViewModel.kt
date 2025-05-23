@@ -18,6 +18,7 @@ import com.acrcloud.rec.ACRCloudResult
 import com.acrcloud.rec.IACRCloudListener
 import com.acrcloud.rec.utils.ACRCloudLogger
 import com.riders.thelab.core.common.network.LabNetworkManager
+import com.riders.thelab.core.common.utils.LabPackageManager
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
@@ -130,21 +131,69 @@ class ACRCloudViewModel @Inject constructor(
             Timber.e("coroutineExceptionHandler | ${throwable.message}")
         }
 
+
     ///////////////////////////////
     //
-    // INITIALIZATION
+    // OVERRIDE
     //
     ///////////////////////////////
     init {
         Timber.i("init method")
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        Timber.e("onCleared()")
+    }
+
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
+        Timber.d("onStart()")
+
+        if (spotifyToken.isNullOrBlank()) {
+            getSpotifyToken()
+        }
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        Timber.e("onPause()")
+    }
+
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        Timber.d("onResume()")
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        super.onStop(owner)
+        Timber.e("onStop()")
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        Timber.e("onDestroy()")
+        mClient?.let {
+            it.release()
+            mClient = null
+        }
+    }
 
     ///////////////////////////////
     //
     // CLASS METHODS
     //
     ///////////////////////////////
+    fun onEvent(event: UiEvent) {
+        Timber.d("onEvent() | event : $event")
+
+        when (event) {
+            is UiEvent.OpenInSpotify -> {
+
+            }
+        }
+    }
+
     fun initACRCloud(context: Context) {
         Timber.d("initACRCloud()")
         if (null == mConfig) {
@@ -287,64 +336,6 @@ class ACRCloudViewModel @Inject constructor(
         updateResult(songFetched)
     }
 
-
-    ///////////////////////////////
-    //
-    // OVERRIDE
-    //
-    ///////////////////////////////
-    override fun onCleared() {
-        super.onCleared()
-        Timber.e("onCleared()")
-    }
-
-    override fun onStart(owner: LifecycleOwner) {
-        super.onStart(owner)
-        Timber.d("onStart()")
-
-        if (spotifyToken.isNullOrBlank()) {
-            getSpotifyToken()
-        }
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-        Timber.e("onPause()")
-    }
-
-    override fun onResume(owner: LifecycleOwner) {
-        super.onResume(owner)
-        Timber.d("onResume()")
-    }
-
-    override fun onStop(owner: LifecycleOwner) {
-        super.onStop(owner)
-        Timber.e("onStop()")
-    }
-
-    override fun onDestroy(owner: LifecycleOwner) {
-        super.onDestroy(owner)
-        Timber.e("onDestroy()")
-        mClient?.let {
-            it.release()
-            mClient = null
-        }
-    }
-
-    override fun onResult(acrResult: ACRCloudResult?) {
-        Timber.d("onResult() | result: $acrResult")
-        acrResult?.let {
-            Timber.d("acr cloud result received: ${it.result}")
-            handleResult(it.result)
-        } ?: {
-            updateUiState(ACRUiState.RecognitionError("Error message"))
-        }
-    }
-
-    override fun onVolumeChanged(volume: Double) {
-        Timber.e("onVolumeChanged() | volume: $volume")
-    }
-
     private fun getSpotifyToken() {
         Timber.d("getSpotifyToken()")
 
@@ -407,5 +398,26 @@ class ACRCloudViewModel @Inject constructor(
                 .getOrNull()
         }
     }
+
+
+    ///////////////////////////////
+    //
+    // IMPLEMENTS METHODS
+    //
+    ///////////////////////////////
+    override fun onResult(acrResult: ACRCloudResult?) {
+        Timber.d("onResult() | result: $acrResult")
+        acrResult?.let {
+            Timber.d("acr cloud result received: ${it.result}")
+            handleResult(it.result)
+        } ?: {
+            updateUiState(ACRUiState.RecognitionError("Error message"))
+        }
+    }
+
+    override fun onVolumeChanged(volume: Double) {
+        Timber.e("onVolumeChanged() | volume: $volume")
+    }
+
 }
 

@@ -2,6 +2,7 @@ package com.riders.thelab.feature.musicrecognition.ui.acrcloud
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -9,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,13 +26,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.FabPosition
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -48,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -56,6 +59,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
+import com.riders.thelab.core.common.utils.LabPackageManager
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
@@ -70,6 +74,7 @@ import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.feature.musicrecognition.R
+import com.riders.thelab.feature.musicrecognition.utils.Constants
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -183,12 +188,14 @@ fun RecognitionError(theme: AppTheme, darkTheme: Boolean) {
 fun RecognitionResult(
     theme: AppTheme,
     darkTheme: Boolean,
-    state: ACRUiState.RecognitionSuccessful
+    state: ACRUiState.RecognitionSuccessful,
+    uiEvent: (UiEvent) -> Unit
 ) {
+    val context = LocalContext.current
     val expanded = remember { mutableStateOf(false) }
 
     val painter: AsyncImagePainter = getCoilAsyncImagePainter(
-        context = LocalContext.current,
+        context = context,
         dataUrl = state.songFetched.albumThumbUrl,
         isSvg = false,
         placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
@@ -268,6 +275,48 @@ fun RecognitionResult(
                             style = TextStyle(fontSize = 18.sp)
                         )
                     }
+
+                    AnimatedVisibility(
+                        visible = if (LocalInspectionMode.current) true else {
+                            LabPackageManager(
+                                applicationContext = context
+                            ).isInstalled(Constants.PACKAGE_NAME_SPOTIFY)
+                        }
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .clickable(enabled = true) {
+                                    uiEvent.invoke(UiEvent.OpenInSpotify(state.songFetched))
+                                },
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Open in Spotify",
+                                fontWeight = FontWeight.ExtraBold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+
+                            AnimatedContent(targetState = darkTheme) { targetState: Boolean ->
+                                if (!targetState) {
+                                    Image(
+                                        modifier = Modifier.size(40.dp),
+                                        painter = painterResource(com.riders.thelab.core.ui.R.drawable.ic_spotify),
+                                        contentDescription = "spotify_icon"
+                                    )
+                                } else {
+                                    Image(
+                                        modifier = Modifier.size(40.dp),
+                                        painter = painterResource(com.riders.thelab.core.ui.R.drawable.ic_spotify_black),
+                                        contentDescription = "spotify_icon",
+                                        colorFilter = ColorFilter.tint(color = Color.White)
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
 
                 Card(
@@ -309,7 +358,8 @@ fun ACRCloudActivityContent(
     result: String,
     canLaunchAudioRecognition: Boolean,
     onStartRecognition: () -> Unit,
-    isRecognizing: Boolean
+    isRecognizing: Boolean,
+    uiEvent: (UiEvent) -> Unit
 ) {
     var currentCapabilityChangedCount by remember { mutableIntStateOf(0) }
     //  val maxCapabilitiesCountTaken = 1
@@ -339,50 +389,54 @@ fun ACRCloudActivityContent(
                     navigationIcon = {})
             },
             floatingActionButton = {
-                AnimatedContent(
-                    targetState = isRecognizing,
-                    label = "something"
-                ) { target ->
-                    if (!target) {
-                        androidx.compose.material.FloatingActionButton(
-                            backgroundColor = if (!isRecognizing) {
-                                md_theme_light_onPrimaryContainer
-                            } else {
-                                MaterialTheme.colorScheme.background
-                            },
-                            onClick = {
-                                if (!isRecognizing) {
-                                    onStartRecognition()
+                AnimatedVisibility(visible = hasNetworkConnection) {
+
+                    AnimatedContent(
+                        targetState = isRecognizing,
+                        label = "something"
+                    ) { target ->
+                        if (!target) {
+                            androidx.compose.material.FloatingActionButton(
+                                backgroundColor = if (!isRecognizing) {
+                                    md_theme_light_onPrimaryContainer
                                 } else {
-                                    Timber.e("FloatingActionButton | onClick | recognition is already running")
-                                }
-                            },
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(40.dp),
-                                painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_the_lab_12_logo_white),
-                                contentDescription = "the lab logo",
-                                tint = Color.White
-                            )
+                                    MaterialTheme.colorScheme.background
+                                },
+                                onClick = {
+                                    if (!isRecognizing) {
+                                        onStartRecognition()
+                                    } else {
+                                        Timber.e("FloatingActionButton | onClick | recognition is already running")
+                                    }
+                                },
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(40.dp),
+                                    painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_the_lab_12_logo_white),
+                                    contentDescription = "the lab logo",
+                                    tint = Color.White
+                                )
+                            }
+                        } else {
+                            Box(modifier = Modifier)
                         }
-                    } else {
-                        Box(modifier = Modifier)
                     }
                 }
-
             },
             floatingActionButtonPosition = FabPosition.Center,
             isFloatingActionButtonDocked = true,
             bottomBar = {
-                androidx.compose.material.BottomAppBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(animatedHeight)
-                        .background(MaterialTheme.colorScheme.background),
-                    backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                    cutoutShape = CircleShape
-                ) {
+                AnimatedVisibility(visible = hasNetworkConnection) {
+                    androidx.compose.material.BottomAppBar(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(animatedHeight)
+                            .background(MaterialTheme.colorScheme.background),
+                        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                        cutoutShape = CircleShape
+                    ) {
 
+                    }
                 }
             }
         ) { contentPadding ->
@@ -437,7 +491,8 @@ fun ACRCloudActivityContent(
                                     RecognitionResult(
                                         theme = theme,
                                         darkTheme = darkTheme,
-                                        state = targetState
+                                        state = targetState,
+                                        uiEvent = uiEvent
                                     )
                                 }
 
@@ -564,7 +619,7 @@ fun PreviewRecognitionResult(@PreviewParameter(AppThemePreviewProvider::class) a
         RecognitionResult(
             theme = appTheme, darkTheme = isSystemInDarkTheme(),
             state = ACRUiState.RecognitionSuccessful(songFetched = Song.mock)
-        )
+        ) {}
     }
 }
 
@@ -592,7 +647,7 @@ fun PreviewMainActivityContentWithoutInternetConnection(@PreviewParameter(Previe
             canLaunchAudioRecognition = true,
             onStartRecognition = {},
             isRecognizing = false
-        )
+        ) {}
     }
 }
 
@@ -609,6 +664,6 @@ fun PreviewMainActivityContentWithInternetConnection(@PreviewParameter(PreviewPr
             canLaunchAudioRecognition = true,
             onStartRecognition = {},
             isRecognizing = false
-        )
+        ) {}
     }
 }

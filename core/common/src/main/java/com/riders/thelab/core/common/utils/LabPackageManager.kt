@@ -6,6 +6,17 @@ import timber.log.Timber
 
 class LabPackageManager(private val applicationContext: Context) {
 
+    fun isInstalled(packageName:String):Boolean{
+        val packageManager = applicationContext.packageManager
+        return try {
+            packageManager.getPackageInfo(packageName, 0)
+            true
+        }catch (nameNotFoundException:PackageManager.NameNotFoundException){
+            Timber.e("isInstalled() | Package with name $packageName not found.")
+            false
+        }
+    }
+
     fun getActivityPackageName(activityName: String): String? {
         Timber.d("getActivityPackageName()")
 
