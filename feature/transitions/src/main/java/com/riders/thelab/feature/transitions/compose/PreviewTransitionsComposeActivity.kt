@@ -74,7 +74,7 @@ fun MainScreen(
                         modifier = Modifier
                             .aspectRatio(16f / 9f)
                             .sharedElement(
-                                state = rememberSharedContentState(key = "image-0"),
+                                sharedContentState = rememberSharedContentState(key = "image-0"),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = boundsTransform
                             ),
@@ -87,7 +87,7 @@ fun MainScreen(
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
                             .sharedElement(
-                                state = rememberSharedContentState(key = "button-0"),
+                                sharedContentState = rememberSharedContentState(key = "button-0"),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = boundsTransform
                             )
@@ -132,7 +132,7 @@ fun DetailScreen(
                     modifier = Modifier
                         .aspectRatio(16f / 9f)
                         .sharedElement(
-                            state = rememberSharedContentState(key = "image-0"),
+                            sharedContentState = rememberSharedContentState(key = "image-0"),
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = boundsTransform
                         )
@@ -146,7 +146,7 @@ fun DetailScreen(
                     modifier = Modifier
                         .padding(bottom = 32.dp)
                         .sharedElement(
-                            state = rememberSharedContentState(key = "button-0"),
+                            sharedContentState = rememberSharedContentState(key = "button-0"),
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = boundsTransform
                         )

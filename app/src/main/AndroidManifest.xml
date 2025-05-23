@@ -124,7 +124,8 @@
         android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"
         android:minSdkVersion="34"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"
         android:minSdkVersion="34"
         tools:ignore="ProtectedPermissions" />
 
@@ -583,9 +584,22 @@
 
         <activity
             android:name=".feature.musicrecognition.ui.acrcloud.ACRCloudActivity"
+            android:exported="true"
             android:parentActivityName=".feature.musicrecognition.ui.MusicRecognitionChooserActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="callback"
+                    android:scheme="thelab" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".feature.streaming.StreamingActivity"

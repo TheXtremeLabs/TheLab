@@ -161,7 +161,7 @@ fun YoutubeItem(
                                             .defaultMinSize(1.dp)
                                             .aspectRatio(16f / 9f)
                                             .sharedElement(
-                                                state = rememberSharedContentState(key = "image-$index"),
+                                                sharedContentState = rememberSharedContentState(key = "image-$index"),
                                                 animatedVisibilityScope = animatedVisibilityScope,
                                                 boundsTransform = boundsTransform
                                             )
@@ -231,7 +231,7 @@ fun YoutubeItem(
                             modifier = Modifier
                                 .padding(16.dp)
                                 .sharedElement(
-                                    state = rememberSharedContentState(key = "text-$index"),
+                                    sharedContentState = rememberSharedContentState(key = "text-$index"),
                                     animatedVisibilityScope = animatedVisibilityScope,
                                     boundsTransform = boundsTransform
                                 )

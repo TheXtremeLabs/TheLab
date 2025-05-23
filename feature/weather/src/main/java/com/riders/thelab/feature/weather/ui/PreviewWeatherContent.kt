@@ -27,6 +27,7 @@ import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
@@ -46,7 +47,7 @@ fun WeatherLoading(theme: AppTheme, darkTheme: Boolean, modifier: Modifier = Mod
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         BoxWithConstraints(
             modifier = Modifier
-                .size(56.dp)
+                .size(40.dp)
                 .then(modifier),
             contentAlignment = Alignment.Center
         ) {
@@ -179,13 +180,15 @@ fun WeatherContent(
                     is WeatherDataState.None,
                     is WeatherDataState.Loading -> {
                         // Loading State
-                        WeatherLoading(theme = theme, darkTheme = darkTheme)
+                        LabLoader(modifier = Modifier.size(56.dp))
+                        //WeatherLoading(theme = theme, darkTheme = darkTheme)
                     }
 
                     is WeatherDataState.Error -> {
                         // Error State
                         WeatherError(
-                            theme = theme, darkTheme = darkTheme,
+                            theme = theme,
+                            darkTheme = darkTheme,
                             modifier = Modifier.fillMaxSize(),
                             onRetryButtonClicked = { uiEvent.invoke(UiEvent.OnRetryRequest) }
                         )
@@ -194,7 +197,8 @@ fun WeatherContent(
                     is WeatherDataState.SuccessWeatherData -> {
                         // Success State
                         WeatherSuccess(
-                            theme = theme, darkTheme = darkTheme,
+                            theme = theme,
+                            darkTheme = darkTheme,
                             weatherUiState = weatherUiState,
                             searchMenuExpanded = searchMenuExpanded,
                             searchCityQuery = searchCityQuery,

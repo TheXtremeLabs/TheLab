@@ -183,7 +183,7 @@ fun ArtistItem(
                             modifier = Modifier
                                 .padding(16.dp)
                                 .sharedElement(
-                                    state = rememberSharedContentState(key = "text-$index"),
+                                    sharedContentState = rememberSharedContentState(key = "text-$index"),
                                     animatedVisibilityScope = animatedVisibilityScope,
                                     boundsTransform = boundsTransform
                                 )
