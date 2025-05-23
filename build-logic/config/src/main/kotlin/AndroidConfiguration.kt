@@ -8,7 +8,7 @@ object AndroidConfiguration {
 
     object Application {
         const val CODE: Int = 1
-        val version: Version = Version(major = 13, minor = 0, patch = 0)
+        val version: Version = Version(major = 13, minor = 0, patch = 1)
     }
 }
 

@@ -86,7 +86,7 @@ Repository created and maintained by Saint-Honoré Michaël([*@MichaelStH*](http
 ![HotCoffeeLoading](docs/gif/lottie_hot_coffee.gif)
 
 [sem-ver]: https://semver.org/
-[thelab-badge]: https://img.shields.io/static/v1?label=version&message=13.0.0&color=blue
+[thelab-badge]: https://img.shields.io/static/v1?label=version&message=13.0.1&color=blue
 [thelab-project]: https://github.com/TheXtremeLabs/TheLab
 [android-badge]: https://img.shields.io/static/v1?logo=android&label=Android%20SDK&message=API%2036&color=green
 [android-project]: https://www.android.com/intl/fr_fr/
