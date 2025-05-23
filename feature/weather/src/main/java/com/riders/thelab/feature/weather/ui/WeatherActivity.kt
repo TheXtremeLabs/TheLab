@@ -2,14 +2,9 @@ package com.riders.thelab.feature.weather.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -25,12 +20,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.WorkInfo
-import com.riders.thelab.core.common.network.LabNetworkManager
+import com.riders.thelab.core.common.bus.KotlinBus
+import com.riders.thelab.core.common.bus.Listen
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
-import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.data.local.model.compose.weather.WeatherDataState
 import com.riders.thelab.core.data.local.model.compose.weather.WeatherUIState
+import com.riders.thelab.core.location.GPSProvidersResultModel
+import com.riders.thelab.core.location.LabLocationReceiver
+import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -38,6 +36,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.data.local.bean.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -47,16 +46,8 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
     private val mWeatherViewModel: WeatherViewModel by viewModels<WeatherViewModel>()
 
     private var mLabLocationManager: LabLocationManager? = null
+    private var mLabLocationReceiver: LabLocationReceiver? = null
 
-    private val mGpsSwitchStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent?) {
-
-            if (intent?.action != null && intent.action?.equals(LocationManager.PROVIDERS_CHANGED_ACTION) == true) {
-                // Make an action or refresh an already managed state.
-                Timber.d("CHANGED")
-            }
-        }
-    }
 
     /////////////////////////////////////
     //
@@ -66,6 +57,8 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.d("onCreate()")
         super.onCreate(savedInstanceState)
+
+        subscribeToKotlinBus()
 
         mWeatherViewModel.initWeakReference(this@WeatherActivity)
 
@@ -77,22 +70,19 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
         super.onPause()
 
         if (hasLocationPermissions()) {
-            unregisterReceiver(mGpsSwitchStateReceiver)
-
             mLabLocationManager?.stopUsingGPS()
         }
+
+        unregisterReceiver(mLabLocationReceiver)
     }
 
     public override fun onResume() {
         super.onResume()
         Timber.d("onResume()")
 
-        if (hasLocationPermissions()) {
-            registerReceiver(
-                mGpsSwitchStateReceiver,
-                IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
-            )
+        registerReceivers()
 
+        if (hasLocationPermissions()) {
             registerLabLocationManager()
 
             mLabLocationManager?.let {
@@ -117,6 +107,23 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
     override fun onDestroy() {
         Timber.e("onDestroy()")
         super.onDestroy()
+    }
+
+
+    /////////////////////////////////////
+    //
+    // BUS METHODS
+    //
+    /////////////////////////////////////
+    @OptIn(DelicateCoroutinesApi::class)
+    @Listen
+    fun onLocationProvidersChanged() {
+        lifecycleScope.launch {
+            KotlinBus.subscribe<GPSProvidersResultModel> { result ->
+                Timber.d("onLocationProvidersChanged() | ${result.toString()}")
+                updateLocationIcon(result.isGPS)
+            }
+        }
     }
 
 
@@ -184,7 +191,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                                             searchCityQuery = citySearch,
                                             suggestions = mWeatherViewModel.suggestions,
                                             isWeatherMoreDataVisible = mWeatherViewModel.isWeatherMoreDataVisible,
-                                            ) { event ->
+                                        ) { event ->
                                             when (event) {
                                                 is UiEvent.OnMyLocationClicked -> fetchCurrentLocation()
                                                 else -> mWeatherViewModel.onEvent(event)
@@ -250,6 +257,11 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                 locationManager.getCurrentLocation()
             }
         } ?: run { Timber.e("Lab location object is null") }
+    }
+
+    fun registerReceivers() {
+        mLabLocationReceiver = LabLocationReceiver()
+        registerReceiver(mLabLocationReceiver, LabLocationReceiver.getIntentFilters())
     }
 
     fun fetchCurrentLocation() {

@@ -497,7 +497,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(MusicRecognitionChooserActivity::class.java)
-                        .withActivityDate("2023/09/21")
+                        .withActivityDate("2025/05/23")
                         .build()
                 this.add(musicRecognition)
 
