@@ -424,6 +424,12 @@ class WeatherViewModel @Inject constructor(
                             WeatherUtils.getWeatherIconFromApi(dailyItem.weatherIconUrl.toString())
                     }
                 }
+                hourlyWeather?.let {
+                    it.forEach { hourlyItem ->
+                        hourlyItem.weatherIconUrl =
+                            WeatherUtils.getWeatherIconFromApi(hourlyItem.weatherIconUrl.toString())
+                    }
+                }
             }
 
             withContext(Dispatchers.Main) {

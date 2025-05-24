@@ -92,7 +92,8 @@ fun WeatherSuccess(
 
             // Weather city data to display
             WeatherMainCityContent(
-                theme = theme, darkTheme = darkTheme,
+                theme = theme,
+                darkTheme = darkTheme,
                 weatherUIState = weatherUiState,
                 isWeatherMoreDataVisible = isWeatherMoreDataVisible,
                 uiEvent = uiEvent

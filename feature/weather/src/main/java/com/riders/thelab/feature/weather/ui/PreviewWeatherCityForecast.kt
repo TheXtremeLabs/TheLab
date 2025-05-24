@@ -5,11 +5,14 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,25 +53,26 @@ fun WeatherDailyForecast(
     val listState = rememberLazyListState()
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
-        Column(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .then(modifier),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .then(modifier)
         ) {
-            Text(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Weather trends for the next 5 days"
-            )
-
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                // colors = CardDefaults.cardColors(containerColor = if (!isSystemInDarkTheme()) md_theme_light_primary else md_theme_dark_primary)
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Weather trends for the next 5 days"
+                )
+
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .defaultMinSize(minHeight = 1.dp)
+                        .heightIn(max = 360.dp)
                         .padding(8.dp),
                     state = listState,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -134,6 +138,80 @@ fun WeatherDailyForecast(
     }
 }
 
+@Composable
+fun WeatherHourlyForecast(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    hourlyWeatherList: List<WeatherModel>,
+    modifier: Modifier = Modifier
+) {
+    val listState = rememberLazyListState()
+
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
+        Card(modifier = Modifier.then(modifier)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Hourly weather"
+                )
+
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(56.dp, 100.dp),
+                    state = listState,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    items(items = hourlyWeatherList) { hourlyWeather ->
+                        val painter = rememberAsyncImagePainter(
+                            model = ImageRequest
+                                .Builder(LocalContext.current)
+                                .data(hourlyWeather.weatherIconUrl.toString())
+                                .apply {
+                                    crossfade(true)
+                                    allowHardware(false)
+                                }
+                                .build(),
+                            placeholder = painterResource(R.drawable.logo_colors),
+                        )
+
+                        Column(
+                            modifier = Modifier.fillMaxHeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            // current temperature
+                            Text(
+                                text = DateTimeUtils.formatMillisToTimeHoursMinutes(hourlyWeather.dateTimeUTC),
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            WeatherIcon(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clip(RoundedCornerShape(12.dp)),
+                                weatherIconUrl = hourlyWeather.weatherIconUrl.toString()
+                            )
+
+                            // current temperature
+                            Text(
+                                text = "${hourlyWeather.temperature?.temperature?.toInt()}°"
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 ///////////////////////////////////////////////////
 //
 // PREVIEWS
@@ -144,9 +222,23 @@ fun WeatherDailyForecast(
 private fun PreviewWeatherDailyForecast(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
     TheLabTheme(theme = AppTheme.Default) {
         WeatherDailyForecast(
-            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
-            modifier = Modifier.fillMaxSize(),
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            modifier = Modifier.fillMaxWidth(),
             dailyWeatherList = weather.dailyWeather!!
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewWeatherHourlyForecast(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+    TheLabTheme(theme = AppTheme.Default) {
+        WeatherHourlyForecast(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            modifier = Modifier.fillMaxWidth(),
+            hourlyWeatherList = weather.hourlyWeather!!
         )
     }
 }

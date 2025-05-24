@@ -74,7 +74,6 @@ class PreviewProviderWeatherDataState : PreviewParameterProvider<WeatherDataStat
 }
 
 class PreviewProviderWeatherUIState : PreviewParameterProvider<WeatherUIState> {
-
     override val values: Sequence<WeatherUIState>
         get() = sequenceOf(
             WeatherUIState.None,

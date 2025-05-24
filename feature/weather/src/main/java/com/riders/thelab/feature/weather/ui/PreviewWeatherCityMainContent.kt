@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -27,10 +30,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -83,7 +88,6 @@ fun WeatherMoreData(theme: AppTheme, darkTheme: Boolean, weather: WeatherModel) 
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
@@ -143,7 +147,9 @@ fun WeatherMoreData(theme: AppTheme, darkTheme: Boolean, weather: WeatherModel) 
             }
 
             LazyVerticalGrid(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(56.dp, 300.dp),
                 state = gridState,
                 columns = GridCells.Fixed(2),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -198,6 +204,26 @@ fun WeatherMoreData(theme: AppTheme, darkTheme: Boolean, weather: WeatherModel) 
 }
 
 @Composable
+fun BlurredWeatherIconBackground(painter: Painter) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .blur(25.dp),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        // Weather icon
+        Image(
+            modifier = Modifier
+                .size(96.dp)
+                .clip(RoundedCornerShape(12.dp)),
+            painter = painter,
+            contentDescription = "weather icon wth coil",
+            contentScale = ContentScale.Fit,
+        )
+    }
+}
+
+@Composable
 fun WeatherMainCityContent(
     theme: AppTheme, darkTheme: Boolean,
     weatherUIState: WeatherUIState,
@@ -212,6 +238,8 @@ fun WeatherMainCityContent(
             when (targetState) {
                 is WeatherUIState.None -> Box(modifier = Modifier)
                 is WeatherUIState.Success -> {
+
+                    val mainListState = rememberLazyListState()
 
                     val weather = targetState.weather
                     val address: Address? = targetState.weather.address
@@ -240,153 +268,179 @@ fun WeatherMainCityContent(
                     // weather.hourlyWeather?.let { onGetMaxMinTemperature(it) }
 
                     AnimatedVisibility(visible = true) {
-                        Column(
+                        LazyColumn(
                             modifier = Modifier.fillMaxWidth(),
+                            state = mainListState,
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
+                            verticalArrangement = Arrangement.spacedBy(
+                                16.dp,
+                                Alignment.CenterVertically
+                            ),
                         ) {
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                            ) {
-                                Column(
+                            // Main weather data info
+                            item {
+                                Card(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(8.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                                        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                                 ) {
-
-                                    Row(
+                                    Column(
                                         modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.spacedBy(16.dp)
                                     ) {
-                                        // Weather icon
-                                        Image(
-                                            modifier = Modifier
-                                                .size(72.dp)
-                                                .clip(RoundedCornerShape(12.dp)),
-                                            painter = painter,
-                                            contentDescription = "weather icon wth coil",
-                                            contentScale = ContentScale.Fit,
-                                        )
-
-                                        // Colum with city name country and weather state
-                                        Column(
-                                            horizontalAlignment = Alignment.End,
-                                            verticalArrangement = Arrangement.Center
-                                        ) {
-                                            Text(text = "$cityName, $country")
-                                            Text(
-                                                text = weather.mainWeather.toString(),
-                                                style = Typography.titleSmall,
-                                                fontWeight = FontWeight.ExtraBold
-                                            )
-                                        }
-                                    }
-
-                                    // Temperature row container
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Column(modifier = Modifier) {
-                                            // current temperature
-                                            Text(
-                                                text = temperature,
-                                                style = Typography.titleLarge,
-                                                fontWeight = FontWeight.Bold
-                                            )
-
-                                            // Min | Max Temperatures
+                                        Box(modifier = Modifier) {
+                                            BlurredWeatherIconBackground(painter = painter)
                                             Row(
-                                                modifier = Modifier,
-                                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                                verticalAlignment = Alignment.CenterVertically
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween
                                             ) {
-                                                Text(
-                                                    text = weather.temperature?.max?.toInt()
-                                                        .toString(),
-                                                    fontWeight = FontWeight.Bold
+                                                // Weather icon
+                                                Image(
+                                                    modifier = Modifier
+                                                        .padding(top = 8.dp, start = 8.dp)
+                                                        .size(72.dp)
+                                                        .clip(RoundedCornerShape(12.dp)),
+                                                    painter = painter,
+                                                    contentDescription = "weather icon wth coil",
+                                                    contentScale = ContentScale.Fit,
                                                 )
-                                                Text(
-                                                    text = "|"
-                                                )
-                                                Text(
-                                                    text = weather.temperature?.min?.toInt()
-                                                        .toString()
-                                                )
-                                            }
-                                        }
 
-                                        Button(
-                                            onClick = {
-                                                uiEvent.invoke(
-                                                    UiEvent.OnUpdateMoreWeatherDataVisible(
-                                                        !isWeatherMoreDataVisible
-                                                    )
-                                                )
-                                            }) {
-                                            AnimatedContent(
-                                                targetState = isWeatherMoreDataVisible,
-                                                label = "weather_visibility_animation"
-                                            ) { targetState ->
-                                                Row(
-                                                    modifier = Modifier,
-                                                    horizontalArrangement = Arrangement.spacedBy(
-                                                        16.dp,
-                                                        Alignment.CenterHorizontally
-                                                    ),
-                                                    verticalAlignment = Alignment.CenterVertically
+                                                // Colum with city name country and weather state
+                                                Column(
+                                                    modifier = Modifier.padding(8.dp),
+                                                    horizontalAlignment = Alignment.End,
+                                                    verticalArrangement = Arrangement.Center
                                                 ) {
-                                                    Text(text = if (!targetState) "Show More" else "Close Panel")
-                                                    Icon(
-                                                        imageVector = if (!targetState) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
-                                                        contentDescription = "more icon"
+                                                    Text(text = "$cityName, $country")
+                                                    Text(
+                                                        text = weather.mainWeather.toString(),
+                                                        style = Typography.titleSmall,
+                                                        fontWeight = FontWeight.ExtraBold
                                                     )
                                                 }
                                             }
+
+                                        }
+                                        // Temperature row container
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Column(modifier = Modifier.padding(start = 8.dp)) {
+                                                // current temperature
+                                                Text(
+                                                    text = temperature,
+                                                    style = Typography.titleLarge,
+                                                    fontWeight = FontWeight.Bold
+                                                )
+
+                                                // Min | Max Temperatures
+                                                Row(
+                                                    modifier = Modifier,
+                                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Text(
+                                                        text = weather.temperature?.max?.toInt()
+                                                            .toString(),
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                    Text(
+                                                        text = "|"
+                                                    )
+                                                    Text(
+                                                        text = weather.temperature?.min?.toInt()
+                                                            .toString()
+                                                    )
+                                                }
+                                            }
+
+                                            Button(
+                                                modifier = Modifier.padding(end = 8.dp),
+                                                onClick = {
+                                                    uiEvent.invoke(
+                                                        UiEvent.OnUpdateMoreWeatherDataVisible(
+                                                            !isWeatherMoreDataVisible
+                                                        )
+                                                    )
+                                                }) {
+                                                AnimatedContent(
+                                                    targetState = isWeatherMoreDataVisible,
+                                                    label = "weather_visibility_animation"
+                                                ) { targetState ->
+                                                    Row(
+                                                        modifier = Modifier,
+                                                        horizontalArrangement = Arrangement.spacedBy(
+                                                            16.dp,
+                                                            Alignment.CenterHorizontally
+                                                        ),
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+                                                        Text(text = if (!targetState) "Show More" else "Close Panel")
+                                                        Icon(
+                                                            imageVector = if (!targetState) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
+                                                            contentDescription = "more icon"
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        AnimatedVisibility(visible = isWeatherMoreDataVisible) {
+                                            WeatherMoreData(
+                                                theme = theme,
+                                                darkTheme = darkTheme,
+                                                weather
+                                            )
                                         }
                                     }
 
-                                    AnimatedVisibility(visible = isWeatherMoreDataVisible) {
-                                        WeatherMoreData(
-                                            theme = theme,
-                                            darkTheme = darkTheme,
-                                            weather
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(
+                                            space = 16.dp,
+                                            alignment = Alignment.End
+                                        ),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.weather_data_provided_by),
+                                            fontSize = 12.sp
                                         )
-                                    }
-
-                                    AnimatedVisibility(visible = !weather.dailyWeather.isNullOrEmpty()) {
-                                        // Forecast
-                                        WeatherDailyForecast(
-                                            theme = theme, darkTheme = darkTheme,
-                                            dailyWeatherList = weather.dailyWeather!!
+                                        Image(
+                                            modifier = Modifier.height(28.dp),
+                                            painter = painterResource(id = R.drawable.openweathermap_logo_white),
+                                            contentDescription = "open weather icon"
                                         )
                                     }
                                 }
+                            }
 
-
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(
-                                        space = 16.dp,
-                                        alignment = Alignment.End
-                                    ),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = stringResource(id = R.string.weather_data_provided_by),
-                                        fontSize = 12.sp
+                            // Hourly Forecast
+                            item {
+                                AnimatedVisibility(visible = !weather.hourlyWeather.isNullOrEmpty()) {
+                                    WeatherHourlyForecast(
+                                        modifier = Modifier.padding(horizontal = 16.dp),
+                                        theme = theme,
+                                        darkTheme = darkTheme,
+                                        hourlyWeatherList = weather.hourlyWeather!!
                                     )
-                                    Image(
-                                        modifier = Modifier.height(28.dp),
-                                        painter = painterResource(id = R.drawable.openweathermap_logo_white),
-                                        contentDescription = "open weather icon"
+                                }
+                            }
+
+                            // Daily Forecast (5 days)
+                            item {
+                                AnimatedVisibility(visible = !weather.dailyWeather.isNullOrEmpty()) {
+                                    // Forecast
+                                    WeatherDailyForecast(
+                                        modifier = Modifier.padding(horizontal = 16.dp),
+                                        theme = theme,
+                                        darkTheme = darkTheme,
+                                        dailyWeatherList = weather.dailyWeather!!
                                     )
                                 }
                             }
@@ -410,6 +464,14 @@ fun WeatherMainCityContent(
 fun PreviewWeatherMoreData(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
     TheLabTheme(theme = AppTheme.Default) {
         WeatherMoreData(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), weather)
+    }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewBlurredWeatherIconBackground(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+    TheLabTheme(theme = AppTheme.Default) {
+        BlurredWeatherIconBackground(painter = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors))
     }
 }
 
