@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.weather.ui
 
 import android.location.Address
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -20,14 +22,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -40,6 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -52,6 +52,7 @@ import com.riders.thelab.core.data.local.model.weather.WeatherModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.core.ui.data.local.bean.WindDirection
@@ -64,7 +65,12 @@ import kotlin.math.roundToInt
 //
 ///////////////////////////////////////////////////
 @Composable
-fun WeatherMoreData(theme: AppTheme, darkTheme: Boolean, weather: WeatherModel) {
+fun WeatherMoreData(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    weather: WeatherModel,
+    modifier: Modifier = Modifier
+) {
     val gridState = rememberLazyGridState()
 
     val realFeels =
@@ -87,18 +93,141 @@ fun WeatherMoreData(theme: AppTheme, darkTheme: Boolean, weather: WeatherModel) 
     )
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
-            ) {
-                Text(text = "Real Feels")
-                Text(text = realFeels, fontWeight = FontWeight.ExtraBold)
-            }
+        Card(modifier = Modifier.then(modifier)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+                ) {
+                    Text(text = "Real Feels")
+                    Text(text = realFeels, fontWeight = FontWeight.ExtraBold)
+                }
 
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        24.dp,
+                        Alignment.CenterHorizontally
+                    )
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(
+                            8.dp,
+                            Alignment.CenterVertically
+                        )
+                    ) {
+                        Image(
+                            modifier = Modifier.size(36.dp),
+                            painter = painterResource(id = R.drawable.ic_sunrise),
+                            contentDescription = "sunrise icon",
+                            colorFilter = ColorFilter.tint(
+                                color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
+                                blendMode = BlendMode.SrcIn
+                            )
+                        )
+                        Text(
+                            text = sunrise
+                        )
+                    }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(
+                            8.dp,
+                            Alignment.CenterVertically
+                        )
+                    ) {
+                        Image(
+                            modifier = Modifier.size(36.dp),
+                            painter = painterResource(id = R.drawable.ic_sunset),
+                            contentDescription = "sunset icon",
+                            colorFilter = ColorFilter.tint(
+                                color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
+                                blendMode = BlendMode.SrcIn
+                            )
+                        )
+
+                        Text(
+                            text = DateTimeUtils.formatMillisToTimeHoursMinutes(
+                                weather.timezone!!,
+                                weather.sunset
+                            )
+                        )
+                    }
+                }
+
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(56.dp, 300.dp),
+                    state = gridState,
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    item {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_cloud),
+                                contentDescription = "cloud icon"
+                            )
+                            Text(text = "Cloudiness: $cloudiness")
+                        }
+                    }
+                    item {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_pressure),
+                                contentDescription = "pressure icon"
+                            )
+                            Text(text = "Pressure: $pressure")
+                        }
+                    }
+                    item {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_wind),
+                                contentDescription = "wind icon"
+                            )
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text(text = "Wind: $wind")
+                                Icon(
+                                    modifier = Modifier.size(20.dp),
+                                    painter = painterResource(id = windDirection.icon),
+                                    contentDescription = "wind direction icon"
+                                )
+                            }
+                        }
+                    }
+                    item {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_humidity),
+                                contentDescription = "humidity icon"
+                            )
+                            Text(text = "humidity: $humidity")
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+@Composable
+fun WeatherSunriseSunset(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    sunrise: String,
+    sunset: String,
+    modifier: Modifier = Modifier
+) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
+        Card(modifier = Modifier.then(modifier)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally)
+                horizontalArrangement = Arrangement.spacedBy(48.dp, Alignment.CenterHorizontally)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -116,9 +245,7 @@ fun WeatherMoreData(theme: AppTheme, darkTheme: Boolean, weather: WeatherModel) 
                             blendMode = BlendMode.SrcIn
                         )
                     )
-                    Text(
-                        text = sunrise
-                    )
+                    Text(text = sunrise)
                 }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -137,50 +264,134 @@ fun WeatherMoreData(theme: AppTheme, darkTheme: Boolean, weather: WeatherModel) 
                         )
                     )
 
-                    Text(
-                        text = DateTimeUtils.formatMillisToTimeHoursMinutes(
-                            weather.timezone!!,
-                            weather.sunset
-                        )
-                    )
+                    Text(text = sunset)
                 }
             }
+        }
+    }
+}
 
-            LazyVerticalGrid(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(56.dp, 300.dp),
-                state = gridState,
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+
+@Composable
+fun WeatherEnvironmentItem(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    @DrawableRes cardTitleIcon: Int,
+    cardTitle: String,
+    content: @Composable () -> Unit
+) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
+        Card(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Top
             ) {
-                item {
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_cloud),
-                            contentDescription = "cloud icon"
-                        )
-                        Text(text = "Cloudiness: $cloudiness")
-                    }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .padding(),
+                        painter = painterResource(cardTitleIcon),
+                        contentDescription = null
+                    )
+                    Text(text = cardTitle, fontSize = 14.sp)
                 }
-                item {
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_pressure),
-                            contentDescription = "pressure icon"
-                        )
-                        Text(text = "Pressure: $pressure")
-                    }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(72.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    content.invoke()
                 }
-                item {
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_wind),
-                            contentDescription = "wind icon"
+            }
+        }
+    }
+}
+
+
+@Composable
+fun WeatherEnvironment(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    cloudiness: Int,
+    humidity: Int,
+    pressure: Int,
+    windSpeed: Double,
+    windDegree: Int
+) {
+    val lazyGridState = rememberLazyGridState()
+
+    val windDirection: WindDirection =
+        WindDirection.getWindDirectionToTextualDescription(windDegree)
+
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
+        LazyVerticalGrid(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(56.dp, 250.dp)
+                .padding(horizontal = 16.dp),
+            state = lazyGridState,
+            columns = GridCells.Fixed(2),
+            //columns = GridCells.Adaptive(128.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            userScrollEnabled = false,
+        ) {
+            // Cloudiness
+            item {
+                WeatherEnvironmentItem(
+                    theme = theme,
+                    darkTheme = darkTheme,
+                    cardTitleIcon = R.drawable.ic_cloud,
+                    cardTitle = "Cloudiness",
+                    content = {
+                        Text(
+                            text = "$cloudiness ${stringResource(R.string.percent_placeholder)}",
+                            fontWeight = FontWeight.W700
                         )
+                    }
+                )
+            }
+
+            // Pressure
+            item {
+                WeatherEnvironmentItem(
+                    theme = theme,
+                    darkTheme = darkTheme,
+                    cardTitleIcon = R.drawable.ic_pressure,
+                    cardTitle = "Pressure",
+                    content = {
+                        Text(
+                            text = "$pressure ${stringResource(R.string.pressure_unit_placeholder)}",
+                            fontWeight = FontWeight.W700
+                        )
+                    }
+                )
+            }
+
+            // Wind
+            item {
+                WeatherEnvironmentItem(
+                    theme = theme,
+                    darkTheme = darkTheme,
+                    cardTitleIcon = R.drawable.ic_wind,
+                    cardTitle = "Wind",
+                    content = {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(text = "Wind: $wind")
+                            Text(
+                                text = "${windSpeed.toString()} ${stringResource(R.string.meter_unit_placeholder)}",
+                                style = TextStyle(fontWeight = FontWeight.W700)
+                            )
+
                             Icon(
                                 modifier = Modifier.size(20.dp),
                                 painter = painterResource(id = windDirection.icon),
@@ -188,20 +399,28 @@ fun WeatherMoreData(theme: AppTheme, darkTheme: Boolean, weather: WeatherModel) 
                             )
                         }
                     }
-                }
-                item {
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_humidity),
-                            contentDescription = "humidity icon"
+                )
+            }
+
+            // Humidity
+            item {
+                WeatherEnvironmentItem(
+                    theme = theme,
+                    darkTheme = darkTheme,
+                    cardTitleIcon = R.drawable.ic_humidity,
+                    cardTitle = "Humidity",
+                    content = {
+                        Text(
+                            text = "$humidity ${stringResource(R.string.percent_placeholder)}",
+                            fontWeight = FontWeight.W700
                         )
-                        Text(text = "humidity: $humidity")
                     }
-                }
+                )
             }
         }
     }
 }
+
 
 @Composable
 fun BlurredWeatherIconBackground(painter: Painter) {
@@ -356,79 +575,21 @@ fun WeatherMainCityContent(
                                                     )
                                                 }
                                             }
-
-                                            Button(
-                                                modifier = Modifier.padding(end = 8.dp),
-                                                onClick = {
-                                                    uiEvent.invoke(
-                                                        UiEvent.OnUpdateMoreWeatherDataVisible(
-                                                            !isWeatherMoreDataVisible
-                                                        )
-                                                    )
-                                                }) {
-                                                AnimatedContent(
-                                                    targetState = isWeatherMoreDataVisible,
-                                                    label = "weather_visibility_animation"
-                                                ) { targetState ->
-                                                    Row(
-                                                        modifier = Modifier,
-                                                        horizontalArrangement = Arrangement.spacedBy(
-                                                            16.dp,
-                                                            Alignment.CenterHorizontally
-                                                        ),
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
-                                                        Text(text = if (!targetState) "Show More" else "Close Panel")
-                                                        Icon(
-                                                            imageVector = if (!targetState) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
-                                                            contentDescription = "more icon"
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        AnimatedVisibility(visible = isWeatherMoreDataVisible) {
-                                            WeatherMoreData(
-                                                theme = theme,
-                                                darkTheme = darkTheme,
-                                                weather
-                                            )
                                         }
                                     }
 
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(8.dp),
-                                        horizontalArrangement = Arrangement.spacedBy(
-                                            space = 16.dp,
-                                            alignment = Alignment.End
-                                        ),
-                                        verticalAlignment = Alignment.CenterVertically
+                                    // Hourly weather forecast content
+                                    AnimatedVisibility(
+                                        modifier = Modifier.padding(top = 12.dp),
+                                        visible = !weather.hourlyWeather.isNullOrEmpty()
                                     ) {
-                                        Text(
-                                            text = stringResource(id = R.string.weather_data_provided_by),
-                                            fontSize = 12.sp
-                                        )
-                                        Image(
-                                            modifier = Modifier.height(28.dp),
-                                            painter = painterResource(id = R.drawable.openweathermap_logo_white),
-                                            contentDescription = "open weather icon"
+                                        WeatherHourlyForecast(
+                                            modifier = Modifier.padding(horizontal = 16.dp),
+                                            theme = theme,
+                                            darkTheme = darkTheme,
+                                            hourlyWeatherList = weather.hourlyWeather!!
                                         )
                                     }
-                                }
-                            }
-
-                            // Hourly Forecast
-                            item {
-                                AnimatedVisibility(visible = !weather.hourlyWeather.isNullOrEmpty()) {
-                                    WeatherHourlyForecast(
-                                        modifier = Modifier.padding(horizontal = 16.dp),
-                                        theme = theme,
-                                        darkTheme = darkTheme,
-                                        hourlyWeatherList = weather.hourlyWeather!!
-                                    )
                                 }
                             }
 
@@ -444,11 +605,83 @@ fun WeatherMainCityContent(
                                     )
                                 }
                             }
+
+                            // Weather sunrise/sunset
+                            item {
+                                val sunrise = remember {
+                                    DateTimeUtils.formatMillisToTimeHoursMinutes(
+                                        weather.timezone!!,
+                                        weather.sunrise
+                                    )
+                                }
+
+                                val sunset = remember {
+                                    DateTimeUtils.formatMillisToTimeHoursMinutes(
+                                        weather.timezone!!,
+                                        weather.sunset
+                                    )
+                                }
+
+                                WeatherSunriseSunset(
+                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                    theme = theme,
+                                    darkTheme = darkTheme,
+                                    sunrise = sunrise,
+                                    sunset = sunset
+                                )
+                            }
+
+                            // Weather environment
+                            item {
+                                WeatherEnvironment(
+                                    theme = theme,
+                                    darkTheme = darkTheme,
+                                    cloudiness = weather.clouds,
+                                    pressure = weather.pressure,
+                                    humidity = weather.humidity,
+                                    windSpeed = weather.windSpeed,
+                                    windDegree = weather.windDegree
+                                )
+                            }
+
+                            item {
+                                WeatherDataProvidedBy(theme, darkTheme)
+                            }
                         }
                     }
                 }
 
                 is WeatherUIState.Error -> Box(modifier = Modifier)
+            }
+        }
+    }
+}
+
+@Composable
+fun WeatherDataProvidedBy(theme: AppTheme, darkTheme: Boolean) {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(
+                space = 16.dp,
+                alignment = Alignment.End
+            ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(id = R.string.weather_data_provided_by),
+                fontSize = 12.sp
+            )
+            Card {
+                Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.Center) {
+                    Image(
+                        modifier = Modifier.height(28.dp),
+                        painter = painterResource(id = R.drawable.openweathermap_logo_white),
+                        contentDescription = "open weather icon"
+                    )
+                }
             }
         }
     }
@@ -463,7 +696,81 @@ fun WeatherMainCityContent(
 @Composable
 fun PreviewWeatherMoreData(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
     TheLabTheme(theme = AppTheme.Default) {
-        WeatherMoreData(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), weather)
+        WeatherMoreData(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            weather = weather
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewWeatherRealFeels(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+    val sunrise = remember {
+        DateTimeUtils.formatMillisToTimeHoursMinutes(
+            weather.timezone!!,
+            weather.sunrise
+        )
+    }
+
+    val sunset = remember {
+        DateTimeUtils.formatMillisToTimeHoursMinutes(
+            weather.timezone!!,
+            weather.sunset
+        )
+    }
+    TheLabTheme(theme = AppTheme.Default) {
+        WeatherSunriseSunset(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            sunrise = sunrise,
+            sunset = sunset,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewWeatherEnvironmentItem(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+    TheLabTheme(theme = AppTheme.Default) {
+        WeatherEnvironmentItem(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            cardTitleIcon = R.drawable.ic_wind,
+            cardTitle = "Wind",
+            content = {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "32 km//H",
+                        style = TextStyle(fontWeight = FontWeight.W700)
+                    )
+
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        painter = painterResource(id = R.drawable.ic_wind_south),
+                        contentDescription = "wind direction icon"
+                    )
+                }
+            }
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+fun PreviewWeatherEnvironment(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+    TheLabTheme(theme = AppTheme.Default) {
+        WeatherEnvironment(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            cloudiness = weather.clouds,
+            pressure = weather.pressure,
+            humidity = weather.humidity,
+            windSpeed = weather.windSpeed,
+            windDegree = weather.windDegree,
+        )
     }
 }
 
@@ -486,5 +793,13 @@ private fun PreviewWeatherMainCityContent(
             weatherUIState = weatherUiState,
             isWeatherMoreDataVisible = false
         ) {}
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewWeatherDataProvidedBy(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        WeatherDataProvidedBy(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }

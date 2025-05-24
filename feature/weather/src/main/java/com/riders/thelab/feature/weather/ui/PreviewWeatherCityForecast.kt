@@ -64,7 +64,8 @@ fun WeatherDailyForecast(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(8.dp),
                     text = "Weather trends for the next 5 days"
                 )
 
@@ -166,7 +167,7 @@ fun WeatherHourlyForecast(
                         .fillMaxWidth()
                         .heightIn(56.dp, 100.dp),
                     state = listState,
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     items(items = hourlyWeatherList) { hourlyWeather ->
