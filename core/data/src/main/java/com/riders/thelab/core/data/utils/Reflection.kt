@@ -12,6 +12,7 @@ fun <T : Any> T.getClass(): KClass<T> {
 )
 @JvmName("getClassInstance")
 inline fun <reified T : Any> T.getInstance(): T {
+    @Suppress("DEPRECATION")
     return T::class.java.newInstance()
 }
 

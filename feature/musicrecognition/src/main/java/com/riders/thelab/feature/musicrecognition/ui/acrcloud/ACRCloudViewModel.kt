@@ -1,15 +1,10 @@
 package com.riders.thelab.feature.musicrecognition.ui.acrcloud
 
-import android.annotation.SuppressLint
 import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.acrcloud.rec.ACRCloudClient
@@ -18,10 +13,11 @@ import com.acrcloud.rec.ACRCloudResult
 import com.acrcloud.rec.IACRCloudListener
 import com.acrcloud.rec.utils.ACRCloudLogger
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.common.utils.LabPackageManager
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
+import com.riders.thelab.core.data.local.model.music.MusicRecognitionModel
+import com.riders.thelab.core.data.local.model.music.toModel
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyResponse
 import com.riders.thelab.core.data.remote.dto.spotify.SpotifyToken
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
@@ -39,29 +35,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 import javax.inject.Inject
-
-///////////////////////////////
-//
-// COMPOSE
-//
-///////////////////////////////
-/*
- * To do that we will write an extension Composable function for ViewModel which
- * will receive Composable lifecycle Owner LocalLifecycleOwner.current.lifecycle
- * and will add observer and remove observer on onDispose block.
- *
- * The ViewModel will implement DefaultLifecycleObserver and will start receiving lifecycle events.
- */
-@SuppressLint("ComposableNaming")
-@Composable
-fun <viewModel : LifecycleObserver> viewModel.observeLifecycleEvents(lifecycle: Lifecycle) {
-    DisposableEffect(lifecycle) {
-        lifecycle.addObserver(this@observeLifecycleEvents)
-        onDispose {
-            lifecycle.removeObserver(this@observeLifecycleEvents)
-        }
-    }
-}
 
 @Suppress("EmptyMethod")
 @HiltViewModel
@@ -385,7 +358,9 @@ class ACRCloudViewModel @Inject constructor(
                     song.albumThumbUrl = albumThumbnail
                     Timber.d("song: $song")
 
-                    repository.saveSong(song)
+                    // Create music recognition instance and save it in database
+                    val model: MusicRecognitionModel = song.toModel()
+                    repository.saveSong(model)
 
                     updateUiState(ACRUiState.RecognitionSuccessful(song))
                 }
@@ -420,6 +395,5 @@ class ACRCloudViewModel @Inject constructor(
     override fun onVolumeChanged(volume: Double) {
         Timber.e("onVolumeChanged() | volume: $volume")
     }
-
 }
 
