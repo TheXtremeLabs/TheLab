@@ -13,6 +13,7 @@ import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.User
+import com.riders.thelab.core.data.local.model.music.MusicRecognitionModel
 import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.preferences.PreferencesImpl
@@ -125,6 +126,18 @@ class RepositoryImpl @Inject constructor(
         mDbImpl.clearData()
     }
 
+    override fun saveSong(musicRecognitionModel: MusicRecognitionModel): Long =
+        mDbImpl.saveSong(musicRecognitionModel)
+
+    override suspend fun getAllMusicRecognitionItems(): Flow<List<MusicRecognitionModel>> =
+        mDbImpl.getAllMusicRecognitionItems()
+
+    override fun removeSong(songId: Int): Long {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteAllMusicRecognitionData() = mDbImpl.deleteAllMusicRecognitionData()
+
     override suspend fun insertWeatherData(isWeatherData: WeatherData): Long {
         return mDbImpl.insertWeatherData(isWeatherData)
     }
@@ -150,7 +163,7 @@ class RepositoryImpl @Inject constructor(
         return mDbImpl.getCitiesCursor(query)
     }
 
-    override fun deleteAll() =  mDbImpl.deleteAll()
+    override fun deleteAll() = mDbImpl.deleteAll()
 
     /////////////////////////
     //

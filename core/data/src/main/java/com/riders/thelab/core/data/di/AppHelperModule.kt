@@ -5,6 +5,10 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.RepositoryImpl
 import com.riders.thelab.core.data.local.DbImpl
 import com.riders.thelab.core.data.local.LabDatabase
+import com.riders.thelab.core.data.local.dao.ContactDao
+import com.riders.thelab.core.data.local.dao.MusicRecognitionDao
+import com.riders.thelab.core.data.local.dao.UserDao
+import com.riders.thelab.core.data.local.dao.WeatherDao
 import com.riders.thelab.core.data.preferences.PreferencesImpl
 import com.riders.thelab.core.data.remote.ApiImpl
 import dagger.Module
@@ -20,11 +24,16 @@ import javax.inject.Singleton
 object AppHelperModule {
 
     @Provides
-    fun provideDbHelper(appDatabase: LabDatabase) =
-        DbImpl(
-            appDatabase.getUserDao(),
-            appDatabase.getContactDao(),
-            appDatabase.getWeatherDao()
+    fun provideDbHelper(
+        userDao: UserDao,
+        contactDao: ContactDao,
+        musicRecognitionDao: MusicRecognitionDao,
+        weatherDao: WeatherDao
+    ) = DbImpl(
+            userDao = userDao,
+            contactDao = contactDao,
+            musicRecognitionDao =  musicRecognitionDao,
+            weatherDao = weatherDao
         )
 
     @Provides

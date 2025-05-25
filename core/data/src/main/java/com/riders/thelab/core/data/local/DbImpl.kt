@@ -2,10 +2,12 @@ package com.riders.thelab.core.data.local
 
 import android.database.Cursor
 import com.riders.thelab.core.data.local.dao.ContactDao
+import com.riders.thelab.core.data.local.dao.MusicRecognitionDao
 import com.riders.thelab.core.data.local.dao.UserDao
 import com.riders.thelab.core.data.local.dao.WeatherDao
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.User
+import com.riders.thelab.core.data.local.model.music.MusicRecognitionModel
 import com.riders.thelab.core.data.local.model.weather.CityMapper
 import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.data.local.model.weather.WeatherData
@@ -17,11 +19,13 @@ import javax.inject.Inject
 class DbImpl @Inject constructor(
     userDao: UserDao,
     contactDao: ContactDao,
+    musicRecognitionDao: MusicRecognitionDao,
     weatherDao: WeatherDao
 ) : IDb {
 
     private var mUserDao: UserDao = userDao
     private var mContactDao: ContactDao = contactDao
+    private var mMusicRecognitionDao: MusicRecognitionDao = musicRecognitionDao
     private var mWeatherDao: WeatherDao = weatherDao
 
     override fun insertUser(user: User): Long {
@@ -52,7 +56,7 @@ class DbImpl @Inject constructor(
 
     override fun getUserByEmail(email: String): User = mUserDao.getUserByEmail(email)
 
-    override fun getUserWithGoogle(email: String): User?  =  mUserDao.getUserWithGoogle(email)
+    override fun getUserWithGoogle(email: String): User? = mUserDao.getUserWithGoogle(email)
 
     override fun setUserLogged(userId: Int) = mUserDao.setUserLogged(userId)
     override fun logUser(usernameOrMail: String, encodedPassword: String): User? {
@@ -103,6 +107,18 @@ class DbImpl @Inject constructor(
         mContactDao.deleteAll()
     }
 
+    override fun saveSong(musicRecognitionModel: MusicRecognitionModel) =
+        mMusicRecognitionDao.insert(musicRecognitionModel)
+
+    override suspend fun getAllMusicRecognitionItems(): Flow<List<MusicRecognitionModel>> =
+        mMusicRecognitionDao.getAllMusicRecognitionItems()
+
+    override fun removeSong(songId: Int): Long {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteAllMusicRecognitionData() = mMusicRecognitionDao.deleteAll()
+
     override suspend fun insertWeatherData(isWeatherData: WeatherData): Long {
         return mWeatherDao.insert(isWeatherData)
     }
@@ -123,7 +139,7 @@ class DbImpl @Inject constructor(
         return mWeatherDao.searchCity(cityQuery)
     }
 
-    override suspend fun getWeatherData(): WeatherData? =mWeatherDao.getWeatherData()
+    override suspend fun getWeatherData(): WeatherData? = mWeatherDao.getWeatherData()
 
     override suspend fun getCities(): List<CityModel> {
         return mWeatherDao.getCities()

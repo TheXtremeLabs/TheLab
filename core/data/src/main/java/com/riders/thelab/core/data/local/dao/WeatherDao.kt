@@ -9,6 +9,7 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.RoomWarnings
+import androidx.room.RoomWarnings.Companion.QUERY_MISMATCH
 import androidx.room.Transaction
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.riders.thelab.core.data.local.model.weather.CityModel
@@ -26,7 +27,6 @@ interface WeatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllRX(cities: List<CityModel>): List<Long>
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(isWeatherData: WeatherData): Long
@@ -55,7 +55,7 @@ interface WeatherDao {
     )
     suspend fun searchCity(query: String): List<CityModel>*/
 
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Transaction
     @RewriteQueriesToDropUnusedColumns
     @Query("SELECT * FROM city INNER JOIN city_fts ON city.name = city_fts.name WHERE city_fts.name LIKE '%' || :query || '%' LIMIT 10")

@@ -7,6 +7,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.LabDatabase
 import com.riders.thelab.core.data.local.dao.ContactDao
+import com.riders.thelab.core.data.local.dao.MusicRecognitionDao
 import com.riders.thelab.core.data.local.dao.UserDao
 import com.riders.thelab.core.data.local.dao.WeatherDao
 import dagger.Module
@@ -48,22 +49,21 @@ internal object DatabaseModule {
                 },
                 Executors.newSingleThreadExecutor()
             )
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(false)
             .build()
     }
 
     @Provides
-    fun provideUserDao(appDatabase: LabDatabase): UserDao {
-        return appDatabase.getUserDao()
-    }
+    fun provideUserDao(appDatabase: LabDatabase): UserDao = appDatabase.getUserDao()
+
 
     @Provides
-    fun provideContactDao(appDatabase: LabDatabase): ContactDao {
-        return appDatabase.getContactDao()
-    }
+    fun provideContactDao(appDatabase: LabDatabase): ContactDao = appDatabase.getContactDao()
 
     @Provides
-    fun provideWeatherDao(appDatabase: LabDatabase): WeatherDao {
-        return appDatabase.getWeatherDao()
-    }
+    fun provideMusicRecognitionDao(appDatabase: LabDatabase): MusicRecognitionDao =
+        appDatabase.getMusicRecognitionDao()
+
+    @Provides
+    fun provideWeatherDao(appDatabase: LabDatabase): WeatherDao = appDatabase.getWeatherDao()
 }
