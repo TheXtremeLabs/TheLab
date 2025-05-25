@@ -11,9 +11,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.Constraints
 import androidx.work.Data
@@ -23,7 +24,6 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.utils.DateTimeUtils
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
@@ -36,6 +36,7 @@ import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.local.model.weather.WeatherModel
 import com.riders.thelab.core.data.local.model.weather.toModel
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.core.ui.data.local.bean.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
@@ -54,6 +55,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -67,7 +69,7 @@ class WeatherViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
     val uiRepository: IUiRepository
-) : ViewModel() {
+) : BaseViewModel(), DefaultLifecycleObserver {
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
@@ -105,6 +107,12 @@ class WeatherViewModel @Inject constructor(
 
 
     fun updateWeatherDataState(state: WeatherDataState) {
+        if (state is WeatherDataState.Error) {
+            Timber.e("updateWeatherDataState() | Error state : ${state.errorResponse?.message}")
+        } else {
+            Timber.d("updateWeatherDataState() | state : $state")
+        }
+
         _weatherDataState.value = state
     }
 
@@ -150,6 +158,14 @@ class WeatherViewModel @Inject constructor(
 
 
     //////////////////////////////////////////
+    //Live Data
+    //////////////////////////////////////////
+    private val workerStatus: MutableLiveData<WorkInfo.State> = MutableLiveData()
+    private val isWeatherData: MutableLiveData<Boolean> = MutableLiveData()
+
+    fun getWorkerStatus(): LiveData<WorkInfo.State> = workerStatus
+
+    //////////////////////////////////////////
     // Coroutines
     //////////////////////////////////////////
     private var mSearchJob: Job? = null
@@ -177,14 +193,15 @@ class WeatherViewModel @Inject constructor(
         Timber.e("onCleared()")
     }
 
-    //////////////////////////////////////////
-    //Live Data
-    //////////////////////////////////////////
-    private val workerStatus: MutableLiveData<WorkInfo.State> = MutableLiveData()
-    private val isWeatherData: MutableLiveData<Boolean> = MutableLiveData()
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
 
-    fun getWorkerStatus(): LiveData<WorkInfo.State> = workerStatus
-
+        viewModelScope.launch {
+            if (hasWeatherLocalData()) {
+                updateWeatherDataState(WeatherDataState.SuccessWeatherData(true))
+            }
+        }
+    }
 
     ///////////////////////////
     //
@@ -305,54 +322,56 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
+    fun hasWeatherLocalData(): Boolean = try {
+        // First step
+        // Call repository to check if there is data in database
+        val weatherData = runBlocking(Dispatchers.IO) { repository.getWeatherData() }
+
+        if (null == weatherData || !weatherData.isWeatherData) {
+            // In this case record's return is null
+            // then we have to call our Worker to perform
+            // the web service call to retrieve data from api
+            Timber.e("hasWeatherLocalData() | List is empty. No Record found in database")
+            false
+        } else {
+            // In this case data already exists in database
+            // Load data then let the the user perform his request
+            Timber.d("hasWeatherLocalData() | Record found in database. Continue...")
+            true
+        }
+    } catch (throwable: Exception) {
+        throwable.printStackTrace()
+        Timber.e("hasWeatherLocalData() | Error while fetching records in database")
+        false
+    }
+
     fun fetchCities(activity: WeatherActivity) {
         Timber.d("fetchCities()")
 
         if (!hasInternetConnection.value) {
-            updateWeatherDataState(WeatherDataState.Error())
+            Timber.e("fetchCities() | No internet connection detected")
+            updateWeatherDataState(WeatherDataState.Error(Throwable(message = "Please check your internet connection")))
             return
-        } else {
-            updateWeatherDataState(WeatherDataState.Loading)
+        }
 
-            viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-                try {
-                    // First step
-                    // Call repository to check if there is data in database
-                    val weatherData = repository.getWeatherData()
+        updateWeatherDataState(WeatherDataState.Loading)
 
-                    if (null == weatherData || !weatherData.isWeatherData) {
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+            if (!hasWeatherLocalData()) {
+                // Only for debug purposes
+                // Use worker to make long job operation in background
+                Timber.e("fetchCities() | Use worker to make long job operation in background...")
 
-                        // In this case record's return is null
-                        // then we have to call our Worker to perform
-                        // the web service call to retrieve data from api
-                        Timber.e("fetchCities() | List is empty. No Record found in database")
-
-                        // Only for debug purposes
-                        // Use worker to make long job operation in background
-                        Timber.e("fetchCities() | Use worker to make long job operation in background...")
-
-                        withContext(Dispatchers.IO) {
-                            startWork(activity)
-                        }
-                    } else {
-                        // In this case data already exists in database
-                        // Load data then let the the user perform his request
-                        Timber.d("Record found in database. Continue...")
-                        withContext(Dispatchers.Main) {
-                            isWeatherData.value = true
-                            updateWeatherDataState(WeatherDataState.SuccessWeatherData(true))
-                        }
-                    }
-                } catch (throwable: Exception) {
-                    Timber.e("Error while fetching records in database")
-
-//                    if (throwable is EmptyResultSetException) {
-//                        Timber.e(throwable)
-//                        Timber.e("weatherData is empty. No Record found in database")
-//                        isWeatherData.value = false
-//                    } else {
-                    Timber.e(throwable)
-//                    }
+                withContext(Dispatchers.IO) {
+                    startWork(activity)
+                }
+            } else {
+                // In this case data already exists in database
+                // Load data then let the the user perform his request
+                Timber.d("Record found in database. Continue...")
+                withContext(Dispatchers.Main) {
+                    isWeatherData.value = true
+                    updateWeatherDataState(WeatherDataState.SuccessWeatherData(true))
                 }
             }
         }

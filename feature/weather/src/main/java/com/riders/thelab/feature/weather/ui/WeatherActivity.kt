@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -31,6 +32,7 @@ import com.riders.thelab.core.location.LabLocationReceiver
 import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.data.local.bean.SnackBarType
@@ -87,12 +89,13 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
 
             mLabLocationManager?.let {
                 updateLocationIcon(it.canGetLocation())
-
                 if (!it.canGetLocation()) {
                     Timber.e("!it.canGetLocation() | WeatherUIState.Error()")
-                    mWeatherViewModel.updateWeatherDataState(WeatherDataState.Error())
-                    return
-                } else {
+                    // TODO : Show snackbar info message cannot get user's location
+                    // mWeatherViewModel.updateWeatherDataState(WeatherDataState.Error())
+                }
+
+                if (!mWeatherViewModel.hasWeatherLocalData()) {
                     mWeatherViewModel.fetchCities(this@WeatherActivity)
                 }
             }
@@ -158,6 +161,10 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                             setContent {
                                 val context = LocalContext.current
 
+                                mWeatherViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
+
+                                val hasInternetConnection by mWeatherViewModel.hasInternetConnection.collectAsStateWithLifecycle()
+
                                 val theme: AppTheme by mWeatherViewModel.uiRepository
                                     .getTheme()
                                     .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
@@ -183,10 +190,6 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                                             weatherDataState = weatherDataState,
                                             weatherUiState = weatherUiState,
                                             iconState = mWeatherViewModel.iconState,
-                                            /*         onRetryRequest = {
-                                                         mWeatherViewModel.retry()
-                                                         (context.findActivity() as WeatherActivity).onResume()
-                                                     },*/
                                             searchMenuExpanded = mWeatherViewModel.expanded,
                                             searchCityQuery = citySearch,
                                             suggestions = mWeatherViewModel.suggestions,
@@ -259,6 +262,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
         } ?: run { Timber.e("Lab location object is null") }
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     fun registerReceivers() {
         mLabLocationReceiver = LabLocationReceiver()
         registerReceiver(mLabLocationReceiver, LabLocationReceiver.getIntentFilters())
