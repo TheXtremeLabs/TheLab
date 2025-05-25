@@ -23,12 +23,14 @@ pluginManagement {
         }
         mavenCentral()
 
+        maven { url = uri("https://androidx.dev/snapshots/latest/artifacts/repository") }
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
         // Ktor
         maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev") }
         maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
         maven {
             url = uri("http://files.couchbase.com/maven2/")
             isAllowInsecureProtocol = true
@@ -59,12 +61,14 @@ dependencyResolutionManagement {
         mavenCentral()
         mavenLocal()
 
+        maven { url = uri("https://androidx.dev/snapshots/latest/artifacts/repository") }
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
         // Ktor
         maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev") }
         maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
         maven {
             url = uri("http://files.couchbase.com/maven2/")
             isAllowInsecureProtocol = true
@@ -75,6 +79,20 @@ dependencyResolutionManagement {
         maven { url = uri("../nowinandroid-prebuilts/m2repository") }
     }
 }
+
+/*
+ * The built-in local build cache, DirectoryBuildCache, uses a directory to store build cache artifacts.
+ * By default, this directory resides in the Gradle User Home, but its location is configurable.
+ * Gradle will periodically clean-up the local cache directory by removing entries
+ * that have not been used recently to conserve disk space.
+ */
+/*buildCache {
+    local {
+        directory = File(rootDir, "build-cache")
+    }
+}*/
+
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 rootProject.name = "The Lab"
 include(":app")
