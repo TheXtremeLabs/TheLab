@@ -16,7 +16,7 @@ ktorGradlePlugin = "3.1.2"
 protobufPlugin = "0.9.5"
 
 # Dependencies version
-accompanist = "0.36.0"
+accompanist = "0.37.3"
 androidDesugarJdkLibs = "2.1.5"
 androidxActivity = "1.10.1"
 androidxAppCompat = "1.7.0"
@@ -55,7 +55,7 @@ androidxLifecycleExtensions = "2.2.0"
 androidxMacroBenchmark = "1.3.4"
 androidxMetrics = "1.0.0-beta02"
 androidxMultiDex = "2.0.1"
-androidxNavigation = "2.8.9"
+androidxNavigation = "2.9.0"
 androidxPalette = "1.0.0"
 androidxProfileinstaller = "1.4.1"
 androidxRecyclerView = "1.4.0"
@@ -68,17 +68,17 @@ androidxTestRules = "1.6.1"
 #noinspection GradleDependency
 androidxTestRunner = "1.5.0"
 androidxTestTruth = "1.6.0"
-androidxTracing = "1.2.0"
+androidxTracing = "1.3.0"
 androidxUiAutomator = "2.3.0"
 androidxViewPager2 = "1.1.0"
-androidxWindowManager = "1.3.0"
+androidxWindowManager = "1.4.0"
 androidxWindowExtensions = "1.0.0-alpha01"
-androidxWork = "2.10.0"
+androidxWork = "2.10.1"
 blurry = "4.0.1"
 coil = "2.7.0"
 # Firebase
-firebaseBom = "33.12.0"
-firebaseAds = "24.2.0"
+firebaseBom = "33.14.0"
+firebaseAds = "24.3.0"
 firebaseAppCheck = "18.0.0"
 # Google Api
 googleApiClient = "2.7.2"
@@ -114,7 +114,7 @@ grpc = "1.71.0"
 grpcOkHttp = "1.71.0"
 grpcStub = "1.71.0"
 # Hilt (for gradle plugin version and dependency)
-hilt = "2.56.1"
+hilt = "2.56.2"
 hiltExt = "1.2.0"
 jacoco = "0.8.7"
 jflacCodec = "1.5.2"
@@ -135,10 +135,10 @@ ktor = "3.1.2"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
 ksp = "2.1.21-2.0.1"
 landscapist = "2.4.7"
-lint = "31.9.2"
+lint = "31.10.0"
 location = "21.3.0"
 logback = "1.5.18"
-lottie = "6.6.4"
+lottie = "6.6.6"
 maps = "19.2.0"
 mapsCompose = "6.5.2"
 material = "1.12.0"
@@ -146,7 +146,7 @@ mapsUtils = "3.11.2"
 # Media Exo Player
 media = "1.7.0"
 mediaRouter = "1.7.0"
-media3 = "1.6.1"
+media3 = "1.7.1"
 mockito = "5.17.0"
 # Moshi - Deprecated change by kotlin serialization json
 # moshi = "1.15.1"
@@ -158,9 +158,9 @@ playIntegrity = "1.4.0"
 places = "4.2.0"
 protobufKotlin = "4.30.2"
 protobufProtoc = "4.30.2"
-retrofit = "2.11.0"
+retrofit = "3.0.0"
 retrofitKotlinxSerializationJson = "1.0.0"
-room = "2.7.0"
+room = "2.7.1"
 slf4j = "1.7.36"
 spotify = "2.1.2"
 secrets = "2.0.1"
@@ -176,12 +176,12 @@ zxingAndroid = "3.3.0"
 [libraries]
 accompanist-adaptive = { group = "com.google.accompanist", name = "accompanist-adaptive", version.ref = "accompanist" }
 accompanist-drawablepainter = { group = "com.google.accompanist", name = "accompanist-drawablepainter", version.ref = "accompanist" }
-accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
-accompanist-navigation-material = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
-accompanist-pager = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
+#accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
+#accompanist-navigation-material = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
+#accompanist-pager = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
-accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
-accompanist-testharness = { group = "com.google.accompanist", name = "accompanist-testharness", version.ref = "accompanist" }
+#accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
+#accompanist-testharness = { group = "com.google.accompanist", name = "accompanist-testharness", version.ref = "accompanist" }
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }

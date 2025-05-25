@@ -53,12 +53,7 @@ dependencies {
     // Accompanist
     api(libs.accompanist.adaptive)
     api(libs.accompanist.drawablepainter)
-    api(libs.accompanist.flowlayout)
-    api(libs.accompanist.navigation.material)
-    api(libs.accompanist.pager)
     api(libs.accompanist.permissions)
-    api(libs.accompanist.systemuicontroller)
-    api(libs.accompanist.testharness)
 
     // Compose
     api(libs.androidx.compose.compiler)
