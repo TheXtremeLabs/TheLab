@@ -385,6 +385,8 @@ class ACRCloudViewModel @Inject constructor(
                     song.albumThumbUrl = albumThumbnail
                     Timber.d("song: $song")
 
+                    repository.saveSong(song)
+
                     updateUiState(ACRUiState.RecognitionSuccessful(song))
                 }
             }

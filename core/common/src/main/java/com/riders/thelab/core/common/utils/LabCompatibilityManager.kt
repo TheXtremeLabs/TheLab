@@ -129,11 +129,19 @@ object LabCompatibilityManager {
     }
 
     /**
-     * Determine if the device is running API level 34 or higher.
+     * Determine if the device is running API level 35 or higher.
      * Upside Down Cake
      */
     fun isVanillaIceCream(): Boolean {
         return getSdkVersion() >= 35
+    }
+
+    /**
+     * Determine if the device is running API level 36 or higher.
+     * Baklava
+     */
+    fun isBaklava(): Boolean {
+        return getSdkVersion() >= 36
     }
 
 

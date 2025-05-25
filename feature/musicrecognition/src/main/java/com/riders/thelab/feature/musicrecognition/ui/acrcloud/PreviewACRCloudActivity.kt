@@ -160,12 +160,16 @@ fun Searching(theme: AppTheme, darkTheme: Boolean, result: String) {
         ) {
             Text(modifier = Modifier, text = result)
             PulsarFab {
-                Image(
-                    modifier = Modifier.size(72.dp),
-                    painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_lab_6_lab),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                    contentDescription = null
-                )
+                Box(modifier = Modifier.clip(CircleShape), contentAlignment = Alignment.Center) {
+                    Image(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .size(56.dp),
+                        painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.ic_lab_6_lab),
+                        colorFilter = ColorFilter.tint(Color.White),
+                        contentDescription = null
+                    )
+                }
             }
         }
     }
