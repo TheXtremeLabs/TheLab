@@ -91,4 +91,50 @@
     <string name="pref_key_delay_loading_barcode_result" translatable="false">barcode_dlbr</string>
     <string name="pref_title_delay_loading_barcode_result">Delay loading barcode result</string>
     <string name="pref_summary_delay_loading_barcode_result">Will show the loading spinner for 2s</string>
+
+
+    <string name="ml_kit_app_name">MLKitCompose</string>
+    <!-- Barcode Scanning -->
+    <string name="ml_kit_item_barcode_scanner_title">Barcode scanning</string>
+    <string name="ml_kit_item_barcode_scanner_description">Scan and process barcodes. Supports most standard 1D and 2D formats.</string>
+
+    <!-- Face Detection -->
+    <string name="ml_kit_item_face_detection_title">Face detection</string>
+    <string name="ml_kit_item_face_detection_description">Detect faces and facial landmarks.</string>
+
+    <!-- Face Mesh Detection -->
+    <string name="ml_kit_item_face_mesh_detection_title">Face mesh detection</string>
+    <string name="ml_kit_item_face_mesh_detection_description">Detect face mesh info on close-range images.</string>
+
+    <!-- Object Detection And Tracking -->
+    <string name="ml_kit_item_object_detection_title">Object detection and tracking</string>
+    <string name="ml_kit_item_object_detection_description">Localize and track in real time one or more objects in the live camera feed.</string>
+
+    <!-- Text recognition -->
+    <string name="ml_kit_item_text_recognition_title">Text recognition</string>
+    <string name="ml_kit_item_text_recognition_description">Recognize and extract text from images.</string>
+
+    <!-- Image Labeling -->
+    <string name="ml_kit_item_image_labeling_title">Image Labeling</string>
+    <string name="ml_kit_item_image_labeling_description">Identify objects, locations, activities, animal species, products, and more. Use a general-purpose base model or tailor to your use case with a custom TensorFlow Lite model.</string>
+
+    <!-- Digital Ink Detection -->
+    <string name="ml_kit_item_digital_ink_detection_title">Digital Ink Detection</string>
+    <string name="ml_kit_item_digital_ink_detection_description">Recognizes handwritten text and handdrawn shapes on a digital surface, such as a touch screen. Recognizes 300+ languages, emojis and basic shapes.</string>
+
+    <!-- Document scanner -->
+    <string name="ml_kit_item_document_scanner_title">Document scanner</string>
+    <string name="ml_kit_item_document_scanner_description">Digitize physical documents from pictures.</string>
+
+    <!-- Pose Detection -->
+    <string name="ml_kit_item_pose_detection_title">Pose detection</string>
+    <string name="ml_kit_item_pose_detection_description">Detect the position of the human body in real time.</string>
+
+    <!-- Selfie Segmentation -->
+    <string name="ml_kit_item_selfie_segmentation_title">Selfie segmentation</string>
+    <string name="ml_kit_item_selfie_segmentation_description">Separate the background from users within a scene and focus on what matters.</string>
+
+    <!-- Translate -->
+    <string name="ml_kit_item_translate_title">Translation</string>
+    <string name="ml_kit_item_translate_description">Translate text between 58 languages, entirely on device.</string>
 </resources>
