@@ -1,9 +1,13 @@
 package com.riders.thelab.feature.mlkit.ui.compose.utils
 
 import android.content.Intent
-import com.riders.thelab.feature.mlkit.data.local.model.BarcodeField
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.feature.mlkit.data.local.model.BarcodeField
+import com.riders.thelab.feature.mlkit.ui.compose.barcodescanner.BarcodeScannerActivity
+import com.riders.thelab.feature.mlkit.ui.compose.barcodescanner.BarcodeScannerResultActivity
 import com.riders.thelab.feature.mlkit.ui.compose.cameratest.CameraTestActivity
+import com.riders.thelab.feature.mlkit.ui.compose.documentscanner.DocumentScannerActivity
+import com.riders.thelab.feature.mlkit.ui.compose.face.FaceDetectionActivity
 
 class MLKitComposeNavigator(private val activity: BaseComponentActivity) {
 

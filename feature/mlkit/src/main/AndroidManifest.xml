@@ -80,11 +80,11 @@
             android:name=".ui.compose.cameratest.CameraTestActivity"
             android:parentActivityName=".ui.compose.MLKitComposeMainActivity" />
         <activity
-            android:name=".ui.documentscanner.DocumentScannerActivity"
-            android:parentActivityName=".ui.main.MainActivity" />
+            android:name=".ui.compose.documentscanner.DocumentScannerActivity"
+               android:parentActivityName=".ui.compose.MLKitComposeMainActivity" />
         <activity
-            android:name=".ui.face.FaceDetectionActivity"
-            android:parentActivityName=".ui.main.MainActivity" />
+            android:name=".ui.compose.face.FaceDetectionActivity"
+               android:parentActivityName=".ui.compose.MLKitComposeMainActivity" />
         <activity
             android:name=".ui.ink.InkRecognitionActivity"
             android:parentActivityName=".ui.main.MainActivity" />

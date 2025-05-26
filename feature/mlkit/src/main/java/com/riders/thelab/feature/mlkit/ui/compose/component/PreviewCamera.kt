@@ -20,7 +20,6 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.feature.mlkit.ui.compose.BarcodeAnalyser
 import timber.log.Timber
 import java.util.concurrent.Executors
 
@@ -55,11 +54,11 @@ fun CameraView(modifier: Modifier) {
 
                 val imageAnalyzer = ImageAnalysis.Builder()
                     .build()
-                    .also {
+                   /* .also {
                         it.setAnalyzer(cameraExecutor, BarcodeAnalyser { barcode ->
                             UIManager.showToast(context, "Barcode found, value: $barcode")
                         })
-                    }
+                    }*/
 
                 val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
