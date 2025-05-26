@@ -95,8 +95,8 @@
             android:name=".ui.textrecognition.TextRecognitionAssetsActivity"
             android:parentActivityName=".ui.textrecognition.TextRecognitionActivity" />
         <activity
-            android:name=".ui.translate.TranslateActivity"
-            android:parentActivityName=".ui.main.MainActivity"
+            android:name=".ui.compose.translate.TranslateActivity"
+               android:parentActivityName=".ui.compose.MLKitComposeMainActivity"
             android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>
