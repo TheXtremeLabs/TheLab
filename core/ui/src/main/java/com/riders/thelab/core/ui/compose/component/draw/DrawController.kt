@@ -26,7 +26,7 @@ class DrawController internal constructor(val trackHistory: (undoCount: Int, red
 
     private val _redoPathList = mutableStateListOf<PathWrapper>()
     private val _undoPathList = mutableStateListOf<PathWrapper>()
-    internal val pathList: SnapshotStateList<PathWrapper> = _undoPathList
+    val pathList: SnapshotStateList<PathWrapper> = _undoPathList
 
 
     private val _historyTracker = MutableSharedFlow<String>(extraBufferCapacity = 1)
@@ -48,10 +48,10 @@ class DrawController internal constructor(val trackHistory: (undoCount: Int, red
     fun saveBitmap(config: Bitmap.Config = Bitmap.Config.ARGB_8888) =
         _bitmapGenerators.tryEmit(config)
 
-    var opacity:Float by mutableFloatStateOf(1f)
+    var opacity: Float by mutableFloatStateOf(1f)
         private set
 
-    var strokeWidth:Float by mutableFloatStateOf(10f)
+    var strokeWidth: Float by mutableFloatStateOf(10f)
         private set
 
     var color by mutableStateOf(Color.Red)

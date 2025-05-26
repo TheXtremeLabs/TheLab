@@ -86,8 +86,8 @@
             android:name=".ui.compose.face.FaceDetectionActivity"
                android:parentActivityName=".ui.compose.MLKitComposeMainActivity" />
         <activity
-            android:name=".ui.ink.InkRecognitionActivity"
-            android:parentActivityName=".ui.main.MainActivity" />
+            android:name=".ui.compose.ink.InkRecognitionActivity"
+               android:parentActivityName=".ui.compose.MLKitComposeMainActivity" />
         <activity
             android:name=".ui.textrecognition.TextRecognitionActivity"
             android:parentActivityName=".ui.main.MainActivity" />

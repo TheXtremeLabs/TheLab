@@ -8,6 +8,7 @@ import com.riders.thelab.feature.mlkit.ui.compose.barcodescanner.BarcodeScannerR
 import com.riders.thelab.feature.mlkit.ui.compose.cameratest.CameraTestActivity
 import com.riders.thelab.feature.mlkit.ui.compose.documentscanner.DocumentScannerActivity
 import com.riders.thelab.feature.mlkit.ui.compose.face.FaceDetectionActivity
+import com.riders.thelab.feature.mlkit.ui.compose.ink.InkRecognitionActivity
 import com.riders.thelab.feature.mlkit.ui.compose.textrecognition.TextRecognitionAssetsActivity
 import com.riders.thelab.feature.mlkit.ui.compose.translate.TranslateActivity
 
