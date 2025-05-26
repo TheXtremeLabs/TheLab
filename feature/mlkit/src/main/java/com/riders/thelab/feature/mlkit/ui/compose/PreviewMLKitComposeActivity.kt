@@ -39,6 +39,7 @@ import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.mlkit.ui.compose.component.CameraView
 import kotlinx.coroutines.delay
 
 
@@ -103,6 +104,7 @@ fun MLKitComposeContent(theme: AppTheme, darkTheme: Boolean) {
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Color.DarkGray)
                     .padding(contentPadding)
             ) {
                 Box(

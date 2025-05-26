@@ -252,7 +252,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(WeatherActivity::class.java)
-                        .withActivityDate("2023/05/15")
+                        .withActivityDate("2023/05/23")
                         .build()
                 this.add(weather)
 
@@ -497,7 +497,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(MusicRecognitionChooserActivity::class.java)
-                        .withActivityDate("2025/05/23")
+                        .withActivityDate("2025/05/25")
                         .build()
                 this.add(musicRecognition)
 
@@ -514,7 +514,7 @@ object AppBuilderUtils {
                             )
                         )
                         .withActivityClass(MLKitChooserActivity::class.java)
-                        .withActivityDate("2024/02/18")
+                        .withActivityDate("2025/05/26")
                         .build()
                 this.add(mlkit)
 

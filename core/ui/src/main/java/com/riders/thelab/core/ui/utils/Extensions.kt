@@ -6,16 +6,21 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.util.Base64
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import coil.compose.AsyncImagePainter
 import java.nio.ByteBuffer
+import java.util.concurrent.Executor
 
+val Int.toDp: Int get() = (this / Resources.getSystem().displayMetrics.density).toInt()
+val Int.toPx: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 val Float.toPx get() = this * Resources.getSystem().displayMetrics.density
 
 
 /////////////////////////////////////////////////////
 // Context
 /////////////////////////////////////////////////////
+val Context.executor: Executor get() = ContextCompat.getMainExecutor(this)
 fun Context.getDrawableByName(imageResName: String): Drawable? = ResourcesCompat.getDrawable(
     this.resources,
     this.resources.getIdentifier(imageResName, "drawable", this.packageName),

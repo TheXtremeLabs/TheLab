@@ -31,7 +31,7 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
-import com.riders.thelab.feature.mlkit.ui.compose.CameraView
+import com.riders.thelab.feature.mlkit.ui.compose.component.CameraView
 
 ///////////////////////////////////////
 //

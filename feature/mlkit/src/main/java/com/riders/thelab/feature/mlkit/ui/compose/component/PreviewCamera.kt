@@ -1,4 +1,4 @@
-package com.riders.thelab.feature.mlkit.ui.compose
+package com.riders.thelab.feature.mlkit.ui.compose.component
 
 import androidx.activity.ComponentActivity
 import androidx.camera.core.CameraSelector
@@ -7,6 +7,7 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,6 +20,7 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.feature.mlkit.ui.compose.BarcodeAnalyser
 import timber.log.Timber
 import java.util.concurrent.Executors
 
@@ -91,6 +93,6 @@ fun CameraView(modifier: Modifier) {
 @Composable
 private fun PreviewCameraView(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
-        CameraView(Modifier)
+        CameraView(modifier = Modifier.fillMaxSize())
     }
 }
