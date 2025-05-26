@@ -150,7 +150,7 @@ fun FaceDetectionContent(
                                             bounds = faceBounds
                                         })
                                 },
-                                viewReferencedBlock = {}
+                                onViewReferenced = {}
                             )
 
                             if (null == bounds) {

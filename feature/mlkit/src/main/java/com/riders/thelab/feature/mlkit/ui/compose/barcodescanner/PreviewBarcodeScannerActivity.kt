@@ -160,7 +160,7 @@ fun BarcodeScannerContent(theme: AppTheme, darkTheme: Boolean) {
                                         }
                                     }
                                 ),
-                                viewReferencedBlock = {
+                                onViewReferenced = {
                                     analyzer.viewReferenced =
                                         CameraController.COORDINATE_SYSTEM_VIEW_REFERENCED
                                 }

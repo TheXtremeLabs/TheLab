@@ -89,11 +89,11 @@
             android:name=".ui.compose.ink.InkRecognitionActivity"
                android:parentActivityName=".ui.compose.MLKitComposeMainActivity" />
         <activity
-            android:name=".ui.textrecognition.TextRecognitionActivity"
-            android:parentActivityName=".ui.main.MainActivity" />
+            android:name=".ui.compose.textrecognition.TextRecognitionActivity"
+               android:parentActivityName=".ui.compose.MLKitComposeMainActivity" />
         <activity
-            android:name=".ui.textrecognition.TextRecognitionAssetsActivity"
-            android:parentActivityName=".ui.textrecognition.TextRecognitionActivity" />
+            android:name=".ui.compose.textrecognition.TextRecognitionAssetsActivity"
+            android:parentActivityName=".ui.compose.textrecognition.TextRecognitionActivity" />
         <activity
             android:name=".ui.compose.translate.TranslateActivity"
                android:parentActivityName=".ui.compose.MLKitComposeMainActivity"

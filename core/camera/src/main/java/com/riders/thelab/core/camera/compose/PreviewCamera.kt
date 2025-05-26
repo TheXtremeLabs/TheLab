@@ -9,7 +9,6 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -417,7 +416,7 @@ fun CameraView(
     theme: AppTheme,
     darkTheme: Boolean,
     modifier: Modifier,
-    viewReferencedBlock: () -> Unit,
+    onViewReferenced: () -> Unit,
     scaleType: PreviewView.ScaleType = PreviewView.ScaleType.FILL_CENTER,
     cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA,
     imageAnalyzer: ImageAnalysis.Analyzer? = null,
@@ -437,7 +436,7 @@ fun CameraView(
                 shouldToggleCamera = shouldToggleCamera,
                 scaleType = scaleType,
                 cameraSelector = cameraSelector,
-                viewReferencedBlock = viewReferencedBlock,
+                viewReferencedBlock = onViewReferenced,
                 analyzer = imageAnalyzer
             )
 
@@ -599,6 +598,6 @@ private fun PreviewCameraView(@PreviewParameter(AppThemePreviewProvider::class) 
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
             modifier = Modifier.fillMaxSize(),
-            viewReferencedBlock = {})
+            onViewReferenced = {})
     }
 }
