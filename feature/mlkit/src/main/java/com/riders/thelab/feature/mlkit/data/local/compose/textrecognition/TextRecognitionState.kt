@@ -1,4 +1,4 @@
-package com.riders.mlkitcompose.data.local.compose.textrecognition
+package com.riders.thelab.feature.mlkit.data.local.compose.textrecognition
 
 import androidx.compose.runtime.Stable
 import com.riders.thelab.feature.mlkit.data.local.model.TextRecognitionModel

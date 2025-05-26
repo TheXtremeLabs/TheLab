@@ -4,12 +4,15 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.Button
@@ -40,12 +43,14 @@ import com.riders.thelab.feature.mlkit.ui.compose.component.CameraView
 ///////////////////////////////////////
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CameraTestContent(theme: AppTheme, darkTheme: Boolean) {
+fun CameraTestContent(theme: AppTheme, darkTheme: Boolean, showCamera: Boolean) {
     val context = LocalContext.current
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding(),
             topBar = {
                 TopAppBar(
                     modifier = Modifier
@@ -79,7 +84,7 @@ fun CameraTestContent(theme: AppTheme, darkTheme: Boolean) {
                 contentAlignment = Alignment.Center
             ) {
                 AnimatedContent(
-                    targetState = (context.findActivity() as CameraTestActivity).hasCameraPermission(),
+                    targetState = showCamera,
                     label = "camera_content_transition"
                 ) { targetState: Boolean ->
                     if (!targetState) {
@@ -93,7 +98,12 @@ fun CameraTestContent(theme: AppTheme, darkTheme: Boolean) {
                             }
                         }
                     } else {
-                        CameraView(modifier = Modifier.fillMaxSize())
+                        BoxWithConstraints(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CameraView(modifier = Modifier.size(maxWidth, maxHeight))
+                        }
                     }
                 }
             }
@@ -111,6 +121,6 @@ fun CameraTestContent(theme: AppTheme, darkTheme: Boolean) {
 @Composable
 private fun PreviewCameraTestContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
-        CameraTestContent(theme = appTheme, darkTheme = isSystemInDarkTheme())
+        CameraTestContent(theme = appTheme, darkTheme = isSystemInDarkTheme(), true)
     }
 }

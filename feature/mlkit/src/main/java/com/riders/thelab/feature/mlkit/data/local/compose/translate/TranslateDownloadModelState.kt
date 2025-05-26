@@ -1,4 +1,4 @@
-package com.riders.mlkitcompose.data.local.compose.translate
+package com.riders.thelab.feature.mlkit.data.local.compose.translate
 
 sealed interface TranslateDownloadModelState {
     data object Success : TranslateDownloadModelState
@@ -7,5 +7,5 @@ sealed interface TranslateDownloadModelState {
         val throwable: Throwable? = null
     ) : TranslateDownloadModelState
 
-    data object Idle:TranslateDownloadModelState
+    data object Idle: TranslateDownloadModelState
 }

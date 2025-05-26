@@ -16,6 +16,7 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.core.ui.data.local.UiRepository
 import com.riders.thelab.feature.mlkit.data.local.model.BarcodeField
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +30,7 @@ class BarcodeScannerResultActivity : BaseComponentActivity() {
     private var mScanResult: BarcodeField? = null
 
     @Inject
-    lateinit var uiRepository: UiRepository
+    lateinit var uiRepository: IUiRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

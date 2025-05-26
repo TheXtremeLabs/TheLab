@@ -8,18 +8,15 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.utils.UIManager
 import timber.log.Timber
 import java.util.concurrent.Executors
 
@@ -30,11 +27,9 @@ import java.util.concurrent.Executors
 //
 ///////////////////////////////////////
 @Composable
-fun CameraView(modifier: Modifier) {
+fun CameraView(modifier: Modifier = Modifier) {
     AndroidView(
-        modifier = Modifier
-            .size(width = 250.dp, height = 250.dp)
-            .then(modifier),
+        modifier = modifier,
         factory = { context ->
             val cameraExecutor = Executors.newSingleThreadExecutor()
             val previewView = PreviewView(context).also {
@@ -54,11 +49,11 @@ fun CameraView(modifier: Modifier) {
 
                 val imageAnalyzer = ImageAnalysis.Builder()
                     .build()
-                   /* .also {
-                        it.setAnalyzer(cameraExecutor, BarcodeAnalyser { barcode ->
-                            UIManager.showToast(context, "Barcode found, value: $barcode")
-                        })
-                    }*/
+                /* .also {
+                     it.setAnalyzer(cameraExecutor, BarcodeAnalyser { barcode ->
+                         UIManager.showToast(context, "Barcode found, value: $barcode")
+                     })
+                 }*/
 
                 val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 

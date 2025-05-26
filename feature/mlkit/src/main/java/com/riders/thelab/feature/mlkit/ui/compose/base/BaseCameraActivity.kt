@@ -33,6 +33,7 @@ abstract class BaseCameraActivity : BaseComponentActivity() {
                 } else {
                     Timber.d("initPermissionLauncher() | Camera Permission is granted")
                 }
+                onCameraPermissionGranted(areAllGranted)
             }
     }
 
@@ -41,6 +42,8 @@ abstract class BaseCameraActivity : BaseComponentActivity() {
     }.also {
         Timber.d("hasCameraPermission() | result : $it")
     }
+
+    abstract fun onCameraPermissionGranted(granted: Boolean)
 
     override fun backPressed() {}
 }

@@ -164,7 +164,7 @@ class TheLabVoiceAssistantService : Service(), RecognitionListener {
                         smallIcon = R.mipmap.ic_lab_round
                     )
                 )
-                startListening()
+                // startListening()
             }
 
             getString(R.string.voice_assistant_service_action_stop_listening) -> {
@@ -198,11 +198,11 @@ class TheLabVoiceAssistantService : Service(), RecognitionListener {
 
     private fun startListening() {
         Timber.i("startListeningLegacy()")
-        if (!isListening /*&& SpeechRecognizer.isRecognitionAvailable(this)*/) {
+        /*if (!isListening *//*&& SpeechRecognizer.isRecognitionAvailable(this)*//*) {
             speechRecognizer?.startListening(speechRecognizerIntent)
             isListening = true
             Timber.v("Start listening")
-        }
+        }*/
     }
 
     private fun stopListening() {

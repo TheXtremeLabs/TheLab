@@ -15,8 +15,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MLKitComposeMainActivity : BaseComponentActivity() {
 
     private val mViewModel: MLKitComposeMainViewModel by viewModels<MLKitComposeMainViewModel>()

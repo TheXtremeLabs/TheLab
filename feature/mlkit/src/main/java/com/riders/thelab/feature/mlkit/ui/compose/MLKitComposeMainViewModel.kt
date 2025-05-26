@@ -6,9 +6,11 @@ import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.mlkit.data.local.model.MLKitItem
 import com.riders.thelab.feature.mlkit.ui.compose.utils.MLKitComposeNavigator
+import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
 import javax.inject.Inject
 
+@HiltViewModel
 class MLKitComposeMainViewModel @Inject constructor(
     val uiRepository: IUiRepository
 ) : BaseViewModel() {

@@ -17,6 +17,7 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.mlkit.ui.compose.MLKitComposeActivity
+import com.riders.thelab.feature.mlkit.ui.compose.MLKitComposeMainActivity
 import com.riders.thelab.feature.mlkit.ui.xml.LiveBarcodeScanningActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -73,7 +74,7 @@ class MLKitChooserActivity : BaseComponentActivity() {
             finish()
         }
 
-    fun launchMLKitComposeActivity() = Intent(this, MLKitComposeActivity::class.java)
+    fun launchMLKitComposeActivity() = Intent(this, MLKitComposeMainActivity::class.java)
         .run {
             startActivity(this)
             finish()

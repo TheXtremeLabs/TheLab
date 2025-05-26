@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.core.ui.data.local.UiRepository
 import com.riders.thelab.feature.mlkit.ui.compose.base.BaseCameraActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +28,7 @@ class FaceDetectionActivity : BaseCameraActivity() {
     private var faceDetectionType = FACE_DETECTION_NORMAL
 
     @Inject
-    lateinit var uiRepository: UiRepository
+    lateinit var uiRepository: IUiRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +71,8 @@ class FaceDetectionActivity : BaseCameraActivity() {
         finish()
     }
 
+    override fun onCameraPermissionGranted(granted: Boolean) {
+    }
 
     @SuppressLint("NewApi")
     private fun getBundle() {

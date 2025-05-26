@@ -1,4 +1,4 @@
-package com.riders.mlkitcompose.data.local.compose.facedetection
+package com.riders.thelab.feature.mlkit.data.local.compose.facedetection
 
 sealed interface FaceDetectionState {
     data class Recognized(val face: String) : FaceDetectionState

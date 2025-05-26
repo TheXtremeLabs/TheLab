@@ -7,7 +7,7 @@ import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.Text.TextBlock
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
-import com.riders.mlkitcompose.data.local.compose.textrecognition.TextRecognitionState
+import com.riders.thelab.feature.mlkit.data.local.compose.textrecognition.TextRecognitionState
 import com.riders.thelab.feature.mlkit.data.local.model.TextRecognitionModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose

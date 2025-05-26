@@ -2,6 +2,7 @@ package com.riders.thelab.core.ui.compose.theme
 
 import android.app.Activity
 import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -64,11 +65,29 @@ fun TheLabTheme(
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            (view.context as Activity).window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(
-                (view.context as Activity).window,
-                view
-            ).isAppearanceLightStatusBars = darkTheme
+            try {
+                when (view.context) {
+                    is ComponentActivity -> {
+                        (view.context as ComponentActivity).window.statusBarColor =
+                            colorScheme.primary.toArgb()
+                        WindowCompat.getInsetsController(
+                            (view.context as ComponentActivity).window,
+                            view
+                        ).isAppearanceLightStatusBars = darkTheme
+                    }
+
+                    is Activity -> {
+                        (view.context as Activity).window.statusBarColor =
+                            colorScheme.primary.toArgb()
+                        WindowCompat.getInsetsController(
+                            (view.context as Activity).window,
+                            view
+                        ).isAppearanceLightStatusBars = darkTheme
+                    }
+                }
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
         }
     }
 

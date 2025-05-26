@@ -17,9 +17,11 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.mlkit.data.local.model.BarcodeField
 import com.riders.thelab.feature.mlkit.ui.compose.base.BaseCameraActivity
 import com.riders.thelab.feature.mlkit.ui.compose.utils.MLKitComposeNavigator
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@AndroidEntryPoint
 class BarcodeScannerActivity : BaseCameraActivity() {
 
     private lateinit var navigator: MLKitComposeNavigator
@@ -81,6 +83,10 @@ class BarcodeScannerActivity : BaseCameraActivity() {
     override fun onDestroy() {
         Timber.e("onDestroy()")
         super.onDestroy()
+    }
+
+    override fun onCameraPermissionGranted(granted: Boolean) {
+        mViewModel.updateShowCamera(granted)
     }
 
     fun launchScanResultActivity(scanResult: BarcodeField) {

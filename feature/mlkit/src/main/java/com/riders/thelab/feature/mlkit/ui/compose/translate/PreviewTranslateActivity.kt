@@ -65,7 +65,7 @@ import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.riders.mlkitcompose.data.local.compose.translate.TranslateResultState
+import com.riders.thelab.feature.mlkit.data.local.compose.translate.TranslateResultState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
@@ -186,7 +186,6 @@ fun Header(
                     // Should switch content
                 }
             ) { Icon(imageVector = Icons.Rounded.SyncAlt, contentDescription = null) }
-
 
             TranslateSelector(
                 theme = theme,

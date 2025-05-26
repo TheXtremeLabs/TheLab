@@ -58,7 +58,7 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
-import com.riders.mlkitcompose.data.local.compose.textrecognition.TextRecognitionState
+import com.riders.thelab.feature.mlkit.data.local.compose.textrecognition.TextRecognitionState
 import com.riders.thelab.core.camera.compose.CameraView
 import com.riders.thelab.core.camera.compose.NoCameraPermissionContent
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews

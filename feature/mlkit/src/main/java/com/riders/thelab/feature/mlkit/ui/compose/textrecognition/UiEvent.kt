@@ -1,7 +1,7 @@
 package com.riders.thelab.feature.mlkit.ui.compose.textrecognition
 
 import com.google.mlkit.vision.common.InputImage
-import com.riders.mlkitcompose.data.local.model.TextRecognitionModel
+import com.riders.thelab.feature.mlkit.data.local.model.TextRecognitionModel
 
 sealed interface UiEvent {
     data class OnTextRecognition(val model: TextRecognitionModel) : UiEvent

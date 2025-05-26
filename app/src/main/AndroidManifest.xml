@@ -213,9 +213,9 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/google_ads_key" />
 
-        <meta-data
+        <!--<meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
-            android:value="barcode" />
+            android:value="barcode" />-->
 
         <!-- Fix Manifest merger failed : Attribute property#android.adservices.AD_SERVICES_CONFIG@resource error with AGP 8.3.0 -->
         <!--<meta-data
@@ -534,9 +534,14 @@
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-
         <activity
             android:name=".feature.mlkit.ui.xml.LiveBarcodeScanningActivity"
+            android:label="@string/activity_barcode_scanning_title"
+            android:parentActivityName=".ui.mainactivity.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".feature.mlkit.ui.compose.MLKitComposeMainActivity"
             android:label="@string/activity_barcode_scanning_title"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"

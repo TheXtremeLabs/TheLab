@@ -1,4 +1,4 @@
-package com.riders.mlkitcompose.data.local.compose.translate
+package com.riders.thelab.feature.mlkit.data.local.compose.translate
 
 sealed interface TranslateResultState {
     data class Translated(val translation: String) : TranslateResultState

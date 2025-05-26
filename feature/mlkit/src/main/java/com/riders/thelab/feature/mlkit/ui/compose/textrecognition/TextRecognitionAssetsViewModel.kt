@@ -2,7 +2,7 @@ package com.riders.thelab.feature.mlkit.ui.compose.textrecognition
 
 import android.graphics.Bitmap
 import androidx.lifecycle.viewModelScope
-import com.riders.mlkitcompose.data.local.compose.textrecognition.TextRecognitionState
+import com.riders.thelab.feature.mlkit.data.local.compose.textrecognition.TextRecognitionState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

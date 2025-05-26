@@ -12,8 +12,7 @@ import com.google.mlkit.vision.digitalink.DigitalInkRecognizer
 import com.google.mlkit.vision.digitalink.DigitalInkRecognizerOptions
 import com.google.mlkit.vision.digitalink.Ink
 import com.google.mlkit.vision.digitalink.RecognitionResult
-import com.riders.mlkitcompose.data.local.compose.ink.InkRecognitionState
-import com.riders.thelab.feature.mlkit.ui.compose.ink.InkRecognitionActivity
+import com.riders.thelab.feature.mlkit.data.local.compose.ink.InkRecognitionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

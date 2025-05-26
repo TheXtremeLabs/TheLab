@@ -52,7 +52,11 @@ class TextRecognitionAssetsActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            TextRecognitionAssetsContent(state = textRecognitionState)
+                            TextRecognitionAssetsContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme,
+                                state = textRecognitionState
+                            )
                         }
                     }
                 }

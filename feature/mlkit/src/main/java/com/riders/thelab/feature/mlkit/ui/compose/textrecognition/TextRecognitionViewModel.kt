@@ -2,14 +2,15 @@ package com.riders.thelab.feature.mlkit.ui.compose.textrecognition
 
 import androidx.lifecycle.viewModelScope
 import com.google.mlkit.vision.common.InputImage
-import com.riders.mlkitcompose.data.local.compose.textrecognition.TextRecognitionState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
+import com.riders.thelab.feature.mlkit.data.local.compose.textrecognition.TextRecognitionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -31,10 +32,22 @@ class TextRecognitionViewModel @Inject constructor(
         MutableStateFlow(TextRecognitionState.Idle)
     val textRecognitionState = _textRecognitionState.asStateFlow()
 
+    private var showCamera: MutableStateFlow<Boolean> = MutableStateFlow(false)
+        private set
+
     private fun updateTextRecognitionState(state: TextRecognitionState) {
         this._textRecognitionState.value = state
     }
 
+    fun updateShowCamera(showCamera: Boolean) {
+        this.showCamera.update { showCamera }
+    }
+
+    ////////////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    ////////////////////////////////////////////
     override fun onCleared() {
         Timber.e("onCleared()")
         mTextRecognitionManager = null

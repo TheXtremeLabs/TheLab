@@ -5,8 +5,8 @@ import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.Translator
 import com.google.mlkit.nl.translate.TranslatorOptions
-import com.riders.mlkitcompose.data.local.compose.translate.TranslateDownloadModelState
-import com.riders.mlkitcompose.data.local.compose.translate.TranslateResultState
+import com.riders.thelab.feature.mlkit.data.local.compose.translate.TranslateDownloadModelState
+import com.riders.thelab.feature.mlkit.data.local.compose.translate.TranslateResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

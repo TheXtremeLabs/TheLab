@@ -4,9 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.viewModelScope
-import com.riders.mlkitcompose.data.local.compose.translate.TranslateDownloadModelState
-import com.riders.mlkitcompose.data.local.compose.translate.TranslateResultState
+import com.riders.thelab.feature.mlkit.data.local.compose.translate.TranslateDownloadModelState
+import com.riders.thelab.feature.mlkit.data.local.compose.translate.TranslateResultState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +27,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class TranslateViewModel @Inject constructor(val uiRepository: IUiRepository) : BaseViewModel() {
+class TranslateViewModel @Inject constructor(
+    val uiRepository: IUiRepository
+) : BaseViewModel(), DefaultLifecycleObserver {
 
     ////////////////////////////////////////////
     // Variables

@@ -17,9 +17,11 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.mlkit.ui.compose.base.BaseCameraActivity
 import com.riders.thelab.feature.mlkit.ui.compose.utils.MLKitComposeNavigator
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@AndroidEntryPoint
 class TextRecognitionActivity : BaseCameraActivity() {
     private val mViewModel: TextRecognitionViewModel by viewModels<TextRecognitionViewModel>()
     private lateinit var mNavigator: MLKitComposeNavigator
@@ -29,6 +31,8 @@ class TextRecognitionActivity : BaseCameraActivity() {
         Timber.d("onCreate()")
 
         mNavigator = MLKitComposeNavigator(this@TextRecognitionActivity)
+
+        mViewModel.updateShowCamera(hasCameraPermission())
         mViewModel.initRecognitionManager(this)
 
         enableEdgeToEdge()
@@ -52,6 +56,8 @@ class TextRecognitionActivity : BaseCameraActivity() {
                             color = MaterialTheme.colorScheme.background
                         ) {
                             TextRecognitionContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme,
                                 state = textRecognitionState,
                                 uiEvent = { event ->
                                     when (event) {
@@ -73,5 +79,9 @@ class TextRecognitionActivity : BaseCameraActivity() {
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()
+    }
+
+    override fun onCameraPermissionGranted(granted: Boolean) {
+        mViewModel.updateShowCamera(granted)
     }
 }

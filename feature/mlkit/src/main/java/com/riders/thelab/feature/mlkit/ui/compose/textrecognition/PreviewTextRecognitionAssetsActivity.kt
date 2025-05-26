@@ -3,6 +3,7 @@ package com.riders.thelab.feature.mlkit.ui.compose.textrecognition
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,14 +36,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.riders.mlkitcompose.core.compose.annotation.DevicePreviews
-import com.riders.mlkitcompose.core.compose.theme.AppTypography
-import com.riders.mlkitcompose.core.compose.theme.MLKitComposeTheme
-import com.riders.mlkitcompose.core.compose.utils.findActivity
-import com.riders.mlkitcompose.data.local.compose.textrecognition.TextRecognitionState
-import com.riders.mlkitcompose.data.local.model.TextRecognitionModel
+import com.riders.thelab.feature.mlkit.data.local.compose.textrecognition.TextRecognitionState
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.theme.AppTypography
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.feature.mlkit.data.local.model.TextRecognitionModel
 import timber.log.Timber
 
@@ -151,10 +150,14 @@ fun RecognizedText(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextRecognitionAssetsContent(state: TextRecognitionState) {
+fun TextRecognitionAssetsContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    state: TextRecognitionState
+) {
     val context = LocalContext.current
 
-    MLKitComposeTheme {
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
@@ -232,6 +235,8 @@ fun TextRecognitionAssetsContent(state: TextRecognitionState) {
                             contentAlignment = Alignment.Center
                         ) {
                             RecognizedText(
+                                theme = theme,
+                                darkTheme = darkTheme,
                                 modifier = Modifier.fillMaxSize(),
                                 recognitionModel = state.recognitionModel
                             )
@@ -252,7 +257,12 @@ fun TextRecognitionAssetsContent(state: TextRecognitionState) {
 @DevicePreviews
 @Composable
 private fun PreviewTextRecognitionContent(@PreviewParameter(PreviewProvider::class) state: TextRecognitionState) {
-    MLKitComposeTheme {
-        TextRecognitionAssetsContent(state = state)
+
+    TheLabTheme(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme()) {
+        TextRecognitionAssetsContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            state = state
+        )
     }
 }

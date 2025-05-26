@@ -1,4 +1,4 @@
-package com.riders.mlkitcompose.data.local.compose.ink
+package com.riders.thelab.feature.mlkit.data.local.compose.ink
 
 sealed interface InkRecognitionState {
     data class Recognized(val candidate: String) : InkRecognitionState

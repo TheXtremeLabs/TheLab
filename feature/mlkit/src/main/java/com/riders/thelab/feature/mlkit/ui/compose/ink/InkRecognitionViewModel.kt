@@ -2,7 +2,7 @@ package com.riders.thelab.feature.mlkit.ui.compose.ink
 
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.viewModelScope
-import com.riders.mlkitcompose.data.local.compose.ink.InkRecognitionState
+import com.riders.thelab.feature.mlkit.data.local.compose.ink.InkRecognitionState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.core.ui.utils.encodeToBase64
@@ -13,9 +13,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
-class InkRecognitionViewModel(val uiRepository: IUiRepository) : BaseViewModel() {
+class InkRecognitionViewModel @Inject constructor(val uiRepository: IUiRepository) : BaseViewModel() {
     ////////////////////////////////////////////
     // Variables
     ////////////////////////////////////////////
