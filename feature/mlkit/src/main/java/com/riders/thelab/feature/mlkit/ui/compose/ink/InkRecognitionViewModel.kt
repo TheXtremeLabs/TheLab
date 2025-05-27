@@ -1,11 +1,12 @@
 package com.riders.thelab.feature.mlkit.ui.compose.ink
 
+import android.content.res.Resources.NotFoundException
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.viewModelScope
-import com.riders.thelab.feature.mlkit.data.local.compose.ink.InkRecognitionState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.core.ui.utils.encodeToBase64
+import com.riders.thelab.feature.mlkit.data.local.compose.ink.InkRecognitionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class InkRecognitionViewModel @Inject constructor(val uiRepository: IUiRepository) : BaseViewModel() {
+class InkRecognitionViewModel @Inject constructor(val uiRepository: IUiRepository) :
+    BaseViewModel() {
     ////////////////////////////////////////////
     // Variables
     ////////////////////////////////////////////
@@ -64,6 +66,14 @@ class InkRecognitionViewModel @Inject constructor(val uiRepository: IUiRepositor
                         is InkRecognitionState.Recognized -> updateInkRecognitionState(it.candidate)
                         is InkRecognitionState.Failed -> {
                             Timber.d("recognize() | InkRecognitionState.Failed")
+
+                            if (it.throwable is NotFoundException) {
+                                // No model found. User might check his internet connection to fetch model online.
+                                updateInkRecognitionState("No model found. Please check your internet connection first.")
+                                return@collect
+                            }
+
+                            updateInkRecognitionState("Error while recognizing text")
                         }
                     }
                 }

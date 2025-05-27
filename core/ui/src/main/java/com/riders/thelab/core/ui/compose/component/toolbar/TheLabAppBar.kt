@@ -74,7 +74,7 @@ fun TheLabTopAppBar(
     isDarkThemeForced: Boolean = false,
     isDarkTheme: Boolean = false,
     navigationIcon: @Composable (() -> Unit)? = null,
-    actionBlock: (() -> Unit)? = null,
+    actionBlock: @Composable (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
 
@@ -283,6 +283,7 @@ fun TheLabTopAppBar(
     toolbarSize: ToolbarSize,
     title: String? = null,
     titleColor: Color = Color.White,
+    toolbarHeight: Dp = 56.dp,
     toolbarMaxHeight: Dp = 96.dp,
     mainCustomContent: @Composable (() -> Unit)? = null,
     withGradientBackground: Boolean = false,
@@ -300,7 +301,7 @@ fun TheLabTopAppBar(
                 TopAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
+                        .height(toolbarHeight)
                         .background(
                             Brush.verticalGradient(
                                 listOf(
@@ -377,7 +378,7 @@ fun TheLabTopAppBar(
                                 Text(
                                     modifier = Modifier.padding(start = 16.dp),
                                     text = title,
-                                    color = Color.White
+                                    color = titleColor
                                 )
                             }
                         } else if (null != mainCustomContent && null == title) {
@@ -433,7 +434,7 @@ fun TheLabTopAppBar(
                                     .padding(start = 16.dp, bottom = 16.dp),
                                 verticalArrangement = Arrangement.Bottom
                             ) {
-                                Text(text = title, color = Color.White)
+                                Text(text = title, color = titleColor)
                             }
                         } else if (null != mainCustomContent && null == title) {
                             mainCustomContent()

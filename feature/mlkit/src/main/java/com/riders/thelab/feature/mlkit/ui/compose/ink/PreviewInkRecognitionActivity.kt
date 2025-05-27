@@ -10,12 +10,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.Redo
 import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.rounded.CheckCircleOutline
@@ -24,10 +23,9 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -49,10 +47,11 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.bottomsheet.BottomSheetContent
 import com.riders.thelab.core.ui.compose.component.draw.DrawBox
 import com.riders.thelab.core.ui.compose.component.draw.rememberDrawController
+import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -82,30 +81,26 @@ fun InkRecognitionContent(
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         BottomSheetScaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding(),
             scaffoldState = bottomSheetScaffoldState,
             topBar = {
-                TopAppBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .requiredHeight(56.dp),
-                    navigationIcon = {
-                        IconButton(
-                            modifier = Modifier.fillMaxHeight(),
-                            onClick = { (context.findActivity() as InkRecognitionActivity).backPressed() }
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                                contentDescription = "nav_back_icon"
-                            )
-                        }
-                    },
-                    title = {
+                TheLabTopAppBar(
+                    theme = theme,
+                    toolbarSize = ToolbarSize.SMALL,
+                    toolbarHeight = 80.dp,
+                    title = null,
+                    mainCustomContent = {
                         Column(
                             modifier = Modifier.fillMaxHeight(),
                             verticalArrangement = Arrangement.Center
-                        ) { Text(text = "Ink Recognition", textAlign = TextAlign.Center) }
+                        ) {
+                            Text(text = "Ink Recognition")
+                        }
                     },
+                    titleColor = MaterialTheme.colorScheme.onSurface,
+                    backgroundColor = MaterialTheme.colorScheme.surface,
                     actions = {
                         // Clear all button
                         Box(
@@ -138,6 +133,7 @@ fun InkRecognitionContent(
                                 }
                             }
                         }
+
 
                         // Recognize circle button
                         Box(
@@ -183,7 +179,7 @@ fun InkRecognitionContent(
                     }
                 }
             },
-            sheetPeekHeight = 128.dp,
+            sheetPeekHeight = 96.dp,
         ) { contentPadding ->
             Column(
                 modifier = Modifier

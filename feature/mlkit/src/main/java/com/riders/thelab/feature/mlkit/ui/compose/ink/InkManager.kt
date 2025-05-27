@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.mlkit.ui.compose.ink
 
+import android.content.res.Resources.NotFoundException
 import android.view.MotionEvent
 import androidx.compose.ui.geometry.Offset
 import com.google.mlkit.common.MlKitException
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
+import java.net.UnknownHostException
 
 class InkManager(private val activity: InkRecognitionActivity) {
 
@@ -160,7 +162,7 @@ class InkManager(private val activity: InkRecognitionActivity) {
     }
 
 
-    fun recognize(activity: InkRecognitionActivity) : Flow<InkRecognitionState> = callbackFlow {
+    fun recognize(activity: InkRecognitionActivity): Flow<InkRecognitionState> = callbackFlow {
         Timber.d("recognize()")
 
         model?.let {
@@ -169,6 +171,7 @@ class InkManager(private val activity: InkRecognitionActivity) {
                 .addOnSuccessListener(activity) { downloaded ->
                     if (!downloaded) {
                         Timber.e("recognize() | model is NOT downloaded")
+                        trySend(InkRecognitionState.Failed("Model is not downloaded", NotFoundException("Model is not downloaded")))
                         return@addOnSuccessListener
                     } else {
                         ink = inkBuilder.build()
