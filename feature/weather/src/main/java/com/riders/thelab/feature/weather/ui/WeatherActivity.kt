@@ -159,8 +159,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                         // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
                         repeatOnLifecycle(Lifecycle.State.STARTED) {
                             setContent {
-                                val context = LocalContext.current
-
+                                // Register lifecycle events
                                 mWeatherViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
                                 val hasInternetConnection by mWeatherViewModel.hasInternetConnection.collectAsStateWithLifecycle()

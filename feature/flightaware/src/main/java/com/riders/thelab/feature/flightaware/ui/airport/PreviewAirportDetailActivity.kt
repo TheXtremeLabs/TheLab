@@ -112,7 +112,7 @@ fun AirportDetailContent(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width))
+                            .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_width))
                             .zIndex(2f)
                     ) {
                         GoogleMap(

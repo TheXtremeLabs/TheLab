@@ -111,6 +111,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
 
+                    // Register lifecycle events
                     mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
                     val theme: AppTheme by mViewModel.uiRepository

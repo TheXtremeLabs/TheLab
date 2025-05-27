@@ -138,7 +138,11 @@ fun ArtistsContent(theme: AppTheme, darkTheme: Boolean, state: ArtistsUiState) {
                     }
 
                     is ArtistsUiState.Error -> {
-                        NoItemFound("An error occurred while loading\n${targetState.message}")
+                        NoItemFound(
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            message = "An error occurred while loading\n${targetState.message}"
+                        )
                     }
 
                     is ArtistsUiState.Success -> {

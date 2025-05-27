@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
@@ -37,9 +39,11 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,12 +63,16 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.riders.thelab.core.data.local.model.compose.palette.PaletteUiState
 import com.riders.thelab.core.ui.R
+import com.riders.thelab.core.ui.compose.NoInternetConnection
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.snackbar.SnackbarVisualsCustom
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.toColor
 import com.riders.thelab.core.ui.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -81,7 +89,8 @@ fun PaletteLoader() {
     Box(
         modifier = Modifier
             .size(72.dp)
-            .zIndex(5f), contentAlignment = Alignment.Center
+            .zIndex(5f),
+        contentAlignment = Alignment.Center
     ) {
         Lottie(
             modifier = Modifier.fillMaxSize(),
@@ -90,11 +99,20 @@ fun PaletteLoader() {
     }
 }
 
+@Composable
+fun PaletteWithInternetConnection(
+    theme: AppTheme,
+    darkTheme: Boolean,
+) {
+
+}
+
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun PaletteContent(
     theme: AppTheme,
     darkTheme: Boolean,
+    hasInternetConnection: Boolean,
     paletteUiState: PaletteUiState,
     paletteNameList: List<String>,
     onRefreshedClicked: () -> Unit,
@@ -108,183 +126,231 @@ fun PaletteContent(
     val snackBarHostState = SnackbarHostState()
     val snackBarVisualsCustom = remember { mutableStateOf(SnackbarVisualsCustom()) }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TheLabTopAppBar(
-                theme = theme,
-                title = stringResource(id = R.string.activity_title_palette),
-                withGradientBackground = true,
-                actions = {
-                    Box(
-                        modifier = Modifier.fillMaxHeight(),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        AnimatedContent(
-                            modifier = Modifier.padding(bottom = 8.dp),
-                            targetState = isRefreshing,
-                            transitionSpec = { fadeIn() + slideInVertically() togetherWith slideOutVertically() + fadeOut() },
-                            label = "loading animation content"
-                        ) { targetState ->
-                            if (!targetState) {
-                                Box(
-                                    modifier = Modifier.size(40.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    IconButton(
-                                        modifier = Modifier.fillMaxSize(),
-                                        onClick = onRefreshedClicked
+    var navigationColor by remember { mutableStateOf(Color.Black) }
+    var gradientStartColor by remember { mutableStateOf(Color.Black) }
+
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TheLabTopAppBar(
+                    theme = theme,
+                    toolbarSize = ToolbarSize.SMALL,
+                    title = stringResource(id = R.string.activity_title_palette),
+                    toolbarHeight = 72.dp,
+                    withGradientBackground = true,
+                    gradientStartColor = gradientStartColor,
+                    navigationIconColor = navigationColor,
+                    actions = {
+                        Box(
+                            modifier = Modifier.fillMaxHeight(),
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+                            AnimatedContent(
+                                modifier = Modifier.padding(bottom = 8.dp),
+                                targetState = isRefreshing,
+                                transitionSpec = { fadeIn() + slideInVertically() togetherWith slideOutVertically() + fadeOut() },
+                                label = "loading animation content"
+                            ) { targetState ->
+                                if (!targetState) {
+                                    Box(
+                                        modifier = Modifier.size(40.dp),
+                                        contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(
+                                        IconButton(
+                                            modifier = Modifier.fillMaxSize(),
+                                            onClick = onRefreshedClicked,
+                                            enabled = hasInternetConnection
+                                        ) {
+                                            Icon(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .padding(4.dp),
+                                                imageVector = Icons.Filled.Sync,
+                                                contentDescription = null,
+                                                tint = Color.White
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    Box(
+                                        modifier = Modifier.size(40.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator(
                                             modifier = Modifier
                                                 .fillMaxSize()
-                                                .padding(4.dp),
-                                            imageVector = Icons.Filled.Sync,
-                                            contentDescription = null,
-                                            tint = Color.White
+                                                .padding(8.dp)
                                         )
                                     }
                                 }
-                            } else {
-                                Box(
-                                    modifier = Modifier.size(40.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(8.dp)
-                                    )
-                                }
                             }
                         }
-                    }
-                })
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState) {
-                it.visuals.message
-            }
-        }
-    ) { contentPadding ->
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
-            contentAlignment = Alignment.Center
-        ) {
-            when (paletteUiState) {
-                is PaletteUiState.Loading -> {
-                    PaletteLoader()
+                    })
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = snackBarHostState) {
+                    it.visuals.message
                 }
-
-                else -> {
-                    val painter = rememberAsyncImagePainter(
-                        model = ImageRequest
-                            .Builder(LocalContext.current)
-                            .data(if (paletteUiState is PaletteUiState.Success) paletteUiState.fetchedImage else com.riders.thelab.core.ui.R.drawable.logo_colors)
-                            .apply {
-                                crossfade(true)
-                                allowHardware(false)
-                                //transformations(RoundedCornersTransformation(32.dp.value))
-                            }
-                            .build(),
-                        placeholder = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors),
+            }
+        ) { contentPadding ->
+            AnimatedContent(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+                targetState = hasInternetConnection,
+                transitionSpec = { fadeIn() + scaleIn() togetherWith scaleOut() + fadeOut() },
+                label = "loading animation content"
+            ) { targetState: Boolean ->
+                if (!targetState) {
+                    NoInternetConnection(
+                        theme = theme,
+                        darkTheme = darkTheme,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(contentPadding),
+                        message = "${stringResource(R.string.network_status_disconnected)}\n${
+                            stringResource(
+                                R.string.network_check_connection
+                            )
+                        }",
+                        errorImageResId = null,
+                        action = onRefreshedClicked
                     )
-                    val state = painter.state
-
-                    LazyVerticalGrid(
+                } else {
+                    BoxWithConstraints(
                         modifier = Modifier.fillMaxSize(),
-                        state = lazyState,
-                        horizontalArrangement = Arrangement.Center,
-                        verticalArrangement = Arrangement.spacedBy(24.dp),
-                        columns = GridCells.Fixed(2)
+                        contentAlignment = Alignment.TopCenter
                     ) {
-                        item(span = {
-                            // Replace "maxCurrentLineSpan" with the number of spans this item should take.
-                            // Use "maxCurrentLineSpan" if you want to take full width.
-                            GridItemSpan(maxCurrentLineSpan)
-                        }) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(contentPadding),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Card(
+                        when (paletteUiState) {
+                            is PaletteUiState.Loading -> {
+                                LabLoader(
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp)
+                                        .align(Alignment.Center)
+                                        .size(72.dp)
+                                )
+                            }
+
+                            else -> {
+                                val painter = rememberAsyncImagePainter(
+                                    model = ImageRequest
+                                        .Builder(LocalContext.current)
+                                        .data(if (paletteUiState is PaletteUiState.Success) paletteUiState.fetchedImage else com.riders.thelab.core.ui.R.drawable.logo_colors)
+                                        .apply {
+                                            crossfade(true)
+                                            allowHardware(false)
+                                            //transformations(RoundedCornersTransformation(32.dp.value))
+                                        }
+                                        .build(),
+                                    placeholder = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors),
+                                )
+                                val state = painter.state
+
+                                LazyVerticalGrid(
+                                    modifier = Modifier.size(
+                                        width = this.maxWidth,
+                                        height = this.maxHeight
+                                    ),
+                                    state = lazyState,
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                                    columns = GridCells.Fixed(2)
                                 ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(0.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        Image(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height))
-                                                .clip(RoundedCornerShape(12.dp)),
-                                            painter = painter,
-                                            contentDescription = "palette image wth coil",
-                                            contentScale = ContentScale.Crop,
-                                        )
-                                        when (state) {
-                                            is AsyncImagePainter.State.Loading -> {
-                                                Timber.i("state is AsyncImagePainter.State.Loading")
-                                                PaletteLoader()
-                                            }
+                                    // Image Container
+                                    item(span = {
+                                        // Replace "maxCurrentLineSpan" with the number of spans this item should take.
+                                        // Use "maxCurrentLineSpan" if you want to take full width.
+                                        GridItemSpan(maxCurrentLineSpan)
+                                    }) {
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            val imageShape = RoundedCornerShape(
+                                                topStart = 0.dp,
+                                                topEnd = 0.dp,
+                                                bottomStart = 12.dp,
+                                                bottomEnd = 12.dp
+                                            )
 
-                                            is AsyncImagePainter.State.Success -> {
-                                                Timber.d("state is AsyncImagePainter.State.Success")
+                                            // Image Container
+                                            Card(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                shape = imageShape
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(0.dp),
+                                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    Image(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_custom_max_height))
+                                                            .clip(imageShape),
+                                                        painter = painter,
+                                                        contentDescription = "palette image wth coil",
+                                                        contentScale = ContentScale.Crop,
+                                                    )
+                                                    when (state) {
+                                                        is AsyncImagePainter.State.Loading -> {
+                                                            Timber.i("state is AsyncImagePainter.State.Loading")
+                                                            LabLoader(modifier = Modifier.size(56.dp))
+                                                        }
+
+                                                        is AsyncImagePainter.State.Success -> {
+                                                            Timber.d("state is AsyncImagePainter.State.Success")
 
 
-                                                LaunchedEffect(key1 = painter) {
-                                                    scope.launch {
-                                                        val image = painter.loadImage()
+                                                            LaunchedEffect(key1 = painter) {
+                                                                scope.launch {
+                                                                    val image = painter.loadImage()
 
-                                                        val palette = Palette.from(
-                                                            image.toBitmap(
-                                                                image.intrinsicWidth,
-                                                                image.intrinsicHeight
-                                                            )
-                                                        ).generate()
+                                                                    val palette = Palette.from(
+                                                                        image.toBitmap(
+                                                                            image.intrinsicWidth,
+                                                                            image.intrinsicHeight
+                                                                        )
+                                                                    ).generate()
 
-                                                        ////////////////
+                                                                    ////////////////
 
-                                                        paletteColorList.value =
-                                                            generatePalette(palette)
+                                                                    paletteColorList.value =
+                                                                        generatePalette(palette)
+                                                                }
+                                                            }
+                                                        }
+
+                                                        is AsyncImagePainter.State.Error -> {
+                                                            Timber.e("state is AsyncImagePainter.State.Error | ${state.result}")
+                                                        }
+
+                                                        else -> {
+                                                            Timber.e("else branch")
+                                                        }
                                                     }
                                                 }
                                             }
-
-                                            is AsyncImagePainter.State.Error -> {
-                                                Timber.e("state is AsyncImagePainter.State.Error | ${state.result}")
-                                            }
-
-                                            else -> {
-                                                Timber.e("else branch")
-                                            }
                                         }
+                                    }
+
+                                    // Image Palette grid content
+                                    itemsIndexed(paletteColorList.value) { index, item ->
+                                        PaletteItem(
+                                            text = paletteNameList[index],
+                                            color = item?.let { Color(it) })
                                     }
                                 }
                             }
-                        }
-
-                        itemsIndexed(paletteColorList.value) { index, item ->
-                            PaletteItem(
-                                text = paletteNameList[index],
-                                color = item?.let { Color(it) })
                         }
                     }
                 }
             }
         }
     }
+
 
     LaunchedEffect(paletteUiState) {
         if (paletteUiState is PaletteUiState.Error) {
@@ -298,6 +364,17 @@ fun PaletteContent(
                 snackBarHostState.showSnackbar(snackBarVisualsCustom.value)
             }
         }
+    }
+
+    LaunchedEffect(paletteColorList) {
+        if (paletteColorList.value.isEmpty()) {
+            return@LaunchedEffect
+        }
+
+        navigationColor = paletteColorList.value.last()?.toColor()
+            ?: paletteColorList.value[2]?.toColor()
+                    ?: Color.White
+        gradientStartColor = paletteColorList.value[1]?.toColor() ?: Color.Black
     }
 }
 
@@ -322,6 +399,32 @@ fun generatePalette(palette: Palette): List<Int?> {
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
+private fun PreviewPaletteContentWithoutInternet(@PreviewParameter(PreviewProvider::class) palette: PaletteUiState) {
+
+    val paletteNameList = listOf(
+        "Vibrant",
+        "Vibrant Dark",
+        "Vibrant Light",
+        "Muted",
+        "Muted Dark",
+        "Light Muted"
+    )
+
+    TheLabTheme(theme = AppTheme.Default) {
+        PaletteContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            hasInternetConnection = false,
+            palette,
+            paletteNameList,
+            {},
+            true
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
 private fun PreviewPaletteContent(@PreviewParameter(PreviewProvider::class) palette: PaletteUiState) {
 
     val paletteNameList = listOf(
@@ -337,6 +440,7 @@ private fun PreviewPaletteContent(@PreviewParameter(PreviewProvider::class) pale
         PaletteContent(
             theme = AppTheme.Default,
             darkTheme = isSystemInDarkTheme(),
+            hasInternetConnection = true,
             palette,
             paletteNameList,
             {},

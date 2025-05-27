@@ -78,7 +78,7 @@ fun AirportNearByItem(theme: AppTheme, darkTheme: Boolean, airport: AirportModel
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_mid_height)),
+                .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_custom_max_height)),
             onClick = {
                 airport.icaoCode?.let {
                     (context as FlightMainActivity).launchAirportDetail(it)
@@ -212,7 +212,7 @@ fun AirportNearByContent(
                 .fillMaxWidth()
                 .heightIn(
                     24.dp,
-                    configuration.screenHeightDp.dp - dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height)
+                    configuration.screenHeightDp.dp - dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_height)
                 )
                 .padding(horizontal = 16.dp)
                 .then(modifier),

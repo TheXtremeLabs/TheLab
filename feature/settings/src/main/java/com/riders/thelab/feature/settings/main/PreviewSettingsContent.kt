@@ -2,10 +2,13 @@ package com.riders.thelab.feature.settings.main
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +21,7 @@ import com.riders.thelab.core.data.local.model.compose.settings.UserUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
+import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -30,7 +34,8 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 ///////////////////////////////
 @Composable
 fun SettingsContent(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     deviceInformationUiState: DeviceInfoUiState,
     userUiState: UserUiState,
     themeOptions: List<String>,
@@ -48,12 +53,13 @@ fun SettingsContent(
             topBar = {
                 TheLabTopAppBar(
                     theme = theme,
-                    isDarkMode = darkTheme,
-                    title = stringResource(id = R.string.activity_settings_title)
+                    toolbarSize = ToolbarSize.MEDIUM,
+                    title = stringResource(id = R.string.activity_settings_title),
+                    titleColor = MaterialTheme.colorScheme.onSurface,
+                    withGradientBackground = true,
                 )
             }
         ) { contentPadding ->
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -62,9 +68,11 @@ fun SettingsContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                item { Spacer(modifier = Modifier.size(width = 0.dp, height = 8.dp)) }
                 item {
                     AppSettingsSection(
-                        theme = theme, darkTheme = darkTheme,
+                        theme = theme,
+                        darkTheme = darkTheme,
                         themeOptions = themeOptions,
                         version = version,
                         isVibration = isVibration,

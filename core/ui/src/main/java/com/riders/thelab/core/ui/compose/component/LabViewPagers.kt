@@ -76,7 +76,7 @@ fun LabHorizontalViewPager(
     val scope = rememberCoroutineScope()
     val screenWidth: Int = LocalConfiguration.current.screenWidthDp
     val horizontalPadding: Dp = 8.dp
-    val itemWidth: Dp = dimensionResource(id = R.dimen.max_card_image_width)
+    val itemWidth: Dp = dimensionResource(id = R.dimen.card_image_default_max_width)
     val contentPadding = PaddingValues(
         start = horizontalPadding,
         end = (screenWidth - itemWidth.value.toInt() + horizontalPadding.value.toInt()).dp
@@ -194,7 +194,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
     val scope = rememberCoroutineScope()
     val screenWidth: Int = LocalConfiguration.current.screenWidthDp
     val horizontalPadding: Dp = 8.dp
-    val itemWidth: Dp = dimensionResource(id = R.dimen.max_card_image_width)
+    val itemWidth: Dp = dimensionResource(id = R.dimen.card_image_default_max_width)
     val contentPadding = PaddingValues(
         start = horizontalPadding,
         end = (screenWidth - itemWidth.value.toInt() + horizontalPadding.value.toInt()).dp
@@ -322,7 +322,7 @@ fun <T : Any> LabHorizontalViewPagerGeneric(
     val scope = rememberCoroutineScope()
     val screenWidth: Int = LocalConfiguration.current.screenWidthDp
     val horizontalPadding: Dp = 8.dp
-    val itemWidth: Dp = dimensionResource(id = R.dimen.max_card_image_width)
+    val itemWidth: Dp = dimensionResource(id = R.dimen.card_image_default_max_width)
     val contentPadding = PaddingValues(
         start = horizontalPadding,
         end = (screenWidth - itemWidth.value.toInt() + horizontalPadding.value.toInt()).dp
@@ -548,7 +548,7 @@ fun <T : Any> LabVerticalViewPagerGeneric(
     val scope = rememberCoroutineScope()
     val screenWidth: Int = LocalConfiguration.current.screenWidthDp
     val horizontalPadding: Dp = 8.dp
-    val itemWidth: Dp = dimensionResource(id = R.dimen.max_card_image_width)
+    val itemWidth: Dp = dimensionResource(id = R.dimen.card_image_default_max_width)
     val contentPadding = PaddingValues(
         start = horizontalPadding,
         end = (screenWidth - itemWidth.value.toInt() + horizontalPadding.value.toInt()).dp

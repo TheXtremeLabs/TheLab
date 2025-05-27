@@ -1,6 +1,7 @@
 package com.riders.thelab.core.ui.compose.component.toolbar
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -211,6 +212,7 @@ fun TheLabTopAppBar(
     toolbarMaxHeight: Dp = 96.dp,
     mainCustomContent: @Composable (() -> Unit)? = null,
     withGradientBackground: Boolean = false,
+    gradientStartColor: Color = Color.Black,
     backgroundColor: Color = Color.Transparent,
     viewModel: BaseViewModel? = null,
     navigationIcon: @Composable (() -> Unit)? = null,
@@ -227,7 +229,7 @@ fun TheLabTopAppBar(
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            if (!withGradientBackground) Color.Transparent else Color.Black,
+                            if (!withGradientBackground) Color.Transparent else gradientStartColor,
                             Color.Transparent
                         )
                     )
@@ -287,13 +289,21 @@ fun TheLabTopAppBar(
     toolbarMaxHeight: Dp = 96.dp,
     mainCustomContent: @Composable (() -> Unit)? = null,
     withGradientBackground: Boolean = false,
+    gradientStartColor: Color = Color.Black,
     backgroundColor: Color = Color.Transparent,
     viewModel: BaseViewModel? = null,
     navigationIcon: @Composable (() -> Unit)? = null,
     navigationIconColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
     actions: @Composable (RowScope.() -> Unit)? = null
 ) {
-    val context = LocalContext.current
+    val context: Context = LocalContext.current
+
+    val gradientBrush: Brush = Brush.verticalGradient(
+        listOf(
+            if (!withGradientBackground) Color.Transparent else gradientStartColor,
+            Color.Transparent
+        )
+    )
 
     TheLabTheme(theme = theme, darkTheme = viewModel?.isDarkMode ?: isSystemInDarkTheme()) {
         when (toolbarSize) {
@@ -302,14 +312,7 @@ fun TheLabTopAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(toolbarHeight)
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    if (!withGradientBackground) Color.Transparent else Color.Black,
-                                    Color.Transparent
-                                )
-                            )
-                        ),
+                        .background(gradientBrush),
                     title = {
                         if (null != title && null == mainCustomContent) {
                             Column(
@@ -358,14 +361,7 @@ fun TheLabTopAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .requiredHeightIn(56.dp, toolbarMaxHeight)
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    if (!withGradientBackground) Color.Transparent else Color.Black,
-                                    Color.Transparent
-                                )
-                            )
-                        ),
+                        .background(gradientBrush),
                     title = {
                         if (null != title && null == mainCustomContent) {
                             Column(
@@ -418,14 +414,7 @@ fun TheLabTopAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .requiredHeight(toolbarMaxHeight)
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    if (!withGradientBackground) Color.Transparent else Color.Black,
-                                    Color.Transparent
-                                )
-                            )
-                        ),
+                        .background(gradientBrush),
                     title = {
                         if (null != title && null == mainCustomContent) {
                             Column(
@@ -685,7 +674,7 @@ private fun PreviewTheLabTopAppBarWithToolbarSizeTitleString(
         TheLabTopAppBar(
             theme = AppTheme.Default,
             toolbarSize = toolbarSize,
-            toolbarMaxHeight = if (ToolbarSize.LARGE == toolbarSize) dimensionResource(id = R.dimen.max_card_image_height) else 96.dp,
+            toolbarMaxHeight = if (ToolbarSize.LARGE == toolbarSize) dimensionResource(id = R.dimen.card_image_default_max_width) else 96.dp,
             title = "Palette",
             backgroundColor = Color(0xFF032342),
             withGradientBackground = false,
@@ -705,7 +694,7 @@ private fun PreviewTheLabTopAppBarWithToolbarSizeCustomContent(
         TheLabTopAppBar(
             theme = AppTheme.Default,
             toolbarSize = toolbarSize,
-            toolbarMaxHeight = if (ToolbarSize.LARGE == toolbarSize) dimensionResource(id = R.dimen.max_card_image_height) else 96.dp,
+            toolbarMaxHeight = if (ToolbarSize.LARGE == toolbarSize) dimensionResource(id = R.dimen.card_image_default_max_width) else 96.dp,
             mainCustomContent = {
                 Column(
                     modifier = Modifier

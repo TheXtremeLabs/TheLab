@@ -45,6 +45,7 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
 
+                    // Register lifecycle events
                     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
                     val theme: AppTheme by viewModel.uiRepository

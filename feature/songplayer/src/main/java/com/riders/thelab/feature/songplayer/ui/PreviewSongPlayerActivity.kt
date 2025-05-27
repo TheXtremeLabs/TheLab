@@ -79,11 +79,19 @@ fun SongPlayerContent(
 
                 when (targetState) {
                     is SongPlayerUiState.Loading -> {
-                        NoItemFound("Loading...")
+                        NoItemFound(
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            message = "Loading..."
+                        )
                     }
 
                     is SongPlayerUiState.Empty -> {
-                        NoItemFound("No song item found")
+                        NoItemFound(
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            message = "No song item found"
+                        )
                     }
 
                     is SongPlayerUiState.Loaded -> {

@@ -2,6 +2,7 @@ package com.riders.thelab.feature.palette
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -9,11 +10,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,9 +38,13 @@ class PaletteActivity : BaseComponentActivity() {
 
         viewModel.getWallpaperImages(this@PaletteActivity)
 
+        enableEdgeToEdge()
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
+                    // Register lifecycle events
+                    viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
                     val theme: AppTheme by viewModel.uiRepository
                         .getTheme()
@@ -45,6 +52,8 @@ class PaletteActivity : BaseComponentActivity() {
                     val isDarkTheme: Boolean by viewModel.uiRepository
                         .isThemeDarkMode()
                         .collectAsStateWithLifecycle(initialValue = false)
+
+                    val hasInternetConnection by viewModel.hasInternetConnection.collectAsStateWithLifecycle()
 
                     val paletteState by viewModel.paletteUiState.collectAsStateWithLifecycle()
 
@@ -55,7 +64,9 @@ class PaletteActivity : BaseComponentActivity() {
                             color = MaterialTheme.colorScheme.background
                         ) {
                             PaletteContent(
-                                theme = theme, darkTheme = isDarkTheme,
+                                theme = theme,
+                                darkTheme = isDarkTheme,
+                                hasInternetConnection = hasInternetConnection,
                                 paletteUiState = paletteState,
                                 paletteNameList = viewModel.paletteNameList,
                                 onRefreshedClicked = {

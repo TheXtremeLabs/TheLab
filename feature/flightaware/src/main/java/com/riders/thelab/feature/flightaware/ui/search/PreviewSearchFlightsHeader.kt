@@ -61,7 +61,7 @@ fun SearchFlightsHeader(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(dimensionResource(id = R.dimen.max_card_image_height)),
+                    .height(dimensionResource(id = R.dimen.card_image_default_max_height)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {

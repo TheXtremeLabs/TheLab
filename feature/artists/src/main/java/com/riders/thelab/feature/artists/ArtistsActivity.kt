@@ -33,6 +33,7 @@ class ArtistsActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
+                    // Register lifecycle events
                     mViewModel.observeLifecycleEvents(lifecycle = LocalLifecycleOwner.current.lifecycle)
 
                     val theme: AppTheme by mViewModel.uiRepository

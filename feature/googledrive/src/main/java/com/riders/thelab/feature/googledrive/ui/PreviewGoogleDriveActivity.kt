@@ -95,7 +95,7 @@ fun PlayServicesUnavailableContent(theme: AppTheme, darkTheme: Boolean) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(.65f)
-                    .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height))
+                    .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_height))
                     .clip(RoundedCornerShape(16.dp)),
                 contentAlignment = Alignment.Center
             ) {
@@ -343,7 +343,7 @@ fun GoogleDriveContentSuccess(
                                                     Timber.d("state is AsyncImagePainter.State.Success")
                                                     Box(
                                                         modifier = Modifier
-                                                            .size(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height))
+                                                            .size(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_height))
                                                             .clip(CircleShape),
                                                         contentAlignment = Alignment.Center
                                                     ) {
@@ -497,7 +497,11 @@ fun GoogleDriveContent(
                     }
 
                     is GoogleDriveUiState.Error -> {
-                        NoItemFound("An error occurred while loading\n${targetState.message}")
+                        NoItemFound(
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            message = "An error occurred while loading\n${targetState.message}"
+                        )
                     }
 
                     is GoogleDriveUiState.GooglePlayServicesUnavailable -> {

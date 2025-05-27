@@ -52,6 +52,7 @@ import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.NoItemFound
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -206,7 +207,11 @@ fun MainContent(
                             // Use "maxCurrentLineSpan" if you want to take full width.
                             GridItemSpan(maxCurrentLineSpan)
                         }) {
-                            NoItemFound(theme = theme, darkTheme = darkTheme, searchedAppRequest)
+                            NoItemFound(
+                                theme = theme,
+                                darkTheme = darkTheme,
+                                message = "Oops! No item found for value \"$searchedAppRequest\"\nPlease retry..."
+                            )
                         }
                     }
                 }

@@ -9,6 +9,7 @@ import android.os.Environment
 import android.widget.Toast
 import androidx.core.net.toUri
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
@@ -75,7 +76,6 @@ class ApiImpl @Inject constructor(
     flightApiService: FlightApiService,
     wikimediaService: WikimediaApiService
 ) : IApi {
-
     private var mArtistsAPIService: ArtistsAPIService = artistsAPIService
     private var mGoogleAPIService: GoogleAPIService = googleAPIService
     private var mYoutubeApiService: YoutubeApiService = youtubeApiService
@@ -96,33 +96,44 @@ class ApiImpl @Inject constructor(
         var storageRef: StorageReference? = null
 
         // Initialize Firebase Auth
-        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-
-        val task = mAuth.signInAnonymously().await()
-
-        task.user?.let {
-            Timber.d("signInAnonymously:success : $it")
-        }
-
-        if (null != mAuth.currentUser) {
-            // Sign in success, update UI with the signed-in user's information
-            Timber.d("signInAnonymously:success")
-
-            if (BuildConfig.DEBUG) {
-                Timber.d("auth user: ${mAuth.currentUser}")
+        val firebaseUser: FirebaseUser? = FirebaseAuth.getInstance()
+            .signInAnonymously()
+            .await()
+            .user
+            ?.also { user ->
+                if (BuildConfig.DEBUG) {
+                    Timber.d("getStorageReference() | signInAnonymously | result user: ${user.displayName} (is anonymous: ${user.isAnonymous})")
+                }
             }
 
+        if (null == firebaseUser) {
+            Timber.e("getStorageReference() | failed")
+            null
+        } else {
+            // Sign in success, update UI with the signed-in user's information
+            Timber.i("getStorageReference() | success, get firebase instance and fetch bucket")
+
             val bucketName = "gs://the-lab-3920e.appspot.com"
-            storage[0] = FirebaseStorage.getInstance(bucketName)
+            val bucketInstance = FirebaseStorage.getInstance(bucketName)
+
+            storage[0] = bucketInstance.also { result ->
+                if (BuildConfig.DEBUG) {
+                    Timber.d("getStorageReference() | FirebaseStorage.getInstance(bucketName) | result : ${result.reference.name}")
+                }
+            }
+
             // Create a storage reference from our app
-            storageRef = storage[0]!!.reference
+            storageRef = storage[0]!!.reference.also { ref ->
+                if (BuildConfig.DEBUG) {
+                    Timber.d("getStorageReference() | reference : ${ref.name}")
+                }
+            }
+            storageRef
         }
-        storageRef
 
     } catch (exception: Exception) {
-
         // If sign in fails, display a message to the user.
-        Timber.w("signInAnonymously:failure %s", exception.toString())
+        Timber.w("getStorageReference() | signInAnonymously:failure %s", exception.toString())
         activity.runOnUiThread {
             Toast.makeText(
                 activity,

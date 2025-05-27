@@ -162,7 +162,7 @@ fun MLKitComposeMainContent(
                                 modifier = Modifier
                                     .animateItem()
                                     .fillMaxWidth()
-                                    .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height) + 64.dp)
+                                    .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_height) + 64.dp)
                                     .padding(vertical = 8.dp),
                                 item = item,
                                 isDragging = isDragging,

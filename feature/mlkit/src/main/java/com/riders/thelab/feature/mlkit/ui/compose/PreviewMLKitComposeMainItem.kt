@@ -136,7 +136,7 @@ private fun PreviewMLKitComposeMainItem(@PreviewParameter(AppThemePreviewProvide
         MLKitComposeMainItem(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height) + 64.dp),
+                .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_height) + 64.dp),
             theme = appTheme, darkTheme = isSystemInDarkTheme(),
             item = PreviewProviderMLKitItem().values.first(),
             isDragging = false

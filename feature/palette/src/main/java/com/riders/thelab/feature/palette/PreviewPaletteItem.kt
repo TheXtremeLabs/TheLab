@@ -17,10 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
-import com.riders.thelab.core.ui.compose.previewprovider.TextContentPreviewProvider
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 ///////////////////////////////////////
@@ -34,9 +35,7 @@ fun PaletteItem(text: String, color: Color? = MaterialTheme.colorScheme.backgrou
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier
@@ -66,8 +65,11 @@ fun PaletteItem(text: String, color: Color? = MaterialTheme.colorScheme.backgrou
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewPaletteItem(@PreviewParameter(TextContentPreviewProvider::class) text: String) {
-    TheLabTheme(theme = AppTheme.Default) {
-        PaletteItem(text = text, color = MaterialTheme.colorScheme.primary)
+private fun PreviewPaletteItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        PaletteItem(
+            text = LoremIpsum().values.first().take(20),
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }

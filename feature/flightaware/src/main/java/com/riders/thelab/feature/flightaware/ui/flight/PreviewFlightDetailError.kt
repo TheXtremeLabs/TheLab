@@ -59,7 +59,7 @@ fun FlightDetailErrorContent(theme: AppTheme, darkTheme: Boolean, reason: NotBla
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxWidth(.8f)
-                    .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height)),
+                    .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_height)),
                 contentAlignment = Alignment.Center
             ) {
                 Lottie(

@@ -99,7 +99,7 @@ fun ArtistItem(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height))
+                .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_height))
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,

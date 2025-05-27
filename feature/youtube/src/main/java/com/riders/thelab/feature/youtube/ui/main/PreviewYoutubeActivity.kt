@@ -106,7 +106,11 @@ fun YoutubeContent(theme: AppTheme, darkTheme: Boolean, uiState: YoutubeUiState)
                     }
 
                     is YoutubeUiState.Error -> {
-                        NoItemFound("An error occurred while loading\n${targetState.message}")
+                        NoItemFound(
+                            theme = theme,
+                            darkTheme = darkTheme,
+                            message = "An error occurred while loading\n${targetState.message}"
+                        )
                     }
 
                     is YoutubeUiState.Success -> {

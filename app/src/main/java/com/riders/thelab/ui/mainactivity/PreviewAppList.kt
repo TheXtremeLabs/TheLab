@@ -38,6 +38,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.utils.LabAppManager
 
+/*
 
 @Composable
 fun NoItemFound(
@@ -68,7 +69,7 @@ fun NoItemFound(
         }
     }
 }
-
+*/
 
 @Composable
 fun App(
@@ -111,7 +112,7 @@ fun App(
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
             modifier = Modifier
-                .height(dimensionResource(id = R.dimen.max_card_image_height))
+                .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_height))
                 .fillMaxWidth(),
             onClick = { onAppItemClick.invoke(item) },
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
@@ -207,17 +208,6 @@ fun App(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
-@Composable
-private fun PreviewNoItemFound(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
-    TheLabTheme(theme = appTheme) {
-        NoItemFound(
-            theme = appTheme,
-            darkTheme = isSystemInDarkTheme(), "Cool"
-        )
-    }
-}
-
 @DevicePreviews
 @Composable
 private fun PreviewApp(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {

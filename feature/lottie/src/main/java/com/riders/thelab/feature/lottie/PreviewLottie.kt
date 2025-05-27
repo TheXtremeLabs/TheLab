@@ -77,7 +77,7 @@ fun LottieContent(theme: AppTheme, darkTheme: Boolean) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(height = dimensionResource(id = R.dimen.max_card_image_height)),
+                            .height(height = dimensionResource(id = R.dimen.card_image_default_max_height)),
                         contentAlignment = Alignment.Center
                     ) {
                         Lottie(modifier = Modifier.fillMaxWidth(), url = list[index])

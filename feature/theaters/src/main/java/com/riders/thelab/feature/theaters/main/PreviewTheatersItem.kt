@@ -175,8 +175,8 @@ fun TMDBItem(
         Card(
             modifier = Modifier
                 .size(
-                    width = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_height),
-                    height = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width)
+                    width = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_height),
+                    height = dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_width)
                 )
                 .clip(TicketShape(circleRadius = 8.dp, cornerSize = CornerSize(8.dp))),
             onClick = { uiEvent.invoke(UiEvent.OnItemDetailClicked(tmdbItem)) }
@@ -189,7 +189,7 @@ fun TMDBItem(
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.max_card_image_width))
+                        .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_default_max_width))
                         .weight(2.5f)
                         .clip(RoundedCornerShape(12.dp)),
                     painter = painter,

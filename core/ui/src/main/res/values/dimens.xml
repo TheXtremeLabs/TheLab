@@ -39,10 +39,13 @@
     <!-- CardView -->
     <!-- Default Card View Dimens -->
     <dimen name="card_elevation">8dp</dimen>
-    <dimen name="max_card_image_width">344dp</dimen>
-    <dimen name="max_card_image_height">194dp</dimen>
-    <dimen name="card_image_mid_height">260dp</dimen>
-
+    <dimen name="card_image_default_max_width">344dp</dimen>
+    <dimen name="card_image_default_max_height">194dp</dimen>
+    <!-- Custom Card View Dimens -->
+    <dimen name="card_image_custom_min_width">304dp</dimen>
+    <dimen name="card_image_custom_min_height">154dp</dimen>
+    <dimen name="card_image_custom_max_width">410dp</dimen>
+    <dimen name="card_image_custom_max_height">260dp</dimen>
 
     <dimen name="activity_section_title">20sp</dimen>
 
