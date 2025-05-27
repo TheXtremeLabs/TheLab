@@ -86,19 +86,19 @@ Repository created and maintained by Saint-Honoré Michaël([*@MichaelStH*](http
 ![HotCoffeeLoading](docs/gif/lottie_hot_coffee.gif)
 
 [sem-ver]: https://semver.org/
-[thelab-badge]: https://img.shields.io/static/v1?label=version&message=13.0.1&color=blue
+[thelab-badge]: https://img.shields.io/static/v1?label=version&message=13.0.3&color=blue
 [thelab-project]: https://github.com/TheXtremeLabs/TheLab
 [android-badge]: https://img.shields.io/static/v1?logo=android&label=Android%20SDK&message=API%2036&color=green
 [android-project]: https://www.android.com/intl/fr_fr/
 [kotools-types-badge]: https://img.shields.io/static/v1?label=Kotools&message=5.0.0&color=blue
 [kotools-types-project]: https://github.com/kotools/types
 [kotlin]: https://kotlinlang.org
-[kotlin-badge]: https://img.shields.io/badge/kotlin-2.1.20-blue?logo=kotlin
+[kotlin-badge]: https://img.shields.io/badge/kotlin-2.1.21-blue?logo=kotlin
 [kotlin.ArithmeticException]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-arithmetic-exception
 [kotlinx.serialization]: https://github.com/Kotlin/kotlinx.serialization
 [kotlinx.serialization-badge]: https://img.shields.io/badge/kotlinx.serialization-1.8.1-blue?logo=kotlin
 [ksp]: https://github.com/google/ksp
-[ksp-badge]: https://img.shields.io/static/v1?logo=google&label=ksp&message=2.1.20-1.0.32&color=blue
+[ksp-badge]: https://img.shields.io/static/v1?logo=google&label=ksp&message=2.1.21-2.0.1&color=blue
 [androidx]: https://developer.android.com/jetpack/androidx?hl=fr
 [jetpack-compose]: https://developer.android.com/jetpack/compose?hl=fr
 [google-apis]: https://console.cloud.google.com/apis/library?hl=fr
