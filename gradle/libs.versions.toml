@@ -1,17 +1,18 @@
 [versions]
 # Gradle version
 # Android
-androidGradlePlugin = "8.10.0"
+androidGradlePlugin = "8.10.1"
+kotzillaGradlePlugin = "1.0.1"
 navigationGradlePlugin = "2.9.0"
 # Google Services
 playServicesGradlePlugin = "4.4.2"
 # Firebase
 # Crashlytics
-crashlyticsGradlePlugin = "3.0.3"
+crashlyticsGradlePlugin = "3.0.4"
 # Performance Monitoring plugin
 performancesGradlePlugin = "1.4.2"
 # Ktor
-ktorGradlePlugin = "3.1.2"
+ktorGradlePlugin = "3.1.3"
 # Protobuf
 protobufPlugin = "0.9.5"
 
@@ -19,17 +20,17 @@ protobufPlugin = "0.9.5"
 accompanist = "0.37.3"
 androidDesugarJdkLibs = "2.1.5"
 androidxActivity = "1.10.1"
-androidxAppCompat = "1.7.0"
+androidxAppCompat = "1.7.1"
 androidxAppSearch = "1.1.0-rc01"
 androidxArch = "2.2.0"
-androidxAutoFill = "1.1.0"
+androidxAutoFill = "1.3.0"
 androidxBiometric = "1.1.0"
 androidxBrowser = "1.8.0"
 # Camera
 androidxCamera = "1.5.0-beta01"
 androidxCameraViewFinder = "1.4.0-alpha07"
 # Compose
-androidxComposeBom = "2025.05.01"
+androidxComposeBom = "2025.06.00"
 androidxComposeCompiler = "1.5.15"
 androidxComposeMaterial3 = "1.3.2"
 androidxComposeMaterial3Adaptative = "1.1.0"
@@ -47,10 +48,10 @@ androidxDynamicAnimation = "1.1.0"
 # espresso version {strictly 3.5.0}
 #noinspection GradleDependency
 androidxEspresso = "3.5.0"
-androidxFragment = "1.8.7"
+androidxFragment = "1.8.8"
 androidxGlance = "1.1.1"
 androidxHiltNavigationCompose = "1.2.0"
-androidxLifecycle = "2.9.0"
+androidxLifecycle = "2.9.1"
 androidxLifecycleExtensions = "2.2.0"
 androidxMacroBenchmark = "1.3.4"
 androidxMetrics = "1.0.0-beta02"
@@ -77,24 +78,24 @@ androidxWork = "2.10.1"
 blurry = "4.0.1"
 coil = "2.7.0"
 # Firebase
-firebaseBom = "33.14.0"
-firebaseAds = "24.3.0"
+firebaseBom = "33.15.0"
+firebaseAds = "24.4.0"
 firebaseAppCheck = "18.0.0"
 # Google Api
-googleApiClient = "2.7.2"
-googleApiClientAndroid = "2.7.2"
+googleApiClient = "2.8.0"
+googleApiClientAndroid = "2.8.0"
 googleApiClientOAuth = "1.39.0"
 googleApiDriveV3 = "v3-rev20221219-2.0.0"
-googleApiClientJackson2 = "2.7.2"
-googleAuthLibraryOauth2Http = "1.33.1"
-googleCloudBom = "26.59.0"
-googleCloudTextToSpeech = "2.61.0"
+googleApiClientJackson2 = "2.8.0"
+googleAuthLibraryOauth2Http = "1.37.0"
+googleCloudBom = "26.61.0"
+googleCloudTextToSpeech = "2.65.0"
 googleCloudSpeech = "4.55.0"
-googleHttpClient = "1.46.3"
-googleHttpClientGson = "1.46.3"
+googleHttpClient = "1.47.0"
+googleHttpClientGson = "1.47.0"
 googleIdentity = "1.1.1"
 # Google Guava
-googleGuava = "33.4.6-jre"
+googleGuava = "33.4.8-jre"
 googleGuavaListenableFuture = "9999.0-empty-to-avoid-conflict-with-guava"
 # Google ML Kit
 googleMLKitBarcodeScanning = "17.3.0"
@@ -126,7 +127,7 @@ glide = "4.16.0"
 glideCompose = "1.0.0-beta01"
 glideTransformation = "4.3.0"
 # GRPC
-grpc = "1.71.0"
+grpc = "1.73.0"
 grpcOkHttp = "1.71.0"
 grpcStub = "1.71.0"
 # Hilt (for gradle plugin version and dependency)
@@ -137,7 +138,7 @@ jflacCodec = "1.5.2"
 jtransforms = "3.1"
 junit = "1.1.5"
 junit4 = "4.13.2"
-koin = "4.1.0-Beta6"
+koin = "4.1.0"
 koinAnnotationsBom = "2.0.0"
 koinKspCompiler = "2.0.0"
 # Kotlin (for gradle plugin version and dependency)
@@ -147,23 +148,25 @@ kotlinxDatetime = "0.6.2"
 kotlinPlayServices = "1.10.2"
 kotlinxMetadataJvm = "0.9.0"
 kotlinxSerializationJson = "1.8.1"
-ktor = "3.1.2"
+# Kotzilla
+kotzilla = "1.1.0"
+ktor = "3.1.3"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
 ksp = "2.1.21-2.0.1"
-landscapist = "2.4.7"
-lint = "31.10.0"
+landscapist = "2.4.9"
+lint = "31.10.1"
 location = "21.3.0"
 logback = "1.5.18"
 lottie = "6.6.6"
 maps = "19.2.0"
-mapsCompose = "6.5.2"
+mapsCompose = "6.6.0"
 material = "1.12.0"
-mapsUtils = "3.11.2"
+mapsUtils = "3.14.0"
 # Media Exo Player
 media = "1.7.0"
-mediaRouter = "1.7.0"
+mediaRouter = "1.8.0"
 media3 = "1.7.1"
-mockito = "5.17.0"
+mockito = "5.18.0"
 # Moshi - Deprecated change by kotlin serialization json
 # moshi = "1.15.1"
 mpAndroidChart = "3.1.0"
@@ -171,9 +174,9 @@ napier = "2.7.1"
 okhttp = "4.12.0"
 okhttpMockWebServer = "4.12.0"
 playIntegrity = "1.4.0"
-places = "4.2.0"
-protobufKotlin = "4.30.2"
-protobufProtoc = "4.30.2"
+places = "4.3.1"
+protobufKotlin = "4.31.1"
+protobufProtoc = "4.31.1"
 retrofit = "3.0.0"
 retrofitKotlinxSerializationJson = "1.0.0"
 room = "2.7.1"
@@ -436,6 +439,8 @@ kotlinx-metadata-jvm = { group = "org.jetbrains.kotlinx", name = "kotlinx-metada
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinPlayServices" }
 kotools-types = { group = "org.kotools", name = "types", version.ref = "types" }
+# Kotzilla
+kotzilla-sdk = { group = "io.kotzilla", name = "kotzilla-sdk", version.ref = "kotzilla" }
 # Ktor
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
@@ -501,6 +506,7 @@ zxing-android-integration = { group = "com.google.zxing", name = "android-integr
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 androidx-navigation-gradlePlugin = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navigationGradlePlugin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotzilla-gradlePlugin = { module = "io.kotzilla:kotzilla-plugin", version.ref = "kotzillaGradlePlugin" }
 ktor-gradlePlugin = { group = "io.ktor.plugin", name = "io.ktor.plugin.gradle.plugin", version.ref = "ktorGradlePlugin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 play-services-gradlePlugin = { group = "com.google.gms", name = "google-services", version.ref = "playServicesGradlePlugin" }
@@ -520,6 +526,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotzilla = { id = "io.kotzilla.plugin", version.ref = "kotzilla" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 # ktor = { id = "io.ktor.plugin", version.ref = "ktorGradlePlugin" }
 playservices = { id = "com.google.gms.google-services", version.ref = "playServicesGradlePlugin" }
