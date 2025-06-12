@@ -208,6 +208,7 @@ fun TheLabTopAppBar(theme: AppTheme, isDarkMode: Boolean, title: String) {
 @Composable
 fun TheLabTopAppBar(
     theme: AppTheme,
+    darkTheme: Boolean = isSystemInDarkTheme(),
     title: String? = null,
     toolbarMaxHeight: Dp = 96.dp,
     mainCustomContent: @Composable (() -> Unit)? = null,
@@ -221,7 +222,10 @@ fun TheLabTopAppBar(
 ) {
     val context = LocalContext.current
 
-    TheLabTheme(theme = theme, darkTheme = viewModel?.isDarkMode ?: isSystemInDarkTheme()) {
+    TheLabTheme(
+        theme = theme,
+        darkTheme = viewModel?.isDarkMode ?: darkTheme
+    ) {
         TopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -283,6 +287,7 @@ fun TheLabTopAppBar(
 fun TheLabTopAppBar(
     theme: AppTheme,
     toolbarSize: ToolbarSize,
+    darkTheme: Boolean = isSystemInDarkTheme(),
     title: String? = null,
     titleColor: Color = Color.White,
     toolbarHeight: Dp = 56.dp,
@@ -305,7 +310,7 @@ fun TheLabTopAppBar(
         )
     )
 
-    TheLabTheme(theme = theme, darkTheme = viewModel?.isDarkMode ?: isSystemInDarkTheme()) {
+    TheLabTheme(theme = theme, darkTheme = viewModel?.isDarkMode ?: darkTheme) {
         when (toolbarSize) {
             ToolbarSize.SMALL -> {
                 TopAppBar(

@@ -107,17 +107,20 @@ class DbImpl @Inject constructor(
         mContactDao.deleteAll()
     }
 
-    override fun saveSong(musicRecognitionModel: MusicRecognitionModel) =
+    override suspend fun saveSong(musicRecognitionModel: MusicRecognitionModel) =
         mMusicRecognitionDao.insert(musicRecognitionModel)
 
-    override suspend fun getAllMusicRecognitionItems(): Flow<List<MusicRecognitionModel>> =
+    override suspend fun updateSong(musicRecognitionModel: MusicRecognitionModel): Int =
+        mMusicRecognitionDao.update(song = musicRecognitionModel)
+
+    override fun getAllMusicRecognitionItems(): Flow<List<MusicRecognitionModel>> =
         mMusicRecognitionDao.getAllMusicRecognitionItems()
 
-    override fun removeSong(songId: Int): Long {
+    override suspend fun removeSong(songId: Int): Long {
         TODO("Not yet implemented")
     }
 
-    override fun deleteAllMusicRecognitionData() = mMusicRecognitionDao.deleteAll()
+    override suspend fun deleteAllMusicRecognitionData() = mMusicRecognitionDao.deleteAll()
 
     override suspend fun insertWeatherData(isWeatherData: WeatherData): Long {
         return mWeatherDao.insert(isWeatherData)

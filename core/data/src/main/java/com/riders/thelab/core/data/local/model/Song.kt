@@ -7,7 +7,7 @@ import java.io.Serializable
 
 
 /**
- * Json example
+ * ```json
  *      {
  *          "cost_time":0.37100005149841,
  *          "status":{
@@ -76,6 +76,7 @@ import java.io.Serializable
  *              }]
  *          }
  *      }
+ * ```
  */
 
 @kotlinx.serialization.Serializable
@@ -124,7 +125,9 @@ data class Song(
             externalMetadata: JSONObject
         ): Song {
             val albumName = album.run { this.getString("name") } ?: ""
-            val spotify = externalMetadata.getJSONObject("spotify") ?: null
+            val spotify = externalMetadata.getJSONObject("spotify")
+                ?: externalMetadata.getJSONObject("deezer")
+                ?: null
             val track = spotify?.run { this.getJSONObject("track") }
             val trackName = track?.run { this.getString("name") } ?: ""
             val trackID = track?.run { this.getString("id") } ?: ""

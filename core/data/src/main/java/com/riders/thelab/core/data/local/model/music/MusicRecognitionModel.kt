@@ -4,7 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.riders.thelab.core.data.local.model.Song
+import com.riders.thelab.core.data.remote.dto.acrcloud.ACRCloudResponse
 import kotlinx.serialization.json.Json
+import kotools.types.text.NotBlankString
+import org.kotools.types.ExperimentalKotoolsTypesApi
+import timber.log.Timber
 
 @Entity(tableName = "music_recognition")
 data class MusicRecognitionModel(
@@ -22,19 +26,75 @@ data class MusicRecognitionModel(
     @ColumnInfo(name = "album")
     val album: String,
     @ColumnInfo(name = "albumThumbUrl")
-    val albumThumbUrl: String,
+    var albumThumbUrl: String? = null,
+    @ColumnInfo(name = "albumThumbBase64")
+    var albumThumbBase64: String? = null,
     @ColumnInfo(name = "genres")
-    val genres: String
+    val genres: String,
+    @ColumnInfo(name = "spotifyTrackId")
+    var spotifyTrackId: String? = null,
 )
+
+/////////////////////////////////////////////////////////
+//
+// EXTENSIONS
+//
+/////////////////////////////////////////////////////////
+private val json = Json {
+    isLenient = true
+}
+
+@OptIn(ExperimentalKotoolsTypesApi::class)
+private inline fun <reified T> Set<T>.toJson(): String = runCatching {
+    json.encodeToString(this)
+        .removePrefix("[")
+        .removePrefix("\"")
+        .removeSuffix("\"")
+        .removeSuffix("]")
+}
+    .onFailure { throwable ->
+        throwable.printStackTrace()
+        Timber.e("Set<T>.toJson() | onFailure | error caught with message: ${throwable.message} (class: ${throwable.javaClass.canonicalName})")
+    }
+    .getOrElse { NotBlankString.create("N/A").toString() }
+
 
 fun Song.toModel(): MusicRecognitionModel = MusicRecognitionModel(
     title = this.title,
-    artists = this.artists.toJson(),
+    artists = this.artists.joinToString(", "),
     label = this.label,
     releaseDate = this.releaseDate,
     album = this.album,
     albumThumbUrl = this.albumThumbUrl,
     genres = this.genres.toJson(),
+    spotifyTrackId = this.externalMetadata["trackID"].toString()
 )
 
-private fun Set<*>.toJson() = Json.encodeToString(this)
+@OptIn(ExperimentalKotoolsTypesApi::class)
+fun ACRCloudResponse.toModel(): MusicRecognitionModel {
+    val title = this.metadata?.music?.get(0)?.externalMetadata?.spotify?.track?.name
+        ?: this.metadata?.music?.get(0)?.externalMetadata?.deezer?.track?.name
+        ?: this.metadata?.music?.get(0)?.title
+        ?: NotBlankString.create("N/A").toString()
+
+    val artists = this.metadata?.music?.get(0)?.externalMetadata?.spotify?.artist?.name
+        ?: this.metadata?.music?.get(0)?.externalMetadata?.deezer?.artist?.name
+        ?: this.metadata?.music?.get(0)?.artists?.joinToString(", ") { it.name }
+        ?: NotBlankString.create("N/A").toString()
+
+    val album = this.metadata?.music?.get(0)?.externalMetadata?.spotify?.album?.name
+        ?: this.metadata?.music?.get(0)?.externalMetadata?.deezer?.album?.name
+        ?: this.metadata?.music?.get(0)?.album?.name
+        ?: NotBlankString.create("N/A").toString()
+
+    return MusicRecognitionModel(
+        title = title,
+        artists = artists,
+        album = album,
+        label = this.metadata?.music?.get(0)?.label ?: NotBlankString.create("N/A").toString(),
+        releaseDate = this.metadata?.music?.get(0)?.releaseDate
+            ?: NotBlankString.create("N/A").toString(),
+        genres = this.metadata?.music?.get(0)?.genres?.joinToString(", ") { it.name }
+            ?: NotBlankString.create("N/A").toString()
+    )
+}

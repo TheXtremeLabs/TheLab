@@ -403,7 +403,8 @@ class MainActivityViewModel @Inject constructor(
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
         Timber.d("onStart()")
-        speechToTextRepository.startRecognition()
+        // TODO : Uncomment
+        // speechToTextRepository.startRecognition()
     }
 
     override fun onPause(owner: LifecycleOwner) {

@@ -15,7 +15,7 @@ import com.riders.thelab.core.data.local.model.weather.WeatherData
 
 @Database(
     entities = [User::class, Contact::class, CityModelFTS::class, CityModel::class, MusicRecognitionModel::class, WeatherData::class],
-    version = 4,
+    version = 5,
     /*autoMigrations = [
         AutoMigration(from = 1, to = 2),
     ],*/

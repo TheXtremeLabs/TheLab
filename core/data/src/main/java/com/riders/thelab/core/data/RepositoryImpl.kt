@@ -126,17 +126,20 @@ class RepositoryImpl @Inject constructor(
         mDbImpl.clearData()
     }
 
-    override fun saveSong(musicRecognitionModel: MusicRecognitionModel): Long =
+    override suspend fun saveSong(musicRecognitionModel: MusicRecognitionModel): Long =
         mDbImpl.saveSong(musicRecognitionModel)
 
-    override suspend fun getAllMusicRecognitionItems(): Flow<List<MusicRecognitionModel>> =
+    override suspend fun updateSong(musicRecognitionModel: MusicRecognitionModel): Int =
+        mDbImpl.updateSong(musicRecognitionModel)
+
+    override fun getAllMusicRecognitionItems(): Flow<List<MusicRecognitionModel>> =
         mDbImpl.getAllMusicRecognitionItems()
 
-    override fun removeSong(songId: Int): Long {
+    override suspend fun removeSong(songId: Int): Long {
         TODO("Not yet implemented")
     }
 
-    override fun deleteAllMusicRecognitionData() = mDbImpl.deleteAllMusicRecognitionData()
+    override suspend fun deleteAllMusicRecognitionData() = mDbImpl.deleteAllMusicRecognitionData()
 
     override suspend fun insertWeatherData(isWeatherData: WeatherData): Long {
         return mDbImpl.insertWeatherData(isWeatherData)

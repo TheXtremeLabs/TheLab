@@ -70,7 +70,9 @@ private fun PreviewLabTabItem(@PreviewParameter(AppThemePreviewProvider::class) 
                 isSelected = true,
                 onClick = { },
                 tabWidth = 150.dp,
-                text = "Tab Text"
+                text = "Tab Text",
+                selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                unselectedTextColor = MaterialTheme.colorScheme.inverseOnSurface
             )
         }
     }

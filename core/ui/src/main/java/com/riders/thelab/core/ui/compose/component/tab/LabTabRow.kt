@@ -111,10 +111,6 @@ private fun PreviewLabTabRow(@PreviewParameter(AppThemePreviewProvider::class) a
                 "instructions".uppercase(Locale.getDefault())
             ),
             onClick = {},
-            backgroundColor = Color.Black,
-            indicatorColor = md_theme_dark_primary,
-            selectedTextColor = Color.White,
-            unselectedTextColor = md_theme_dark_tertiaryContainer,
             hasCustomShape = false
         )
     }

@@ -99,7 +99,6 @@ class ACRCloudActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
-
                     // Register lifecycle events
                     mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
@@ -112,12 +111,17 @@ class ACRCloudActivity : BaseComponentActivity() {
 
                     val acrUiState by mViewModel.uiState.collectAsStateWithLifecycle()
                     val hasNetworkConnection by mViewModel.hasInternetConnection.collectAsStateWithLifecycle()
+                    val items by mViewModel.repository
+                        .getAllMusicRecognitionItems()
+                        .collectAsStateWithLifecycle(
+                            lifecycle = LocalLifecycleOwner.current.lifecycle,
+                            initialValue = emptyList()
+                        )
 
                     TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
-//                            color = MaterialTheme.colorScheme.background
                             color = MaterialTheme.colorScheme.background
                         ) {
                             ACRCloudActivityContent(
@@ -125,6 +129,7 @@ class ACRCloudActivity : BaseComponentActivity() {
                                 darkTheme = isDarkTheme,
                                 acrUiState = acrUiState,
                                 hasNetworkConnection = hasNetworkConnection,
+                                currentPageIndex = mViewModel.currentPageIndex,
                                 result = mViewModel.result ?: "",
                                 canLaunchAudioRecognition = mViewModel.canLaunchAudioRecognition,
                                 onStartRecognition = {
@@ -135,10 +140,19 @@ class ACRCloudActivity : BaseComponentActivity() {
                                     }
                                 },
                                 isRecognizing = mViewModel.isRecognizing,
-                                uiEvent = { event -> when(event){
-                                    is UiEvent.OpenInSpotify-> openSpotify(event.song.externalMetadata["trackID"].toString())
-                                    else -> mViewModel.onEvent(event)
-                                } }
+                                items = items,
+                                uiEvent = { event ->
+                                    when (event) {
+                                        is UiEvent.OpenInSpotify -> openSpotify(event.song.externalMetadata["trackID"].toString())
+                                        is UiEvent.OpenModelInSpotify -> {
+                                            event.model.spotifyTrackId?.let { trackId ->
+                                                openSpotify(songId = trackId)
+                                            }
+                                        }
+
+                                        else -> mViewModel.onEvent(event)
+                                    }
+                                }
                             )
                         }
                     }
@@ -214,7 +228,7 @@ class ACRCloudActivity : BaseComponentActivity() {
     }
 
     private fun openSpotify(songId: String) {
-        if (songId.isBlank()){
+        if (songId.isBlank()) {
             Timber.e("openSpotify() | Invalid song ID")
             return
         }

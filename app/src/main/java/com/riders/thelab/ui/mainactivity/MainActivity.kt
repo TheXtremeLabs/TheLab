@@ -296,7 +296,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                             TheLabApplication.getInstance().getContext()
                         )
 
-                        mViewModel.startRecognition()
+                        // mViewModel.startRecognition()
 
                         // startVoiceService()
                     }

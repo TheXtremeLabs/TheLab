@@ -48,10 +48,11 @@ interface IDb {
     // MUSIC RECOGNITION
     //
     /////////////////////////////////////
-    fun saveSong(musicRecognitionModel: MusicRecognitionModel):Long
-    suspend fun getAllMusicRecognitionItems(): Flow<List<MusicRecognitionModel>>
-    fun removeSong(songId: Int): Long
-    fun deleteAllMusicRecognitionData()
+    suspend fun saveSong(musicRecognitionModel: MusicRecognitionModel): Long
+    suspend fun updateSong(musicRecognitionModel: MusicRecognitionModel): Int
+    fun getAllMusicRecognitionItems(): Flow<List<MusicRecognitionModel>>
+    suspend fun removeSong(songId: Int): Long
+    suspend fun deleteAllMusicRecognitionData()
 
     /////////////////////////////////////
     //
