@@ -335,22 +335,7 @@ fun RecognitionResult(
                                 color = MaterialTheme.colorScheme.onSurface
                             )
 
-                            AnimatedContent(targetState = darkTheme) { targetState: Boolean ->
-                                if (!targetState) {
-                                    Image(
-                                        modifier = Modifier.size(40.dp),
-                                        painter = painterResource(com.riders.thelab.core.ui.R.drawable.ic_spotify),
-                                        contentDescription = "spotify_icon"
-                                    )
-                                } else {
-                                    Image(
-                                        modifier = Modifier.size(40.dp),
-                                        painter = painterResource(com.riders.thelab.core.ui.R.drawable.ic_spotify_black),
-                                        contentDescription = "spotify_icon",
-                                        colorFilter = ColorFilter.tint(color = Color.White)
-                                    )
-                                }
-                            }
+                            SpotifyIcon(modifier = Modifier.size(36.dp), darkTheme = darkTheme)
                         }
                     }
                 }

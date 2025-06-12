@@ -52,6 +52,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
+import com.riders.thelab.core.common.utils.LabPackageManager
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.music.MusicRecognitionModel
 import com.riders.thelab.core.data.local.model.music.toModel
@@ -63,6 +64,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.animatePlacement
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.utils.decodeBase64
+import com.riders.thelab.feature.musicrecognition.utils.Constants
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -214,7 +216,15 @@ fun ACRCloudLibraryItem(
                             Text(text = item.artists, fontSize = 12.sp)
                         }
 
-                        SpotifyIcon(modifier = Modifier.size(30.dp), darkTheme = darkTheme)
+                        AnimatedVisibility(
+                            visible = if (LocalInspectionMode.current) true else {
+                                LabPackageManager(applicationContext = context).isInstalled(
+                                    Constants.PACKAGE_NAME_SPOTIFY
+                                )
+                            }
+                        ) {
+                            SpotifyIcon(modifier = Modifier.size(30.dp), darkTheme = darkTheme)
+                        }
                     }
                 }
             }
@@ -238,7 +248,7 @@ fun ACRCloudLibraryContent(
     val scrollToTopButton: Boolean by remember { derivedStateOf { 0 != lazyListState.firstVisibleItemIndex } }
 
     LaunchedEffect(loaded) {
-        delay(500L)
+        delay(3_500L)
         loaded = true
     }
 
@@ -258,7 +268,8 @@ fun ACRCloudLibraryContent(
             ) {
                 itemsIndexed(
                     items = songs,
-                    key = { _: Int, item: MusicRecognitionModel -> item._id }) { _, item ->
+                    key = { _: Int, item: MusicRecognitionModel -> item._id }
+                ) { _, item ->
                     ACRCloudLibraryItem(
                         theme = theme,
                         darkTheme = darkTheme,
