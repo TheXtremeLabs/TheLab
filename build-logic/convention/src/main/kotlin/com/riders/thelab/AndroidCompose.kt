@@ -5,6 +5,8 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import java.io.File
 
 /**
@@ -19,13 +21,12 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
             compose = true
         }
 
-        /*composeOptions {
-            kotlinCompilerExtensionVersion =
-                libs.findVersion("androidxComposeCompiler").get().toString()
-        }*/
-
-        kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + buildComposeMetricsParameters()
+        tasks.withType<KotlinJvmCompile>() {
+            compilerOptions {
+                freeCompilerArgs.addAll(
+                    freeCompilerArgs.get() + buildComposeMetricsParameters()
+                )
+            }
         }
 
         dependencies {
