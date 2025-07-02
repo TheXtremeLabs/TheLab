@@ -33,6 +33,7 @@ import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.feature.settings.R
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 
 
 ///////////////////////////////
@@ -331,7 +332,7 @@ fun DeviceInfoSection(
         SettingsSectionWithTitle(
             theme = theme,
             darkTheme = darkTheme,
-            title = NotBlankString.create(stringResource(id = R.string.placeholder_device_information))
+            title = stringResource(id = R.string.placeholder_device_information).toNotBlankString().getOrThrow()
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth(),

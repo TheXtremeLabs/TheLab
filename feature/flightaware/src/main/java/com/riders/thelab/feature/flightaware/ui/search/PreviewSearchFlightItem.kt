@@ -43,8 +43,8 @@ import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
 import com.riders.thelab.feature.flightaware.ui.flight.InfoContainerTitleDescription
 import com.riders.thelab.feature.flightaware.utils.Constants
+import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
-import kotools.types.text.NotBlankString
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -232,7 +232,7 @@ fun SearchFlightItem(
                     InfoContainerTitleDescription(
                         theme = theme,
                         darkTheme = darkTheme,
-                        title = NotBlankString.create("Status"),
+                        title = "Status".toNotBlankString().getOrThrow(),
                         description = flight.status,
                         isRightSide = true
                     )

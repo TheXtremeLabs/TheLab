@@ -29,6 +29,7 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -70,11 +71,12 @@ class YoutubeViewModel @Inject constructor(
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
-            Timber.e(throwable.message)
+            Timber.e("coroutineExceptionHandler | Exception caught with message : ${throwable.message}")
+            val errorMessage = "Error occurred while getting value".toNotBlankString().getOrThrow()
 
             updateYoutubeUiState(
                 YoutubeUiState.Error(
-                    message = NotBlankString.create(throwable.message!!),
+                    message = throwable.message?.toNotBlankString()?.getOrThrow()?: errorMessage,
                     throwable = throwable
                 )
             )
@@ -109,6 +111,8 @@ class YoutubeViewModel @Inject constructor(
             fetchContentJob?.cancel()
         }
 
+        val errorMessage = "Error occurred while getting value".toNotBlankString().getOrThrow()
+
         fetchContentJob =
             viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
                 try {
@@ -117,7 +121,7 @@ class YoutubeViewModel @Inject constructor(
 
                         if (videos.isEmpty()) {
                             withContext(Dispatchers.Main) {
-                                updateYoutubeUiState(YoutubeUiState.Error(NotBlankString.create("Error occurred while getting value")))
+                                updateYoutubeUiState(YoutubeUiState.Error(errorMessage))
                             }
                         } else {
                             val videosModel = videos.map { it.toModel() }
@@ -130,7 +134,7 @@ class YoutubeViewModel @Inject constructor(
                 } catch (throwable: Exception) {
                     Timber.e(throwable)
                     withContext(Dispatchers.Main) {
-                        updateYoutubeUiState(YoutubeUiState.Error(NotBlankString.create("Error occurred while getting value")))
+                        updateYoutubeUiState(YoutubeUiState.Error(errorMessage))
                     }
                 }
             }

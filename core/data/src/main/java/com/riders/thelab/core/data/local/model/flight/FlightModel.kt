@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import com.riders.thelab.core.data.remote.dto.flight.Flight
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import java.io.Serializable
 
 @Stable
@@ -71,13 +72,13 @@ data class FlightModel(
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 fun Flight.toFlightModel(): FlightModel = FlightModel(
-    faFlightID = this.faFlightID ?: NotBlankString.create("N/A"),
-    operatorID = this.operatorID ?: NotBlankString.create("N/A"),
+    faFlightID = this.faFlightID ?: "N/A".toNotBlankString().getOrThrow(),
+    operatorID = this.operatorID ?: "N/A".toNotBlankString().getOrThrow(),
     identICAO = this.identICAO,
     identIATA = this.identIATA,
     origin = this.origin?.toOriginDestinationModel(),
     destination = this.destination?.toOriginDestinationModel(),
-    status = this.status ?: NotBlankString.create("N/A"),
+    status = this.status ?: "N/A".toNotBlankString().getOrThrow(),
     progress = this.progress,
     waypoints = this.waypoints,
     firstTimePosition = this.firstTimePosition,

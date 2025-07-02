@@ -24,6 +24,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -196,7 +197,7 @@ class KatChatViewModel @Inject constructor(val uiRepository: IUiRepository) : Vi
         Timber.d("sendMessage() | textInput: $textInput")
 
         runCatching {
-            val message: NotBlankString = NotBlankString.create(textInput)
+            val message: NotBlankString = textInput.toNotBlankString().getOrThrow()
 
             FirebaseUtils.sendMessageToUser(
                 context = context,

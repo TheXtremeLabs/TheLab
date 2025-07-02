@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -216,7 +217,7 @@ open class FlightSearchViewModel @Inject constructor(
 
             is UiEvent.OnSearchFlightByID -> searchFlightByFlightNumber(
                 context = uiEvent.context,
-                flightNumber = NotBlankString.create(uiEvent.id)
+                flightNumber = uiEvent.id
             )
 
             /*is UiEvent.OnSearchFlightByRoute -> searchFlightByRoute(
@@ -245,7 +246,8 @@ open class FlightSearchViewModel @Inject constructor(
             return
         }
 
-        val query = NotBlankString.create(if (BuildConfig.DEBUG) "AAL306" else flightNumber)
+        val query =
+            if (BuildConfig.DEBUG) "AAL306".toNotBlankString().getOrThrow() else flightNumber
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             val flights = repository.searchFlightByID(query).flights
@@ -387,8 +389,8 @@ open class FlightSearchViewModel @Inject constructor(
             return
         }
 
-        val latitude = NotBlankString.create(location.latitude)
-        val longitude = NotBlankString.create(location.longitude)
+        val latitude = location.latitude.toString().toNotBlankString().getOrThrow()
+        val longitude = location.longitude.toString().toNotBlankString().getOrThrow()
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             val response =

@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotools.types.text.NotBlankString
 import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import timber.log.Timber
@@ -85,7 +84,7 @@ inline fun <reified T : Any> Task<T>.getTaskFlow(): Flow<Resource<T>> = callback
     this@getTaskFlow
         .addOnCanceledListener {
             Timber.d("task | addOnCanceledListener")
-            trySend(Resource.Error(message = NotBlankString.create("Task canceled")))
+            trySend(Resource.Error(message = "Task canceled".toNotBlankString().getOrThrow()))
         }
         .addOnFailureListener { throwable ->
             Timber.e("task | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")

@@ -52,7 +52,7 @@ import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
-import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import java.util.Locale
 
@@ -173,7 +173,7 @@ fun UserSection(
         SettingsSectionWithTitle(
             theme = theme,
             darkTheme = darkTheme,
-            title = NotBlankString.create("User")
+            title = "User".toNotBlankString().getOrThrow()
         ) {
             AnimatedContent(
                 targetState = userUiState,

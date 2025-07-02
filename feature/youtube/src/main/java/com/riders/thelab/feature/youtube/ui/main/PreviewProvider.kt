@@ -3,15 +3,17 @@ package com.riders.thelab.feature.youtube.ui.main
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.compose.youtube.YoutubeUiState
 import com.riders.thelab.core.data.local.model.youtube.Video
+import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
-import kotools.types.text.NotBlankString
 
 class PreviewProviderYoutube : PreviewParameterProvider<YoutubeUiState> {
     @OptIn(ExperimentalKotoolsTypesApi::class)
     override val values: Sequence<YoutubeUiState>
         get() = sequenceOf(
             YoutubeUiState.Loading,
-            YoutubeUiState.Error(NotBlankString.create("Error occurred while getting value")),
+            YoutubeUiState.Error(
+                "Error occurred while getting value".toNotBlankString().getOrThrow()
+            ),
             YoutubeUiState.Success(
                 listOf(
                     Video(
@@ -164,6 +166,7 @@ class PreviewProviderVideo : PreviewParameterProvider<Video> {
             )
         )
 }
+
 class PreviewProviderVideos : PreviewParameterProvider<List<Video>> {
     override val values: Sequence<List<Video>>
         get() = sequenceOf(PreviewProviderVideo().values.toList())

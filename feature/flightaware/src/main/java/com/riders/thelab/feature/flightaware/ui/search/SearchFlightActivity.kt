@@ -22,8 +22,9 @@ import com.riders.thelab.feature.flightaware.ui.flight.FlightDetailActivity
 import com.riders.thelab.feature.flightaware.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -118,7 +119,7 @@ class SearchFlightActivity : BaseComponentActivity() {
         val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN, locale)
         val formattedDate = now.format(formatter)
 
-        currentDate = NotBlankString.create(formattedDate)
+        currentDate = formattedDate.toNotBlankString().getOrThrow()
     }
 
     private fun launchFlightDetail(flight: SearchFlightModel) =

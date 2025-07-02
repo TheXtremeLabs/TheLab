@@ -71,6 +71,7 @@ import com.riders.thelab.feature.flightaware.ui.airport.AirportSearchItem
 import kotlinx.coroutines.launch
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import timber.log.Timber
 
 ///////////////////////////////////////
@@ -162,7 +163,7 @@ fun SearchFlightByCode(theme: AppTheme, darkTheme: Boolean, uiEvent: (UiEvent) -
 
                         uiEvent.invoke(
                             UiEvent.OnSearchFlightByID(
-                                id = NotBlankString.create(flightNumber),
+                                id = flightNumber.toNotBlankString().getOrThrow(),
                                 context = context
                             )
                         )
@@ -393,10 +394,10 @@ fun SearchFlightByDestination(
                         uiEvent.invoke(
                             UiEvent.OnSearchFlightByRoute(
                                 context = context
-                                /*departureAirportIcaoCode = NotBlankString.create(
+                                /*departureAirportIcaoCode = 
                                     departureQuery
                                 ),
-                                arrivalAirportIcaoCode = NotBlankString.create(
+                                arrivalAirportIcaoCode = 
                                     arrivalQuery
                                 )*/
                             )

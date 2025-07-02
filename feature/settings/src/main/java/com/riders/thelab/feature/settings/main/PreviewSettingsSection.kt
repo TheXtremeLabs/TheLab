@@ -19,6 +19,7 @@ import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
 
 
@@ -76,7 +77,7 @@ private fun PreviewSettingsSectionWithTitle(@PreviewParameter(AppThemePreviewPro
         SettingsSectionWithTitle(
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
-            title = NotBlankString.create("Device")
+            title = "Device".toNotBlankString().getOrThrow()
         ) {
             DeviceInfoSection(
                 theme = appTheme,

@@ -37,8 +37,9 @@ import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
-import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
+import org.kotools.types.ExperimentalKotoolsTypesApi
 
 
 ///////////////////////////////////////
@@ -131,7 +132,7 @@ fun DeparturesArrivals(
     val airportFlightsLazyListState = rememberLazyListState()
 
     val departuresArrivalsHeader = listOf("Flight ID", "Departure", " ", "Arrival")
-    val naValue: NotBlankString = NotBlankString.create("N/A")
+    val naValue: NotBlankString = "N/A".toNotBlankString().getOrThrow()
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
@@ -231,15 +232,15 @@ private fun PreviewDeparturesArrivalsItem(@PreviewParameter(AppThemePreviewProvi
             DeparturesArrivalsItem(
                 theme = appTheme,
                 darkTheme = isSystemInDarkTheme(),
-                flightId = NotBlankString.create("EZ1515FR"),
-                departureAirportId = NotBlankString.create("CDG"),
-                departureAirportName = NotBlankString.create("Paris-Charles-de-Gaulle"),
-                departureGate = NotBlankString.create("2"),
-                departureTerminal = NotBlankString.create("D"),
-                arrivalAirportId = NotBlankString.create("LAX"),
-                arrivalAirportName = NotBlankString.create("Int'l Los Angeles"),
-                arrivalGate = NotBlankString.create("5"),
-                arrivalTerminal = NotBlankString.create("D")
+                flightId = "EZ1515FR".toNotBlankString().getOrThrow(),
+                departureAirportId = "CDG".toNotBlankString().getOrThrow(),
+                departureAirportName = "Paris-Charles-de-Gaulle".toNotBlankString().getOrThrow(),
+                departureGate = "2".toNotBlankString().getOrThrow(),
+                departureTerminal = "D".toNotBlankString().getOrThrow(),
+                arrivalAirportId = "LAX".toNotBlankString().getOrThrow(),
+                arrivalAirportName = "Int'l Los Angeles".toNotBlankString().getOrThrow(),
+                arrivalGate = "5".toNotBlankString().getOrThrow(),
+                arrivalTerminal = "D".toNotBlankString().getOrThrow(),
             )
         }
     }

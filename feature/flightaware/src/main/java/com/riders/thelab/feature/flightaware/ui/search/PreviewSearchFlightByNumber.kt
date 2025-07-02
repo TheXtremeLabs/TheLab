@@ -28,8 +28,8 @@ import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.ui.flight.FlightInfoContainer
 import com.riders.thelab.feature.flightaware.ui.flight.FlightStatusCard
 import com.riders.thelab.feature.flightaware.ui.main.Footer
+import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
-import kotools.types.text.NotBlankString
 
 
 ///////////////////////////////////////
@@ -86,14 +86,14 @@ fun SearchFlightByNumberContent(
                         FlightStatusCard(
                             theme = theme,
                             darkTheme = darkTheme,
-                            flightId = NotBlankString.create(
-                                flight.faFlightID.toString().split("-")[0]
-                            ),
+                            flightId =
+                                flight.faFlightID.toString().split("-")[0].toNotBlankString()
+                                    .getOrThrow(),
                             airlineIATA = flight.identIATA ?: flight.identICAO!!,
                             departureAirportIataCode = flight.origin?.codeIcao
-                                ?: NotBlankString.create("N/A"),
+                                ?: "N/A".toNotBlankString().getOrThrow(),
                             arrivalAirportIataCode = flight.destination?.codeIcao
-                                ?: NotBlankString.create("N/A"),
+                                ?: "N/A".toNotBlankString().getOrThrow(),
                             flightStatus = flight.status
                         )
                     }
@@ -103,19 +103,24 @@ fun SearchFlightByNumberContent(
                             theme = theme,
                             darkTheme = darkTheme,
                             airline = flight.operatorID,
-                            aircraftType = flight.aircraftType ?: NotBlankString.create("N/A"),
+                            aircraftType = flight.aircraftType ?: "N/A".toNotBlankString()
+                                .getOrThrow(),
                             estimatedDepartureDate = flight.estimatedOut
-                                ?: NotBlankString.create("N/A"),
+                                ?: "N/A".toNotBlankString().getOrThrow(),
                             estimatedDepartureTime = flight.estimatedOut
-                                ?: NotBlankString.create("N/A"),
+                                ?: "N/A".toNotBlankString().getOrThrow(),
                             estimatedArrivalDate = flight.estimatedIn
-                                ?: NotBlankString.create("N/A"),
+                                ?: "N/A".toNotBlankString().getOrThrow(),
                             estimatedArrivalTime = flight.estimatedIn
-                                ?: NotBlankString.create("N/A"),
-                            actualDepartureDate = flight.actualOut ?: NotBlankString.create("N/A"),
-                            actualDepartureTime = flight.actualOut ?: NotBlankString.create("N/A"),
-                            actualArrivalDate = flight.actualIn ?: NotBlankString.create("N/A"),
-                            actualArrivalTime = flight.actualIn ?: NotBlankString.create("N/A"),
+                                ?: "N/A".toNotBlankString().getOrThrow(),
+                            actualDepartureDate = flight.actualOut ?: "N/A".toNotBlankString()
+                                .getOrThrow(),
+                            actualDepartureTime = flight.actualOut ?: "N/A".toNotBlankString()
+                                .getOrThrow(),
+                            actualArrivalDate = flight.actualIn ?: "N/A".toNotBlankString()
+                                .getOrThrow(),
+                            actualArrivalTime = flight.actualIn ?: "N/A".toNotBlankString()
+                                .getOrThrow(),
                         )
                     }
 

@@ -59,6 +59,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 
 
 ///////////////////////////////
@@ -375,7 +376,7 @@ fun AppSettingsSection(
         SettingsSectionWithTitle(
             theme = theme,
             darkTheme = darkTheme,
-            title = NotBlankString.create("App Settings")
+            title = "App Settings".toNotBlankString().getOrThrow()
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Row(

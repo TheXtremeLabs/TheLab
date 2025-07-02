@@ -24,8 +24,9 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
-import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
+import org.kotools.types.ExperimentalKotoolsTypesApi
 
 ///////////////////////////////////////
 //
@@ -84,7 +85,8 @@ fun SearchFlightsContent(
                             SearchFlightsErrorContent(
                                 theme = theme,
                                 darkTheme = darkTheme,
-                                reason = NotBlankString.create("Error occurred while getting value")
+                                reason = "Error occurred while getting value".toNotBlankString()
+                                    .getOrThrow()
                             )
                         }
 
@@ -117,7 +119,7 @@ private fun PreviewSearchFlightsContent(@PreviewParameter(PreviewProviderSearchF
         SearchFlightsContent(
             theme = AppTheme.Default,
             darkTheme = isSystemInDarkTheme(),
-            currentDate = NotBlankString.create("24/04/2024"),
+            currentDate = "24/04/2024".toNotBlankString().getOrThrow(),
             uiState = uiState
         ) {}
     }

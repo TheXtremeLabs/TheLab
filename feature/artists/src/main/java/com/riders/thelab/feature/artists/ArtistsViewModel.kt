@@ -25,8 +25,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
-import kotools.types.text.NotBlankString
 import timber.log.Timber
 import java.lang.ref.WeakReference
 import javax.inject.Inject
@@ -36,7 +36,7 @@ import kotlin.coroutines.CoroutineContext
 @HiltViewModel
 class ArtistsViewModel @Inject constructor(
     private val repository: IRepository,
-    val  uiRepository: IUiRepository
+    val uiRepository: IUiRepository
 ) : BaseViewModel(), CoroutineScope, DefaultLifecycleObserver {
 
     override val coroutineContext: CoroutineContext
@@ -58,13 +58,13 @@ class ArtistsViewModel @Inject constructor(
     // Compose states
     //////////////////////////////////////////
     private var _artistUiState: MutableStateFlow<ArtistsUiState> = MutableStateFlow(
-        ArtistsUiState.Loading(NotBlankString.create("Loading..."))
+        ArtistsUiState.Loading("Loading...".toNotBlankString().getOrThrow())
     )
     val artistUiState: StateFlow<ArtistsUiState> = _artistUiState
         .asStateFlow()
         .stateIn(
             scope = viewModelScope,
-            initialValue = ArtistsUiState.Loading(NotBlankString.create("Loading...")),
+            initialValue = ArtistsUiState.Loading("Loading...".toNotBlankString().getOrThrow()),
             started = SharingStarted.WhileSubscribed(5_000),
         )
 
@@ -112,7 +112,12 @@ class ArtistsViewModel @Inject constructor(
             fetchJsonJob = viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
                 try {
                     if (null == mStorageReference) {
-                        updateArtistUiState(ArtistsUiState.Loading(NotBlankString.create("Authenticating to the server...")))
+                        updateArtistUiState(
+                            ArtistsUiState.Loading(
+                                message = "Authenticating to the server...".toNotBlankString()
+                                    .getOrThrow()
+                            )
+                        )
 
                         mStorageReference = repository.getStorageReference(activity)
                     }
@@ -149,10 +154,11 @@ class ArtistsViewModel @Inject constructor(
                     withContext(Dispatchers.Main) {
                         updateArtistUiState(
                             ArtistsUiState.Error(
-                                message = NotBlankString.create(
-                                    throwable.message
-                                        ?: NotBlankString.create("Error occurred while getting value")
-                                ),
+                                message = throwable.message
+                                    ?.toNotBlankString()
+                                    ?.getOrThrow()
+                                    ?: "Error occurred while getting value".toNotBlankString()
+                                        .getOrThrow(),
                                 errorResponse = throwable
                             )
                         )
@@ -187,7 +193,12 @@ class ArtistsViewModel @Inject constructor(
                             // imagesRef now points to "images"
                             val imagesRef: StorageReference = ref.child("images/artists")
 
-                            updateArtistUiState(ArtistsUiState.Loading(NotBlankString.create("Fetching Artists data...")))
+                            updateArtistUiState(
+                                ArtistsUiState.Loading(
+                                    message = "Fetching Artists data...".toNotBlankString()
+                                        .getOrThrow()
+                                )
+                            )
 
                             imagesRef
                                 .listAll()
@@ -212,9 +223,8 @@ class ArtistsViewModel @Inject constructor(
                                                         withContext(Dispatchers.Main) {
                                                             updateArtistUiState(
                                                                 ArtistsUiState.Error(
-                                                                    message = NotBlankString.create(
-                                                                        "Thumbnail list is Empty"
-                                                                    ),
+                                                                    message = "Thumbnail list is Empty".toNotBlankString()
+                                                                        .getOrThrow(),
                                                                     errorResponse = null
                                                                 )
                                                             )
@@ -228,7 +238,9 @@ class ArtistsViewModel @Inject constructor(
                                                         if (taskResult.result.items.size == thumbList.size) {
                                                             updateArtistUiState(
                                                                 ArtistsUiState.Loading(
-                                                                    NotBlankString.create("Fetching successful. Please wait a few moment..")
+                                                                    message = "Fetching successful. Please wait a few moment.."
+                                                                        .toNotBlankString()
+                                                                        .getOrThrow()
                                                                 )
                                                             )
 
@@ -251,10 +263,13 @@ class ArtistsViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             updateArtistUiState(
                                 ArtistsUiState.Error(
-                                    message = NotBlankString.create(
+                                    message =
                                         throwable.message
-                                            ?: NotBlankString.create("Error occurred while getting value")
-                                    ),
+                                            ?.toNotBlankString()
+                                            ?.getOrThrow()
+                                            ?: "Error occurred while getting value"
+                                                .toNotBlankString()
+                                                .getOrThrow(),
                                     errorResponse = throwable
                                 )
                             )
@@ -281,10 +296,12 @@ class ArtistsViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     updateArtistUiState(
                         ArtistsUiState.Error(
-                            message = NotBlankString.create(
-                                throwable.message
-                                    ?: NotBlankString.create("Error occurred while getting value")
-                            ),
+                            message = throwable.message
+                                ?.toNotBlankString()
+                                ?.getOrThrow()
+                                ?: "Error occurred while getting value"
+                                    .toNotBlankString()
+                                    .getOrThrow(),
                             errorResponse = throwable
                         )
                     )

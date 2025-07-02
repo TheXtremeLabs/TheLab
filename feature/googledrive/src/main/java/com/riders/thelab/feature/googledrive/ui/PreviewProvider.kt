@@ -4,16 +4,18 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.google.GoogleAccountModel
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleDriveUiState
 import com.riders.thelab.feature.googledrive.data.local.compose.GoogleSignInState
-import org.kotools.types.ExperimentalKotoolsTypesApi
-import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import org.kotools.types.EmailAddress
+import org.kotools.types.ExperimentalKotoolsTypesApi
 
 class PreviewProviderUiState : PreviewParameterProvider<GoogleDriveUiState> {
     @OptIn(ExperimentalKotoolsTypesApi::class)
     override val values: Sequence<GoogleDriveUiState>
         get() = sequenceOf(
             GoogleDriveUiState.Loading,
-            GoogleDriveUiState.Error(NotBlankString.create("Error occurred while getting value")),
+            GoogleDriveUiState.Error(
+                "Error occurred while getting value".toNotBlankString().getOrThrow()
+            ),
             GoogleDriveUiState.GooglePlayServicesUnavailable,
             GoogleDriveUiState.Success
         )
@@ -27,12 +29,14 @@ class PreviewProviderGoogleSignInState : PreviewParameterProvider<GoogleSignInSt
             GoogleSignInState.Connected(
                 GoogleAccountModel(
                     emailAddress = EmailAddress.orThrow("john.smith@test.com"),
-                    idToken = NotBlankString.create("sdfkvbnimpsdbvSDFVj255edfvedfv754edfved4fv-edfb0defbmW"),
-                    firstName = NotBlankString.create("John"),
-                    familyName = NotBlankString.create("Smith"),
-                    displayName = NotBlankString.create("JohnSmith"),
-                    phoneNumber = NotBlankString.create("+33658479632"),
-                    profilePictureUri = NotBlankString.create("N/A")
+                    idToken = "sdfkvbnimpsdbvSDFVj255edfvedfv754edfved4fv-edfb0defbmW"
+                        .toNotBlankString()
+                        .getOrThrow(),
+                    firstName = "John".toNotBlankString().getOrThrow(),
+                    familyName = "Smith".toNotBlankString().getOrThrow(),
+                    displayName = "JohnSmith".toNotBlankString().getOrThrow(),
+                    phoneNumber = "+33658479632".toNotBlankString().getOrThrow(),
+                    profilePictureUri = "N/A".toNotBlankString().getOrThrow()
                 )
             ),
             GoogleSignInState.Disconnected

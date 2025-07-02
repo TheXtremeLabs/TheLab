@@ -5,6 +5,7 @@ import androidx.compose.runtime.Stable
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 
 /**
  * Represents the local model of [AirportSearch] to be used in app
@@ -21,13 +22,13 @@ data class AirportSearchModel(
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 fun AirportSearch.toAirportSearchModel(): AirportSearchModel = AirportSearchModel(
-    city = this.cityName?.let { NotBlankString.create(it) },
-    name = this.description?.let { NotBlankString.create(it) },
-    description = this.description?.let { NotBlankString.create(it) },
-    icaoCode = this.icaoCode?.let { NotBlankString.create(it) },
+    city = this.cityName?.let { it.toNotBlankString().getOrThrow() },
+    name = this.description?.let { it.toNotBlankString().getOrThrow() },
+    description = this.description?.let { it.toNotBlankString().getOrThrow() },
+    icaoCode = this.icaoCode?.let { it.toNotBlankString().getOrThrow() },
     iataCode = this.iataCode?.let {
         if (it.isNotBlank()) {
-            NotBlankString.create(it)
+            it.toNotBlankString().getOrThrow()
         } else {
             null
         }

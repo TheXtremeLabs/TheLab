@@ -30,6 +30,7 @@ import com.riders.thelab.feature.flightaware.core.theme.textColor
 import com.riders.thelab.feature.flightaware.ui.main.Footer
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 
 ///////////////////////////////////////
 //
@@ -116,7 +117,7 @@ private fun PreviewSearchFlightsSuccess(@PreviewParameter(PreviewProviderFlights
         SearchFlightsSuccessContent(
             theme = AppTheme.Default,
             darkTheme = isSystemInDarkTheme(),
-            currentDate = NotBlankString.create("24/04/2024"),
+            currentDate = "24/04/2024".toNotBlankString().getOrThrow(),
             flights = flights
         ) {}
     }

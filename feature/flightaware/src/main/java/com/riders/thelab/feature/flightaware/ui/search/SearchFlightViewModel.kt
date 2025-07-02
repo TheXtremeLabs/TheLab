@@ -8,8 +8,8 @@ import com.riders.thelab.feature.flightaware.utils.Constants
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
+import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
-import kotools.types.text.NotBlankString
 import timber.log.Timber
 
 class SearchFlightViewModel : ViewModel() {
@@ -64,23 +64,42 @@ class SearchFlightViewModel : ViewModel() {
                             }
                                 ?: run {
                                     Timber.e("SearchFlightActivity.EXTRA_SEARCH_TYPE_FLIGHT_ROUTE | Extra item object is null")
-                                    updateUiState(SearchFlightsUiState.Error(NotBlankString.create("Error occurred while getting value")))
+                                    updateUiState(
+                                        SearchFlightsUiState.Error(
+                                            "Error occurred while getting value".toNotBlankString()
+                                                .getOrThrow()
+                                        )
+                                    )
                                 }
                         }
 
                         else -> {
                             Timber.e("Unknown search type: $searchType")
-                            updateUiState(SearchFlightsUiState.Error(NotBlankString.create("Error occurred while getting value")))
+                            updateUiState(
+                                SearchFlightsUiState.Error(
+                                    "Error occurred while getting value"
+                                        .toNotBlankString()
+                                        .getOrThrow()
+                                )
+                            )
                         }
                     }
                 } ?: run {
                     Timber.e("getBundle() | flightString is null")
-                    updateUiState(SearchFlightsUiState.Error(NotBlankString.create("Error occurred while getting value")))
+                    updateUiState(
+                        SearchFlightsUiState.Error(
+                            "Error occurred while getting value".toNotBlankString().getOrThrow()
+                        )
+                    )
                 }
 
             } ?: run {
                 Timber.e("Intent extras are null")
-                updateUiState(SearchFlightsUiState.Error(NotBlankString.create("Error occurred while getting value")))
+                updateUiState(
+                    SearchFlightsUiState.Error(
+                        "Error occurred while getting value".toNotBlankString().getOrThrow()
+                    )
+                )
             }
         }
             .onFailure {
@@ -88,7 +107,8 @@ class SearchFlightViewModel : ViewModel() {
                 Timber.e("getBundle() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
                 updateUiState(
                     SearchFlightsUiState.Error(
-                        message = NotBlankString.create("Error occurred while getting value"),
+                        message = "Error occurred while getting value".toNotBlankString()
+                            .getOrThrow(),
                         throwable = it
                     )
                 )

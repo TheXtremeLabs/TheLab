@@ -7,6 +7,7 @@ import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import com.riders.thelab.core.data.remote.dto.flight.Segment
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import java.io.Serializable
 
 @Stable
@@ -108,16 +109,16 @@ data class SearchFlightModel(
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 fun Flight.toSearchFlightModel(): SearchFlightModel = SearchFlightModel(
-    faFlightID = this.faFlightID ?: NotBlankString.create("N/A"),
-    operatorID = this.operatorID ?: NotBlankString.create("N/A"),
-    operatorName = this.operatorID ?: NotBlankString.create("N/A"),
+    faFlightID = this.faFlightID ?: "N/A".toNotBlankString().getOrThrow(),
+    operatorID = this.operatorID ?: "N/A".toNotBlankString().getOrThrow(),
+    operatorName = this.operatorID ?: "N/A".toNotBlankString().getOrThrow(),
     operatorICAO = this.identICAO,
     identICAO = this.identICAO,
     operatorIATA = this.identIATA,
     identIATA = this.identIATA,
     origin = this.origin?.toOriginDestinationModel(),
     destination = this.destination?.toOriginDestinationModel(),
-    status = this.status ?: NotBlankString.create("N/A"),
+    status = this.status ?: "N/A".toNotBlankString().getOrThrow(),
     progress = this.progress,
     waypoints = this.waypoints,
     firstTimePosition = this.firstTimePosition,
@@ -181,7 +182,7 @@ fun Segment.toSearchFlightModel(): SearchFlightModel = SearchFlightModel(
     departureDelay = this.departureDelay,
     arrivalDelay = this.arrivalDelay,
     progress = this.progress,
-    status = this.status ?: NotBlankString.create("N/A"),
+    status = this.status ?: "N/A".toNotBlankString().getOrThrow(),
     aircraftType = this.aircraftType,
     routeDistance = this.routeDistance,
     filedAirSpeed = this.filedAirSpeed,

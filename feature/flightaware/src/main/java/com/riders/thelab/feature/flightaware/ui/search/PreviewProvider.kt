@@ -6,15 +6,17 @@ import com.riders.thelab.core.data.local.model.flight.OriginDestinationModel
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.data.remote.dto.flight.FlightType
 import com.riders.thelab.feature.flightaware.ui.flight.PreviewProviderFlight
+import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
-import kotools.types.text.NotBlankString
 
 class PreviewProviderSearchFlightsUiState : PreviewParameterProvider<SearchFlightsUiState> {
     @OptIn(ExperimentalKotoolsTypesApi::class)
     override val values: Sequence<SearchFlightsUiState>
         get() = sequenceOf(
             SearchFlightsUiState.Loading,
-            SearchFlightsUiState.Error(NotBlankString.create("Error occurred while getting value")),
+            SearchFlightsUiState.Error(
+                "Error occurred while getting value".toNotBlankString().getOrThrow()
+            ),
             SearchFlightsUiState.Success(PreviewProviderFlight().values.toList()),
         )
 }
@@ -24,106 +26,107 @@ class PreviewProviderFlight : PreviewParameterProvider<SearchFlightModel> {
     override val values: Sequence<SearchFlightModel>
         get() = sequenceOf(
             SearchFlightModel(
-                operatorID = NotBlankString.create("AAL306"),
-                operatorICAO = NotBlankString.create("AAL306"),
-                operatorIATA = NotBlankString.create("AA306"),
-                faFlightID = NotBlankString.create("AAL306-1712349302-airline-801p"),
+                operatorID = "AAL306".toNotBlankString().getOrThrow(),
+                operatorICAO = "AAL306".toNotBlankString().getOrThrow(),
+                operatorIATA = "AA306".toNotBlankString().getOrThrow(),
+                faFlightID = "AAL306-1712349302-airline-801p".toNotBlankString().getOrThrow(),
                 origin = OriginDestinationModel(
-                    codeIcao = NotBlankString.create("KJFK"),
-                    codeIata = NotBlankString.create("JFK"),
-                    codeLid = NotBlankString.create("JFK"),
-                    timezone = NotBlankString.create("America/New_York"),
-                    name = NotBlankString.create("Int'l John-F.-Kennedy"),
-                    city = NotBlankString.create("New York"),
-                    airportInfoUrl = NotBlankString.create("/airports/KJFK")
+                    codeIcao = "KJFK".toNotBlankString().getOrThrow(),
+                    codeIata = "JFK".toNotBlankString().getOrThrow(),
+                    codeLid = "JFK".toNotBlankString().getOrThrow(),
+                    timezone = "America/New_York".toNotBlankString().getOrThrow(),
+                    name = "Int'l John-F.-Kennedy".toNotBlankString().getOrThrow(),
+                    city = "New York".toNotBlankString().getOrThrow(),
+                    airportInfoUrl = "/airports/KJFK".toNotBlankString().getOrThrow(),
                 ),
                 destination = OriginDestinationModel(
-                    codeIcao = NotBlankString.create("KLAX"),
-                    codeIata = NotBlankString.create("LAX"),
-                    codeLid = NotBlankString.create("LAX"),
-                    timezone = NotBlankString.create("America/Los_Angeles"),
-                    name = NotBlankString.create("Int'l de Los Angeles"),
-                    city = NotBlankString.create("Los Angeles"),
-                    airportInfoUrl = NotBlankString.create("/airports/KLAX")
+                    codeIcao = "KLAX".toNotBlankString().getOrThrow(),
+                    codeIata = "LAX".toNotBlankString().getOrThrow(),
+                    codeLid = "LAX".toNotBlankString().getOrThrow(),
+                    timezone = "America/Los_Angeles".toNotBlankString().getOrThrow(),
+                    name = "Int'l de Los Angeles".toNotBlankString().getOrThrow(),
+                    city = "Los Angeles".toNotBlankString().getOrThrow(),
+                    airportInfoUrl = "/airports/KLAX".toNotBlankString().getOrThrow(),
                 ),
                 waypoints = null,
                 firstTimePosition = null,
                 boundingBox = null,
                 identPrefix = null,
-                aircraftType = NotBlankString.create("A321"),
+                aircraftType = "A321".toNotBlankString().getOrThrow(),
                 progress = 20,
-                status = NotBlankString.create("Planifié"),
+                status = "Planifié".toNotBlankString().getOrThrow(),
                 actualOff = null,
                 actualOn = null,
                 foresightPredictionsAvailable = false,
                 type = FlightType.AIRLINE
             ),
             SearchFlightModel(
-                operatorName = NotBlankString.create("AFR"),
-                operatorID = NotBlankString.create("AFR25"),
-                operatorICAO = NotBlankString.create("AFR"),
-                operatorIATA = NotBlankString.create("AF"),
+                operatorName = "AFR".toNotBlankString().getOrThrow(),
+                operatorID = "AFR25".toNotBlankString().getOrThrow(),
+                operatorICAO = "AFR".toNotBlankString().getOrThrow(),
+                operatorIATA = "AF".toNotBlankString().getOrThrow(),
                 actualRunwayOff = null,
                 actualRunwayOn = null,
-                faFlightID = NotBlankString.create("AFR25-1714095213-schedule-1763p"),
-                flightNumber = NotBlankString.create("25"),
+                faFlightID = "AFR25-1714095213-schedule-1763p".toNotBlankString().getOrThrow(),
+                flightNumber = "25".toNotBlankString().getOrThrow(),
                 registration = null,
                 atcIdent = null,
                 inboundFaFlightID = null,
-                /*codeshares= emptyList(),
-                codeSharesIata= emptyList(),*/
+                /*codeshares= emptyList(.toNotBlankString().getOrThrow(),
+                codeSharesIata= emptyList(.toNotBlankString().getOrThrow(),*/
                 blocked = false,
                 diverted = false,
                 cancelled = false,
                 positionOnly = false,
                 origin = OriginDestinationModel(
-                    codeIcao = NotBlankString.create("KLAX"),
-                    codeIata = NotBlankString.create("LAX"),
+                    codeIcao = "KLAX".toNotBlankString().getOrThrow(),
+                    codeIata = "LAX".toNotBlankString().getOrThrow(),
                     codeLid = null,
-                    timezone = NotBlankString.create("America/Los_Angeles"),
-                    name = NotBlankString.create("Int'l de Los Angeles"),
-                    city = NotBlankString.create("Los Angeles"),
-                    airportInfoUrl = NotBlankString.create("/airports/KLAX")
+                    timezone = "America/Los_Angeles".toNotBlankString().getOrThrow(),
+                    name = "Int'l de Los Angeles".toNotBlankString().getOrThrow(),
+                    city = "Los Angeles".toNotBlankString().getOrThrow(),
+                    airportInfoUrl = "/airports/KLAX".toNotBlankString().getOrThrow(),
                 ),
                 destination = OriginDestinationModel(
-                    codeIcao = NotBlankString.create("LFPG"),
-                    codeIata = NotBlankString.create("CDG"),
+                    codeIcao = "LFPG".toNotBlankString().getOrThrow(),
+                    codeIata = "CDG".toNotBlankString().getOrThrow(),
                     codeLid = null,
-                    timezone = NotBlankString.create("Europe/Paris"),
-                    name = NotBlankString.create("Paris-Charles-de-Gaulle"),
-                    city = NotBlankString.create("Paris"),
-                    airportInfoUrl = NotBlankString.create("/airports/LFPG")
+                    timezone = "Europe/Paris".toNotBlankString().getOrThrow(),
+                    name = "Paris-Charles-de-Gaulle".toNotBlankString().getOrThrow(),
+                    city = "Paris".toNotBlankString().getOrThrow(),
+                    airportInfoUrl = "/airports/LFPG".toNotBlankString().getOrThrow(),
                 ),
                 departureDelay = 0,
                 arrivalDelay = 0,
                 filedEte = 37800,
-                scheduledOut = NotBlankString.create("2024-04-28T01:30:00Z"),
-                estimatedOut = NotBlankString.create("2024-04-28T01:30:00Z"),
+                scheduledOut = "2024-04-28T01:30:00Z".toNotBlankString().getOrThrow(),
+                estimatedOut = "2024-04-28T01:30:00Z".toNotBlankString().getOrThrow(),
                 actualOut = null,
-                scheduledOff = NotBlankString.create("2024-04-28T01:40:00Z"),
-                estimatedOff = NotBlankString.create("2024-04-28T01:40:00Z"),
+                scheduledOff = "2024-04-28T01:40:00Z".toNotBlankString().getOrThrow(),
+                estimatedOff = "2024-04-28T01:40:00Z".toNotBlankString().getOrThrow(),
                 actualOff = null,
-                scheduledOn = NotBlankString.create("2024-04-28T12:10:00Z"),
-                estimatedOn = NotBlankString.create("2024-04-28T12:10:00Z"),
+                scheduledOn = "2024-04-28T12:10:00Z".toNotBlankString().getOrThrow(),
+                estimatedOn = "2024-04-28T12:10:00Z".toNotBlankString().getOrThrow(),
                 actualOn = null,
-                scheduledIn = NotBlankString.create("2024-04-28T12:20:00Z"),
-                estimatedIn = NotBlankString.create("2024-04-28T12:20:00Z"),
+                scheduledIn = "2024-04-28T12:20:00Z".toNotBlankString().getOrThrow(),
+                estimatedIn = "2024-04-28T12:20:00Z".toNotBlankString().getOrThrow(),
                 actualIn = null,
                 progress = 0,
-                status = NotBlankString.create("Planifié"),
-                aircraftType = NotBlankString.create("B77W"),
+                status = "Planifié".toNotBlankString().getOrThrow(),
+                aircraftType = "B77W".toNotBlankString().getOrThrow(),
                 routeDistance = 5675,
                 filedAirSpeed = 496,
                 filedAltitude = 330,
-                route = NotBlankString.create("DTA039023 KU78S KU06W 4900N/10000W 5430N/09000W 5730N/08000W 5930N/07000W RODBO PIDSO 6100N/05000W 6100N/04000W 6000N/03000W 5800N/02000W PIKIL SOVED REVNU MORAG NUCHU L18 MID Y803 SFD UM605 BIBAX BIBAX9W"),
-                baggageClaim = NotBlankString.create("30"),
+                route = "DTA039023 KU78S KU06W 4900N/10000W 5430N/09000W 5730N/08000W 5930N/07000W RODBO PIDSO 6100N/05000W 6100N/04000W 6000N/03000W 5800N/02000W PIKIL SOVED REVNU MORAG NUCHU L18 MID Y803 SFD UM605 BIBAX BIBAX9W".toNotBlankString()
+                    .getOrThrow(),
+                baggageClaim = "30".toNotBlankString().getOrThrow(),
                 seatsCabinBusiness = 58,
                 seatsCabinCoach = 234,
                 seatsCabinFirst = 4,
-                gateOrigin = NotBlankString.create("208"),
+                gateOrigin = "208".toNotBlankString().getOrThrow(),
                 gateDestination = null,
-                terminalOrigin = NotBlankString.create("B"),
-                terminalDestination = NotBlankString.create("2E"),
+                terminalOrigin = "B".toNotBlankString().getOrThrow(),
+                terminalDestination = "2E".toNotBlankString().getOrThrow(),
                 type = FlightType.AIRLINE
             )
         )

@@ -1,12 +1,13 @@
 package com.riders.thelab.feature.youtube.ui.main
 
-import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
+import org.kotools.types.ExperimentalKotoolsTypesApi
 
 sealed class YoutubeScreen(val route: NotBlankString) {
     @OptIn(ExperimentalKotoolsTypesApi::class)
-    data object List : YoutubeScreen(NotBlankString.create("list"))
+    data object List : YoutubeScreen("list".toNotBlankString().getOrThrow())
 
     @OptIn(ExperimentalKotoolsTypesApi::class)
-    data object Detail : YoutubeScreen(NotBlankString.create("details/{id}"))
+    data object Detail : YoutubeScreen("details/{id}".toNotBlankString().getOrThrow())
 }

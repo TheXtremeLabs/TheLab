@@ -36,6 +36,7 @@ import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 
 
 ///////////////////////////////////////
@@ -105,7 +106,7 @@ private fun PreviewSearchFlightsError(@PreviewParameter(AppThemePreviewProvider:
         SearchFlightsErrorContent(
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
-            reason = NotBlankString.create("Error occurred while getting value")
+            reason = "Error occurred while getting value".toNotBlankString().getOrThrow()
         )
     }
 }

@@ -2,48 +2,49 @@ package com.riders.thelab.feature.flightaware.ui.airport
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
+import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
-import kotools.types.text.NotBlankString
 
 class PreviewProviderAirportSearch : PreviewParameterProvider<AirportSearchModel> {
     @OptIn(ExperimentalKotoolsTypesApi::class)
     override val values: Sequence<AirportSearchModel>
         get() = sequenceOf(
             AirportSearchModel(
-                name = NotBlankString.create("Los Angeles Intl (Los Angeles)"),
-                description = NotBlankString.create("Los Angeles Intl (Los Angeles)"),
-                icaoCode = NotBlankString.create("KLAX"),
-                iataCode = NotBlankString.create("LAX")
+                name = "Los Angeles Intl (Los Angeles)".toNotBlankString().getOrThrow(),
+                description = "Los Angeles Intl (Los Angeles)".toNotBlankString().getOrThrow(),
+                icaoCode = "KLAX".toNotBlankString().getOrThrow(),
+                iataCode = "LAX".toNotBlankString().getOrThrow()
             ),
             AirportSearchModel(
-                name = NotBlankString.create("Paris-Charles-de-Gaulle"),
-                description = NotBlankString.create("Paris-Charles-de-Gaulle"),
-                icaoCode = NotBlankString.create("LFPG"),
-                iataCode = NotBlankString.create("CDG"),
-                city = NotBlankString.create("Paris"),
+                name = "Paris-Charles-de-Gaulle".toNotBlankString().getOrThrow(),
+                description = "Paris-Charles-de-Gaulle".toNotBlankString().getOrThrow(),
+                icaoCode = "LFPG".toNotBlankString().getOrThrow(),
+                iataCode = "CDG".toNotBlankString().getOrThrow(),
+                city = "Paris".toNotBlankString().getOrThrow(),
             ),
             AirportSearchModel(
-                name = NotBlankString.create("Whiteman (Los Angeles)"),
-                description = NotBlankString.create("Whiteman (Los Angeles)"),
-                icaoCode = NotBlankString.create("KWHP"),
-                iataCode = NotBlankString.create("WHP")
+                name = "Whiteman (Los Angeles)".toNotBlankString().getOrThrow(),
+                description = "Whiteman (Los Angeles)".toNotBlankString().getOrThrow(),
+                icaoCode = "KWHP".toNotBlankString().getOrThrow(),
+                iataCode = "WHP".toNotBlankString().getOrThrow(),
             ),
             AirportSearchModel(
-                name = NotBlankString.create("María Dolores (Los Angeles)"),
-                description = NotBlankString.create("María Dolores (Los Angeles)"),
-                icaoCode = NotBlankString.create("SCGE")
+                name = "María Dolores (Los Angeles)".toNotBlankString().getOrThrow(),
+                description = "María Dolores (Los Angeles)".toNotBlankString().getOrThrow(),
+                icaoCode = "SCGE".toNotBlankString().getOrThrow(),
             ),
             AirportSearchModel(
-                name = NotBlankString.create("Los Cabos Int'l (Los Cabos)"),
-                description = NotBlankString.create("Los Cabos Int'l (Los Cabos)"),
-                icaoCode = NotBlankString.create("MMSD"),
-                iataCode = NotBlankString.create("SJD")
+                name = "Los Cabos Int'l (Los Cabos)".toNotBlankString().getOrThrow(),
+                description = "Los Cabos Int'l (Los Cabos)".toNotBlankString().getOrThrow(),
+                icaoCode = "MMSD".toNotBlankString().getOrThrow(),
+                iataCode = "SJD".toNotBlankString().getOrThrow(),
             ),
             AirportSearchModel(
-                name = NotBlankString.create("Southern Wisconsin Rgnl (Janesville)"),
-                description = NotBlankString.create("Southern Wisconsin Rgnl (Janesville)"),
-                icaoCode = NotBlankString.create("KJVL"),
-                iataCode = NotBlankString.create("JVL")
+                name = "Southern Wisconsin Rgnl (Janesville)".toNotBlankString().getOrThrow(),
+                description = "Southern Wisconsin Rgnl (Janesville)".toNotBlankString()
+                    .getOrThrow(),
+                icaoCode = "KJVL".toNotBlankString().getOrThrow(),
+                iataCode = "JVL".toNotBlankString().getOrThrow(),
             )
         )
 }
@@ -54,33 +55,34 @@ class PreviewProviderAirports : PreviewParameterProvider<List<AirportSearchModel
         get() = sequenceOf(
             listOf(
                 AirportSearchModel(
-                    name = NotBlankString.create("Los Angeles Intl (Los Angeles)"),
-                    description = NotBlankString.create("Los Angeles Intl (Los Angeles)"),
-                    icaoCode = NotBlankString.create("KLAX"),
-                    iataCode = NotBlankString.create("LAX")
+                    name = "Los Angeles Intl (Los Angeles)".toNotBlankString().getOrThrow(),
+                    description = "Los Angeles Intl (Los Angeles)".toNotBlankString().getOrThrow(),
+                    icaoCode = "KLAX".toNotBlankString().getOrThrow(),
+                    iataCode = "LAX".toNotBlankString().getOrThrow(),
                 ),
                 AirportSearchModel(
-                    name = NotBlankString.create("Whiteman (Los Angeles)"),
-                    description = NotBlankString.create("Whiteman (Los Angeles)"),
-                    icaoCode = NotBlankString.create("KWHP"),
-                    iataCode = NotBlankString.create("WHP")
+                    name = "Whiteman (Los Angeles)".toNotBlankString().getOrThrow(),
+                    description = "Whiteman (Los Angeles)".toNotBlankString().getOrThrow(),
+                    icaoCode = "KWHP".toNotBlankString().getOrThrow(),
+                    iataCode = "WHP".toNotBlankString().getOrThrow(),
                 ),
                 AirportSearchModel(
-                    name = NotBlankString.create("María Dolores (Los Angeles)"),
-                    description = NotBlankString.create("María Dolores (Los Angeles)"),
-                    icaoCode = NotBlankString.create("SCGE")
+                    name = "María Dolores (Los Angeles)".toNotBlankString().getOrThrow(),
+                    description = "María Dolores (Los Angeles)".toNotBlankString().getOrThrow(),
+                    icaoCode = "SCGE".toNotBlankString().getOrThrow(),
                 ),
                 AirportSearchModel(
-                    name = NotBlankString.create("Los Cabos Int'l (Los Cabos)"),
-                    description = NotBlankString.create("Los Cabos Int'l (Los Cabos)"),
-                    icaoCode = NotBlankString.create("MMSD"),
-                    iataCode = NotBlankString.create("SJD")
+                    name = "Los Cabos Int'l (Los Cabos)".toNotBlankString().getOrThrow(),
+                    description = "Los Cabos Int'l (Los Cabos)".toNotBlankString().getOrThrow(),
+                    icaoCode = "MMSD".toNotBlankString().getOrThrow(),
+                    iataCode = "SJD".toNotBlankString().getOrThrow(),
                 ),
                 AirportSearchModel(
-                    name = NotBlankString.create("Southern Wisconsin Rgnl (Janesville)"),
-                    description = NotBlankString.create("Southern Wisconsin Rgnl (Janesville)"),
-                    icaoCode = NotBlankString.create("KJVL"),
-                    iataCode = NotBlankString.create("JVL")
+                    name = "Southern Wisconsin Rgnl (Janesville)".toNotBlankString().getOrThrow(),
+                    description = "Southern Wisconsin Rgnl (Janesville)".toNotBlankString()
+                        .getOrThrow(),
+                    icaoCode = "KJVL".toNotBlankString().getOrThrow(),
+                    iataCode = "JVL".toNotBlankString().getOrThrow(),
                 )
             )
         )

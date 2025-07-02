@@ -49,18 +49,16 @@ import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
 import com.riders.thelab.feature.flightaware.ui.search.SearchFlightActivity
 import com.riders.thelab.feature.flightaware.utils.Constants
-import org.kotools.types.ExperimentalKotoolsTypesApi
+import com.riders.thelab.feature.flightaware.utils.toFormattedDate
+import com.riders.thelab.feature.flightaware.utils.toLocalDateTime
 import kotools.types.text.NotBlankString
-import java.time.Instant
-import java.time.LocalDateTime
+import kotools.types.text.toNotBlankString
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 private val zoneId: ZoneId = ZoneId.systemDefault()
-private fun NotBlankString.toLocalDateTime(): LocalDateTime =
-    LocalDateTime.ofInstant(Instant.parse(this.toString()), zoneId)
-
 
 ///////////////////////////////////////
 //
@@ -272,14 +270,14 @@ fun FlightInfoContainer(
                     InfoContainerTitleDescription(
                         theme = theme,
                         darkTheme = darkTheme,
-                        title = NotBlankString.create("Airline"),
+                        title = "Airline".toNotBlankString().getOrThrow(),
                         description = airline
                     )
 
                     InfoContainerTitleDescription(
                         theme = theme,
                         darkTheme = darkTheme,
-                        title = NotBlankString.create("Aircraft type"),
+                        title = "Aircraft type".toNotBlankString().getOrThrow(),
                         description = aircraftType,
                         isRightSide = true
                     )
@@ -295,22 +293,36 @@ fun FlightInfoContainer(
                         theme = theme,
                         darkTheme = darkTheme,
                         modifier = Modifier.weight(1f),
-                        title = NotBlankString.create("Estimated Departure date"),
-                        description = NotBlankString.create(
-                            if (estimatedDepartureDate.toString() == "N/A") "N/A" else estimatedDepartureDate.toLocalDateTime()
-                                .format(formatter).toString()
-                        )
+                        title = "Estimated Departure date".toNotBlankString().getOrThrow(),
+                        description =
+                            if (estimatedDepartureDate.toString() == "N/A") {
+                                "N/A".toNotBlankString().getOrThrow()
+                            } else {
+                                estimatedDepartureDate
+                                    .toLocalDateTime()
+                                    .format(formatter)
+                                    .toString()
+                                    .toNotBlankString()
+                                    .getOrThrow()
+                            }
                     )
 
                     InfoContainerTitleDescription(
                         theme = theme,
                         darkTheme = darkTheme,
                         modifier = Modifier.weight(1f),
-                        title = NotBlankString.create("Estimated Arrival date"),
-                        description = NotBlankString.create(
-                            if (estimatedArrivalDate.toString() == "N/A") "N/A" else estimatedArrivalDate.toLocalDateTime()
-                                .format(formatter).toString()
-                        ),
+                        title = "Estimated Arrival date".toNotBlankString().getOrThrow(),
+                        description =
+                            if (estimatedArrivalDate.toString() == "N/A") {
+                                "N/A".toNotBlankString().getOrThrow()
+                            } else {
+                                estimatedArrivalDate
+                                    .toLocalDateTime()
+                                    .format(formatter)
+                                    .toString()
+                                    .toNotBlankString()
+                                    .getOrThrow()
+                            },
                         isRightSide = true
                     )
                 }
@@ -325,21 +337,21 @@ fun FlightInfoContainer(
                     InfoContainerTitleDescription(
                         theme = theme,
                         darkTheme = darkTheme,
-                        title = NotBlankString.create("Departure time"),
-                        description = NotBlankString.create(
-                            if (estimatedDepartureTime.toString() == "N/A") "N/A" else estimatedDepartureTime.toLocalDateTime()
-                                .toLocalTime().toString()
-                        )
+                        title = "Departure time".toNotBlankString().getOrThrow(),
+                        description = estimatedDepartureTime.toFormattedDate(formatter = formatter)
                     )
 
                     InfoContainerTitleDescription(
                         theme = theme,
                         darkTheme = darkTheme,
-                        title = NotBlankString.create("Arrival time"),
-                        description = NotBlankString.create(
-                            if (estimatedArrivalTime.toString() == "N/A") "N/A" else estimatedArrivalTime.toLocalDateTime()
-                                .toLocalTime().toString()
-                        ),
+                        title = "Arrival time".toNotBlankString().getOrThrow(),
+                        description =
+                            if (estimatedArrivalTime.toString() == "N/A") {
+                                "N/A".toNotBlankString().getOrThrow()
+                            } else {
+                                estimatedArrivalTime.toLocalDateTime()
+                                    .toLocalTime().toString().toNotBlankString().getOrThrow()
+                            },
                         isRightSide = true
                     )
                 }
@@ -354,22 +366,16 @@ fun FlightInfoContainer(
                         theme = theme,
                         darkTheme = darkTheme,
                         modifier = Modifier.weight(1f),
-                        title = NotBlankString.create("Actual Departure date"),
-                        description = NotBlankString.create(
-                            if (actualDepartureDate.toString() == "N/A") "N/A" else actualDepartureDate.toLocalDateTime()
-                                .format(formatter).toString()
-                        )
+                        title = "Actual Departure date".toNotBlankString().getOrThrow(),
+                        description = actualDepartureDate.toFormattedDate(formatter = formatter)
                     )
 
                     InfoContainerTitleDescription(
                         theme = theme,
                         darkTheme = darkTheme,
                         modifier = Modifier.weight(1f),
-                        title = NotBlankString.create("Actual Arrival date"),
-                        description = NotBlankString.create(
-                            if (actualArrivalDate.toString() == "N/A") "N/A" else actualArrivalDate.toLocalDateTime()
-                                .format(formatter).toString()
-                        ),
+                        title = "Actual Arrival date".toNotBlankString().getOrThrow(),
+                        description = actualArrivalDate.toFormattedDate(formatter = formatter),
                         isRightSide = true
                     )
                 }
@@ -384,21 +390,15 @@ fun FlightInfoContainer(
                     InfoContainerTitleDescription(
                         theme = theme,
                         darkTheme = darkTheme,
-                        title = NotBlankString.create("Actual Departure time"),
-                        description = NotBlankString.create(
-                            if (actualDepartureTime.toString() == "N/A") "N/A" else actualDepartureTime.toLocalDateTime()
-                                .toLocalTime().toString()
-                        )
+                        title = "Actual Departure time".toNotBlankString().getOrThrow(),
+                        description = actualDepartureTime.toFormattedDate(formatter = formatter),
                     )
 
                     InfoContainerTitleDescription(
                         theme = theme,
                         darkTheme = darkTheme,
-                        title = NotBlankString.create("Actual Arrival time"),
-                        description = NotBlankString.create(
-                            if (actualArrivalTime.toString() == "N/A") "N/A" else actualArrivalTime.toLocalDateTime()
-                                .toLocalTime().toString()
-                        ),
+                        title = "Actual Arrival time".toNotBlankString().getOrThrow(),
+                        description = actualArrivalTime.toFormattedDate(formatter = formatter),
                         isRightSide = true
                     )
                 }
@@ -430,14 +430,13 @@ fun FlightDetailSuccessContent(theme: AppTheme, darkTheme: Boolean, flight: Sear
                 FlightStatusCard(
                     theme = theme,
                     darkTheme = darkTheme,
-                    flightId = NotBlankString.create(
-                        flight.faFlightID.toString().split("-")[0]
-                    ),
+                    flightId = flight.faFlightID.toString().split("-")[0].toNotBlankString()
+                        .getOrThrow(),
                     airlineIATA = flight.identIATA ?: flight.identICAO!!,
                     departureAirportIataCode = flight.origin?.codeIcao
-                        ?: NotBlankString.create("N/A"),
+                        ?: "N/A".toNotBlankString().getOrThrow(),
                     arrivalAirportIataCode = flight.destination?.codeIcao
-                        ?: NotBlankString.create("N/A"),
+                        ?: "N/A".toNotBlankString().getOrThrow(),
                     flightStatus = flight.status
                 )
             }
@@ -447,19 +446,19 @@ fun FlightDetailSuccessContent(theme: AppTheme, darkTheme: Boolean, flight: Sear
                     theme = theme,
                     darkTheme = darkTheme,
                     airline = flight.operatorID,
-                    aircraftType = flight.aircraftType ?: NotBlankString.create("N/A"),
+                    aircraftType = flight.aircraftType ?: "N/A".toNotBlankString().getOrThrow(),
                     estimatedDepartureDate = flight.estimatedOut
-                        ?: NotBlankString.create("N/A"),
+                        ?: "N/A".toNotBlankString().getOrThrow(),
                     estimatedDepartureTime = flight.estimatedOut
-                        ?: NotBlankString.create("N/A"),
+                        ?: "N/A".toNotBlankString().getOrThrow(),
                     estimatedArrivalDate = flight.estimatedIn
-                        ?: NotBlankString.create("N/A"),
+                        ?: "N/A".toNotBlankString().getOrThrow(),
                     estimatedArrivalTime = flight.estimatedIn
-                        ?: NotBlankString.create("N/A"),
-                    actualDepartureDate = flight.actualOut ?: NotBlankString.create("N/A"),
-                    actualDepartureTime = flight.actualOut ?: NotBlankString.create("N/A"),
-                    actualArrivalDate = flight.actualIn ?: NotBlankString.create("N/A"),
-                    actualArrivalTime = flight.actualIn ?: NotBlankString.create("N/A"),
+                        ?: "N/A".toNotBlankString().getOrThrow(),
+                    actualDepartureDate = flight.actualOut ?: "N/A".toNotBlankString().getOrThrow(),
+                    actualDepartureTime = flight.actualOut ?: "N/A".toNotBlankString().getOrThrow(),
+                    actualArrivalDate = flight.actualIn ?: "N/A".toNotBlankString().getOrThrow(),
+                    actualArrivalTime = flight.actualIn ?: "N/A".toNotBlankString().getOrThrow(),
                 )
             }
 
@@ -486,11 +485,13 @@ private fun PreviewFlightStatusCard(@PreviewParameter(PreviewProviderFlight::cla
             FlightStatusCard(
                 theme = AppTheme.Default,
                 darkTheme = isSystemInDarkTheme(),
-                flightId = NotBlankString.create(flight.faFlightID.toString().split("-")[0]),
+                flightId = flight.faFlightID.toString().split("-")[0].toNotBlankString()
+                    .getOrThrow(),
                 airlineIATA = flight.operatorID,
-                departureAirportIataCode = flight.origin?.codeIata ?: NotBlankString.create("N/A"),
+                departureAirportIataCode = flight.origin?.codeIata ?: "N/A".toNotBlankString()
+                    .getOrThrow(),
                 arrivalAirportIataCode = flight.destination?.codeIata
-                    ?: NotBlankString.create("N/A"),
+                    ?: "N/A".toNotBlankString().getOrThrow(),
                 flightStatus = flight.status
             )
         }
@@ -535,19 +536,19 @@ private fun PreviewFlightInfoContainer(@PreviewParameter(PreviewProviderFlight::
             theme = AppTheme.Default,
             darkTheme = isSystemInDarkTheme(),
             airline = flight.operatorID,
-            aircraftType = flight.aircraftType ?: NotBlankString.create("N/A"),
+            aircraftType = flight.aircraftType ?: "N/A".toNotBlankString().getOrThrow(),
             estimatedDepartureDate = flight.estimatedOut
-                ?: NotBlankString.create("N/A"),
+                ?: "N/A".toNotBlankString().getOrThrow(),
             estimatedDepartureTime = flight.estimatedOut
-                ?: NotBlankString.create("N/A"),
+                ?: "N/A".toNotBlankString().getOrThrow(),
             estimatedArrivalDate = flight.estimatedIn
-                ?: NotBlankString.create("N/A"),
+                ?: "N/A".toNotBlankString().getOrThrow(),
             estimatedArrivalTime = flight.estimatedIn
-                ?: NotBlankString.create("N/A"),
-            actualDepartureDate = flight.actualOut ?: NotBlankString.create("N/A"),
-            actualDepartureTime = flight.actualOut ?: NotBlankString.create("N/A"),
-            actualArrivalDate = flight.actualIn ?: NotBlankString.create("N/A"),
-            actualArrivalTime = flight.actualIn ?: NotBlankString.create("N/A"),
+                ?: "N/A".toNotBlankString().getOrThrow(),
+            actualDepartureDate = flight.actualOut ?: "N/A".toNotBlankString().getOrThrow(),
+            actualDepartureTime = flight.actualOut ?: "N/A".toNotBlankString().getOrThrow(),
+            actualArrivalDate = flight.actualIn ?: "N/A".toNotBlankString().getOrThrow(),
+            actualArrivalTime = flight.actualIn ?: "N/A".toNotBlankString().getOrThrow(),
         )
     }
 }

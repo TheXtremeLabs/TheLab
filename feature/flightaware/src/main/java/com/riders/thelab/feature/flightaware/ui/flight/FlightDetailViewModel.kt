@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import timber.log.Timber
 
 class FlightDetailViewModel : BaseViewModel() {
@@ -51,11 +52,11 @@ class FlightDetailViewModel : BaseViewModel() {
                 updateUiState(FlightDetailUiState.Success(item))
             } ?: run {
                 Timber.e("Extra recycler view item object is null")
-                updateUiState(FlightDetailUiState.Error(NotBlankString.create("Error occurred while getting value")))
+                updateUiState(FlightDetailUiState.Error("Error occurred while getting value".toNotBlankString().getOrThrow()))
             }
         } ?: run {
             Timber.e("Intent extras are null")
-            updateUiState(FlightDetailUiState.Error(NotBlankString.create("Error occurred while getting value")))
+            updateUiState(FlightDetailUiState.Error("Error occurred while getting value".toNotBlankString().getOrThrow()))
         }
     }
 
