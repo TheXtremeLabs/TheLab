@@ -189,8 +189,8 @@ configurations.forEach { configuration ->
 
 composeCompiler {
     featureFlags.addAll(
-        ComposeFeatureFlag.StrongSkipping,
-        ComposeFeatureFlag.IntrinsicRemember
+        ComposeFeatureFlag.OptimizeNonSkippingGroups,
+        ComposeFeatureFlag.PausableComposition
     )
 }
 
