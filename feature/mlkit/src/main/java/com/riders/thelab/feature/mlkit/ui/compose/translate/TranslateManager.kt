@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
-import okhttp3.internal.toImmutableList
 import timber.log.Timber
 
 class TranslateManager(private val activity: TranslateActivity) {
@@ -128,7 +127,7 @@ class TranslateManager(private val activity: TranslateActivity) {
         .flowOn(Dispatchers.Main)
 
     companion object {
-        val LANGUAGES: List<String> = TranslateLanguage.getAllLanguages().toImmutableList()
+        val LANGUAGES: List<String> = TranslateLanguage.getAllLanguages().toList()
         const val DEFAULT_SOURCE_LANGUAGE = TranslateLanguage.ENGLISH
         const val DEFAULT_TARGET_LANGUAGE = TranslateLanguage.FRENCH
     }

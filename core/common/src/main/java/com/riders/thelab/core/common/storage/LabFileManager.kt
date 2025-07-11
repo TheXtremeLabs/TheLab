@@ -14,8 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.EnvironmentCompat
 import com.riders.thelab.core.common.R
 import okhttp3.ResponseBody
-import okhttp3.internal.io.FileSystem
+import okio.FileSystem
 import okio.GzipSource
+import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
 import org.xml.sax.InputSource
@@ -39,7 +40,7 @@ object LabFileManager {
      */
     fun tryReadFile(file: File): String? {
         try {
-            FileSystem.SYSTEM.source(file).buffer().use {
+            FileSystem.SYSTEM.source(file.toOkioPath()).buffer().use {
                 return it.readUtf8()
             }
         } catch (exception: IOException) {
@@ -71,7 +72,8 @@ object LabFileManager {
      */
     @Throws(IOException::class)
     fun readFile(file: File): String {
-        FileSystem.SYSTEM.source(file).buffer().use { source -> return source.readUtf8() }
+        FileSystem.SYSTEM.source(file.toOkioPath()).buffer()
+            .use { source -> return source.readUtf8() }
     }
 
     /**

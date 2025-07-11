@@ -1,6 +1,5 @@
 package com.riders.thelab.ui.login
 
-import okhttp3.internal.and
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -47,7 +46,7 @@ object LoginUtils {
                     sb.append(
                         if (halfByte in 0..9) ('0'.code + halfByte).toChar() else ('0'.code + (halfByte + 10)).toChar()
                     )
-                    halfByte = (b and 0x0F)
+                    // halfByte = (b and   0x0F)
                 } while (twoHalfs++ < 1)
             }
             return sb.toString()
