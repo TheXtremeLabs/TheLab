@@ -95,7 +95,7 @@ fun Modifier.shimmerLoading(durationMillis: Int = 1_000): Modifier {
 //
 ///////////////////////////////
 @Composable
-fun SpotifyIcon(darkTheme: Boolean, modifier : Modifier= Modifier) {
+fun SpotifyIcon(darkTheme: Boolean, modifier: Modifier = Modifier) {
     AnimatedContent(targetState = darkTheme) { targetState: Boolean ->
         if (!targetState) {
             Image(
@@ -149,14 +149,16 @@ fun ACRCloudActivityContent(
         label = "heightFraction_animation"
     )
 
-    fun scrollPagerToIndex(index:Int){
+    fun scrollPagerToIndex(index: Int) {
         uiEvent.invoke(UiEvent.UpdateCurrentPageIndex(index))
         scope.launch { pagerState.animateScrollToPage(index) }
     }
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         androidx.compose.material.Scaffold(
-            modifier = Modifier.background(MaterialTheme.colorScheme.background),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
             topBar = {
                 TheLabTopAppBar(
                     theme = theme,
@@ -233,7 +235,12 @@ fun ACRCloudActivityContent(
                 }
             }
         ) { contentPadding ->
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+                contentAlignment = Alignment.BottomCenter
+            ) {
                 if (!hasNetworkConnection) {
                     NoNetworkConnection()
                 } else {
