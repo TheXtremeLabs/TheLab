@@ -1,7 +1,7 @@
 [versions]
 # Gradle version
 # Android
-androidGradlePlugin = "8.11.1"
+androidGradlePlugin = "8.12.0"
 kotzillaGradlePlugin = "1.0.1"
 navigationGradlePlugin = "2.9.3"
 # Google Services
@@ -79,8 +79,10 @@ androidxWork = "2.10.3"
 blurry = "4.0.1"
 coil = "2.7.0"
 # Firebase
+#noinspection GradleDependency
 firebaseBom = "33.16.0"
 firebaseAds = "24.5.0"
+#noinspection GradleDependency
 firebaseAppCheck = "18.0.0"
 # Google Api
 googleApiClient = "2.8.0"
