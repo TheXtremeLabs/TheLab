@@ -3,6 +3,9 @@ package com.riders.thelab.core.common.utils
 object Constants {
     const val EMULATOR_DEVICE_TAG = "sdk"
 
+    const val ANDROID_RES_PATH = "android.resource://"
+    const val SEPARATOR = "/"
+
     const val GPS_REQUEST = 5214
 
     const val NOTIFICATION_ID: Int = 45532
