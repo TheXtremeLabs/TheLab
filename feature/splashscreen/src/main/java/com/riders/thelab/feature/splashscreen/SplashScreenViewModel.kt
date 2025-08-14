@@ -14,10 +14,10 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -115,14 +115,10 @@ class SplashScreenViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Timber.e("onCleared()")
-    }
 
     //////////////////////////////////////////
     //
-    // Class Methods
+    // CLASS METHODS
     //
     //////////////////////////////////////////
     fun getVideoPath(activity: SplashScreenActivity): String? = try {
@@ -149,8 +145,12 @@ class SplashScreenViewModel @Inject constructor(
     }
 
     fun startCountDown(activity: SplashScreenActivity) {
-        viewModelScope.launch {
-            withTimeout(2_500L) { activity.goToMainActivity() }
+        val delay = 2_500L
+        Timber.w("startCountDown() | start count down for $delay ms")
+        updateStartCountDown(true)
+        viewModelScope.launch(Dispatchers.IO + coroutineContext) {
+            delay(delay)
+            activity.goToMainActivity(withError = false)
         }
     }
 }
