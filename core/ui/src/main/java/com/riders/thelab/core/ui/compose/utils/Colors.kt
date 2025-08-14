@@ -11,8 +11,41 @@ import androidx.compose.ui.graphics.Color
 //////////////////////////////////////////////////////
 fun Int.toColor(): Color = Color(this)
 
+///////////////////////////////////////
+//
+// MOBILE
+//
+///////////////////////////////////////
 @Composable
 fun ColorScheme.switch() = copy(
+    primary = animateColor(primary),
+    onPrimary = animateColor(onPrimary),
+    primaryContainer = animateColor(primaryContainer),
+    secondary = animateColor(secondary),
+    onSecondary = animateColor(onSecondary),
+    secondaryContainer = animateColor(secondaryContainer),
+    onSecondaryContainer = animateColor(onSecondaryContainer),
+    tertiary = animateColor(tertiary),
+    onTertiary = animateColor(onTertiary),
+    tertiaryContainer = animateColor(tertiaryContainer),
+    background = animateColor(background),
+    surface = animateColor(surface),
+    error = animateColor(error),
+    onError = animateColor(onError),
+    errorContainer = animateColor(errorContainer),
+    onErrorContainer = animateColor(onErrorContainer),
+    onBackground = animateColor(onBackground),
+    onSurface = animateColor(onSurface)
+)
+
+
+///////////////////////////////////////
+//
+// TV
+//
+///////////////////////////////////////
+@Composable
+fun androidx.tv.material3.ColorScheme.switchTV() = copy(
     primary = animateColor(primary),
     onPrimary = animateColor(onPrimary),
     primaryContainer = animateColor(primaryContainer),

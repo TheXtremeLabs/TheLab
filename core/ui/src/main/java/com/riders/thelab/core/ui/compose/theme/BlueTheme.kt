@@ -66,6 +66,11 @@ import com.riders.thelab.core.ui.compose.color.md_blue_theme_light_tertiary
 import com.riders.thelab.core.ui.compose.color.md_blue_theme_light_tertiaryContainer
 
 
+///////////////////////////////////////
+//
+// MOBILE
+//
+///////////////////////////////////////
 /**
  * Linked to BlueThemeColors file
  */
@@ -211,6 +216,84 @@ fun blueThemeDynamicDarkColorScheme(context: Context) = dynamicDarkColorScheme(c
     onSurfaceVariant = md_blue_theme_dark_onSurfaceVariant,
     outline = md_blue_theme_dark_outline,
     outlineVariant = md_blue_theme_dark_outlineVariant,
+    scrim = md_blue_theme_dark_scrim,
+    inverseSurface = md_blue_theme_dark_inverseSurface,
+    inverseOnSurface = md_blue_theme_dark_inverseOnSurface,
+    inversePrimary = md_blue_theme_dark_inversePrimary,
+    /*surfaceDim = md_blue_theme_dark_surfaceDim,
+    surfaceBright = md_blue_theme_dark_surfaceBright,
+    surfaceContainerLowest = md_blue_theme_dark_surfaceContainerLowest,
+    surfaceContainerLow = md_blue_theme_dark_surfaceContainerLow,
+    surfaceContainer = md_blue_theme_dark_surfaceContainer,
+    surfaceContainerHigh = md_blue_theme_dark_surfaceContainerHigh,
+    surfaceContainerHighest = md_blue_theme_dark_surfaceContainerHighest,*/
+)
+
+
+///////////////////////////////////////
+//
+// TV
+//
+///////////////////////////////////////
+val BlueThemeLightColorSchemeTV = androidx.tv.material3.lightColorScheme(
+    primary = md_blue_theme_light_primary,
+    onPrimary = md_blue_theme_light_onPrimary,
+    primaryContainer = md_blue_theme_light_primaryContainer,
+    onPrimaryContainer = md_blue_theme_light_onPrimaryContainer,
+    secondary = md_blue_theme_light_secondary,
+    onSecondary = md_blue_theme_light_onSecondary,
+    secondaryContainer = md_blue_theme_light_secondaryContainer,
+    onSecondaryContainer = md_blue_theme_light_onSecondaryContainer,
+    tertiary = md_blue_theme_light_tertiary,
+    onTertiary = md_blue_theme_light_onTertiary,
+    tertiaryContainer = md_blue_theme_light_tertiaryContainer,
+    onTertiaryContainer = md_blue_theme_light_onTertiaryContainer,
+    error = md_blue_theme_light_error,
+    onError = md_blue_theme_light_onError,
+    errorContainer = md_blue_theme_light_errorContainer,
+    onErrorContainer = md_blue_theme_light_onErrorContainer,
+    background = md_blue_theme_light_background,
+    onBackground = md_blue_theme_light_onBackground,
+    surface = md_blue_theme_light_surface,
+    onSurface = md_blue_theme_light_onSurface,
+    surfaceVariant = md_blue_theme_light_surfaceVariant,
+    onSurfaceVariant = md_blue_theme_light_onSurfaceVariant,
+    scrim = md_blue_theme_light_scrim,
+    inverseSurface = md_blue_theme_light_inverseSurface,
+    inverseOnSurface = md_blue_theme_light_inverseOnSurface,
+    inversePrimary = md_blue_theme_light_inversePrimary,
+    /*surfaceDim = md_blue_theme_light_surfaceDim,
+    surfaceBright = md_blue_theme_light_surfaceBright,
+    surfaceContainerLowest = md_blue_theme_light_surfaceContainerLowest,
+    surfaceContainerLow = md_blue_theme_light_surfaceContainerLow,
+    surfaceContainer = md_blue_theme_light_surfaceContainer,
+    surfaceContainerHigh = md_blue_theme_light_surfaceContainerHigh,
+    surfaceContainerHighest = md_blue_theme_light_surfaceContainerHighest,*/
+)
+
+val BlueThemeDarkColorSchemeTV = androidx.tv.material3.darkColorScheme(
+    primary = md_blue_theme_dark_primary,
+    onPrimary = md_blue_theme_dark_onPrimary,
+    primaryContainer = md_blue_theme_dark_primaryContainer,
+    onPrimaryContainer = md_blue_theme_dark_onPrimaryContainer,
+    secondary = md_blue_theme_dark_secondary,
+    onSecondary = md_blue_theme_dark_onSecondary,
+    secondaryContainer = md_blue_theme_dark_secondaryContainer,
+    onSecondaryContainer = md_blue_theme_dark_onSecondaryContainer,
+    tertiary = md_blue_theme_dark_tertiary,
+    onTertiary = md_blue_theme_dark_onTertiary,
+    tertiaryContainer = md_blue_theme_dark_tertiaryContainer,
+    onTertiaryContainer = md_blue_theme_dark_onTertiaryContainer,
+    error = md_blue_theme_dark_error,
+    onError = md_blue_theme_dark_onError,
+    errorContainer = md_blue_theme_dark_errorContainer,
+    onErrorContainer = md_blue_theme_dark_onErrorContainer,
+    background = md_blue_theme_dark_background,
+    onBackground = md_blue_theme_dark_onBackground,
+    surface = md_blue_theme_dark_surface,
+    onSurface = md_blue_theme_dark_onSurface,
+    surfaceVariant = md_blue_theme_dark_surfaceVariant,
+    onSurfaceVariant = md_blue_theme_dark_onSurfaceVariant,
     scrim = md_blue_theme_dark_scrim,
     inverseSurface = md_blue_theme_dark_inverseSurface,
     inverseOnSurface = md_blue_theme_dark_inverseOnSurface,

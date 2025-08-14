@@ -26,6 +26,8 @@ fun Context.getDrawableByName(imageResName: String): Drawable? = ResourcesCompat
     this.resources.getIdentifier(imageResName, "drawable", this.packageName),
     this.theme
 )
+fun Context.getDrawableFromIntResource(resId: Int): Drawable =
+    ContextCompat.getDrawable(this, resId)!!
 
 
 /////////////////////////////////////////////////////

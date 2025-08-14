@@ -17,6 +17,7 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
 
     commonExtension.apply {
         buildFeatures {
+            buildConfig = true
             // Enables Jetpack Compose for this module
             compose = true
         }
