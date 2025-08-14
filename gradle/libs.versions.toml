@@ -32,10 +32,12 @@ androidxCameraViewFinder = "1.4.0-alpha07"
 # Compose
 androidxComposeBom = "2025.07.00"
 androidxComposeCompiler = "1.5.15"
+androidxComposeFoundation = "1.9.0-rc01"
 androidxComposeMaterial3 = "1.3.2"
 androidxComposeMaterial3Adaptative = "1.1.0"
 androidxComposeUi = "1.9.0-rc01"
 androidxComposeUiTooling = "1.8.3"
+androidxComposeRuntime = "1.9.0-rc01"
 androidxComposeRuntimeTracing = "1.8.3"
 androidxCardView = "1.0.0"
 androidxConstraintLayout = "2.2.1"
@@ -71,6 +73,8 @@ androidxTestRules = "1.7.0"
 androidxTestRunner = "1.5.0"
 androidxTestTruth = "1.7.0"
 androidxTracing = "1.3.0"
+androidxTvFoundation = "1.0.0-alpha07"
+androidxTvMaterial = "1.0.1"
 androidxUiAutomator = "2.3.0"
 androidxViewPager2 = "1.1.0"
 androidxWindowManager = "1.4.0"
@@ -232,8 +236,8 @@ androidx-cardview = { group = "androidx.cardview", name = "cardview", version.re
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
 androidx-compose-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "androidxComposeCompiler" }
-androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
-androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" , version.ref="androidxComposeFoundation" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" , version.ref="androidxComposeFoundation"}
 androidx-compose-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
 androidx-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
@@ -244,12 +248,13 @@ androidx-compose-material3-adaptative = { group = "androidx.compose.material3.ad
 androidx-compose-material3-adaptative-layout = { group = "androidx.compose.material3.adaptive", name = "adaptive-layout", version.ref = "androidxComposeMaterial3Adaptative" }
 androidx-compose-material3-adaptative-navigation = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation", version.ref = "androidxComposeMaterial3Adaptative" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
-androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
-androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
-androidx-compose-runtime-tracing = { group = "androidx.compose.runtime", name = "runtime-tracing", version.ref = "androidxComposeRuntimeTracing" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref="androidxComposeRuntime" }
+androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref="androidxComposeRuntime" }
+androidx-compose-runtime-tracing = { group = "androidx.compose.runtime", name = "runtime-tracing", version.ref = "androidxComposeRuntime" }
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-testManifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "androidxComposeUi" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "androidxComposeUi" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "androidxComposeUiTooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
@@ -326,6 +331,9 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-test-truth = { group = "androidx.test.ext", name = "truth", version.ref = "androidxTestTruth" }
 androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "androidxUiAutomator" }
 androidx-tracing-ktx = { group = "androidx.tracing", name = "tracing-ktx", version.ref = "androidxTracing" }
+# AndroidX TV
+androidx-tv-foundation = { group = "androidx.tv", name = "tv-foundation", version.ref = "androidxTvFoundation" }
+androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "androidxTvMaterial" }
 androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "androidxViewPager2" }
 androidx-window-manager = { module = "androidx.window:window", version.ref = "androidxWindowManager" }
 androidx-window-extensions = { group = "androidx.window", name = "window-extensions", version.ref = "androidxWindowExtensions" }
@@ -434,6 +442,7 @@ koin-test-junit5 = { group = "io.insert-koin", name = "koin-test-junit5" }
 kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
@@ -516,7 +525,6 @@ ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devto
 play-services-gradlePlugin = { group = "com.google.gms", name = "google-services", version.ref = "playServicesGradlePlugin" }
 firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "crashlyticsGradlePlugin" }
 firebase-performances-gradlePlugin = { group = "com.google.firebase", name = "perf-plugin", version.ref = "performancesGradlePlugin" }
-
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
