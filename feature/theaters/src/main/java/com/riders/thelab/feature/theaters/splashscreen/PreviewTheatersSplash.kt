@@ -31,10 +31,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
 import com.riders.thelab.core.ui.compose.color.md_theme_dark_primaryContainer
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.TheLabThemeTV
 import com.riders.thelab.core.ui.compose.theme.samsungSangFamily
 import kotlinx.coroutines.delay
 
@@ -45,7 +47,7 @@ import kotlinx.coroutines.delay
 //
 ///////////////////////////////////////
 @Composable
-fun TheatersSplash(theme: AppTheme, darkTheme: Boolean, ) {
+fun TheatersSplash(theme: AppTheme, darkTheme: Boolean) {
     val scale = remember { Animatable(initialValue = 2f) }
     val theaterAdditionalTextVisibility = remember { mutableStateOf(false) }
     val visible = remember { mutableStateOf(false) }
@@ -152,6 +154,14 @@ fun TheatersSplash(theme: AppTheme, darkTheme: Boolean, ) {
 @Composable
 private fun PreviewTheatersSplash(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
+        TheatersSplash(theme = appTheme, darkTheme = isSystemInDarkTheme())
+    }
+}
+
+@DevicePreviewsTV
+@Composable
+private fun PreviewTheatersSplashTV(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabThemeTV(theme = appTheme) {
         TheatersSplash(theme = appTheme, darkTheme = isSystemInDarkTheme())
     }
 }

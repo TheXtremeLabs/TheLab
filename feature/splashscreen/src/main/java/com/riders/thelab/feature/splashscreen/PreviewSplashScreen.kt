@@ -1,6 +1,5 @@
 package com.riders.thelab.feature.splashscreen
 
-import com.riders.thelab.feature.splashscreen.BuildConfig
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
@@ -36,9 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -52,7 +48,7 @@ import com.riders.thelab.core.common.utils.Constants
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.color.md_theme_dark_primary
-import com.riders.thelab.core.ui.compose.component.Lottie
+import com.riders.thelab.core.ui.compose.component.NoContentFound
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.Shapes
@@ -61,49 +57,12 @@ import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Locale
 
 ///////////////////////////////////////
 //
 // COMPOSABLE
 //
 ///////////////////////////////////////
-@Composable
-fun NoContentFound(theme: AppTheme, darkTheme: Boolean) {
-    val context = LocalContext.current
-
-    TheLabTheme(theme = theme, darkTheme = darkTheme) {
-        Column(
-            modifier = Modifier.fillMaxWidth(.8f),
-            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Lottie(
-                modifier = Modifier.fillMaxSize(.5f),
-                rawResId = com.riders.thelab.core.ui.R.raw.error_rolling_dark_theme
-            )
-
-            Text(
-                text = "Unable to play splashscreen video.",
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Button(
-                modifier = Modifier.fillMaxWidth(.6f),
-                onClick = { (context.findActivity() as SplashScreenActivity).finish() }
-            ) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = com.riders.thelab.core.ui.R.string.action_exit).uppercase(
-                        Locale.getDefault()
-                    ),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-    }
-}
-
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
 fun VideoView(videoPath: String, uiEvent: (UiEvent) -> Unit) {
@@ -170,10 +129,7 @@ fun VideoView(videoPath: String, uiEvent: (UiEvent) -> Unit) {
 }
 
 @Composable
-fun LoadingContent(
-    theme: AppTheme,
-    darkTheme: Boolean, version: String
-) {
+fun LoadingContent(theme: AppTheme, darkTheme: Boolean, version: String) {
 
     val scope = rememberCoroutineScope()
     val progressBarVisibility = remember { mutableStateOf(false) }
@@ -246,6 +202,8 @@ fun SplashScreenContent(
     startCountDown: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
+    val context = LocalContext.current
+
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -253,7 +211,12 @@ fun SplashScreenContent(
             verticalArrangement = Arrangement.Center
         ) {
             if (null == videoPath) {
-                NoContentFound(theme = theme, darkTheme = darkTheme)
+                NoContentFound(
+                    theme = theme,
+                    darkTheme = darkTheme,
+                    message = "Unable to play splashscreen video.",
+                    basicAction = { (context.findActivity() as SplashScreenActivity).finish() }
+                )
             } else {
                 AnimatedContent(
                     targetState = switchContent,
@@ -277,14 +240,6 @@ fun SplashScreenContent(
 // PREVIEWS
 //
 ///////////////////////////////
-@DevicePreviews
-@Composable
-private fun PreviewNoContentFound(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
-    TheLabTheme(theme = appTheme) {
-        NoContentFound(theme = appTheme, darkTheme = isSystemInDarkTheme())
-    }
-}
-
 @DevicePreviews
 @Composable
 private fun PreviewLoadingContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
@@ -331,7 +286,7 @@ private fun PreviewSplashScreenContent(@PreviewParameter(AppThemePreviewProvider
         SplashScreenContent(
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
-            version =  viewModel.version,
+            version = viewModel.version,
             videoPath = videoPath,
             switchContent = true,
             startCountDown = false

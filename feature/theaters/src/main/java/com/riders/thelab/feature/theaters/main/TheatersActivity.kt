@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 
-
 @AndroidEntryPoint
 class TheatersActivity : BaseComponentActivity() {
 
@@ -52,7 +51,30 @@ class TheatersActivity : BaseComponentActivity() {
                     val trendingTvShowItem by mTheatersViewModel.tmdbTrendingTvShowItemUiState.collectAsStateWithLifecycle()
                     val trendingTvShows by mTheatersViewModel.tmdbTrendingTvShowsUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    if(isTv) {
+                        TheatersContainerTV(
+                            theme = theme,
+                            darkTheme = isDarkTheme,
+                            hasNetworkConnection = hasNetworkConnection,
+                            tabRowSelected = mTheatersViewModel.tabRowSelected,
+                            trendingMovieItem = trendingMovieItem,
+                            movies = movies,
+                            upcomingMovies = upcomingMovies,
+                            trendingTvShowItem = trendingTvShowItem,
+                            trendingTvShows = trendingTvShows,
+                            isRefreshing = mTheatersViewModel.isRefreshing,
+                            uiEvent = { event ->
+                                when (event) {
+                                    is UiEvent.OnItemDetailClicked -> launchTMDBItemDetailActivity(
+                                        event.item
+                                    )
+
+                                    else -> mTheatersViewModel.onEvent(event)
+                                }
+                            }
+                        )
+                    } else {
+                        TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -82,6 +104,8 @@ class TheatersActivity : BaseComponentActivity() {
                                 }
                             )
                         }
+                    }
+
                     }
                 }
             }

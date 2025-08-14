@@ -24,10 +24,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.TheLabThemeTV
 
+///////////////////////////////////////
+//
+// COMPOSE
+//
+///////////////////////////////////////
 @Composable
 fun LabTabItem(
     isSelected: Boolean,
@@ -61,6 +68,45 @@ fun LabTabItem(
     )
 }
 
+@Composable
+fun LabTabItemTV(
+    isSelected: Boolean,
+    tabWidth: Dp,
+    text: String,
+    shape: Shape = RoundedCornerShape(8.dp),
+    selectedTextColor: Color = androidx.tv.material3.MaterialTheme.colorScheme.primary,
+    unselectedTextColor: Color = if (!isSystemInDarkTheme()) Color.Black else Color.White,
+    onClick: () -> Unit
+) {
+    val tabTextColor: Color by animateColorAsState(
+        targetValue = if (isSelected) {
+            selectedTextColor
+        } else {
+            unselectedTextColor
+        },
+        animationSpec = tween(easing = LinearEasing),
+        label = "tab_text_animation"
+    )
+
+    androidx.tv.material3.Text(
+        modifier = Modifier
+            .clip(shape)
+            .clickable(enabled = true, onClick = onClick)
+            .width(tabWidth)
+            .padding(vertical = 8.dp, horizontal = 12.dp),
+        text = text,
+        fontSize = 14.sp,
+        color = tabTextColor,
+        textAlign = TextAlign.Center,
+    )
+}
+
+
+///////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////
 @DevicePreviews
 @Composable
 private fun PreviewLabTabItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
@@ -73,6 +119,23 @@ private fun PreviewLabTabItem(@PreviewParameter(AppThemePreviewProvider::class) 
                 text = "Tab Text",
                 selectedTextColor = MaterialTheme.colorScheme.onSurface,
                 unselectedTextColor = MaterialTheme.colorScheme.inverseOnSurface
+            )
+        }
+    }
+}
+
+@DevicePreviewsTV
+@Composable
+private fun PreviewLabTabItemTV() {
+    TheLabThemeTV(theme = AppTheme.Default) {
+        Box(modifier = Modifier.background(if (!isSystemInDarkTheme()) Color.White else Color.Black)) {
+            LabTabItemTV(
+                isSelected = true,
+                onClick = { },
+                tabWidth = 150.dp,
+                text = "Tab Text",
+                selectedTextColor = androidx.tv.material3.MaterialTheme.colorScheme.onSurface,
+                unselectedTextColor = androidx.tv.material3.MaterialTheme.colorScheme.inverseOnSurface
             )
         }
     }

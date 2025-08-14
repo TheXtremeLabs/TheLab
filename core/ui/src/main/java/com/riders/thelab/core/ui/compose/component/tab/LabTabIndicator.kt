@@ -77,6 +77,12 @@ fun drawTicketPath(size: Size, cornerRadius: Float): Path {
     }
 }
 
+
+///////////////////////////////////////
+//
+// COMPOSE
+//
+///////////////////////////////////////
 @Composable
 fun LabTabIndicator(
     indicatorWidth: Dp,
@@ -131,6 +137,12 @@ fun LabTabIndicator(
     }
 }
 
+
+///////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////
 @DevicePreviews
 @Composable
 private fun PreviewLabTabIndicator(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {

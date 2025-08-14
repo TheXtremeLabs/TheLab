@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.riders.thelab.feature.theaters.main
 
 import android.annotation.SuppressLint
@@ -26,13 +28,16 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
 import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
 import com.riders.thelab.core.ui.compose.component.network.PreviewProviderNetworkState
 import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
+import com.riders.thelab.core.ui.compose.component.tab.LabTabRowTV
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.theme.TheLabThemeTV
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -188,6 +193,124 @@ fun TheatersContent(
 }
 
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun TheatersContentTV(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    hasNetworkConnection: Boolean,
+    categories: List<String>,
+    tabRowSelected: Int,
+    trendingMovieItem: TMDBUiState.TMDBTrendingMovieItemUiState,
+    movies: TMDBUiState.TMDBMoviesUiState,
+    upcomingMovies: TMDBUiState.TMDBUpcomingMoviesUiState,
+    trendingTvShowItem: TMDBUiState.TMDBTrendingTvShowItemUiState,
+    trendingTvShows: TMDBUiState.TMDBTvShowsUiState,
+    isRefreshing: Boolean,
+    uiEvent: (UiEvent) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    val pagerState: PagerState = rememberPagerState { categories.size }
+
+    val transitionSpec: () -> ContentTransform = {
+        fadeIn(tween(durationMillis = 200)) togetherWith fadeOut(
+            tween(
+                durationMillis = 200
+            )
+        )
+    }
+
+    TheLabThemeTV(theme = theme, darkTheme = darkTheme) {
+        Scaffold(
+            topBar = {
+                TheLabTopAppBar(
+                    theme = theme,
+                    mainCustomContent = {
+                        AnimatedContent(
+                            targetState = hasNetworkConnection,
+                            transitionSpec = { transitionSpec.invoke() },
+                            label = "network state animation"
+                        ) { targetState ->
+                            if (!targetState) {
+                                Box() {}
+                            } else {
+                                LabTabRowTV(
+                                    theme = theme,
+                                    selectedItemIndex = tabRowSelected,
+                                    items = categories,
+                                    onClick = { index ->
+                                        uiEvent.invoke(UiEvent.OnUpdateTabRowSelected(index))
+                                    }
+                                )
+                            }
+                        }
+                    },
+                    withGradientBackground = true,
+                    navigationIconColor = Color.White
+                ) {}
+            }
+        ) { /*paddingContent ->*/
+            AnimatedContent(
+                // modifier = Modifier.fillMaxSize().padding(paddingContent),
+                targetState = hasNetworkConnection,
+                transitionSpec = { transitionSpec() },
+                label = "network state animation"
+            ) { targetState ->
+                if (!targetState) {
+                    NoNetworkConnection()
+                } else {
+                    LabHorizontalViewPagerGeneric(
+                        theme = theme,
+                        pagerState = pagerState,
+                        items = categories,
+                        onCurrentPageChanged = { index ->
+                            uiEvent.invoke(UiEvent.OnUpdateTabRowSelected(index))
+                        }
+                    ) { page, _ ->
+
+                        when (page) {
+                            0 -> {
+                                ScreenMovieContentTV(
+                                    theme = theme, darkTheme = darkTheme,
+                                    trendingMovieItem,
+                                    movies,
+                                    upcomingMovies,
+                                    uiEvent = uiEvent
+                                )
+                            }
+
+                            1 -> {
+                                ScreenTvShowsContentTV(
+                                    theme = theme, darkTheme = darkTheme,
+                                    trendingTvShowItem,
+                                    trendingTvShows,
+                                    uiEvent = uiEvent
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = tabRowSelected) {
+        Timber.d("LaunchedEffect | tabRowSelected : $tabRowSelected | with: ${this.coroutineContext}")
+
+        scope.launch {
+            pagerState.animateScrollToPage(tabRowSelected)
+        }
+    }
+
+    LaunchedEffect(key1 = isRefreshing) {
+        Timber.d("LaunchedEffect | isRefreshing : $isRefreshing | with: ${this.coroutineContext}")
+
+        if (isRefreshing) {
+        }
+    }
+}
+
+
 ///////////////////////////////////////
 //
 // PREVIEWS
@@ -198,6 +321,27 @@ fun TheatersContent(
 private fun PreviewTheatersContent(@PreviewParameter(PreviewProviderNetworkState::class) networkState: NetworkState) {
     TheLabTheme(theme = AppTheme.Default) {
         TheatersContent(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            hasNetworkConnection = true,
+            categories = listOf("Movies", "Tv Shows"),
+            tabRowSelected = 0,
+            trendingMovieItem = TMDBUiState.TMDBTrendingMovieItemUiState.Loading,
+            movies = TMDBUiState.TMDBMoviesUiState.Loading,
+            upcomingMovies = TMDBUiState.TMDBUpcomingMoviesUiState.Loading,
+            trendingTvShowItem = TMDBUiState.TMDBTrendingTvShowItemUiState.Loading,
+            trendingTvShows = TMDBUiState.TMDBTvShowsUiState.Loading,
+            isRefreshing = false,
+            uiEvent = {}
+        )
+    }
+}
+
+@DevicePreviewsTV
+@Composable
+private fun PreviewTheatersContentTV(@PreviewParameter(PreviewProviderNetworkState::class) networkState: NetworkState) {
+    TheLabTheme(theme = AppTheme.Default) {
+        TheatersContentTV(
             theme = AppTheme.Default,
             darkTheme = isSystemInDarkTheme(),
             hasNetworkConnection = true,
