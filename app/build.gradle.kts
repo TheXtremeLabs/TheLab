@@ -217,7 +217,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:testing"))
 
-    implementation(project(":feature:common"))
+    implementation(project(":feature:home"))
 
     /////////////////////////////
     // General Dependencies
