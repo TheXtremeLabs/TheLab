@@ -39,4 +39,6 @@ class LocalAppPreviewProvider(private val context: Context) : PreviewParameterPr
                 localDate = "2021/10/13"
             )
         )
+
+    val valuesAsLocalApp = values.map { it as LocalApp }
 }

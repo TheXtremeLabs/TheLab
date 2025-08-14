@@ -59,7 +59,7 @@ import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.utils.LabAppManager
+import com.riders.thelab.utils.AppBuilderUtils
 
 ///////////////////////////////
 //
@@ -397,7 +397,8 @@ private fun PreviewWhatsNewTopContent(@PreviewParameter(AppThemePreviewProvider:
 @Composable
 private fun PreviewWhatsNew(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
-    val appItem = LabAppManager.getActivityList(context)[0]
+    val appItem = AppBuilderUtils.buildActivities(context)[0]
+
     TheLabTheme(theme = appTheme) {
         WhatsNew(theme = appTheme, darkTheme = isSystemInDarkTheme(), item = appItem)
     }
@@ -407,7 +408,7 @@ private fun PreviewWhatsNew(@PreviewParameter(AppThemePreviewProvider::class) ap
 @Composable
 private fun PreviewWhatsNewForPager(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
-    val appItem = LabAppManager.getActivityList(context)[12]
+    val appItem = AppBuilderUtils.buildActivities(context)[12]
     TheLabTheme(theme = appTheme) {
         WhatsNew(theme = appTheme, darkTheme = isSystemInDarkTheme(), appItem, 2f)
     }
@@ -418,7 +419,7 @@ private fun PreviewWhatsNewForPager(@PreviewParameter(AppThemePreviewProvider::c
 private fun PreviewWhatsNewList(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
     val viewModel: MainActivityViewModel = hiltViewModel()
-    val appList = LabAppManager.getActivityList(context).take(3).let {
+    val appList = AppBuilderUtils.buildActivities(context).take(3).let {
         it.map { localApp ->
 
             val bitmap: Bitmap? = when (localApp.appDrawableIcon) {

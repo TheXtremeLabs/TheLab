@@ -4,13 +4,16 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
 import android.util.Base64
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import coil.compose.AsyncImagePainter
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
+import androidx.core.graphics.createBitmap
 
 val Int.toDp: Int get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 val Int.toPx: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
@@ -29,6 +32,18 @@ fun Context.getDrawableByName(imageResName: String): Drawable? = ResourcesCompat
 fun Context.getDrawableFromIntResource(resId: Int): Drawable =
     ContextCompat.getDrawable(this, resId)!!
 
+
+/////////////////////////////////////////////////////
+// Vector Drawable
+/////////////////////////////////////////////////////
+fun VectorDrawable.toBitmap() : Bitmap? {
+    val bitmap = createBitmap(this.intrinsicWidth, this.intrinsicHeight)
+
+    val canvas = Canvas(bitmap)
+    this.setBounds(0, 0, canvas.width, canvas.height)
+    this.draw(canvas)
+    return bitmap
+}
 
 /////////////////////////////////////////////////////
 // Bitmap

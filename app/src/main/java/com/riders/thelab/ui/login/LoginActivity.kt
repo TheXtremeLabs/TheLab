@@ -38,8 +38,6 @@ class LoginActivity : BaseGoogleActivity() {
 
     private var mNavigator: Navigator? = null
 
-    private var windowSize: WindowSizeClass? = null
-
     private val mGoogleApiAvailability: GoogleApiAvailability by lazy {
         GoogleApiAvailability.getInstance()
     }
@@ -149,41 +147,6 @@ class LoginActivity : BaseGoogleActivity() {
     // CLASS METHODS
     //
     /////////////////////////////////////////////////////
-    private fun computeWindowSizeClasses() {
-        Timber.d("computeWindowSizeClasses()")
-
-        val metrics = WindowMetricsCalculator
-            .getOrCreate()
-            .computeCurrentWindowMetrics(this)
-
-        val widthDp = metrics.bounds.width() /
-                resources.displayMetrics.density
-        val widthWindowSizeClass = when {
-            widthDp < 600f -> WindowSizeClass.COMPACT
-            widthDp < 840f -> WindowSizeClass.MEDIUM
-            else -> WindowSizeClass.EXPANDED
-        }
-
-        Timber.i("widthWindowSizeClass: $widthWindowSizeClass")
-
-        val heightDp = metrics.bounds.height() /
-                resources.displayMetrics.density
-        val heightWindowSizeClass = when {
-            heightDp < 480f -> WindowSizeClass.COMPACT
-            heightDp < 900f -> WindowSizeClass.MEDIUM
-            else -> WindowSizeClass.EXPANDED
-        }
-        Timber.i("heightWindowSizeClass: $heightWindowSizeClass")
-
-        // Use widthWindowSizeClass and heightWindowSizeClass.
-        windowSize = widthWindowSizeClass
-    }
-
-    fun getDeviceWindowsSizeClass(): WindowSizeClass {
-        Timber.d("getDeviceWindowsSizeClass()")
-        return windowSize!!
-    }
-
     private fun authenticateWithGoogle() {
         Timber.d("authenticateWithGoogle()")
 

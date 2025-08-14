@@ -33,7 +33,8 @@ import com.riders.thelab.core.data.local.model.app.LocalApp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
-import com.riders.thelab.utils.LabAppManager
+import com.riders.thelab.core.ui.utils.toBitmap
+import com.riders.thelab.utils.AppBuilderUtils
 
 
 ///////////////////////////////
@@ -123,16 +124,15 @@ fun Header(
 @Composable
 fun PreviewHeader(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
-    val appList = LabAppManager.getActivityList(context).take(3).let {
+    val appList = AppBuilderUtils.buildActivities(context).take(3).let {
         it.map { localApp ->
-
             val bitmap: Bitmap? = when (localApp.appDrawableIcon) {
                 is BitmapDrawable -> {
                     (localApp.appDrawableIcon as BitmapDrawable).bitmap as Bitmap
                 }
 
                 is VectorDrawable -> {
-                    com.riders.thelab.core.data.local.model.app.App.getBitmap(localApp.appDrawableIcon as VectorDrawable)!!
+                   (localApp.appDrawableIcon as VectorDrawable).toBitmap()
                 }
 
                 else -> {

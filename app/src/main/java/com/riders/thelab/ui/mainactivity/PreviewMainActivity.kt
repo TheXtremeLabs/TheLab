@@ -59,7 +59,7 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.utils.LabAppManager
+import com.riders.thelab.utils.AppBuilderUtils
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -196,7 +196,7 @@ fun MainContent(
                         items = filteredList,
                         key = { it.id }
                     ) { appItem ->
-                        App(
+                        AppItem(
                             theme = theme, darkTheme = darkTheme,
                             item = appItem,
                             onAppItemClick = { uiEvent.invoke(UiEvent.OnAppItemClicked(it)) }
@@ -298,7 +298,7 @@ fun MainContent(
 @Composable
 private fun PreviewMainContentWithoutInternetConnection(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
     val context = LocalContext.current
-    val appList = LabAppManager.getActivityList(context).take(3).let {
+    val appList = AppBuilderUtils.buildActivities(context).take(3).let {
         it.map { localApp ->
 
             val bitmap: Bitmap? = when (localApp.appDrawableIcon) {
@@ -352,7 +352,7 @@ private fun PreviewMainContentWithoutInternetConnection(@PreviewParameter(Island
 @Composable
 private fun PreviewMainContentWithInternetConnection(@PreviewParameter(IslandStatePreviewProvider::class) state: IslandState) {
     val context = LocalContext.current
-    val appList = LabAppManager.getActivityList(context).take(3).let {
+    val appList = AppBuilderUtils.buildActivities(context).take(3).let {
         it.map { localApp ->
 
             val bitmap: Bitmap? = when (localApp.appDrawableIcon) {

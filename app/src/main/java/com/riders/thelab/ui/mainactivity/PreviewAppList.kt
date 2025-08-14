@@ -3,7 +3,6 @@ package com.riders.thelab.ui.mainactivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,50 +30,24 @@ import androidx.palette.graphics.Palette
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
+import com.riders.thelab.core.ui.compose.previewprovider.LocalAppPreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.utils.LabAppManager
 
-/*
 
+///////////////////////////////////////////////////////////
+//
+// COMPOSE
+//
+///////////////////////////////////////////////////////////
 @Composable
-fun NoItemFound(
+fun AppItem(
     theme: AppTheme,
-    darkTheme: Boolean, searchValue: String
-) {
-    TheLabTheme(theme = theme, darkTheme = darkTheme) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
-        ) {
-            Box(modifier = Modifier.size(112.dp), contentAlignment = Alignment.Center) {
-                Lottie(
-                    modifier = Modifier.fillMaxSize(),
-                    rawResId = if (!isSystemInDarkTheme()) com.riders.thelab.core.ui.R.raw.error_rolling else com.riders.thelab.core.ui.R.raw.error_rolling_dark_theme
-                )
-            }
-
-            Text(
-                text = "Oops! No item found for value \"$searchValue\"",
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = "Please retry...",
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-    }
-}
-*/
-
-@Composable
-fun App(
-    theme: AppTheme,
-    darkTheme: Boolean, item: App, onAppItemClick: (App) -> Unit
+    darkTheme: Boolean,
+    item: App,
+    onAppItemClick: (App) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -203,22 +176,23 @@ fun App(
 }
 
 
-///////////////////////////////////////
+///////////////////////////////////////////////////////////
 //
 // PREVIEWS
 //
-///////////////////////////////////////
+///////////////////////////////////////////////////////////
 @DevicePreviews
 @Composable
 private fun PreviewApp(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
-    val appItem = LabAppManager.getActivityList(context)[12]
+    val appItem = LocalAppPreviewProvider(context).values.first()
 
     TheLabTheme(theme = appTheme) {
-        App(
+        AppItem (
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
-            appItem
-        ) {}
+           item =  appItem,
+            onAppItemClick = { app -> }
+        )
     }
 }

@@ -3,8 +3,10 @@ package com.riders.thelab.ui.mainactivity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.location.Address
 import android.location.Geocoder
@@ -19,6 +21,8 @@ import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.utils.LabAddressesUtils
+import com.riders.thelab.core.common.utils.LabAppManager
+import com.riders.thelab.core.common.utils.LabAppManager.getPackageList
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.data.local.model.app.App
@@ -30,8 +34,9 @@ import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.speechtotext.SpeechToTextRepository
 import com.riders.thelab.core.speechtotext.VoiceManagedViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
+import com.riders.thelab.core.ui.utils.toBitmap
 import com.riders.thelab.navigator.Navigator
-import com.riders.thelab.utils.LabAppManager
+import com.riders.thelab.utils.AppBuilderUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -308,8 +313,33 @@ class MainActivityViewModel @Inject constructor(
         val appList: MutableList<App> = ArrayList()
 
         // Get constants activities
-        appList.addAll(LabAppManager.getActivityList(context))
-        appList.addAll(LabAppManager.getPackageList(context))
+        appList.addAll(AppBuilderUtils.buildActivities(context))
+        appList.addAll(context.getPackageList { appInfo ->
+
+            val icon: Drawable =
+                context.packageManager.getApplicationIcon(appInfo.packageName)
+            val pInfo: PackageInfo =
+                context.packageManager.getPackageInfo(appInfo.packageName, 0)
+            val version: String? = pInfo.versionName
+            val packageName: String? = appInfo.packageName
+
+            version?.let { appVersion ->
+                packageName?.let { appPackageName ->
+                    appList.add(
+                        PackageApp(
+                            context.packageManager.getApplicationLabel(appInfo).toString(),
+                            icon,
+                            appVersion,
+                            appPackageName
+                        )
+                    )
+                } ?: run {
+                    Timber.e("Unable to get app package name")
+                }
+            } ?: run {
+                Timber.e("Unable to get app version")
+            }
+        })
 
         if (appList.isEmpty()) {
             Timber.e("app list is empty")
@@ -320,8 +350,8 @@ class MainActivityViewModel @Inject constructor(
 
     fun retrieveRecentApps(context: Context) {
         // Setup last 3 features added
-        val mWhatsNewApps: List<LocalApp> = LabAppManager
-            .getActivityList(context)
+        val mWhatsNewApps: List<LocalApp> = AppBuilderUtils
+            .buildActivities(context)
             .sortedByDescending { (it as LocalApp).appDate }
             .take(3)
             .map {
@@ -331,7 +361,7 @@ class MainActivityViewModel @Inject constructor(
                     }
 
                     is VectorDrawable -> {
-                        App.getBitmap(it.appDrawableIcon as VectorDrawable)!!
+                       (it.appDrawableIcon as VectorDrawable).toBitmap()
                     }
 
                     else -> {

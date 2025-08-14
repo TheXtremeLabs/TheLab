@@ -36,6 +36,7 @@ import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
 
 object AppBuilderUtils {
+    @Deprecated("Use :home module istead, when development is done")
     fun buildActivities(context: Context): List<App> =
         mutableListOf<App>()
             .apply {

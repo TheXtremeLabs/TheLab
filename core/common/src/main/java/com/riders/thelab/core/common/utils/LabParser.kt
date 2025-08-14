@@ -1,18 +1,22 @@
 package com.riders.thelab.core.common.utils
 
 import android.content.Context
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 
 object LabParser {
     inline fun <reified T> parseJsonFile(
         context: Context,
-        filename: String
+        filename: String,
+        deserializer: KSerializer<T>? = null
     ): T? = runCatching {
         Timber.d("parseJsonFile() | filename: $filename")
 
         val json = context.assets.open(filename).bufferedReader().use { it.readText() }
-        val mRObject: T = Json.decodeFromString(json)
+        val mRObject: T = deserializer
+            ?.let { Json.decodeFromString(deserializer = it, string = json) }
+            ?: Json.decodeFromString(string = json)
 
         if (null == mRObject) {
             Timber.e("List is null. Return emptyList")
@@ -29,10 +33,15 @@ object LabParser {
         }
         .getOrThrow<T>()
 
-    inline fun <reified T> parseJsonFile(jsonContent: String): T? = runCatching {
+    inline fun <reified T> parseJsonFile(
+        jsonContent: String,
+        deserializer: KSerializer<T>? = null
+    ): T? = runCatching {
         Timber.d("parseJsonFile() | content length: ${jsonContent.length}")
 
-        val mRObject: T = Json.decodeFromString(jsonContent)
+        val mRObject: T = deserializer
+            ?.let { Json.decodeFromString(deserializer = it, string = jsonContent) }
+            ?: Json.decodeFromString(string = jsonContent)
 
         if (null == mRObject) {
             Timber.e("List is null. Return emptyList")
