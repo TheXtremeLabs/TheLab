@@ -29,15 +29,15 @@ object LabNotificationManager {
         actionIcon: Int,
         actionTitle: Int,
         playbackAction: Long
-    ) =
-        NotificationCompat.Action.Builder(
+    ) = NotificationCompat.Action.Builder(
             actionIcon,
             context.getString(actionTitle),
             MediaButtonReceiver.buildMediaButtonPendingIntent(
                 context,
                 playbackAction
             )
-        ).build()
+        )
+        .build()
 
 
     fun createNotificationChannel(

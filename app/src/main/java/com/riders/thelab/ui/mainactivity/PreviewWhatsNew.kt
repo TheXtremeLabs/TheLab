@@ -61,13 +61,11 @@ import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.utils.LabAppManager
 
-
 ///////////////////////////////
 //
 // COMPOSE
 //
 ///////////////////////////////
-
 @Composable
 fun WhatsNew(theme: AppTheme, darkTheme: Boolean, item: App) {
 
@@ -294,7 +292,6 @@ fun WhatsNewTopContent(
         )
     }
 }
-
 
 @Composable
 fun WhatsNewList(

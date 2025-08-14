@@ -20,9 +20,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
+import javax.inject.Inject
 
 @SuppressLint("MissingPermission")
-class LabNetworkManager(context: Context) : ConnectivityManager.NetworkCallback() {
+class LabNetworkManager @Inject constructor (context: Context) : ConnectivityManager.NetworkCallback() {
 
     // Connectivity manager
     private val connectivityManager: ConnectivityManager =
