@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -13,8 +14,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.utils.switch
+import com.riders.thelab.core.ui.compose.utils.switchTV
 
 @Composable
 fun TheLabTheme(
@@ -25,7 +28,7 @@ fun TheLabTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
+    val colorScheme: ColorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             // Check if is dart theme or not
@@ -94,6 +97,68 @@ fun TheLabTheme(
     MaterialTheme(
         colorScheme = colorScheme.switch(),
         typography = AppTypography,
+        content = content
+    )
+}
+
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+fun TheLabThemeTV(
+    // Specify the theme here
+    theme: AppTheme,
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    // Dynamic color is available on Android 12+
+    dynamicColor: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    val colorScheme: androidx.tv.material3.ColorScheme = when {
+        darkTheme -> when (theme) {
+            AppTheme.Default -> TheLabThemeDarkColorSchemeTV
+            AppTheme.Blue -> BlueThemeDarkColorSchemeTV
+            AppTheme.Red -> RedThemeDarkColorSchemeTV
+            AppTheme.Green -> GreenThemeDarkColorSchemeTV
+        }
+
+        else -> when (theme) {
+            AppTheme.Default -> TheLabThemeLightColorSchemeTV
+            AppTheme.Blue -> BlueThemeLightColorSchemeTV
+            AppTheme.Red -> RedThemeLightColorSchemeTV
+            AppTheme.Green -> GreenThemeLightColorSchemeTV
+        }
+    }
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            try {
+                when (view.context) {
+                    is ComponentActivity -> {
+                        (view.context as ComponentActivity).window.statusBarColor =
+                            colorScheme.primary.toArgb()
+                        WindowCompat.getInsetsController(
+                            (view.context as ComponentActivity).window,
+                            view
+                        ).isAppearanceLightStatusBars = darkTheme
+                    }
+
+                    is Activity -> {
+                        (view.context as Activity).window.statusBarColor =
+                            colorScheme.primary.toArgb()
+                        WindowCompat.getInsetsController(
+                            (view.context as Activity).window,
+                            view
+                        ).isAppearanceLightStatusBars = darkTheme
+                    }
+                }
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
+        }
+    }
+
+    androidx.tv.material3.MaterialTheme(
+        colorScheme = colorScheme.switchTV(),
+        typography = AppTypographyTV,
         content = content
     )
 }

@@ -11,8 +11,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.window.layout.WindowMetricsCalculator
 import com.riders.thelab.core.common.bus.Listen
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
 import timber.log.Timber
 import java.lang.reflect.InvocationTargetException
 
@@ -20,6 +22,19 @@ abstract class BaseComponentActivity : ComponentActivity() {
 
     //    open var permissionLauncher: ActivityResultLauncher<String>? = null
     open var permissionLauncher: ActivityResultLauncher<Array<String>>? = null
+
+    var windowSize: WindowSizeClass? = null
+        private set
+
+    val isTv: Boolean
+        get() {
+            return packageName
+                .also { Timber.d("packageName: $it") }
+                .split(".").last()
+                .also { Timber.d("suffix: $it") }
+                .trim()
+                .contains("tv", true)
+        }
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +79,25 @@ abstract class BaseComponentActivity : ComponentActivity() {
         Timber.e("onDestroy()")
     }
 
+    ///////////////////////////////
+    //
+    // BUS METHODS
+    //
+    ///////////////////////////////
+    fun subscribeToKotlinBus() {
+        Timber.i("subscribeToKotlinBus()")
+        javaClass.declaredMethods
+            .filter { it.isAnnotationPresent(Listen::class.java) }
+            .forEach {
+                try {
+                    it.invoke(this)
+                } catch (e: IllegalAccessException) {
+                    Timber.e(e)
+                } catch (e: InvocationTargetException) {
+                    Timber.e(e)
+                }
+            }
+    }
 
     ///////////////////////////////
     //
@@ -84,30 +118,51 @@ abstract class BaseComponentActivity : ComponentActivity() {
         }
     }
 
-     fun launchPermissionRequest(permission: String) =
+    fun launchPermissionRequest(permission: String) =
         launchPermissionRequest(arrayOf(permission))
 
 
-     private fun launchPermissionRequest(permissions: Array<String>) {
-         Timber.e("requestPermission() | permissions: $permissions")
-         permissionLauncher?.launch(permissions) ?: {
-             Timber.e("Permission launcher has NOT been initialized")
-         }
-     }
+    private fun launchPermissionRequest(permissions: Array<String>) {
+        Timber.e("requestPermission() | permissions: $permissions")
+        permissionLauncher?.launch(permissions) ?: {
+            Timber.e("Permission launcher has NOT been initialized")
+        }
+    }
 
-    fun subscribeToKotlinBus() {
-        Timber.i("subscribeToKotlinBus()")
-        javaClass.declaredMethods
-            .filter { it.isAnnotationPresent(Listen::class.java) }
-            .forEach {
-                try {
-                    it.invoke(this)
-                } catch (e: IllegalAccessException) {
-                    Timber.e(e)
-                } catch (e: InvocationTargetException) {
-                    Timber.e(e)
-                }
-            }
+
+    fun computeWindowSizeClasses() {
+        Timber.d("computeWindowSizeClasses()")
+
+        val metrics = WindowMetricsCalculator
+            .getOrCreate()
+            .computeCurrentWindowMetrics(this)
+
+        val widthDp = metrics.bounds.width() /
+                resources.displayMetrics.density
+        val widthWindowSizeClass = when {
+            widthDp < 600f -> WindowSizeClass.COMPACT
+            widthDp < 840f -> WindowSizeClass.MEDIUM
+            else -> WindowSizeClass.EXPANDED
+        }
+
+        Timber.i("widthWindowSizeClass: $widthWindowSizeClass")
+
+        val heightDp = metrics.bounds.height() /
+                resources.displayMetrics.density
+        val heightWindowSizeClass = when {
+            heightDp < 480f -> WindowSizeClass.COMPACT
+            heightDp < 900f -> WindowSizeClass.MEDIUM
+            else -> WindowSizeClass.EXPANDED
+        }
+        Timber.i("heightWindowSizeClass: $heightWindowSizeClass")
+
+        // Use widthWindowSizeClass and heightWindowSizeClass.
+        windowSize = widthWindowSizeClass
+    }
+
+    fun getDeviceWindowsSizeClass(): WindowSizeClass {
+        Timber.d("getDeviceWindowsSizeClass()")
+        return windowSize!!
     }
 
     abstract fun backPressed()

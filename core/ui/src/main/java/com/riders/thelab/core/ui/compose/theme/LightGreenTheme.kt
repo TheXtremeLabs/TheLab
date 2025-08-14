@@ -78,6 +78,11 @@ import com.riders.composemultiplethemes.core.compose.color.md_green_theme_light_
 import com.riders.composemultiplethemes.core.compose.color.md_green_theme_light_tertiary
 import com.riders.composemultiplethemes.core.compose.color.md_green_theme_light_tertiaryContainer
 
+///////////////////////////////////////
+//
+// MOBILE
+//
+///////////////////////////////////////
 /**
  * Linked to GreenThemeColors file
  */
@@ -233,4 +238,68 @@ fun greenThemeDynamicDarkColorScheme(context: Context) = dynamicDarkColorScheme(
     surfaceContainer = md_green_theme_dark_surfaceContainer,
     surfaceContainerHigh = md_green_theme_dark_surfaceContainerHigh,
     surfaceContainerHighest = md_green_theme_dark_surfaceContainerHighest,
+)
+
+
+///////////////////////////////////////
+//
+// TV
+//
+///////////////////////////////////////
+val GreenThemeLightColorSchemeTV = androidx.tv.material3.lightColorScheme(
+    primary = md_green_theme_light_primary,
+    onPrimary = md_green_theme_light_onPrimary,
+    primaryContainer = md_green_theme_light_primaryContainer,
+    onPrimaryContainer = md_green_theme_light_onPrimaryContainer,
+    secondary = md_green_theme_light_secondary,
+    onSecondary = md_green_theme_light_onSecondary,
+    secondaryContainer = md_green_theme_light_secondaryContainer,
+    onSecondaryContainer = md_green_theme_light_onSecondaryContainer,
+    tertiary = md_green_theme_light_tertiary,
+    onTertiary = md_green_theme_light_onTertiary,
+    tertiaryContainer = md_green_theme_light_tertiaryContainer,
+    onTertiaryContainer = md_green_theme_light_onTertiaryContainer,
+    error = md_green_theme_light_error,
+    onError = md_green_theme_light_onError,
+    errorContainer = md_green_theme_light_errorContainer,
+    onErrorContainer = md_green_theme_light_onErrorContainer,
+    background = md_green_theme_light_background,
+    onBackground = md_green_theme_light_onBackground,
+    surface = md_green_theme_light_surface,
+    onSurface = md_green_theme_light_onSurface,
+    surfaceVariant = md_green_theme_light_surfaceVariant,
+    onSurfaceVariant = md_green_theme_light_onSurfaceVariant,
+    scrim = md_green_theme_light_scrim,
+    inverseSurface = md_green_theme_light_inverseSurface,
+    inverseOnSurface = md_green_theme_light_inverseOnSurface,
+    inversePrimary = md_green_theme_light_inversePrimary,
+)
+
+val GreenThemeDarkColorSchemeTV = androidx.tv.material3.darkColorScheme(
+    primary = md_green_theme_dark_primary,
+    onPrimary = md_green_theme_dark_onPrimary,
+    primaryContainer = md_green_theme_dark_primaryContainer,
+    onPrimaryContainer = md_green_theme_dark_onPrimaryContainer,
+    secondary = md_green_theme_dark_secondary,
+    onSecondary = md_green_theme_dark_onSecondary,
+    secondaryContainer = md_green_theme_dark_secondaryContainer,
+    onSecondaryContainer = md_green_theme_dark_onSecondaryContainer,
+    tertiary = md_green_theme_dark_tertiary,
+    onTertiary = md_green_theme_dark_onTertiary,
+    tertiaryContainer = md_green_theme_dark_tertiaryContainer,
+    onTertiaryContainer = md_green_theme_dark_onTertiaryContainer,
+    error = md_green_theme_dark_error,
+    onError = md_green_theme_dark_onError,
+    errorContainer = md_green_theme_dark_errorContainer,
+    onErrorContainer = md_green_theme_dark_onErrorContainer,
+    background = md_green_theme_dark_background,
+    onBackground = md_green_theme_dark_onBackground,
+    surface = md_green_theme_dark_surface,
+    onSurface = md_green_theme_dark_onSurface,
+    surfaceVariant = md_green_theme_dark_surfaceVariant,
+    onSurfaceVariant = md_green_theme_dark_onSurfaceVariant,
+    scrim = md_green_theme_dark_scrim,
+    inverseSurface = md_green_theme_dark_inverseSurface,
+    inverseOnSurface = md_green_theme_dark_inverseOnSurface,
+    inversePrimary = md_green_theme_dark_inversePrimary,
 )
