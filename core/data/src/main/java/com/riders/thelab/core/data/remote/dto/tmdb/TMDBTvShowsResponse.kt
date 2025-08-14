@@ -1,5 +1,6 @@
 package com.riders.thelab.core.data.remote.dto.tmdb
 
+import com.riders.thelab.core.data.remote.dto.tmdb.TvShowsDto.Companion.mockTvShowsDto
 import kotlinx.serialization.SerialName
 import java.io.Serializable
 
@@ -15,4 +16,15 @@ data class TMDBTvShowsResponse(
     val totalPages: Int,
     @SerialName(value = "total_results")
     val totalResults: Int
-) : Serializable
+) : Serializable {
+    companion object {
+        val mockTMDBTvShowsResponse = TMDBTvShowsResponse(
+            dates = Dates("2024-02-14", "2024-01-24"),
+            page = 1,
+            results = listOf(mockTvShowsDto),
+            totalResults = 1,
+            totalPages = 2
+        )
+
+    }
+}

@@ -31,7 +31,7 @@ data class TvShowsDto(
     val voteNumber: Int,
 ) : Serializable {
     companion object {
-        fun getMockMovie(): TvShowsDto = TvShowsDto(
+        val mockTvShowsDto: TvShowsDto = TvShowsDto(
             0,
             "",
             "/efpojdpcjzidcjpzdko.jpg",
