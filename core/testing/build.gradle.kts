@@ -17,9 +17,14 @@ dependencies {
     ///////////////////////////////////
     // General Dependencies
     ///////////////////////////////////
-    //Kotlin
-    api(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.kotlinx.coroutines.test)
+    // Kotlin
+    implementation(platform(libs.kotlin.bom))
+    api(libs.kotlin.test)
+    testApi(libs.kotlin.test)
+    testApi(libs.kotlinx.coroutines.core)
+    testApi(libs.kotlinx.coroutines.test)
+    androidTestApi(libs.kotlinx.coroutines.core)
+    androidTestApi(libs.kotlinx.coroutines.test)
 
     // Compose
     api(libs.androidx.compose.ui.test)
@@ -34,24 +39,25 @@ dependencies {
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////
+    // Unit Test
     testApi(libs.junit4)
     // Assertions
     testApi(libs.androidx.test.truth)
 
+    // Android Instrumented Unit Test
+    androidTestApi(libs.junit4)
     // Core library
     androidTestApi(libs.androidx.test.core)
-
     // AndroidJUnitRunner and JUnit Rules
     androidTestApi(libs.androidx.test.rules)
     androidTestApi(libs.androidx.test.runner)
-
     // Assertions
     androidTestApi(libs.androidx.test.ext)
     androidTestApi(libs.androidx.test.truth)
     androidTestApi(libs.androidx.test.uiautomator)
 
-    androidTestApi(libs.androidx.test.ext)
     androidTestApi(libs.androidx.test.espresso.core)
+
     androidTestImplementation(libs.mockito)
     androidTestImplementation(libs.mockito.android)
 

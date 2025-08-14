@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.thelab.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.thelab.hilt)
     alias(libs.plugins.ksp)
 }
 
@@ -8,6 +9,19 @@ android {
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    sourceSets {
+        getByName("main") {
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        }
+        getByName("release") {
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        }
+        getByName("androidTest") {
+            manifest.srcFile("${project.rootDir}/AndroidManifest.xml")
+        }
+    }
+
     namespace = "com.riders.thelab.core.common"
 }
 
@@ -20,6 +34,7 @@ dependencies {
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.android)
     api(libs.kotlinx.serialization.json)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 
     // AndroidX
     api(libs.androidx.core.ktx)
@@ -46,4 +61,9 @@ dependencies {
     // Tests Dependencies
     ///////////////////////////////////
     androidTestImplementation(project(":core:testing"))
+
+    testImplementation(libs.junit4)
+    androidTestImplementation(libs.androidx.test.ext)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.test.truth)
 }

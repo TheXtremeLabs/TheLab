@@ -22,7 +22,7 @@ dependencies {
 
 
     ///////////////////////////////////
-    // General Dependencies
+    // Tests Dependencies
     ///////////////////////////////////
     androidTestImplementation(project(":core:testing"))
 }

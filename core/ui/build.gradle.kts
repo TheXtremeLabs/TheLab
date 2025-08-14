@@ -15,10 +15,7 @@ android {
 }
 
 composeCompiler {
-    featureFlags.addAll(
-        ComposeFeatureFlag.StrongSkipping,
-        ComposeFeatureFlag.OptimizeNonSkippingGroups
-    )
+    featureFlags.addAll(ComposeFeatureFlag.OptimizeNonSkippingGroups)
 }
 
 dependencies {
@@ -80,12 +77,16 @@ dependencies {
     debugApi(libs.androidx.compose.ui.tooling)
     api(libs.androidx.compose.ui.tooling.preview)
     api(libs.androidx.compose.ui)
+    api(libs.androidx.compose.ui.graphics)
     api(libs.androidx.compose.ui.util)
     api(libs.androidx.hilt.navigation.compose)
     api(libs.androidx.lifecycle.runtimeCompose)
     api(libs.androidx.lifecycle.viewModelCompose)
     api(libs.androidx.metrics)
     api(libs.androidx.tracing.ktx)
+
+    api(libs.androidx.tv.foundation)
+    api(libs.androidx.tv.material)
 
     // Glide
     api(libs.glide)
