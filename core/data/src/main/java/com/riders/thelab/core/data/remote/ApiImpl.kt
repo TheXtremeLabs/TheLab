@@ -48,6 +48,7 @@ import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
+import com.riders.thelab.core.data.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -144,6 +145,62 @@ class ApiImpl @Inject constructor(
 
         null
     }
+
+    override suspend fun getStorageReferenceAsResource(): Resource<StorageReference> = runCatching {
+        Timber.e("getStorageReference()")
+        val storage = arrayOfNulls<FirebaseStorage>(1)
+        var storageRef: StorageReference? = null
+
+        // Initialize Firebase Auth
+        val firebaseUser: FirebaseUser? = FirebaseAuth.getInstance()
+            .signInAnonymously()
+            .await()
+            .user
+            ?.also { user ->
+                if (BuildConfig.DEBUG) {
+                    Timber.d("getStorageReference() | signInAnonymously | result user: ${user.displayName} (is anonymous: ${user.isAnonymous})")
+                }
+            }
+
+        return if (null == firebaseUser) {
+            Timber.e("getStorageReference() | failed")
+            Resource.Error(message = "Sign in failed".toNotBlankString().getOrThrow())
+        } else {
+            // Sign in success, update UI with the signed-in user's information
+            Timber.i("getStorageReference() | success, get firebase instance and fetch bucket")
+
+            val bucketName = "gs://the-lab-3920e.appspot.com"
+            val bucketInstance = FirebaseStorage.getInstance(bucketName)
+
+            storage[0] = bucketInstance.also { result ->
+                if (BuildConfig.DEBUG) {
+                    Timber.d("getStorageReference() | FirebaseStorage.getInstance(bucketName) | result : ${result.reference.name}")
+                }
+            }
+
+            // Create a storage reference from our app
+            storageRef = storage[0]!!.reference.also { ref ->
+                if (BuildConfig.DEBUG) {
+                    Timber.d("getStorageReference() | reference : ${ref.name}")
+                }
+            }
+
+            Resource.Success(storageRef)
+        }
+    }
+        .onFailure { throwable: Throwable ->
+            // If sign in fails, display a message to the user.
+            Timber.w("getStorageReference() | signInAnonymously:failure %s", throwable.toString())
+        }
+        .onSuccess {
+            Timber.d("getStorageReference() | signIn successfully executed ")
+        }
+        .getOrElse { exception ->
+            Resource.Error(
+                message = exception.message!!.toNotBlankString().getOrThrow(),
+                throwable = exception
+            )
+        }
 
 
     override suspend fun getArtists(url: String): List<Artist> = mArtistsAPIService.getArtists(url)

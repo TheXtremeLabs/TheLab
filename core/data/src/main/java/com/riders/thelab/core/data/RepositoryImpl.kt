@@ -40,6 +40,7 @@ import com.riders.thelab.core.data.remote.dto.weather.City
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
+import com.riders.thelab.core.data.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotools.types.text.NotBlankString
 import okhttp3.ResponseBody
@@ -173,9 +174,10 @@ class RepositoryImpl @Inject constructor(
     // API
     //
     /////////////////////////
-    override suspend fun getStorageReference(activity: Activity): StorageReference? {
-        return mApiImpl.getStorageReference(activity)
-    }
+    override suspend fun getStorageReference(activity: Activity): StorageReference? = mApiImpl.getStorageReference(activity)
+
+    override suspend fun getStorageReferenceAsResource(): Resource<StorageReference> = mApiImpl.getStorageReferenceAsResource()
+
 
     override suspend fun getArtists(url: String): List<Artist> {
         return mApiImpl.getArtists(url)
