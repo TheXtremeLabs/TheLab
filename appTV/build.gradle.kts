@@ -4,6 +4,7 @@ plugins {
      */
     alias(libs.plugins.thelab.application)
     alias(libs.plugins.thelab.application.compose)
+    alias(libs.plugins.thelab.firebase)
     alias(libs.plugins.thelab.hilt)
 }
 
@@ -22,6 +23,10 @@ android {
     namespace = "com.riders.thelab.tv"
 
     defaultConfig {
+        manifestPlaceholders += mapOf(
+            "redirectHostName" to "com.riders.thelab.tv",
+            "redirectSchemeName" to "com.riders.thelab.tv"
+        )
         applicationId = "com.riders.thelab.tv"
 
         // Enabling multidex support.
@@ -53,6 +58,7 @@ dependencies {
     ///////////////////////////////////
     // Project
     ///////////////////////////////////
+    implementation(project(":core:analytics"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
@@ -69,6 +75,16 @@ dependencies {
 
     implementation(libs.androidx.tv.foundation)
     implementation(libs.androidx.tv.material)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.perf)
+
+    // Firebase App Check
+    implementation(libs.firebase.appcheck.ktx)
+    implementation(libs.firebase.appcheck.debug)
+    implementation(libs.firebase.appcheck.playintegrity)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test)

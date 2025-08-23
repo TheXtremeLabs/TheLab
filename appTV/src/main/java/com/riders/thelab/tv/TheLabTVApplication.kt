@@ -1,7 +1,12 @@
 package com.riders.thelab.tv
 
 import android.content.Context
+import android.os.Build
 import androidx.multidex.MultiDexApplication
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.riders.thelab.core.common.utils.LabDeviceManager
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -73,22 +78,23 @@ class TheLabTVApplication : MultiDexApplication() {
     }
 
     private fun initAdsAndFirebase() {
-        /*Timber.d("initAdsAndFirebase()")
+        Timber.d("initAdsAndFirebase()")
 
         // Firebase Crashlytics
-        FirebaseApp.initializeApp(this@TheLabApplication)
+        FirebaseApp.initializeApp(this)
         Firebase.crashlytics.apply {
             isCrashlyticsCollectionEnabled = true
             setUserId("wayne")
+            setCustomKey("device", Build.DEVICE)
         }
 
         //  Gets the instance of the Firebase App Check SDK.
-        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        //val firebaseAppCheck = FirebaseAppCheck.getInstance()
         // Tells App Check to use the Play Integrity provider to obtain tokens.
-        firebaseAppCheck.installAppCheckProviderFactory(
-            // Gets the Play Integrity App Check provider factory.
-            PlayIntegrityAppCheckProviderFactory.getInstance()
-        )*/
+//        firebaseAppCheck.installAppCheckProviderFactory(
+//           // Gets the Play Integrity App Check provider factory.
+//            PlayIntegrityAppCheckProviderFactory.getInstance()
+//        )
     }
 
     fun getContext(): Context = super.getApplicationContext()
