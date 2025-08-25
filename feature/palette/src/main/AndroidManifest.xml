@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <activity android:name=".SplashScreenActivity" />
+        <activity
+            android:name=".PaletteActivity"
+            android:exported="true" />
     </application>
 </manifest>
