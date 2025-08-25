@@ -56,11 +56,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.palette.graphics.Palette
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
+import coil3.request.crossfade
 import com.riders.thelab.core.data.local.model.compose.palette.PaletteUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.NoInternetConnection
@@ -72,8 +74,8 @@ import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.loadImage
 import com.riders.thelab.core.ui.compose.utils.toColor
-import com.riders.thelab.core.ui.utils.loadImage
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -243,7 +245,7 @@ fun PaletteContent(
                                         .build(),
                                     placeholder = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors),
                                 )
-                                val state = painter.state
+                                val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
 
                                 LazyVerticalGrid(
                                     modifier = Modifier.size(
@@ -306,14 +308,10 @@ fun PaletteContent(
 
                                                             LaunchedEffect(key1 = painter) {
                                                                 scope.launch {
-                                                                    val image = painter.loadImage()
 
-                                                                    val palette = Palette.from(
-                                                                        image.toBitmap(
-                                                                            image.intrinsicWidth,
-                                                                            image.intrinsicHeight
-                                                                        )
-                                                                    ).generate()
+                                                                    val palette = Palette
+                                                                        .from(painter.loadImage())
+                                                                        .generate()
 
                                                                     ////////////////
 
@@ -324,7 +322,7 @@ fun PaletteContent(
                                                         }
 
                                                         is AsyncImagePainter.State.Error -> {
-                                                            Timber.e("state is AsyncImagePainter.State.Error | ${state.result}")
+                                                            Timber.e("state is AsyncImagePainter.State.Error | ${(state as AsyncImagePainter.State.Error).result}")
                                                         }
 
                                                         else -> {

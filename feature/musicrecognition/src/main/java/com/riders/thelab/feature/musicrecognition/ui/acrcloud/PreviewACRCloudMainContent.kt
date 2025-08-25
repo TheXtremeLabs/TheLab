@@ -38,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -55,8 +56,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
-import coil.compose.AsyncImagePainter
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImagePainter
 import com.riders.thelab.core.common.utils.LabPackageManager
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
@@ -69,7 +70,7 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
-import com.riders.thelab.core.ui.utils.loadImage
+import com.riders.thelab.core.ui.compose.utils.loadImage
 import com.riders.thelab.feature.musicrecognition.utils.Constants
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -225,7 +226,7 @@ fun RecognitionResult(
         placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
 
-    val painterState: AsyncImagePainter.State = painter.state
+    val painterState: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
@@ -258,7 +259,7 @@ fun RecognitionResult(
                                             uiEvent.invoke(
                                                 UiEvent.UpdateMusicModelImageBase64(
                                                     currentSong = state.songModel,
-                                                    imageBitmap = image.toBitmap()
+                                                    imageBitmap = image
                                                 )
                                             )
                                         }

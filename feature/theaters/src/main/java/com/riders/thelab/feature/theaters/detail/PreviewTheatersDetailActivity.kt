@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,10 +36,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.palette.graphics.Palette
-import coil.compose.AsyncImagePainter
-import coil.size.Scale
+import coil3.compose.AsyncImagePainter
+import coil3.size.Scale
 import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBDetailUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
@@ -49,8 +50,8 @@ import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
+import com.riders.thelab.core.ui.compose.utils.loadImage
 import com.riders.thelab.core.ui.compose.utils.toColor
-import com.riders.thelab.core.ui.utils.loadImage
 import com.riders.thelab.feature.theaters.main.trendingItemImageHeight
 import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBDetailUiState
 import kotlinx.coroutines.launch
@@ -127,7 +128,7 @@ fun TheatersDetailContent(
                                 scale = Scale.FILL,
                                 placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
                             )
-                        val state = painter.state
+                        val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
 
                         /* Create the Palette, pass the bitmap to it */
 //                         var palette: Palette
@@ -180,14 +181,10 @@ fun TheatersDetailContent(
 
                                                 LaunchedEffect(key1 = painter) {
                                                     scope.launch {
-                                                        val image = painter.loadImage()
 
-                                                        palette = Palette.from(
-                                                            image.toBitmap(
-                                                                image.intrinsicWidth,
-                                                                image.intrinsicHeight
-                                                            )
-                                                        ).generate()
+                                                        palette = Palette
+                                                            .from(painter.loadImage())
+                                                            .generate()
 
                                                         ////////////////
 

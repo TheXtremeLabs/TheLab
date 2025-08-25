@@ -119,7 +119,8 @@ fun HomeScreenTV(
     TheLabThemeTV(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = {}
+            topBar = {},
+            containerColor = androidx.tv.material3.MaterialTheme.colorScheme.background
         ) { contentPadding ->
             BoxWithConstraints(
                 modifier = Modifier

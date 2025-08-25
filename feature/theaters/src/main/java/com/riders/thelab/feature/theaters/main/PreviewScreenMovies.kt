@@ -4,8 +4,10 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -160,10 +162,12 @@ fun ScreenMovieContent(
 
 @Composable
 fun ScreenMovieContentTV(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     trendingMovieItem: TMDBTrendingMovieItemUiState,
     movies: TMDBMoviesUiState,
     upcomingMovies: TMDBUpcomingMoviesUiState,
+    modifier : Modifier = Modifier,
     uiEvent: (UiEvent) -> Unit
 ) {
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
@@ -193,9 +197,12 @@ fun ScreenMovieContentTV(
                             val item: TMDBItemModel =
                                 targetState.response.results.map { it.toItemModel() }[0]
 
-                            TrendingTMDBItem(
+                            TrendingTMDBItemTV(
                                 theme = theme,
                                 darkTheme = darkTheme,
+                                modifier = Modifier
+                                    .defaultMinSize(1.dp)
+                                    .height(376.dp),
                                 trendingItem = item,
                                 uiEvent = uiEvent
                             )
@@ -214,6 +221,10 @@ fun ScreenMovieContentTV(
                             TheaterTMDBListTV(
                                 theme = theme,
                                 darkTheme = darkTheme,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(376.dp)
+                                    .bringIntoViewRequester(bringIntoViewRequester)  ,
                                 rowListState = lazyRowTrendingListState,
                                 categoryTitle = MovieCategoryEnum.TRENDING.value,
                                 tmdbList = tmdbList,
@@ -235,6 +246,10 @@ fun ScreenMovieContentTV(
                             TheaterTMDBListTV(
                                 theme = theme,
                                 darkTheme = darkTheme,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(376.dp)
+                                    .bringIntoViewRequester(bringIntoViewRequester)  ,
                                 rowListState = lazyRowUpcomingListState,
                                 categoryTitle = MovieCategoryEnum.UPCOMING.value,
                                 tmdbList = tmdbList,
@@ -255,6 +270,10 @@ fun ScreenMovieContentTV(
                             TheaterTMDBListTV(
                                 theme = theme,
                                 darkTheme = darkTheme,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(376.dp)
+                                    .bringIntoViewRequester(bringIntoViewRequester)  ,
                                 rowListState = lazyRowPopularListState,
                                 categoryTitle = MovieCategoryEnum.POPULAR.value,
                                 tmdbList = tmdbList,
@@ -302,7 +321,7 @@ private fun PreviewScreenMoviesContent(@PreviewParameter(AppThemePreviewProvider
 
 @DevicePreviewsTV
 @Composable
-private fun PreviewScreenMoviesContent() {
+private fun PreviewScreenMoviesContentTV() {
     TheLabThemeTV(theme = AppTheme.Default) {
         ScreenMovieContentTV(
             theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),

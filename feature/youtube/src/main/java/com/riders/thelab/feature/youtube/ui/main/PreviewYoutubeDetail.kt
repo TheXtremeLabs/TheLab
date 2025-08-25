@@ -46,18 +46,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.palette.graphics.Palette
-import coil.compose.AsyncImagePainter
+import coil3.compose.AsyncImagePainter
 import com.riders.thelab.core.data.local.model.youtube.Video
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
-import com.riders.thelab.core.ui.utils.loadImage
+import com.riders.thelab.core.ui.compose.utils.loadImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -92,7 +92,7 @@ fun YoutubeDetailScreen(
         isSvg = false,
         placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
-    val state = painter.state
+    val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
 
     /* Create the Palette, pass the bitmap to it */
     var palette: Palette
@@ -111,14 +111,8 @@ fun YoutubeDetailScreen(
                 Timber.d("state is AsyncImagePainter.State.Success")
 
                 scope.launch {
-                    val image = painter.loadImage()
 
-                    palette = Palette.from(
-                        image.toBitmap(
-                            image.intrinsicWidth,
-                            image.intrinsicHeight
-                        )
-                    ).generate()
+                    palette = Palette.from(painter.loadImage()).generate()
 
                     ////////////////
 

@@ -11,8 +11,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -20,9 +25,11 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.riders.thelab.core.common.network.NetworkState
@@ -210,6 +217,10 @@ fun TheatersContentTV(
     uiEvent: (UiEvent) -> Unit
 ) {
     val scope = rememberCoroutineScope()
+
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+    val focusRequester = remember { FocusRequester() }
+
     val pagerState: PagerState = rememberPagerState { categories.size }
 
     val transitionSpec: () -> ContentTransform = {
@@ -236,6 +247,8 @@ fun TheatersContentTV(
                             } else {
                                 LabTabRowTV(
                                     theme = theme,
+                                    bringIntoViewRequester = bringIntoViewRequester,
+                                    focusRequester = focusRequester,
                                     selectedItemIndex = tabRowSelected,
                                     items = categories,
                                     onClick = { index ->
@@ -250,46 +263,57 @@ fun TheatersContentTV(
                 ) {}
             }
         ) { /*paddingContent ->*/
-            AnimatedContent(
-                // modifier = Modifier.fillMaxSize().padding(paddingContent),
-                targetState = hasNetworkConnection,
-                transitionSpec = { transitionSpec() },
-                label = "network state animation"
-            ) { targetState ->
-                if (!targetState) {
-                    NoNetworkConnection()
-                } else {
-                    LabHorizontalViewPagerGeneric(
-                        theme = theme,
-                        pagerState = pagerState,
-                        items = categories,
-                        onCurrentPageChanged = { index ->
-                            uiEvent.invoke(UiEvent.OnUpdateTabRowSelected(index))
-                        }
-                    ) { page, _ ->
-
-                        when (page) {
-                            0 -> {
-                                ScreenMovieContentTV(
-                                    theme = theme, darkTheme = darkTheme,
-                                    trendingMovieItem,
-                                    movies,
-                                    upcomingMovies,
-                                    uiEvent = uiEvent
-                                )
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                AnimatedContent(
+                    // modifier = Modifier.fillMaxSize().padding(paddingContent),
+                    targetState = hasNetworkConnection,
+                    transitionSpec = { transitionSpec() },
+                    label = "network state animation"
+                ) { targetState ->
+                    if (!targetState) {
+                        NoNetworkConnection()
+                    } else {
+                        LabHorizontalViewPagerGeneric(
+                            theme = theme,
+                            modifier = Modifier.size(
+                                width = this@BoxWithConstraints.maxWidth,
+                                height = this@BoxWithConstraints.maxHeight
+                            ),
+                            pagerState = pagerState,
+                            items = categories,
+                            onCurrentPageChanged = { index ->
+                                uiEvent.invoke(UiEvent.OnUpdateTabRowSelected(index))
                             }
+                        ) { page, _ ->
 
-                            1 -> {
-                                ScreenTvShowsContentTV(
-                                    theme = theme, darkTheme = darkTheme,
-                                    trendingTvShowItem,
-                                    trendingTvShows,
-                                    uiEvent = uiEvent
-                                )
+                            when (page) {
+                                0 -> {
+                                    ScreenMovieContentTV(
+                                        theme = theme,
+                                        darkTheme = darkTheme,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        trendingMovieItem = trendingMovieItem,
+                                        movies = movies,
+                                        upcomingMovies = upcomingMovies,
+                                        uiEvent = uiEvent
+                                    )
+                                }
+
+                                1 -> {
+                                    ScreenTvShowsContentTV(
+                                        theme = theme,
+                                        darkTheme = darkTheme,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        trendingTvShowItem = trendingTvShowItem,
+                                        trendingTvShows = trendingTvShows,
+                                        uiEvent = uiEvent
+                                    )
+                                }
                             }
                         }
                     }
                 }
+
             }
         }
     }
@@ -340,7 +364,7 @@ private fun PreviewTheatersContent(@PreviewParameter(PreviewProviderNetworkState
 @DevicePreviewsTV
 @Composable
 private fun PreviewTheatersContentTV(@PreviewParameter(PreviewProviderNetworkState::class) networkState: NetworkState) {
-    TheLabTheme(theme = AppTheme.Default) {
+    TheLabThemeTV(theme = AppTheme.Default) {
         TheatersContentTV(
             theme = AppTheme.Default,
             darkTheme = isSystemInDarkTheme(),

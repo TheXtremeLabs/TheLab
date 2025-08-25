@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -119,6 +120,7 @@ fun ScreenTvShowsContentTV(
     darkTheme: Boolean,
     trendingTvShowItem: TMDBTrendingTvShowItemUiState,
     trendingTvShows: TMDBTvShowsUiState,
+    modifier : Modifier = Modifier,
     uiEvent: (UiEvent) -> Unit
 ) {
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
@@ -131,9 +133,7 @@ fun ScreenTvShowsContentTV(
             contentAlignment = Alignment.TopCenter
         ) {
             LazyColumn(
-                modifier = Modifier
-                    .bringIntoViewRequester(bringIntoViewRequester)
-                    .fillMaxSize(),
+                modifier = Modifier.matchParentSize(),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 state = lazyListState
@@ -164,7 +164,12 @@ fun ScreenTvShowsContentTV(
                                 targetState.response.results.map { it.toItemModel() }
 
                             TheaterTMDBListTV(
-                                theme = theme, darkTheme = darkTheme,
+                                theme = theme,
+                                darkTheme = darkTheme,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(376.dp)
+                                    .bringIntoViewRequester(bringIntoViewRequester)  ,
                                 rowListState = lazyRowTrendingListState,
                                 categoryTitle = MovieCategoryEnum.TRENDING.value,
                                 tmdbList = tmdbList,

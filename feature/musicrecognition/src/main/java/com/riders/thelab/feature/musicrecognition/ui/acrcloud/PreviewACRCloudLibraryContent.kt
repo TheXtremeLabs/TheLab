@@ -51,7 +51,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImagePainter
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImagePainter
 import com.riders.thelab.core.common.utils.LabPackageManager
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.music.MusicRecognitionModel
@@ -135,7 +136,7 @@ fun ACRCloudLibraryItem(
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error
         })
-    val state = painter.state
+    val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         AnimatedContent(targetState = loaded) { targetState: Boolean ->
@@ -162,7 +163,10 @@ fun ACRCloudLibraryItem(
                                 )
                             }
                         } else {
-                            AnimatedContent(targetState = state) { targetState: AsyncImagePainter.State ->
+                            AnimatedContent(
+                                targetState = state,
+                                label = "loading_image_animated_content"
+                            ) { targetState: AsyncImagePainter.State ->
                                 when (targetState) {
                                     is AsyncImagePainter.State.Loading -> {
                                         LabLoader(modifier = Modifier.size(36.dp))
@@ -183,7 +187,7 @@ fun ACRCloudLibraryItem(
                                                 .size(64.dp),
                                             contentScale = ContentScale.Crop,
                                             painter = if (isError.not() && !LocalInspectionMode.current) {
-                                                painter
+                                                targetState.painter
                                             } else {
                                                 painterResource(id = com.riders.thelab.core.ui.R.drawable.logo_colors)
                                             },

@@ -53,7 +53,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImagePainter
 import com.google.api.services.drive.model.File
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.color.success
@@ -308,7 +309,7 @@ fun GoogleDriveContentSuccess(
                             )
                         } ?: run { null }
 
-                        val painterState = painter?.state
+                        val painterState: AsyncImagePainter.State by painter?.state!!.collectAsStateWithLifecycle()
 
                         LazyColumn(
                             modifier = Modifier.padding(top = 24.dp),
