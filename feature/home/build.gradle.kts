@@ -38,6 +38,7 @@ dependencies {
     api(project(":feature:schedule"))
     api(project(":feature:settings"))
     api(project(":feature:songplayer"))
+    api(project(":feature:splashscreen"))
     api(project(":feature:streaming"))
     api(project(":feature:tabs"))
     api(project(":feature:theaters"))

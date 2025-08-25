@@ -53,7 +53,7 @@ class MainActivity : BaseComponentActivity() {
             }
             .onFailure {
                 it.printStackTrace()
-                Timber.e("navigateToHomeScreen() | onFailure | Error caught: ${it.message} (class : ${it.javaClass.canonicalName})")
+                Timber.e("navigateToHomeScreen | onFailure | Error caught: ${it.message} (class : ${it.javaClass.canonicalName})")
             }
             .onSuccess {
                 Timber.d("navigateToHomeScreen | onSuccess | Activity launched successfully")

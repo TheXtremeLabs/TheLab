@@ -10,6 +10,7 @@ import com.google.firebase.storage.StorageReference
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.artists.ArtistsUiState
 import com.riders.thelab.core.data.local.model.music.ArtistModel
+import com.riders.thelab.core.data.utils.Resource
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -105,28 +106,31 @@ class ArtistsViewModel @Inject constructor(
 
     @OptIn(ExperimentalKotoolsTypesApi::class)
     private fun getFirebaseJSONURL() {
+        if (null == mWeakReference?.get()) {
+            Timber.e("getFirebaseJSONURL() | Unable to get activity")
+            return
+        }
 
-        mWeakReference?.get()?.let { activity ->
-            Timber.d("getFirebaseJSONURL()")
-
-            fetchJsonJob = viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
-                try {
-                    if (null == mStorageReference) {
-                        updateArtistUiState(
-                            ArtistsUiState.Loading(
-                                message = "Authenticating to the server...".toNotBlankString()
-                                    .getOrThrow()
-                            )
+        fetchJsonJob = viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
+            try {
+                if (null == mStorageReference) {
+                    updateArtistUiState(
+                        ArtistsUiState.Loading(
+                            message = "Authenticating to the server...".toNotBlankString()
+                                .getOrThrow()
                         )
+                    )
+                }
 
-                        mStorageReference = repository.getStorageReference(activity)
-                    }
-
-                    // Create a child reference
-                    // imagesRef now points to "images"
-                    mStorageReference?.let {
-                        val artistsRef: StorageReference = it.child("bulk/artists.json")
-
+                val mStorageReferenceResource = repository.getStorageReferenceAsResource()
+                when (mStorageReferenceResource) {
+                    is Resource.Success -> {
+                        // Create a child reference
+                        // imagesRef now points to "images"
+                        val artistsRef: StorageReference = mStorageReferenceResource
+                            .data
+                            .also { Timber.d("getFirebaseJSONURL() | storage reference : ${it?.name}") }
+                            .child("bulk/artists.json")
 
                         withContext(Dispatchers.Main) {
                             artistsRef
@@ -149,23 +153,36 @@ class ArtistsViewModel @Inject constructor(
                         }
                     }
 
-                } catch (throwable: Exception) {
-                    Timber.e(throwable)
-                    withContext(Dispatchers.Main) {
-                        updateArtistUiState(
-                            ArtistsUiState.Error(
-                                message = throwable.message
-                                    ?.toNotBlankString()
-                                    ?.getOrThrow()
-                                    ?: "Error occurred while getting value".toNotBlankString()
-                                        .getOrThrow(),
-                                errorResponse = throwable
+                    is Resource.Error -> {
+                        withContext(Dispatchers.Main) {
+                            updateArtistUiState(
+                                ArtistsUiState.Error(
+                                    message = mStorageReferenceResource.message,
+                                    errorResponse = mStorageReferenceResource.throwable
+                                )
                             )
-                        )
+                        }
                     }
+
+                    else -> Timber.e("getFirebaseJSONURL() | Unhandled type")
+                }
+
+            } catch (throwable: Exception) {
+                Timber.e(throwable)
+                withContext(Dispatchers.Main) {
+                    updateArtistUiState(
+                        ArtistsUiState.Error(
+                            message = throwable.message
+                                ?.toNotBlankString()
+                                ?.getOrThrow()
+                                ?: "Error occurred while getting value".toNotBlankString()
+                                    .getOrThrow(),
+                            errorResponse = throwable
+                        )
+                    )
                 }
             }
-        } ?: run { Timber.e("getFirebaseJSONURL() | Unable to get activity") }
+        }
     }
 
 

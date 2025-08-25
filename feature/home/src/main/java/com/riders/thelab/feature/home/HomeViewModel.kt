@@ -10,6 +10,7 @@ import com.riders.thelab.core.ui.data.local.UiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -34,16 +35,29 @@ class HomeViewModel @Inject constructor(
             activity
                 .getActivityList(activity.isTv)
                 .map { it as LocalApp }
+                .sortedByDescending { it.localDate }
                 .let { appList -> updateLocalApps(appList) }
+        } ?: run {
+            Timber.e("onStart() | Unable to get weak reference activity. Object is null")
+        }
+    }
+
+    fun initWeakReference(activity: HomeActivity) {
+        if (null == mWeakReference) {
+            mWeakReference = WeakReference(activity)
         }
     }
 
     /**
      * @return the list of activities developed in TheLab App
      */
-    private fun Context.getActivityList(isForTv: Boolean): List<App> = if (isForTv) {
-        AppBuilderUtils.getTVActivities(this)
-    } else {
-        AppBuilderUtils.getMobileActivities(this)
-    }
+    private fun Context.getActivityList(isForTv: Boolean): List<App> = AppBuilderUtils
+        .getInstance(this)
+        .run {
+            if (isForTv) {
+                getTVActivities(this@getActivityList)
+            } else {
+                getMobileActivities(this@getActivityList)
+            }
+        }
 }

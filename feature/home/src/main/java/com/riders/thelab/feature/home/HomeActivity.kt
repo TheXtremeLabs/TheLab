@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.home
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,6 +11,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -25,6 +27,8 @@ class HomeActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate()")
+
+        mViewModel.initWeakReference(this)
 
         enableEdgeToEdge()
 
@@ -48,7 +52,11 @@ class HomeActivity : BaseComponentActivity() {
                     val appList by mViewModel.appList.collectAsStateWithLifecycle()
 
                     if (isTv) {
-                        HomeScreenTV(theme = theme, darkTheme = true, whatsNewList = appList.take(3))
+                        HomeScreenTV(
+                            theme = theme,
+                            darkTheme = true,
+                            whatsNewList = appList.take(3)
+                        )
                     } else {
                         HomeScreen(theme = theme, darkTheme = isDarkTheme, windowSize = windowSize)
                     }
@@ -59,5 +67,20 @@ class HomeActivity : BaseComponentActivity() {
 
     override fun backPressed() {
         finish()
+    }
+
+    fun launchApp(app: App) {
+        Intent(this, app.appActivity).runCatching {
+            Timber.w("launchApp() | Attempting lo launch ${app.appActivity?.simpleName}...")
+            startActivity(this)
+        }
+            .onFailure {
+                it.printStackTrace()
+                Timber.e("launchApp | onFailure | Error caught: ${it.message} (class : ${it.javaClass.canonicalName})")
+            }
+            .onSuccess {
+                Timber.d("launchApp | onSuccess | Activity launched successfully")
+                finish()
+            }
     }
 }
