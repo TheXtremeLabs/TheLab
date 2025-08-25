@@ -1,25 +1,31 @@
 package com.riders.thelab.core.ui.compose.utils
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import coil.ImageLoader
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.SvgDecoder
-import coil.request.CachePolicy
-import coil.request.ImageRequest
-import coil.size.Scale
-import coil.size.Size
-import coil.util.DebugLogger
+import coil3.ImageLoader
+import coil3.compose.AsyncImagePainter
+import coil3.compose.asPainter
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
+import coil3.request.crossfade
+import coil3.size.Scale
+import coil3.size.Size
+import coil3.svg.SvgDecoder
+import coil3.toBitmap
+import coil3.util.DebugLogger
 import com.riders.thelab.core.ui.R
 import timber.log.Timber
 
 /*
  * https://www.sinasamaki.com/loading-images-using-coil-in-jetpack-compose/
  */
-@Composable
+// @Composable
 private fun getCoilImageRequest(
     context: Context,
     dataUrl: String,
@@ -133,3 +139,14 @@ fun getCoilAsyncImagePainter(
         onState = onState,
         imageLoader = ImageLoader.Builder(context).logger(DebugLogger()).build()
     )
+
+fun AsyncImagePainter.get(context: Context): Painter =   (this.state as AsyncImagePainter.State.Success)
+    .result
+    .image
+    .asPainter(context = context )
+
+
+fun AsyncImagePainter.loadImage(): Bitmap = (this.state as AsyncImagePainter.State.Success)
+    .result
+    .image
+    .toBitmap()

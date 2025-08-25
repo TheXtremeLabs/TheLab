@@ -7,10 +7,11 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.core.content.FileProvider
 import androidx.glance.LocalContext
-import coil.annotation.ExperimentalCoilApi
-import coil.imageLoader
-import coil.request.ErrorResult
-import coil.request.ImageRequest
+import coil3.annotation.ExperimentalCoilApi
+import coil3.imageLoader
+import coil3.memory.MemoryCache
+import coil3.request.ErrorResult
+import coil3.request.ImageRequest
 import timber.log.Timber
 
 
@@ -34,7 +35,7 @@ suspend fun String.getIconUri(context: Context): String {
     // Request the image to be loaded and throw error if it failed
     with(context.imageLoader) {
         diskCache?.remove(this@getIconUri)
-        memoryCache?.remove(coil.memory.MemoryCache.Key(this@getIconUri))
+        memoryCache?.remove(MemoryCache.Key(this@getIconUri))
 
         val result = execute(request)
         if (result is ErrorResult) {

@@ -10,7 +10,7 @@ import android.graphics.drawable.VectorDrawable
 import android.util.Base64
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import coil.compose.AsyncImagePainter
+import coil3.compose.AsyncImagePainter
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 import androidx.core.graphics.createBitmap
@@ -80,12 +80,3 @@ fun Bitmap.encodeToBase64(): String = Base64.encodeToString(
 fun String.decodeBase64(): Bitmap = Base64
     .decode(this, 0)
     .run { BitmapFactory.decodeByteArray(this, 0, this.size) }
-
-/////////////////////////////////////////////////////
-// Glide Image Loader
-/////////////////////////////////////////////////////
-// painter.loadImage() -> Drawable
-suspend fun AsyncImagePainter.loadImage(): Drawable =
-    imageLoader
-        .execute(request)
-        .drawable!!
