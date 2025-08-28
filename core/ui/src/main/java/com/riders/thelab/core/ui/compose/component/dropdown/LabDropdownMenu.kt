@@ -64,12 +64,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.executeOnBackPressed
-import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.compose.utils.keyboardAsState
 import com.riders.thelab.core.ui.utils.UIManager
 import kotlinx.coroutines.android.awaitFrame
@@ -237,7 +235,7 @@ fun <T> LabDropdownMenu(
         if (expanded) {
             dropdownMenuUiEvent.invoke(UiEvent.OnExpandedChanged(false))
         }
-        executeOnBackPressed((context.findActivity() as BaseComponentActivity))
+        context.executeOnBackPressed()
     }
 
     LaunchedEffect(forceRequestFocus) {
@@ -450,7 +448,7 @@ fun <T> LabDropdownMenu2(
         if (expanded) {
             dropdownMenuUiEvent.invoke(UiEvent.OnExpandedChanged(false))
         }
-        executeOnBackPressed((context.findActivity() as BaseComponentActivity))
+        context.executeOnBackPressed()
     }
 
     /*LaunchedEffect(interactionSource) {

@@ -27,7 +27,7 @@ fun Project.configureFlavors(
     commonExtension.apply {
         flavorDimensions += FlavorDimension.contentType.name
         productFlavors {
-            TheLabFlavor.values().forEach {
+            TheLabFlavor.entries.forEach {
                 create(it.name) {
                     dimension = it.dimension.name
                     flavorConfigurationBlock(this, it)

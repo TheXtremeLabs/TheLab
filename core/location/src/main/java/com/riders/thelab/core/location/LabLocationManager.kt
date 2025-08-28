@@ -8,7 +8,6 @@ import android.provider.Settings
 import android.provider.Settings.SettingNotFoundException
 import androidx.core.location.LocationManagerCompat
 import timber.log.Timber
-import java.lang.Exception
 
 
 class LabLocationManager(private val context: Context) {
@@ -36,8 +35,10 @@ class LabLocationManager(private val context: Context) {
 
     @Throws(Exception::class)
     fun isLocationModeOn(): Boolean {
-        val locationMode =
-            Settings.Secure.getInt(context.contentResolver, Settings.Secure.LOCATION_MODE)
+        val locationMode = Settings.Secure.getInt(
+            context.contentResolver,
+            Settings.Secure.LOCATION_MODE
+        )
         return locationMode != Settings.Secure.LOCATION_MODE_OFF
     }
 
