@@ -3,12 +3,11 @@ import com.android.build.gradle.LibraryExtension
 import com.riders.thelab.configureKotlinAndroid
 import com.riders.thelab.configurePrintApksTask
 import com.riders.thelab.configureTimber
+import com.riders.thelab.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.kotlin
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 
@@ -21,7 +20,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             // Configure Jvm ToolChain
-            with(kotlinExtension){
+            with(kotlinExtension) {
                 jvmToolchain(21)
             }
 
@@ -34,7 +33,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             extensions.configure<LibraryAndroidComponentsExtension> {
                 configurePrintApksTask(this)
             }
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
             configurations.configureEach {
                 resolutionStrategy {
                     force(libs.findLibrary("junit4").get())

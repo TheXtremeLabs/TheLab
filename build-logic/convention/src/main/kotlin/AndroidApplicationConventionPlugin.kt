@@ -1,5 +1,6 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import com.riders.thelab.configureFlavors
 import com.riders.thelab.configureKotlinAndroid
 import com.riders.thelab.configurePrintApksTask
 import com.riders.thelab.configureTimber
@@ -26,11 +27,13 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
+
                 defaultConfig.targetSdk = AndroidConfiguration.Sdk.TARGET
 
                 defaultConfig.versionCode = AndroidConfiguration.Application.CODE
                 defaultConfig.versionName = AndroidConfiguration.Application.version.toString()
-                // configureFlavors(this)
+
+                configureFlavors(this)
                 configureTimber()
             }
             extensions.configure<ApplicationAndroidComponentsExtension> {
