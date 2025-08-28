@@ -21,7 +21,6 @@ import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.utils.LabAddressesUtils
-import com.riders.thelab.core.common.utils.LabAppManager
 import com.riders.thelab.core.common.utils.LabAppManager.getPackageList
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.toLocation
@@ -108,7 +107,6 @@ class MainActivityViewModel @Inject constructor(
 
     // ViewPager Scroll
     var isPagerAutoScroll: Boolean by mutableStateOf(false)
-        private set
 
     // Search
     var searchedAppRequest by mutableStateOf("")

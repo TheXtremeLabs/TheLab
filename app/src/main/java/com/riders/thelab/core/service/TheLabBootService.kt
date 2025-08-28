@@ -99,7 +99,7 @@ class TheLabBootService : Service() {
                 }
 
             val mNotifyMgr: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
             mNotifyMgr.notify(Constants.NOTIFICATION_ID, mBuilder.build())
 

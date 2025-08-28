@@ -14,7 +14,7 @@ data class SnackbarVisualsCustom(
     override val withDismissAction: Boolean = false,
     override val duration: SnackbarDuration = if (actionLabel == null) SnackbarDuration.Short else SnackbarDuration.Indefinite,
     // You can add custom things here (for you it's an icon)
-    @DrawableRes val drawableRes: Int? = null,
+    @param:DrawableRes val drawableRes: Int? = null,
     val icon: ImageVector? = null,
     val containerColor: Color = Color.Black
 ) : SnackbarVisuals {

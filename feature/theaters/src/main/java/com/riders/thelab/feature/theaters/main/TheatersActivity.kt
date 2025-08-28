@@ -2,6 +2,7 @@ package com.riders.thelab.feature.theaters.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,7 +27,7 @@ import kotlinx.serialization.json.Json
 import timber.log.Timber
 
 @AndroidEntryPoint
-class TheatersActivity : BaseComponentActivity() {
+class TheatersActivity : BaseComponentActivity(), KeyEvent.Callback {
 
     private val mTheatersViewModel: TheatersViewModel by viewModels()
 
@@ -138,5 +139,28 @@ class TheatersActivity : BaseComponentActivity() {
             .onSuccess {
                 Timber.d("runCatching - onSuccess() | Activity launched successfully")
             }
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        Timber.d("onKeyUp() | event: ${event?.keyCode?.toString()}")
+        when(event?.keyCode){
+            KeyEvent.KEYCODE_DPAD_UP -> {
+                true
+            }
+            KeyEvent.KEYCODE_DPAD_DOWN -> {true}
+            KeyEvent.KEYCODE_DPAD_LEFT-> {true}
+            KeyEvent.KEYCODE_DPAD_RIGHT -> {true}
+            KeyEvent.KEYCODE_DPAD_CENTER -> {true}
+            KeyEvent.KEYCODE_BUTTON_SELECT -> {true}
+            KeyEvent.KEYCODE_BACK -> {}
+            else -> return true
+        }
+
+        return super.onKeyUp(keyCode, event)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        Timber.d("onKeyDown() | event: ${event?.keyCode?.toString()}")
+        return super.onKeyDown(keyCode, event)
     }
 }

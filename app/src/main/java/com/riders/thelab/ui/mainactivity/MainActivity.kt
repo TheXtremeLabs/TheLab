@@ -227,7 +227,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == GPS_REQUEST) {
+        if (resultCode == RESULT_OK && requestCode == GPS_REQUEST) {
             isGPS = true // flag maintain before get location
         }
     }
@@ -268,7 +268,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 
         val hasPermission = arrayOfPermissions.all {
             val granted = checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
-            Timber.d("checkPermissions() | permission ${it.toString()} granted ? = $granted")
+            Timber.d("checkPermissions() | permission $it granted ? = $granted")
             checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
         }
 
@@ -437,7 +437,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
             startActivityForResult(panelIntent, 0)
         } else {
             // use previous solution, add appropriate permissions to AndroidManifest file (see answers above)
-            (this.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager)
+            (this.applicationContext.getSystemService(WIFI_SERVICE) as? WifiManager)
                 ?.apply {
                     // isWifiEnabled = true /*or false*/
                     if (!isWifiEnabled) {

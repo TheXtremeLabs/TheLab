@@ -42,46 +42,6 @@ fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
-@Deprecated(
-    message = "This implementation of executeOnBackPressed is outdated. Use the newer Context.executeOnBackPressed() for improved reliability and integration with modern Android back navigation.",
-    replaceWith = ReplaceWith(
-        "context.executeOnBackPressed()", // 'this' refers to the Context instance
-        "com.riders.thelab.core.ui.compose.utils.executeOnBackPressed" // Assuming the new function is in this import
-    ),
-    level = DeprecationLevel.WARNING
-)
-fun executeOnBackPressed(context: Context) {
-    Timber.d("executeOnBackPressed()")
-
-    runCatching {
-        Timber.d("runCatching | Attempt to execute backPressed on ComponentActivity()")
-        (context.findActivity() as BaseComponentActivity).backPressed()
-    }
-        .onFailure { baseComponentException ->
-            baseComponentException.printStackTrace()
-            Timber.e("runCatching | onFailure | error caught with message: ${baseComponentException.message} (class: ${baseComponentException.javaClass.canonicalName})")
-
-            runCatching {
-                Timber.d("runCatching | Attempt to execute fallback backPressed on AppCompatActivity()")
-                (context.findActivity() as BaseAppCompatActivity).backPressed()
-            }
-                .onFailure { baseAppCompatException ->
-                    baseAppCompatException.printStackTrace()
-                    Timber.e("runCatching | onFailure | error caught with message: ${baseAppCompatException.message} (class: ${baseAppCompatException.javaClass.canonicalName})")
-
-                    runCatching {
-                        Timber.d("runCatching | Attempt to execute fallback backPressed on FragmentActivity()")
-                        @Suppress("DEPRECATION")
-                        (context.findActivity() as FragmentActivity).onBackPressed()
-                    }
-                        .onFailure { fragmentActivityException ->
-                            fragmentActivityException.printStackTrace()
-                            Timber.e("runCatching | onFailure | error caught with message: ${fragmentActivityException.message} (class: ${fragmentActivityException.javaClass.canonicalName})")
-                        }
-                }
-        }
-}
-
 // OnBackPressedDispatcher
 fun Context.executeOnBackPressed() {
     Timber.d("Context.executeOnBackPressed()")

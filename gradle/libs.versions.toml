@@ -1,7 +1,7 @@
 [versions]
 # Gradle version
 # Android
-androidGradlePlugin = "8.12.1"
+androidGradlePlugin = "8.12.2"
 kotzillaGradlePlugin = "1.0.1"
 navigationGradlePlugin = "2.9.3"
 # Google Services

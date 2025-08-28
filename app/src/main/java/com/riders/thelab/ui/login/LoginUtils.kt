@@ -39,7 +39,7 @@ object LoginUtils {
         try {
             val sb = StringBuilder()
             for (b in sha1hash) {
-                var halfByte: Int = b.toInt() ushr 4 and 0x0F
+                val halfByte: Int = b.toInt() ushr 4 and 0x0F
                 var twoHalfs = 0
 
                 do {

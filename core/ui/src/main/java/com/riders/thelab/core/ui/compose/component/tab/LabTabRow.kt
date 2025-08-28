@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -32,6 +34,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Tab
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
@@ -140,6 +143,10 @@ fun LabTabRowTV(
         label = "indicator animation",
     )
 
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     TheLabThemeTV(theme = theme) {
         Box(
             modifier = modifier
@@ -153,10 +160,11 @@ fun LabTabRowTV(
             androidx.tv.material3.TabRow(
                 selectedTabIndex = selectedItemIndex,
                 modifier = Modifier
+                    .fillMaxHeight()
                     .clip(shape)
                     .bringIntoViewRequester(bringIntoViewRequester),
                 //containerColor = backgroundColor,
-               // contentColor = selectedTextColor,
+                // contentColor = selectedTextColor,
                 indicator = { tabPositions, doesTabRowHaveFocus ->
                     if (hasCustomShape) {
                         LabTabIndicator(
@@ -168,12 +176,10 @@ fun LabTabRowTV(
                         )
                     } else {
                         androidx.tv.material3.TabRowDefaults.PillIndicator(
-                            modifier = Modifier
-                                .focusRequester(focusRequester)
-                                .padding(8.dp),
+                            modifier = Modifier.focusRequester(focusRequester),
                             currentTabPosition = tabPositions[selectedItemIndex],
                             doesTabRowHaveFocus = doesTabRowHaveFocus,
-                           // activeColor = indicatorColor,
+                            // activeColor = indicatorColor,
                             // inactiveColor = indicatorColor
                         )
                     }
@@ -216,14 +222,22 @@ fun LabTabRowTV(
                         )
                     } else {
                         Tab(
+                            modifier = Modifier
+                                .bringIntoViewRequester(bringIntoViewRequester)
+                                .focusRequester(focusRequester),
                             selected = isSelected,
                             onFocus = { onClick(index) },
                             onClick = { onClick(index) }
                         ) {
-                            androidx.tv.material3.Text(
-                                modifier = Modifier.padding(8.dp),
-                                text = text
-                            )
+                            Box(
+                                contentAlignment = Alignment.Center) {
+
+                                androidx.tv.material3.Text(
+                                    modifier  = Modifier.padding(10.dp),
+                                    text = text,
+                                    style = androidx.tv.material3.MaterialTheme.typography.labelSmall
+                                )
+                            }
                         }
                     }
                 }

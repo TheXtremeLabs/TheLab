@@ -13,11 +13,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.window.layout.WindowMetricsCalculator
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.GoogleApiAvailability
-import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
 import com.riders.thelab.core.google.BaseGoogleActivity
 import com.riders.thelab.core.google.GooglePlayServicesManager
 import com.riders.thelab.core.google.GoogleSignInManager

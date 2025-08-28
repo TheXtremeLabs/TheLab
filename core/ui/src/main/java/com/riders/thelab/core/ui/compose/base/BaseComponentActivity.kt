@@ -27,14 +27,14 @@ abstract class BaseComponentActivity : ComponentActivity() {
         private set
 
     val isTv: Boolean
-        get() {
-            return packageName
-                .also { Timber.d("packageName: $it") }
-                .split(".").last()
-                .also { Timber.d("suffix: $it") }
-                .trim()
-                .contains("tv", true)
-        }
+        get() = packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+            .also { isTelevision: Boolean ->
+                if (isTelevision) {
+                    Timber.tag("DeviceTypeRuntimeCheck").d("Running on a TV Device")
+                } else {
+                    Timber.tag("DeviceTypeRuntimeCheck").d("Running on a non-TV Device")
+                }
+            }
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {

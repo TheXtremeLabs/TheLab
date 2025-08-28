@@ -1,13 +1,25 @@
 package com.riders.thelab.feature.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.AppBuilder
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.utils.getDrawableFromIntResource
 import com.riders.thelab.feature.artists.ArtistsActivity
+import com.riders.thelab.feature.biometric.ui.BiometricActivity
+import com.riders.thelab.feature.bluetooth.BluetoothActivity
+import com.riders.thelab.feature.colors.ColorActivity
+import com.riders.thelab.feature.download.DownloadActivity
+import com.riders.thelab.feature.googledrive.ui.GoogleDriveActivity
+import com.riders.thelab.feature.kat.ui.KatSplashscreenActivity
+import com.riders.thelab.feature.koin.ui.KoinActivity
+import com.riders.thelab.feature.locationonmaps.LocationOnMapsActivity
 import com.riders.thelab.feature.lottie.LottieActivity
+import com.riders.thelab.feature.mlkit.ui.chooser.MLKitChooserActivity
+import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
 import com.riders.thelab.feature.palette.PaletteActivity
+import com.riders.thelab.feature.schedule.ui.ScheduleActivity
 import com.riders.thelab.feature.songplayer.ui.SongPlayerActivity
 import com.riders.thelab.feature.streaming.StreamingActivity
 import com.riders.thelab.feature.tabs.WorkingTabsActivity
@@ -17,8 +29,487 @@ import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.feature.youtube.ui.splashscreen.YoutubeSplashScreenActivity
 import timber.log.Timber
 
-object AppBuilderUtils {
+class AppBuilderUtils(private val context: Context) {
 
+    // Colors
+    val colors
+        get() = AppBuilder
+            .withId(0)
+            .withActivityTitle(context.getString(R.string.activity_title_colors))
+            .withActivityDescription("Change color programmatically...")
+            .withActivityIcon(context.getDrawableFromIntResource(R.drawable.logo_colors))
+            .withActivityClass(ColorActivity::class.java)
+            .withActivityDate("2024/01/14")
+            .build()
+
+    //Biometric
+    val biometric
+        get() = AppBuilder
+            .withId(1)
+            .withActivityTitle("Biometric")
+            .withActivityDescription("Check biometric hardware and test it...")
+            .withActivityIcon(context.getDrawableFromIntResource(R.drawable.ic_fingerprint))
+            .withActivityClass(BiometricActivity::class.java)
+            .withActivityDate("2023/07/24")
+            .build()
+
+    // Artists
+    val artists
+        get() = AppBuilder
+            .withId(2)
+            .withActivityTitle("Artists")
+            .withActivityDescription("Show Artists info using recycler basics and best practices...")
+            .withActivityIcon(context.getDrawableFromIntResource(R.drawable.ic_microphone_flat))
+            .withActivityClass(ArtistsActivity::class.java)
+            .withActivityDate("2024/05/27")
+            .build()
+
+    //Tabs
+    val tabs
+        get() = AppBuilder
+            .withId(3)
+            .withActivityTitle("Tabs")
+            .withActivityDescription("ViewPager Fragments Tabs...")
+            .withActivityIcon(context.getDrawableFromIntResource(R.drawable.ic_tab))
+            .withActivityClass(WorkingTabsActivity::class.java)
+            .withActivityDate("2015/01/20")
+            .build()
+
+    //Transitions
+    val transitions
+        get() = AppBuilder
+            .withId(4)
+            .withActivityTitle("Transitions")
+            .withActivityDescription("Start a new activity with awesome animations...")
+            .withActivityIcon(context.getDrawableFromIntResource(R.drawable.ic_flip_to_back))
+            .withActivityClass(
+                TransitionsChooserActivity::
+                class.java
+            )
+            .withActivityDate("2024/05/14")
+            .build()
+
+    //Contact List
+    /*val contactList get() = AppBuilder
+            .withId(6)
+            .withActivityTitle("Contact List")
+            .withActivityDescription("Fetch contacts from database, add one and more...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_contacts
+                )
+            )
+            .withActivityClass(ContactsActivity::class.java)
+            .withActivityDate("2019/01/20")
+            .build()*/
+
+    //Location On Maps
+    val locationOnMaps
+        get() = AppBuilder
+            .withId(7)
+            .withActivityTitle("Location On Maps")
+            .withActivityDescription("Display User location on map...")
+            .withActivityIcon(context.getDrawableFromIntResource(R.drawable.ic_location_on))
+            .withActivityClass(LocationOnMapsActivity::class.java)
+            .withActivityDate("2024/10/03")
+            .build()
+
+
+    //Schedule Job
+    val scheduleJob
+        get() = AppBuilder
+            .withId(8)
+            .withActivityTitle("Schedule Job")
+            .withActivityDescription("Own alarm to remind user...")
+            .withActivityIcon(context.getDrawableFromIntResource(R.drawable.ic_schedule))
+            .withActivityClass(ScheduleActivity::class.java)
+            .withActivityDate("2023/03/23")
+            .build()
+
+    // Palette
+    val palette
+        get() = AppBuilder
+            .withId(10)
+            .withActivityTitle(context.getString(R.string.activity_title_palette))
+            .withActivityDescription("Get different color from an image...")
+            .withActivityIcon(context.getDrawableFromIntResource(R.drawable.ic_palette))
+            .withActivityClass(com.riders.thelab.feature.palette.PaletteActivity::class.java)
+            .withActivityDate("2024/02/12")
+            .build()
+
+    // Theaters
+    val theaters
+        get() = AppBuilder
+            .withId(12)
+            .withActivityTitle(context.getString(R.string.activity_title_theaters))
+            .withActivityDescription("Netflix like but not Netflix...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_theaters
+                )
+            )
+            .withActivityClass(TheatersActivity::class.java)
+            .withActivityDate("2025/08/14")
+            .build()
+
+    // Built-In Web View
+    /*val builtInWebView
+        get() = AppBuilder
+            .withId(14)
+            .withActivityTitle("Built-in Web View")
+            .withActivityDescription("Display web view in activity directly...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_alternate_email
+                )
+            )
+            .withActivityClass(BuiltInWebViewActivity::class.java)
+            .withActivityDate("01/20/2015")
+            .build()*/
+
+    // Youtube
+    val youtube
+        get() = AppBuilder
+            .withId(15)
+            .withActivityTitle(context.getString(R.string.activity_title_youtube_like))
+            .withActivityDescription("Youtube look like...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.youtube_icon_like
+                )
+            )
+            .withActivityClass(YoutubeSplashScreenActivity::class.java)
+            .withActivityDate("2024/05/13")
+            .build()
+
+    // Weather
+    val weather
+        get() = AppBuilder
+            .withId(16)
+            .withActivityTitle(context.getString(R.string.activity_title_weather))
+            .withActivityDescription("Current weather forecast in your city...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.openweathermap
+                )
+            )
+            .withActivityClass(WeatherActivity::class.java)
+            .withActivityDate("2023/05/23")
+            .build()
+
+    // Floating Widgets
+    /*val floatingWidgets
+        get() = AppBuilder
+            .withId(17)
+            .withActivityTitle("Floating Widget")
+            .withActivityDescription("Create a floating widget that you can move around on the screen...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_flip_to_back
+                )
+            )
+            .withActivityClass(FloatingViewActivity::class.java)
+            .withActivityDate("01/20/2015")
+            .build()*/
+
+    // Custom Toast
+    /*val customToast
+        get() = AppBuilder
+            .withId(18)
+            .withActivityTitle("Custom Toast")
+            .withActivityDescription("Custom Toast Layout...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_announcement
+                )
+            )
+            .withActivityClass(CustomToastActivity::class.java)
+            .withActivityDate("01/20/2015")
+            .build()*/
+
+    // Vector Drawables
+    /*val vectorDrawables
+        get() = AppBuilder
+            .withId(19)
+            .withActivityTitle("Vector Drawables")
+            .withActivityDescription("Animated, scale, transform vector drawables...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_aspect_ratio
+                )
+            )
+            .withActivityClass(VectorDrawablesActivity::class.java)
+            .withActivityDate("01/20/2015")
+            .build()*/
+
+    // Spring
+    /*val spring
+        get() = AppBuilder
+            .withId(20)
+            .withActivityTitle("Spring")
+            .withActivityDescription("Physics-based motion is driven by force. Spring force is one such force that guides interactivity and motion....")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_filter_center_focus
+                )
+            )
+            .withActivityClass(SpringActivity::class.java)
+            .withActivityDate("01/20/2015")
+            .build()*/
+
+    // Kat
+    val kat
+        get() = AppBuilder
+            .withId(21)
+            .withActivityTitle("Chat")
+            .withActivityDescription("Realtime chat using firebase realtime database features")
+            .withActivityIcon(context.getDrawableFromIntResource(R.drawable.ic_k_at))
+            .withActivityClass(KatSplashscreenActivity::class.java)
+            .withActivityDate("2023/12/10")
+            .build()
+
+
+    // SongPlayer
+    val songPlayer
+        get() = AppBuilder
+            .withId(22)
+            .withActivityTitle("Music Player")
+            .withActivityDescription("Play music that is stored on your phone (Live Streaming wip)...")
+            .withActivityIcon(context.getDrawableFromIntResource(R.drawable.ic_music))
+            .withActivityClass(SongPlayerActivity::class.java)
+            .withActivityDate("2025/04/22")
+            .build()
+
+    // Google
+    /*val googleSignIn
+        get() = AppBuilder
+            .withId(23)
+            .withActivityTitle("Google Sign In")
+            .withActivityDescription("Exploring Google Sign In Api...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.googleg_color
+                )
+            )
+            .withActivityClass(GoogleSignInActivity::class.java)
+            .withActivityDate("01/20/2015")
+            .build()*/
+
+    val googleDrive
+        get() = AppBuilder
+            .withId(24)
+            .withActivityTitle("Google Drive API")
+            .withActivityDescription("Exploring Google Drive Api...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.googleg_color
+                )
+            )
+            .withActivityClass(GoogleDriveActivity::class.java)
+            .withActivityDate("2024/12/27")
+            .build()
+
+
+    // download
+    val download
+        get() = AppBuilder
+            .withId(25)
+            .withActivityTitle("Download")
+            .withActivityDescription("Download file using Android DownloadManager, Kotlin Flow and Retrofit...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_download
+                )
+            )
+            .withActivityClass(DownloadActivity::class.java)
+            .withActivityDate("2023/12/29")
+            .build()
+
+    // lottie
+    val lottie
+        get() = AppBuilder
+            .withId(26)
+            .withActivityTitle(context.getString(R.string.activity_title_lottie))
+            .withActivityDescription("Lottie is a mobile library for Android and iOS that parses Adobe After Effects animations and renders them natively on mobile!...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_lottie_icon
+                )
+            )
+            .withActivityClass(LottieActivity::class.java)
+            .withActivityDate("2023/12/23")
+            .build()
+
+    // Bluetooth
+    val bluetooth
+        get() = AppBuilder
+            .withId(27)
+            .withActivityTitle("Bluetooth")
+            .withActivityDescription("Bluetooth feature, retrieve bounded devices and scan available bluetooth connections...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_bluetooth
+                )
+            )
+            .withActivityClass(BluetoothActivity::class.java)
+            .withActivityDate("2023/12/27")
+            .build()
+
+    val googleDrive2
+        get() = AppBuilder
+            .withId(28)
+            .withActivityTitle("Google Drive API")
+            .withActivityDescription("Exploring Google Drive Api...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    com.riders.thelab.feature.googledrive.R.drawable.ic_google_drive_logo
+                )
+            )
+            .withActivityClass(com.riders.thelab.feature.googledrive.ui.GoogleDriveActivity::class.java)
+            .withActivityDate("2024/05/15")
+            .build()
+
+    // Camera
+    /*val camera
+        get() = AppBuilder
+            .withId(29)
+            .withActivityTitle("Camera")
+            .withActivityDescription("CameraX is a Jetpack support library, built to help you make camera app development easier....")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_camera
+                )
+            )
+            .withActivityClass(CameraActivity::class.java)
+            .withActivityDate("2021/10/13")
+            .build()*/
+
+    // Screen Shot
+    /*val screenShot
+        get() = AppBuilder
+            .withId(30)
+            .withActivityTitle("Screen Shot")
+            .withActivityDescription("Screen Shot the device display programmatically...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_fullscreen
+                )
+            )
+            .withActivityClass(ScreenShotActivity::class.java)
+            .withActivityDate("2021/10/13")
+            .build()*/
+
+    // Music Recognition
+    val musicRecognition
+        get() = AppBuilder
+            .withId(31)
+            .withActivityTitle("Music Recognition")
+            .withActivityDescription("Choose ACRCLoud Or Shazam and see...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_shazam
+                )
+            )
+            .withActivityClass(MusicRecognitionChooserActivity::class.java)
+            .withActivityDate("2025/05/25")
+            .build()
+
+    // Google ML Kit
+    val mlkit
+        get() = AppBuilder
+            .withId(32)
+            .withActivityTitle(context.getString(R.string.activity_title_google_ml_kit))
+            .withActivityDescription("ML Kit brings Google’s machine learning expertise to mobile developers in a powerful and easy-to-use package...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.logo_mlkit
+                )
+            )
+            .withActivityClass(MLKitChooserActivity::class.java)
+            .withActivityDate("2025/05/26")
+            .build()
+
+    // Streaming
+    val streaming
+        get() = AppBuilder
+            .withId(34)
+            .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_streaming))
+            .withActivityDescription("Use ExoPlayer to stream media from YouTube, Vimeo, Dailymotion, Twitch, and more...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    com.riders.thelab.core.ui.R.drawable.ic_streaming
+                )
+            )
+            .withActivityClass(StreamingActivity::class.java)
+            .withActivityDate("2024/01/24")
+            .build()
+
+    //Location On Maps Compose
+    val locationOnMapsCompose
+        get() = AppBuilder
+            .withId(35)
+            .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_location_on_maps_compose))
+            .withActivityDescription("Display User location on map...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    com.riders.thelab.feature.locationonmaps.R.drawable.ic_location_compose
+                )
+            )
+            .withActivityClass(com.riders.thelab.feature.locationonmaps.LocationOnMapsActivity::class.java)
+            .withActivityDate("2024/03/06")
+            .build()
+
+    // Flight
+    val flight
+        get() = AppBuilder
+            .withId(36)
+            .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_flight))
+            .withActivityDescription("Track and get flights info...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    com.riders.thelab.feature.flightaware.R.drawable.ic_flightaware_logo
+                )
+            )
+            .withActivityClass(com.riders.thelab.feature.flightaware.ui.splashscreen.FlightSplashScreenActivity::class.java)
+            .withActivityDate("2024/03/06")
+            .build()
+
+    // Koin
+    val koin
+        get() = AppBuilder
+            .withId(37)
+            .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_koin))
+            .withActivityDescription("See the magic of dependency injection with Koin...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    com.riders.thelab.core.ui.R.drawable.koin_logo
+                )
+            )
+            .withActivityClass(KoinActivity::class.java)
+            .withActivityDate("2025/04/15")
+            .build()
+
+    // Wip
+    val wip
+        get() = AppBuilder
+            .withId(40)
+            .withActivityTitle("WIP")
+            .withActivityDescription("Coming soon...")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    R.drawable.ic_warning
+                )
+            )
+            .withActivityClass(null)
+            .withActivityDate("1970/01/01")
+            .build()
+
+
+    //////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    //////////////////////////////////
     fun getMobileActivities(context: Context): List<App> =
         mutableListOf<App>()
             .apply {
@@ -77,7 +568,7 @@ object AppBuilderUtils {
                         .withId(3)
                         .withActivityTitle("Tabs")
                         .withActivityDescription("ViewPager Fragments Tabs...")
-                        .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_tab))
+                        .withActivityIcon(context.getDrawableFromIntResource( R.drawable.ic_tab))
                         .withActivityClass(WorkingTabsActivity::class.java)
                         .withActivityDate("2015/01/20")
                         .build()
@@ -297,7 +788,7 @@ object AppBuilderUtils {
                         .withId(21)
                         .withActivityTitle("Chat")
                         .withActivityDescription("Realtime chat using firebase realtime database features")
-                        .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_k_at))
+                        .withActivityIcon(context.getDrawableFromIntResource( R.drawable.ic_k_at))
                         .withActivityClass(KatSplashscreenActivity::class.java)
                         .withActivityDate("2023/12/10")
                         .build()
@@ -310,7 +801,7 @@ object AppBuilderUtils {
                         .withId(22)
                         .withActivityTitle("Music Player")
                         .withActivityDescription("Play music that is stored on your phone (Live Streaming wip)...")
-                        .withActivityIcon(getDrawableFromIntResource(context, R.drawable.ic_music))
+                        .withActivityIcon(context.getDrawableFromIntResource( R.drawable.ic_music))
                         .withActivityClass(SongPlayerActivity::class.java)
                         .withActivityDate("2025/04/22")
                         .build()
@@ -563,158 +1054,48 @@ object AppBuilderUtils {
         mutableListOf<App>()
             .apply {
                 // Artists
-                val artists =
-                    AppBuilder
-                        .withId(2)
-                        .withActivityTitle("Artists")
-                        .withActivityDescription("Show Artists info using recycler basics and best practices...")
-                        .withActivityIcon(
-                            context.getDrawableFromIntResource(
-                                com.riders.thelab.core.ui.R.drawable.ic_microphone_flat
-                            )
-                        )
-                        .withActivityClass(ArtistsActivity::class.java)
-                        .withActivityDate("2024/05/27")
-                        .build()
                 this.add(artists)
 
                 //Tabs
-                val tabs =
-                    AppBuilder
-                        .withId(3)
-                        .withActivityTitle("Tabs")
-                        .withActivityDescription("ViewPager Fragments Tabs...")
-                        .withActivityIcon(context.getDrawableFromIntResource(R.drawable.ic_tab))
-                        .withActivityClass(WorkingTabsActivity::class.java)
-                        .withActivityDate("2015/01/20")
-                        .build()
                 this.add(tabs)
 
                 // Transitions
-                val transitions =
-                    AppBuilder
-                        .withId(4)
-                        .withActivityTitle("Transitions")
-                        .withActivityDescription("Start a new activity with awesome animations...")
-                        .withActivityIcon(
-                            context.getDrawableFromIntResource(
-                                R.drawable.ic_flip_to_back
-                            )
-                        )
-                        .withActivityClass(TransitionsChooserActivity::class.java)
-                        .withActivityDate("2024/05/14")
-                        .build()
                 this.add(transitions)
 
                 // Palette
-                val palette =
-                    AppBuilder
-                        .withId(10)
-                        .withActivityTitle(context.getString(R.string.activity_title_palette))
-                        .withActivityDescription("Get different color from an image...")
-                        .withActivityIcon(
-                            context.getDrawableFromIntResource(
-                                R.drawable.ic_palette
-                            )
-                        )
-                        .withActivityClass(PaletteActivity::class.java)
-                        .withActivityDate("2024/02/12")
-                        .build()
                 this.add(palette)
 
                 // Theaters
-                val theaters =
-                    AppBuilder
-                        .withId(12)
-                        .withActivityTitle(context.getString(R.string.activity_title_theaters))
-                        .withActivityDescription("Netflix like but not Netflix...")
-                        .withActivityIcon(
-                            context.getDrawableFromIntResource(
-                                R.drawable.ic_theaters
-                            )
-                        )
-                        .withActivityClass(TheatersActivity::class.java)
-                        .withActivityDate("2024/01/24")
-                        .build()
                 this.add(theaters)
 
                 // Youtube
-                val youtube =
-                    AppBuilder
-                        .withId(15)
-                        .withActivityTitle(context.getString(R.string.activity_title_youtube_like))
-                        .withActivityDescription("Youtube look like...")
-                        .withActivityIcon(
-                            context.getDrawableFromIntResource(
-                                R.drawable.youtube_icon_like
-                            )
-                        )
-                        .withActivityClass(YoutubeSplashScreenActivity::class.java)
-                        .withActivityDate("2024/05/13")
-                        .build()
                 this.add(youtube)
 
                 // Weather
-                val weather =
-                    AppBuilder
-                        .withId(16)
-                        .withActivityTitle(context.getString(R.string.activity_title_weather))
-                        .withActivityDescription("Current weather forecast in your city...")
-                        .withActivityIcon(
-                            context.getDrawableFromIntResource(
-                                R.drawable.openweathermap
-                            )
-                        )
-                        .withActivityClass(WeatherActivity::class.java)
-                        .withActivityDate("2023/05/23")
-                        .build()
                 this.add(weather)
 
                 // SongPlayer
-                val songPlayer =
-                    AppBuilder
-                        .withId(22)
-                        .withActivityTitle("Music Player")
-                        .withActivityDescription("Play music that is stored on your phone (Live Streaming wip)...")
-                        .withActivityIcon(context.getDrawableFromIntResource(R.drawable.ic_music))
-                        .withActivityClass(SongPlayerActivity::class.java)
-                        .withActivityDate("2025/04/22")
-                        .build()
                 this.add(songPlayer)
 
                 // lottie
-                val lottie =
-                    AppBuilder
-                        .withId(26)
-                        .withActivityTitle(context.getString(R.string.activity_title_lottie))
-                        .withActivityDescription("Lottie is a mobile library for Android and iOS that parses Adobe After Effects animations and renders them natively on mobile!...")
-                        .withActivityIcon(
-                            context.getDrawableFromIntResource(
-                                R.drawable.ic_lottie_icon
-                            )
-                        )
-                        .withActivityClass(LottieActivity::class.java)
-                        .withActivityDate("2023/12/23")
-                        .build()
                 this.add(lottie)
 
                 // Streaming
-                val streaming =
-                    AppBuilder
-                        .withId(34)
-                        .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_streaming))
-                        .withActivityDescription("Use ExoPlayer to stream media from YouTube, Vimeo, Dailymotion, Twitch, and more...")
-                        .withActivityIcon(
-                            context.getDrawableFromIntResource(
-                                com.riders.thelab.core.ui.R.drawable.ic_streaming
-                            )
-                        )
-                        .withActivityClass(StreamingActivity::class.java)
-                        .withActivityDate("2024/01/24")
-                        .build()
                 this.add(streaming)
             }.also {
                 Timber.d("getTVActivities() | size: ${it.size}")
             }
             .toList()
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        private var mInstance: AppBuilderUtils? = null
+
+        @Synchronized
+        fun getInstance(context: Context): AppBuilderUtils = mInstance ?: synchronized(this) {
+            mInstance ?: AppBuilderUtils(context = context).also {
+                mInstance = it
+            }
+        }
+    }
 }

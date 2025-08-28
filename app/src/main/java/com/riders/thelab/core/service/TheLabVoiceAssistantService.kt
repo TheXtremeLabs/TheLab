@@ -10,13 +10,6 @@ import android.os.IBinder
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import com.google.api.gax.rpc.ClientStream
-import com.google.api.gax.rpc.ResponseObserver
-import com.google.api.gax.rpc.StreamController
-import com.google.cloud.speech.v1.SpeechClient
-import com.google.cloud.speech.v1.StreamingRecognizeRequest
-import com.google.cloud.speech.v1.StreamingRecognizeResponse
-import com.google.cloud.speech.v1.stub.GrpcSpeechStub
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabNotificationManager
 import com.riders.thelab.core.speechtotext.SpeechToTextRepository

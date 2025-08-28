@@ -36,7 +36,6 @@ class SplashScreenViewModel @Inject constructor(
     var switchContent: Boolean by mutableStateOf(false)
 
     var videoPath: String? by mutableStateOf(null)
-        private set
 
 
     private fun updateStartCountDown(started: Boolean) {

@@ -7,7 +7,6 @@ import android.provider.Settings
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.service.FloatingViewService

@@ -126,7 +126,7 @@ class CameraActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         orientationEventListener.enable()
-        val displayManager = getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+        val displayManager = getSystemService(DISPLAY_SERVICE) as DisplayManager
         displayManager.registerDisplayListener(displayListener, null)
     }
 
@@ -167,7 +167,7 @@ class CameraActivity : AppCompatActivity() {
 
         orientationEventListener.disable()
 
-        val displayManager = getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+        val displayManager = getSystemService(DISPLAY_SERVICE) as DisplayManager
         displayManager.unregisterDisplayListener(displayListener)
 
         camera?.let { CameraUtils.turnOffCameraFlash(it) }

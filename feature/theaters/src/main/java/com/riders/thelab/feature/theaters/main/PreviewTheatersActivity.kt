@@ -33,6 +33,7 @@ import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabThemeTV
 import com.riders.thelab.feature.theaters.splashscreen.TheatersSplash
+import com.riders.thelab.feature.theaters.splashscreen.TheatersSplashTV
 import kotlinx.coroutines.delay
 
 
@@ -150,7 +151,10 @@ fun TheatersContainerTV(
                 .fillMaxSize()
                 .background(androidx.tv.material3.MaterialTheme.colorScheme.background)
         ) {
-            AnimatedContent(targetState = hasNetworkConnection) { targetState ->
+            AnimatedContent(
+                modifier = Modifier.matchParentSize(),
+                targetState = hasNetworkConnection
+            ) { targetState ->
                 if (!targetState) {
                     NoInternetConnection(
                         modifier = Modifier.align(Alignment.Center),
@@ -169,7 +173,7 @@ fun TheatersContainerTV(
                         label = "splashscreen animation"
                     ) { targetState ->
                         if (!targetState) {
-                            TheatersSplash(theme = theme, darkTheme = darkTheme)
+                            TheatersSplashTV(theme = theme, darkTheme = darkTheme)
                         } else {
                             TheatersContentTV(
                                 theme = theme,
