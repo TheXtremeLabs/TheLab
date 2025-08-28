@@ -1,3 +1,4 @@
+import com.riders.thelab.TheLabBuildType
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 
 plugins {
@@ -29,12 +30,6 @@ plugins {
  */
 fun log(tag: String, message: String) {
     println("---> KotlinDSL script logs | $tag | $message")
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
 }
 
 android {
@@ -69,6 +64,33 @@ android {
         )
     }
 
+
+    sourceSets {
+        // Encapsulates configurations for the main source set.
+        getByName("main") {
+            // For each source set, you can specify only one Android manifest.
+            // By default, Android Studio creates a manifest for your main source
+            // set in the src/main/ directory.
+            manifest.srcFile("src/main/AndroidManifest.xml")
+        }
+
+        // Encapsulates configurations for the main source set.
+        getByName("release") {
+            // For each source set, you can specify only one Android manifest.
+            // By default, Android Studio creates a manifest for your main source
+            // set in the src/main/ directory.
+            manifest.srcFile("src/main/AndroidManifest.xml")
+        }
+
+        getByName("androidTest") {
+            // For each source set, you can specify only one Android manifest.
+            // By default, Android Studio creates a manifest for your main source
+            // set in the src/main/ directory.
+            manifest.srcFile("${project.rootDir}/AndroidManifest.xml")
+        }
+    }
+
+
     buildTypes {
         getByName("debug") {
             isDebuggable = true
@@ -77,7 +99,7 @@ android {
             // your project's release build type.
             isMinifyEnabled = false
 
-            //applicationIdSuffix = LabBuildType.DEBUG.applicationIdSuffix
+            // applicationIdSuffix = TheLabBuildType.DEBUG.applicationIdSuffix
         }
 
         getByName("release") {
@@ -100,20 +122,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            //applicationIdSuffix = LabBuildType.RELEASE.applicationIdSuffix
+            applicationIdSuffix = TheLabBuildType.RELEASE.applicationIdSuffix
         }
     }
 
-    packaging {
-        resources {
-            excludes += "META-INF/DEPENDENCIES"
-            excludes += "META-INF/INDEX.LIST"
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "google/protobuf/*.proto"
-        }
-
-        jniLibs.pickFirsts.add("protobuf.meta")
-    }
 
     buildFeatures {
         // Determines whether to support Data Binding.
@@ -144,6 +156,25 @@ android {
         checkReleaseBuilds = false
     }
 
+    packaging {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "google/protobuf/*.proto"
+        }
+
+        jniLibs.pickFirsts.add("protobuf.meta")
+    }
+
+    testOptions {
+        unitTests {
+            animationsDisabled = true
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
+
     /*
     * https://stackoverflow.com/questions/50792428/how-to-access-variant-outputfilename-in-kotlin
     */
@@ -157,23 +188,6 @@ android {
                 log("Application Variants | output", "filename: $printFileName")
                 output.outputFileName = fileName
             }
-    }
-
-    configurations.all {
-        /*
-         exclude(module = "protobuf-javalite")
-         exclude(module = "protobuf-java")
-         exclude(module = "proto-google-common-protos")
-         exclude(module = "protolite-well-known-types")
-         */
-
-        exclude(group = "org.threeten", module = "threetenbp")
-    }
-
-    configurations.all {
-        resolutionStrategy {
-            force("com.jakewharton.threetenabp:threetenabp:1.4.9") // Force a specific version
-        }
     }
 
     namespace = "com.riders.thelab"
@@ -192,6 +206,17 @@ composeCompiler {
         ComposeFeatureFlag.OptimizeNonSkippingGroups,
         ComposeFeatureFlag.PausableComposition
     )
+}
+
+configurations.all {
+    resolutionStrategy {
+        cacheDynamicVersionsFor(4, "hours")
+        cacheChangingModulesFor(10, "minutes")
+
+        force("com.jakewharton.threetenabp:threetenabp:1.4.9") // Force a specific version
+    }
+
+    exclude(group = "org.threeten", module = "threetenbp")
 }
 
 dependencies {
@@ -372,6 +397,7 @@ hilt {
  * Use incremental compilation
  */
 tasks.withType<JavaCompile>().configureEach {
+    options.isFork = true
     options.isIncremental = true
 }
 
@@ -382,8 +408,22 @@ tasks.withType<JavaCompile>().configureEach {
  *      you use build scans, which provide more information than a local report
  */
 tasks.withType<Test>().configureEach {
+    // Run tests in parallel
+    maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+
+    // Disable test reports
     reports.html.required = false
     reports.junitXml.required = false
+
+    /*
+    Fork tests into multiple processes
+
+    By default, Gradle runs all tests in a single forked JVM process.
+    This is efficient for small test suites, but large or memory-intensive test suites can suffer from long execution times and GC pauses.
+    You can reduce memory pressure and isolate problematic tests by forking a new JVM
+    after a specified number of tests using the forkEvery setting:
+     */
+    forkEvery = 100
 }
 
 tasks.named("build") {
