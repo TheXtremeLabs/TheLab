@@ -34,9 +34,9 @@ import com.riders.thelab.core.ui.compose.utils.executeOnBackPressed
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.searchTextColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
-import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import kotools.types.text.toNotBlankString
+import org.kotools.types.ExperimentalKotoolsTypesApi
 
 
 ///////////////////////////////////////
@@ -72,7 +72,7 @@ fun FlightDetailErrorContent(theme: AppTheme, darkTheme: Boolean, reason: NotBla
             Text(text = reason.toString(), color = textColor)
 
             Button(
-                onClick = { executeOnBackPressed(context) },
+                onClick = { context.executeOnBackPressed() },
                 colors = ButtonDefaults.buttonColors(containerColor = searchTextColor)
             ) {
                 Row(

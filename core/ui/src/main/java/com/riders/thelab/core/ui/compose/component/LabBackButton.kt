@@ -44,7 +44,7 @@ fun LabBackButton(
             modifier = Modifier
                 .size(48.dp)
                 .then(modifier),
-            onClick = { executeOnBackPressed(context) },
+            onClick = { context.executeOnBackPressed() },
             colors = CardDefaults.cardColors(containerColor = backgroundColor.copy(alpha = .5345f)),
             shape = CircleShape
         ) {

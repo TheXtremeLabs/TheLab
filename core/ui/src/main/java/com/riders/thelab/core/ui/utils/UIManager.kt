@@ -31,6 +31,7 @@ import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.utils.executeOnBackPressed
 import com.riders.thelab.core.ui.data.local.bean.SnackBarType
 import timber.log.Timber
+import androidx.core.graphics.createBitmap
 
 object UIManager {
 
@@ -107,8 +108,7 @@ object UIManager {
         }
         alertDialog.setPositiveButton(positiveMessage) { _: DialogInterface?, _: Int ->
             this.showToast(context, positiveMessage)
-//            activity?.onBackPressed()
-            activity?.let { executeOnBackPressed(it) }
+            activity?.executeOnBackPressed()
             if (negativeMessage.equals("Quitter", ignoreCase = true)) {
                 activity!!.finish()
             }
@@ -211,7 +211,7 @@ object UIManager {
     fun addGradientToImageView(context: Context, originalBitmap: Bitmap): Bitmap {
         val width = originalBitmap.width
         val height = originalBitmap.height
-        val updatedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val updatedBitmap = createBitmap(width, height)
         val canvas = Canvas(updatedBitmap)
         canvas.drawBitmap(originalBitmap, 0f, 0f, null)
         val paint = Paint()
@@ -247,7 +247,7 @@ object UIManager {
         width = if (width > 0) width else 1
         var height = drawable.intrinsicHeight
         height = if (height > 0) height else 1
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(width, height)
         val canvas = Canvas(bitmap)
         drawable.setBounds(0, 0, canvas.width, canvas.height)
         drawable.draw(canvas)
@@ -256,11 +256,7 @@ object UIManager {
 
     fun convertVectorToBitmap(drawable: Drawable): Bitmap? {
         return try {
-            val bitmap: Bitmap = Bitmap.createBitmap(
-                drawable.intrinsicWidth,
-                drawable.intrinsicHeight,
-                Bitmap.Config.ARGB_8888
-            )
+            val bitmap: Bitmap = createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight)
             val canvas = Canvas(bitmap)
             drawable.setBounds(0, 0, canvas.width, canvas.height)
             drawable.draw(canvas)

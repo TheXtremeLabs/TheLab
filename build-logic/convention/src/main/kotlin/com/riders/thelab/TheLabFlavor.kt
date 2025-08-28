@@ -27,13 +27,18 @@ fun Project.configureFlavors(
     commonExtension.apply {
         flavorDimensions += FlavorDimension.contentType.name
         productFlavors {
-            TheLabFlavor.values().forEach {
+            TheLabFlavor.entries.forEach {
                 create(it.name) {
                     dimension = it.dimension.name
                     flavorConfigurationBlock(this, it)
                     if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
                         if (it.applicationIdSuffix != null) {
                             this.applicationIdSuffix = it.applicationIdSuffix
+                        }
+
+                        if (TheLabFlavor.demo.name == it.name) {
+                            isDefault = true
+                            androidResources.localeFilters += listOf("en"/*, "xxhdpi"*/)
                         }
                     }
                 }

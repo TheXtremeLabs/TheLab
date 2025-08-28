@@ -20,8 +20,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -42,6 +42,14 @@ fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
+@Deprecated(
+    message = "This implementation of executeOnBackPressed is outdated. Use the newer Context.executeOnBackPressed() for improved reliability and integration with modern Android back navigation.",
+    replaceWith = ReplaceWith(
+        "context.executeOnBackPressed()", // 'this' refers to the Context instance
+        "com.riders.thelab.core.ui.compose.utils.executeOnBackPressed" // Assuming the new function is in this import
+    ),
+    level = DeprecationLevel.WARNING
+)
 fun executeOnBackPressed(context: Context) {
     Timber.d("executeOnBackPressed()")
 
@@ -63,6 +71,7 @@ fun executeOnBackPressed(context: Context) {
 
                     runCatching {
                         Timber.d("runCatching | Attempt to execute fallback backPressed on FragmentActivity()")
+                        @Suppress("DEPRECATION")
                         (context.findActivity() as FragmentActivity).onBackPressed()
                     }
                         .onFailure { fragmentActivityException ->
@@ -73,9 +82,56 @@ fun executeOnBackPressed(context: Context) {
         }
 }
 
+// OnBackPressedDispatcher
+fun Context.executeOnBackPressed() {
+    Timber.d("Context.executeOnBackPressed()")
+
+    runCatching {
+        Timber.d("Context.executeOnBackPressed() | Attempt to execute backPressed on ComponentActivity()")
+        (this.findActivity() as BaseComponentActivity).backPressed()
+    }
+        .onFailure { baseComponentException ->
+            baseComponentException.printStackTrace()
+            Timber.e("Context.executeOnBackPressed() | onFailure | error caught with message: ${baseComponentException.message} (class: ${baseComponentException.javaClass.canonicalName})")
+
+            this.fallbackExecuteOnBackPressed()
+        }
+}
+
+// Fallback onBackPressed
+fun Context.fallbackExecuteOnBackPressed() {
+    Timber.d("Context.fallbackExecuteOnBackPressed()")
+
+    runCatching {
+        Timber.d("Context.fallbackExecuteOnBackPressed | Attempt to execute fallback backPressed on AppCompatActivity()")
+        (this.findActivity() as BaseAppCompatActivity).backPressed()
+    }
+        .onFailure { baseAppCompatException ->
+            baseAppCompatException.printStackTrace()
+            Timber.e("Context.fallbackExecuteOnBackPressed | onFailure | error caught with message: ${baseAppCompatException.message} (class: ${baseAppCompatException.javaClass.canonicalName})")
+
+            this.deprecatedExecuteOnBackPressed()
+        }
+}
+
+// Deprecated onBackPressed
+fun Context.deprecatedExecuteOnBackPressed() {
+    Timber.d("Context.deprecatedExecuteOnBackPressed()")
+
+    runCatching {
+        Timber.d("Context.deprecatedExecuteOnBackPressed | Attempt to execute backPressed on ComponentActivity()")
+        @Suppress("DEPRECATION")
+        (this.findActivity() as Activity).onBackPressed()
+    }
+        .onFailure { deprecatedComponentException ->
+            deprecatedComponentException.printStackTrace()
+            Timber.e("Context.deprecatedExecuteOnBackPressed | onFailure | error caught with message: ${deprecatedComponentException.message} (class: ${deprecatedComponentException.javaClass.canonicalName})")
+        }
+}
+
 @Composable
 @ReadOnlyComposable
-private fun resourcesAsComposable(): Resources = LocalContext.current.resources
+private fun resourcesAsComposable(): Resources = LocalResources.current
 
 @Composable
 fun isKeyboardVisible(): Boolean = WindowInsets.ime.getBottom(LocalDensity.current) > 0

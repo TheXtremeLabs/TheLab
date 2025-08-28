@@ -105,7 +105,7 @@ fun TheLabTopAppBar(
                 }
             },
             navigationIcon = {
-                IconButton(onClick = { executeOnBackPressed(context) }) {
+                IconButton(onClick = { context.executeOnBackPressed() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
@@ -145,9 +145,7 @@ fun TheLabTopAppBar(theme: AppTheme, viewModel: BaseViewModel, title: String) {
                 }
             },
             navigationIcon = {
-                IconButton(onClick = {
-                    executeOnBackPressed(context)
-                }) {
+                IconButton(onClick = { context.executeOnBackPressed() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
@@ -187,9 +185,7 @@ fun TheLabTopAppBar(theme: AppTheme, isDarkMode: Boolean, title: String) {
                 }
             },
             navigationIcon = {
-                IconButton(onClick = {
-                    executeOnBackPressed(context)
-                }) {
+                IconButton(onClick = { context.executeOnBackPressed() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
@@ -258,9 +254,7 @@ fun TheLabTopAppBar(
             },
             navigationIcon = {
                 if (null == navigationIcon) {
-                    IconButton(
-                        onClick = { executeOnBackPressed(context) }
-                    ) {
+                    IconButton(onClick = { context.executeOnBackPressed() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = "Back_icon",
@@ -339,9 +333,8 @@ fun TheLabTopAppBar(
                         if (null == navigationIcon) {
                             IconButton(
                                 modifier = Modifier.zIndex(10f),
-                                onClick = {
-                                    executeOnBackPressed(context)
-                                }) {
+                                onClick = { context.executeOnBackPressed() }
+                            ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                                     contentDescription = "Back_icon",
@@ -390,11 +383,7 @@ fun TheLabTopAppBar(
                     },
                     navigationIcon = {
                         if (null == navigationIcon) {
-                            IconButton(
-                                onClick = {
-//                        (context.findActivity() as BaseComponentActivity).backPressed()
-                                    executeOnBackPressed(context)
-                                }) {
+                            IconButton(onClick = { context.executeOnBackPressed() }) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                                     contentDescription = "Back_icon",
@@ -438,10 +427,7 @@ fun TheLabTopAppBar(
                     },
                     navigationIcon = {
                         if (null == navigationIcon) {
-                            IconButton(
-                                onClick = {
-                                    executeOnBackPressed(context)
-                                }) {
+                            IconButton(onClick = { context.executeOnBackPressed() }) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                                     contentDescription = "Back_icon",
@@ -589,10 +575,7 @@ fun TheLabTopAppBarLarge(theme: AppTheme) {
                 }
             },
             navigationIcon = {
-                IconButton(
-                    onClick = {
-                        executeOnBackPressed(context)
-                    }) {
+                IconButton(onClick = { context.executeOnBackPressed() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
