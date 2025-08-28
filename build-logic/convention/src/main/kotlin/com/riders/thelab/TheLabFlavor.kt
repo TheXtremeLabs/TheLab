@@ -35,6 +35,10 @@ fun Project.configureFlavors(
                         if (it.applicationIdSuffix != null) {
                             this.applicationIdSuffix = it.applicationIdSuffix
                         }
+
+                        if (TheLabFlavor.demo.name == it.name) {
+                            androidResources.localeFilters += listOf("en"/*, "xxhdpi"*/)
+                        }
                     }
                 }
             }

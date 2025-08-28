@@ -1,11 +1,10 @@
 package com.riders.thelab
 
 import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
@@ -23,13 +22,11 @@ private val coverageExclusions = listOf(
 internal fun Project.configureJacoco(
     androidComponentsExtension: AndroidComponentsExtension<*, *, *>,
 ) {
-    val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-
     configure<JacocoPluginExtension> {
         toolVersion = libs.findVersion("jacoco").get().toString()
     }
 
-    val jacocoTestReport = tasks.create("jacocoTestReport")
+    val jacocoTestReport = tasks.register("jacocoTestReport")
 
     androidComponentsExtension.onVariants { variant ->
         val testTaskName = "test${variant.name.replaceFirstChar(Char::titlecase)}()}UnitTest"
