@@ -41,6 +41,11 @@ android {
     ndkVersion = "21.3.6528147"
 
     defaultConfig {
+        manifestPlaceholders += mapOf(
+            "redirectHostName" to "com.riders.thelab",
+            "redirectSchemeName" to "com.riders.thelab",
+            "redirectPathPattern" to "//com.riders.thelab"
+        )
         applicationId = "com.riders.thelab"
 
         /**
@@ -57,11 +62,6 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        manifestPlaceholders += mapOf(
-            "redirectHostName" to "com.riders.thelab",
-            "redirectSchemeName" to "com.riders.thelab"
-        )
     }
 
 
@@ -249,8 +249,6 @@ dependencies {
     /////////////////////////////
     //Kotlin
     implementation(libs.kotlin.reflect)
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlin.parcelize)

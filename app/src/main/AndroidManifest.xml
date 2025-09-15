@@ -602,7 +602,8 @@
 
                 <data
                     android:host="callback"
-                    android:scheme="thelab" />
+                    android:scheme="thelab"
+                    android:pathPattern="/"/>
             </intent-filter>
         </activity>
 

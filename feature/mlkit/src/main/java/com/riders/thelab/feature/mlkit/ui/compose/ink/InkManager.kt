@@ -6,13 +6,13 @@ import androidx.compose.ui.geometry.Offset
 import com.google.mlkit.common.MlKitException
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
-import com.google.mlkit.vision.digitalink.DigitalInkRecognition
-import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModel
-import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier
-import com.google.mlkit.vision.digitalink.DigitalInkRecognizer
-import com.google.mlkit.vision.digitalink.DigitalInkRecognizerOptions
-import com.google.mlkit.vision.digitalink.Ink
-import com.google.mlkit.vision.digitalink.RecognitionResult
+import com.google.mlkit.vision.digitalink.common.RecognitionResult
+import com.google.mlkit.vision.digitalink.recognition.DigitalInkRecognition
+import com.google.mlkit.vision.digitalink.recognition.DigitalInkRecognitionModel
+import com.google.mlkit.vision.digitalink.recognition.DigitalInkRecognitionModelIdentifier
+import com.google.mlkit.vision.digitalink.recognition.DigitalInkRecognizer
+import com.google.mlkit.vision.digitalink.recognition.DigitalInkRecognizerOptions
+import com.google.mlkit.vision.digitalink.recognition.Ink
 import com.riders.thelab.feature.mlkit.data.local.compose.ink.InkRecognitionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
-import java.net.UnknownHostException
 
 class InkManager(private val activity: InkRecognitionActivity) {
 
@@ -171,7 +170,12 @@ class InkManager(private val activity: InkRecognitionActivity) {
                 .addOnSuccessListener(activity) { downloaded ->
                     if (!downloaded) {
                         Timber.e("recognize() | model is NOT downloaded")
-                        trySend(InkRecognitionState.Failed("Model is not downloaded", NotFoundException("Model is not downloaded")))
+                        trySend(
+                            InkRecognitionState.Failed(
+                                "Model is not downloaded",
+                                NotFoundException("Model is not downloaded")
+                            )
+                        )
                         return@addOnSuccessListener
                     } else {
                         ink = inkBuilder.build()
