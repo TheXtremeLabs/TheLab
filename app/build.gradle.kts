@@ -41,11 +41,6 @@ android {
     ndkVersion = "21.3.6528147"
 
     defaultConfig {
-        manifestPlaceholders += mapOf(
-            "redirectHostName" to "com.riders.thelab",
-            "redirectSchemeName" to "com.riders.thelab",
-            "redirectPathPattern" to "//com.riders.thelab"
-        )
         applicationId = "com.riders.thelab"
 
         /**
@@ -62,6 +57,12 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders += mapOf(
+            "redirectHostName" to "com.riders.thelab",
+            "redirectSchemeName" to "com.riders.thelab",
+            "redirectPathPattern" to "//com.riders.thelab"
+        )
     }
 
 
@@ -337,7 +338,7 @@ dependencies {
     implementation(libs.google.mlkit.objectdetection.custom)
 
     // Firebase BOM and Dependencies: provided by analytics module
-    implementation(libs.firebase.appcheck.ktx)
+    implementation(libs.firebase.appcheck)
     implementation(libs.firebase.appcheck.debug)
     implementation(libs.firebase.appcheck.playintegrity)
 

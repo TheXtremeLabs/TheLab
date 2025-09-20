@@ -56,6 +56,8 @@ dependencies {
     // define any required OkHttp artifacts without version
     api(libs.okhttp)
 
+    api(libs.timber)
+
 
     ///////////////////////////////////
     // Tests Dependencies
