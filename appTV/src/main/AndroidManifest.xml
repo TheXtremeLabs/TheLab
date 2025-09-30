@@ -57,6 +57,8 @@
             android:name="com.riders.thelab.feature.splashscreen.SplashScreenActivity"
             android:exported="true" />
 
+        <activity android:name="com.riders.thelab.feature.login.LoginActivity"/>
+
         <activity android:name="com.riders.thelab.feature.home.HomeActivity" />
 
         <activity android:name="com.riders.thelab.feature.theaters.main.TheatersActivity"

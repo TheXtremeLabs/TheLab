@@ -322,7 +322,7 @@ fun PaletteContent(
                                                         }
 
                                                         is AsyncImagePainter.State.Error -> {
-                                                            Timber.e("state is AsyncImagePainter.State.Error | ${(state as AsyncImagePainter.State.Error).result}")
+                                                            Timber.e("Recomposition | AsyncImagePainter.State.Error | ${(state as AsyncImagePainter.State.Error).result.throwable.message}")
                                                         }
 
                                                         else -> {

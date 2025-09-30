@@ -193,9 +193,9 @@ fun LocationOnMapsContent(
                             when (it) {
                                 is UiEvent.OnPlaceSelected -> {
                                     @Suppress("DEPRECATION")
-                                    markerTitle = it.place.name?.ifBlank { null }
+                                    markerTitle = it.place.displayName?.ifBlank { null }
                                     @Suppress("DEPRECATION")
-                                    markerSnippet = it.place.name?.ifBlank { null }
+                                    markerSnippet = it.place.displayName?.ifBlank { null }
                                 }
 
                                 else -> {

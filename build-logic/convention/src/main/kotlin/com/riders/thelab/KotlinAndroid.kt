@@ -50,12 +50,12 @@ internal fun Project.configureKotlinAndroid(
         add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
 
         // Kotlin bom
-        add("implementation", platform( libs.findLibrary("kotlin-bom").get()))
+        add("implementation", platform(libs.findLibrary("kotlin-bom").get()))
         add("implementation", libs.findLibrary("kotlin-stdlib").get())
         add("implementation", libs.findLibrary("kotlin-reflect").get())
 
         // Kotlin Coroutines bom
-        add("implementation", platform( libs.findLibrary("kotlinx-coroutines-bom").get()))
+        add("implementation", platform(libs.findLibrary("kotlinx-coroutines-bom").get()))
         add("implementation", libs.findLibrary("kotlinx-coroutines-core").get())
         add("implementation", libs.findLibrary("kotlinx-coroutines-android").get())
 

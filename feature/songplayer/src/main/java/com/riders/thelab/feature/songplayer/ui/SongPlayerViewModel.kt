@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -457,7 +458,19 @@ class SongPlayerViewModel @Inject constructor(
             if (null == mMediaButtonReceiver) {
                 mMediaButtonReceiver = MediaButtonReceiver()
             }
-            context.registerReceiver(mMediaButtonReceiver, IntentFilter(Intent.ACTION_MEDIA_BUTTON))
+            if (LabCompatibilityManager.isR()) {
+                ContextCompat.registerReceiver(
+                    context,
+                    mMediaButtonReceiver,
+                    IntentFilter(Intent.ACTION_MEDIA_BUTTON),
+                    ContextCompat.RECEIVER_EXPORTED
+                )
+            } else {
+                context.registerReceiver(
+                    mMediaButtonReceiver,
+                    IntentFilter(Intent.ACTION_MEDIA_BUTTON)
+                )
+            }
         }
             .onFailure {
                 Timber.e("onResume() | onFailure | Error caught: ${it.message}")

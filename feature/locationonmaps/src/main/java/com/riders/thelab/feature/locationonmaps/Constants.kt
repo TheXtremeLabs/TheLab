@@ -20,22 +20,22 @@ object Constants {
      */
     @Suppress("DEPRECATION")
     val CURRENT_PLACE_FIELDS = listOf(
-        Place.Field.ADDRESS,
+        Place.Field.FORMATTED_ADDRESS,
         Place.Field.ID,
-        Place.Field.LAT_LNG,
-        Place.Field.NAME
+        Place.Field.LOCATION,
+        Place.Field.DISPLAY_NAME
     )
 
     @Suppress("DEPRECATION")
     val PLACES_FIELDS = listOf(
-        Place.Field.ADDRESS,
+        Place.Field.FORMATTED_ADDRESS,
         Place.Field.ADDRESS_COMPONENTS,
         Place.Field.BUSINESS_STATUS,
         Place.Field.ID,
-        Place.Field.LAT_LNG,
-        Place.Field.NAME,
+        Place.Field.LOCATION,
+        Place.Field.DISPLAY_NAME,
         Place.Field.OPENING_HOURS,
-        Place.Field.PHONE_NUMBER,
+        Place.Field.NATIONAL_PHONE_NUMBER,
         Place.Field.TYPES,
         Place.Field.VIEWPORT,
         Place.Field.UTC_OFFSET

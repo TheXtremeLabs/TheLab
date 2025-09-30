@@ -30,9 +30,9 @@ abstract class BaseComponentActivity : ComponentActivity() {
         get() = packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
             .also { isTelevision: Boolean ->
                 if (isTelevision) {
-                    Timber.tag("DeviceTypeRuntimeCheck").d("Running on a TV Device")
+                    Timber.tag("DeviceTypeRuntimeCheck").i("Running on a TV Device")
                 } else {
-                    Timber.tag("DeviceTypeRuntimeCheck").d("Running on a non-TV Device")
+                    Timber.tag("DeviceTypeRuntimeCheck").i("Running on a non-TV Device")
                 }
             }
 
