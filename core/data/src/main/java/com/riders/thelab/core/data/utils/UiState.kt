@@ -4,11 +4,13 @@ import androidx.compose.runtime.Stable
 
 @Stable
 // Source : https://levelup.gitconnected.com/error-handling-in-clean-architecture-using-flow-and-jetpack-compose-b39c729a68eb
-sealed class UiState<T> {
+sealed class UiState<out T> {
     @Stable
-    class Loading<T>: UiState<T>()
+    data class Error<Nothing>(val error: String) : UiState<Nothing>()
+
     @Stable
-    data class Error<T>(val error: String) : UiState<T>()
+    data class Success<T>(val data: T) : UiState<T>()
+
     @Stable
-    data class Loaded<T>(val data: T): UiState<T>()
+    data object Loading : UiState<Nothing>()
 }

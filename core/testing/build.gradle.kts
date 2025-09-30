@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.thelab.library)
     alias(libs.plugins.thelab.library.compose)
-    alias(libs.plugins.thelab.library.jacoco)
+//    alias(libs.plugins.thelab.library.jacoco)
     alias(libs.plugins.thelab.hilt)
 }
 

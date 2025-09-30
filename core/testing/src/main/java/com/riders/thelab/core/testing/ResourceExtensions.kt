@@ -1,12 +1,15 @@
 package com.riders.thelab.core.testing
 
-import kotlin.reflect.KClass
-import java.io.*
+import java.io.InputStream
 
-fun <T:Any> KClass<T>.getResourceFileAsInputStream(filename: String) : InputStream? = runCatching {
-    (this as Any).javaClass.classLoader?.getResourceAsStream(filename)
-}
-    .onFailure { exception -> println("=======> getResourceFileAsInputStream() | exception : $exception") }
-    .getOrNull()
+fun <T : Any> T.getResourceFileAsInputStream(filename: String): InputStream? =
+    runCatching {
+        this.javaClass.classLoader?.getResourceAsStream(filename)
+    }
+        .onFailure { exception -> println("=======> getResourceFileAsInputStream() | exception : $exception") }
+        .getOrNull()
 
-// fun getResourceAsStringData(filename:String):String? =getResourceFileAsInputStream(filename).readAllBytes
+fun <T : Any> T.getResourceAsStringData(filename: String): String? =
+    getResourceFileAsInputStream(filename)
+        ?.bufferedReader()
+        ?.use { it.readText() }
