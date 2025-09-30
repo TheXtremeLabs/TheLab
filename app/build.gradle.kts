@@ -380,10 +380,6 @@ dependencies {
         androidTestImplementation(libs.androidx.compose.ui.test)
         debugImplementation(libs.androidx.compose.ui.tooling)
         debugImplementation(libs.androidx.compose.ui.testManifest)*/
-
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
-    kspAndroidTest(libs.hilt.ext.compiler)
 }
 
 // Aggregating Task

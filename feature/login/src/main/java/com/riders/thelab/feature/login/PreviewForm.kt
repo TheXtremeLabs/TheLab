@@ -1,6 +1,5 @@
 package com.riders.thelab.feature.login
 
-import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
@@ -65,10 +64,12 @@ import com.riders.thelab.core.data.local.model.compose.LoginFieldsUIState
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
 import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsAll
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 
 ///////////////////////////////////////////////////
 //
@@ -267,7 +268,7 @@ fun Submit(
     uiState: LoginUiState,
     uiEvent: (UiEvent) -> Unit
 ) {
-    val activity = LocalActivity.current as LoginActivity
+    val activity = LocalContext.current.findActivity() as LoginActivity
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(modifier = modifier, contentAlignment = Alignment.CenterEnd) {
@@ -277,7 +278,7 @@ fun Submit(
                 verticalArrangement = Arrangement.Center
             ) {
                 if (activity.isTv) {
-                    androidx.tv.material3.Button (
+                    androidx.tv.material3.Button(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(40.dp),
@@ -503,7 +504,7 @@ fun Form(
 // PREVIEWS
 //
 ///////////////////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewLogin(@PreviewParameter(PreviewProviderLoginFieldsUIState::class) uiState: LoginFieldsUIState.Login) {
     val focusRequester = remember { FocusRequester() }
@@ -520,7 +521,7 @@ fun PreviewLogin(@PreviewParameter(PreviewProviderLoginFieldsUIState::class) uiS
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewPassword(@PreviewParameter(PreviewProviderPasswordFieldsUIState::class) uiState: LoginFieldsUIState.Password) {
     val focusRequester = remember { FocusRequester() }
@@ -535,7 +536,7 @@ fun PreviewPassword(@PreviewParameter(PreviewProviderPasswordFieldsUIState::clas
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewRememberUser(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = AppTheme.Default) {
@@ -546,7 +547,7 @@ fun PreviewRememberUser(@PreviewParameter(AppThemePreviewProvider::class) appThe
     }
 }
 
-@DevicePreviews
+@DevicePreviewsAll
 @Composable
 fun PreviewSubmit(@PreviewParameter(PreviewProviderLoginState::class) uiState: LoginUiState) {
     TheLabTheme(theme = AppTheme.Blue) {
@@ -559,7 +560,7 @@ fun PreviewSubmit(@PreviewParameter(PreviewProviderLoginState::class) uiState: L
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewForm(@PreviewParameter(PreviewProviderLoginState::class) uiState: LoginUiState) {
     val loginFieldUiState: LoginFieldsUIState.Login = LoginFieldsUIState.Login.Ok

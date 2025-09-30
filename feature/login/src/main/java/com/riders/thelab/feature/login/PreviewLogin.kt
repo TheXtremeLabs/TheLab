@@ -2,7 +2,6 @@ package com.riders.thelab.feature.login
 
 import android.annotation.SuppressLint
 import android.view.View
-import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
@@ -46,11 +45,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import com.riders.thelab.core.data.local.model.compose.LoginFieldsUIState
 import com.riders.thelab.core.data.local.model.compose.LoginUiState
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
 import com.riders.thelab.core.ui.compose.component.LabHtmlText
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -59,6 +57,7 @@ import com.riders.thelab.core.ui.compose.theme.Shapes
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabThemeTV
 import com.riders.thelab.core.ui.compose.utils.animatePlacement
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -75,7 +74,7 @@ fun GoogleButton(
     modifier: Modifier = Modifier,
     uiEvent: (UiEvent) -> Unit
 ) {
-    val activity = LocalActivity.current as LoginActivity
+    val activity = LocalContext.current.findActivity() as LoginActivity
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(
@@ -84,7 +83,7 @@ fun GoogleButton(
                 .then(modifier),
             contentAlignment = Alignment.Center
         ) {
-            if(activity.isTv){
+            if (activity.isTv) {
                 androidx.tv.material3.Button(
                     modifier = Modifier.align(Alignment.Center),
                     onClick = { uiEvent.invoke(UiEvent.OnGoogleButtonLoginClicked) },
@@ -141,7 +140,7 @@ fun SignUpButton(
     modifier: Modifier = Modifier,
     uiEvent: (UiEvent) -> Unit
 ) {
-    val activity = LocalActivity.current as LoginActivity
+    val activity = LocalContext.current.findActivity() as LoginActivity
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Box(
@@ -150,7 +149,7 @@ fun SignUpButton(
                 .then(modifier),
             contentAlignment = Alignment.Center
         ) {
-            if(activity.isTv){
+            if (activity.isTv) {
                 androidx.tv.material3.Button(
                     onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) },
                     colors = androidx.tv.material3.ButtonDefaults.colors(containerColor = MaterialTheme.colorScheme.primaryContainer),
@@ -168,21 +167,22 @@ fun SignUpButton(
                     }
                 }
             } else {
-            Button(
-                onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-            ) {
-                Box(
-                    modifier = Modifier.wrapContentSize(),
-                    contentAlignment = Alignment.Center
+                Button(
+                    onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 ) {
-                    LabHtmlText(
-                        modifier = Modifier.fillMaxWidth(),
-                        stringResId = com.riders.thelab.core.ui.R.string.no_account_register,
-                        textAlignment = View.TEXT_ALIGNMENT_CENTER,
-                        onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) }
-                    )
-                }}
+                    Box(
+                        modifier = Modifier.wrapContentSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LabHtmlText(
+                            modifier = Modifier.fillMaxWidth(),
+                            stringResId = com.riders.thelab.core.ui.R.string.no_account_register,
+                            textAlignment = View.TEXT_ALIGNMENT_CENTER,
+                            onClick = { uiEvent.invoke(UiEvent.OnSignUpClicked) }
+                        )
+                    }
+                }
             }
         }
     }
@@ -210,7 +210,6 @@ fun LoginContent(
     isRememberCredentialsChecked: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     val versionVisibility = remember { mutableStateOf(true) }
@@ -546,7 +545,7 @@ fun LoginContentTV(
 // PREVIEWS
 //
 ///////////////////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewSignUpButton(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = AppTheme.Default) {
@@ -567,7 +566,7 @@ fun PreviewSignUpButton(@PreviewParameter(AppThemePreviewProvider::class) appThe
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewLoginContent(@PreviewParameter(PreviewProviderLoginState::class) loginUiState: LoginUiState) {
     val loginFieldUiState: LoginFieldsUIState.Login = LoginFieldsUIState.Login.Ok

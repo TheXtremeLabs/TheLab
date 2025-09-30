@@ -1,6 +1,7 @@
 package com.riders.thelab.core.ui.compose.annotation
 
 import android.content.res.Configuration
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 
 ///////////////////////////////////////
@@ -8,10 +9,22 @@ import androidx.compose.ui.tooling.preview.Preview
 // MOBILE
 //
 ///////////////////////////////////////
-/**
- * Multipreview annotation that represents various device sizes. Add this annotation to a composable
- * to render various devices.
- */
+@Preview(
+    name = "Pixel Light",
+    showBackground = true,
+    showSystemUi = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    device = Devices.PIXEL_3A
+)
+@Preview(
+    name = "Pixel Dark",
+    showBackground = true,
+    showSystemUi = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    device = Devices.PIXEL_3A
+)
+annotation class DevicePreviewsPhoneOnly
+
 @Suppress("PreviewPickerAnnotation")
 @Preview(
     name = "phone light",
@@ -37,7 +50,6 @@ import androidx.compose.ui.tooling.preview.Preview
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     device = "spec:shape=Normal,width=640,height=360,unit=dp,dpi=480"
 )
-/*
 @Preview(
     name = "foldable light",
     showBackground = true,
@@ -49,7 +61,7 @@ import androidx.compose.ui.tooling.preview.Preview
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     device = "spec:shape=Normal,width=673,height=841,unit=dp,dpi=480"
-)*/
+)
 @Preview(
     name = "tablet light",
     showBackground = true,
@@ -62,6 +74,10 @@ import androidx.compose.ui.tooling.preview.Preview
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     device = "spec:shape=Normal,width=1280,height=800,unit=dp,dpi=480"
 )
+annotation class DevicePreviewsFoldableAndTablet
+
+@DevicePreviewsPhoneOnly
+@DevicePreviewsFoldableAndTablet
 annotation class DevicePreviews
 
 
@@ -80,28 +96,28 @@ annotation class DevicePreviews
     showBackground = true,
     showSystemUi = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO,
-    device = "spec:parent=tv_720p,width=1280,height=720,unit=dp"
+    device = Devices.TV_720p
 )
 @Preview(
     name = "tv 720p dark",
     showBackground = true,
     showSystemUi = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
-    device = "spec:parent=tv_720p,width=1280,height=720,unit=dp"
+    device = Devices.TV_720p
 )
 @Preview(
     name = "tv 1080p light",
     showBackground = true,
     showSystemUi = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO,
-    device = "spec:parent=tv_1080p,width=1920,height=1080,unit=dp"
+    device = Devices.TV_1080p
 )
 @Preview(
     name = "tv 1080p dark",
     showBackground = true,
     showSystemUi = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
-    device = "spec:parent=tv_1080p,width=1920,height=1080,unit=dp"
+    device = Devices.TV_1080p
 )
 @Preview(
     name = "tv 4K light",
@@ -118,3 +134,7 @@ annotation class DevicePreviews
     device = "spec:parent=tv_4k,width=3480,height=2160,unit=dp"
 )
 annotation class DevicePreviewsTV
+
+@DevicePreviews
+@DevicePreviewsTV
+annotation class DevicePreviewsAll

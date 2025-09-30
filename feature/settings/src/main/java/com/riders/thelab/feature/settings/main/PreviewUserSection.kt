@@ -48,6 +48,7 @@ import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.compose.settings.UserUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -256,7 +257,7 @@ fun UserSection(
 // PREVIEWS
 //
 ///////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewEditProfileCardRowItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val user: User = User.mockUserForTests[0]
@@ -265,7 +266,7 @@ private fun PreviewEditProfileCardRowItem(@PreviewParameter(AppThemePreviewProvi
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewUserSection(@PreviewParameter(PreviewProviderUserUiState::class) userUiState: UserUiState) {
     TheLabTheme(theme = AppTheme.Default) {

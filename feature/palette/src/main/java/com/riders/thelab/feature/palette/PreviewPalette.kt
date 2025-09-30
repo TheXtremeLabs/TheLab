@@ -67,6 +67,7 @@ import com.riders.thelab.core.data.local.model.compose.palette.PaletteUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.NoInternetConnection
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.snackbar.SnackbarVisualsCustom
@@ -85,7 +86,7 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PaletteLoader() {
     Box(
@@ -310,7 +311,7 @@ fun PaletteContent(
                                                                 scope.launch {
 
                                                                     val palette = Palette
-                                                                        .from(painter.loadImage())
+                                                                        .from((state as AsyncImagePainter.State.Success).loadImage())
                                                                         .generate()
 
                                                                     ////////////////
@@ -395,7 +396,7 @@ fun generatePalette(palette: Palette): List<Int?> {
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewPaletteContentWithoutInternet(@PreviewParameter(PreviewProvider::class) palette: PaletteUiState) {
 
@@ -421,7 +422,7 @@ private fun PreviewPaletteContentWithoutInternet(@PreviewParameter(PreviewProvid
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewPaletteContent(@PreviewParameter(PreviewProvider::class) palette: PaletteUiState) {
 

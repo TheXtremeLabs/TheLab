@@ -14,6 +14,7 @@ import android.net.wifi.WifiManager
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @SuppressLint("MissingPermission")
-class LabNetworkManager @Inject constructor (context: Context) : ConnectivityManager.NetworkCallback() {
+class LabNetworkManager @Inject constructor(
+    @param:ApplicationContext private val context: Context
+) : ConnectivityManager.NetworkCallback() {
 
     // Connectivity manager
     private val connectivityManager: ConnectivityManager =

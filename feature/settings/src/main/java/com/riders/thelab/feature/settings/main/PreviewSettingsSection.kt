@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -68,7 +69,7 @@ fun SettingsSectionWithTitle(
 //
 ///////////////////////////////
 @OptIn(ExperimentalKotoolsTypesApi::class)
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewSettingsSectionWithTitle(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val deviceInfoUiState = PreviewProviderDeviceInfoUiState().values.toList()[2]

@@ -140,13 +140,21 @@ fun getCoilAsyncImagePainter(
         imageLoader = ImageLoader.Builder(context).logger(DebugLogger()).build()
     )
 
-fun AsyncImagePainter.get(context: Context): Painter =   (this.state as AsyncImagePainter.State.Success)
-    .result
-    .image
-    .asPainter(context = context )
+fun AsyncImagePainter.get(context: Context): Painter =
+    (this.state as AsyncImagePainter.State.Success)
+        .result
+        .image
+        .asPainter(context = context)
 
 
 fun AsyncImagePainter.loadImage(): Bitmap = (this.state as AsyncImagePainter.State.Success)
     .result
     .image
     .toBitmap()
+
+
+fun AsyncImagePainter.State.Success.get(context: Context): Painter =
+    this.result.image.asPainter(context = context)
+
+
+fun AsyncImagePainter.State.Success.loadImage(): Bitmap = this.result.image.toBitmap()
