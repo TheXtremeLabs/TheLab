@@ -70,6 +70,7 @@ dependencies {
     androidTestImplementation(libs.koin.test.junit5)
 
     // Ktor
+    implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.content.negotiation)

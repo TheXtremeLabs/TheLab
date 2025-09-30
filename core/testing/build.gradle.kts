@@ -13,18 +13,14 @@ android {
 }
 
 dependencies {
-
     ///////////////////////////////////
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
     implementation(platform(libs.kotlin.bom))
-    api(libs.kotlin.test)
-    testApi(libs.kotlin.test)
-    testApi(libs.kotlinx.coroutines.core)
-    testApi(libs.kotlinx.coroutines.test)
-    androidTestApi(libs.kotlinx.coroutines.core)
-    androidTestApi(libs.kotlinx.coroutines.test)
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlin.test)
 
     // Compose
     api(libs.androidx.compose.ui.test)
@@ -39,13 +35,10 @@ dependencies {
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////
-    // Unit Test
+    // Junit
     testApi(libs.junit4)
-    // Assertions
-    testApi(libs.androidx.test.truth)
-
-    // Android Instrumented Unit Test
-    androidTestApi(libs.junit4)
+    androidTestImplementation(libs.junit4)
+    //AndroidX
     // Core library
     androidTestApi(libs.androidx.test.core)
     // AndroidJUnitRunner and JUnit Rules
@@ -53,15 +46,28 @@ dependencies {
     androidTestApi(libs.androidx.test.runner)
     // Assertions
     androidTestApi(libs.androidx.test.ext)
+    testApi(libs.androidx.test.truth)
     androidTestApi(libs.androidx.test.truth)
     androidTestApi(libs.androidx.test.uiautomator)
-
+    // Espresso
     androidTestApi(libs.androidx.test.espresso.core)
-
-    androidTestImplementation(libs.mockito)
-    androidTestImplementation(libs.mockito.android)
-
+    // Compose
     androidTestImplementation(libs.androidx.compose.ui.test)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.testManifest)
+    // Kotlin
+    testApi(platform(libs.kotlin.bom))
+    testApi(libs.kotlin.stdlib)
+    testApi(libs.kotlin.reflect)
+    testApi(libs.kotlin.test)
+    androidTestApi(libs.kotlin.test)
+    testApi(platform(libs.kotlinx.coroutines.bom))
+    testApi(libs.kotlinx.coroutines.core)
+    testApi(libs.kotlinx.coroutines.test)
+    androidTestApi(platform(libs.kotlinx.coroutines.bom))
+    androidTestApi(libs.kotlinx.coroutines.core)
+    androidTestApi(libs.kotlinx.coroutines.test)
+    // Mockito
+    androidTestImplementation(libs.mockito)
+    androidTestImplementation(libs.mockito.android)
 }
