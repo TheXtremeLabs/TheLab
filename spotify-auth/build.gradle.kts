@@ -4,10 +4,10 @@ plugins {
 
 android {
     namespace = "com.riders.spotify_auth"
-    compileSdk = 35
+    compileSdk = AndroidConfiguration.Sdk.COMPILATION
 
     defaultConfig {
-        minSdk = 23
+        minSdk = AndroidConfiguration.Sdk.MIN
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

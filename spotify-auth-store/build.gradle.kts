@@ -7,7 +7,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 23
+        minSdk =  AndroidConfiguration.Sdk.MIN
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

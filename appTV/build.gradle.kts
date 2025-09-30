@@ -65,6 +65,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
 
+    implementation(project(":feature:login"))
     implementation(project(":feature:home"))
 
     /////////////////////////////

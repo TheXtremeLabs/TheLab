@@ -103,6 +103,7 @@ dependencies {
     // Coil
     api(libs.coil.kt)
     api(libs.coil.kt.compose)
+    api(libs.coil.kt.okhttp)
     api(libs.coil.kt.svg)
 
     api(libs.kotools.types)
