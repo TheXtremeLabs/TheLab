@@ -1,4 +1,4 @@
-package com.riders.thelab.core.testing
+package com.riders.thelab.core.testing.utils
 
 import java.io.InputStream
 

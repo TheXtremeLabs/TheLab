@@ -7,7 +7,7 @@ plugins {
 
 android {
     defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.riders.thelab.core.testing.TheLabHiltRunner"
     }
     namespace = "com.riders.thelab.core.testing"
 }
@@ -22,6 +22,10 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlin.test)
 
+    // AndroidX
+    implementation(libs.androidx.multidex)
+    implementation(libs.androidx.test.runner)
+
     // Compose
     api(libs.androidx.compose.ui.test)
     debugImplementation(libs.androidx.compose.ui.testManifest)
@@ -32,25 +36,32 @@ dependencies {
     // Worker & concurrent
     androidTestImplementation(libs.androidx.work.testing)
 
+    // Hilt
+    implementation(libs.hilt.android.testing)
+    
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////
     // Junit
     testApi(libs.junit4)
-    androidTestImplementation(libs.junit4)
+    androidTestApi(libs.junit4)
     //AndroidX
     // Core library
     androidTestApi(libs.androidx.test.core)
+    androidTestApi(libs.androidx.test.ext)
     // AndroidJUnitRunner and JUnit Rules
     androidTestApi(libs.androidx.test.rules)
     androidTestApi(libs.androidx.test.runner)
     // Assertions
-    androidTestApi(libs.androidx.test.ext)
     testApi(libs.androidx.test.truth)
     androidTestApi(libs.androidx.test.truth)
     androidTestApi(libs.androidx.test.uiautomator)
     // Espresso
     androidTestApi(libs.androidx.test.espresso.core)
+    androidTestApi(libs.androidx.test.espresso.contrib)
+    androidTestApi(libs.androidx.test.espresso.idling.concurrent)
+    androidTestApi(libs.androidx.test.espresso.idling.resources)
+    androidTestApi(libs.androidx.test.espresso.intents)
     // Compose
     androidTestImplementation(libs.androidx.compose.ui.test)
     debugImplementation(libs.androidx.compose.ui.tooling)

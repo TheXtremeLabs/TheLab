@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application android:name="com.riders.thelab.core.testing.base.BaseTheLabApplication">
+        <activity
+            android:name=".PaletteActivity"
+            android:exported="false" />
+    </application>
+
+
+    <instrumentation
+        android:name="com.riders.thelab.core.testing.TheLabHiltTestRunner"
+        android:label="TheLab Hilt Test Runner"
+        android:targetPackage="com.riders.thelab.feature.palette.test" />
+
+</manifest>
