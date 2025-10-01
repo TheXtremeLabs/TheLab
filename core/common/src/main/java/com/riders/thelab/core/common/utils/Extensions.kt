@@ -87,6 +87,12 @@ fun String.encrypt(): String {
     return Base64.encode(cipherText)
 }
 
+fun InputStream.asStringData(charset: Charset = Charsets.UTF_8): String =
+    this.bufferedReader(charset).use { reader ->
+        reader.readText()
+    }.also { Timber.d("InputStream.asStringData() | content length : ${it.length}") }
+
+
 
 /////////////////////////////////////////////////////
 // Image
