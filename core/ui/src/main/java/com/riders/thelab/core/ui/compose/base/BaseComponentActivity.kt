@@ -63,7 +63,7 @@ abstract class BaseComponentActivity : ComponentActivity() {
                     })
         }
     }
-
+/*
     override fun onPause() {
         super.onPause()
         Timber.e("onPause()")
@@ -77,7 +77,7 @@ abstract class BaseComponentActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Timber.e("onDestroy()")
-    }
+    }*/
 
     ///////////////////////////////
     //
