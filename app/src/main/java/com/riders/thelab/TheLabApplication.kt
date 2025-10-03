@@ -2,6 +2,7 @@ package com.riders.thelab
 
 /*import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.initialization.InitializationStatus*/
+// import com.jakewharton.threetenabp.AndroidThreeTen
 import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
@@ -20,12 +21,13 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
-// import com.jakewharton.threetenabp.AndroidThreeTen
+import com.google.firebase.crashlytics.crashlytics
+import com.google.firebase.perf.FirebasePerformance
+import com.google.firebase.perf.performance
 import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
 import com.riders.thelab.feature.weather.core.worker.WeatherWidgetWorker
@@ -143,6 +145,12 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
         Firebase.crashlytics.apply {
             isCrashlyticsCollectionEnabled = true
             setUserId("wayne")
+        }
+
+        FirebasePerformance.getInstance()
+        Firebase.performance.apply {
+            isPerformanceCollectionEnabled = true
+            newTrace("TheLabVision Trace")
         }
 
         //  Gets the instance of the Firebase App Check SDK.

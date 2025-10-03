@@ -1,8 +1,6 @@
 package com.riders.thelab.ui.mainactivity
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
@@ -17,6 +15,8 @@ import android.provider.Settings
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +52,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.fragment.exit.ExitDialog
+import com.riders.thelab.utils.Constants
 import com.riders.thelab.utils.Constants.GPS_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -80,6 +81,25 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
     /*private var speech: SpeechRecognizer? = null
     private var recognizerIntent: Intent? = null*/
     private var message: String? = null
+
+    private val cameraLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        Timber.d("cameraLauncher | result : $result")
+
+        when (result.resultCode) {
+            RESULT_CANCELED -> {
+                val reason: String? = result.data?.getStringExtra("ERROR_MESSAGE")
+                Timber.e("cameraLauncher | error caught: $reason")
+                UIManager.showToast(this, "Activity Result Canceled : $reason")
+            }
+
+            RESULT_OK -> {
+                Timber.e("cameraLauncher | Activity Result OK From Camera")
+                UIManager.showToast(this, "Activity Result OK From Camera")
+            }
+        }
+    }
 
 
     /////////////////////////////////////
@@ -468,6 +488,16 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                 UIManager.showToast(
                     this@MainActivity,
                     "Please check this functionality later. Problem using Drive REST API v3"
+                )
+                return
+            }
+
+            item is LocalApp && item.localTitle.lowercase().contains("camera") -> {
+                val mNavigator = Navigator(this)
+                mNavigator.callIntentForPackageActivity(
+                    activityResultLauncher = cameraLauncher,
+                    intentPackageName = Constants.PACKAGE_NAME_THE_LAB_VISION,
+                    Constants.EXTRA_TARGET_VISION to Constants.VISION_CAMERA
                 )
                 return
             }
