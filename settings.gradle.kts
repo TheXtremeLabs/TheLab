@@ -95,7 +95,11 @@ dependencyResolutionManagement {
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 rootProject.name = "The Lab"
+// Applications
 include(":app")
+include(":appTV")
+include(":vision")
+// Library modules
 include(":core:analytics")
 include(":core:camera")
 include(":core:common")
@@ -108,6 +112,7 @@ include(":core:player")
 include(":core:speechtotext")
 include(":core:ui")
 include(":core:testing")
+// Features
 include(":feature:artists")
 include(":feature:biometric")
 include(":feature:bluetooth")
@@ -138,4 +143,3 @@ include(":feature:youtube")
 include(":spotify-app-remote")
 include(":spotify-auth")
 include(":spotify-auth-store")
-include(":appTV")
