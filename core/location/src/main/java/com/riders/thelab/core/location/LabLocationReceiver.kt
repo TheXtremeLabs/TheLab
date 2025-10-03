@@ -48,10 +48,7 @@ class LabLocationReceiver : BroadcastReceiver() {
 
                     GlobalScope.launch {
                         KotlinBus.publish(
-                            GPSProvidersResultModel(
-                                isGPS = isGpsEnabled,
-                                isNet = isNetworkEnabled
-                            )
+                            GPSProvidersResultModel(isGpsEnabled, isNetworkEnabled)
                         )
                     }
                     // }
