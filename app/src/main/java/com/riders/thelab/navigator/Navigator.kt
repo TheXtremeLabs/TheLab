@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
+import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.settings.main.SettingsActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.ui.contacts.addcontact.AddContactActivity
@@ -88,6 +90,57 @@ class Navigator(private val activity: Activity) {
     fun callIntentForPackageActivity(intentPackageName: String) {
         activity.startActivity(activity.packageManager.getLaunchIntentForPackage(intentPackageName))
     }
+
+
+    fun callIntentForPackageActivityLegacy(
+        intentPackageName: String,
+        vararg extras: Pair<String, Any?>
+    ) {
+        val packageIntent = activity.packageManager.getLaunchIntentForPackage(intentPackageName)
+        if (null == packageIntent) {
+            Timber.e("callIntentForPackageActivity() | Intent is null make sure that the target application is installed")
+            return
+        }
+
+        packageIntent
+            .apply {
+                extras.forEach { pair ->
+                    pair.second?.let { value ->
+                        when (value) {
+                            is String -> this.putExtra(pair.first, value)
+                        }
+                    }
+                }
+            }
+            .run { activity.startActivity(this) }
+    }
+
+
+    fun callIntentForPackageActivity(
+        activityResultLauncher: ActivityResultLauncher<Intent>? = null,
+        intentPackageName: String,
+        vararg extras: Pair<String, Any?>
+    ) = activity.packageManager.getLaunchIntentForPackage(intentPackageName)
+        ?.runCatching {
+            Timber.d("callIntentForPackageActivity()")
+            extras.forEach { pair ->
+                pair.second?.let { value ->
+                    when (value) {
+                        is String -> this.putExtra(pair.first, value)
+                    }
+                }
+            }
+            this
+        }
+        ?.onFailure { exception ->
+            exception.printStackTrace()
+            Timber.e("callIntentForPackageActivity() | onFailure | Error caught with message: ${exception.message} (class: ${exception.javaClass.canonicalName})")
+        }
+        ?.onSuccess {
+            Timber.d("callIntentForPackageActivity() | Package $intentPackageName successfully found. Attempt to start target package")
+            activityResultLauncher?.launch(it) ?: activity.startActivity(it)
+        } ?: run {   UIManager.showToast(activity, "Package $intentPackageName is not installed") }
+
 
     companion object {
         fun callVoiceAssistantActivity(context: Context) {

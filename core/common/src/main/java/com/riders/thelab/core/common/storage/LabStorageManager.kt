@@ -11,9 +11,8 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-class LabStorageManager() {
+object LabStorageManager {
 
-    @JvmStatic
     fun isExternalStorageReadOnly(): Boolean {
         val extStorageState = Environment.getExternalStorageState()
         if (Environment.MEDIA_MOUNTED_READ_ONLY == extStorageState) {
@@ -22,7 +21,6 @@ class LabStorageManager() {
         return false
     }
 
-    @JvmStatic
     fun isExternalStorageAvailable(): Boolean {
         val extStorageState = Environment.getExternalStorageState()
         if (Environment.MEDIA_MOUNTED == extStorageState) {

@@ -150,6 +150,7 @@
 
     <!-- from API Level 30 need to add <queries> for android.speech.RecognitionService  to AndroidManifest.xml -->
     <queries>
+        <package android:name="com.riders.thelab.vision" />
         <intent>
             <action android:name="android.speech.RecognitionService" />
         </intent>
@@ -602,8 +603,8 @@
 
                 <data
                     android:host="callback"
-                    android:scheme="thelab"
-                    android:pathPattern="/"/>
+                    android:pathPattern="/"
+                    android:scheme="thelab" />
             </intent-filter>
         </activity>
 
@@ -800,6 +801,10 @@
                 tools:node="remove" />
         </provider>
 
+        <provider
+            android:name="com.google.firebase.perf.provider.FirebasePerfProvider"
+            android:authorities="${applicationId}.firebaseperfprovider"
+            tools:node="remove" />
         <!-- In order to use hilt injection in Worker -->
         <!-- If you want to disable android.startup completely. -->
         <!--<provider

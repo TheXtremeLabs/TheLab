@@ -188,10 +188,10 @@ private fun PreviewApp(@PreviewParameter(AppThemePreviewProvider::class) appThem
     val appItem = LocalAppPreviewProvider(context).values.first()
 
     TheLabTheme(theme = appTheme) {
-        AppItem (
+        AppItem(
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
-           item =  appItem,
+            item = appItem,
             onAppItemClick = { app -> }
         )
     }

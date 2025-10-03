@@ -130,7 +130,7 @@ fun BasicCameraSurface(
                     val preview = Preview.Builder()
                         .build()
                         .also {
-                            it.setSurfaceProvider(previewView.surfaceProvider)
+                            it.surfaceProvider = previewView.surfaceProvider
                         }
 
                     val imageCapture = ImageCapture.Builder().build()
@@ -156,7 +156,7 @@ fun BasicCameraSurface(
                             imageAnalyzer
                         )
                     } catch (exc: Exception) {
-                        Timber.e("DEBUG", "Use case binding failed", exc)
+                        Timber.e("RECOMPOSITION | Use case binding failed. $exc")
                     }
                 },
                 context.executor
@@ -252,7 +252,7 @@ fun AdvancedCameraSurface(
                                 preview = Preview.Builder()
                                     .build()
                                     .also { view ->
-                                        view.setSurfaceProvider(previewView.surfaceProvider)
+                                        view.surfaceProvider = previewView.surfaceProvider
                                     }
 
                                 imageCapture = ImageCapture.Builder().build()
@@ -523,7 +523,7 @@ fun initWithCoroutines(
                 val preview = Preview.Builder()
                     .build()
                     .also {
-                        it.setSurfaceProvider(previewView.surfaceProvider)
+                        it.surfaceProvider = previewView.surfaceProvider
                     }
 
                 val imageCapture = ImageCapture.Builder().build()

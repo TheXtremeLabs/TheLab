@@ -56,7 +56,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     labNetworkManager: LabNetworkManager,
     val uiRepository: IUiRepository,
     val speechToTextRepository: SpeechToTextRepository

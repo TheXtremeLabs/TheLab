@@ -52,6 +52,7 @@ class SplashScreenActivity : ComponentActivity() {
         )
 
         super.onCreate(savedInstanceState)
+        Timber.d("onCreate()")
 
         // Check if activities splash screens are enabled
         if (!mViewModel.isActivitiesSplashEnabled) {
@@ -105,7 +106,6 @@ class SplashScreenActivity : ComponentActivity() {
                 }
             }
         }
-
     }
 
 

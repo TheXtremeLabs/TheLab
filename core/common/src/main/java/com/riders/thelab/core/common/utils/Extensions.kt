@@ -6,6 +6,8 @@ import android.location.Location
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import timber.log.Timber
+import java.io.InputStream
+import java.nio.charset.Charset
 import java.security.MessageDigest
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec

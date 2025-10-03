@@ -13,6 +13,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.os.EnvironmentCompat
 import com.riders.thelab.core.common.R
+import com.riders.thelab.core.common.bean.FileExtensions
+import com.riders.thelab.core.common.utils.Resource
 import okhttp3.ResponseBody
 import okio.FileSystem
 import okio.GzipSource
@@ -21,11 +23,12 @@ import okio.buffer
 import okio.source
 import org.xml.sax.InputSource
 import timber.log.Timber
-import java.io.BufferedInputStream
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
 import java.util.zip.GZIPInputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 /**
  * Utils for I/O operations.
@@ -156,8 +159,6 @@ object LabFileManager {
                         throwable = folderResource.throwable
                     )
                 }
-
-                is Resource.Loading -> return@let Resource.Loading
             }
         }
 
@@ -193,7 +194,7 @@ object LabFileManager {
      * @param onSuccess A callback that is invoked when the download is successful.
      * @param onError A callback that is invoked when an error occurs during the download.
      */
-    fun writeResponseBodyToDisk(
+    /*fun writeResponseBodyToDisk(
         responseBody: Response<ResponseBody>,
         path: String,
         downloadUrl: String,
@@ -311,7 +312,7 @@ object LabFileManager {
             onError(path, exception)
             return
         }
-    }
+    }*/
 
     fun zipFiles(files: List<File>, outputPath: String): Resource<File> = runCatching {
         Timber.d("zipFiles() |\nfiles to zip : ${files.joinToString(",") { it.name }}\noutputPath : $outputPath")
@@ -679,8 +680,8 @@ object LabFileManager {
      * This should not start with a slash.
      * @return The absolute path to the specified file or directory.
      */
-    fun getAppFilePath(path: String): String = run { getSamSharePath() + path }
-        .also { Timber.d("getAppFilePath() | path :$it") }
+    /*fun getAppFilePath(path: String): String = run { getSamSharePath() + path }
+        .also { Timber.d("getAppFilePath() | path :$it") }*/
 
     fun getDownloadFolderAsString(): String = Environment
         .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -697,11 +698,11 @@ object LabFileManager {
      *
      * @return The path to the SAM_SHARE directory.
      */
-    fun getSamSharePath(): String = run {
+    /*fun getSamSharePath(): String = run {
         // For Android 10 (API 29) and above, app-specific storage is preferred for new files.
         // However, SAM_SHARE sounds like a shared location, which has restrictions.
         // This logic might need review based on actual requirements for SAM_SHARE.
-        if (CompatibilityManager.isAndroid10()) { // API 29+
+        if (LabCompatibilityManager.isAndroid10()) { // API 29+
             // Accessing filesDir is always specific to the app.
             // If SAM_SHARE is truly external/shared, this path is internal.
             context.filesDir.absolutePath + File.separator + APK_DIRECTORY + File.separator
@@ -719,7 +720,7 @@ object LabFileManager {
                         File.separator
             }
         }
-    }.also { Timber.d("getSamSharePath() | path :$it") }
+    }.also { Timber.d("getSamSharePath() | path :$it") }*/
 
     /**
      * Retrieves an [InputStream] for a given asset file.
@@ -737,12 +738,13 @@ object LabFileManager {
      * @param extension The extension of the asset file (without the leading dot).
      * @return An [InputStream] for the asset if found and successfully opened, otherwise `null`.
      */
-    fun getAsset(assetName: String, extension: String): InputStream? = context.assets.runCatching {
-        open("$assetName.$extension")
-    }
-        .onFailure { exception -> Timber.e("getAsset() | onFailure | Error caught with message : ${exception.message} (class : ${exception.javaClass.canonicalName})") }
-        .onSuccess { Timber.d("getAsset() | onSuccess") }
-        .getOrNull()
+    fun getAsset(context: Context, assetName: String, extension: String): InputStream? =
+        context.assets.runCatching {
+            open("$assetName.$extension")
+        }
+            .onFailure { exception -> Timber.e("getAsset() | onFailure | Error caught with message : ${exception.message} (class : ${exception.javaClass.canonicalName})") }
+            .onSuccess { Timber.d("getAsset() | onSuccess") }
+            .getOrNull()
 
     ////////////////////////////////////////////////////////
     // --- UPDATE
@@ -910,7 +912,11 @@ object LabFileManager {
      * @param assetPathInRoot The specific path/filename of the asset in the root assets folder (e.g., "myConfig.xml").
      * @param destFile The absolute path to where the asset file should be copied.
      */
-    private fun copyAssetFromRoot(assetPathInRoot: String, destFile: String): Boolean =
+    private fun copyAssetFromRoot(
+        context: Context,
+        assetPathInRoot: String,
+        destFile: String
+    ): Boolean =
         runCatching {
             Timber.d("copyAssetFromRoot() | Attempting to copy asset '$assetPathInRoot' to '$destFile'")
             val outFile = File(destFile)
@@ -938,7 +944,10 @@ object LabFileManager {
             .getOrDefault(false)
 
 
-    fun copyAssetsToApplicationDirectory(filename: String = "EMDKConfig.xml"): File? =
+    fun copyAssetsToApplicationDirectory(
+        context: Context,
+        filename: String = "EMDKConfig.xml"
+    ): File? =
         context.runCatching {
             val destinationFile = File(this.filesDir, filename)
             Timber.d("copyAssetsToApplicationDirectory() | Attempting to copy asset '$filename' to '${destinationFile.absolutePath}'")
@@ -987,6 +996,7 @@ object LabFileManager {
      *                It receives an error message as a [String] (nullable) and the [Throwable] (nullable) that caused the error.
      */
     fun copyThenUnzip(
+        context: Context,
         assetFileName: String, // Changed from src to be more specific
         destDir: File,      // Changed to destDir for clarity
         onSuccess: (String?) -> Unit,
@@ -1003,7 +1013,7 @@ object LabFileManager {
 
         val copiedAssetFile = File(destDir, assetFileName)
 
-        if (!copyAssetFromRoot(assetFileName, copiedAssetFile.absolutePath)) {
+        if (!copyAssetFromRoot(context, assetFileName, copiedAssetFile.absolutePath)) {
             throw IOException("Failed to copy asset '$assetFileName' to '${copiedAssetFile.absolutePath}'")
         }
 
@@ -1064,7 +1074,7 @@ object LabFileManager {
      * Then, it iterates over all files in the directory and deletes them.
      * If an error occurs during the process, it logs the error.
      */
-    fun deleteAllApkFile() {
+    /*fun deleteAllApkFile() {
         try {
             val dirPath = getSamSharePath() // This path includes APK_DIRECTORY
             val dir = File(dirPath)
@@ -1089,10 +1099,10 @@ object LabFileManager {
             exception.printStackTrace()
             Timber.e("deleteAllApkFile() | Error caught with message ${exception.message} (class : ${exception.javaClass.canonicalName})")
         }
-    }
+    }*/
 
 
-    companion object {
+    /*companion object {
         // This path seems to point to a specific file, not a directory for profiles.
         // Also, Environment.getExternalStorageDirectory() is deprecated and has issues with scoped storage.
         // This needs careful review based on where EMDKConfig.xml is actually expected/managed.
@@ -1106,7 +1116,7 @@ object LabFileManager {
 
 
         const val APK_DIRECTORY: String = "SAM_SHARE/APK" // This is a relative path segment
-    }
+    }*/
 
     /**
      * Reads file and returns a String.

@@ -1,6 +1,7 @@
 package com.riders.thelab.core.testing.utils
 
 import android.view.View
+import androidx.activity.ComponentActivity
 import androidx.test.espresso.IdlingRegistry
 import com.google.android.material.snackbar.Snackbar
 
@@ -22,7 +23,7 @@ object SnackbarTestHelper {
         resource.busy()
 
         // Show listener to detect when Snackbar is dismissed
-        UIManager.showSnackbar(
+        /*UIManager.showSnackbar(
             activity = activity,
             rootView = parentView,
             message = message,
@@ -55,6 +56,6 @@ object SnackbarTestHelper {
                 println("======> waitForSnackbar() | snackBar action clicked")
                 it.dismiss()
             }
-        )
+        )*/
     }
 }
