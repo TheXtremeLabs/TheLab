@@ -59,7 +59,7 @@ dependencies {
     api(libs.google.cloud.texttospeech)*/
     api(libs.google.cloud.speech)
     api(libs.grpc.okhttp)
-     api(libs.grpc.stub)
+    api(libs.grpc.stub)
     api(libs.jflac.codec)
 
     /////////////////////////////

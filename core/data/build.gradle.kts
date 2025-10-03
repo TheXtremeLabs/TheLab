@@ -50,11 +50,10 @@ android {
     namespace = "com.riders.thelab.core.data"
 }
 
-configurations.forEach { configuration ->
-    configuration.exclude("protolite-well-known-types")
-    configuration.exclude("protobuf-javalite")
-    configuration.exclude("protobuf-java")
-    configuration.exclude("protobuf-java-util")
+configurations.all {
+    resolutionStrategy {
+        force ("com.google.protobuf:protobuf-javalite:4.32.0")
+    }
 }
 
 dependencies {

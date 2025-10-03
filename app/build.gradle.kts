@@ -1,5 +1,4 @@
 import com.riders.thelab.TheLabBuildType
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 
 plugins {
     /**
@@ -18,7 +17,6 @@ plugins {
     alias(libs.plugins.thelab.application.jacoco)
     alias(libs.plugins.thelab.hilt)
     alias(libs.plugins.thelab.firebase)
-    id("jacoco")
 }
 
 /**
@@ -41,6 +39,11 @@ android {
     ndkVersion = "21.3.6528147"
 
     defaultConfig {
+        manifestPlaceholders += mapOf(
+            "redirectHostName" to "com.riders.thelab",
+            "redirectSchemeName" to "com.riders.thelab",
+            "redirectPathPattern" to "//com.riders.thelab"
+        )
         applicationId = "com.riders.thelab"
 
         /**
@@ -57,12 +60,6 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        manifestPlaceholders += mapOf(
-            "redirectHostName" to "com.riders.thelab",
-            "redirectSchemeName" to "com.riders.thelab",
-            "redirectPathPattern" to "//com.riders.thelab"
-        )
     }
 
 
@@ -194,31 +191,21 @@ android {
     namespace = "com.riders.thelab"
 }
 
-configurations.forEach { configuration ->
-    configuration.exclude("protolite-well-known-types")
-    configuration.exclude("protobuf-javalite")
-    configuration.exclude("protobuf-java")
-    configuration.exclude("protobuf-java-util")
-    configuration.exclude(group = "org.threeten", module = "threetenbp")
-}
-
-composeCompiler {
-    featureFlags.addAll(
-        ComposeFeatureFlag.OptimizeNonSkippingGroups,
-        ComposeFeatureFlag.PausableComposition
-    )
-}
-
 configurations.all {
     resolutionStrategy {
         cacheDynamicVersionsFor(4, "hours")
         cacheChangingModulesFor(10, "minutes")
 
+        force("com.google.protobuf:protobuf-javalite:4.32.0")
         force("com.jakewharton.threetenabp:threetenabp:1.4.9") // Force a specific version
     }
 
+    exclude(module = "protobuf-javalite")
+    exclude(module = "protobuf-lite")
+    exclude(module = "protolite-well-known-types")
     exclude(group = "org.threeten", module = "threetenbp")
 }
+
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
@@ -226,13 +213,8 @@ dependencies {
     ///////////////////////////////////
     // Project
     ///////////////////////////////////
-    implementation(project(":core:analytics")) {
-        exclude(module = "protobuf-javalite")
-        exclude(module = "protobuf-java")
-        exclude(module = "proto-google-common-protos")
-        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
-    }
-
+    implementation(project(":core:analytics"))
+    implementation(project(":core:camera"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:datastore"))
@@ -275,11 +257,11 @@ dependencies {
     // Compose: provided by ui module
     // The others dependencies has been added into the AndroidCompose plugin convention class
 
-    // CameraX
-    implementation(libs.androidx.camera)
+    // CameraX : provided by camera module
+    /*implementation(libs.androidx.camera)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
-    implementation(libs.androidx.camera.extensions)
+    implementation(libs.androidx.camera.extensions)*/
 
     // Media
     implementation(libs.androidx.media)
@@ -338,7 +320,7 @@ dependencies {
     implementation(libs.google.mlkit.objectdetection.custom)
 
     // Firebase BOM and Dependencies: provided by analytics module
-    implementation(libs.firebase.appcheck)
+    implementation(libs.firebase.appcheck.ktx)
     implementation(libs.firebase.appcheck.debug)
     implementation(libs.firebase.appcheck.playintegrity)
 

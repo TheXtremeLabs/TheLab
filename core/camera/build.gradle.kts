@@ -47,6 +47,7 @@ dependencies {
     api(libs.androidx.camera.effects)
     api(libs.androidx.camera.extensions)
     api(libs.androidx.camera.lifecycle)
+    api(libs.androidx.camera.mlkit.vision)
     api(libs.androidx.camera.view)
     api(libs.androidx.camera.video)
 
@@ -60,6 +61,6 @@ dependencies {
     // Tests dependencies
     ////////////////////////////////////////////
     testImplementation(libs.junit4)
-    androidTestImplementation(libs.androidx.test.junit)
+    androidTestImplementation(libs.androidx.test.ext)
     androidTestImplementation(libs.androidx.test.espresso.core)
 }

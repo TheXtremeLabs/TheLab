@@ -25,6 +25,12 @@ dependencies {
     // AndroidX
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.test.runner)
+    // Espresso
+    implementation(libs.androidx.test.espresso.core)
+    implementation(libs.androidx.test.espresso.contrib)
+    implementation(libs.androidx.test.espresso.idling.concurrent)
+    implementation(libs.androidx.test.espresso.idling.resources)
+    implementation(libs.androidx.test.espresso.intents)
 
     // Compose
     api(libs.androidx.compose.ui.test)
@@ -38,7 +44,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android.testing)
-    
+
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////

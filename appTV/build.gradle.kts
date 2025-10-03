@@ -8,6 +8,10 @@ plugins {
     alias(libs.plugins.thelab.hilt)
 }
 
+val versionMajor: Int = 0
+val versionMinor: Int = 0
+val versionPatch: Int = 1
+
 /**
  * Log events in console
  *
@@ -24,6 +28,9 @@ android {
 
     defaultConfig {
         applicationId = "com.riders.thelab.tv"
+
+        versionCode = 2000 * versionMajor + 100 * versionMinor + versionPatch
+        versionName = "$versionMajor.$versionMinor.$versionPatch"
 
         // Enabling multidex support.
         multiDexEnabled = true

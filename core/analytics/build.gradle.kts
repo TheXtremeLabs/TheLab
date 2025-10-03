@@ -1,5 +1,5 @@
 plugins {
-    id("thelab.android.library")
+    alias(libs.plugins.thelab.library)
 }
 
 android {
@@ -27,7 +27,7 @@ android {
     }
 
     packaging {
-        resources{
+        resources {
             excludes += "META-INF/DEPENDENCIES"
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/LICENSE"
@@ -38,22 +38,23 @@ android {
         jniLibs.pickFirsts.add("protobuf.meta")
     }
 
-    configurations.all {
+    /*configurations.all {
         exclude(module = "protobuf-javalite")
         exclude(module = "protobuf-java")
         exclude(module = "proto-google-common-protos")
         exclude(group = "com.google.firebase", module = "protolite-well-known-types")
-    }
+    }*/
 
     namespace = "com.riders.thelab.core.analytics"
 }
 
-configurations.forEach { configuration ->
-    configuration.exclude("protolite-well-known-types")
-    configuration.exclude("protobuf-javalite")
-    configuration.exclude("protobuf-java")
-    configuration.exclude("protobuf-java-util")
-}
+/*configurations.forEach { configuration ->
+    configuration.exclude(module = "protolite-well-known-types")
+    configuration.exclude(module = "protobuf-javalite")
+    configuration.exclude(module = "protobuf-java")
+    configuration.exclude(module = "protobuf-java-util")
+    configuration.exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+}*/
 
 dependencies {
     /////////////////////////////
@@ -62,20 +63,17 @@ dependencies {
     // Firebase
     api(platform(libs.firebase.bom))
 //    api(libs.firebase.ads)
-    api(libs.firebase.analytics) {
-        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
-    }
+    api(libs.firebase.analytics)
     api(libs.firebase.auth)
     api(libs.firebase.crashlytics)
     api(libs.firebase.database)
-    api(libs.firebase.firestore) {
-        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
-    }
+    api(libs.firebase.firestore)
     api(libs.firebase.messaging)
-    api(libs.firebase.perf) {
-        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
-    }
-    api(libs.firebase.storage) {
-        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
-    }
+    api(libs.firebase.perf)
+    api(libs.firebase.storage)
+
+    // App Check
+    api(libs.firebase.appcheck.ktx)
+    api(libs.firebase.appcheck.debug)
+    api(libs.firebase.appcheck.playintegrity)
 }

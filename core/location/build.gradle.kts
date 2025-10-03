@@ -9,6 +9,8 @@ android {
     defaultConfig {
         minSdk = AndroidConfiguration.Sdk.MIN
 
+        testApplicationId = "com.riders.thelab.core.location.test"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -27,7 +29,15 @@ android {
 dependencies {
 
     implementation(project(":core:common"))
+    implementation(project(":core:testing"))
 
+    // AndroidX
+    implementation(libs.androidx.concurrent)
+    // Worker
+    implementation(libs.androidx.work.ktx)
+    androidTestImplementation(libs.androidx.work.testing)
+
+    // Google Play Location & Maps
     api(libs.location)
     api(libs.maps)
     api(libs.maps.compose)
@@ -35,9 +45,18 @@ dependencies {
     api(libs.maps.compose.widgets)
     api(libs.maps.utils)
 
-    implementation(libs.timber)
+    implementation(libs.google.guava)
+    implementation(libs.google.guava.listenablefuture)
+
+
+    ////////////////////////////////////////////
+    // Tests dependencies
+    ////////////////////////////////////////////
+    androidTestImplementation(project(":core:testing"))
 
     testImplementation(libs.junit4)
-    androidTestImplementation(libs.androidx.test.junit)
+    androidTestImplementation(libs.androidx.test.ext)
+    androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.test.uiautomator)
 }

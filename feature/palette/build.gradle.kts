@@ -17,9 +17,9 @@ android {
         testApplicationId = "com.riders.thelab.feature.palette.test"
     }
 
-    sourceSets{
-        getByName("androidTest"){
-         java.srcDirs("$projectDir/core/testing/src/androidTest/java/")
+    sourceSets {
+        getByName("androidTest") {
+            java.srcDirs("$projectDir/core/testing/src/androidTest/java/")
         }
     }
     namespace = "com.riders.thelab.feature.palette"
@@ -35,12 +35,7 @@ dependencies {
     implementation(project(":core:testing"))
 
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.storage) {
-        exclude(module = "protobuf-javalite")
-        exclude(module = "protobuf-java")
-        exclude(module = "proto-google-common-protos")
-        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
-    }
+    implementation(libs.firebase.storage)
 
     ///////////////////////////////////
     // General Dependencies

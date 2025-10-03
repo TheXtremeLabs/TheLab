@@ -1,5 +1,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 @Suppress("DSL_SCOPE_VIOLATION")
+/*buildscript {
+    dependencies {
+        // Replace the standard Performance Monitoring plugin dependency line, as follows:
+        classpath(libs.firebase.performances.gradlePlugin) {
+            exclude(group = "com.google.guava", module = "guava-jdk5")
+        }
+    }
+}*/
+
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -20,6 +29,8 @@ plugins {
     // Firebase
     alias(libs.plugins.crashlytics) apply false
     alias(libs.plugins.performances) apply false
+    // Protobuf
+    alias(libs.plugins.protobuf) apply false
 }
 
 tasks.register("clean", Delete::class) {
