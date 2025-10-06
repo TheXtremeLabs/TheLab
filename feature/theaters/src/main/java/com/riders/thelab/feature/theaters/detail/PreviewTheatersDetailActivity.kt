@@ -20,8 +20,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,9 +31,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -42,7 +47,7 @@ import coil3.compose.AsyncImagePainter
 import coil3.size.Scale
 import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBDetailUiState
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
@@ -50,8 +55,8 @@ import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
-import com.riders.thelab.core.ui.compose.utils.loadImage
 import com.riders.thelab.core.ui.compose.utils.toColor
+import com.riders.thelab.core.ui.utils.generatePalette
 import com.riders.thelab.feature.theaters.main.trendingItemImageHeight
 import com.riders.thelab.feature.theaters.previewprovider.PreviewProviderTMDBDetailUiState
 import kotlinx.coroutines.launch
@@ -63,10 +68,128 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////////////
+@Composable
+fun Poster(
+    tmdbState: TMDBDetailUiState.Success,
+    onPaletteComplete: (Color) -> Unit
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    val painter =
+        getCoilAsyncImagePainter(
+            context = context,
+            dataUrl = if (null != tmdbState.item.poster) {
+                tmdbState.item.getPosterImageUrl()
+            } else {
+                tmdbState.item.getBackdropImageUrl()
+            },
+            isSvg = false,
+            scale = Scale.FILL,
+            placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
+        )
+
+    val painterState: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
+
+    /* Create the Palette, pass the bitmap to it */
+    var generatedPalette: HashMap<String, Int?>? = null
+
+    /* Get the dark vibrant swatch */
+    val lightVibrantSwatch = remember { mutableIntStateOf(0) }
+    val darkVibrantSwatch = remember { mutableIntStateOf(0) }
+
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(1.dp)
+            .height(trendingItemImageHeight),
+        contentAlignment = Alignment.BottomStart
+    ) {
+
+        // Image
+        AnimatedContent(
+            modifier = Modifier.size(width = this.maxWidth, height = this.maxHeight),
+            targetState = painterState,
+            transitionSpec = { fadeIn() + expandIn() togetherWith fadeOut() },
+            label = "animated content state",
+            contentAlignment = Alignment.Center
+        ) { targetState: AsyncImagePainter.State ->
+
+            when (targetState) {
+                is AsyncImagePainter.State.Loading -> {
+                    Timber.i("state is AsyncImagePainter.State.Loading")
+                    LabLoader(modifier = Modifier.size(56.dp))
+                }
+
+                is AsyncImagePainter.State.Success -> {
+                    Timber.d("state is AsyncImagePainter.State.Success")
+
+                    Image(
+                        modifier = Modifier.size(
+                            this@BoxWithConstraints.maxWidth,
+                            this@BoxWithConstraints.maxHeight
+                        ),
+                        painter = painter,
+                        contentDescription = "movie_image",
+                        contentScale = ContentScale.Crop,
+                    )
+
+                    LaunchedEffect(key1 = painter) {
+                        scope.launch {
+
+                            generatedPalette = generatePalette(targetState).also { palette ->
+                                Timber.d("painter | generatedPalette | ${palette.map { it.value }}")
+                            }
+
+                            ////////////////
+
+                            lightVibrantSwatch.intValue = generatedPalette["light vibrant"] ?: 0
+                            darkVibrantSwatch.intValue = generatedPalette["dark vibrant"] ?: 0
+
+                            onPaletteComplete(lightVibrantSwatch.intValue.toColor())
+                        }
+                    }
+                }
+
+                is AsyncImagePainter.State.Error -> {
+                    Timber.e("state is AsyncImagePainter.State.Error | ${targetState.result}")
+                }
+
+                else -> {
+                    Timber.e("state | else branch")
+                }
+            }
+        }
+
+        // Title
+        Box(
+            modifier = Modifier
+                .width(this.maxWidth)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            MaterialTheme.colorScheme.background,
+                            MaterialTheme.colorScheme.background,
+                        )
+                    )
+                )
+        ) {
+            Titles(
+                modifier = Modifier.padding(top = 32.dp),
+                title = tmdbState.item.title,
+                originalTitle = tmdbState.item.originalTitle,
+                textColor = Color(lightVibrantSwatch.intValue)
+            )
+        }
+    }
+}
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedBoxWithConstraintsScope")
 @Composable
 fun TheatersDetailContent(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     tmdbState: TMDBDetailUiState,
     isTrailerVisible: Boolean,
     onTrailerVisible: (Boolean) -> Unit
@@ -77,9 +200,9 @@ fun TheatersDetailContent(
     var palette: Palette
 
     /* Get the dark vibrant swatch */
-    val lightVibrantSwatch = remember { mutableIntStateOf(0) }
-    val darkVibrantSwatch = remember { mutableIntStateOf(0) }
-    val dominantSwatch = remember { mutableIntStateOf(0) }
+    var lightVibrantSwatch by remember { mutableIntStateOf(0) }
+    val darkVibrantSwatch by remember { mutableIntStateOf(0) }
+    val dominantSwatch by remember { mutableIntStateOf(0) }
 
     val animateNavigationButtonColor = remember { Animatable(initialValue = Color.White) }
 
@@ -128,7 +251,7 @@ fun TheatersDetailContent(
                                 scale = Scale.FILL,
                                 placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
                             )
-                        val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
+                        val painterState: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
 
                         /* Create the Palette, pass the bitmap to it */
 //                         var palette: Palette
@@ -148,7 +271,7 @@ fun TheatersDetailContent(
                         ) {
                             // Image
                             item {
-                                BoxWithConstraints(
+                                /*BoxWithConstraints(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .defaultMinSize(1.dp)
@@ -157,7 +280,7 @@ fun TheatersDetailContent(
                                 ) {
                                     AnimatedContent(
                                         modifier = Modifier.fillParentMaxSize(),
-                                        targetState = state,
+                                        targetState = painterState,
                                         transitionSpec = { fadeIn() + expandIn() togetherWith fadeOut() },
                                         label = "animated content state",
                                         contentAlignment = Alignment.Center
@@ -176,14 +299,14 @@ fun TheatersDetailContent(
                                                     modifier = Modifier.fillMaxSize(),
                                                     painter = painter,
                                                     contentDescription = "movie_image",
-                                                    contentScale = ContentScale.FillBounds,
+                                                    contentScale = ContentScale.Crop,
                                                 )
 
                                                 LaunchedEffect(key1 = painter) {
                                                     scope.launch {
 
                                                         palette = Palette
-                                                            .from(painter.loadImage())
+                                                            .from(targetState.loadImage())
                                                             .generate()
 
                                                         ////////////////
@@ -211,17 +334,24 @@ fun TheatersDetailContent(
                                             }
                                         }
                                     }
+                                }*/
+
+                                Poster(tmdbState = tmdbState) { paletteColor ->
+                                    scope.launch {
+                                        animateNavigationButtonColor.animateTo(paletteColor)
+                                        lightVibrantSwatch = paletteColor.toArgb()
+                                    }
                                 }
                             }
 
                             // Titles
-                            item {
+                            /*item {
                                 Titles(
                                     title = tmdbState.item.title,
                                     originalTitle = tmdbState.item.originalTitle,
-                                    textColor = Color(lightVibrantSwatch.intValue)
+                                    textColor = Color(lightVibrantSwatch)
                                 )
-                            }
+                            }*/
 
                             // Popularity and Rating
                             item {
@@ -325,7 +455,15 @@ fun TheatersDetailContent(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
+@Composable
+private fun PreviewPoster(@PreviewParameter(PreviewProviderTMDBDetailUiState::class) uiState: TMDBDetailUiState.Success) {
+    TheLabTheme(theme = AppTheme.Default) {
+        Poster(tmdbState = uiState) {}
+    }
+}
+
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewTheatersDetailContent(@PreviewParameter(PreviewProviderTMDBDetailUiState::class) uiState: TMDBDetailUiState) {
     TheLabTheme(theme = AppTheme.Default) {

@@ -27,6 +27,7 @@ import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.ui.compose.NoInternetConnection
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
@@ -37,7 +38,7 @@ import com.riders.thelab.feature.theaters.splashscreen.TheatersSplashTV
 import kotlinx.coroutines.delay
 
 
-val trendingItemImageHeight: Dp = 550.dp
+val trendingItemImageHeight: Dp = 600.dp
 
 
 ///////////////////////////////////////
@@ -208,13 +209,13 @@ fun TheatersContainerTV(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewTheatersContainerWithoutConnection(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
         TheatersContainer(
             theme = appTheme,
-            darkTheme = isSystemInDarkTheme(),
+            darkTheme = true ,
             isActivitiesSplashScreenEnable = false,
             hasNetworkConnection = false,
             categories = listOf("Movies", "Tv Shows"),
@@ -230,13 +231,13 @@ private fun PreviewTheatersContainerWithoutConnection(@PreviewParameter(AppTheme
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewTheatersContainerWithConnection(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
         TheatersContainer(
             theme = appTheme,
-            darkTheme = isSystemInDarkTheme(),
+            darkTheme = true ,
             isActivitiesSplashScreenEnable = false,
             hasNetworkConnection = true,
             categories = listOf("Movies", "Tv Shows"),
@@ -258,7 +259,7 @@ private fun PreviewTheatersTV(@PreviewParameter(AppThemePreviewProvider::class) 
     TheLabTheme(theme = appTheme) {
         TheatersContainerTV(
             theme = appTheme,
-            darkTheme = isSystemInDarkTheme(),
+            darkTheme = true ,
             hasNetworkConnection = true,
             tabRowSelected = 0,
             trendingMovieItem = TMDBUiState.TMDBTrendingMovieItemUiState.Loading,

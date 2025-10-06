@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.artists
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -130,13 +131,8 @@ fun ArtistThumb(
                     LaunchedEffect(state) {
                         if (state is AsyncImagePainter.State.Success) {
                             scope.launch {
-
-                                palette = Palette.from(painter.loadImage()).generate()
-
-                                ////////////////
-
-                                // Timber.d("Recomposition | palette swatches : ${palette.swatches.joinToString(" | ")}")
-
+                                val bitmap: Bitmap = state.loadImage() ?: return@launch
+                                palette = Palette.from(bitmap).generate()
                                 onPalette(palette)
                             }
                         }

@@ -42,6 +42,7 @@ import coil3.size.Size
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.utils.Constants
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
 import com.riders.thelab.core.ui.compose.component.image.CoilImage
 import com.riders.thelab.core.ui.compose.component.ticket.TicketShape
@@ -181,8 +182,6 @@ fun TrendingTMDBItemTV(
     TheLabThemeTV(theme = theme, darkTheme = darkTheme) {
         Box(modifier = modifier) {
             CoilImage(
-                theme = theme,
-                darkTheme = darkTheme,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(trendingItemImageHeight)
@@ -375,11 +374,11 @@ fun TMDBItemTV(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewTrendingTMDBItem(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabTheme(theme = AppTheme.Default) {
-        TrendingTMDBItem(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), item) { }
+        TrendingTMDBItem(theme = AppTheme.Default, darkTheme = true , item) { }
     }
 }
 
@@ -387,15 +386,15 @@ private fun PreviewTrendingTMDBItem(@PreviewParameter(PreviewProviderTMDBItemMod
 @Composable
 private fun PreviewTrendingTMDBItemTV(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabThemeTV(theme = AppTheme.Default) {
-        TrendingTMDBItemTV(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), item) { }
+        TrendingTMDBItemTV(theme = AppTheme.Default, darkTheme = true , item) { }
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewTMDBItem(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabTheme(theme = AppTheme.Default) {
-        TMDBItem(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), item) { }
+        TMDBItem(theme = AppTheme.Default, darkTheme = true , item) { }
     }
 }
 
@@ -403,6 +402,6 @@ private fun PreviewTMDBItem(@PreviewParameter(PreviewProviderTMDBItemModel::clas
 @Composable
 private fun PreviewTMDBItemTV(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabThemeTV(theme = AppTheme.Default) {
-        TMDBItemTV(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), item) { }
+        TMDBItemTV(theme = AppTheme.Default, darkTheme = true , item) { }
     }
 }

@@ -172,7 +172,7 @@ private fun PreviewTheaterTMDBList(@PreviewParameter(PreviewProviderTMDBItemMode
     TheLabTheme(theme = AppTheme.Default) {
         TheaterTMDBList(
             theme = AppTheme.Default,
-            darkTheme = isSystemInDarkTheme(),
+            darkTheme = true ,
             rowListState = rememberLazyListState(),
             categoryTitle = "Trending Movies",
             tmdbList = listOf(item),
@@ -186,7 +186,7 @@ private fun PreviewTheaterTMDBListTV(@PreviewParameter(PreviewProviderTMDBItemMo
     TheLabThemeTV(theme = AppTheme.Default) {
         TheaterTMDBListTV(
             theme = AppTheme.Default,
-            darkTheme = isSystemInDarkTheme(),
+            darkTheme = true ,
             rowListState = rememberLazyListState(),
             categoryTitle = "Trending Movies",
             tmdbList = listOf(item),

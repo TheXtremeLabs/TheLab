@@ -109,7 +109,7 @@ fun EditProfileCardRowItem(username: String, email: String, photoUrl: String? = 
                         Image(
                             modifier = Modifier.fillMaxSize(),
                             painter = if (isError.not() && !LocalInspectionMode.current) {
-                                painter.get(context = context)
+                                state.get(context = context) ?: return@Box
                             } else {
                                 painterResource(id = R.drawable.logo_colors)
                             },

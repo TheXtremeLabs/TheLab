@@ -2,7 +2,6 @@ package com.riders.thelab.feature.theaters.main
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,10 +22,9 @@ import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDB
 import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBTvShowsUiState
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.toItemModel
-import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBTvShowsResponse
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -120,7 +118,7 @@ fun ScreenTvShowsContentTV(
     darkTheme: Boolean,
     trendingTvShowItem: TMDBTrendingTvShowItemUiState,
     trendingTvShows: TMDBTvShowsUiState,
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     uiEvent: (UiEvent) -> Unit
 ) {
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
@@ -169,7 +167,7 @@ fun ScreenTvShowsContentTV(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(376.dp)
-                                    .bringIntoViewRequester(bringIntoViewRequester)  ,
+                                    .bringIntoViewRequester(bringIntoViewRequester),
                                 rowListState = lazyRowTrendingListState,
                                 categoryTitle = MovieCategoryEnum.TRENDING.value,
                                 tmdbList = tmdbList,
@@ -200,13 +198,13 @@ fun ScreenTvShowsContentTV(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewScreenTvShowsContent() {
     TheLabThemeTV(theme = AppTheme.Default) {
         ScreenTvShowsContent(
             theme = AppTheme.Default,
-            darkTheme = isSystemInDarkTheme(),
+            darkTheme = true,
             trendingTvShowItem = TMDBTrendingTvShowItemUiState.Success(response = TMDBTvShowsResponse.mockTMDBTvShowsResponse),
             trendingTvShows = TMDBTvShowsUiState.Loading,
             uiEvent = {},
@@ -217,11 +215,10 @@ private fun PreviewScreenTvShowsContent() {
 @DevicePreviewsTV
 @Composable
 private fun PreviewScreenTvShowsContentTV() {
-
     TheLabThemeTV(theme = AppTheme.Default) {
         ScreenTvShowsContentTV(
             theme = AppTheme.Default,
-            darkTheme = isSystemInDarkTheme(),
+            darkTheme = true,
             trendingTvShowItem = TMDBTrendingTvShowItemUiState.Success(response = TMDBTvShowsResponse.mockTMDBTvShowsResponse),
             trendingTvShows = TMDBTvShowsUiState.Loading,
             uiEvent = {},

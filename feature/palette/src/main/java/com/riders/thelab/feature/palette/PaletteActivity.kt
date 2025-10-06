@@ -68,7 +68,6 @@ class PaletteActivity : BaseComponentActivity() {
                                 darkTheme = isDarkTheme,
                                 hasInternetConnection = hasInternetConnection,
                                 paletteUiState = paletteState,
-                                paletteNameList = viewModel.paletteNameList,
                                 onRefreshedClicked = {
                                     viewModel.updateIsRefreshing(true)
                                     viewModel.getWallpaperImages(this@PaletteActivity)

@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.musicrecognition.ui.acrcloud
 
+import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
@@ -57,12 +58,14 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.palette.graphics.Palette
 import coil3.compose.AsyncImagePainter
 import com.riders.thelab.core.common.utils.LabPackageManager
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.data.local.model.music.toModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.color.success
 import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.component.fab.PulsarFab
@@ -255,7 +258,8 @@ fun RecognitionResult(
 
                                     LaunchedEffect(painterState) {
                                         scope.launch {
-                                            val image = painter.loadImage()
+                                            val image: Bitmap = painterState.loadImage() ?: return@launch
+
                                             uiEvent.invoke(
                                                 UiEvent.UpdateMusicModelImageBase64(
                                                     currentSong = state.songModel,
@@ -459,7 +463,7 @@ fun ACRCloudMainContent(
 // PREVIEWS
 //
 ///////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewIdle(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
@@ -473,7 +477,7 @@ fun PreviewIdle(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppT
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewACRError(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
@@ -485,7 +489,7 @@ fun PreviewACRError(@PreviewParameter(AppThemePreviewProvider::class) appTheme: 
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewSearching(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
@@ -497,7 +501,7 @@ fun PreviewSearching(@PreviewParameter(AppThemePreviewProvider::class) appTheme:
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewRecognitionResult(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
@@ -508,7 +512,7 @@ fun PreviewRecognitionResult(@PreviewParameter(AppThemePreviewProvider::class) a
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewRecognitionError(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
@@ -519,7 +523,7 @@ fun PreviewRecognitionError(@PreviewParameter(AppThemePreviewProvider::class) ap
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewACRCloudMainContent(@PreviewParameter(AppThemePreviewProvider::class) appTHeme: AppTheme) {
     TheLabTheme(theme = appTHeme, darkTheme = isSystemInDarkTheme()) {

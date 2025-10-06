@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.data.local.model.compose.Download
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
@@ -72,7 +72,8 @@ fun Header(text: String, isButtonEnabled: Boolean, onButtonClicked: () -> Unit) 
 
 @Composable
 fun DownloaderContent(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     downloadListState: List<Download>,
     buttonText: String,
     isButtonEnabled: Boolean,
@@ -152,7 +153,7 @@ fun DownloaderContent(
 // PREVIEWS
 //
 ////////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewHeader(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
@@ -160,7 +161,7 @@ private fun PreviewHeader(@PreviewParameter(AppThemePreviewProvider::class) appT
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewDownloaderContent(@PreviewParameter(PreviewListProvider::class) itemList: List<Download>) {
     TheLabTheme(theme = AppTheme.Default) {

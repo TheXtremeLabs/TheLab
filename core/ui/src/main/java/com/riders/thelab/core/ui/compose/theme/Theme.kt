@@ -108,8 +108,6 @@ fun TheLabThemeTV(
     // Specify the theme here
     theme: AppTheme,
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme: androidx.tv.material3.ColorScheme = when {

@@ -317,7 +317,7 @@ fun TheLabTopAppBar(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(start = 8.dp),
+                                    .padding(start = 8.dp, top = 8.dp),
                                 horizontalAlignment = Alignment.Start,
                                 verticalArrangement = Arrangement.Center
                             ) {
@@ -365,7 +365,7 @@ fun TheLabTopAppBar(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(start = 16.dp),
+                                    .padding(start = 16.dp, top = 16.dp),
                                 horizontalAlignment = Alignment.Start,
                                 verticalArrangement = Arrangement.Center
                             ) {
@@ -414,7 +414,7 @@ fun TheLabTopAppBar(
                             Column(
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .padding(start = 16.dp, bottom = 16.dp),
+                                    .padding(start = 16.dp , top = 16.dp, bottom = 16.dp),
                                 verticalArrangement = Arrangement.Bottom
                             ) {
                                 Text(text = title, color = titleColor)

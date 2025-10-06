@@ -1,7 +1,6 @@
 package com.riders.thelab.feature.theaters.main
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.defaultMinSize
@@ -28,7 +27,7 @@ import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.toItemModel
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -167,7 +166,7 @@ fun ScreenMovieContentTV(
     trendingMovieItem: TMDBTrendingMovieItemUiState,
     movies: TMDBMoviesUiState,
     upcomingMovies: TMDBUpcomingMoviesUiState,
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     uiEvent: (UiEvent) -> Unit
 ) {
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
@@ -224,7 +223,7 @@ fun ScreenMovieContentTV(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(376.dp)
-                                    .bringIntoViewRequester(bringIntoViewRequester)  ,
+                                    .bringIntoViewRequester(bringIntoViewRequester),
                                 rowListState = lazyRowTrendingListState,
                                 categoryTitle = MovieCategoryEnum.TRENDING.value,
                                 tmdbList = tmdbList,
@@ -249,7 +248,7 @@ fun ScreenMovieContentTV(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(376.dp)
-                                    .bringIntoViewRequester(bringIntoViewRequester)  ,
+                                    .bringIntoViewRequester(bringIntoViewRequester),
                                 rowListState = lazyRowUpcomingListState,
                                 categoryTitle = MovieCategoryEnum.UPCOMING.value,
                                 tmdbList = tmdbList,
@@ -273,7 +272,7 @@ fun ScreenMovieContentTV(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(376.dp)
-                                    .bringIntoViewRequester(bringIntoViewRequester)  ,
+                                    .bringIntoViewRequester(bringIntoViewRequester),
                                 rowListState = lazyRowPopularListState,
                                 categoryTitle = MovieCategoryEnum.POPULAR.value,
                                 tmdbList = tmdbList,
@@ -304,12 +303,13 @@ fun ScreenMovieContentTV(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewScreenMoviesContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
         ScreenMovieContent(
-            theme = appTheme, darkTheme = isSystemInDarkTheme(),
+            theme = appTheme,
+            darkTheme = true,
             trendingMovieItem = TMDBTrendingMovieItemUiState.Success(
                 TMDBMovieResponse.mockTMDBMovieResponse
             ),
@@ -324,7 +324,8 @@ private fun PreviewScreenMoviesContent(@PreviewParameter(AppThemePreviewProvider
 private fun PreviewScreenMoviesContentTV() {
     TheLabThemeTV(theme = AppTheme.Default) {
         ScreenMovieContentTV(
-            theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
+            theme = AppTheme.Default,
+            darkTheme = true,
             trendingMovieItem = TMDBTrendingMovieItemUiState.Success(
                 TMDBMovieResponse.mockTMDBMovieResponse
             ),

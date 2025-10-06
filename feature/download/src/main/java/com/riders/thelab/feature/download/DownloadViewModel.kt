@@ -34,7 +34,7 @@ import javax.inject.Inject
 @Suppress("EmptyMethod")
 @HiltViewModel
 class DownloadViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val repository: IRepository,
     val uiRepository: IUiRepository
 ) : BaseViewModel() {

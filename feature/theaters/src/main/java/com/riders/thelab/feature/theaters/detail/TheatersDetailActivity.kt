@@ -38,20 +38,18 @@ class TheatersDetailActivity : BaseComponentActivity() {
                     val theme: AppTheme by mViewModel.uiRepository
                         .getTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
 
                     val tmdbUIState by mViewModel.tmdbItemUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = true) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             TheatersDetailContent(
-                                theme = theme, darkTheme = isDarkTheme,
+                                theme = theme,
+                                darkTheme = true,
                                 tmdbState = tmdbUIState,
                                 isTrailerVisible = mViewModel.isTrailerVisible
                             ) {

@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.artists
 
+import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -132,7 +133,8 @@ fun ArtistItem(
                             LaunchedEffect(state) {
                                 if (state is AsyncImagePainter.State.Success) {
                                     scope.launch {
-                                        palette = Palette.from(painter.loadImage()).generate()
+                                        val bitmap: Bitmap = state.loadImage() ?: return@launch
+                                        palette = Palette.from(bitmap).generate()
 
                                         ////////////////
 

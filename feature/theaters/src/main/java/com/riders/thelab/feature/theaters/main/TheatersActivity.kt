@@ -44,7 +44,6 @@ class TheatersActivity : BaseComponentActivity(), KeyEvent.Callback {
                     val theme: AppTheme by mTheatersViewModel.uiRepository
                         .getTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by remember { mutableStateOf(true) }
 
                     val trendingMovieItem by mTheatersViewModel.tmdbTrendingMovieItemUiState.collectAsStateWithLifecycle()
                     val movies by mTheatersViewModel.tmdbMoviesUiState.collectAsStateWithLifecycle()
@@ -52,10 +51,16 @@ class TheatersActivity : BaseComponentActivity(), KeyEvent.Callback {
                     val trendingTvShowItem by mTheatersViewModel.tmdbTrendingTvShowItemUiState.collectAsStateWithLifecycle()
                     val trendingTvShows by mTheatersViewModel.tmdbTrendingTvShowsUiState.collectAsStateWithLifecycle()
 
+                    TheLabTheme(theme = theme, darkTheme = true) {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
                     if(isTv) {
                         TheatersContainerTV(
                             theme = theme,
-                            darkTheme = isDarkTheme,
+                            darkTheme = true,
                             hasNetworkConnection = hasNetworkConnection,
                             tabRowSelected = mTheatersViewModel.tabRowSelected,
                             trendingMovieItem = trendingMovieItem,
@@ -75,15 +80,9 @@ class TheatersActivity : BaseComponentActivity(), KeyEvent.Callback {
                             }
                         )
                     } else {
-                        TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
-                        // A surface container using the 'background' color from the theme
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
-                        ) {
                             TheatersContainer(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
+                                darkTheme = true,
                                 hasNetworkConnection = hasNetworkConnection,
                                 isActivitiesSplashScreenEnable = mTheatersViewModel.isActivitiesSplashEnabled,
                                 categories = mTheatersViewModel.categories,

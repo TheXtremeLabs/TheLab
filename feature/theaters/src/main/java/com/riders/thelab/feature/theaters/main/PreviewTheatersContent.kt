@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
 import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
@@ -340,13 +341,13 @@ fun TheatersContentTV(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewTheatersContent(@PreviewParameter(PreviewProviderNetworkState::class) networkState: NetworkState) {
     TheLabTheme(theme = AppTheme.Default) {
         TheatersContent(
             theme = AppTheme.Default,
-            darkTheme = isSystemInDarkTheme(),
+            darkTheme = true,
             hasNetworkConnection = true,
             categories = listOf("Movies", "Tv Shows"),
             tabRowSelected = 0,
@@ -367,7 +368,7 @@ private fun PreviewTheatersContentTV(@PreviewParameter(PreviewProviderNetworkSta
     TheLabThemeTV(theme = AppTheme.Default) {
         TheatersContentTV(
             theme = AppTheme.Default,
-            darkTheme = isSystemInDarkTheme(),
+            darkTheme = true,
             hasNetworkConnection = true,
             categories = listOf("Movies", "Tv Shows"),
             tabRowSelected = 0,

@@ -10,10 +10,13 @@ import android.graphics.drawable.VectorDrawable
 import android.util.Base64
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.createBitmap
+import androidx.palette.graphics.Palette
 import coil3.compose.AsyncImagePainter
+import com.riders.thelab.core.ui.compose.utils.loadImage
+import timber.log.Timber
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
-import androidx.core.graphics.createBitmap
 
 val Int.toDp: Int get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 val Int.toPx: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
@@ -29,6 +32,7 @@ fun Context.getDrawableByName(imageResName: String): Drawable? = ResourcesCompat
     this.resources.getIdentifier(imageResName, "drawable", this.packageName),
     this.theme
 )
+
 fun Context.getDrawableFromIntResource(resId: Int): Drawable =
     ContextCompat.getDrawable(this, resId)!!
 
@@ -36,7 +40,7 @@ fun Context.getDrawableFromIntResource(resId: Int): Drawable =
 /////////////////////////////////////////////////////
 // Vector Drawable
 /////////////////////////////////////////////////////
-fun VectorDrawable.toBitmap() : Bitmap? {
+fun VectorDrawable.toBitmap(): Bitmap? {
     val bitmap = createBitmap(this.intrinsicWidth, this.intrinsicHeight)
 
     val canvas = Canvas(bitmap)
@@ -80,3 +84,37 @@ fun Bitmap.encodeToBase64(): String = Base64.encodeToString(
 fun String.decodeBase64(): Bitmap = Base64
     .decode(this, 0)
     .run { BitmapFactory.decodeByteArray(this, 0, this.size) }
+
+
+/////////////////////////////////////////////////////
+// Palette
+/////////////////////////////////////////////////////
+fun generatePalette(painterState: AsyncImagePainter.State.Success) = Palette
+    .from(painterState.loadImage())
+    .generate()
+    .run {
+        getPalette(this)
+    }
+
+
+fun generatePalette(bitmap: Bitmap): HashMap<String, Int?> = Palette
+    .from(bitmap)
+    .generate()
+    .run {
+        getPalette(this)
+    }
+
+private fun getPalette(palette: Palette): HashMap<String, Int?> {
+    Timber.d("Palette extensions | Generate Palette")
+
+    val paletteMap: HashMap<String, Int?> = hashMapOf(
+        "vibrant" to (palette.vibrantSwatch?.rgb ?: 0),
+        "dark vibrant" to (palette.darkVibrantSwatch?.rgb ?: 0),
+        "light vibrant" to (palette.lightVibrantSwatch?.rgb ?: 0),
+        "muted" to (palette.mutedSwatch?.rgb ?: 0),
+        "dark muted" to (palette.darkMutedSwatch?.rgb ?: 0),
+        "light muted" to (palette.lightMutedSwatch?.rgb ?: 0)
+    ).also { Timber.d("getPalette() | ${it.toString()}") } as HashMap<String, Int?>
+
+    return paletteMap
+}

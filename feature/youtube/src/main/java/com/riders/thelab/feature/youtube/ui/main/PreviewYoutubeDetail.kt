@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.youtube.ui.main
 
+import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -54,6 +55,7 @@ import androidx.palette.graphics.Palette
 import coil3.compose.AsyncImagePainter
 import com.riders.thelab.core.data.local.model.youtube.Video
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
@@ -111,8 +113,8 @@ fun YoutubeDetailScreen(
                 Timber.d("state is AsyncImagePainter.State.Success")
 
                 scope.launch {
-
-                    palette = Palette.from(painter.loadImage()).generate()
+                    val bitmap: Bitmap = state.loadImage() ?: return@launch
+                    palette = Palette.from(bitmap).generate()
 
                     ////////////////
 
@@ -253,7 +255,7 @@ fun YoutubeDetailScreen(
 //
 ///////////////////////////////////////
 @OptIn(ExperimentalSharedTransitionApi::class)
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewYoutubeDetailScreen(@PreviewParameter(PreviewProviderVideo::class) video: Video) {
     val navController = rememberNavController()

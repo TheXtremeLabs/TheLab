@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.data.local.model.tmdb.TDMBCastModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -58,31 +58,33 @@ import kotlin.math.roundToInt
 //
 ///////////////////////////////
 @Composable
-fun Titles(title: String, originalTitle: String, textColor: Color) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = title,
-            style = TextStyle(
-                color = textColor,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
-        )
-
-        if (!title.equals(originalTitle, true)) {
+fun Titles(title: String, originalTitle: String, textColor: Color, modifier: Modifier = Modifier) {
+    Box(modifier = modifier) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Text(
-                text = originalTitle,
+                text = title,
                 style = TextStyle(
-                    color = Color.LightGray,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp
+                    color = textColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
                 )
             )
+
+            if (!title.equals(originalTitle, true)) {
+                Text(
+                    text = originalTitle,
+                    style = TextStyle(
+                        color = Color.LightGray,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 20.sp
+                    )
+                )
+            }
         }
     }
 }
@@ -255,7 +257,7 @@ fun Casting(castList: List<TDMBCastModel>) {
 // PREVIEWS
 //
 ///////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewTMDBTitles(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabTheme(theme = AppTheme.Default) {
@@ -263,7 +265,7 @@ private fun PreviewTMDBTitles(@PreviewParameter(PreviewProviderTMDBItemModel::cl
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewTMDBPopularityAndRating(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabTheme(theme = AppTheme.Default) {
@@ -271,7 +273,7 @@ private fun PreviewTMDBPopularityAndRating(@PreviewParameter(PreviewProviderTMDB
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewTMDBTrailer(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
@@ -279,7 +281,7 @@ private fun PreviewTMDBTrailer(@PreviewParameter(AppThemePreviewProvider::class)
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewTMDBOverview(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabTheme(theme = AppTheme.Default) {
@@ -287,7 +289,7 @@ private fun PreviewTMDBOverview(@PreviewParameter(PreviewProviderTMDBItemModel::
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewTMDBCasting(@PreviewParameter(PreviewProviderTMDBItemModel::class) item: TMDBItemModel) {
     TheLabTheme(theme = AppTheme.Default) {

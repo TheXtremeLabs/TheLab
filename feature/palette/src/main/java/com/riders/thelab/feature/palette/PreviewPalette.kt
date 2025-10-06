@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.palette
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -19,14 +20,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.Card
@@ -51,32 +54,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.palette.graphics.Palette
 import coil3.compose.AsyncImagePainter
-import coil3.compose.rememberAsyncImagePainter
-import coil3.request.ImageRequest
-import coil3.request.allowHardware
-import coil3.request.crossfade
 import com.riders.thelab.core.data.local.model.compose.palette.PaletteUiState
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.NoInternetConnection
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
-import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.snackbar.SnackbarVisualsCustom
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.compose.utils.loadImage
 import com.riders.thelab.core.ui.compose.utils.toColor
+import com.riders.thelab.core.ui.utils.generatePalette
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -86,28 +82,140 @@ import timber.log.Timber
 // COMPOSE
 //
 ///////////////////////////////////////
-@DevicePreviewsPhoneOnly
+@SuppressLint("MutableCollectionMutableState")
 @Composable
-fun PaletteLoader() {
-    Box(
-        modifier = Modifier
-            .size(72.dp)
-            .zIndex(5f),
-        contentAlignment = Alignment.Center
-    ) {
-        Lottie(
-            modifier = Modifier.fillMaxSize(),
-            url = "https://assets2.lottiefiles.com/packages/lf20_kk62um5v.json"
+fun PaletteSuccess(
+    fetchedImageUrl: String,
+    onPaletteComplete: (HashMap<String, Int?>) -> Unit
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val lazyState = rememberLazyGridState()
+
+    // Image Container
+    val imageShape = remember {
+        RoundedCornerShape(
+            topStart = 0.dp,
+            topEnd = 0.dp,
+            bottomStart = 12.dp,
+            bottomEnd = 12.dp
         )
     }
+
+    var generatedPalette: HashMap<String, Int?>? by remember { mutableStateOf(null) }
+
+    val painter = getCoilAsyncImagePainter(
+        context = context,
+        dataUrl = fetchedImageUrl,
+        isSvg = false,
+        placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors,
+    )
+    val painterState: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
+
+    BoxWithConstraints (modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+        Column(
+            modifier = Modifier
+                .size(this.maxWidth, this.maxHeight)
+                .verticalScroll(rememberScrollState())
+        ) {
+            // Image Container
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_custom_max_height)),
+                shape = imageShape
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    when (painterState) {
+                        is AsyncImagePainter.State.Loading -> {
+                            Timber.i("state is AsyncImagePainter.State.Loading")
+                            LabLoader(modifier = Modifier.size(56.dp))
+                        }
+
+                        is AsyncImagePainter.State.Success -> {
+                            Timber.d("state is AsyncImagePainter.State.Success")
+
+                            Image(
+                                modifier = Modifier
+                                    .clip(imageShape)
+                                    .fillMaxSize(),
+                                painter = painter,
+                                contentDescription = "palette image wth coil",
+                                contentScale = ContentScale.Crop,
+                            )
+
+                            LaunchedEffect(key1 = painterState) {
+                                scope.launch {
+                                    val bitmap: Bitmap = painterState.loadImage() ?: return@launch
+                                    Timber.w("Recomposition | AsyncImagePainter.State.Success | process palette...")
+                                    generatedPalette = generatePalette(bitmap)
+                                }
+                            }
+                        }
+
+                        is AsyncImagePainter.State.Error -> {
+                            Timber.e("Recomposition | AsyncImagePainter.State.Error | ${(painterState as AsyncImagePainter.State.Error).result.throwable.message}")
+                        }
+
+                        else -> {
+                            Timber.e("else branch")
+                        }
+                    }
+                }
+            }
+
+            AnimatedContent(targetState = null != generatedPalette) { targetState ->
+                if (!targetState) {
+                    LabLoader(modifier = Modifier.size(56.dp))
+                } else {
+                    LazyVerticalGrid(
+                        modifier = Modifier.fillMaxWidth().heightIn(max=500.dp),
+                        state = lazyState,
+                        horizontalArrangement = Arrangement.Center,
+                        verticalArrangement = Arrangement.spacedBy(24.dp),
+                        columns = GridCells.Fixed(2)
+                    ) {
+                        // Image Palette grid content
+                        itemsIndexed(
+                            generatedPalette!!.toList()
+                        ) { index, item ->
+                            val paletteKey = remember { generatedPalette?.keys?.toList()[index] }
+                                .also { Timber.d("Recomposition | palette key : $it") }
+
+                            paletteKey?.let {
+                                PaletteItem(
+                                    text = it,
+                                    color = generatedPalette?.get(it)?.toColor()
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // LaunchedEffect(painterState) { }
+
+    LaunchedEffect(generatedPalette) {
+        if (null == generatedPalette) {
+            Timber.e("LaunchedEffect | generatedPalette | value is null")
+            return@LaunchedEffect
+        }
+
+        onPaletteComplete.invoke(generatedPalette!!)
+    }
+
 }
 
-@Composable
-fun PaletteWithInternetConnection(
-    theme: AppTheme,
-    darkTheme: Boolean,
-) {
 
+@Composable
+fun PaletteError(onRetryClicked: () -> Unit) {
 }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -117,15 +225,9 @@ fun PaletteContent(
     darkTheme: Boolean,
     hasInternetConnection: Boolean,
     paletteUiState: PaletteUiState,
-    paletteNameList: List<String>,
     onRefreshedClicked: () -> Unit,
     isRefreshing: Boolean
 ) {
-    val scope = rememberCoroutineScope()
-    val lazyState = rememberLazyGridState()
-
-    val paletteColorList = remember { mutableStateOf(listOf<Int?>()) }
-
     val snackBarHostState = SnackbarHostState()
     val snackBarVisualsCustom = remember { mutableStateOf(SnackbarVisualsCustom()) }
 
@@ -150,7 +252,7 @@ fun PaletteContent(
                             contentAlignment = Alignment.BottomCenter
                         ) {
                             AnimatedContent(
-                                modifier = Modifier.padding(bottom = 8.dp),
+                                modifier = Modifier.padding(vertical = 8.dp),
                                 targetState = isRefreshing,
                                 transitionSpec = { fadeIn() + slideInVertically() togetherWith slideOutVertically() + fadeOut() },
                                 label = "loading animation content"
@@ -192,9 +294,7 @@ fun PaletteContent(
                     })
             },
             snackbarHost = {
-                SnackbarHost(hostState = snackBarHostState) {
-                    it.visuals.message
-                }
+                SnackbarHost(hostState = snackBarHostState) { it.visuals.message }
             }
         ) { contentPadding ->
             AnimatedContent(
@@ -220,130 +320,15 @@ fun PaletteContent(
                         action = onRefreshedClicked
                     )
                 } else {
-                    BoxWithConstraints(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.TopCenter
-                    ) {
-                        when (paletteUiState) {
-                            is PaletteUiState.Loading -> {
-                                LabLoader(
-                                    modifier = Modifier
-                                        .align(Alignment.Center)
-                                        .size(72.dp)
-                                )
-                            }
-
-                            else -> {
-                                val painter = rememberAsyncImagePainter(
-                                    model = ImageRequest
-                                        .Builder(LocalContext.current)
-                                        .data(if (paletteUiState is PaletteUiState.Success) paletteUiState.fetchedImage else com.riders.thelab.core.ui.R.drawable.logo_colors)
-                                        .apply {
-                                            crossfade(true)
-                                            allowHardware(false)
-                                            //transformations(RoundedCornersTransformation(32.dp.value))
-                                        }
-                                        .build(),
-                                    placeholder = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors),
-                                )
-                                val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
-
-                                LazyVerticalGrid(
-                                    modifier = Modifier.size(
-                                        width = this.maxWidth,
-                                        height = this.maxHeight
-                                    ),
-                                    state = lazyState,
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                                    columns = GridCells.Fixed(2)
-                                ) {
-                                    // Image Container
-                                    item(span = {
-                                        // Replace "maxCurrentLineSpan" with the number of spans this item should take.
-                                        // Use "maxCurrentLineSpan" if you want to take full width.
-                                        GridItemSpan(maxCurrentLineSpan)
-                                    }) {
-                                        Column(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalAlignment = Alignment.CenterHorizontally,
-                                            verticalArrangement = Arrangement.Center
-                                        ) {
-                                            val imageShape = RoundedCornerShape(
-                                                topStart = 0.dp,
-                                                topEnd = 0.dp,
-                                                bottomStart = 12.dp,
-                                                bottomEnd = 12.dp
-                                            )
-
-                                            // Image Container
-                                            Card(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                shape = imageShape
-                                            ) {
-                                                Column(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(0.dp),
-                                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                                    verticalArrangement = Arrangement.Center
-                                                ) {
-                                                    Image(
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_custom_max_height))
-                                                            .clip(imageShape),
-                                                        painter = painter,
-                                                        contentDescription = "palette image wth coil",
-                                                        contentScale = ContentScale.Crop,
-                                                    )
-                                                    when (state) {
-                                                        is AsyncImagePainter.State.Loading -> {
-                                                            Timber.i("state is AsyncImagePainter.State.Loading")
-                                                            LabLoader(modifier = Modifier.size(56.dp))
-                                                        }
-
-                                                        is AsyncImagePainter.State.Success -> {
-                                                            Timber.d("state is AsyncImagePainter.State.Success")
-
-
-                                                            LaunchedEffect(key1 = painter) {
-                                                                scope.launch {
-
-                                                                    val palette = Palette
-                                                                        .from((state as AsyncImagePainter.State.Success).loadImage())
-                                                                        .generate()
-
-                                                                    ////////////////
-
-                                                                    paletteColorList.value =
-                                                                        generatePalette(palette)
-                                                                }
-                                                            }
-                                                        }
-
-                                                        is AsyncImagePainter.State.Error -> {
-                                                            Timber.e("Recomposition | AsyncImagePainter.State.Error | ${(state as AsyncImagePainter.State.Error).result.throwable.message}")
-                                                        }
-
-                                                        else -> {
-                                                            Timber.e("else branch")
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    // Image Palette grid content
-                                    itemsIndexed(paletteColorList.value) { index, item ->
-                                        PaletteItem(
-                                            text = paletteNameList[index],
-                                            color = item?.let { Color(it) })
-                                    }
-                                }
-                            }
+                    when (paletteUiState) {
+                        is PaletteUiState.Loading -> LabLoader(modifier = Modifier.size(56.dp))
+                        is PaletteUiState.Success -> PaletteSuccess(fetchedImageUrl = paletteUiState.fetchedImage) { palette ->
+                            Timber.d("Recomposition | generated palette $palette")
+                            navigationColor = palette["Light Vibrant"]?.toColor() ?: Color.White
+                            gradientStartColor = palette["Dark Vibrant"]?.toColor() ?: Color.Black
                         }
+
+                        is PaletteUiState.Error -> PaletteError { }
                     }
                 }
             }
@@ -364,32 +349,8 @@ fun PaletteContent(
             }
         }
     }
-
-    LaunchedEffect(paletteColorList) {
-        if (paletteColorList.value.isEmpty()) {
-            return@LaunchedEffect
-        }
-
-        navigationColor = paletteColorList.value.last()?.toColor()
-            ?: paletteColorList.value[2]?.toColor()
-                    ?: Color.White
-        gradientStartColor = paletteColorList.value[1]?.toColor() ?: Color.Black
-    }
 }
 
-
-fun generatePalette(palette: Palette): List<Int?> {
-    Timber.d("Generate Palette")
-
-    return listOf(
-        palette.vibrantSwatch?.rgb,
-        palette.darkVibrantSwatch?.rgb,
-        palette.lightVibrantSwatch?.rgb,
-        palette.mutedSwatch?.rgb,
-        palette.darkMutedSwatch?.rgb,
-        palette.lightMutedSwatch?.rgb,
-    )
-}
 
 ///////////////////////////////////////
 //
@@ -399,23 +360,12 @@ fun generatePalette(palette: Palette): List<Int?> {
 @DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewPaletteContentWithoutInternet(@PreviewParameter(PreviewProvider::class) palette: PaletteUiState) {
-
-    val paletteNameList = listOf(
-        "Vibrant",
-        "Vibrant Dark",
-        "Vibrant Light",
-        "Muted",
-        "Muted Dark",
-        "Light Muted"
-    )
-
     TheLabTheme(theme = AppTheme.Default) {
         PaletteContent(
             theme = AppTheme.Default,
             darkTheme = isSystemInDarkTheme(),
             hasInternetConnection = false,
             palette,
-            paletteNameList,
             {},
             true
         )
@@ -425,23 +375,12 @@ private fun PreviewPaletteContentWithoutInternet(@PreviewParameter(PreviewProvid
 @DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewPaletteContent(@PreviewParameter(PreviewProvider::class) palette: PaletteUiState) {
-
-    val paletteNameList = listOf(
-        "Vibrant",
-        "Vibrant Dark",
-        "Vibrant Light",
-        "Muted",
-        "Muted Dark",
-        "Light Muted"
-    )
-
     TheLabTheme(theme = AppTheme.Default) {
         PaletteContent(
             theme = AppTheme.Default,
             darkTheme = isSystemInDarkTheme(),
             hasInternetConnection = true,
             palette,
-            paletteNameList,
             {},
             true
         )

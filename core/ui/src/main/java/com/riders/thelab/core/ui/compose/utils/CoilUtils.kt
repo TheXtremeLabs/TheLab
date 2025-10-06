@@ -28,15 +28,20 @@ import timber.log.Timber
 // @Composable
 private fun getCoilImageRequest(
     context: Context,
-    dataUrl: String,
+    data: Any,
+    isSvg: Boolean = false,
     size: Size? = null,
     scale: Scale? = null,
     isCaching: Boolean = true
 ): ImageRequest = ImageRequest
-    .Builder(context)
-    .data(dataUrl)
-    .apply {
-        Timber.d("getCoilImageRequest() | dataUrl : $dataUrl, size : $size, scale : $scale")
+    .Builder(context).apply {
+        Timber.d("getCoilImageRequest() | data : $data, size : $size, scale : $scale")
+
+        data(data)
+
+        if (isSvg) {
+            decoderFactory(SvgDecoder.Factory())
+        }
 
         crossfade(true)
         allowHardware(false)
@@ -51,60 +56,44 @@ private fun getCoilImageRequest(
             memoryCachePolicy(CachePolicy.ENABLED)
         }
     }
+
     .build()
 
-private fun getCoilImageRequestSvg(
-    context: Context,
-    dataUrl: String,
-    size: Size? = null,
-    scale: Scale? = null,
-    isCaching: Boolean = true
-): ImageRequest = ImageRequest
-    .Builder(context)
-    .data(dataUrl)
-    .decoderFactory(SvgDecoder.Factory())
-    .apply {
-        Timber.d("getCoilImageRequest() | dataUrl : $dataUrl, size : $size, scale : $scale")
-
-        crossfade(true)
-        allowHardware(false)
-        //transformations(RoundedCornersTransformation(32.dp.value))
-
-        size(size ?: Size.ORIGINAL)
-        scale(scale ?: Scale.FIT)
-
-        if (isCaching) {
-            networkCachePolicy(CachePolicy.ENABLED)
-            diskCachePolicy(CachePolicy.DISABLED)
-            memoryCachePolicy(CachePolicy.ENABLED)
-        }
-    }
-    .build()
-
-@Composable
-fun getCoilAsyncImagePainter(
+private fun getCoilImageRequest(
     context: Context,
     dataUrl: String,
     isSvg: Boolean = false,
     size: Size? = null,
     scale: Scale? = null,
+    isCaching: Boolean = true
+): ImageRequest = getCoilImageRequest(
+    context = context,
+    data = dataUrl,
+    isSvg = isSvg,
+    size = size,
+    scale = scale,
+    isCaching = isCaching
+)
+
+@Composable
+fun getCoilAsyncImagePainter(
+    context: Context,
+    data: Any,
+    isSvg: Boolean = false,
+    size: Size? = null,
+    scale: Scale? = null,
     @DrawableRes placeholderResId: Int = R.drawable.logo_colors
-): AsyncImagePainter =
-    rememberAsyncImagePainter(
-        model = if (!isSvg) getCoilImageRequest(
+): AsyncImagePainter = rememberAsyncImagePainter(
+        model = getCoilImageRequest(
             context = context,
-            dataUrl = dataUrl,
-            size = size,
-            scale = scale
-        ) else getCoilImageRequestSvg(
-            context = context,
-            dataUrl = dataUrl,
+            data = data,
+            isSvg = isSvg,
             size = size,
             scale = scale
         ),
         placeholder = painterResource(placeholderResId),
         onLoading = {
-            Timber.i("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Loading Image... | url: $dataUrl")
+            Timber.i("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Loading Image... | data: $data")
         },
         onSuccess = {
             Timber.d("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Image successfully loaded")
@@ -122,17 +111,29 @@ fun getCoilAsyncImagePainter(
     isSvg: Boolean = false,
     size: Size? = null,
     scale: Scale? = null,
+    @DrawableRes placeholderResId: Int = R.drawable.logo_colors
+): AsyncImagePainter = getCoilAsyncImagePainter(
+    context = context,
+    data = dataUrl,
+    isSvg = isSvg,
+    size = size,
+    scale = scale,
+    placeholderResId = placeholderResId
+)
+
+@Composable
+fun getCoilAsyncImagePainter(
+    context: Context,
+    dataUrl: String,
+    isSvg: Boolean = false,
+    size: Size? = null,
+    scale: Scale? = null,
     onState: ((AsyncImagePainter.State) -> Unit)? = null,
-): AsyncImagePainter =
-    rememberAsyncImagePainter(
-        model = if (!isSvg) getCoilImageRequest(
+): AsyncImagePainter = rememberAsyncImagePainter(
+        model = getCoilImageRequest(
             context = context,
             dataUrl = dataUrl,
-            size = size,
-            scale = scale
-        ) else getCoilImageRequestSvg(
-            context = context,
-            dataUrl = dataUrl,
+            isSvg = isSvg,
             size = size,
             scale = scale
         ),
@@ -140,17 +141,16 @@ fun getCoilAsyncImagePainter(
         imageLoader = ImageLoader.Builder(context).logger(DebugLogger()).build()
     )
 
-fun AsyncImagePainter.get(context: Context): Painter =
-    (this.state as AsyncImagePainter.State.Success)
-        .result
-        .image
-        .asPainter(context = context)
+fun AsyncImagePainter.State.get(context: Context): Painter? = when (this) {
+    is AsyncImagePainter.State.Success -> this.result.image.asPainter(context = context)
+    else -> null
+}
 
 
-fun AsyncImagePainter.loadImage(): Bitmap = (this.state as AsyncImagePainter.State.Success)
-    .result
-    .image
-    .toBitmap()
+fun AsyncImagePainter.State.loadImage(): Bitmap? = when (this) {
+    is AsyncImagePainter.State.Success -> this.result.image.toBitmap()
+    else -> null
+}
 
 
 fun AsyncImagePainter.State.Success.get(context: Context): Painter =

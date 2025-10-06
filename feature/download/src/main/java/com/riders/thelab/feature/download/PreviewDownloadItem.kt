@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.riders.thelab.core.data.local.model.compose.Download
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.color.success
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -142,7 +143,7 @@ fun DownloadItem(theme: AppTheme, darkTheme: Boolean, modifier: Modifier, item: 
 // PREVIEWS
 //
 ////////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewDownloadItem(@PreviewParameter(PreviewProvider::class) item: Download) {
     TheLabTheme(theme = AppTheme.Default) {
