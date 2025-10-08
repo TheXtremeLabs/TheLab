@@ -46,6 +46,7 @@ import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.data.local.model.music.MusicRecognitionModel
 import com.riders.thelab.core.data.local.model.music.toModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.color.md_theme_light_onPrimaryContainer
 import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
@@ -163,7 +164,9 @@ fun ACRCloudActivityContent(
                 TheLabTopAppBar(
                     theme = theme,
                     darkTheme = darkTheme,
-                    toolbarSize = ToolbarSize.SMALL,
+                    toolbarSize = ToolbarSize.MEDIUM,
+                    title = null,
+                    toolbarHeight = 64.dp,
                     mainCustomContent = {
                         Box(
                             modifier = Modifier.fillMaxHeight(),
@@ -171,6 +174,7 @@ fun ACRCloudActivityContent(
                         ) {
                             LabTabRow(
                                 theme = theme,
+                                modifier = Modifier.fillMaxWidth().padding(8.dp),
                                 items = tabItems,
                                 selectedItemIndex = currentPageIndex,
                                 selectedTextColor = if (darkTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.inverseOnSurface
@@ -339,7 +343,7 @@ fun ACRCloudActivityContent(
 // PREVIEWS
 //
 ///////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewMainActivityContentWithoutInternetConnection(@PreviewParameter(PreviewProviderACRCloud::class) acrUiState: ACRUiState) {
     TheLabTheme(theme = AppTheme.Default) {
@@ -358,7 +362,7 @@ fun PreviewMainActivityContentWithoutInternetConnection(@PreviewParameter(Previe
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewMainActivityContentWithInternetConnection(@PreviewParameter(PreviewProviderACRCloud::class) acrUiState: ACRUiState) {
     TheLabTheme(theme = AppTheme.Default) {

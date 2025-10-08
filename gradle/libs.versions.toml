@@ -338,7 +338,8 @@ androidx-work-multiprocess = { group = "androidx.work", name = "work-multiproces
 androidx-work-testing = { group = "androidx.work", name = "work-testing", version.ref = "androidxWork" }
 coil-kt = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
 coil-kt-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
-coil-kt-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+coil-kt-network-cache-control = { group = "io.coil-kt.coil3", name = "coil-network-cache-control", version.ref = "coil" }
+coil-kt-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 coil-kt-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
@@ -444,11 +445,11 @@ kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" }
 kotlinx-coroutines-bom = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-bom", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android" }
+kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinPlayServices" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-metadata-jvm = { group = "org.jetbrains.kotlinx", name = "kotlinx-metadata-jvm", version.ref = "kotlinxMetadataJvm" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-kotlinx-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinPlayServices" }
 kotools-types = { group = "org.kotools", name = "types", version.ref = "types" }
 # Kotzilla
 kotzilla-sdk = { group = "io.kotzilla", name = "kotzilla-sdk", version.ref = "kotzilla" }

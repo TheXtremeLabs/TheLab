@@ -70,10 +70,6 @@ class WeatherViewModel @Inject constructor(
     private val repository: IRepository,
     val uiRepository: IUiRepository
 ) : BaseViewModel(), DefaultLifecycleObserver {
-    //////////////////////////////////////////
-    // Variables
-    //////////////////////////////////////////
-    private var mWeakReference: WeakReference<WeatherActivity>? = null
 
     //////////////////////////////////////////
     // Compose states
@@ -208,12 +204,6 @@ class WeatherViewModel @Inject constructor(
     // Class methods
     //
     ///////////////////////////
-    fun initWeakReference(activity: WeatherActivity) {
-        if (null == mWeakReference) {
-            mWeakReference = WeakReference(activity)
-        }
-    }
-
     fun onEvent(event: UiEvent) {
         when (event) {
             is UiEvent.OnUpdateSearchCityQuery -> updateSearchText(event.newQuery)
@@ -287,9 +277,10 @@ class WeatherViewModel @Inject constructor(
         Timber.d("Retrying...")
         updateWeatherDataState(WeatherDataState.Loading)
 
-        mWeakReference?.get()?.let { startWork(it) } ?: run {
-            Timber.e("retry() | Activity object is null")
-        }
+        (mWeakReference?.get() as? WeatherActivity)?.let { activity -> startWork(activity) }
+            ?: run {
+                Timber.e("retry() | Activity object is null")
+            }
     }
 
     @SuppressLint("NewApi")
@@ -403,18 +394,16 @@ class WeatherViewModel @Inject constructor(
     private suspend fun processOneCallResponse(weatherResponse: OneCallWeatherResponse) {
         runCatching {
             val weatherModel: WeatherModel = weatherResponse.toModel().apply {
-                mWeakReference
-                    ?.get()
-                    ?.let { activity ->
-                        getCityNameWithCoordinates(
-                            activity = activity,
-                            latitude = weatherResponse.latitude,
-                            longitude = weatherResponse.longitude,
-                            onAddressFetched = { address ->
-                                this.address = address
-                            }
-                        )
-                    } ?: run {
+                (mWeakReference?.get() as? WeatherActivity)?.let { activity ->
+                    getCityNameWithCoordinates(
+                        activity = activity,
+                        latitude = weatherResponse.latitude,
+                        longitude = weatherResponse.longitude,
+                        onAddressFetched = { address ->
+                            this.address = address
+                        }
+                    )
+                } ?: run {
                     Timber.e("fetchWeather() | Activity object is null")
                 }
 

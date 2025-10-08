@@ -32,7 +32,7 @@ class SettingsActivity : BaseGoogleActivity() {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate()")
 
-        mViewModel.intWeakReference(this@SettingsActivity)
+        mViewModel.initWeakReference(activity = this@SettingsActivity)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

@@ -1,7 +1,6 @@
 package com.riders.thelab.ui.camera
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.display.DisplayManager
@@ -323,11 +322,11 @@ class CameraActivity : AppCompatActivity() {
             File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
         }*/
 
-        val mediaDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES).let {
+        val mediaDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES).let {
             File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
         }
 
-        return if (mediaDir != null && mediaDir.exists())
+        return if (null != mediaDir && mediaDir.exists())
             mediaDir else filesDir
     }
 

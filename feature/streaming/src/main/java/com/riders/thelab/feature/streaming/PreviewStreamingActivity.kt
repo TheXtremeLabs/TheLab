@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.riders.thelab.core.player.ExoPlayer
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.component.LabVerticalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -90,7 +91,7 @@ fun StreamingContent(theme: AppTheme, darkTheme: Boolean) {
 }
 
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewStreamingContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {

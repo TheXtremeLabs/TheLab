@@ -14,6 +14,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.camera.CameraWorkflowModel
+import com.riders.thelab.core.permissions.Permission
+import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -32,48 +34,63 @@ class TheLabVisionActivity : BaseComponentActivity() {
     private val cameraViewModel: CameraWorkflowModel by viewModels<CameraWorkflowModel>()
     private val mViewModel: VisionViewModel by viewModels<VisionViewModel>()
 
+    private var mPermissionManager: PermissionManager? = null
     private var targetVision: NotBlankString? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate()")
 
-        getBundle()
-
         enableEdgeToEdge()
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+        mPermissionManager = PermissionManager.from(this)
+    }
 
-                setContent {
+    override fun onResume() {
+        super.onResume()
 
-                    // Register lifecycle events
-                    mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
+        mPermissionManager
+            ?.request(Permission.Camera)
+            ?.checkPermission { granted ->
+                if (!granted) {
+                    mPermissionManager?.shouldAskPermission(this, Permission.Camera.permissions[0])
+                } else {
+                    getBundle()
 
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    lifecycleScope.launch {
+                        repeatOnLifecycle(Lifecycle.State.CREATED) {
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
-                        when (targetVision.toString()) {
-                            Constants.VISION_VIDEO -> VisionVideoScreen(
-                                theme = theme,
-                                isDarkTheme = isDarkTheme
-                            )
+                            setContent {
 
-                            else -> VisionCameraScreen(
-                                theme = theme,
-                                isDarkTheme = isDarkTheme,
-                                cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-                            )
+                                // Register lifecycle events
+                                mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
+
+                                val theme: AppTheme by mViewModel.uiRepository
+                                    .getTheme()
+                                    .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                                val isDarkTheme: Boolean by mViewModel.uiRepository
+                                    .isThemeDarkMode()
+                                    .collectAsStateWithLifecycle(initialValue = false)
+
+                                TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                                    when (targetVision.toString()) {
+                                        Constants.VISION_VIDEO -> VisionVideoScreen(
+                                            theme = theme,
+                                            isDarkTheme = isDarkTheme
+                                        )
+
+                                        else -> VisionCameraScreen(
+                                            theme = theme,
+                                            isDarkTheme = isDarkTheme,
+                                            cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
     }
 
     override fun backPressed() {

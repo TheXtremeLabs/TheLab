@@ -207,7 +207,7 @@ fun UserSection(
                             verticalArrangement = Arrangement.Center
                         ) {
                             EditProfileCardRowItem(
-                                photoUrl = targetState.user.profilePictureUri.toString(),
+                                photoUrl = targetState.user.profilePictureUri,
                                 username = targetState.user.username,
                                 email = targetState.user.email
                             )

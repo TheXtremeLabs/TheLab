@@ -8,7 +8,7 @@ import com.riders.thelab.R
  * Data module doesn't have a resources package then we use the app resources folder directly
  *
  */
-sealed class SignUpScreen(val route: String, @StringRes val resourceId: Int) {
+sealed class SignUpScreen(val route: String, @param:StringRes val resourceId: Int) {
     data object EULA : SignUpScreen("EULA", R.string.title_activity_license_agreement)
     data object Form : SignUpScreen("User Form", R.string.title_activity_user_inscription_form)
     data object SignUpSuccess :

@@ -222,9 +222,9 @@ fun ACRCloudLibraryItem(
 
                         AnimatedVisibility(
                             visible = if (LocalInspectionMode.current) true else {
-                                LabPackageManager(applicationContext = context).isInstalled(
-                                    Constants.PACKAGE_NAME_SPOTIFY
-                                )
+                                LabPackageManager
+                                    .getInstance( context)
+                                    .isInstalled(Constants.PACKAGE_NAME_SPOTIFY)
                             }
                         ) {
                             SpotifyIcon(modifier = Modifier.size(30.dp), darkTheme = darkTheme)

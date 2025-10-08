@@ -1,10 +1,13 @@
 package com.riders.thelab.core.common.utils
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import androidx.activity.result.ActivityResultLauncher
+import kotlinx.serialization.json.Json
 import timber.log.Timber
 
-class LabPackageManager(private val applicationContext: Context) {
+class LabPackageManager private constructor(private val applicationContext: Context) {
 
     fun isInstalled(packageName:String):Boolean{
         val packageManager = applicationContext.packageManager
@@ -26,8 +29,9 @@ class LabPackageManager(private val applicationContext: Context) {
         var returnedActivityPackageToString: String? = null
 
         return try {
-            val list =
-                pManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES).activities
+            val list = pManager
+                .getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+                .activities
 
             list?.let {
                 for (activityInfo in it.iterator()) {
@@ -44,6 +48,45 @@ class LabPackageManager(private val applicationContext: Context) {
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
             null
+        }
+    }
+
+
+    fun callIntentForPackageActivity(
+        activityResultLauncher: ActivityResultLauncher<Intent>? = null,
+        intentPackageName: String,
+        vararg extras: Pair<String, Any?>
+    ) = applicationContext.packageManager.getLaunchIntentForPackage(intentPackageName)
+        ?.runCatching {
+            Timber.d("callIntentForPackageActivity()")
+            extras.forEach { pair ->
+                pair.second?.let { value ->
+                    when (value) {
+                        is String -> this.putExtra(pair.first, value)
+                        else -> this.putExtra(pair.first, Json.encodeToString(pair.second))
+                    }
+                }
+            }
+            this
+        }
+        ?.onFailure { exception ->
+            exception.printStackTrace()
+            when(exception){
+                is PackageManager.NameNotFoundException-> Timber.e("Package $intentPackageName is not installed")
+                else -> Timber.e("callIntentForPackageActivity() | onFailure | Error caught with message: ${exception.message} (class: ${exception.javaClass.canonicalName})")
+            }
+        }
+        ?.onSuccess {
+            Timber.d("callIntentForPackageActivity() | Package $intentPackageName successfully found. Attempt to start target package")
+            activityResultLauncher?.launch(it) ?: applicationContext.startActivity(it)
+        }
+
+    companion object{
+        private var INSTANCE: LabPackageManager? = null
+
+        @Synchronized
+        fun getInstance(context: Context) = INSTANCE?: synchronized(this){
+            INSTANCE ?: LabPackageManager(context).also { INSTANCE = it }
         }
     }
 }

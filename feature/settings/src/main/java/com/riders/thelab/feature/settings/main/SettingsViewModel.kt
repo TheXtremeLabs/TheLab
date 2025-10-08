@@ -44,7 +44,6 @@ class SettingsViewModel @Inject constructor(
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
-    private var mWeakReference: WeakReference<SettingsActivity>? = null
     val themeOptions: List<String> = listOf("Light", "Dark", "Use System")
 
     //////////////////////////////////////////
@@ -116,12 +115,6 @@ class SettingsViewModel @Inject constructor(
     // CLASS METHODS
     //
     //////////////////////////////////////////
-    fun intWeakReference(activity: SettingsActivity) {
-        if (null == mWeakReference) {
-            mWeakReference = WeakReference(activity)
-        }
-    }
-
     fun onEvent(event: UiEvent) {
         Timber.d("onEvent() | event: $event")
 
@@ -203,7 +196,7 @@ class SettingsViewModel @Inject constructor(
                 if (it.isGoogleAuth) {
                     it.isGoogleAuth = false
 
-                    mWeakReference?.get()?.signOut()
+                    (mWeakReference?.get() as? SettingsActivity)?.signOut()
                 }
 
                 repository.logoutUser(it._id.toInt())

@@ -62,7 +62,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
 
         subscribeToKotlinBus()
 
-        mWeatherViewModel.initWeakReference(this@WeatherActivity)
+        mWeatherViewModel.initWeakReference(activity = this@WeatherActivity)
 
         checkLocationPermissions()
     }

@@ -2,19 +2,20 @@ package com.riders.thelab.feature.mlkit.ui.compose
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.riders.thelab.core.common.utils.LabPackageManager
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.mlkit.data.local.model.MLKitItem
 import com.riders.thelab.feature.mlkit.ui.compose.utils.MLKitComposeNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 @HiltViewModel
 class MLKitComposeMainViewModel @Inject constructor(
     val uiRepository: IUiRepository
 ) : BaseViewModel() {
-
     private lateinit var navigator: MLKitComposeNavigator
 
     var mlKitItems: SnapshotStateList<MLKitItem> = mutableStateListOf()
@@ -42,7 +43,7 @@ class MLKitComposeMainViewModel @Inject constructor(
             is UiEvent.OnInkRecognitionClicked -> navigator.launchInkRecognitionActivity()
             is UiEvent.OnTextRecognitionClicked -> navigator.launchTextRecognitionActivity()
             is UiEvent.OnTranslateClicked -> navigator.launchTranslateActivity()
-            is UiEvent.None -> navigator.launchCameraTestActivity()
+            is UiEvent.None -> {}
         }
     }
 
