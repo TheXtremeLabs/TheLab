@@ -236,7 +236,7 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlin.parcelize)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlinx.play.services)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // AndroidX
     implementation(libs.androidx.startup)

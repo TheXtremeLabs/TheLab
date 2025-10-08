@@ -24,7 +24,7 @@ dependencies {
 
     // AndroidX
     implementation(libs.androidx.multidex)
-    implementation(libs.androidx.test.runner)
+    api(libs.androidx.test.runner)
     // Espresso
     implementation(libs.androidx.test.espresso.core)
     implementation(libs.androidx.test.espresso.contrib)

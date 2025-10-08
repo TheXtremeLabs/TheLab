@@ -26,6 +26,7 @@ dependencies {
     ///////////////////////////////////
     // Project
     ///////////////////////////////////
+    implementation(project(":core:common"))
     implementation(project(":core:camera"))
     implementation(project(":core:permissions"))
     implementation(project(":core:ui"))
@@ -39,11 +40,6 @@ dependencies {
     implementation(libs.accompanist.adaptive)
     implementation(libs.accompanist.drawablepainter)
     implementation(libs.accompanist.permissions)
-
-    // Coil
-    implementation(libs.coil.kt)
-    implementation(libs.coil.kt.compose)
-    implementation(libs.coil.kt.svg)
 
     implementation(libs.google.guava)
 

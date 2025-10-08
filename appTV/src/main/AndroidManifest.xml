@@ -1,38 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
         android:name="android.software.leanback"
-        android:required="false" />
+        android:required="true" />
 
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
-    <uses-feature android:name="android.hardware.faketouch"
-        android:required="false"/>
-    <uses-feature android:name="android.hardware.telephony"
-        android:required="false"/>
-    <uses-feature android:name="android.hardware.camera"
-        android:required="false"/>
-    <uses-feature android:name="android.hardware.nfc"
-        android:required="false"/>
-    <uses-feature android:name="android.hardware.location.gps"
-        android:required="false"/>
-    <uses-feature android:name="android.hardware.microphone"
-        android:required="false"/>
-    <uses-feature android:name="android.hardware.sensor"
-        android:required="false"/>
+
+    <uses-feature
+        android:name="android.hardware.faketouch"
+        android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.sensor"
+        android:required="false" />
+
     <!-- Some TV devices have an ethernet connection only -->
-    <uses-feature android:name="android.hardware.wifi"
-        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
 
     <application
         android:name=".TheLabTVApplication"
         android:allowBackup="true"
+        android:banner="@drawable/ic_lab_6_lab"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_lab"
         android:label="@string/app_name"
@@ -40,7 +56,7 @@
         android:roundIcon="@mipmap/ic_lab_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TheLab"
-        tools:ignore="MissingTvBanner">
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".ui.main.MainActivity"
@@ -48,7 +64,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
@@ -57,15 +72,17 @@
             android:name="com.riders.thelab.feature.splashscreen.SplashScreenActivity"
             android:exported="true" />
 
-        <activity android:name="com.riders.thelab.feature.login.LoginActivity"/>
+        <activity android:name="com.riders.thelab.feature.login.LoginActivity" />
 
         <activity android:name="com.riders.thelab.feature.home.HomeActivity" />
 
-        <activity android:name="com.riders.thelab.feature.theaters.main.TheatersActivity"
-            android:parentActivityName="com.riders.thelab.feature.home.HomeActivity"/>
+        <activity
+            android:name="com.riders.thelab.feature.theaters.main.TheatersActivity"
+            android:parentActivityName="com.riders.thelab.feature.home.HomeActivity" />
 
-        <activity android:name="com.riders.thelab.feature.artists.ArtistsActivity"
-            android:parentActivityName="com.riders.thelab.feature.home.HomeActivity"/>
+        <activity
+            android:name="com.riders.thelab.feature.artists.ArtistsActivity"
+            android:parentActivityName="com.riders.thelab.feature.home.HomeActivity" />
     </application>
 
 </manifest>

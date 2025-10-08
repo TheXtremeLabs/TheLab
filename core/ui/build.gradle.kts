@@ -88,6 +88,13 @@ dependencies {
     api(libs.androidx.tv.foundation)
     api(libs.androidx.tv.material)
 
+    // Coil
+    api(libs.coil.kt)
+    api(libs.coil.kt.compose)
+    api(libs.coil.kt.network.cache.control)
+    api(libs.coil.kt.network.okhttp)
+    api(libs.coil.kt.svg)
+
     // Glide
     api(libs.glide)
     ksp(libs.glide.compiler)
@@ -100,11 +107,6 @@ dependencies {
     api(libs.lottie)
     api(libs.lottie.compose)
 
-    // Coil
-    api(libs.coil.kt)
-    api(libs.coil.kt.compose)
-    api(libs.coil.kt.okhttp)
-    api(libs.coil.kt.svg)
 
     api(libs.kotools.types)
 

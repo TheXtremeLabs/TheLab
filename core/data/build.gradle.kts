@@ -52,7 +52,7 @@ android {
 
 configurations.all {
     resolutionStrategy {
-        force ("com.google.protobuf:protobuf-javalite:4.32.0")
+        force("com.google.protobuf:protobuf-javalite:4.32.0")
     }
 }
 
@@ -135,5 +135,7 @@ dependencies {
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////
+    androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.truth)
+    androidTestImplementation(libs.turbine)
 }

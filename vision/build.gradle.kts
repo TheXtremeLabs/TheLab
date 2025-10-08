@@ -48,6 +48,11 @@ android {
 
         vectorDrawables.useSupportLibrary = true
 
+        ndk {
+            abiFilters.clear()
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
+
         manifestPlaceholders += mapOf(
             "redirectHostName" to "com.riders.thelab.vision",
             "redirectSchemeName" to "com.riders.thelab.vision",

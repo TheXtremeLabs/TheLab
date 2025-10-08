@@ -35,6 +35,12 @@ android {
         // Enabling multidex support.
         multiDexEnabled = true
 
+        ndk {
+            abiFilters.clear()
+            //noinspection ChromeOsAbiSupport
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
+
         manifestPlaceholders += mapOf(
             "redirectHostName" to "com.riders.thelab.tv",
             "redirectSchemeName" to "com.riders.thelab.tv",

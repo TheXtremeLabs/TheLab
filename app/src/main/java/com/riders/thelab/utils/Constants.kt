@@ -16,11 +16,6 @@ object Constants {
     const val ML_KIT_VISION_FACE_DETECTION: String = "ML_KIT_VISION_FACE_DETECTION"
 
 
-
-    const val DATASTORE_THE_LAB_FILE_NAME = "THE_LAB_DATASTORE"
-
-    const val EMULATOR_DEVICE_TAG = "sdk"
-
     const val ANDROID_RES_PATH = "android.resource://"
     const val SEPARATOR = "/"
 

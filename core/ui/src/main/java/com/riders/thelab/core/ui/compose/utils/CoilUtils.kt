@@ -4,12 +4,16 @@ import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import coil3.ImageLoader
 import coil3.compose.AsyncImagePainter
 import coil3.compose.asPainter
 import coil3.compose.rememberAsyncImagePainter
+import coil3.disk.DiskCache
+import coil3.disk.directory
+import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
@@ -22,10 +26,27 @@ import coil3.util.DebugLogger
 import com.riders.thelab.core.ui.R
 import timber.log.Timber
 
+@Stable
+fun getImageLoader(context: Context): ImageLoader = ImageLoader.Builder(context)
+    .memoryCache {
+        MemoryCache.Builder()
+            .maxSizePercent(context, 0.20)
+            .build()
+    }
+    .diskCache {
+        DiskCache.Builder()
+            .directory(context.cacheDir.resolve("image_cache"))
+            .maxSizeBytes(5 * 1024 * 1024)
+            .build()
+    }
+    .logger(DebugLogger())
+    .build()
+
 /*
  * https://www.sinasamaki.com/loading-images-using-coil-in-jetpack-compose/
  */
 // @Composable
+@Stable
 private fun getCoilImageRequest(
     context: Context,
     data: Any,
@@ -52,13 +73,13 @@ private fun getCoilImageRequest(
 
         if (isCaching) {
             networkCachePolicy(CachePolicy.ENABLED)
-            diskCachePolicy(CachePolicy.DISABLED)
+            diskCachePolicy(CachePolicy.ENABLED)
             memoryCachePolicy(CachePolicy.ENABLED)
         }
     }
-
     .build()
 
+@Stable
 private fun getCoilImageRequest(
     context: Context,
     dataUrl: String,
@@ -84,25 +105,25 @@ fun getCoilAsyncImagePainter(
     scale: Scale? = null,
     @DrawableRes placeholderResId: Int = R.drawable.logo_colors
 ): AsyncImagePainter = rememberAsyncImagePainter(
-        model = getCoilImageRequest(
-            context = context,
-            data = data,
-            isSvg = isSvg,
-            size = size,
-            scale = scale
-        ),
-        placeholder = painterResource(placeholderResId),
-        onLoading = {
-            Timber.i("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Loading Image... | data: $data")
-        },
-        onSuccess = {
-            Timber.d("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Image successfully loaded")
-        },
-        onError = {
-            Timber.e("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Error while loading Image")
-        },
-        imageLoader = ImageLoader.Builder(context).logger(DebugLogger()).build()
-    )
+    model = getCoilImageRequest(
+        context = context,
+        data = data,
+        isSvg = isSvg,
+        size = size,
+        scale = scale
+    ),
+    placeholder = painterResource(placeholderResId),
+    onLoading = {
+        Timber.i("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Loading Image... | data: $data")
+    },
+    onSuccess = {
+        Timber.d("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Image successfully loaded")
+    },
+    onError = {
+        Timber.e("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Error while loading Image")
+    },
+    imageLoader = getImageLoader(context)
+)
 
 @Composable
 fun getCoilAsyncImagePainter(
@@ -130,16 +151,16 @@ fun getCoilAsyncImagePainter(
     scale: Scale? = null,
     onState: ((AsyncImagePainter.State) -> Unit)? = null,
 ): AsyncImagePainter = rememberAsyncImagePainter(
-        model = getCoilImageRequest(
-            context = context,
-            dataUrl = dataUrl,
-            isSvg = isSvg,
-            size = size,
-            scale = scale
-        ),
-        onState = onState,
-        imageLoader = ImageLoader.Builder(context).logger(DebugLogger()).build()
-    )
+    model = getCoilImageRequest(
+        context = context,
+        dataUrl = dataUrl,
+        isSvg = isSvg,
+        size = size,
+        scale = scale
+    ),
+    onState = onState,
+    imageLoader = getImageLoader(context)
+)
 
 fun AsyncImagePainter.State.get(context: Context): Painter? = when (this) {
     is AsyncImagePainter.State.Success -> this.result.image.asPainter(context = context)
