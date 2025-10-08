@@ -44,7 +44,12 @@ import timber.log.Timber
 ///////////////////////////////////////
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ArtistsContentSuccess(theme: AppTheme, darkTheme: Boolean, artists: List<ArtistModel>) {
+fun ArtistsContentSuccess(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    artists: List<ArtistModel>,
+    uiEvent: (UiEvent) -> Unit
+) {
     val navController = rememberNavController()
     val backstackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backstackEntry?.destination?.route
@@ -61,8 +66,14 @@ fun ArtistsContentSuccess(theme: AppTheme, darkTheme: Boolean, artists: List<Art
                     sharedTransitionScope = this@SharedTransitionLayout,
                     animatedVisibilityScope = this@composable,
                     artists = artists,
-                    onArtistClicked = { index ->
-                        navController.navigate(ArtistScreen.Detail(index))
+                    uiEvent = { event ->
+                        when (event) {
+                            is UiEvent.OnArtistClicked -> {
+                                navController.navigate(ArtistScreen.Detail(event.artist.id.toInt()))
+                            }
+
+                            else -> uiEvent.invoke(event)
+                        }
                     }
                 )
             }
@@ -99,7 +110,12 @@ fun ArtistsContentSuccess(theme: AppTheme, darkTheme: Boolean, artists: List<Art
 }
 
 @Composable
-fun ArtistsContent(theme: AppTheme, darkTheme: Boolean, state: ArtistsUiState) {
+fun ArtistsContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    state: ArtistsUiState,
+    uiEvent: (UiEvent) -> Unit
+) {
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -149,7 +165,8 @@ fun ArtistsContent(theme: AppTheme, darkTheme: Boolean, state: ArtistsUiState) {
                         ArtistsContentSuccess(
                             theme = theme,
                             darkTheme = darkTheme,
-                            targetState.artists
+                            artists = targetState.artists,
+                            uiEvent = uiEvent
                         )
                     }
                 }
@@ -167,7 +184,11 @@ fun ArtistsContent(theme: AppTheme, darkTheme: Boolean, state: ArtistsUiState) {
 @Composable
 private fun PreviewArtistsContentSuccess(@PreviewParameter(PreviewProviderArtists::class) artists: List<ArtistModel>) {
     TheLabTheme(theme = AppTheme.Default) {
-        ArtistsContentSuccess(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), artists)
+        ArtistsContentSuccess(
+            theme = AppTheme.Default,
+            darkTheme = isSystemInDarkTheme(),
+            artists
+        ) {}
     }
 }
 
@@ -175,6 +196,6 @@ private fun PreviewArtistsContentSuccess(@PreviewParameter(PreviewProviderArtist
 @Composable
 fun PreviewArtistsContent(@PreviewParameter(PreviewProviderArtistUiState::class) state: ArtistsUiState) {
     TheLabTheme(theme = AppTheme.Default) {
-        ArtistsContent(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), state)
+        ArtistsContent(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), state) {}
     }
 }

@@ -54,7 +54,8 @@ class ArtistsActivity : BaseComponentActivity() {
                             ArtistsContent(
                                 theme = theme,
                                 darkTheme = isDarkTheme,
-                                state = artistUiState
+                                state = artistUiState,
+                                uiEvent = mViewModel::onEvent
                             )
                         }
                     }

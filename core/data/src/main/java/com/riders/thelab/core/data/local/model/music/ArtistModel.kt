@@ -2,6 +2,9 @@ package com.riders.thelab.core.data.local.model.music
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.riders.thelab.core.data.remote.dto.artist.Artist
 import kotools.types.text.toNotBlankString
 import java.io.Serializable
@@ -9,17 +12,32 @@ import java.io.Serializable
 @Stable
 @Immutable
 @kotlinx.serialization.Serializable
+@Entity(tableName = "artist")
 data class ArtistModel(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
     val id: Byte,
+    @ColumnInfo(name = "sceneName")
     val sceneName: String,
+    @ColumnInfo(name = "firstName")
     val firstName: String,
+    @ColumnInfo(name = "secondName")
     val secondName: String? = null,
+    @ColumnInfo(name = "lastName")
     val lastName: String,
+    @ColumnInfo(name = "dateOfBirth")
     val dateOfBirth: String,
+    @ColumnInfo(name = "origin")
     val origin: String,
+    @ColumnInfo(name = "debutes")
     val debutes: String,
+    @ColumnInfo(name = "activities")
     val activities: String,
-    var urlThumb: String,
+    @ColumnInfo(name = "urlThumbnail")
+    var urlThumbnail: String? = null,
+    @ColumnInfo(name = "thumbnail")
+    var encodedThumbnail: String? = null,
+    @ColumnInfo(name = "description")
     val description: String,
 ) : Serializable {
     companion object {
@@ -34,7 +52,7 @@ data class ArtistModel(
             "",
             "",
             "http://pierrethumb.com".toNotBlankString().getOrThrow().toString(),
-            ""
+            description = ""
         )
     }
 }
@@ -49,6 +67,7 @@ fun Artist.toModel(index: Byte): ArtistModel = ArtistModel(
     origin = this.origin,
     debutes = this.debutes,
     activities = this.activities,
-    urlThumb = this.urlThumb,
+    urlThumbnail = urlThumb,
+    encodedThumbnail = null,
     description = this.description
 )

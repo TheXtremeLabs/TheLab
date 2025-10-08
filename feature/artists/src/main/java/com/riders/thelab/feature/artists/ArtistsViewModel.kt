@@ -19,19 +19,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import timber.log.Timber
-import java.lang.ref.WeakReference
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 @HiltViewModel
@@ -46,13 +49,9 @@ class ArtistsViewModel @Inject constructor(
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
-    private var mWeakReference: WeakReference<ArtistsActivity>? = null
     private var bucketUrl: String? = null
     private val artistThumbnails = mutableListOf<String>()
 
-    private var fetchJsonJob: Job? = null
-    private var fetchArtistsJob: Job? = null
-    private var fetchArtistsThumbJob: Job? = null
     private var mStorageReference: StorageReference? = null
 
     //////////////////////////////////////////
@@ -70,27 +69,81 @@ class ArtistsViewModel @Inject constructor(
         )
 
     private fun updateArtistUiState(newState: ArtistsUiState) {
-        this._artistUiState.value = newState
+        this._artistUiState.update { newState }
     }
 
     //////////////////////////////////////////
     // Coroutines
     //////////////////////////////////////////
+    private var fetchJsonJob: Job? = null
+    private var fetchArtistsJob: Job? = null
+    private var fetchArtistsThumbJob: Job? = null
+    private var updateArtistJob: Job? = null
+
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
-            Timber.e(throwable.message)
+            Timber.e("fetchJsonExceptionHandler | Error caught with message : ${throwable.message} (class : ${throwable::class.java.canonicalName})")
         }
+
+    private val fetchJsonExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+        Timber.e("fetchJsonExceptionHandler | Error caught with message : ${throwable.message} (class : ${throwable::class.java.canonicalName})")
+    }
+
+    private val updateArtistExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+        Timber.e("updateArtistExceptionHandler | Error caught with message : ${throwable.message} (class : ${throwable::class.java.canonicalName})")
+    }
 
     //////////////////////////////////////////
     //
     // OVERRIDE
     //
     //////////////////////////////////////////
+    init {
+        Timber.d("init method")
+    }
+
     override fun onCleared() {
         Timber.e("onCleared()")
         cancelJobs()
         super.onCleared()
+    }
+
+    override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
+        Timber.d("onCreate()")
+
+        val hasArtistsRecords: Boolean = repository.getArtistsSync().isNotEmpty()
+
+        if (!hasArtistsRecords) {
+            getFirebaseJSONURL()
+        } else {
+            viewModelScope.launch(coroutineContext) {
+                updateArtistUiState(ArtistsUiState.Loading("Artists records found....".toNotBlankString().getOrThrow()))
+                delay(2.toDuration(DurationUnit.SECONDS))
+
+                updateArtistUiState(ArtistsUiState.Loading("Loading. Please wait....".toNotBlankString().getOrThrow()))
+                delay(2.toDuration(DurationUnit.SECONDS))
+
+                repository.getArtists().collect { artistModels ->
+                    withContext(Dispatchers.Main) {
+                        updateArtistUiState(ArtistsUiState.Success(artistModels))
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
+        Timber.d("onStart()")
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        Timber.e("onDestroy()")
     }
 
     //////////////////////////////////////////
@@ -98,9 +151,10 @@ class ArtistsViewModel @Inject constructor(
     // CLASS METHODS
     //
     //////////////////////////////////////////
-    fun initWeakReference(activity: ArtistsActivity) {
-        if (null == mWeakReference) {
-            mWeakReference = WeakReference(activity)
+    fun onEvent(event: UiEvent) {
+        when (event) {
+            is UiEvent.OnUpdateArtistWithImage -> updateArtistInDatabase(event.artist)
+            else -> return
         }
     }
 
@@ -111,7 +165,7 @@ class ArtistsViewModel @Inject constructor(
             return
         }
 
-        fetchJsonJob = viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
+        fetchJsonJob = viewModelScope.launch(coroutineContext + fetchJsonExceptionHandler) {
             try {
                 if (null == mStorageReference) {
                     updateArtistUiState(
@@ -129,7 +183,7 @@ class ArtistsViewModel @Inject constructor(
                         // imagesRef now points to "images"
                         val artistsRef: StorageReference = mStorageReferenceResource
                             .data
-                            .also { Timber.d("getFirebaseJSONURL() | storage reference : ${it?.name}") }
+                            .also { Timber.d("getFirebaseJSONURL() | storage reference : ${it.name}") }
                             .child("bulk/artists.json")
 
                         withContext(Dispatchers.Main) {
@@ -192,7 +246,7 @@ class ArtistsViewModel @Inject constructor(
     @OptIn(ExperimentalKotoolsTypesApi::class)
     fun getFirebaseFiles() {
 
-        mWeakReference?.get()?.let { activity ->
+        (mWeakReference?.get() as?  ArtistsActivity)?.let { activity ->
             Timber.d("getFirebaseFiles()")
 
             fetchArtistsThumbJob =
@@ -302,28 +356,42 @@ class ArtistsViewModel @Inject constructor(
         Timber.d("fetchArtists() | url: $urlPath")
 
         fetchArtistsJob = viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
-            try {
-                val artists: List<ArtistModel> = repository.getArtists(urlPath).run {
-                    ArtistsManager.convertArtistsToModel(this, artistThumbnails)
+
+            when (val result = repository.getArtistsResource(urlPath)) {
+                is Resource.Success -> {
+                    val artistsModel: List<ArtistModel> = ArtistsManager.convertArtistsToModel(
+                        listOfArtistDto = result.data,
+                        artistThumbnails = artistThumbnails
+                    )
+
+                    updateArtistUiState(ArtistsUiState.Success(artistsModel))
+
+                    val hasArtistsRecords: Boolean = repository.getArtistsSync().isNotEmpty()
+                    if (!hasArtistsRecords) {
+                        repository.insertAllArtists(artistsModel)
+                    }
                 }
 
-                _artistUiState.value = ArtistsUiState.Success(artists)
-            } catch (throwable: Exception) {
-                Timber.e(throwable)
-                withContext(Dispatchers.Main) {
-                    updateArtistUiState(
-                        ArtistsUiState.Error(
-                            message = throwable.message
-                                ?.toNotBlankString()
-                                ?.getOrThrow()
-                                ?: "Error occurred while getting value"
-                                    .toNotBlankString()
-                                    .getOrThrow(),
-                            errorResponse = throwable
+                is Resource.Error -> {
+                    withContext(Dispatchers.Main) {
+                        updateArtistUiState(
+                            ArtistsUiState.Error(
+                                message = result.message,
+                                errorResponse = result.throwable
+                            )
                         )
-                    )
+                    }
                 }
+
+                else -> return@launch
             }
+        }
+    }
+
+    fun updateArtistInDatabase(artistToUpdate: ArtistModel) {
+        updateArtistJob = viewModelScope.launch(Dispatchers.IO + updateArtistExceptionHandler) {
+            val result = repository.updateArtist(artistToUpdate)
+            Timber.d("updateArtistInDatabase() | result : $result")
         }
     }
 
@@ -344,27 +412,5 @@ class ArtistsViewModel @Inject constructor(
             fetchArtistsThumbJob?.cancel()
         }
         fetchArtistsThumbJob = null
-    }
-
-
-    //////////////////////////////////////////
-    //
-    // IMPLEMENTS
-    //
-    //////////////////////////////////////////
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
-        Timber.d("onCreate()")
-    }
-
-    override fun onStart(owner: LifecycleOwner) {
-        super.onStart(owner)
-        Timber.d("onStart()")
-        getFirebaseJSONURL()
-    }
-
-    override fun onDestroy(owner: LifecycleOwner) {
-        super.onDestroy(owner)
-        Timber.e("onDestroy()")
     }
 }

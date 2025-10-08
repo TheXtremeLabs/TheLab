@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -14,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
 import timber.log.Timber
+import java.lang.ref.WeakReference
 
 ///////////////////////////////
 //
@@ -40,6 +42,9 @@ fun <viewModel : LifecycleObserver> viewModel.observeLifecycleEvents(lifecycle: 
 
 @Suppress("EmptyMethod")
 abstract class BaseViewModel : ViewModel() {
+
+    var mWeakReference: WeakReference<ComponentActivity>? = null
+        private set
 
     //////////////////////////////////////////
     // Compose states
@@ -107,6 +112,12 @@ abstract class BaseViewModel : ViewModel() {
     //////////////////////////////////////////
     // Class Methods
     //////////////////////////////////////////
+    fun initWeakReference(activity: ComponentActivity) {
+        if (null == mWeakReference) {
+            mWeakReference = WeakReference(activity)
+        }
+    }
+
     fun retrieveAppVersion(activity: Activity) {
         try {
             val pInfo: PackageInfo =

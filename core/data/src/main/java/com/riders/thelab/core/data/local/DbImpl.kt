@@ -1,29 +1,38 @@
 package com.riders.thelab.core.data.local
 
 import android.database.Cursor
+import androidx.paging.Pager
+import com.riders.thelab.core.data.local.dao.ArtistDao
 import com.riders.thelab.core.data.local.dao.ContactDao
 import com.riders.thelab.core.data.local.dao.MusicRecognitionDao
 import com.riders.thelab.core.data.local.dao.UserDao
 import com.riders.thelab.core.data.local.dao.WeatherDao
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.User
+import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.data.local.model.music.MusicRecognitionModel
 import com.riders.thelab.core.data.local.model.weather.CityMapper
 import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.remote.dto.weather.City
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
 class DbImpl @Inject constructor(
     userDao: UserDao,
+    artistDao: ArtistDao,
     contactDao: ContactDao,
     musicRecognitionDao: MusicRecognitionDao,
     weatherDao: WeatherDao
 ) : IDb {
 
     private var mUserDao: UserDao = userDao
+    var mArtistDao: ArtistDao = artistDao
+        private set
     private var mContactDao: ContactDao = contactDao
     private var mMusicRecognitionDao: MusicRecognitionDao = musicRecognitionDao
     private var mWeatherDao: WeatherDao = weatherDao
@@ -79,6 +88,30 @@ class DbImpl @Inject constructor(
 
     override fun deleteUser(userId: Int) = mUserDao.deleteUser(userId)
 
+    /////////////////////////////////////
+    //
+    // ARTISTS
+    //
+    /////////////////////////////////////
+    override suspend fun insertArtist(artist: ArtistModel): Long = mArtistDao.insert(artist)
+    override suspend fun insertAllArtists(artists: List<ArtistModel>) = mArtistDao.insert(artists)
+    override fun getArtists(): Flow<List<ArtistModel>> = mArtistDao.getAllArtists()
+    override fun getArtistsSync(): List<ArtistModel> = runBlocking(Dispatchers.IO) {
+        mArtistDao.getAllArtists().first()
+    }
+
+    // override fun getArtistsPaged(): Pager<Int, ArtistModel> = mArtistDao.getAllArtistsPaged()
+
+    override suspend fun updateArtist(artist: ArtistModel): Int = mArtistDao.updateArtist(artist)
+    override suspend fun deleteArtist(artistId: Int) = mArtistDao.deleteAll()
+    override suspend fun deleteAllArtists() = mArtistDao.deleteAll()
+
+
+    /////////////////////////////////////
+    //
+    // CONTACTS
+    //
+    /////////////////////////////////////
     override fun insertContact(contact: Contact) {
         mContactDao.insert(contact)
     }
@@ -107,6 +140,12 @@ class DbImpl @Inject constructor(
         mContactDao.deleteAll()
     }
 
+
+    /////////////////////////////////////
+    //
+    // MUSIC RECOGNITION
+    //
+    /////////////////////////////////////
     override suspend fun saveSong(musicRecognitionModel: MusicRecognitionModel) =
         mMusicRecognitionDao.insert(musicRecognitionModel)
 
@@ -122,6 +161,12 @@ class DbImpl @Inject constructor(
 
     override suspend fun deleteAllMusicRecognitionData() = mMusicRecognitionDao.deleteAll()
 
+
+    /////////////////////////////////////
+    //
+    // WEATHER
+    //
+    /////////////////////////////////////
     override suspend fun insertWeatherData(isWeatherData: WeatherData): Long {
         return mWeatherDao.insert(isWeatherData)
     }

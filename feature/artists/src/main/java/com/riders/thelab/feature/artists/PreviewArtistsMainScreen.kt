@@ -48,7 +48,7 @@ fun ArtistMainScreen(
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
     artists: List<ArtistModel>,
-    onArtistClicked: (Int) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     val lazyGridState = rememberLazyGridState()
 
@@ -102,10 +102,9 @@ fun ArtistMainScreen(
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope,
                         artist = item,
-                        index = index
-                    ) {
-                        onArtistClicked(index)
-                    }
+                        index = index,
+                        uiEvent = uiEvent
+                    )
                 }
             }
         }

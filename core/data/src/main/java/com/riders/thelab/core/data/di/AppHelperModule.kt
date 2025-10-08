@@ -5,6 +5,7 @@ import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.RepositoryImpl
 import com.riders.thelab.core.data.local.DbImpl
 import com.riders.thelab.core.data.local.LabDatabase
+import com.riders.thelab.core.data.local.dao.ArtistDao
 import com.riders.thelab.core.data.local.dao.ContactDao
 import com.riders.thelab.core.data.local.dao.MusicRecognitionDao
 import com.riders.thelab.core.data.local.dao.UserDao
@@ -23,19 +24,23 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppHelperModule {
 
+    @Singleton
     @Provides
     fun provideDbHelper(
         userDao: UserDao,
+        artistDao: ArtistDao,
         contactDao: ContactDao,
         musicRecognitionDao: MusicRecognitionDao,
         weatherDao: WeatherDao
     ) = DbImpl(
-            userDao = userDao,
-            contactDao = contactDao,
-            musicRecognitionDao =  musicRecognitionDao,
-            weatherDao = weatherDao
-        )
+        userDao = userDao,
+        artistDao = artistDao,
+        contactDao = contactDao,
+        musicRecognitionDao = musicRecognitionDao,
+        weatherDao = weatherDao
+    )
 
+    @Singleton
     @Provides
     fun provideApiHelper() =
         ApiImpl(
@@ -52,13 +57,14 @@ object AppHelperModule {
             ApiModule.provideWikimediaAPIService(),
         )
 
+    @Singleton
     @Provides
     fun providePreferences(@ApplicationContext appContext: Context) =
         PreferencesImpl(appContext)
 
+    @Singleton
     @Provides
 //    @ViewModelScoped // this is new
-    @Singleton
     fun provideRepository(dbImpl: DbImpl, apiImpl: ApiImpl, preferencesImpl: PreferencesImpl) =
         RepositoryImpl(dbImpl, apiImpl, preferencesImpl) as IRepository
 }

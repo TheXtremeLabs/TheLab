@@ -18,6 +18,7 @@ class ArtistModelPreviewProvider : PreviewParameterProvider<ArtistModel> {
                 "",
                 "",
                 "http://pierrethumb.com".toNotBlankString().getOrThrow().toString(),
+                null,
                 ""
             )
         )

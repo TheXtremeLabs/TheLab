@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.LabDatabase
+import com.riders.thelab.core.data.local.dao.ArtistDao
 import com.riders.thelab.core.data.local.dao.ContactDao
 import com.riders.thelab.core.data.local.dao.MusicRecognitionDao
 import com.riders.thelab.core.data.local.dao.UserDao
@@ -17,6 +18,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import timber.log.Timber
 import java.util.concurrent.Executors
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -30,6 +32,7 @@ internal object DatabaseModule {
 
     //TODO : Due to Heroku back-end free services ending,
     // Use of the database to store and log users
+    @Singleton
     @Provides
     fun provideAppDatabase(@ApplicationContext appContext: Context): LabDatabase {
         return Room
@@ -53,17 +56,25 @@ internal object DatabaseModule {
             .build()
     }
 
+    @Singleton
     @Provides
     fun provideUserDao(appDatabase: LabDatabase): UserDao = appDatabase.getUserDao()
 
 
+    @Singleton
+    @Provides
+    fun provideArtistDao(appDatabase: LabDatabase): ArtistDao = appDatabase.getArtistDao()
+
+    @Singleton
     @Provides
     fun provideContactDao(appDatabase: LabDatabase): ContactDao = appDatabase.getContactDao()
 
+    @Singleton
     @Provides
     fun provideMusicRecognitionDao(appDatabase: LabDatabase): MusicRecognitionDao =
         appDatabase.getMusicRecognitionDao()
 
+    @Singleton
     @Provides
     fun provideWeatherDao(appDatabase: LabDatabase): WeatherDao = appDatabase.getWeatherDao()
 }

@@ -91,7 +91,7 @@ fun ArtistThumb(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     boundsTransform: (Rect, Rect) -> TweenSpec<Rect>,
-    urlThumb: String,
+    urlThumb: String?,
     index: Int,
     onPalette: (Palette) -> Unit
 ) {
@@ -103,7 +103,7 @@ fun ArtistThumb(
 
     val painter = getCoilAsyncImagePainter(
         context = context,
-        dataUrl = urlThumb,
+        dataUrl = urlThumb ?: "",
         onState = { state ->
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error
@@ -226,7 +226,7 @@ fun ArtistDetailScreen(
                             theme = theme, darkTheme = darkTheme,
                             sharedTransitionScope = sharedTransitionScope,
                             animatedVisibilityScope = animatedVisibilityScope,
-                            urlThumb = artist.urlThumb,
+                            urlThumb = /*artist.encodedThumbnail ?:*/ artist.urlThumbnail,
                             index = index,
                             boundsTransform = boundsTransform
                         ) { fetchedPalette ->

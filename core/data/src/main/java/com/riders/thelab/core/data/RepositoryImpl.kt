@@ -13,6 +13,7 @@ import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.local.model.User
+import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.data.local.model.music.MusicRecognitionModel
 import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.data.local.model.weather.WeatherData
@@ -43,8 +44,10 @@ import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
 import com.riders.thelab.core.data.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotools.types.text.NotBlankString
+import kotools.types.text.toNotBlankString
 import okhttp3.ResponseBody
 import retrofit2.Call
+import timber.log.Timber
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
@@ -101,6 +104,31 @@ class RepositoryImpl @Inject constructor(
 
     override fun logoutUser(userId: Int) = mDbImpl.logoutUser(userId)
     override fun deleteUser(userId: Int) = mDbImpl.deleteUser(userId)
+
+    override suspend fun insertArtist(artist: ArtistModel): Long = mDbImpl.insertArtist(artist)
+
+    override suspend fun insertAllArtists(artists: List<ArtistModel>) =
+        mDbImpl.insertAllArtists(artists)
+
+    override fun getArtists(): Flow<List<ArtistModel>> = mDbImpl.getArtists()
+
+    override fun getArtistsSync(): List<ArtistModel> = mDbImpl.getArtistsSync()
+
+    /*@OptIn(ExperimentalPagingApi::class)
+    override fun getArtistsPaged(): Pager<Int, ArtistModel> = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+            enablePlaceholders = false
+        ),
+        remoteMediator = ArtistRemoteMediator(api, dao, keysDao),
+        pagingSourceFactory = { mDbImpl.getArtistsPaged() }
+    )*/
+
+    override suspend fun updateArtist(artist: ArtistModel): Int = mDbImpl.updateArtist(artist)
+
+    override suspend fun deleteArtist(artistId: Int) = mDbImpl.deleteArtist(artistId)
+
+    override suspend fun deleteAllArtists() = mDbImpl.deleteAllArtists()
 
 
     override fun insertContact(contact: Contact) {
@@ -174,14 +202,29 @@ class RepositoryImpl @Inject constructor(
     // API
     //
     /////////////////////////
-    override suspend fun getStorageReference(activity: Activity): StorageReference? = mApiImpl.getStorageReference(activity)
+    override suspend fun getStorageReference(activity: Activity): StorageReference? =
+        mApiImpl.getStorageReference(activity)
 
-    override suspend fun getStorageReferenceAsResource(): Resource<StorageReference> = mApiImpl.getStorageReferenceAsResource()
+    override suspend fun getStorageReferenceAsResource(): Resource<StorageReference> =
+        mApiImpl.getStorageReferenceAsResource()
 
 
-    override suspend fun getArtists(url: String): List<Artist> {
-        return mApiImpl.getArtists(url)
+    override suspend fun getArtists(url: String): List<Artist> = mApiImpl.getArtists(url)
+
+    override suspend fun getArtistsResource(url: String): Resource<List<Artist>> = runCatching {
+        Resource.Success(getArtists(url))
     }
+        .onFailure { exception ->
+            exception.printStackTrace()
+            Timber.e("Error caught with message : ${exception.message} (class : ${exception::class.java.canonicalName})")
+        }
+        .getOrElse { exception ->
+            Resource.Error(
+                exception.message!!.toNotBlankString().getOrThrow(),
+                exception
+            )
+        }
+
 
     override suspend fun getVideos(): List<VideoDto> {
         return mApiImpl.getVideos()

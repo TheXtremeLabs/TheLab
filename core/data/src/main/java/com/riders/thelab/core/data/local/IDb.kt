@@ -1,8 +1,11 @@
 package com.riders.thelab.core.data.local
 
 import android.database.Cursor
+import androidx.paging.Pager
+import androidx.paging.PagingSource
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.User
+import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.data.local.model.music.MusicRecognitionModel
 import com.riders.thelab.core.data.local.model.weather.CityModel
 import com.riders.thelab.core.data.local.model.weather.WeatherData
@@ -29,6 +32,22 @@ interface IDb {
     fun logUser(usernameOrMail: String, encodedPassword: String): User?
     fun logoutUser(userId: Int)
     fun deleteUser(userId: Int)
+
+
+    /////////////////////////////////////
+    //
+    // ARTISTS
+    //
+    /////////////////////////////////////
+    suspend fun insertArtist(artist: ArtistModel): Long
+    suspend fun insertAllArtists(artists: List<ArtistModel>)
+    fun getArtists(): Flow<List<ArtistModel>>
+    fun getArtistsSync(): List<ArtistModel>
+
+    // fun getArtistsPaged(): Pager<Int, ArtistModel>
+    suspend fun updateArtist(artist: ArtistModel): Int
+    suspend fun deleteArtist(artistId: Int)
+    suspend fun deleteAllArtists()
 
 
     /////////////////////////////////////

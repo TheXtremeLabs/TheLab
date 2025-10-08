@@ -58,7 +58,9 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.compose.utils.loadImage
+import com.riders.thelab.core.ui.utils.encodeToBase64
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -69,7 +71,7 @@ fun ArtistItem(
     animatedVisibilityScope: AnimatedVisibilityScope,
     artist: ArtistModel,
     index: Int,
-    onClick: () -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -81,7 +83,7 @@ fun ArtistItem(
 
     val painter: AsyncImagePainter = getCoilAsyncImagePainter(
         context = context,
-        dataUrl = artist.urlThumb,
+        dataUrl = /*artist.encodedThumbnail ?: */artist.urlThumbnail ?: "",
         onState = { state ->
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error
@@ -104,7 +106,7 @@ fun ArtistItem(
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
-                    onClick = onClick
+                    onClick = { uiEvent.invoke(UiEvent.OnArtistClicked(artist = artist)) }
                 )
         ) {
             Column(
@@ -144,6 +146,13 @@ fun ArtistItem(
                                             palette.lightVibrantSwatch?.rgb ?: 0
                                         lightMutedSwatch = palette.lightMutedSwatch?.rgb ?: 0
                                         darkMutedSwatch = palette.darkMutedSwatch?.rgb ?: 0
+
+                                        /*val encodedImageToString: String = bitmap.encodeToBase64()
+                                        Timber.d("Recomposition | encodedImageToString length: ${encodedImageToString.length}")
+
+                                        uiEvent.invoke(UiEvent.OnUpdateArtistWithImage(artist = artist.apply {
+                                            this.encodedThumbnail = encodedImageToString
+                                        }))*/
                                     }
                                 }
                             }

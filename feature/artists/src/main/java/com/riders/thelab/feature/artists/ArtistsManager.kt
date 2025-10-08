@@ -27,9 +27,9 @@ object ArtistsManager {
         return listOfArtistDto
             .mapIndexed { index: Int, artist: Artist -> artist.toModel(index.toByte()) }
             .onEach { artist ->
-                Timber.d("convertArtistsToModel() | url : ${artist.urlThumb}")
-                artist.urlThumb = artistThumbnails.firstOrNull {
-                    it.contains(artist.urlThumb)
+                Timber.d("convertArtistsToModel() | url : ${artist.urlThumbnail}")
+                artist.urlThumbnail = artistThumbnails.firstOrNull {
+                    it.contains(artist.urlThumbnail.toString())
                 } ?: ""
             }
     }
