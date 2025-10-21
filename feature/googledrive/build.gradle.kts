@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.google.api.client.oauth.jackson2)
 
     // Google Http
+    implementation(platform(libs.google.http.client.bom))
     implementation(libs.google.http.client)
     implementation(libs.google.http.client.gson)
 

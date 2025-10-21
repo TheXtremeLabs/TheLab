@@ -305,6 +305,7 @@ dependencies {
     implementation(libs.google.play.services.base)
     implementation(libs.google.play.services.auth)
     implementation(libs.google.api.drive)
+    implementation(platform(libs.google.http.client.bom))
     implementation(libs.google.http.client)
     implementation(libs.google.api.client)
     implementation(libs.google.api.client.android)

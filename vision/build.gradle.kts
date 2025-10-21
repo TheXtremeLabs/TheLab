@@ -61,8 +61,20 @@ android {
     }
 
     buildTypes {
-        release {
+        val debug by getting {
+            isDebuggable = true
+
+            // Enables CODE shrinking, obfuscation, and optimization for only
+            // your project's release build type.
             isMinifyEnabled = false
+        }
+
+        release {
+            isDebuggable = false
+
+            // Enables CODE shrinking, obfuscation, and optimization for only
+            // your project's release build type.
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

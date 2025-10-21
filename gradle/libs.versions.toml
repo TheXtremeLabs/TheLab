@@ -2,16 +2,13 @@
 # Gradle version
 # Android
 androidGradlePlugin = "8.13.0"
-kotzillaGradlePlugin = "1.2.2"
 # Google Services
-playServicesGradlePlugin = "4.4.3"
+playServicesGradlePlugin = "4.4.4"
 # Firebase
 # Crashlytics
 crashlyticsGradlePlugin = "3.0.6"
 # Performance Monitoring plugin
 performancesGradlePlugin = "2.0.1"
-# Ktor
-ktorGradlePlugin = "3.3.0"
 # Protobuf
 protobufPlugin = "0.9.5"
 
@@ -26,17 +23,17 @@ androidxAutoFill = "1.3.0"
 androidxBiometric = "1.1.0"
 androidxBrowser = "1.9.0"
 # Camera
-androidxCamera = "1.5.0"
+androidxCamera = "1.5.1"
 androidxCameraViewFinder = "1.4.0-alpha07"
 # Compose
-androidxComposeBom = "2025.09.01"
+androidxComposeBom = "2025.10.00"
 androidxComposeCompiler = "1.5.15"
-androidxComposeFoundation = "1.9.2"
+androidxComposeFoundation = "1.9.3"
 androidxComposeMaterial3 = "1.4.0"
 androidxComposeMaterial3Adaptative = "1.1.0"
-androidxComposeRuntime = "1.9.2"
+androidxComposeRuntime = "1.9.3"
 androidxComposeRuntimeTracing = "1.8.3"
-androidxComposeUi = "1.9.2"
+androidxComposeUi = "1.9.3"
 androidxComposeUiTooling = "1.9.2"
 androidxCardView = "1.0.0"
 androidxConstraintLayout = "2.2.1"
@@ -56,7 +53,7 @@ androidxHiltNavigationCompose = "1.3.0"
 androidxLifecycle = "2.9.4"
 androidxLifecycleExtensions = "2.2.0"
 androidxMacroBenchmark = "1.4.1"
-androidxMetrics = "1.0.0-rc01"
+androidxMetrics = "1.0.0"
 androidxMultiDex = "2.0.1"
 androidxNavigation = "2.9.5"
 androidxPalette = "1.0.0"
@@ -81,8 +78,8 @@ androidxWork = "2.10.5"
 blurry = "4.0.1"
 coil = "3.3.0"
 # Firebase
-firebaseBom = "34.3.0"
-firebaseAds = "24.6.0"
+firebaseBom = "34.4.0"
+firebaseAds = "24.7.0"
 firebaseAppCheck = "18.0.0"
 # Google Api
 googleApiClient = "2.8.1"
@@ -90,11 +87,11 @@ googleApiClientAndroid = "2.8.1"
 googleApiClientOAuth = "1.39.0"
 googleApiDriveV3 = "v3-rev20221219-2.0.0"
 googleApiClientJackson2 = "2.8.1"
-googleAuthLibraryOauth2Http = "1.39.1"
-googleCloudBom = "26.69.0"
+googleAuthLibraryOauth2Http = "1.40.0"
+googleCloudBom = "26.70.0"
 googleCloudTextToSpeech = "2.76.0"
 googleCloudSpeech = "4.70.0"
-googleHttpClient = "2.0.1"
+googleHttpClientBom = "2.0.2"
 googleHttpClientGson = "2.0.1"
 googleIdentity = "1.1.1"
 # Google Guava
@@ -130,7 +127,7 @@ glide = "5.0.5"
 glideCompose = "1.0.0-beta08"
 glideTransformation = "4.3.0"
 # GRPC
-grpc = "1.75.0"
+grpc = "1.76.0"
 grpcOkHttp = "1.71.0"
 grpcStub = "1.71.0"
 # Hilt (for gradle plugin version and dependency)
@@ -142,8 +139,8 @@ jtransforms = "3.1"
 junit = "1.1.5"
 junit4 = "4.13.2"
 koin = "4.1.1"
-koinAnnotationsBom = "2.1.0"
-koinKspCompiler = "2.1.0"
+koinAnnotationsBom = "2.3.0"
+koinKspCompiler = "2.3.0"
 # Kotlin (for gradle plugin version and dependency)
 kotlin = "2.2.20"
 kotlinxCoroutines = "1.10.2"
@@ -152,17 +149,17 @@ kotlinPlayServices = "1.10.2"
 kotlinxMetadataJvm = "0.9.0"
 kotlinxSerializationJson = "1.9.0"
 # Kotzilla
-kotzilla = "1.2.2"
-ktor = "3.3.0"
+kotzilla = "1.2.3"
+ktor = "3.3.1"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
 ksp = "2.2.20-2.0.3"
 landscapist = "2.6.1"
 lint = "31.13.0"
 location = "21.3.0"
-logback = "1.5.19"
+logback = "1.5.20"
 lottie = "6.6.10"
 maps = "19.2.0"
-mapsCompose = "6.12.0"
+mapsCompose = "6.12.1"
 material = "1.13.0"
 mapsUtils = "3.19.0"
 # Media Exo Player
@@ -174,15 +171,15 @@ mockito = "5.20.0"
 # moshi = "1.15.1"
 mpAndroidChart = "3.1.0"
 napier = "2.7.1"
-okhttp = "5.1.0"
-okhttpMockWebServer = "5.1.0"
+okhttp = "5.2.1"
+okhttpMockWebServer = "5.2.1"
 playIntegrity = "1.5.0"
 places = "5.0.0"
-protobufKotlin = "4.32.1"
-protobufProtoc = "4.32.1"
+protobufKotlin = "4.33.0"
+protobufProtoc = "4.33.0"
 retrofit = "3.0.0"
 retrofitKotlinxSerializationJson = "1.0.0"
-room = "2.8.1"
+room = "2.8.2"
 slf4j = "1.7.36"
 spotify = "3.0.0"
 secrets = "2.0.1"
@@ -232,8 +229,8 @@ androidx-cardview = { group = "androidx.cardview", name = "cardview", version.re
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
 androidx-compose-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "androidxComposeCompiler" }
-androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "androidxComposeFoundation" }
-androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "androidxComposeFoundation" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
 androidx-compose-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
 androidx-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
@@ -244,14 +241,14 @@ androidx-compose-material3-adaptative = { group = "androidx.compose.material3.ad
 androidx-compose-material3-adaptative-layout = { group = "androidx.compose.material3.adaptive", name = "adaptive-layout", version.ref = "androidxComposeMaterial3Adaptative" }
 androidx-compose-material3-adaptative-navigation = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation", version.ref = "androidxComposeMaterial3Adaptative" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
-androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "androidxComposeRuntime" }
-androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "androidxComposeRuntime" }
-androidx-compose-runtime-tracing = { group = "androidx.compose.runtime", name = "runtime-tracing", version.ref = "androidxComposeRuntime" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
+androidx-compose-runtime-tracing = { group = "androidx.compose.runtime", name = "runtime-tracing" }
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-testManifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "androidxComposeUi" }
-androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "androidxComposeUi" }
-androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "androidxComposeUiTooling" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 androidx-concurrent = { group = "androidx.concurrent", name = "concurrent-futures", version.ref = "androidxConcurrent" }
@@ -363,12 +360,13 @@ google-api-client-jetty = { group = "com.google.oauth-client", name = "google-oa
 google-api-drive = { group = "com.google.apis", name = "google-api-services-drive", version.ref = "googleApiDriveV3" }
 google-auth-library-oauth2-http = { group = "com.google.auth", name = "google-auth-library-oauth2-http", version.ref = "googleAuthLibraryOauth2Http" }
 google-cloud-bom = { group = "com.google.cloud", name = "libraries-bom", version.ref = "googleCloudBom" }
-google-cloud-texttospeech = { group = "com.google.cloud", name = "google-cloud-texttospeech", version.ref = "googleCloudTextToSpeech" }
-google-cloud-speech = { group = "com.google.cloud", name = "google-cloud-speech", version.ref = "googleCloudSpeech" }
+google-cloud-texttospeech = { group = "com.google.cloud", name = "google-cloud-texttospeech" }
+google-cloud-speech = { group = "com.google.cloud", name = "google-cloud-speech" }
 google-guava = { group = "com.google.guava", name = "guava", version.ref = "googleGuava" }
 google-guava-listenablefuture = { group = "com.google.guava", name = "listenablefuture", version.ref = "googleGuavaListenableFuture" }
-google-http-client = { group = "com.google.http-client", name = "google-http-client-android", version.ref = "googleHttpClient" }
-google-http-client-gson = { group = "com.google.http-client", name = "google-http-client-gson", version.ref = "googleHttpClientGson" }
+google-http-client-bom = { group = "com.google.http-client", name = "google-http-client-bom", version.ref = "googleHttpClientBom" }
+google-http-client = { group = "com.google.http-client", name = "google-http-client-android" }
+google-http-client-gson = { group = "com.google.http-client", name = "google-http-client-gson" }
 google-identity = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleIdentity" }
 google-mlkit-barcode-scanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "googleMLKitBarcodeScanning" }
 google-mlkit-common = { group = "com.google.mlkit", name = "common", version.ref = "googleMLKitCommon" }
@@ -520,8 +518,8 @@ zxing-android-integration = { group = "com.google.zxing", name = "android-integr
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 androidx-navigation-gradlePlugin = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "androidxNavigation" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-kotzilla-gradlePlugin = { module = "io.kotzilla:kotzilla-plugin", version.ref = "kotzillaGradlePlugin" }
-ktor-gradlePlugin = { group = "io.ktor.plugin", name = "io.ktor.plugin.gradle.plugin", version.ref = "ktorGradlePlugin" }
+kotzilla-gradlePlugin = { module = "io.kotzilla:kotzilla-plugin", version.ref = "kotzilla" }
+ktor-gradlePlugin = { group = "io.ktor.plugin", name = "io.ktor.plugin.gradle.plugin", version.ref = "ktor" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 play-services-gradlePlugin = { group = "com.google.gms", name = "google-services", version.ref = "playServicesGradlePlugin" }
 firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "crashlyticsGradlePlugin" }
@@ -549,15 +547,15 @@ performances = { id = "com.google.firebase.firebase-perf", version.ref = "perfor
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 
-thelab-application-compose = { id = "thelab.android.application.compose", version = "unspecified" }
 thelab-application = { id = "thelab.android.application", version = "unspecified" }
+thelab-application-compose = { id = "thelab.android.application.compose", version = "unspecified" }
 thelab-application-jacoco = { id = "thelab.android.application.jacoco", version = "unspecified" }
-thelab-library-compose = { id = "thelab.android.library.compose", version = "unspecified" }
 thelab-library = { id = "thelab.android.library", version = "unspecified" }
-thelab-feature = { id = "thelab.android.feature", version = "unspecified" }
+thelab-library-compose = { id = "thelab.android.library.compose", version = "unspecified" }
 thelab-library-jacoco = { id = "thelab.android.library.jacoco", version = "unspecified" }
-thelab-test = { id = "thelab.android.test", version = "unspecified" }
+thelab-feature = { id = "thelab.android.feature", version = "unspecified" }
+thelab-firebase = { id = "thelab.firebase", version = "unspecified" }
 thelab-hilt = { id = "thelab.android.hilt", version = "unspecified" }
 thelab-ktor = { id = "thelab.android.ktor", version = "unspecified" }
 thelab-room = { id = "thelab.android.room", version = "unspecified" }
-thelab-firebase = { id = "thelab.firebase", version = "unspecified" }
+thelab-test = { id = "thelab.android.test", version = "unspecified" }
