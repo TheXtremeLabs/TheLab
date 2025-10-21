@@ -55,8 +55,8 @@ dependencies {
     // Google
     api(libs.google.auth.library.oauth2.http)
     // Google Cloud Speech API
-    /*api(platform(libs.google.cloud.bom))
-    api(libs.google.cloud.texttospeech)*/
+    api(platform(libs.google.cloud.bom))
+    //api(libs.google.cloud.texttospeech)
     api(libs.google.cloud.speech)
     api(libs.grpc.okhttp)
     api(libs.grpc.stub)
