@@ -21,6 +21,15 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.SingletonImageLoader
+import coil3.disk.DiskCache
+import coil3.disk.directory
+import coil3.memory.MemoryCache
+import coil3.request.crossfade
+import coil3.svg.SvgDecoder
+import coil3.util.DebugLogger
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
@@ -40,7 +49,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltAndroidApp
-class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configuration.Provider {
+class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configuration.Provider,
+    SingletonImageLoader.Factory {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
@@ -53,6 +63,32 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
             setRequiresBatteryNotLow(true)
             setRequiresCharging(false)
             setRequiresStorageNotLow(true)
+        }
+        .build()
+
+    override fun newImageLoader(context: PlatformContext): ImageLoader = ImageLoader
+        .Builder(context)
+        .crossfade(true)
+        .components {
+            // Add custom components like decoders (e.g., SVG, GIF) or fetchers
+            add(SvgDecoder.Factory())
+        }
+        .memoryCache {
+            MemoryCache.Builder()
+                .maxSizePercent(context, 0.20)
+                .build()
+        }
+        .diskCache {
+            DiskCache.Builder()
+                .directory(context.cacheDir.resolve("image_cache"))
+                .maxSizeBytes(5 * 1024 * 1024)
+                .build()
+        }
+        // Optional: Add a logger in debug builds
+        .apply {
+            if (BuildConfig.DEBUG) {
+                logger(DebugLogger())
+            }
         }
         .build()
 
@@ -77,7 +113,7 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
 //        val appLifecycleObserver = TheLabAppLifecycleObserver()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
-        // delayedInit()
+        delayedInit()
 
         if (BuildConfig.DEBUG) {
             LabDeviceManager.logDeviceInfo()
