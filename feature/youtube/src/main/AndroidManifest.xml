@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application>
+        <activity
+            android:name=".ui.splashscreen.YoutubeSplashScreenActivity"
+            android:label="@string/activity_title_youtube_like"
+            android:theme="@style/YoutubeTheme" />
+        <activity
+            android:name=".ui.main.YoutubeActivity"
+            android:label="@string/activity_title_youtube_like"
+            android:theme="@style/YoutubeTheme" />
+    </application>
+</manifest>

@@ -37,7 +37,8 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun YoutubeListScreen(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,

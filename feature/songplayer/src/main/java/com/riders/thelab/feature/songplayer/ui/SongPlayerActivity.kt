@@ -1,8 +1,11 @@
 package com.riders.thelab.feature.songplayer.ui
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.OptIn
@@ -17,16 +20,19 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSession.ConnectionResult.AcceptedResultBuilder
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.permissions.PermissionManager
+import com.riders.thelab.core.player.service.PlaybackService
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.songplayer.core.SongsManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,10 +40,37 @@ import timber.log.Timber
 @AndroidEntryPoint
 class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
 
+    // Context & ViewModel
     private val viewModel: SongPlayerViewModel by viewModels()
 
+    // Service
+    private  var mServiceMusic: PlaybackService? = null
+    private var mBound: Boolean = false
+
+    /** Defines callbacks for service binding, passed to bindService()  */
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            val binder = service as PlaybackService.LocalBinder
+            mServiceMusic = binder.getService()
+            mBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mBound = false
+        }
+    }
+
+    private var mMediaButtonReceiver: MediaButtonReceiver? = null
+
+    private var songManager: SongsManager? = null
     private var currentSongIndex = 0
 
+    ////////////////////////////////////////
+    //
+    // OVERRIDE
+    //
+    ////////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -90,6 +123,10 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
         checkPermissions()
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
+
 
     @Deprecated("DEPRECATED - Use registerActivityForResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -110,11 +147,11 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
         }
     }
 
-    ///////////////////////////////
+    ////////////////////////////////////////
     //
     // CLASS METHODS
     //
-    ///////////////////////////////
+    ////////////////////////////////////////
     @SuppressLint("NewApi")
     private fun checkPermissions() {
         PermissionManager
@@ -138,12 +175,17 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
             }
     }
 
+    fun registerReceivers(){
+        if( null == mMediaButtonReceiver) {
+            mMediaButtonReceiver = MediaButtonReceiver()
+        }
+    }
 
-    ///////////////////////////////
+    ////////////////////////////////////////
     //
     // IMPLEMENTS
     //
-    ///////////////////////////////
+    ////////////////////////////////////////
     @OptIn(UnstableApi::class)
     override fun onConnect(
         session: MediaSession,

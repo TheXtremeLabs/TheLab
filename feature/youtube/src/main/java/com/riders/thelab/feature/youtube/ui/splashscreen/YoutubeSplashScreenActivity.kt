@@ -94,5 +94,6 @@ class YoutubeSplashScreenActivity : BaseComponentActivity() {
             }
             .onSuccess {
                 Timber.d("launchKatActivity() | onSuccess | Activity launched successfully")
+                finish()
             }
 }

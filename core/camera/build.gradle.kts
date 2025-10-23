@@ -35,13 +35,15 @@ dependencies {
     ///////////////////////////////////
     // General Dependencies
     ///////////////////////////////////
+    // Kotlin
     implementation(libs.kotlinx.serialization.json)
 
+    // AndroidX
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-
+    // CameraX
     api(libs.androidx.camera)
     api(libs.androidx.camera.compose)
     api(libs.androidx.camera.effects)
@@ -50,6 +52,8 @@ dependencies {
     api(libs.androidx.camera.mlkit.vision)
     api(libs.androidx.camera.view)
     api(libs.androidx.camera.video)
+    // Preferences
+    api(libs.androidx.preferences)
 
     // Google
     api(libs.google.guava)

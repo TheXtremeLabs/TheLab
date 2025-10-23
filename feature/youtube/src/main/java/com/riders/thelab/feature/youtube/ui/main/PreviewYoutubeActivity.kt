@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.youtube.ui.main
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -13,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
@@ -27,6 +29,7 @@ import com.riders.thelab.core.ui.compose.component.NoItemFound
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import timber.log.Timber
 
 
@@ -38,9 +41,18 @@ import timber.log.Timber
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun YoutubeContentSuccess(theme: AppTheme, darkTheme: Boolean, uiState: YoutubeUiState.Success) {
+    val context = LocalContext.current
     val navController = rememberNavController()
     val backstackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backstackEntry?.destination?.route
+
+    BackHandler {
+        if (currentDestination == YoutubeScreen.Detail.route.toString()) {
+            navController.popBackStack()
+        } else {
+            (context.findActivity() as? YoutubeActivity)?.finish()
+        }
+    }
 
     SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
         NavHost(
@@ -50,7 +62,8 @@ fun YoutubeContentSuccess(theme: AppTheme, darkTheme: Boolean, uiState: YoutubeU
         ) {
             composable(route = YoutubeScreen.List.route.toString()) {
                 YoutubeListScreen(
-                    theme = theme, darkTheme = darkTheme,
+                    theme = theme,
+                    darkTheme = darkTheme,
                     sharedTransitionScope = this@SharedTransitionLayout,
                     animatedVisibilityScope = this@composable,
                     videos = uiState.videos,

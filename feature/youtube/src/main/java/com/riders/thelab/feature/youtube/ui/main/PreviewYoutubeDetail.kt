@@ -53,6 +53,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.palette.graphics.Palette
 import coil3.compose.AsyncImagePainter
+import coil3.size.Scale
+import coil3.size.Size
 import com.riders.thelab.core.data.local.model.youtube.Video
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
@@ -72,7 +74,8 @@ import timber.log.Timber
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun YoutubeDetailScreen(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier,
@@ -92,6 +95,7 @@ fun YoutubeDetailScreen(
         context = context,
         dataUrl = video.imageUrl,
         isSvg = false,
+        scale = Scale.FILL,
         placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
     )
     val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()

@@ -1,8 +1,7 @@
 plugins {
-    id("thelab.android.feature")
-    id("thelab.android.library.compose")
-    id("thelab.android.hilt")
-    id("thelab.android.library.jacoco")
+    alias(libs.plugins.thelab.library.compose)
+    alias(libs.plugins.thelab.feature)
+    alias(libs.plugins.thelab.hilt)
 }
 
 android {

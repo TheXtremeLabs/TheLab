@@ -12,7 +12,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
@@ -63,15 +62,19 @@ class YoutubeActivity : BaseComponentActivity() {
     override fun onStart() {
         super.onStart()
 
-        //Test the internet's connection
-        if (!mViewModel.hasInternetConnection.value) {
-            Timber.e("No Internet connection")
-            UIManager.showToast(
-                this@YoutubeActivity,
-                getString(com.riders.thelab.core.ui.R.string.network_status_disconnected)
-            )
-        } else {
-            mViewModel.fetchVideos()
+        lifecycleScope.launch {
+            mViewModel.hasInternetConnection.collect { hasInternetConnection ->
+                //Test the internet's connection
+                if (!hasInternetConnection) {
+                    Timber.e("onStart() | No Internet connection")
+                    UIManager.showToast(
+                        this@YoutubeActivity,
+                        getString(com.riders.thelab.core.ui.R.string.network_status_disconnected)
+                    )
+                } else {
+                    mViewModel.fetchVideos()
+                }
+            }
         }
     }
 

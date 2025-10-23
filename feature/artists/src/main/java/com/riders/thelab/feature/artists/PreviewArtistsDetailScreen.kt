@@ -67,6 +67,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.palette.graphics.Palette
 import coil3.compose.AsyncImagePainter
+import coil3.size.Scale
 import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
@@ -104,6 +105,7 @@ fun ArtistThumb(
     val painter = getCoilAsyncImagePainter(
         context = context,
         dataUrl = urlThumb ?: "",
+        scale = Scale.FILL,
         onState = { state ->
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error

@@ -75,7 +75,8 @@ import timber.log.Timber
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun YoutubeItem(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     video: Video,
