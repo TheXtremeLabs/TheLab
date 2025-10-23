@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -99,7 +100,8 @@ fun Header(
         Text(
             text = stringResource(id = R.string.app_list_placeholder),
             fontSize = 18.sp,
-            fontWeight = FontWeight.W600
+            fontWeight = FontWeight.W600,
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(modifier = Modifier.size(8.dp))
@@ -107,7 +109,8 @@ fun Header(
         Text(
             text = stringResource(id = R.string.app_list_detail_placeholder),
             fontSize = 18.sp,
-            fontWeight = FontWeight.Thin
+            fontWeight = FontWeight.Thin,
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(modifier = Modifier.size(16.dp))

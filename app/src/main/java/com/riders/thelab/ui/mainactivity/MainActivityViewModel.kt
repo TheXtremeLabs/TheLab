@@ -95,9 +95,6 @@ class MainActivityViewModel @Inject constructor(
 
     val isDynamicIslandVisible: Boolean by derivedStateOf { _dynamicIslandState.value !is IslandState.DefaultState }
 
-    // Network
-    private lateinit var networkState: StateFlow<NetworkState>
-
     // Network State
     var hasInternetConnection: StateFlow<Boolean> = labNetworkManager.isConnectedFlow.stateIn(
         scope = viewModelScope,

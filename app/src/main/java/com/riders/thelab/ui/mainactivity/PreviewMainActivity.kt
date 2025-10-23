@@ -58,6 +58,7 @@ import com.riders.thelab.core.ui.compose.component.NoItemFound
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.keyboardAsState
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.utils.AppBuilderUtils
 import kotlinx.coroutines.launch
@@ -84,6 +85,7 @@ fun MainContent(
     val context = LocalContext.current
     val density = LocalDensity.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val isKeyboardVisible  by keyboardAsState()
 
     // Declaring Coroutine scope
     val scope = rememberCoroutineScope()
