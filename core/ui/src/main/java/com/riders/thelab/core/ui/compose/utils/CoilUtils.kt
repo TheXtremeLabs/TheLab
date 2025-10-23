@@ -5,15 +5,12 @@ import android.graphics.Bitmap
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import coil3.ImageLoader
 import coil3.compose.AsyncImagePainter
 import coil3.compose.asPainter
 import coil3.compose.rememberAsyncImagePainter
-import coil3.disk.DiskCache
-import coil3.disk.directory
-import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
@@ -22,31 +19,15 @@ import coil3.size.Scale
 import coil3.size.Size
 import coil3.svg.SvgDecoder
 import coil3.toBitmap
-import coil3.util.DebugLogger
 import com.riders.thelab.core.ui.R
 import timber.log.Timber
-
-@Stable
-fun getImageLoader(context: Context): ImageLoader = ImageLoader.Builder(context)
-    .memoryCache {
-        MemoryCache.Builder()
-            .maxSizePercent(context, 0.20)
-            .build()
-    }
-    .diskCache {
-        DiskCache.Builder()
-            .directory(context.cacheDir.resolve("image_cache"))
-            .maxSizeBytes(5 * 1024 * 1024)
-            .build()
-    }
-    .logger(DebugLogger())
-    .build()
 
 /*
  * https://www.sinasamaki.com/loading-images-using-coil-in-jetpack-compose/
  */
 // @Composable
 @Stable
+@Composable
 private fun getCoilImageRequest(
     context: Context,
     data: Any,
@@ -54,32 +35,36 @@ private fun getCoilImageRequest(
     size: Size? = null,
     scale: Scale? = null,
     isCaching: Boolean = true
-): ImageRequest = ImageRequest
-    .Builder(context).apply {
-        Timber.d("getCoilImageRequest() | data : $data, size : $size, scale : $scale")
+): ImageRequest = remember(data) {
+    ImageRequest
+        .Builder(context)
+        .apply {
+            Timber.d("getCoilImageRequest() | data : $data, size : $size, scale : $scale")
 
-        data(data)
+            data(data)
 
-        if (isSvg) {
-            decoderFactory(SvgDecoder.Factory())
+            if (isSvg) {
+                decoderFactory(SvgDecoder.Factory())
+            }
+
+            crossfade(true)
+            allowHardware(false)
+            //transformations(RoundedCornersTransformation(32.dp.value))
+
+            size(size ?: Size.ORIGINAL)
+            scale(scale ?: Scale.FIT)
+
+            if (isCaching) {
+                networkCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.ENABLED)
+                memoryCachePolicy(CachePolicy.ENABLED)
+            }
         }
-
-        crossfade(true)
-        allowHardware(false)
-        //transformations(RoundedCornersTransformation(32.dp.value))
-
-        size(size ?: Size.ORIGINAL)
-        scale(scale ?: Scale.FIT)
-
-        if (isCaching) {
-            networkCachePolicy(CachePolicy.ENABLED)
-            diskCachePolicy(CachePolicy.ENABLED)
-            memoryCachePolicy(CachePolicy.ENABLED)
-        }
-    }
-    .build()
+        .build()
+}
 
 @Stable
+@Composable
 private fun getCoilImageRequest(
     context: Context,
     dataUrl: String,
@@ -121,8 +106,7 @@ fun getCoilAsyncImagePainter(
     },
     onError = {
         Timber.e("getCoilAsyncImagePainter() | rememberAsyncImagePainter | Error while loading Image")
-    },
-    imageLoader = getImageLoader(context)
+    }
 )
 
 @Composable
@@ -158,8 +142,7 @@ fun getCoilAsyncImagePainter(
         size = size,
         scale = scale
     ),
-    onState = onState,
-    imageLoader = getImageLoader(context)
+    onState = onState
 )
 
 fun AsyncImagePainter.State.get(context: Context): Painter? = when (this) {
