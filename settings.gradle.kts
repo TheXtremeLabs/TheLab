@@ -94,7 +94,7 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
-rootProject.name = "The Lab"
+rootProject.name = "TheLab"
 // Applications
 include(":app")
 include(":appTV")
