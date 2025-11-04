@@ -60,6 +60,8 @@ sealed class Permission(vararg val permissions: String) {
         Manifest.permission.ACCESS_FINE_LOCATION
     )
 
+    @RequiresApi(Build.VERSION_CODES.R)
+    data object QueryAllPackages : Permission(Manifest.permission.QUERY_ALL_PACKAGES)
 
     companion object {
         @SuppressLint("NewApi")
@@ -79,6 +81,7 @@ sealed class Permission(vararg val permissions: String) {
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION -> Location
             Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE -> Storage
             Manifest.permission.ACCESS_MEDIA_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE -> MediaLocation
+            Manifest.permission.QUERY_ALL_PACKAGES -> QueryAllPackages
             else -> throw IllegalArgumentException("Unknown permission: $permission")
         }
     }

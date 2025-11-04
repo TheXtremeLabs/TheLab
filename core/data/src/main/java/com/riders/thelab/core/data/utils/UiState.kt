@@ -13,4 +13,7 @@ sealed class UiState<out T> {
 
     @Stable
     data object Loading : UiState<Nothing>()
+
+    @Stable
+    data object Idle : UiState<Nothing>()
 }

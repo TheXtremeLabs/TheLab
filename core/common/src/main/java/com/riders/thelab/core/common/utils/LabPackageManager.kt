@@ -2,6 +2,7 @@ package com.riders.thelab.core.common.utils
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import androidx.activity.result.ActivityResultLauncher
 import kotlinx.serialization.json.Json
@@ -9,12 +10,22 @@ import timber.log.Timber
 
 class LabPackageManager private constructor(private val applicationContext: Context) {
 
-    fun isInstalled(packageName:String):Boolean{
+    fun getInstalledPackages(): List<ApplicationInfo>? = runCatching {
+        applicationContext.packageManager.getInstalledApplications(0)
+    }
+        .onFailure { exception ->
+            exception.printStackTrace()
+            Timber.e("getInstalledPackages() | onFailure | Error caught with message: ${exception.message} (class: ${exception.javaClass.canonicalName})")
+        }
+        .getOrNull()
+
+
+    fun isInstalled(packageName: String): Boolean {
         val packageManager = applicationContext.packageManager
         return try {
             packageManager.getPackageInfo(packageName, 0)
             true
-        }catch (nameNotFoundException:PackageManager.NameNotFoundException){
+        } catch (nameNotFoundException: PackageManager.NameNotFoundException) {
             Timber.e("isInstalled() | Package with name $packageName not found.")
             false
         }
@@ -51,6 +62,37 @@ class LabPackageManager private constructor(private val applicationContext: Cont
         }
     }
 
+    /**
+     * Get all packages
+     */
+    fun getFilteredPackageList(
+        vararg filters: String,
+        onProcessAppInfo: (List<ApplicationInfo>) -> Unit
+    ) {
+        Timber.d("getFilteredPackageList()")
+
+        val installedAppList: List<ApplicationInfo> = getInstalledPackages() ?: emptyList()
+        val filterPredicates: List<String> = (filters).asList()
+
+        val appList = mutableListOf<ApplicationInfo>()
+
+        installedAppList.forEach { appInfo ->
+            if (filterPredicates.isEmpty()) {
+                appList.add(appInfo)
+            } else {
+                filterPredicates.forEach { filter ->
+                    if (appInfo.packageName.contains(filter)) {
+                        appList.add(appInfo)
+                    }
+                }
+            }
+        }
+
+        Timber.d("getFilteredPackageList() | appList size: ${appList.size}")
+
+        onProcessAppInfo.invoke(appList)
+    }
+
 
     fun callIntentForPackageActivity(
         activityResultLauncher: ActivityResultLauncher<Intent>? = null,
@@ -71,8 +113,8 @@ class LabPackageManager private constructor(private val applicationContext: Cont
         }
         ?.onFailure { exception ->
             exception.printStackTrace()
-            when(exception){
-                is PackageManager.NameNotFoundException-> Timber.e("Package $intentPackageName is not installed")
+            when (exception) {
+                is PackageManager.NameNotFoundException -> Timber.e("Package $intentPackageName is not installed")
                 else -> Timber.e("callIntentForPackageActivity() | onFailure | Error caught with message: ${exception.message} (class: ${exception.javaClass.canonicalName})")
             }
         }
@@ -81,11 +123,11 @@ class LabPackageManager private constructor(private val applicationContext: Cont
             activityResultLauncher?.launch(it) ?: applicationContext.startActivity(it)
         }
 
-    companion object{
+    companion object {
         private var INSTANCE: LabPackageManager? = null
 
         @Synchronized
-        fun getInstance(context: Context) = INSTANCE?: synchronized(this){
+        fun getInstance(context: Context) = INSTANCE ?: synchronized(this) {
             INSTANCE ?: LabPackageManager(context).also { INSTANCE = it }
         }
     }

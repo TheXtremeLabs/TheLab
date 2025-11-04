@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="PackageVisibilityPolicy,QueryAllPackagesPermission" />
+
+    <queries>
+        <package android:name="com.riders.thelab" />
+        <package android:name="com.riders.thelab.tv" />
+        <package android:name="com.riders.thelab.vision" />
+        <package android:name="com.riders.hiltinjection" />
+
+        <package android:name="com.riders.thelabmultiplatform" />
+
+        <package android:name="com.riders.lab" />
+        <package android:name="fr.chronopost.lab" />
+    </queries>
 
     <application
+        android:name=".TheLabCentralApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:hardwareAccelerated="false"
+        android:icon="@mipmap/ic_launcher_the_lab_central"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:largeHeap="false"
+        android:roundIcon="@mipmap/ic_launcher_the_lab_central_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TheLab">
+
         <activity
-            android:name=".MainCentralActivity"
+            android:name=".ui.MainCentralActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.TheLab">
