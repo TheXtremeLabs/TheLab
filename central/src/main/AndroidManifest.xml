@@ -21,10 +21,8 @@
     <application
         android:name=".TheLabCentralApplication"
         android:allowBackup="true"
-        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher_the_lab_central"
         android:label="@string/app_name"
-        android:largeHeap="false"
         android:roundIcon="@mipmap/ic_launcher_the_lab_central_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TheLab">

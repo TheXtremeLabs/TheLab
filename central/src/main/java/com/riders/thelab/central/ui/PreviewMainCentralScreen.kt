@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -65,6 +66,7 @@ fun MainCentralScreen(
             sheetPeekHeight = 128.dp
         ) { innerPadding ->
             AnimatedContent(
+                modifier = Modifier.fillMaxWidth(),
                 targetState = centralUiState,
                 contentAlignment = Alignment.TopCenter
             ) { targetState ->
@@ -111,6 +113,10 @@ fun MainCentralScreen(
 @Composable
 private fun PreviewMainCentralScreen() {
     TheLabTheme(theme = AppTheme.Default) {
-
+        MainCentralScreen(
+            theme = AppTheme.Default,
+            darkTheme = false,
+            centralUiState = UiState.Loading
+        )
     }
 }

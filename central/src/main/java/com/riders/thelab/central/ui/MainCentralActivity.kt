@@ -28,17 +28,17 @@ class MainCentralActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mPermissionManager = PermissionManager.from(this)
+        //mPermissionManager = PermissionManager.from(this)
 
         enableEdgeToEdge()
 
-        mPermissionManager
+        /*mPermissionManager
             ?.request(Permission.QueryAllPackages)
             ?.checkPermission { granted ->
                 if (!granted) {
                     Timber.e("Permission not granted")
                 }
-            }
+            }*/
 
         setContent {
             // Register lifecycle events
