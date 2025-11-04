@@ -98,6 +98,7 @@ rootProject.name = "The Lab"
 // Applications
 include(":app")
 include(":appTV")
+include(":central")
 include(":vision")
 // Library modules
 include(":core:analytics")
