@@ -67,7 +67,6 @@ fun Search(
     onUpdateMicrophoneEnabled: (Boolean) -> Unit,
     onUpdateKeyboardVisible: (Boolean) -> Unit
 ) {
-    val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val focus = remember { mutableStateOf(false) }

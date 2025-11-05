@@ -41,7 +41,7 @@ android {
     }
 
     buildTypes {
-        val debug by getting {
+         debug {
             isDebuggable = true
 
             // Enables CODE shrinking, obfuscation, and optimization for only

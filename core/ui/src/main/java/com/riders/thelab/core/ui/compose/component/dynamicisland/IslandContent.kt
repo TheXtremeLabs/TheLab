@@ -20,9 +20,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Welcome
-import com.riders.thelab.core.ui.compose.component.dynamicisland.FaceUnlock
-import com.riders.thelab.core.ui.compose.component.dynamicisland.LeadingContent
-import com.riders.thelab.core.ui.compose.component.dynamicisland.TrailingContent
 import com.riders.thelab.core.ui.compose.previewprovider.IslandStatePreviewProvider
 
 

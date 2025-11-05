@@ -189,7 +189,6 @@ fun CentralScreenPortrait(
     searchQuery: String,
     uiEvent: (UiEvent) -> Unit
 ) {
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val bottomSheetState: SheetState = rememberModalBottomSheetState()
     val bottomSheetScaffoldState =
@@ -240,46 +239,63 @@ fun CentralScreenPortrait(
                     modifier = Modifier.matchParentSize(),
                     targetState = centralUiState,
                     contentAlignment = Alignment.TopCenter
-                ) { targetState ->
+                ) { centralTargetState ->
 
-                    when (targetState) {
+                    when (centralTargetState) {
                         is UiState.Loading -> {
                             LabLoader(modifier = Modifier.size(56.dp))
                         }
 
                         is UiState.Success -> {
+                            val isPackageFound by derivedStateOf {
+                                if(searchQuery.trim().isEmpty()) true else centralTargetState
+                                    .data
+                                    .any { packageApp ->
+                                        packageApp.name.contains(searchQuery, true) ||
+                                                packageApp.packageName.contains(
+                                                    searchQuery,
+                                                    true
+                                                )
+                                    }
+                            }
                             val lazyGridState = rememberLazyGridState()
 
-                            LazyVerticalGrid(
-                                modifier = Modifier.matchParentSize(),
-                                state = lazyGridState,
-                                columns = GridCells.Fixed(2)
-                            ) {
-                                itemsIndexed(
-                                    items = if (searchQuery.trim().isEmpty()) {
-                                        targetState.data
-                                    } else {
-                                        targetState.data.filter { packageApp ->
-                                            packageApp.name.contains(searchQuery, true) ||
-                                                    packageApp.packageName.contains(
-                                                        searchQuery,
-                                                        true
-                                                    )
+                            AnimatedContent(targetState = isPackageFound) { targetState->
+                                if(!isPackageFound) {
+                                    Text(text="No package found for \"$searchQuery\"")
+                                } else {
+                                    LazyVerticalGrid(
+                                        modifier = Modifier.matchParentSize(),
+                                        state = lazyGridState,
+                                        columns = GridCells.Fixed(2)
+                                    ) {
+                                        itemsIndexed(
+                                            items = if (searchQuery.trim().isEmpty()) {
+                                                centralTargetState.data
+                                            } else {
+                                                centralTargetState.data.filter { packageApp ->
+                                                    packageApp.name.contains(searchQuery, true) ||
+                                                            packageApp.packageName.contains(
+                                                                searchQuery,
+                                                                true
+                                                            )
+                                                }
+                                            }
+                                        ) { _, item ->
+                                            CentralPackageItem(
+                                                theme = theme,
+                                                darkTeme = darkTheme,
+                                                packageItem = item,
+                                                uiEvent = uiEvent
+                                            )
                                         }
                                     }
-                                ) { _, item ->
-                                    CentralPackageItem(
-                                        theme = theme,
-                                        darkTeme = darkTheme,
-                                        packageItem = item,
-                                        uiEvent = uiEvent
-                                    )
                                 }
                             }
                         }
 
                         is UiState.Error -> {
-                            Text(text = targetState.error)
+                            Text(text = centralTargetState.error)
                         }
 
                         else -> {
@@ -300,7 +316,6 @@ fun CentralScreenLandscape(
     centralUiState: UiState<List<PackageApp>>,
     uiEvent: (UiEvent) -> Unit
 ) {
-    val context = LocalContext.current
     val bottomSheetState = rememberModalBottomSheetState()
     val bottomSheetScaffoldState =
         rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
@@ -380,7 +395,7 @@ fun CentralScreenLandscape(
                                 state = lazyGridState,
                                 columns = GridCells.Adaptive(128.dp),
                             ) {
-                                itemsIndexed(items = targetState.data) { index, item ->
+                                itemsIndexed(items = targetState.data) { _, item ->
                                     CentralPackageItem(
                                         theme = theme,
                                         darkTeme = darkTheme,
