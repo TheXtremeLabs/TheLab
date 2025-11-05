@@ -175,8 +175,7 @@ okhttp = "5.3.0"
 okhttpMockWebServer = "5.3.0"
 playIntegrity = "1.5.0"
 places = "5.0.0"
-protobufKotlin = "4.33.0"
-protobufProtoc = "4.33.0"
+protobuf = "4.33.0"
 retrofit = "3.0.0"
 retrofitKotlinxSerializationJson = "1.0.0"
 room = "2.8.3"
@@ -400,9 +399,10 @@ glide-compose = { group = "com.github.bumptech.glide", name = "compose", version
 glide-blurry = { group = "jp.wasabeef", name = "blurry", version.ref = "blurry" }
 glide-landscapist = { group = "com.github.skydoves", name = "landscapist-glide", version.ref = "landscapist" }
 glide-transformation = { group = "jp.wasabeef", name = "glide-transformations", version.ref = "glideTransformation" }
-grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpc" }
-grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf", version.ref = "grpc" }
-grpc-stub = { group = "io.grpc", name = "grpc-stub", version.ref = "grpc" }
+grpc-bom = { group = "io.grpc", name = "grpc-bom", version.ref = "grpc" }
+grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp" }
+grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf" }
+grpc-stub = { group = "io.grpc", name = "grpc-stub" }
 # Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
@@ -492,10 +492,12 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 # MockWebServer
 okhttp-mock-web-server = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttpMockWebServer" }
 places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
-protobuf-java = { group = "com.google.protobuf", name = "protobuf-java", version.ref = "protobufKotlin" }
-protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobufKotlin" }
-protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobufProtoc" }
-retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+protobuf-bom = { group = "com.google.protobuf", name = "protobuf-bom", version.ref = "protobuf" }
+protobuf-java = { group = "com.google.protobuf", name = "protobuf-java" }
+protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite" }
+protobuf-protoc = { group = "com.google.protobuf", name = "protoc" }
+retrofit-bom = { group = "com.squareup.retrofit2", name = "retrofit-bom", version.ref = "retrofit" }
+retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit" }
 #retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 retrofit-kotlin-serialization = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinxSerializationJson" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }

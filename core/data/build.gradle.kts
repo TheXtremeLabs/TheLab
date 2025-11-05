@@ -120,6 +120,7 @@ dependencies {
     }
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Gson, Moshi, Serialization  */
+    api(platform(libs.retrofit.bom))
     api(libs.retrofit.core)
     api(libs.retrofit.kotlin.serialization)
 
