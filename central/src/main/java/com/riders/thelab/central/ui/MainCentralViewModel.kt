@@ -3,6 +3,9 @@ package com.riders.thelab.central.ui
 import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
@@ -45,9 +48,21 @@ class MainCentralViewModel @Inject constructor(
     @Stable
     val centralUiState: StateFlow<UiState<List<PackageApp>>> get() = _centralUiState
 
+    var searchModeEnabled: Boolean by mutableStateOf(false)
+    var searchPackageQuery: String by mutableStateOf("")
+
     fun updateCentralUiState(newState: UiState<List<PackageApp>>) {
         _centralUiState.update { newState }
     }
+
+    fun updateSearchMode(enabled: Boolean) {
+        this.searchModeEnabled = enabled
+    }
+
+    fun updateSearchPackageQuery(newQuery: String) {
+        this.searchPackageQuery = newQuery
+    }
+
 
     //////////////////////////////////////////
     // Coroutines
@@ -165,8 +180,9 @@ class MainCentralViewModel @Inject constructor(
         Timber.d("onEvent() | event: $event")
 
         when (event) {
-            is UiEvent.OnInfoClicked -> {}
-            is UiEvent.OnDismissBottomSheet -> {}
+            is UiEvent.OnUpdateSearchMode -> updateSearchMode(event.enabled)
+            is UiEvent.OnUpdateSearchQuery -> updateSearchPackageQuery(event.newQuery)
+            is UiEvent.OnClearSearchQuery -> updateSearchPackageQuery("")
 
             is UiEvent.OnPackageClicked -> {
                 initNavigator()

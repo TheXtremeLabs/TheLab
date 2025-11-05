@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import kotlinx.serialization.json.Json
 import timber.log.Timber
-import java.io.Serializable
 
 class LabNavigator private constructor(private val activity: Activity) {
 
@@ -73,9 +72,10 @@ class LabNavigator private constructor(private val activity: Activity) {
                 when (value) {
                     is String -> intent.putExtra(pair.first, value)
                     is Double -> intent.putExtra(pair.first, value)
+                    is Short -> intent.putExtra(pair.first, value)
                     is Int -> intent.putExtra(pair.first, value)
                     is Float -> intent.putExtra(pair.first, value)
-                    is Serializable -> Json.encodeToString(value).apply {
+                    else -> Json.encodeToString(value).apply {
                         intent.putExtra(pair.first, this)
                     }
                 }

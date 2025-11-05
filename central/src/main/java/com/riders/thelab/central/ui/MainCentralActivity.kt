@@ -54,6 +54,8 @@ class MainCentralActivity : BaseComponentActivity() {
                     darkTheme = isDarkTheme,
                     windowSize = getDeviceWindowsSizeClass(),
                     centralUiState = centralUiState,
+                    searchModeEnabled = mViewModel.searchModeEnabled,
+                    searchQuery = mViewModel.searchPackageQuery,
                     uiEvent = mViewModel::onEvent
                 )
             }

@@ -4,15 +4,20 @@ package com.riders.thelab.central.ui
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -20,7 +25,9 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -39,23 +46,26 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.central.BuildConfig
 import com.riders.thelab.central.R
 import com.riders.thelab.core.data.local.model.app.PackageApp
+import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.data.local.model.compose.WindowSizeClass
 import com.riders.thelab.core.data.utils.UiState
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
+import com.riders.thelab.core.ui.compose.component.dynamicisland.DynamicIsland
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
-private val gridHorizontalArrangement = Arrangement.spacedBy(16.dp)
-private val gridVerticalArrangement = Arrangement.spacedBy(12.dp)
 
 ///////////////////////////////////////
 //
@@ -63,11 +73,120 @@ private val gridVerticalArrangement = Arrangement.spacedBy(12.dp)
 //
 ///////////////////////////////////////
 @Composable
+fun CentralToolbar(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    scope: CoroutineScope,
+    bottomSheetState: SheetState,
+    isBottomSheetExpended: Boolean,
+    searchModeEnabled: Boolean,
+    searchQuery: String,
+    uiEvent: (UiEvent) -> Unit
+) {
+    val animatedToolbarHeight by animateDpAsState(
+        targetValue = if (!searchModeEnabled) 56.dp else 96.dp,
+        label = "animated_toolbar_height_for_dynamic_island"
+    )
+
+    TheLabTopAppBar(
+        theme = theme,
+        darkTheme = darkTheme,
+        toolbarSize = ToolbarSize.SMALL,
+        toolbarHeight = animatedToolbarHeight,
+        mainCustomContent = {
+            AnimatedContent(targetState = searchModeEnabled) { targetState ->
+                if (!targetState) {
+                    Text(text = stringResource(R.string.app_name))
+                } else {
+                    DynamicIsland(
+                        islandState = IslandState.SearchState(),
+                        searchedAppRequest = searchQuery,
+                        onSearchAppRequestChanged = { newQuery ->
+                            uiEvent.invoke(UiEvent.OnUpdateSearchQuery(newQuery = newQuery))
+                        },
+                        onUpdateKeyboardVisible = {},
+                        onUpdateMicrophoneEnabled = {},
+                        isMicrophoneEnabled = false
+                    )
+                }
+            }
+        },
+        titleColor = if (!darkTheme) Color.Black else Color.White,
+        navigationIcon = {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(40.dp)
+                    .padding(4.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AnimatedContent(
+                    modifier = Modifier.matchParentSize(),
+                    targetState = searchModeEnabled
+                ) { targetState ->
+                    if (!targetState) {
+                        Icon(
+                            modifier = Modifier.fillMaxSize(),
+                            painter = painterResource(if (!darkTheme) R.drawable.ic_the_lab_central else R.drawable.ic_the_lab_central_white),
+                            contentDescription = null
+                        )
+                    } else {
+                        IconButton(
+                            modifier = Modifier.matchParentSize(),
+                            onClick = { uiEvent.invoke(UiEvent.OnUpdateSearchMode(!searchModeEnabled)) }) {
+                            Icon(
+                                modifier = Modifier.fillMaxSize(),
+                                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        actions = {
+            AnimatedVisibility(visible = !searchModeEnabled) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { uiEvent.invoke(UiEvent.OnUpdateSearchMode(enabled = true)) }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Search,
+                            contentDescription = "search_icon"
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                if (!isBottomSheetExpended) {
+                                    bottomSheetState.show()
+                                } else {
+                                    bottomSheetState.hide()
+                                }
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "info_icon"
+                        )
+                    }
+                }
+            }
+        }
+    )
+}
+
+@Composable
 fun CentralScreenPortrait(
     theme: AppTheme,
     darkTheme: Boolean,
     windowSize: WindowSizeClass,
     centralUiState: UiState<List<PackageApp>>,
+    searchModeEnabled: Boolean,
+    searchQuery: String,
     uiEvent: (UiEvent) -> Unit
 ) {
     val context = LocalContext.current
@@ -89,43 +208,15 @@ fun CentralScreenPortrait(
                 .fillMaxSize()
                 .systemBarsPadding(),
             topBar = {
-                TheLabTopAppBar(
+                CentralToolbar(
                     theme = theme,
                     darkTheme = darkTheme,
-                    toolbarSize = ToolbarSize.SMALL,
-                    title = stringResource(R.string.app_name),
-                    titleColor = if (!darkTheme) Color.Black else Color.White,
-                    navigationIcon = {
-                        Box(
-                            modifier = Modifier.padding(8.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                modifier = Modifier.matchParentSize(),
-                                painter = painterResource(if (!darkTheme) R.drawable.ic_the_lab_central else R.drawable.ic_the_lab_central_white),
-                                contentDescription = null
-                            )
-                        }
-                    },
-                    actions = {
-                        IconButton(
-                            onClick = {
-                                scope.launch {
-                                    if (!isBottomSheetExpended) {
-                                        bottomSheetScaffoldState.bottomSheetState.show()
-                                    } else {
-                                        bottomSheetScaffoldState.bottomSheetState.hide()
-                                    }
-                                }
-                                uiEvent.invoke(UiEvent.OnInfoClicked)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Info,
-                                contentDescription = "info_icon"
-                            )
-                        }
-                    }
+                    scope = scope,
+                    bottomSheetState = bottomSheetState,
+                    isBottomSheetExpended = isBottomSheetExpended,
+                    searchModeEnabled = searchModeEnabled,
+                    searchQuery = searchQuery,
+                    uiEvent = uiEvent
                 )
             },
             scaffoldState = bottomSheetScaffoldState,
@@ -164,7 +255,19 @@ fun CentralScreenPortrait(
                                 state = lazyGridState,
                                 columns = GridCells.Fixed(2)
                             ) {
-                                itemsIndexed(items = targetState.data) { _, item ->
+                                itemsIndexed(
+                                    items = if (searchQuery.trim().isEmpty()) {
+                                        targetState.data
+                                    } else {
+                                        targetState.data.filter { packageApp ->
+                                            packageApp.name.contains(searchQuery, true) ||
+                                                    packageApp.packageName.contains(
+                                                        searchQuery,
+                                                        true
+                                                    )
+                                        }
+                                    }
+                                ) { _, item ->
                                     CentralPackageItem(
                                         theme = theme,
                                         darkTeme = darkTheme,
@@ -229,7 +332,7 @@ fun CentralScreenLandscape(
                         }
                     },
                     actions = {
-                        IconButton(onClick = { uiEvent.invoke(UiEvent.OnInfoClicked) }) {
+                        IconButton(onClick = { }) {
                             Icon(
                                 imageVector = Icons.Outlined.Info,
                                 contentDescription = "info_icon"
@@ -310,6 +413,8 @@ fun CentralScreen(
     darkTheme: Boolean,
     windowSize: WindowSizeClass? = null,
     centralUiState: UiState<List<PackageApp>>,
+    searchModeEnabled: Boolean,
+    searchQuery: String,
     uiEvent: (UiEvent) -> Unit
 ) {
     val configuration = LocalConfiguration.current
@@ -320,6 +425,8 @@ fun CentralScreen(
             darkTheme = darkTheme,
             windowSize = windowSize ?: WindowSizeClass.COMPACT,
             centralUiState = centralUiState,
+            searchModeEnabled = searchModeEnabled,
+            searchQuery = searchQuery,
             uiEvent = uiEvent
         )
     } else {
@@ -339,28 +446,69 @@ fun CentralScreen(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
+@Preview(showBackground = true)
 @Composable
-private fun PreviewCentralScreen() {
+private fun PreviewCentralToolbarSearchModeDisabled(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+
+    val bottomSheetState: SheetState = rememberModalBottomSheetState()
+
+    TheLabTheme(theme = appTheme) {
+        CentralToolbar(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            scope = rememberCoroutineScope(),
+            bottomSheetState = bottomSheetState,
+            searchModeEnabled = false,
+            searchQuery = "",
+            isBottomSheetExpended = bottomSheetState.isVisible,
+        ) {}
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PreviewCentralToolbarSearchModeEnabled(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+
+    val bottomSheetState: SheetState = rememberModalBottomSheetState()
+
+    TheLabTheme(theme = appTheme) {
+        CentralToolbar(
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            scope = rememberCoroutineScope(),
+            bottomSheetState = bottomSheetState,
+            searchModeEnabled = true,
+            searchQuery = "The",
+            isBottomSheetExpended = bottomSheetState.isVisible,
+        ) {}
+    }
+}
+
+@DevicePreviewsPhoneOnly
+@Composable
+private fun PreviewCentralScreen(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
 
-    TheLabTheme(theme = AppTheme.Default) {
+    val filteredList = listOf<PackageApp>(
+        PackageApp(
+            name = stringResource(R.string.app_name),
+            drawableIcon = UIManager.getDrawable(
+                context = context,
+                drawableResId = com.riders.thelab.core.ui.R.drawable.ic_lab_6_lab
+            )!!,
+            version = BuildConfig.VERSION_NAME,
+            packageName = BuildConfig.APPLICATION_ID
+        )
+    )
+
+    TheLabTheme(theme = appTheme) {
         CentralScreen(
-            theme = AppTheme.Default,
-            darkTheme = false,
-            centralUiState = UiState.Success(
-                listOf<PackageApp>(
-                    PackageApp(
-                        name = stringResource(R.string.app_name),
-                        drawableIcon = UIManager.getDrawable(
-                            context = context,
-                            drawableResId = com.riders.thelab.core.ui.R.drawable.ic_lab_6_lab
-                        )!!,
-                        version = BuildConfig.VERSION_NAME,
-                        packageName = BuildConfig.APPLICATION_ID
-                    )
-                )
-            )
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
+            windowSize = WindowSizeClass.COMPACT,
+            centralUiState = UiState.Success(filteredList),
+            searchModeEnabled = true,
+            searchQuery = "The",
         ) {}
     }
 }
