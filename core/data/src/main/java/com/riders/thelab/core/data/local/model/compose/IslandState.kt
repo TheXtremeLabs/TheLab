@@ -1,5 +1,6 @@
 package com.riders.thelab.core.data.local.model.compose
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -21,20 +22,25 @@ sealed class IslandState(
 ) {
     val fullWidth = contentSize.width + leadingContentSize + trailingContentSize
 
+    @Stable
+    @Immutable
     data object DefaultState : IslandState()
 
+    @Stable
     class WelcomeState : IslandState(
         contentSize = DpSize(
             300.dp, 50.dp
         ),
     )
 
+    @Stable
     class SearchState : IslandState(
         contentSize = DpSize(
             325.dp, 70.dp
         ),
     )
 
+    @Stable
     class FaceUnlockState : IslandState(
         contentSize = DpSize(
             150.dp, 150.dp
@@ -42,6 +48,7 @@ sealed class IslandState(
         hasMainContent = true,
     )
 
+    @Stable
     class CallState : IslandState(
         leadingContentSize = 65.dp,
         trailingContentSize = 55.dp,
@@ -49,6 +56,7 @@ sealed class IslandState(
         hasTrailingContent = true,
     )
 
+    @Stable
     sealed class NetworkState : IslandState(
         contentSize = DpSize(
             240.dp, 50.dp
@@ -57,11 +65,17 @@ sealed class IslandState(
         trailingContentSize = 55.dp,
         hasLeadingContent = true
     ) {
+        @Stable
         data object Available : NetworkState()
+
+        @Stable
         data object Lost : NetworkState()
+
+        @Stable
         data object Unavailable : NetworkState()
     }
 
+    @Stable
     class CallTimerState : IslandState(
         leadingContentSize = 50.dp,
         hasLeadingContent = true,
