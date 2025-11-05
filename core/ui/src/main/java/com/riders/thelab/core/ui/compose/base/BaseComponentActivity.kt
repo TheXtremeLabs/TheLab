@@ -23,8 +23,8 @@ abstract class BaseComponentActivity : ComponentActivity() {
     //    open var permissionLauncher: ActivityResultLauncher<String>? = null
     open var permissionLauncher: ActivityResultLauncher<Array<String>>? = null
 
-    var windowSize: WindowSizeClass? = null
-        private set
+    private var deviceWindowsSizeClass: WindowSizeClass? = null
+
 
     val isTv: Boolean
         get() = packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
@@ -63,21 +63,21 @@ abstract class BaseComponentActivity : ComponentActivity() {
                     })
         }
     }
-/*
-    override fun onPause() {
-        super.onPause()
-        Timber.e("onPause()")
-    }
+    /*
+        override fun onPause() {
+            super.onPause()
+            Timber.e("onPause()")
+        }
 
-    override fun onResume() {
-        super.onResume()
-        Timber.d("onResume()")
-    }
+        override fun onResume() {
+            super.onResume()
+            Timber.d("onResume()")
+        }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.e("onDestroy()")
-    }*/
+        override fun onDestroy() {
+            super.onDestroy()
+            Timber.e("onDestroy()")
+        }*/
 
     ///////////////////////////////
     //
@@ -123,7 +123,7 @@ abstract class BaseComponentActivity : ComponentActivity() {
 
 
     private fun launchPermissionRequest(permissions: Array<String>) {
-        Timber.e("requestPermission() | permissions: $permissions")
+        Timber.e("requestPermission() | permissions: ${permissions.contentToString()}")
         permissionLauncher?.launch(permissions) ?: {
             Timber.e("Permission launcher has NOT been initialized")
         }
@@ -157,12 +157,12 @@ abstract class BaseComponentActivity : ComponentActivity() {
         Timber.i("heightWindowSizeClass: $heightWindowSizeClass")
 
         // Use widthWindowSizeClass and heightWindowSizeClass.
-        windowSize = widthWindowSizeClass
+        deviceWindowsSizeClass = widthWindowSizeClass
     }
 
     fun getDeviceWindowsSizeClass(): WindowSizeClass {
         Timber.d("getDeviceWindowsSizeClass()")
-        return windowSize!!
+        return deviceWindowsSizeClass!!
     }
 
     abstract fun backPressed()
