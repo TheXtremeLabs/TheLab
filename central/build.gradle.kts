@@ -4,9 +4,9 @@ plugins {
     alias(libs.plugins.thelab.hilt)
 }
 
-val versionMajor: Int = 0
+val versionMajor: Int = 1
 val versionMinor: Int = 0
-val versionPatch: Int = 1
+val versionPatch: Int = 0
 
 /**
  * Log events in console
