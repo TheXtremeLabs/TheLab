@@ -1,17 +1,18 @@
 package com.riders.thelab.central.ui
 
 import android.content.Context
-import android.content.pm.PackageInfo
 import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
+import com.riders.thelab.central.BuildConfig
 import com.riders.thelab.core.common.utils.LabPackageManager
 import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.data.utils.UiState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.UiRepository
+import com.riders.thelab.core.ui.utils.LabNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -29,7 +30,15 @@ class MainCentralViewModel @Inject constructor(
     val uiRepository: UiRepository
 ) : BaseViewModel(), DefaultLifecycleObserver {
 
+    //////////////////////////////////////////
+    // Variables
+    //////////////////////////////////////////
+    private var mNavigator: LabNavigator? = null
 
+
+    //////////////////////////////////////////
+    // Compose states
+    //////////////////////////////////////////
     private val _centralUiState: MutableStateFlow<UiState<List<PackageApp>>> =
         MutableStateFlow(UiState.Idle)
 
@@ -40,6 +49,9 @@ class MainCentralViewModel @Inject constructor(
         _centralUiState.update { newState }
     }
 
+    //////////////////////////////////////////
+    // Coroutines
+    //////////////////////////////////////////
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
         Timber.e("Coroutine Exception caught with message: ${throwable.message} (${throwable.javaClass})")
@@ -47,10 +59,57 @@ class MainCentralViewModel @Inject constructor(
         updateCentralUiState(UiState.Error(error = throwable.message.toString()))
     }
 
-    override fun onResume(owner: LifecycleOwner) {
-        super.onResume(owner)
+
+    ////////////////////////////////////////
+    //
+    // OVERRIDE METHODS
+    //
+    ////////////////////////////////////////
+    override fun onCleared() {
+        super.onCleared()
+        Timber.e("onCleared()")
+    }
+
+    override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
+        Timber.d("onCreate()")
 
         fetchPackages()
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        Timber.e("onPause()")
+    }
+
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        Timber.d("onResume()")
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        super.onStop(owner)
+        Timber.e("onStop()")
+    }
+
+
+    ////////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    ////////////////////////////////////////
+    fun initNavigator() {
+        if (null == mWeakReference || null == mWeakReference?.get()) {
+            Timber.e("initNavigator() | Weak Reference is null, or unable to get Weak Reference Activity value. Leave method immediately")
+            return
+        }
+
+        if (null != mNavigator) {
+            Timber.w("initNavigator() | Navigator is already set.")
+            return
+        }
+
+        mNavigator = LabNavigator.getInstance(mWeakReference?.get()!!)
     }
 
     fun fetchPackages() {
@@ -62,41 +121,57 @@ class MainCentralViewModel @Inject constructor(
         updateCentralUiState(UiState.Loading)
 
         viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-
             LabPackageManager
                 .getInstance(context = context)
                 .getFilteredPackageList(
                     "com.riders", "fr.chronopost"
                 ) { packages ->
                     val appList = mutableListOf<PackageApp>()
-                    packages.forEach {
-                        val packageName: String? = it.packageName
-                        val pInfo: PackageInfo =
-                            context.packageManager.getPackageInfo(it.packageName, 0)
-                        val version: String? = pInfo.versionName
-                        val icon: Drawable =
-                            context.packageManager.getApplicationIcon(it.packageName)
 
-                        version?.let { appVersion ->
-                            packageName?.let { appPackageName ->
+                    packages
+                        .filter { BuildConfig.APPLICATION_ID != it.packageName }
+                        .forEach { applicationInfo ->
+                            val packageManager = context.packageManager
+
+                            val packageLabel =
+                                packageManager.getApplicationLabel(applicationInfo).toString()
+                            val packageName: String = applicationInfo.packageName
+                            val packageIcon: Drawable =
+                                packageManager.getApplicationIcon(packageName)
+                            val packageVersion: String? = packageManager
+                                .getPackageInfo(packageName, 0)
+                                .versionName
+
+                            packageVersion?.let { appVersion ->
                                 appList.add(
                                     PackageApp(
-                                        packageName,
-                                        icon,
-                                        appVersion,
-                                        appPackageName
+                                        name = packageLabel,
+                                        drawableIcon = packageIcon,
+                                        version = appVersion,
+                                        packageName = packageName
                                     )
                                 )
                             } ?: run {
-                                Timber.e("fetchPackages() | Unable to get app package name")
+                                Timber.e("fetchPackages() | Unable to get $packageName version")
                             }
-                        } ?: run {
-                            Timber.e("fetchPackages() | Unable to get $packageName version")
                         }
-                    }
                     appList.sortBy { app -> app.name }
                     updateCentralUiState(UiState.Success(appList))
                 }
+        }
+    }
+
+    fun onEvent(event: UiEvent) {
+        Timber.d("onEvent() | event: $event")
+
+        when (event) {
+            is UiEvent.OnInfoClicked -> {}
+            is UiEvent.OnDismissBottomSheet -> {}
+
+            is UiEvent.OnPackageClicked -> {
+                initNavigator()
+                mNavigator?.callIntentForPackageName(packageName = event.packageItem.packageName)
+            }
         }
     }
 }

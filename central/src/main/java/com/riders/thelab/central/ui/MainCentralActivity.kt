@@ -5,12 +5,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.data.utils.UiState
-import com.riders.thelab.core.permissions.Permission
-import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -23,22 +22,15 @@ class MainCentralActivity : BaseComponentActivity() {
 
     private val mViewModel: MainCentralViewModel by viewModels<MainCentralViewModel>()
 
-    private var mPermissionManager: PermissionManager? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
 
-        //mPermissionManager = PermissionManager.from(this)
+        mViewModel.initWeakReference(this@MainCentralActivity)
+
+        computeWindowSizeClasses()
 
         enableEdgeToEdge()
-
-        /*mPermissionManager
-            ?.request(Permission.QueryAllPackages)
-            ?.checkPermission { granted ->
-                if (!granted) {
-                    Timber.e("Permission not granted")
-                }
-            }*/
 
         setContent {
             // Register lifecycle events
@@ -57,10 +49,12 @@ class MainCentralActivity : BaseComponentActivity() {
                 theme = theme,
                 darkTheme = isDarkTheme
             ) {
-                MainCentralScreen(
+                CentralScreen(
                     theme = theme,
                     darkTheme = isDarkTheme,
+                    windowSize = getDeviceWindowsSizeClass(),
                     centralUiState = centralUiState,
+                    uiEvent = mViewModel::onEvent
                 )
             }
         }
@@ -68,5 +62,10 @@ class MainCentralActivity : BaseComponentActivity() {
 
     override fun backPressed() {
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.e("onDestroy()")
     }
 }
