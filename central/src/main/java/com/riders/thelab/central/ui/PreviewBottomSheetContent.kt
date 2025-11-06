@@ -28,13 +28,14 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -44,6 +45,7 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 ///////////////////////////////////////////////////////////
@@ -144,11 +146,19 @@ fun CentralBottomSheetTooltipContent(
 fun BottomSheetContent(
     theme: AppTheme,
     darkTheme: Boolean,
+    onTooltipVisibilityChanged: ((Boolean) -> Unit)? = null,
     uiEvent: (UiEvent) -> Unit
 ) {
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val tooltipState = rememberTooltipState(isPersistent = true)
+
+    val isTooltipVisible by derivedStateOf { tooltipState.isVisible }
+
+    LaunchedEffect(isTooltipVisible) {
+        Timber.d("Recomposition | LaunchedEffect | is tooltip visible: $isTooltipVisible")
+
+        onTooltipVisibilityChanged?.invoke(isTooltipVisible)
+    }
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Row(
@@ -209,7 +219,7 @@ fun BottomSheetContent(
                                 if (tooltipState.isVisible) {
                                     tooltipState.dismiss()
                                 } else {
-                                    tooltipState.show(MutatePriority.UserInput)
+                                    tooltipState.show(mutatePriority = MutatePriority.UserInput)
                                 }
                             }
                         }

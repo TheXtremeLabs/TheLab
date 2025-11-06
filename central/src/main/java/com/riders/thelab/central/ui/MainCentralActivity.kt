@@ -56,6 +56,7 @@ class MainCentralActivity : BaseComponentActivity() {
                     centralUiState = centralUiState,
                     searchModeEnabled = mViewModel.searchModeEnabled,
                     searchQuery = mViewModel.searchPackageQuery,
+                    isHideBottomSheetContentRequested = mViewModel.isHideBottomSheetContentRequested,
                     uiEvent = mViewModel::onEvent
                 )
             }

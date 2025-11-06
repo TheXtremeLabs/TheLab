@@ -51,7 +51,13 @@ class MainCentralViewModel @Inject constructor(
     val centralUiState: StateFlow<UiState<List<PackageApp>>> get() = _centralUiState
 
     var searchModeEnabled: Boolean by mutableStateOf(false)
+        private set
     var searchPackageQuery: String by mutableStateOf("")
+        private set
+
+
+    var isHideBottomSheetContentRequested: Boolean by mutableStateOf(false)
+        private set
 
     fun updateCentralUiState(newState: UiState<List<PackageApp>>) {
         _centralUiState.update { newState }
@@ -65,6 +71,9 @@ class MainCentralViewModel @Inject constructor(
         this.searchPackageQuery = newQuery
     }
 
+    fun updateIsHideBottomSheetContentRequested(value: Boolean) {
+        this.isHideBottomSheetContentRequested = value
+    }
 
     //////////////////////////////////////////
     // Coroutines
@@ -187,6 +196,8 @@ class MainCentralViewModel @Inject constructor(
             is UiEvent.OnClearSearchQuery -> updateSearchPackageQuery("")
 
             is UiEvent.OnPackageClicked -> {
+                updateIsHideBottomSheetContentRequested(true)
+
                 initNavigator()
                 mNavigator?.callIntentForPackageName(packageName = event.packageItem.packageName)
             }

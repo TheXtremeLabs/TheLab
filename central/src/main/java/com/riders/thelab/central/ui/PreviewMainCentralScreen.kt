@@ -6,6 +6,8 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,9 +38,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,6 +55,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.riders.thelab.central.BuildConfig
 import com.riders.thelab.central.R
 import com.riders.thelab.core.data.local.model.app.PackageApp
@@ -66,6 +73,7 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 ///////////////////////////////////////
 //
@@ -187,6 +195,7 @@ fun CentralScreenPortrait(
     centralUiState: UiState<List<PackageApp>>,
     searchModeEnabled: Boolean,
     searchQuery: String,
+    isHideBottomSheetContentRequested: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -197,9 +206,21 @@ fun CentralScreenPortrait(
     val isBottomSheetExpended by derivedStateOf { bottomSheetScaffoldState.bottomSheetState.isVisible }
 
     val animatedSheetPeekHeight by animateDpAsState(
-        targetValue = if (!isBottomSheetExpended) 0.dp else 128.dp,
+        targetValue = if (!isBottomSheetExpended) 0.dp else 200.dp,
         label = "animated_bottom_sheet_peek_height"
     )
+
+    var isTooltipVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isHideBottomSheetContentRequested) {
+        Timber.d("Recomposition | LaunchedEffect | is hide BottomSheet content requested: $isHideBottomSheetContentRequested")
+
+        if (isHideBottomSheetContentRequested) {
+            if (bottomSheetScaffoldState.bottomSheetState.isVisible) {
+                bottomSheetScaffoldState.bottomSheetState.hide()
+            }
+        }
+    }
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         BottomSheetScaffold(
@@ -223,12 +244,15 @@ fun CentralScreenPortrait(
                 BottomSheetContent(
                     theme = theme,
                     darkTheme = darkTheme,
+                    onTooltipVisibilityChanged = { isVisible ->
+                        Timber.d("Recomposition | onTooltipVisibilityChanged.isTooltipVisible: $isVisible")
+                        isTooltipVisible = isVisible
+                    },
                     uiEvent = uiEvent
                 )
             },
             sheetPeekHeight = animatedSheetPeekHeight
         ) { innerPadding ->
-
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -248,7 +272,7 @@ fun CentralScreenPortrait(
 
                         is UiState.Success -> {
                             val isPackageFound by derivedStateOf {
-                                if(searchQuery.trim().isEmpty()) true else centralTargetState
+                                if (searchQuery.trim().isEmpty()) true else centralTargetState
                                     .data
                                     .any { packageApp ->
                                         packageApp.name.contains(searchQuery, true) ||
@@ -260,9 +284,9 @@ fun CentralScreenPortrait(
                             }
                             val lazyGridState = rememberLazyGridState()
 
-                            AnimatedContent(targetState = isPackageFound) { targetState->
-                                if(!isPackageFound) {
-                                    Text(text="No package found for \"$searchQuery\"")
+                            AnimatedContent(targetState = isPackageFound) { targetState ->
+                                if (!isPackageFound) {
+                                    Text(text = "No package found for \"$searchQuery\"")
                                 } else {
                                     LazyVerticalGrid(
                                         modifier = Modifier.matchParentSize(),
@@ -302,6 +326,19 @@ fun CentralScreenPortrait(
                             Box(modifier = Modifier)
                         }
                     }
+                }
+
+                AnimatedVisibility(
+                    modifier = Modifier.fillMaxSize(),
+                    visible = isTooltipVisible
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable(enabled = false, onClick = { null })
+                            .background(color = Color.Black.copy(alpha = 0.5f))
+                            .zIndex(2f)
+                    ) {}
                 }
             }
         }
@@ -430,6 +467,7 @@ fun CentralScreen(
     centralUiState: UiState<List<PackageApp>>,
     searchModeEnabled: Boolean,
     searchQuery: String,
+    isHideBottomSheetContentRequested: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
     val configuration = LocalConfiguration.current
@@ -442,6 +480,7 @@ fun CentralScreen(
             centralUiState = centralUiState,
             searchModeEnabled = searchModeEnabled,
             searchQuery = searchQuery,
+            isHideBottomSheetContentRequested = isHideBottomSheetContentRequested,
             uiEvent = uiEvent
         )
     } else {
@@ -504,7 +543,7 @@ private fun PreviewCentralToolbarSearchModeEnabled(@PreviewParameter(AppThemePre
 private fun PreviewCentralScreen(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
 
-    val filteredList = listOf<PackageApp>(
+    val filteredList : List<PackageApp> = listOf(
         PackageApp(
             name = stringResource(R.string.app_name),
             drawableIcon = UIManager.getDrawable(
@@ -523,6 +562,7 @@ private fun PreviewCentralScreen(@PreviewParameter(AppThemePreviewProvider::clas
             windowSize = WindowSizeClass.COMPACT,
             centralUiState = UiState.Success(filteredList),
             searchModeEnabled = true,
+            isHideBottomSheetContentRequested = false,
             searchQuery = "The",
         ) {}
     }
