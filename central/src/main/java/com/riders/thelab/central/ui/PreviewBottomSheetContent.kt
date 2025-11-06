@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Send
+import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -27,9 +27,11 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -59,12 +61,15 @@ fun CentralBottomSheetTooltipContent(
         Box(
             modifier = Modifier
                 .wrapContentSize()
-                .background(MaterialTheme.colorScheme.background),
+                .background(
+                    MaterialTheme.colorScheme.inversePrimary,
+                    shape = MaterialTheme.shapes.medium
+                )
+                .clip(shape = MaterialTheme.shapes.medium),
             contentAlignment = Alignment.Center
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .heightIn(max = 90.dp)
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(
@@ -92,7 +97,7 @@ fun CentralBottomSheetTooltipContent(
                                 .size(24.dp),
                             painter = painterResource(com.riders.thelab.core.ui.R.drawable.ic_github),
                             contentDescription = null,
-                            tint = if (!darkTheme) Color.Black else Color.White,
+                            tint = if (darkTheme) Color.Black else Color.White,
                         )
                         Text(modifier = Modifier.weight(1f), text = "View on Github")
                     }
@@ -122,9 +127,9 @@ fun CentralBottomSheetTooltipContent(
                                 .weight(1.5f)
                                 .size(20.dp)
                                 .rotate(315f),
-                            imageVector = Icons.Rounded.Send,
+                            imageVector = Icons.AutoMirrored.Rounded.Send,
                             contentDescription = null,
-                            tint = if (!darkTheme) Color.Black else Color.White,
+                            tint = if (darkTheme) Color.Black else Color.White,
                         )
                         Text(modifier = Modifier.weight(1f), text = "Send via e-mail")
                     }
@@ -199,7 +204,15 @@ fun BottomSheetContent(
                     }
                 ) {
                     Button(
-                        onClick = { scope.launch { tooltipState.show(MutatePriority.UserInput) } }
+                        onClick = {
+                            scope.launch {
+                                if (tooltipState.isVisible) {
+                                    tooltipState.dismiss()
+                                } else {
+                                    tooltipState.show(MutatePriority.UserInput)
+                                }
+                            }
+                        }
                     ) {
                         Text(text = stringResource(R.string.msg_share_project))
                     }

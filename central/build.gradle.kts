@@ -6,7 +6,7 @@ plugins {
 
 val versionMajor: Int = 1
 val versionMinor: Int = 2
-val versionPatch: Int = 0
+val versionPatch: Int = 1
 
 /**
  * Log events in console
