@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TheLab Central</string>
+
+    <string name="msg_share_project">Share project</string>
 </resources>
