@@ -1,7 +1,9 @@
 package com.riders.thelab.central.ui
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -188,6 +190,22 @@ class MainCentralViewModel @Inject constructor(
                 initNavigator()
                 mNavigator?.callIntentForPackageName(packageName = event.packageItem.packageName)
             }
+
+            is UiEvent.OnOpenProjectInBrowserClicked -> {
+                val url = event.url
+                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    Timber.e("onEvent() | Invalid URL: $url")
+                    return
+                }
+
+                initNavigator()
+                mNavigator?.callIntentFromAction(
+                    action = Intent.ACTION_VIEW,
+                    uriParam = Uri.parse(url)
+                )
+            }
+
+            is UiEvent.OnSendProjectWithEmailClicked -> {}
         }
     }
 }

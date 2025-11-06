@@ -66,7 +66,14 @@ fun CentralPackageItem(
                         )!!.asImageBitmap(),
                     contentDescription = "package_drawable_image"
                 )
-                Text(text = packageItem.name, textAlign = TextAlign.Center)
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    text = packageItem.name,
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }

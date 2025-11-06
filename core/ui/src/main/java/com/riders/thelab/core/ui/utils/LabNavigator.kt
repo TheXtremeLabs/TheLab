@@ -2,6 +2,7 @@ package com.riders.thelab.core.ui.utils
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 import kotlinx.serialization.json.Json
 import timber.log.Timber
@@ -37,6 +38,30 @@ class LabNavigator private constructor(private val activity: Activity) {
                 activityResultLauncher?.launch(it) ?: activity.startActivity(it)
             }
     }
+
+    fun callIntentFromAction(
+        action: String,
+        uriParam: Uri? = null,
+        activityResultLauncher: ActivityResultLauncher<Intent>? = null,
+        vararg extras: Pair<String, Any?>,
+        flags: Int? = null
+    ) = Intent(action, uriParam)
+        .runCatching {
+            Timber.d("callIntentFromAction() | action : $action")
+            if (extras.isNotEmpty()) {
+                buildIntentExtras(this, extras = extras)
+            }
+            flags?.let { this.flags = it }
+            this
+        }
+        .onFailure { exception ->
+            exception.printStackTrace()
+            Timber.e("callIntentFromAction() | onFailure | Error caught with message: ${exception.message} (class: ${exception.javaClass.canonicalName})")
+        }
+        .onSuccess {
+            Timber.d("callIntentFromAction() | Attempt to start target action")
+            activityResultLauncher?.launch(it) ?: activity.startActivity(it)
+        }
 
     fun callIntentForPackageName(
         packageName: String,

@@ -9,4 +9,7 @@ sealed interface UiEvent {
     data object OnClearSearchQuery : UiEvent
 
     data class OnPackageClicked(val packageItem: PackageApp) : UiEvent
+
+    data class OnOpenProjectInBrowserClicked(val url: String) : UiEvent
+    data object OnSendProjectWithEmailClicked : UiEvent
 }

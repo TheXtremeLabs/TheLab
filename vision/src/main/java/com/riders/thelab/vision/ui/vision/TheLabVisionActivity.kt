@@ -95,7 +95,7 @@ class TheLabVisionActivity : BaseComponentActivity() {
 
     override fun backPressed() {
         Timber.e("backPressed()")
-        finishWithIntent(Activity.RESULT_CANCELED)
+        finishWithIntent(RESULT_CANCELED)
     }
 
     override fun onDestroy() {
