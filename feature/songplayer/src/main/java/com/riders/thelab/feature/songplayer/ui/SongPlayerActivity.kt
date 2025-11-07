@@ -207,10 +207,6 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
     }
 
     fun registerReceivers() {
-        if (null == mMediaButtonReceiver) {
-            mMediaButtonReceiver = MediaButtonReceiver()
-        }
-
         runCatching {
             if (null == mMediaButtonReceiver) {
                 mMediaButtonReceiver = MediaButtonReceiver()
@@ -223,6 +219,7 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
                     ContextCompat.RECEIVER_EXPORTED
                 )
             } else {
+                @SuppressLint("UnspecifiedRegisterReceiverFlag")
                 registerReceiver(
                     mMediaButtonReceiver,
                     IntentFilter(Intent.ACTION_MEDIA_BUTTON)

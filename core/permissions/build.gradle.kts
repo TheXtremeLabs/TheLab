@@ -1,5 +1,5 @@
 plugins {
-    id("thelab.android.library")
+    alias(libs.plugins.thelab.library)
 }
 
 android {

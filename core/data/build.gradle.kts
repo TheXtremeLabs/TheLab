@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.thelab.library)
-    id("kotlin-parcelize")
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.thelab.hilt)
     alias(libs.plugins.ksp)
+    id("kotlin-parcelize")
     //id("thelab.android.library.jacoco")
     alias(libs.plugins.thelab.room)
 }
