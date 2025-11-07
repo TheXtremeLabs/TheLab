@@ -2,7 +2,9 @@ package com.riders.thelab.feature.songplayer.ui
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
@@ -12,9 +14,9 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,12 +42,18 @@ import timber.log.Timber
 @AndroidEntryPoint
 class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
 
+    ///////////////////////////////////////////
     // Context & ViewModel
-    private val viewModel: SongPlayerViewModel by viewModels()
+    ///////////////////////////////////////////
+    private val mViewModel: SongPlayerViewModel by viewModels()
 
+    ///////////////////////////////////////////
     // Service
-    private  var mServiceMusic: PlaybackService? = null
-    private var mBound: Boolean = false
+    ///////////////////////////////////////////
+    var mServiceMusic: PlaybackService? = null
+        private set
+    var mBound: Boolean = false
+        private set
 
     /** Defines callbacks for service binding, passed to bindService()  */
     private val connection = object : ServiceConnection {
@@ -74,22 +82,24 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        mViewModel.initWeakReference(this@SongPlayerActivity)
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
 
                     // Register lifecycle events
-                    viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
+                    mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-                    val theme: AppTheme by viewModel.uiRepository
+                    val theme: AppTheme by mViewModel.uiRepository
                         .getTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by viewModel.uiRepository
+                    val isDarkTheme: Boolean by mViewModel.uiRepository
                         .isThemeDarkMode()
                         .collectAsStateWithLifecycle(initialValue = false)
 
-                    val songPlayerUiState by viewModel.songUiState.collectAsStateWithLifecycle()
-                    val cardPlayerUiState by viewModel.cardPlayerUiState.collectAsStateWithLifecycle()
+                    val songPlayerUiState by mViewModel.songUiState.collectAsStateWithLifecycle()
+                    val cardPlayerUiState by mViewModel.cardPlayerUiState.collectAsStateWithLifecycle()
 
                     TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
                         // A surface container using the 'background' color from the theme
@@ -101,18 +111,11 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
                                 theme = theme, darkTheme = isDarkTheme,
                                 songPlayerUiState = songPlayerUiState,
                                 cardPlayerState = cardPlayerUiState,
-                                currentSongIndex = viewModel.currentSongIndex,
-                                isSongPlaying = viewModel.playPauseState,
-                                isCardExpanded = viewModel.isPlayerCardExpanded,
-                                songProgress = viewModel.currentSongProgress,
-                                onCardViewClicked = { viewModel.toggleViewToggle(it) },
-                                onItemClicked = { selectedItemId ->
-                                    viewModel.updateCurrentSongIndex(selectedItemId)
-                                    viewModel.playSong(this@SongPlayerActivity, selectedItemId)
-                                },
-                                onPreviousClicked = { viewModel.playPreviousSong(this@SongPlayerActivity) },
-                                onPlayPauseClicked = { viewModel.togglePlayPauseSong() },
-                                onNextClicked = { viewModel.playNextSong(this@SongPlayerActivity) }
+                                currentSongIndex = mViewModel.currentSongIndex,
+                                isSongPlaying = mViewModel.isPlaying,
+                                isCardExpanded = mViewModel.isPlayerCardExpanded,
+                                songProgress = mViewModel.currentSongProgress,
+                                uiEvent = mViewModel::onEvent
                             )
                         }
                     }
@@ -125,8 +128,22 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
 
     override fun onStart() {
         super.onStart()
+        // Bind to LocalService
+        Intent(this, PlaybackService::class.java).also { intent ->
+            bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        }
     }
 
+    override fun onPause() {
+        super.onPause()
+        Timber.e("onPause()")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.d("onResume()")
+        registerReceivers()
+    }
 
     @Deprecated("DEPRECATED - Use registerActivityForResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -140,10 +157,24 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
     }
 
     override fun backPressed() {
-        if (viewModel.isPlayerCardExpanded) {
-            viewModel.toggleViewToggle(!viewModel.isPlayerCardExpanded)
+        if (mViewModel.isPlayerCardExpanded) {
+            mViewModel.toggleCardPlayerView(cardExpanded = !mViewModel.isPlayerCardExpanded)
         } else {
             finish()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.e("onStop()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mBound) {
+            unbindService(connection)
+            mBound = false
+            mServiceMusic = null
         }
     }
 
@@ -169,16 +200,41 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
                     Timber.e("All permissions are not granted")
                 } else {
                     Timber.i("All permissions are granted")
-                    viewModel.init()
-                    viewModel.retrieveSongFiles(this@SongPlayerActivity)
+                    mViewModel.init()
+                    mViewModel.retrieveSongFiles(this@SongPlayerActivity)
                 }
             }
     }
 
-    fun registerReceivers(){
-        if( null == mMediaButtonReceiver) {
+    fun registerReceivers() {
+        if (null == mMediaButtonReceiver) {
             mMediaButtonReceiver = MediaButtonReceiver()
         }
+
+        runCatching {
+            if (null == mMediaButtonReceiver) {
+                mMediaButtonReceiver = MediaButtonReceiver()
+            }
+            if (LabCompatibilityManager.isR()) {
+                ContextCompat.registerReceiver(
+                    this,
+                    mMediaButtonReceiver,
+                    IntentFilter(Intent.ACTION_MEDIA_BUTTON),
+                    ContextCompat.RECEIVER_EXPORTED
+                )
+            } else {
+                registerReceiver(
+                    mMediaButtonReceiver,
+                    IntentFilter(Intent.ACTION_MEDIA_BUTTON)
+                )
+            }
+        }
+            .onFailure {
+                Timber.e("onResume() | onFailure | Error caught: ${it.message}")
+            }
+            .onSuccess {
+                Timber.d("onResume() | onSuccess | app list fetched successfully")
+            }
     }
 
     ////////////////////////////////////////

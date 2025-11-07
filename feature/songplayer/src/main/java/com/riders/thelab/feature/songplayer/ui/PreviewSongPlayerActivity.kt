@@ -51,11 +51,7 @@ fun SongPlayerContent(
     isSongPlaying: Boolean,
     isCardExpanded: Boolean,
     songProgress: Float,
-    onItemClicked: (Int) -> Unit,
-    onCardViewClicked: (Boolean) -> Unit,
-    onPreviousClicked: (Boolean) -> Unit,
-    onPlayPauseClicked: (Boolean) -> Unit,
-    onNextClicked: (Boolean) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     val density = LocalDensity.current
     val darkModeForced = true
@@ -126,7 +122,7 @@ fun SongPlayerContent(
                                         selectedIndex = currentSongIndex,
                                         index = index,
                                         song = item
-                                    ) { onItemClicked(it) }
+                                    ) { uiEvent.invoke(UiEvent.OnSongItemClicked(it)) }
                                 }
                             }
 
@@ -154,18 +150,7 @@ fun SongPlayerContent(
                                             song = targetState.songModel,
                                             songProgress = songProgress,
                                             isCardExpanded = isCardExpanded,
-                                            onCardViewClicked = { expanded ->
-                                                onCardViewClicked(expanded)
-                                            },
-                                            onPreviousClicked = { previousClicked ->
-                                                onPreviousClicked(previousClicked)
-                                            },
-                                            onPlayPauseClicked = { playPauseClicked ->
-                                                onPlayPauseClicked(playPauseClicked)
-                                            },
-                                            onNextClicked = { nextClicked ->
-                                                onNextClicked(nextClicked)
-                                            }
+                                            uiEvent = uiEvent
                                         )
                                     }
                                 }
@@ -230,13 +215,8 @@ private fun PreviewSongPlayerContentEmpty(@PreviewParameter(AppThemePreviewProvi
             currentSongIndex = -1,
             isSongPlaying = false,
             isCardExpanded = false,
-            songProgress = .4f,
-            onItemClicked = {},
-            onCardViewClicked = { },
-            onPreviousClicked = { },
-            onPlayPauseClicked = { },
-            onNextClicked = { }
-        )
+            songProgress = .4f
+        ) {}
     }
 }
 
@@ -252,13 +232,8 @@ private fun PreviewSongPlayerContentIdle(@PreviewParameter(PreviewProviderSongLi
             currentSongIndex = -1,
             isSongPlaying = false,
             isCardExpanded = false,
-            songProgress = .4f,
-            onItemClicked = {},
-            onCardViewClicked = { },
-            onPreviousClicked = { },
-            onPlayPauseClicked = { },
-            onNextClicked = { }
-        )
+            songProgress = .4f
+        ) {}
     }
 }
 
@@ -274,12 +249,7 @@ private fun PreviewSongPlayerContentPlaying(@PreviewParameter(PreviewProviderSon
             currentSongIndex = 2,
             isSongPlaying = true,
             isCardExpanded = false,
-            songProgress = .3f,
-            onItemClicked = {},
-            onCardViewClicked = { },
-            onPreviousClicked = { },
-            onPlayPauseClicked = { },
-            onNextClicked = { }
-        )
+            songProgress = .3f
+        ) {}
     }
 }

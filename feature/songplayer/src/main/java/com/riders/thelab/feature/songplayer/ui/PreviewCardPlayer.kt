@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Pause
@@ -49,17 +50,22 @@ import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImagePainter
 import com.riders.thelab.core.data.local.model.music.SongModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
+import com.riders.thelab.core.ui.compose.utils.getPainterState
 
+///////////////////////////////////////
+//
+// COMPOSE
+//
+///////////////////////////////////////
 @Composable
 fun CardPlayerActions(
     modifier: Modifier,
     isPlaying: Boolean,
-    onPreviousClicked: (Boolean) -> Unit,
-    onPlayPauseClicked: (Boolean) -> Unit,
-    onNextClicked: (Boolean) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -69,7 +75,9 @@ fun CardPlayerActions(
         ),
         verticalAlignment = Alignment.Top
     ) {
-        IconButton(modifier = Modifier.weight(1f), onClick = { onPreviousClicked(true) }) {
+        IconButton(
+            modifier = Modifier.weight(1f),
+            onClick = { uiEvent.invoke(UiEvent.OnPreviousClicked) }) {
             Icon(
                 imageVector = Icons.Rounded.SkipPrevious,
                 contentDescription = "previous icon",
@@ -77,7 +85,9 @@ fun CardPlayerActions(
             )
         }
 
-        IconButton(modifier = Modifier.weight(1f), onClick = { onPlayPauseClicked(!isPlaying) }) {
+        IconButton(
+            modifier = Modifier.weight(1f),
+            onClick = { uiEvent.invoke(UiEvent.OnPlayPauseClicked) }) {
             AnimatedContent(
                 targetState = isPlaying,
                 label = "Play pause animation"
@@ -98,7 +108,9 @@ fun CardPlayerActions(
             }
         }
 
-        IconButton(modifier = Modifier.weight(1f), onClick = { onNextClicked(true) }) {
+        IconButton(
+            modifier = Modifier.weight(1f),
+            onClick = { uiEvent.invoke(UiEvent.OnNextClicked) }) {
             Icon(
                 imageVector = Icons.Rounded.SkipNext,
                 contentDescription = "previous icon",
@@ -113,10 +125,7 @@ fun CardPlayer(
     song: SongModel,
     songProgress: Float,
     isCardExpanded: Boolean,
-    onCardViewClicked: (Boolean) -> Unit,
-    onPreviousClicked: (Boolean) -> Unit,
-    onPlayPauseClicked: (Boolean) -> Unit,
-    onNextClicked: (Boolean) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     val context = LocalContext.current
     val orientation = LocalConfiguration.current.orientation
@@ -146,7 +155,9 @@ fun CardPlayer(
                     shape = RoundedCornerShape(12.dp)
                 )
         },
-        onClick = { onCardViewClicked(!isCardExpanded) },
+        onClick = {
+            uiEvent.invoke(UiEvent.OnPlayerCardClicked(!isCardExpanded))
+        },
         shape = if (!isCardExpanded) RoundedCornerShape(12.dp) else RoundedCornerShape(
             topStartPercent = 10,
             topEndPercent = 10,
@@ -193,9 +204,7 @@ fun CardPlayer(
                         CardPlayerActions(
                             modifier = Modifier.weight(1f),
                             isPlaying = isPlaying,
-                            onPreviousClicked = { onPreviousClicked(it) },
-                            onPlayPauseClicked = { onPlayPauseClicked(it) },
-                            onNextClicked = { onNextClicked(it) }
+                            uiEvent = uiEvent
                         )
                     }
 
@@ -218,13 +227,14 @@ fun CardPlayer(
 
             } else {
 
-                val imagePainter =
-                    getCoilAsyncImagePainter(
-                        context = context,
-                        dataUrl = song.drawableUri,
-                        isSvg = false,
-                        placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
-                    )
+                val imagePainter = getCoilAsyncImagePainter(
+                    context = context,
+                    dataUrl = song.drawableUri,
+                    isSvg = false,
+                    placeholderResId = com.riders.thelab.core.ui.R.drawable.logo_colors
+                )
+
+                val state by imagePainter.getPainterState()
 
                 Column(
                     modifier = Modifier
@@ -234,14 +244,33 @@ fun CardPlayer(
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     Box(modifier = Modifier.weight(1.5f), contentAlignment = Alignment.Center) {
-                        Image(
-                            painter = if (imagePainter.state !is AsyncImagePainter.State.Success) {
-                                painterResource(id = com.riders.thelab.core.ui.R.drawable.logo_colors)
-                            } else {
-                                imagePainter
-                            },
-                            contentDescription = null
-                        )
+                        when (state) {
+                            is AsyncImagePainter.State.Empty -> {
+                                Image(
+                                    painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.logo_colors),
+                                    contentDescription = null
+                                )
+                            }
+
+                            is AsyncImagePainter.State.Loading -> LabLoader(modifier = Modifier.size(64.dp))
+
+                            is AsyncImagePainter.State.Success -> Image(
+                                painter = imagePainter,
+                                contentDescription = null
+                            )
+
+                            else -> {
+                                Image(
+                                    painter = if (imagePainter.state !is AsyncImagePainter.State.Success) {
+                                        painterResource(id = com.riders.thelab.core.ui.R.drawable.logo_colors)
+                                    } else {
+                                        imagePainter
+                                    },
+                                    contentDescription = null
+                                )
+                            }
+                        }
+
                     }
 
                     // Song Info
@@ -298,9 +327,7 @@ fun CardPlayer(
                                 }
                             ),
                         isPlaying = isPlaying,
-                        onPreviousClicked = { onPreviousClicked(it) },
-                        onPlayPauseClicked = { onPlayPauseClicked(it) },
-                        onNextClicked = { onNextClicked(it) }
+                        uiEvent = uiEvent
                     )
                 }
             }
@@ -312,11 +339,17 @@ fun CardPlayer(
     }
 }
 
+
+///////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////
 @DevicePreviews
 @Composable
 private fun PreviewCardPlayerCollapsed(@PreviewParameter(PreviewProviderSong::class) item: SongModel) {
     TheLabTheme(theme = AppTheme.Default) {
-        CardPlayer(item, .4f, false, {}, {}, {}, {})
+        CardPlayer(item, .4f, false) {}
     }
 }
 
@@ -324,6 +357,6 @@ private fun PreviewCardPlayerCollapsed(@PreviewParameter(PreviewProviderSong::cl
 @Composable
 private fun PreviewCardPlayerExpanded(@PreviewParameter(PreviewProviderSong::class) item: SongModel) {
     TheLabTheme(theme = AppTheme.Default) {
-        CardPlayer(item, .93f, true, {}, {}, {}, {})
+        CardPlayer(item, .93f, true) {}
     }
 }

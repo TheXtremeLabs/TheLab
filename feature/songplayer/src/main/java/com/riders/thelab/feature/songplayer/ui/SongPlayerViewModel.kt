@@ -4,24 +4,19 @@ import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.media.MediaPlayer
 import android.os.Environment
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
 import androidx.media.session.MediaButtonReceiver
 import com.riders.thelab.core.common.storage.LabFileManager
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
@@ -29,6 +24,7 @@ import com.riders.thelab.core.common.utils.LabNotificationManager
 import com.riders.thelab.core.data.local.model.music.SongModel
 import com.riders.thelab.core.data.utils.Constants
 import com.riders.thelab.core.player.service.PlaybackService
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.songplayer.core.SongsManager
 import com.riders.thelab.feature.songplayer.data.CardPlayerState
@@ -48,9 +44,9 @@ import javax.inject.Inject
 @SuppressLint("StaticFieldLeak")
 @HiltViewModel
 class SongPlayerViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     val uiRepository: IUiRepository
-) : ViewModel(), DefaultLifecycleObserver,
+) : BaseViewModel(), DefaultLifecycleObserver,
     MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     //////////////////////////////////////////
@@ -68,10 +64,6 @@ class SongPlayerViewModel @Inject constructor(
     private var songManager: SongsManager? = null
     // private val seekForwardTime = 5000 // 5000 milliseconds
     // private val seekBackwardTime = 5000 // 5000 milliseconds
-
-
-    private val isShuffle = false
-    private val isRepeat = false
 
     /**
      * Background Runnable thread
@@ -137,12 +129,16 @@ class SongPlayerViewModel @Inject constructor(
         private set
     var isPlayerCardExpanded: Boolean by mutableStateOf(false)
         private set
-    private var isPlaying: Boolean by mutableStateOf(false)
+    var isPlaying: Boolean by mutableStateOf(false)
         private set
+    var isShuffle: Boolean by mutableStateOf(false)
+        private set
+    var isRepeat: Boolean by mutableStateOf(false)
+        private set
+
     var currentSongProgress: Float by mutableFloatStateOf(0f)
         private set
 
-    val playPauseState: Boolean by derivedStateOf { isPlaying }
 
     private fun updateSongPlayerUiState(newUiState: SongPlayerUiState) {
         Timber.d("updateSongPlayerUiState() | newUiState: $newUiState")
@@ -158,8 +154,12 @@ class SongPlayerViewModel @Inject constructor(
         this.currentSongIndex = newIndex
     }
 
-    fun toggleViewToggle(cardExpanded: Boolean) {
+    fun toggleCardPlayerView(cardExpanded: Boolean) {
         this.isPlayerCardExpanded = cardExpanded
+    }
+
+    fun togglePlayPause(isPlaying: Boolean) {
+        this.isPlaying = isPlaying
     }
 
     fun updateCurrentProgress(newProgress: Float) {
@@ -168,7 +168,17 @@ class SongPlayerViewModel @Inject constructor(
 
     //////////////////////////////////////////
     //
-    // Class Methods
+    // OVERRIDE
+    //
+    //////////////////////////////////////////
+    override fun onCleared() {
+        super.onCleared()
+        Timber.e("onCleared()")
+    }
+
+    //////////////////////////////////////////
+    //
+    // CLASS METHODS
     //
     //////////////////////////////////////////
     fun init() {
@@ -183,6 +193,32 @@ class SongPlayerViewModel @Inject constructor(
         }*/
         songManager = SongsManager()
         mMediaButtonReceiver = MediaButtonReceiver()
+    }
+
+    fun onEvent(event: UiEvent) {
+        Timber.d("onEvent() | event: $event")
+        when (event) {
+            is UiEvent.OnSongItemClicked -> {
+                updateCurrentSongIndex(event.songId)
+                playSong(context = context, songId = event.songId)
+            }
+
+            is UiEvent.OnPlayerCardClicked -> {
+                toggleCardPlayerView(event.expanded)
+            }
+
+            is UiEvent.OnNextClicked -> {
+                playNextSong(context = context)
+            }
+
+            is UiEvent.OnPlayPauseClicked -> {
+                togglePlayPause(!isPlaying)
+            }
+
+            is UiEvent.OnPreviousClicked -> {
+                playPreviousSong(context = context)
+            }
+        }
     }
 
     fun retrieveSongFiles(context: Context) {
@@ -210,7 +246,7 @@ class SongPlayerViewModel @Inject constructor(
                 fullList.add(musicFiles)
             }
 
-            var songsList: List<SongModel> = emptyList()
+            val songsList: MutableList<SongModel> = mutableListOf()
 
             fullList.forEach { volumePath ->
                 Timber.e("volumePath: $volumePath")
@@ -322,7 +358,6 @@ class SongPlayerViewModel @Inject constructor(
         }
         .getOrDefault(listOf())
 
-
     @SuppressLint("InlinedApi")
     fun playSong(context: Context, songId: Int) {
         if (_songUiState.value is SongPlayerUiState.Loaded) {
@@ -424,127 +459,6 @@ class SongPlayerViewModel @Inject constructor(
         // mHandler?.postDelayed(mUpdateTimeTask, 100)
     }
 
-
-    ///////////////////////////////
-    //
-    // OVERRIDE
-    //
-    ///////////////////////////////
-    override fun onCleared() {
-        super.onCleared()
-        Timber.e("onCleared()")
-    }
-
-    override fun onStart(owner: LifecycleOwner) {
-        super.onStart(owner)
-        Timber.d("onStart()")
-        // Bind to LocalService
-        Intent(context, PlaybackService::class.java).also { intent ->
-            context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
-        }
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-        Timber.e("onPause()")
-    }
-
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    override fun onResume(owner: LifecycleOwner) {
-        super.onResume(owner)
-        Timber.d("onResume()")
-
-        runCatching {
-            if (null == mMediaButtonReceiver) {
-                mMediaButtonReceiver = MediaButtonReceiver()
-            }
-            if (LabCompatibilityManager.isR()) {
-                ContextCompat.registerReceiver(
-                    context,
-                    mMediaButtonReceiver,
-                    IntentFilter(Intent.ACTION_MEDIA_BUTTON),
-                    ContextCompat.RECEIVER_EXPORTED
-                )
-            } else {
-                context.registerReceiver(
-                    mMediaButtonReceiver,
-                    IntentFilter(Intent.ACTION_MEDIA_BUTTON)
-                )
-            }
-        }
-            .onFailure {
-                Timber.e("onResume() | onFailure | Error caught: ${it.message}")
-            }
-            .onSuccess {
-                Timber.d("onResume() | onSuccess | app list fetched successfully")
-            }
-    }
-
-    override fun onStop(owner: LifecycleOwner) {
-        super.onStop(owner)
-        Timber.e("onStop()")
-    }
-
-    override fun onDestroy(owner: LifecycleOwner) {
-        super.onStop(owner)
-        Timber.e("onDestroy()")
-
-        runCatching {
-            /*if (true == mp?.isPlaying) {
-                mp?.let {
-                    it.stop()
-                    it.reset()
-                    it.release()
-                }
-            }*/
-        }
-            .onFailure {
-                Timber.e("onDestroy | onFailure | Error caught: ${it.message}")
-            }
-            .onSuccess {
-                Timber.d("onDestroy() | onSuccess")
-//                mp = null
-            }
-
-        mHandler = null
-
-        context.unregisterReceiver(mMediaButtonReceiver)
-        context.unbindService(connection)
-        mBound = false
-    }
-
-    override fun onPrepared(mp: MediaPlayer?) {
-        Timber.d("onPrepared()")
-    }
-
-    override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-        Timber.e("onError() | what: $what | extra: $extra")
-        return false
-    }
-
-    override fun onCompletion(mp: MediaPlayer?) {
-        Timber.i("onCompletion()")
-
-        if (_songUiState.value is SongPlayerUiState.Loaded) {
-            val songList = (_songUiState.value as SongPlayerUiState.Loaded).songs
-
-            // check for repeat is ON or OFF
-            if (isRepeat) {
-                // repeat is on play same song again
-                playSong(context, songList[currentSongIndex].id)
-            } else if (isShuffle) {
-                // shuffle is on - play a random song
-                val rand = Random()
-                currentSongIndex = rand.nextInt(songList.size - 1 - 0 + 1) + 0
-                playSong(context, songList[currentSongIndex].id)
-            } else {
-                // no repeat or shuffle ON - play next song
-                updateCurrentSongIndex(if (currentSongIndex < songList.size - 1) currentSongIndex + 1 else 0)
-                playSong(context, songList[currentSongIndex].id)
-            }
-        }
-    }
-
     fun togglePlayPauseSong() {
         Timber.d("togglePlayPauseSong()")
 
@@ -602,6 +516,72 @@ class SongPlayerViewModel @Inject constructor(
                 // play first song
                 updateCurrentSongIndex(songList.first().id)
                 playSong(context, songList.first().id)
+            }
+        }
+    }
+
+
+    //////////////////////////////////////////
+    //
+    // IMPLEMENTS
+    //
+    //////////////////////////////////////////
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onStop(owner)
+        Timber.e("onDestroy()")
+
+        runCatching {
+            /*if (true == mp?.isPlaying) {
+                mp?.let {
+                    it.stop()
+                    it.reset()
+                    it.release()
+                }
+            }*/
+        }
+            .onFailure {
+                Timber.e("onDestroy | onFailure | Error caught: ${it.message}")
+            }
+            .onSuccess {
+                Timber.d("onDestroy() | onSuccess")
+//                mp = null
+            }
+
+        mHandler = null
+
+        context.unregisterReceiver(mMediaButtonReceiver)
+        context.unbindService(connection)
+        mBound = false
+    }
+
+    override fun onPrepared(mp: MediaPlayer?) {
+        Timber.d("onPrepared()")
+    }
+
+    override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+        Timber.e("onError() | what: $what | extra: $extra")
+        return false
+    }
+
+    override fun onCompletion(mp: MediaPlayer?) {
+        Timber.i("onCompletion()")
+
+        if (_songUiState.value is SongPlayerUiState.Loaded) {
+            val songList = (_songUiState.value as SongPlayerUiState.Loaded).songs
+
+            // check for repeat is ON or OFF
+            if (isRepeat) {
+                // repeat is on play same song again
+                playSong(context, songList[currentSongIndex].id)
+            } else if (isShuffle) {
+                // shuffle is on - play a random song
+                val rand = Random()
+                currentSongIndex = rand.nextInt(songList.size - 1 - 0 + 1) + 0
+                playSong(context, songList[currentSongIndex].id)
+            } else {
+                // no repeat or shuffle ON - play next song
+                updateCurrentSongIndex(if (currentSongIndex < songList.size - 1) currentSongIndex + 1 else 0)
+                playSong(context, songList[currentSongIndex].id)
             }
         }
     }

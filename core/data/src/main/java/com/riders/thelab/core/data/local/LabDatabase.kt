@@ -26,9 +26,9 @@ import com.riders.thelab.core.data.local.model.weather.WeatherData
         MusicRecognitionModel::class,
         WeatherData::class
     ],
-    version = 6,
+    version = 2,
     autoMigrations = [
-        AutoMigration(from = 6, to = 7),
+        AutoMigration(from = 1, to = 2),
     ],
     exportSchema = true
 )
