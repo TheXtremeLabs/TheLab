@@ -149,6 +149,7 @@ fun SongPlayerContent(
                                         CardPlayer(
                                             song = targetState.songModel,
                                             songProgress = songProgress,
+                                            isSongPlaying = isSongPlaying,
                                             isCardExpanded = isCardExpanded,
                                             uiEvent = uiEvent
                                         )

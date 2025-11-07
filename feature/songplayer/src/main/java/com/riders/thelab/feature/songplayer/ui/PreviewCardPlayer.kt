@@ -124,13 +124,12 @@ fun CardPlayerActions(
 fun CardPlayer(
     song: SongModel,
     songProgress: Float,
+    isSongPlaying: Boolean,
     isCardExpanded: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
     val context = LocalContext.current
     val orientation = LocalConfiguration.current.orientation
-
-    val isPlaying by remember { mutableStateOf(song.isPlaying) }
 
     var progress by remember { mutableFloatStateOf(0f) }
     val animatedProgress by animateFloatAsState(
@@ -151,7 +150,7 @@ fun CardPlayer(
                 .padding(top = 24.dp, start = 0.dp, end = 0.dp, bottom = 0.dp)
                 .zIndex(5f)
                 .shadow(
-                    elevation = if (isPlaying) 4.dp else 0.dp,
+                    elevation = if (isSongPlaying) 4.dp else 0.dp,
                     shape = RoundedCornerShape(12.dp)
                 )
         },
@@ -203,7 +202,7 @@ fun CardPlayer(
                         // Actions
                         CardPlayerActions(
                             modifier = Modifier.weight(1f),
-                            isPlaying = isPlaying,
+                            isPlaying = isSongPlaying,
                             uiEvent = uiEvent
                         )
                     }
@@ -261,11 +260,7 @@ fun CardPlayer(
 
                             else -> {
                                 Image(
-                                    painter = if (imagePainter.state !is AsyncImagePainter.State.Success) {
-                                        painterResource(id = com.riders.thelab.core.ui.R.drawable.logo_colors)
-                                    } else {
-                                        imagePainter
-                                    },
+                                    painter = painterResource(id = com.riders.thelab.core.ui.R.drawable.logo_colors),
                                     contentDescription = null
                                 )
                             }
@@ -326,7 +321,7 @@ fun CardPlayer(
                                     else -> 56.dp
                                 }
                             ),
-                        isPlaying = isPlaying,
+                        isPlaying = isSongPlaying,
                         uiEvent = uiEvent
                     )
                 }
@@ -349,7 +344,7 @@ fun CardPlayer(
 @Composable
 private fun PreviewCardPlayerCollapsed(@PreviewParameter(PreviewProviderSong::class) item: SongModel) {
     TheLabTheme(theme = AppTheme.Default) {
-        CardPlayer(item, .4f, false) {}
+        CardPlayer(item, .4f, true, false) {}
     }
 }
 
@@ -357,6 +352,6 @@ private fun PreviewCardPlayerCollapsed(@PreviewParameter(PreviewProviderSong::cl
 @Composable
 private fun PreviewCardPlayerExpanded(@PreviewParameter(PreviewProviderSong::class) item: SongModel) {
     TheLabTheme(theme = AppTheme.Default) {
-        CardPlayer(item, .93f, true) {}
+        CardPlayer(item, .93f, true, true) {}
     }
 }

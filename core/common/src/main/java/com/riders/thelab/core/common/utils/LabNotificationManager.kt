@@ -8,11 +8,13 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -22,6 +24,18 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaStyleNotificationHelper.MediaStyle
 import timber.log.Timber
 
+/**
+ * A utility object for creating and managing Android notifications.
+ *
+ * This singleton object provides helper methods to:
+ * - Create notification channels, which are required for Android 8.0 (Oreo) and higher.
+ * - Build standard notifications with various styles (e.g., BigTextStyle).
+ * - Construct and display complex media-style notifications for controlling media playback
+ *   from a foreground service, integrating with `MediaSessionCompat` and `MediaSession`.
+ *
+ * It simplifies the notification creation process by encapsulating the boilerplate code
+ * and providing a consistent API for different notification types.
+ */
 object LabNotificationManager {
 
     private fun createNotificationAction(
@@ -30,16 +44,33 @@ object LabNotificationManager {
         actionTitle: Int,
         playbackAction: Long
     ) = NotificationCompat.Action.Builder(
-            actionIcon,
-            context.getString(actionTitle),
-            MediaButtonReceiver.buildMediaButtonPendingIntent(
-                context,
-                playbackAction
-            )
+        actionIcon,
+        context.getString(actionTitle),
+        MediaButtonReceiver.buildMediaButtonPendingIntent(
+            context,
+            playbackAction
         )
+    )
         .build()
 
 
+    /**
+     * Creates a notification channel. This is an overloaded function that resolves string resources.
+     *
+     * This function is a convenience wrapper around the primary `createNotificationChannel` function.
+     * It takes string resource IDs for the channel name, description, and ID, resolves them to
+     * strings, and then calls the other function.
+     *
+     * This function is intended for API level 26 (Oreo) and above, as `NotificationChannel`
+     * is not available in older versions. The check is handled in the called function.
+     *
+     * @param context The application context.
+     * @param notificationName The string resource ID for the user-visible name of the channel.
+     * @param notificationDescription The string resource ID for the user-visible description of the channel.
+     * @param notificationImportance The importance of the channel. See [NotificationManager] importance constants.
+     * @param notificationChannelId The string resource ID for the unique ID of this channel.
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannel(
         context: Context,
         @StringRes notificationName: Int,
@@ -54,7 +85,20 @@ object LabNotificationManager {
         notificationChannelId = context.getString(notificationChannelId)
     )
 
-    @SuppressLint("NewApi")
+    /**
+     * Creates a notification channel for Android Oreo and above. This is a convenience overload
+     * that accepts string resource IDs for the channel name, description, and ID.
+     *
+     * It resolves the string resources and then calls the main implementation.
+     * The channel is necessary for displaying notifications on API 26+.
+     *
+     * @param context The application context.
+     * @param notificationName The string resource ID for the user-visible name of the channel.
+     * @param notificationDescription The string resource ID for the user-visible description of the channel.
+     * @param notificationImportance The importance of the channel, e.g., [NotificationManager.IMPORTANCE_DEFAULT].
+     * @param notificationChannelId The string resource ID for the unique ID of the channel.
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannel(
         context: Context,
         notificationName: String,
@@ -66,20 +110,18 @@ object LabNotificationManager {
 
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        if (LabCompatibilityManager.isOreo()) {
-            val channel =
-                NotificationChannel(
-                    notificationChannelId,
-                    notificationName,
-                    notificationImportance
-                ).apply {
-                    description = notificationDescription
-                }
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
+        val channel =
+            NotificationChannel(
+                notificationChannelId,
+                notificationName,
+                notificationImportance
+            ).apply {
+                description = notificationDescription
+            }
+        // Register the channel with the system
+        val notificationManager: NotificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     fun buildMainNotification(
@@ -254,87 +296,86 @@ object LabNotificationManager {
         val description = mediaMetadata.description
         val icon = mediaMetadata.artworkData*/
 
-        val notification = NotificationCompat.Builder(
-            context,
-            Constants.NOTIFICATION_MUSIC_CHANNEL_ID
-        ).apply {
+        val notification = NotificationCompat
+            .Builder(context, Constants.NOTIFICATION_MUSIC_CHANNEL_ID)
+            .apply {
 
-            // Add the metadata for the currently playing track
-            /*setContentTitle(title)
-            setContentText(subtitle)
-            setSubText(description)*/
-            //setLargeIcon(description?.iconBitmap)
+                // Add the metadata for the currently playing track
+                /*setContentTitle(title)
+                setContentText(subtitle)
+                setSubText(description)*/
+                //setLargeIcon(description?.iconBitmap)
 
-            // Enable launching the player by clicking the notification
-            //setContentIntent(controller.sessionActivity)
+                // Enable launching the player by clicking the notification
+                //setContentIntent(controller.sessionActivity)
 
-            // Stop the service when the notification is swiped away
-            setDeleteIntent(
-                MediaButtonReceiver.buildMediaButtonPendingIntent(
-                    context,
-                    PlaybackStateCompat.ACTION_STOP
-                )
-            )
-
-            // Show controls on lock screen even when user hides sensitive content.
-            setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-
-            // Add an app icon and set its accent color
-            // Be careful about the color
-            setSmallIcon(smallIcon)
-
-            val pauseAction = createNotificationAction(
-                context,
-                actionIcon,
-                actionTitle,
-                PlaybackStateCompat.ACTION_PLAY_PAUSE
-            )
-            val previousAction = createNotificationAction(
-                context,
-                actionIcon,
-                actionTitle,
-                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-            )
-            val nextAction = createNotificationAction(
-                context,
-                actionIcon,
-                actionTitle,
-                PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-            )
-
-            // Add a pause button
-            addAction(pauseAction)
-            addAction(previousAction)
-            addAction(nextAction)
-
-            // Create a MediaStyle object and supply your media session token to it.
-            // Take advantage of MediaStyle features
-            val mediaStyle: MediaStyle = MediaStyle(mediaSession)
-                //.setMediaSession(mediaSession.token)
-                // Add media control buttons that invoke intents in your media service
-                //.addAction(R.drawable.ic_previous, "Previous", prevPendingIntent) // #0
-                //.addAction(R.drawable.ic_pause, "Pause", pausePendingIntent) // #1
-                //.addAction(R.drawable.ic_next, "Next", nextPendingIntent) // #2
-                .setShowActionsInCompactView(0)
-                // Add a cancel button
-                .setShowCancelButton(true)
-                .setCancelButtonIntent(
+                // Stop the service when the notification is swiped away
+                setDeleteIntent(
                     MediaButtonReceiver.buildMediaButtonPendingIntent(
                         context,
                         PlaybackStateCompat.ACTION_STOP
                     )
                 )
 
+                // Show controls on lock screen even when user hides sensitive content.
+                setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
-            // Apply the media style template
-            setStyle(mediaStyle)
-            setContentTitle(contentTitle)
-            setContentText(contentText)
-            setLargeIcon(largeIcon.toBitmap(context))
+                // Add an app icon and set its accent color
+                // Be careful about the color
+                setSmallIcon(smallIcon)
 
-            setSilent(true)
-            setAutoCancel(true)
-        }
+                val pauseAction = createNotificationAction(
+                    context,
+                    actionIcon,
+                    actionTitle,
+                    PlaybackStateCompat.ACTION_PLAY_PAUSE
+                )
+                val previousAction = createNotificationAction(
+                    context,
+                    actionIcon,
+                    actionTitle,
+                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                )
+                val nextAction = createNotificationAction(
+                    context,
+                    actionIcon,
+                    actionTitle,
+                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                )
+
+                // Add a pause button
+                addAction(pauseAction)
+                addAction(previousAction)
+                addAction(nextAction)
+
+                // Create a MediaStyle object and supply your media session token to it.
+                // Take advantage of MediaStyle features
+                val mediaStyle: MediaStyle = MediaStyle(mediaSession)
+                    //.setMediaSession(mediaSession.token)
+                    // Add media control buttons that invoke intents in your media service
+                    //.addAction(R.drawable.ic_previous, "Previous", prevPendingIntent) // #0
+                    //.addAction(R.drawable.ic_pause, "Pause", pausePendingIntent) // #1
+                    //.addAction(R.drawable.ic_next, "Next", nextPendingIntent) // #2
+                    .setShowActionsInCompactView(0)
+                    // Add a cancel button
+                    .setShowCancelButton(true)
+                    .setCancelButtonIntent(
+                        MediaButtonReceiver.buildMediaButtonPendingIntent(
+                            context,
+                            PlaybackStateCompat.ACTION_STOP
+                        )
+                    )
+
+
+                // Apply the media style template
+                setStyle(mediaStyle)
+                setContentTitle(contentTitle)
+                setContentText(contentText)
+                setLargeIcon(largeIcon.toBitmap(context))
+
+                setSilent(true)
+                setAutoCancel(true)
+            }
 
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
