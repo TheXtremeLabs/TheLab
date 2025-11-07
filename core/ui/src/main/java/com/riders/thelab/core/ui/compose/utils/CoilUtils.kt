@@ -5,9 +5,11 @@ import android.graphics.Bitmap
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.compose.asPainter
 import coil3.compose.rememberAsyncImagePainter
@@ -144,6 +146,10 @@ fun getCoilAsyncImagePainter(
     ),
     onState = onState
 )
+
+@Composable
+fun AsyncImagePainter.getPainterState(): State<AsyncImagePainter.State> =
+    this.state.collectAsStateWithLifecycle()
 
 fun AsyncImagePainter.State.get(context: Context): Painter? = when (this) {
     is AsyncImagePainter.State.Success -> this.result.image.asPainter(context = context)
