@@ -36,6 +36,12 @@ android {
     namespace = "com.riders.thelab.vision"
 
     defaultConfig {
+        manifestPlaceholders += mapOf(
+            "redirectHostName" to "com.riders.thelab.vision",
+            "redirectSchemeName" to "com.riders.thelab.vision",
+            "redirectPathPattern" to "//com.riders.thelab.vision"
+        )
+
         applicationId = "com.riders.thelab.vision"
 
         versionCode = 2000 * versionMajor + 100 * versionMinor + versionPatch
@@ -52,12 +58,6 @@ android {
             abiFilters.clear()
             abiFilters += listOf("armeabi-v7a", "arm64-v8a")
         }
-
-        manifestPlaceholders += mapOf(
-            "redirectHostName" to "com.riders.thelab.vision",
-            "redirectSchemeName" to "com.riders.thelab.vision",
-            "redirectPathPattern" to "//com.riders.thelab.vision"
-        )
     }
 
     buildTypes {

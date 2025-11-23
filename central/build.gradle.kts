@@ -26,18 +26,18 @@ android {
     }
 
     defaultConfig {
+        manifestPlaceholders += mapOf(
+            "redirectHostName" to "com.riders.thelab.central",
+            "redirectSchemeName" to "com.riders.thelab.central",
+            "redirectPathPattern" to "//com.riders.thelab.central"
+        )
+
         applicationId = "com.riders.thelab.central"
 
         versionCode = 2000 * versionMajor + 100 * versionMinor + versionPatch
         versionName = "$versionMajor.$versionMinor.$versionPatch"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        manifestPlaceholders += mapOf(
-            "redirectHostName" to "com.riders.thelab.central",
-            "redirectSchemeName" to "com.riders.thelab.central",
-            "redirectPathPattern" to "//com.riders.thelab.central"
-        )
     }
 
     buildTypes {

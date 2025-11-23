@@ -27,6 +27,12 @@ android {
     namespace = "com.riders.thelab.tv"
 
     defaultConfig {
+        manifestPlaceholders += mapOf(
+            "redirectHostName" to "com.riders.thelab.tv",
+            "redirectSchemeName" to "com.riders.thelab.tv",
+            "redirectPathPattern" to "//com.riders.thelab.tv"
+        )
+
         applicationId = "com.riders.thelab.tv"
 
         versionCode = 2000 * versionMajor + 100 * versionMinor + versionPatch
@@ -40,12 +46,6 @@ android {
             //noinspection ChromeOsAbiSupport
             abiFilters += listOf("armeabi-v7a", "arm64-v8a")
         }
-
-        manifestPlaceholders += mapOf(
-            "redirectHostName" to "com.riders.thelab.tv",
-            "redirectSchemeName" to "com.riders.thelab.tv",
-            "redirectPathPattern" to "//com.riders.thelab.tv"
-        )
     }
 
     buildTypes {
