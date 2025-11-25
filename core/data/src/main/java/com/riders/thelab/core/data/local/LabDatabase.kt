@@ -27,9 +27,9 @@ import com.riders.thelab.core.data.local.model.weather.WeatherData
         WeatherData::class
     ],
     version = 2,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-    ],
+    /*autoMigrations = [
+        AutoMigration(from = 2, to = 3),
+    ],*/
     exportSchema = true
 )
 abstract class LabDatabase : RoomDatabase() {

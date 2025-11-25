@@ -16,6 +16,7 @@ protobufPlugin = "0.9.5"
 accompanist = "0.37.3"
 androidDesugarJdkLibs = "2.1.5"
 androidxActivity = "1.12.0"
+androidxAnnotation = "1.9.1"
 androidxAppCompat = "1.7.1"
 androidxAppSearch = "1.1.0"
 androidxArch = "2.2.0"
@@ -80,7 +81,7 @@ coil = "3.3.0"
 # Firebase
 firebaseBom = "34.6.0"
 firebaseAds = "24.8.0"
-firebaseAppCheck = "19.0.1"
+firebaseAppCheck = "18.0.1"
 # Google Api
 googleApiClient = "2.8.1"
 googleApiClientAndroid = "2.8.1"
@@ -203,6 +204,7 @@ accompanist-permissions = { group = "com.google.accompanist", name = "accompanis
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidxAnnotation" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
 androidx-appsearch = { group = "androidx.appsearch", name = "appsearch", version.ref = "androidxAppSearch" }
 androidx-appsearch-compiler = { group = "androidx.appsearch", name = "appsearch-compiler", version.ref = "androidxAppSearch" }
@@ -339,10 +341,10 @@ coil-kt-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okht
 coil-kt-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
-firebase-appcheck = { group = "com.google.firebase", name = "firebase-appcheck", version.ref = "firebaseAppCheck" }
-firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug", version.ref = "firebaseAppCheck" }
-firebase-appcheck-ktx = { group = "com.google.firebase", name = "firebase-appcheck-ktx", version.ref = "firebaseAppCheck" }
-firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity", version.ref = "firebaseAppCheck" }
+firebase-appcheck = { group = "com.google.firebase", name = "firebase-appcheck" }
+firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug" }
+firebase-appcheck-ktx = { group = "com.google.firebase", name = "firebase-appcheck-ktx" }
+firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database" }
