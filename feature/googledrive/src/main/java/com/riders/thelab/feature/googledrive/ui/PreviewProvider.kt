@@ -28,7 +28,7 @@ class PreviewProviderGoogleSignInState : PreviewParameterProvider<GoogleSignInSt
             GoogleSignInState.Loading,
             GoogleSignInState.Connected(
                 GoogleAccountModel(
-                    emailAddress = EmailAddress.orThrow("john.smith@test.com"),
+                    emailAddress = requireNotNull(EmailAddress of "john.smith@test.com"),
                     idToken = "sdfkvbnimpsdbvSDFVj255edfvedfv754edfved4fv-edfb0defbmW"
                         .toNotBlankString()
                         .getOrThrow(),
