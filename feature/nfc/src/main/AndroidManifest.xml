@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity android:name=".NFCActivity"
+            android:exported="true">
+            <intent-filter>
+
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

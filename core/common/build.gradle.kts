@@ -12,10 +12,10 @@ android {
 
     sourceSets {
         getByName("main") {
-            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+            manifest.srcFile("src/main/AndroidManifest.xml")
         }
         getByName("release") {
-            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+            manifest.srcFile("src/main/AndroidManifest.xml")
         }
         getByName("androidTest") {
             manifest.srcFile("${project.rootDir}/AndroidManifest.xml")
