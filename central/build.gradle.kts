@@ -21,9 +21,6 @@ fun log(tag: String, message: String) {
 
 android {
     namespace = "com.riders.thelab.central"
-    compileSdk {
-        version = release(36)
-    }
 
     defaultConfig {
         manifestPlaceholders += mapOf(

@@ -73,7 +73,7 @@ dependencies {
     api(libs.firebase.storage)
 
     // App Check
-    api(libs.firebase.appcheck.ktx)
+    api(libs.firebase.appcheck)
     api(libs.firebase.appcheck.debug)
     api(libs.firebase.appcheck.playintegrity)
 }

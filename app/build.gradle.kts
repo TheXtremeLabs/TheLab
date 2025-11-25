@@ -34,7 +34,6 @@ android {
     /**
      * Defined in AndroidApplicationConventionPlugin class
      */
-    // compileSdk = ConfigData.compileSdkVersion
 
     ndkVersion = "21.3.6528147"
 
@@ -322,7 +321,8 @@ dependencies {
     implementation(libs.google.mlkit.objectdetection.custom)
 
     // Firebase BOM and Dependencies: provided by analytics module
-    implementation(libs.firebase.appcheck.ktx)
+    implementation(platform (libs.firebase.bom))
+    implementation(libs.firebase.appcheck)
     implementation(libs.firebase.appcheck.debug)
     implementation(libs.firebase.appcheck.playintegrity)
 
