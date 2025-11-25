@@ -23,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     device = Devices.PIXEL_3A
 )
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
 annotation class DevicePreviewsPhoneOnly
 
 @Suppress("PreviewPickerAnnotation")
@@ -74,10 +76,14 @@ annotation class DevicePreviewsPhoneOnly
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     device = "spec:shape=Normal,width=1280,height=800,unit=dp,dpi=480"
 )
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
 annotation class DevicePreviewsFoldableAndTablet
 
 @DevicePreviewsPhoneOnly
 @DevicePreviewsFoldableAndTablet
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
 annotation class DevicePreviews
 
 
@@ -133,8 +139,12 @@ annotation class DevicePreviews
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     device = "spec:parent=tv_4k,width=3480,height=2160,unit=dp"
 )
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
 annotation class DevicePreviewsTV
 
 @DevicePreviews
 @DevicePreviewsTV
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
 annotation class DevicePreviewsAll

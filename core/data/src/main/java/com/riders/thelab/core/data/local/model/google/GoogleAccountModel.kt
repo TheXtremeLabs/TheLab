@@ -28,7 +28,7 @@ data class GoogleAccountModel(
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 fun GoogleIdTokenCredential.toGoogleAccountModel() = GoogleAccountModel(
-    emailAddress = EmailAddress.orThrow(id),
+    emailAddress = requireNotNull(EmailAddress of id),
     idToken = idToken.toNotBlankString().getOrThrow(),
     firstName = givenName?.toNotBlankString()?.getOrThrow(),
     familyName = familyName?.toNotBlankString()?.getOrThrow(),
@@ -39,7 +39,7 @@ fun GoogleIdTokenCredential.toGoogleAccountModel() = GoogleAccountModel(
 
 @OptIn(ExperimentalKotoolsTypesApi::class)
 fun GoogleSignInAccount.toGoogleAccountModel() = GoogleAccountModel(
-    emailAddress = email?.let { EmailAddress.orThrow(it) } ?: EmailAddress.orThrow("na@na.com"),
+    emailAddress = email?.let { requireNotNull(EmailAddress of it) } ?: requireNotNull(EmailAddress of "na@na.com"),
     idToken = idToken?.toNotBlankString()?.getOrThrow() ?: "N/A".toNotBlankString().getOrThrow(),
     firstName = givenName?.toNotBlankString()?.getOrThrow(),
     familyName = familyName?.toNotBlankString()?.getOrThrow(),
