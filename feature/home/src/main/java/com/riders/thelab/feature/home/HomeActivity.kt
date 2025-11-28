@@ -58,7 +58,11 @@ class HomeActivity : BaseComponentActivity() {
                             whatsNewList = appList.take(3)
                         )
                     } else {
-                        HomeScreen(theme = theme, darkTheme = isDarkTheme, windowSize = getDeviceWindowsSizeClass())
+                        HomeScreen(
+                            theme = theme,
+                            darkTheme = isDarkTheme,
+                            windowSize = getDeviceWindowsSizeClass()
+                        )
                     }
                 }
             }

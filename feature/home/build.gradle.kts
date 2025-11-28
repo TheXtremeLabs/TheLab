@@ -34,6 +34,7 @@ dependencies {
     api(project(":feature:lottie"))
     api(project(":feature:mlkit"))
     api(project(":feature:musicrecognition"))
+    api(project(":feature:nfc"))
     api(project(":feature:palette"))
     api(project(":feature:schedule"))
     api(project(":feature:settings"))

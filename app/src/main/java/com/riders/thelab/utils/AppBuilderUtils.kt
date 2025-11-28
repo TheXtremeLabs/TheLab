@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
 import com.riders.thelab.core.data.local.model.app.AppBuilder
+import com.riders.thelab.core.ui.utils.getDrawableFromIntResource
 import com.riders.thelab.feature.artists.ArtistsActivity
 import com.riders.thelab.feature.biometric.ui.BiometricActivity
 import com.riders.thelab.feature.bluetooth.BluetoothActivity
@@ -16,6 +17,7 @@ import com.riders.thelab.feature.koin.ui.KoinActivity
 import com.riders.thelab.feature.lottie.LottieActivity
 import com.riders.thelab.feature.mlkit.ui.chooser.MLKitChooserActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
+import com.riders.thelab.feature.nfc.NFCActivity
 import com.riders.thelab.feature.schedule.ui.ScheduleActivity
 import com.riders.thelab.feature.songplayer.ui.SongPlayerActivity
 import com.riders.thelab.feature.streaming.StreamingActivity
@@ -36,7 +38,7 @@ import com.riders.thelab.ui.spring.SpringActivity
 import com.riders.thelab.ui.vectordrawables.VectorDrawablesActivity
 
 object AppBuilderUtils {
-    @Deprecated("Use :home module istead, when development is done")
+    @Deprecated("Use :home module instead, when development is done")
     fun buildActivities(context: Context): List<App> =
         mutableListOf<App>()
             .apply {
@@ -586,6 +588,22 @@ object AppBuilderUtils {
                         .withActivityDate("2025/04/15")
                         .build()
                 this.add(koin)
+
+                // NFC
+                val nfc =
+                    AppBuilder
+                        .withId(38)
+                        .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_nfc))
+                        .withActivityDescription("NFC card detection")
+                        .withActivityIcon(
+                            context.getDrawableFromIntResource(
+                                com.riders.thelab.core.ui.R.drawable.ic_nfc_black
+                            )
+                        )
+                        .withActivityClass(NFCActivity::class.java)
+                        .withActivityDate("2025/11/28")
+                        .build()
+                this.add(nfc)
 
                 // Wip
                 val wip =

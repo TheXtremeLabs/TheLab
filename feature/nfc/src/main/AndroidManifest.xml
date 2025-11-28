@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <activity android:name=".NFCActivity"
+        <activity android:name="com.riders.thelab.feature.nfc.NFCActivity"
             android:exported="true">
             <intent-filter>
 

@@ -18,6 +18,7 @@ import com.riders.thelab.feature.locationonmaps.LocationOnMapsActivity
 import com.riders.thelab.feature.lottie.LottieActivity
 import com.riders.thelab.feature.mlkit.ui.chooser.MLKitChooserActivity
 import com.riders.thelab.feature.musicrecognition.ui.MusicRecognitionChooserActivity
+import com.riders.thelab.feature.nfc.NFCActivity
 import com.riders.thelab.feature.palette.PaletteActivity
 import com.riders.thelab.feature.schedule.ui.ScheduleActivity
 import com.riders.thelab.feature.songplayer.ui.SongPlayerActivity
@@ -487,6 +488,21 @@ class AppBuilderUtils(private val context: Context) {
             )
             .withActivityClass(KoinActivity::class.java)
             .withActivityDate("2025/04/15")
+            .build()
+
+    // NFC
+    val nfc
+        get() = AppBuilder
+            .withId(38)
+            .withActivityTitle(context.getString(com.riders.thelab.core.ui.R.string.activity_title_nfc))
+            .withActivityDescription("NFC card detection")
+            .withActivityIcon(
+                context.getDrawableFromIntResource(
+                    com.riders.thelab.core.ui.R.drawable.ic_nfc_black
+                )
+            )
+            .withActivityClass(NFCActivity::class.java)
+            .withActivityDate("2025/11/28")
             .build()
 
     // Wip
