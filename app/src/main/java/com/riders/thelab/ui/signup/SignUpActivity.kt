@@ -71,7 +71,7 @@ class SignUpActivity : BaseComponentActivity() {
                                 onUpdateLastname = mViewModel::updateLastname,
                                 username = mViewModel.username,
                                 onUpdateUsername = mViewModel::updateUsername,
-                                email = EmailAddress.orThrow(mViewModel.email),
+                                email = requireNotNull(EmailAddress of mViewModel.email),
                                 onUpdateEmail = { mViewModel::updateEmail },
                                 password = mViewModel.password,
                                 onUpdatePassword = mViewModel::updatePassword,
