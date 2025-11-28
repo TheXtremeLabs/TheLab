@@ -644,4 +644,6 @@
     <string name="activity_title_flight">News flight</string>
     <!-- Koin -->
     <string name="activity_title_koin">Koin</string>
+    <!-- NFC -->
+    <string name="activity_title_nfc">NFC</string>
 </resources>
