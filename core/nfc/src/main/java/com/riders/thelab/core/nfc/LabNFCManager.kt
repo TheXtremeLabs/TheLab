@@ -2,24 +2,88 @@ package com.riders.thelab.core.nfc
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
+import android.nfc.NfcManager
 import android.nfc.Tag
 import android.nfc.tech.Ndef
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.Settings
 import androidx.activity.ComponentActivity
+import androidx.compose.runtime.Stable
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import timber.log.Timber
+
 
 class LabNFCManager private constructor(
     private val activity: ComponentActivity,
     private val nfcReaderCallback: NfcAdapter.ReaderCallback? = null
 ) {
+    val nfcManager: NfcManager? = activity.getSystemService(Context.NFC_SERVICE) as NfcManager?
     var nfcAdapter: NfcAdapter? = null
         private set
+
+    @Stable
+    val nfcState: MutableStateFlow<NFCUiState> = MutableStateFlow(NFCUiState.Idle)
+
+
+    init {
+        if (null == nfcManager) {
+            //So the service is not supported by the device
+            Timber.d("init | No NFC Manager working")
+        } else {
+            Timber.e("init | NFC Manager working")
+        }
+    }
+
+    fun getAdapter(): NfcAdapter? = if (null == nfcAdapter) {
+        Timber.w("nfc adapter value is null. Set the value...")
+        nfcManager?.defaultAdapter?.also { nfcAdapter = it }
+    } else {
+        nfcAdapter
+    }
+
+    /**
+     * Checks if the device has NFC hardware.
+     *
+     * @return `true` if the device has NFC hardware, `false` otherwise.
+     */
+    fun isNfcSupported(): Boolean = activity.packageManager
+        .hasSystemFeature(PackageManager.FEATURE_NFC)
+        .also { supported: Boolean? ->
+            Timber.d("isNfcSupported() | is NFC supported : $supported")
+            if (false == supported) {
+                nfcState.update { NFCUiState.NotSupported }
+            }
+        }
+
+    /**
+     * Checks if NFC is currently enabled in the device settings.
+     * This will return `false` if the device does not support NFC.
+     *
+     * @return `true` if NFC is supported and enabled, `false` otherwise.
+     */
+    fun isNfcEnabled(): Boolean = run {
+        if (!isNfcSupported()) false else true == getAdapter()?.isEnabled
+    }.also { enabled ->
+        Timber.d("isNfcEnabled() | is NFC enabled : $enabled")
+        nfcState.update { if (enabled) NFCUiState.Enabled else NFCUiState.Disabled }
+    }
+
+    /**
+     * Creates an Intent to open the system's NFC settings screen.
+     * This allows the user to enable or disable NFC.
+     */
+    fun createNfcSettingsIntent(): Intent {
+        return Intent(Settings.ACTION_NFC_SETTINGS)
+    }
 
     fun enableNfcForegroundDispatch() {
         Timber.d("enableNfcForegroundDispatch()")
@@ -116,8 +180,7 @@ class LabNFCManager private constructor(
         }
     }
 
-    private
-    fun processIntentMessages(intentMessages: Array<out Parcelable>?): String? {
+    private fun processIntentMessages(intentMessages: Array<out Parcelable>?): String? {
         Timber.d("processNdefMessages() | intentMessages: ${intentMessages.contentToString()}")
 
         if (null == intentMessages) {
