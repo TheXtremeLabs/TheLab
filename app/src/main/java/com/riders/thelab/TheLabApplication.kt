@@ -110,10 +110,7 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
         initTimberAndThreeten()
         initAdsAndFirebase()
 
-//        val appLifecycleObserver = TheLabAppLifecycleObserver()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-
-        delayedInit()
 
         if (BuildConfig.DEBUG) {
             LabDeviceManager.logDeviceInfo()

@@ -138,10 +138,10 @@ class LabNFCManager private constructor(
         }
     }
 
-    fun onTagDiscovered(detectedTag: Tag) {
-        Timber.d("readFromTag()")
+    fun onTagDiscovered(detectedTag: Tag): Result<String> {
+        Timber.d("onTagDiscovered()")
 
-        try {
+        return try {
             val ndef = Ndef.get(detectedTag)
             ndef.connect()
             Timber.d("type: ${ndef.type}")
@@ -159,14 +159,17 @@ class LabNFCManager private constructor(
                 )
             }
 
-            val messages = processIntentMessages(intentMessages)
+            val messages: String? = processIntentMessages(intentMessages)
 
             if (messages.isNullOrEmpty()) {
-                Timber.e("onTagDiscovered() | Text is empty. NFC messages may be null")
+                val message = "Text is empty. NFC messages may be null"
+                Timber.e("onTagDiscovered() | $message")
                 ndef.close()
+                Result.success(message)
             } else {
                 Timber.d("onTagDiscovered() | NFC Messages: $messages")
                 ndef.close()
+                Result.success(messages)
             }
         } catch (exception: Exception) {
             exception.printStackTrace()
@@ -176,7 +179,10 @@ class LabNFCManager private constructor(
                 if (exception.message?.contains("is not a valid Bluetooth address") == true) {
                     Timber.e(exception.message)
                 }
+                return Result.failure(exception)
             }
+
+            Result.failure(exception)
         }
     }
 

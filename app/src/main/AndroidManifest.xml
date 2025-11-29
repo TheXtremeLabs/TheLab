@@ -657,6 +657,7 @@
         <!-- NFC -->
         <activity
             android:name=".feature.nfc.NFCActivity"
+            android:exported="true"
             android:parentActivityName=".ui.mainactivity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
