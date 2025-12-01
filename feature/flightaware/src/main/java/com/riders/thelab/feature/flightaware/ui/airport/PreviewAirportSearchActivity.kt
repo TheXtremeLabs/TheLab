@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -54,6 +55,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
@@ -104,7 +106,7 @@ fun AirportSearchContent(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TopAppBar(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().heightIn(max = 72.dp),
                     title = {
                         BasicTextField(
                             modifier = Modifier
@@ -197,9 +199,8 @@ fun AirportSearchContent(
                             )
                         }
                     },
-                    colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = backgroundColor)
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor)
                 )
-
             },
             containerColor = backgroundColor
         ) { contentPadding ->

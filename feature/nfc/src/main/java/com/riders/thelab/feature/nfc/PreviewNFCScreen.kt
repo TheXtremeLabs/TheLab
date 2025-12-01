@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,7 @@ import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.AppTypography
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.compose.theme.Typography
+import com.riders.thelab.core.ui.compose.utils.findActivity
 
 
 ///////////////////////////////////////////////////////////
@@ -51,6 +52,8 @@ fun NFCScreen(
     customMessage: String,
     uiEvent: (UiEvent) -> Unit
 ) {
+    val context = LocalContext.current
+
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
 
         Scaffold(
@@ -79,7 +82,9 @@ fun NFCScreen(
                     when (targetState) {
                         is NFCUiState.NotSupported -> {
                             Column(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 32.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(24.dp)
                             ) {
@@ -92,7 +97,11 @@ fun NFCScreen(
                                     rawResId = com.riders.thelab.core.ui.R.raw.lottie_hot_coffee_loading
                                 )
 
-                                Button(onClick = {}) { Text("Quit") }
+                                Button(onClick = { (context.findActivity() as NFCActivity).backPressed() }) {
+                                    Text(
+                                        "Quit"
+                                    )
+                                }
                             }
                         }
 

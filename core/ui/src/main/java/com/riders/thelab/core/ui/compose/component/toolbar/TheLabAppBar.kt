@@ -153,7 +153,7 @@ fun TheLabTopAppBar(theme: AppTheme, viewModel: BaseViewModel, title: String) {
                     )
                 }
             },
-            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+            colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
         )
     }
 }
@@ -193,7 +193,7 @@ fun TheLabTopAppBar(theme: AppTheme, isDarkMode: Boolean, title: String) {
                     )
                 }
             },
-            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+            colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
         )
     }
 }
@@ -270,7 +270,7 @@ fun TheLabTopAppBar(
                     actions()
                 }
             },
-            colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = backgroundColor)
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor)
         )
     }
 }
@@ -399,7 +399,7 @@ fun TheLabTopAppBar(
                             actions()
                         }
                     },
-                    colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = backgroundColor)
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor)
                 )
             }
 
@@ -443,7 +443,7 @@ fun TheLabTopAppBar(
                             actions()
                         }
                     },
-                    colors = TopAppBarDefaults.largeTopAppBarColors(containerColor = backgroundColor)
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor)
                 )
             }
         }
@@ -517,7 +517,7 @@ fun TheLabTopAppBar(
                 }
 
             },
-            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+            colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
         )
     }
 }
@@ -583,7 +583,7 @@ fun TheLabTopAppBarLarge(theme: AppTheme) {
                     )
                 }
             },
-            colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
+            colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
         )
     }
 }

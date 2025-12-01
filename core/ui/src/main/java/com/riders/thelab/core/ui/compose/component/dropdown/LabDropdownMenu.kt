@@ -29,8 +29,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -143,7 +143,7 @@ fun <T> LabDropdownMenu(
                         //This value is used to assign to the DropDown the same width
                         textFieldSize = coordinates.size.toSize()
                     }
-                    .menuAnchor(type = MenuAnchorType.PrimaryEditable)
+                    .menuAnchor(type = ExposedDropdownMenuAnchorType.PrimaryEditable)
                     .focusRequester(focusRequester)
                     .onFocusChanged {
                         Timber.d("Recomposition | BasicTextField2.onFocusChanged | onFocusChanged: isFieldFocused $isFieldFocused, it.isFocused: ${it.isFocused}")
@@ -342,7 +342,7 @@ fun <T> LabDropdownMenu2(
                         //This value is used to assign to the DropDown the same width
                         textFieldSize = coordinates.size.toSize()
                     }
-                    .menuAnchor(type = MenuAnchorType.PrimaryEditable)
+                    .menuAnchor(type = ExposedDropdownMenuAnchorType.PrimaryEditable)
                     .focusRequester(focusRequester)
                     /*.onFocusChanged {
                         Timber.d("Recomposition | BasicTextField2.onFocusChanged | onFocusChanged: isFieldFocused $isFieldFocused, it.isFocused: ${it.isFocused}")

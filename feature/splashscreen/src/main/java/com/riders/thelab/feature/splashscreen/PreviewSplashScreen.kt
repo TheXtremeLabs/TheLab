@@ -69,7 +69,7 @@ fun VideoView(videoPath: String, uiEvent: (UiEvent) -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    val exoPlayer = ExoPlayer.Builder(LocalContext.current)
+    val exoPlayer = ExoPlayer.Builder(context)
         .build()
         .also { exoPlayer ->
             val mediaItem = MediaItem.Builder()
@@ -243,13 +243,11 @@ fun SplashScreenContent(
 @DevicePreviews
 @Composable
 private fun PreviewLoadingContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
-    val viewModel = hiltViewModel<SplashScreenViewModel>()
-
     TheLabTheme(theme = appTheme) {
         LoadingContent(
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
-            version = viewModel.version
+            version = "14.0.0"
         )
     }
 }
@@ -280,13 +278,12 @@ private fun PreviewSplashScreenContent(@PreviewParameter(AppThemePreviewProvider
                 Constants.SEPARATOR +
                 //Smartphone portrait video or Tablet landscape video
                 if (!LabCompatibilityManager.isTablet(activity)) com.riders.thelab.core.ui.R.raw.splash_intro_testing_sound_2 else com.riders.thelab.core.ui.R.raw.splash_intro_testing_no_sound_tablet
-    val viewModel = hiltViewModel<SplashScreenViewModel>()
 
     TheLabTheme(theme = appTheme) {
         SplashScreenContent(
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
-            version = viewModel.version,
+            version = "14.0.0",
             videoPath = videoPath,
             switchContent = true,
             startCountDown = false
