@@ -23,15 +23,16 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
 import com.bumptech.glide.request.RequestListener
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.utils.executeOnBackPressed
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.data.local.bean.SnackBarType
 import timber.log.Timber
-import androidx.core.graphics.createBitmap
 
 object UIManager {
 
@@ -124,8 +125,10 @@ object UIManager {
         this.showToast(context, context.getString(stringResId))
     }
 
-    fun showToast(context: Context, message: String) =
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    fun showToast(context: Context, message: String) = context.findActivity()
+        ?.runOnUiThread { Toast.makeText(context, message, Toast.LENGTH_LONG).show() }
+        ?.run { Timber.e("showToast() | Error showing toast. Cannot find activity") }
+
 
     fun showActionInSnackBar(
         context: Activity,

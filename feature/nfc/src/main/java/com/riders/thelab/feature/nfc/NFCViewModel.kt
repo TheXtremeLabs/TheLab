@@ -51,6 +51,7 @@ class NFCViewModel @Inject constructor(
     }
 
     private fun updateIsScanningNFCTag(isScanning: Boolean) {
+        Timber.d("updateIsScanningNFCTag() | isScanning: $isScanning")
         this.isScanningNFCTag = isScanning
     }
 
@@ -79,7 +80,7 @@ class NFCViewModel @Inject constructor(
     }
 
     fun startScanning() {
-        if (isScanningNFCTag || true == scanningNFCTagJob?.isActive) {
+        if (isScanningNFCTag) {
             Timber.w("startScanning() | NFC is already scanning")
             return
         }

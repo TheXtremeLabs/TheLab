@@ -4,6 +4,10 @@
     <application>
         <activity android:name="com.riders.thelab.feature.nfc.NFCActivity"
             android:exported="true">
+
+            <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_list" />
+
             <intent-filter>
 
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />

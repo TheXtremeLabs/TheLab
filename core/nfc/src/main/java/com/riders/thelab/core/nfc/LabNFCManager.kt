@@ -10,7 +10,10 @@ import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
 import android.nfc.Tag
+import android.nfc.tech.IsoDep
 import android.nfc.tech.Ndef
+import android.nfc.tech.NdefFormatable
+import android.nfc.tech.NfcA
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.Settings
@@ -20,6 +23,7 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import timber.log.Timber
+import java.io.IOException
 
 
 class LabNFCManager private constructor(
@@ -142,47 +146,115 @@ class LabNFCManager private constructor(
         Timber.d("onTagDiscovered()")
 
         return try {
-            val ndef = Ndef.get(detectedTag)
-            ndef.connect()
-            Timber.d("type: ${ndef.type}")
-            Timber.d("max size: ${ndef.maxSize}")
-            Timber.d(if (ndef.isWritable) "ndef.isWritable: True" else "ndef.isWritable: False")
+            val nfcA = detectedTag.techList.firstOrNull { it == NfcA::class.java.name }
+                ?.run { NfcA.get(detectedTag) }
+            val isoDep = detectedTag.techList.firstOrNull { it == IsoDep::class.java.name }
+                ?.run { IsoDep.get(detectedTag) }
+            val ndef = detectedTag.techList
+                .firstOrNull { it == Ndef::class.java.name || it == NdefFormatable::class.java.name }
+                ?.run { Ndef.get(detectedTag) }
 
-            val intentMessages = if (!LabCompatibilityManager.isTiramisu()) {
-                @Suppress("DEPRECATION")
-                activity.intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-            } else {
-                @SuppressLint("NewApi")
-                activity.intent.getParcelableArrayExtra(
-                    NfcAdapter.EXTRA_NDEF_MESSAGES,
-                    NdefMessage::class.java
-                )
+            if (null != isoDep) {
+                handleIsoDepTag(isoDep)
             }
 
-            val messages: String? = processIntentMessages(intentMessages)
-
-            if (messages.isNullOrEmpty()) {
-                val message = "Text is empty. NFC messages may be null"
-                Timber.e("onTagDiscovered() | $message")
-                ndef.close()
-                Result.success(message)
-            } else {
-                Timber.d("onTagDiscovered() | NFC Messages: $messages")
-                ndef.close()
-                Result.success(messages)
+            if (null != nfcA) {
+                handleNfcATag(nfcA)
             }
+
+            if (null != ndef) {
+                handleNdefTag(ndef)
+            }
+
+            Result.success("Success")
         } catch (exception: Exception) {
             exception.printStackTrace()
             Timber.e("onTagDiscovered() | Cannot Read From Tag.")
-
-            if (exception is IllegalArgumentException) {
-                if (exception.message?.contains("is not a valid Bluetooth address") == true) {
-                    Timber.e(exception.message)
-                }
-                return Result.failure(exception)
-            }
-
             Result.failure(exception)
+        }
+    }
+
+    private fun handleIsoDepTag(isoDep: IsoDep): Result<String> = try {
+        Timber.d("handleIsoDepTag()")
+        isoDep.connect()
+
+        val response = isoDep.transceive(byteArrayOf(0x00, 0x00, 0x00, 0x00))
+        Timber.d("handleIsoDepTag() | Response: ${response}")
+        isoDep.close()
+        Result.success(response.contentToString())
+    } catch (ioException: IOException) {
+        ioException.printStackTrace()
+        Timber.e("handleIsoDepTag() | Error caught with message : ${ioException.message}")
+        Result.failure(ioException)
+    } catch (securityException: SecurityException) {
+        securityException.printStackTrace()
+        Timber.e("handleIsoDepTag() | Error caught with message : ${securityException.message}")
+        Result.failure(securityException)
+    } catch (illegalArgumentException: IllegalArgumentException) {
+        illegalArgumentException.printStackTrace()
+        Timber.e("handleIsoDepTag() | Error caught with message : ${illegalArgumentException.message}")
+        Result.failure(illegalArgumentException)
+    }
+
+
+    private fun handleNdefTag(ndef: Ndef): Result<String> = try {
+        Timber.d("handleNdefTag()")
+
+        ndef.connect()
+        Timber.d("type: ${ndef.type}")
+        Timber.d("max size: ${ndef.maxSize}")
+        Timber.d(if (ndef.isWritable) "ndef.isWritable: True" else "ndef.isWritable: False")
+
+        val intentMessages = if (!LabCompatibilityManager.isTiramisu()) {
+            @Suppress("DEPRECATION")
+            activity.intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+        } else {
+            @SuppressLint("NewApi")
+            activity.intent.getParcelableArrayExtra(
+                NfcAdapter.EXTRA_NDEF_MESSAGES,
+                NdefMessage::class.java
+            )
+        }
+
+        val messages: String? = processIntentMessages(intentMessages)
+
+        if (messages.isNullOrEmpty()) {
+            val message = "Text is empty. NFC messages may be null"
+            Timber.e("onTagDiscovered() | $message")
+            ndef.close()
+            Result.success(message)
+        } else {
+            Timber.d("onTagDiscovered() | NFC Messages: $messages")
+            ndef.close()
+            Result.success(messages)
+        }
+    } catch (ioException: IOException) {
+        ioException.printStackTrace()
+        Timber.e("handleNdefTag() | Error caught with message : ${ioException.message}")
+        Result.failure(ioException)
+    } catch (securityException: SecurityException) {
+        securityException.printStackTrace()
+        Timber.e("handleNdefTag() | Error caught with message : ${securityException.message}")
+        Result.failure(securityException)
+    } catch (illegalArgumentException: IllegalArgumentException) {
+        illegalArgumentException.printStackTrace()
+        Timber.e("handleNdefTag() | Error caught with message : ${illegalArgumentException.message}")
+        Result.failure(illegalArgumentException)
+    }
+
+    private fun handleNfcATag(nfcA: NfcA) {
+        Timber.d("handleNfcATag()")
+
+        try {
+        } catch (ioException: IOException) {
+            ioException.printStackTrace()
+            Timber.e("handleNfcATag() | Error caught with message : ${ioException.message}")
+        } catch (securityException: SecurityException) {
+            securityException.printStackTrace()
+            Timber.e("handleNfcATag() | Error caught with message : ${securityException.message}")
+        } catch (illegalArgumentException: IllegalArgumentException) {
+            illegalArgumentException.printStackTrace()
+            Timber.e("handleNfcATag() | Error caught with message : ${illegalArgumentException.message}")
         }
     }
 
