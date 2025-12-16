@@ -38,6 +38,7 @@ android {
     ndkVersion = "21.3.6528147"
 
     defaultConfig {
+
         manifestPlaceholders += mapOf(
             "redirectHostName" to "com.riders.thelab",
             "redirectSchemeName" to "com.riders.thelab",
@@ -196,14 +197,14 @@ configurations.all {
         cacheDynamicVersionsFor(4, "hours")
         cacheChangingModulesFor(10, "minutes")
 
-        force("com.google.protobuf:protobuf-javalite:4.32.0")
+        force("com.google.protobuf:protobuf-javalite:4.33.0")
         force("com.jakewharton.threetenabp:threetenabp:1.4.9") // Force a specific version
     }
 
-    exclude(module = "protobuf-javalite")
+    /*exclude(module = "protobuf-javalite")
     exclude(module = "protobuf-lite")
     exclude(module = "protolite-well-known-types")
-    exclude(group = "org.threeten", module = "threetenbp")
+    exclude(group = "org.threeten", module = "threetenbp")*/
 }
 
 

@@ -32,7 +32,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/LICENSE"
             excludes += "META-INF/INDEX.LIST"
-            excludes += "google/protobuf/*.proto"
+            //excludes += "google/protobuf/*.proto"
         }
 
         jniLibs.pickFirsts.add("protobuf.meta")

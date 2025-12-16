@@ -27,6 +27,7 @@ android {
     namespace = "com.riders.thelab.tv"
 
     defaultConfig {
+
         manifestPlaceholders += mapOf(
             "redirectHostName" to "com.riders.thelab.tv",
             "redirectSchemeName" to "com.riders.thelab.tv",

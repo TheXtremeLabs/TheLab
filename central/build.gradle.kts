@@ -23,6 +23,7 @@ android {
     namespace = "com.riders.thelab.central"
 
     defaultConfig {
+
         manifestPlaceholders += mapOf(
             "redirectHostName" to "com.riders.thelab.central",
             "redirectSchemeName" to "com.riders.thelab.central",
@@ -112,7 +113,7 @@ configurations.all {
         cacheDynamicVersionsFor(4, "hours")
         cacheChangingModulesFor(10, "minutes")
 
-        force("com.google.protobuf:protobuf-javalite:4.32.0")
+        force("com.google.protobuf:protobuf-javalite:4.33.0")
     }
 
     exclude(module = "protobuf-lite")

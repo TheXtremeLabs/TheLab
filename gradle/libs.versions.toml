@@ -1,7 +1,7 @@
 [versions]
 # Gradle version
 # Android
-androidGradlePlugin = "8.13.1"
+androidGradlePlugin = "8.13.2"
 # Google Services
 playServicesGradlePlugin = "4.4.4"
 # Firebase
@@ -15,7 +15,7 @@ protobufPlugin = "0.9.5"
 # Dependencies version
 accompanist = "0.37.3"
 androidDesugarJdkLibs = "2.1.5"
-androidxActivity = "1.12.0"
+androidxActivity = "1.12.1"
 androidxAnnotation = "1.9.1"
 androidxAppCompat = "1.7.1"
 androidxAppSearch = "1.1.0"
@@ -24,10 +24,10 @@ androidxAutoFill = "1.3.0"
 androidxBiometric = "1.1.0"
 androidxBrowser = "1.9.0"
 # Camera
-androidxCamera = "1.5.1"
+androidxCamera = "1.5.2"
 androidxCameraViewFinder = "1.4.0-alpha07"
 # Compose
-androidxComposeBom = "2025.11.01"
+androidxComposeBom = "2025.12.00"
 androidxComposeCompiler = "1.5.15"
 androidxComposeFoundation = "1.9.3"
 androidxComposeMaterial3 = "1.4.0"
@@ -79,8 +79,8 @@ androidxWork = "2.11.0"
 blurry = "4.0.1"
 coil = "3.3.0"
 # Firebase
-firebaseBom = "34.6.0"
-firebaseAds = "24.8.0"
+firebaseBom = "34.7.0"
+firebaseAds = "24.9.0"
 firebaseAppCheck = "18.0.1"
 # Google Api
 googleApiClient = "2.8.1"
@@ -88,7 +88,7 @@ googleApiClientAndroid = "2.8.1"
 googleApiClientOAuth = "1.39.0"
 googleApiDriveV3 = "v3-rev20221219-2.0.0"
 googleApiClientJackson2 = "2.8.1"
-googleAuthLibraryOauth2Http = "1.40.0"
+googleAuthLibraryOauth2Http = "1.41.0"
 googleCloudBom = "26.72.0"
 googleCloudTextToSpeech = "2.76.0"
 googleCloudSpeech = "4.70.0"
@@ -136,38 +136,38 @@ hilt = "2.57.2"
 hiltExt = "1.3.0"
 jacoco = "0.8.7"
 jflacCodec = "1.5.2"
-jtransforms = "3.1"
+jtransforms = "3.2"
 junit = "1.1.5"
 junit4 = "4.13.2"
 koin = "4.1.1"
 koinAnnotationsBom = "2.3.1"
 koinKspCompiler = "2.3.1"
 # Kotlin (for gradle plugin version and dependency)
-kotlin = "2.2.21"
+kotlin = "2.3.0"
 kotlinxCoroutines = "1.10.2"
 kotlinxDatetime = "0.7.1"
 kotlinPlayServices = "1.10.2"
 kotlinxMetadataJvm = "0.9.0"
 kotlinxSerializationJson = "1.9.0"
 # Kotzilla
-kotzilla = "1.4.0"
+kotzilla = "1.4.1"
 ktor = "3.3.3"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
-ksp = "2.2.21-2.0.4"
+ksp = "2.3.3"
 landscapist = "2.6.1"
-lint = "31.13.1"
+lint = "31.13.2"
 location = "21.3.0"
 logback = "1.5.21"
 lottie = "6.7.1"
 maps = "19.2.0"
 mapsCompose = "6.12.2"
 material = "1.13.0"
-mapsUtils = "3.19.1"
+mapsUtils = "3.20.0"
 # Media Exo Player
 media = "1.7.1"
 mediaRouter = "1.8.1"
 media3 = "1.8.0"
-mockito = "5.20.0"
+mockito = "5.21.0"
 # Moshi - Deprecated change by kotlin serialization json
 # moshi = "1.15.1"
 mpAndroidChart = "3.1.0"
@@ -176,7 +176,7 @@ okhttp = "5.3.2"
 okhttpMockWebServer = "5.3.2"
 playIntegrity = "1.6.0"
 places = "5.1.1"
-protobuf = "4.33.1"
+protobuf = "4.33.2"
 retrofit = "3.0.0"
 retrofitKotlinxSerializationJson = "1.0.0"
 room = "2.8.4"
@@ -496,8 +496,10 @@ okhttp-mock-web-server = { group = "com.squareup.okhttp3", name = "mockwebserver
 places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
 protobuf-bom = { group = "com.google.protobuf", name = "protobuf-bom", version.ref = "protobuf" }
 protobuf-java = { group = "com.google.protobuf", name = "protobuf-java" }
-protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite" }
-protobuf-protoc = { group = "com.google.protobuf", name = "protoc" }
+protobuf-java-lite = { group = "com.google.protobuf", name = "protobuf-java-lite" }
+protobuf-kotlin = { group = "com.google.protobuf", name = "protobuf-kotlin", version.ref = "protobuf" }
+protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
+protobuf-protoc = { group = "com.google.protobuf", name = "protoc" , version.ref = "protobuf"}
 retrofit-bom = { group = "com.squareup.retrofit2", name = "retrofit-bom", version.ref = "retrofit" }
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit" }
 #retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }

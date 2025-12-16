@@ -36,6 +36,7 @@ android {
     namespace = "com.riders.thelab.vision"
 
     defaultConfig {
+
         manifestPlaceholders += mapOf(
             "redirectHostName" to "com.riders.thelab.vision",
             "redirectSchemeName" to "com.riders.thelab.vision",
