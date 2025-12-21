@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -35,16 +36,16 @@ class InkRecognitionActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
                     val inkRecognitionState by mViewModel.inkRecognitionState.collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -52,7 +53,7 @@ class InkRecognitionActivity : BaseComponentActivity() {
                         ) {
                             InkRecognitionContent(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                 inkRecognitionValue = inkRecognitionState,
                                 onAddNewTouchEvent = { offset, motionEvent ->
                                     mViewModel.addNewTouchEvent(offset, motionEvent)

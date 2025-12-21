@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -41,9 +39,14 @@ class TheatersActivity : BaseComponentActivity(), KeyEvent.Callback {
                 setContent {
                     val hasNetworkConnection by mTheatersViewModel.hasInternetConnection.collectAsStateWithLifecycle()
 
-                    val theme: AppTheme by mTheatersViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
+                    val theme: AppTheme by mTheatersViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mTheatersViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
+
+                    val isActivitiesSplashEnabled by mTheatersViewModel.isActivitiesSplashEnabled.collectAsStateWithLifecycle()
 
                     val trendingMovieItem by mTheatersViewModel.tmdbTrendingMovieItemUiState.collectAsStateWithLifecycle()
                     val movies by mTheatersViewModel.tmdbMoviesUiState.collectAsStateWithLifecycle()
@@ -57,54 +60,54 @@ class TheatersActivity : BaseComponentActivity(), KeyEvent.Callback {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                    if(isTv) {
-                        TheatersContainerTV(
-                            theme = theme,
-                            darkTheme = true,
-                            hasNetworkConnection = hasNetworkConnection,
-                            tabRowSelected = mTheatersViewModel.tabRowSelected,
-                            trendingMovieItem = trendingMovieItem,
-                            movies = movies,
-                            upcomingMovies = upcomingMovies,
-                            trendingTvShowItem = trendingTvShowItem,
-                            trendingTvShows = trendingTvShows,
-                            isRefreshing = mTheatersViewModel.isRefreshing,
-                            uiEvent = { event ->
-                                when (event) {
-                                    is UiEvent.OnItemDetailClicked -> launchTMDBItemDetailActivity(
-                                        event.item
-                                    )
+                            if (isTv) {
+                                TheatersContainerTV(
+                                    theme = theme,
+                                    darkTheme = true,
+                                    hasNetworkConnection = hasNetworkConnection,
+                                    tabRowSelected = mTheatersViewModel.tabRowSelected,
+                                    trendingMovieItem = trendingMovieItem,
+                                    movies = movies,
+                                    upcomingMovies = upcomingMovies,
+                                    trendingTvShowItem = trendingTvShowItem,
+                                    trendingTvShows = trendingTvShows,
+                                    isRefreshing = mTheatersViewModel.isRefreshing,
+                                    uiEvent = { event ->
+                                        when (event) {
+                                            is UiEvent.OnItemDetailClicked -> launchTMDBItemDetailActivity(
+                                                event.item
+                                            )
 
-                                    else -> mTheatersViewModel.onEvent(event)
-                                }
-                            }
-                        )
-                    } else {
-                            TheatersContainer(
-                                theme = theme,
-                                darkTheme = true,
-                                hasNetworkConnection = hasNetworkConnection,
-                                isActivitiesSplashScreenEnable = mTheatersViewModel.isActivitiesSplashEnabled,
-                                categories = mTheatersViewModel.categories,
-                                tabRowSelected = mTheatersViewModel.tabRowSelected,
-                                trendingMovieItem = trendingMovieItem,
-                                movies = movies,
-                                upcomingMovies = upcomingMovies,
-                                trendingTvShowItem = trendingTvShowItem,
-                                trendingTvShows = trendingTvShows,
-                                isRefreshing = mTheatersViewModel.isRefreshing,
-                                uiEvent = { event ->
-                                    when (event) {
-                                        is UiEvent.OnItemDetailClicked -> launchTMDBItemDetailActivity(
-                                            event.item
-                                        )
-
-                                        else -> mTheatersViewModel.onEvent(event)
+                                            else -> mTheatersViewModel.onEvent(event)
+                                        }
                                     }
-                                }
-                            )
+                                )
+                            } else {
+                                TheatersContainer(
+                                    theme = theme,
+                                    darkTheme = true,
+                                    hasNetworkConnection = hasNetworkConnection,
+                                    isActivitiesSplashScreenEnable = isActivitiesSplashEnabled,
+                                    categories = mTheatersViewModel.categories,
+                                    tabRowSelected = mTheatersViewModel.tabRowSelected,
+                                    trendingMovieItem = trendingMovieItem,
+                                    movies = movies,
+                                    upcomingMovies = upcomingMovies,
+                                    trendingTvShowItem = trendingTvShowItem,
+                                    trendingTvShows = trendingTvShows,
+                                    isRefreshing = mTheatersViewModel.isRefreshing,
+                                    uiEvent = { event ->
+                                        when (event) {
+                                            is UiEvent.OnItemDetailClicked -> launchTMDBItemDetailActivity(
+                                                event.item
+                                            )
+
+                                            else -> mTheatersViewModel.onEvent(event)
+                                        }
+                                    }
+                                )
+                            }
                         }
-                    }
 
                     }
                 }
@@ -142,15 +145,31 @@ class TheatersActivity : BaseComponentActivity(), KeyEvent.Callback {
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         Timber.d("onKeyUp() | event: ${event?.keyCode?.toString()}")
-        when(event?.keyCode){
+        when (event?.keyCode) {
             KeyEvent.KEYCODE_DPAD_UP -> {
                 true
             }
-            KeyEvent.KEYCODE_DPAD_DOWN -> {true}
-            KeyEvent.KEYCODE_DPAD_LEFT-> {true}
-            KeyEvent.KEYCODE_DPAD_RIGHT -> {true}
-            KeyEvent.KEYCODE_DPAD_CENTER -> {true}
-            KeyEvent.KEYCODE_BUTTON_SELECT -> {true}
+
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                true
+            }
+
+            KeyEvent.KEYCODE_DPAD_LEFT -> {
+                true
+            }
+
+            KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                true
+            }
+
+            KeyEvent.KEYCODE_DPAD_CENTER -> {
+                true
+            }
+
+            KeyEvent.KEYCODE_BUTTON_SELECT -> {
+                true
+            }
+
             KeyEvent.KEYCODE_BACK -> {}
             else -> return true
         }

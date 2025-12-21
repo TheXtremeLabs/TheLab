@@ -12,6 +12,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -55,7 +56,7 @@ class SplashScreenActivity : ComponentActivity() {
         Timber.d("onCreate()")
 
         // Check if activities splash screens are enabled
-        if (!mViewModel.isActivitiesSplashEnabled) {
+        if (!mViewModel.isActivitiesSplashEnabled.value) {
             // Check if user is logged in
             if (!mViewModel.checkUserLoggedIn()) {
                 Timber.e("Activities' splashscreen are disabled. Call loginActivity()")
@@ -72,21 +73,22 @@ class SplashScreenActivity : ComponentActivity() {
             requestPermissionForAndroid13()
         }
 
-        mViewModel.retrieveAppVersion(this@SplashScreenActivity)
-        mViewModel.getVideoPath(this@SplashScreenActivity)
+        initViewModel()
 
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    val version: String by mViewModel.version.collectAsStateWithLifecycle()
+
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -94,8 +96,8 @@ class SplashScreenActivity : ComponentActivity() {
                         ) {
                             SplashScreenContent(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
-                                version = mViewModel.version,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
+                                version = version,
                                 videoPath = mViewModel.videoPath,
                                 switchContent = mViewModel.switchContent,
                                 startCountDown = mViewModel.startCountDown,
@@ -138,6 +140,14 @@ class SplashScreenActivity : ComponentActivity() {
             permissionRequestLauncher.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS))
         }
     }
+
+    fun initViewModel() {
+        Timber.d("initViewModel()")
+        mViewModel.initWeakReference(this@SplashScreenActivity)
+        mViewModel.getAppVersion()
+        mViewModel.getVideoPath(this@SplashScreenActivity)
+    }
+
 
     fun goToLoginActivity() {
         Timber.d("goToLoginActivity()")

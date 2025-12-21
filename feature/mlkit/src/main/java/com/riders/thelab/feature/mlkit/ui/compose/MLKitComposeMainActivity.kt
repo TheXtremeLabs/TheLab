@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -63,14 +64,15 @@ class MLKitComposeMainActivity : BaseComponentActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
 
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
+
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -78,7 +80,7 @@ class MLKitComposeMainActivity : BaseComponentActivity() {
                         ) {
                             MLKitComposeMainContent(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                 list = mViewModel.mlKitItems,
                                 onSwap = { from, to -> mViewModel.swap(from, to) },
                             ) { event ->

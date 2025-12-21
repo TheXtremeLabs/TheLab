@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState.TMDBDetailUiState
@@ -13,6 +12,7 @@ import com.riders.thelab.core.data.local.model.tmdb.TDMBCastModel
 import com.riders.thelab.core.data.local.model.tmdb.TMDBItemModel
 import com.riders.thelab.core.data.local.model.tmdb.toCastModel
 import com.riders.thelab.core.data.local.model.tmdb.toVideoModel
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -29,8 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TheatersDetailViewModel @Inject constructor(
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : ViewModel() {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     ////////////////////////////////////////
     // Variables

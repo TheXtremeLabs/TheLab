@@ -2,6 +2,7 @@ package com.riders.thelab.feature.transitions.compose
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -40,19 +41,22 @@ class TransitionsComposeActivity : BaseComponentActivity() {
                 setContent {
 
                     val theme: AppTheme by uiRepository
-                        .getTheme()
+                        .getThemeColorAsAppTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by uiRepository
-                        .isThemeDarkMode()
+                    val isDarkTheme: Boolean? by uiRepository
+                        .isDarkTheme()
                         .collectAsStateWithLifecycle(initialValue = false)
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            TransitionsComposeContent(theme = theme, darkTheme = isDarkTheme)
+                            TransitionsComposeContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme()
+                            )
                         }
                     }
                 }

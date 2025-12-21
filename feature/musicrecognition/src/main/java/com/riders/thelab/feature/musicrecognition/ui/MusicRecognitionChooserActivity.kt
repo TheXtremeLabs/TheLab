@@ -3,6 +3,7 @@ package com.riders.thelab.feature.musicrecognition.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -41,19 +42,22 @@ class MusicRecognitionChooserActivity : BaseComponentActivity() {
                 setContent {
 
                     val theme: AppTheme by uiRepository
-                        .getTheme()
+                        .getThemeColorAsAppTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by uiRepository
-                        .isThemeDarkMode()
+                    val isDarkTheme: Boolean? by uiRepository
+                        .isDarkTheme()
                         .collectAsStateWithLifecycle(initialValue = false)
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            MusicRecognitionContent(theme = theme, darkTheme = isDarkTheme)
+                            MusicRecognitionContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme()
+                            )
                         }
                     }
                 }
@@ -66,16 +70,10 @@ class MusicRecognitionChooserActivity : BaseComponentActivity() {
     }
 
     fun launchACRCloudActivity() = Intent(this, ACRCloudActivity::class.java)
-        .apply {
-            Timber.d("launchACRCloudActivity()")
-        }
-        .run {
-            startActivity(this)
-        }
+        .apply { Timber.d("launchACRCloudActivity()") }
+        .run { startActivity(this) }
 
     /*fun launchShazamActivity() {
         Timber.d("launchShazamActivity()")
     }*/
-
-
 }

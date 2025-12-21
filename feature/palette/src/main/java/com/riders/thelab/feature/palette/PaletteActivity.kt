@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,7 +27,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class PaletteActivity : BaseComponentActivity() {
 
-    private val viewModel: PaletteViewModel by viewModels()
+    private val mViewModel: PaletteViewModel by viewModels()
 
     /////////////////////////////////////
     //
@@ -36,7 +37,7 @@ class PaletteActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.getWallpaperImages(this@PaletteActivity)
+        mViewModel.getWallpaperImages(this@PaletteActivity)
 
         enableEdgeToEdge()
 
@@ -44,20 +45,20 @@ class PaletteActivity : BaseComponentActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
                     // Register lifecycle events
-                    viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
+                    mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-                    val theme: AppTheme by viewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by viewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
-                    val hasInternetConnection by viewModel.hasInternetConnection.collectAsStateWithLifecycle()
+                    val hasInternetConnection by mViewModel.hasInternetConnection.collectAsStateWithLifecycle()
 
-                    val paletteState by viewModel.paletteUiState.collectAsStateWithLifecycle()
+                    val paletteState by mViewModel.paletteUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -65,14 +66,14 @@ class PaletteActivity : BaseComponentActivity() {
                         ) {
                             PaletteContent(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                 hasInternetConnection = hasInternetConnection,
                                 paletteUiState = paletteState,
                                 onRefreshedClicked = {
-                                    viewModel.updateIsRefreshing(true)
-                                    viewModel.getWallpaperImages(this@PaletteActivity)
+                                    mViewModel.updateIsRefreshing(true)
+                                    mViewModel.getWallpaperImages(this@PaletteActivity)
                                 },
-                                isRefreshing = viewModel.isRefreshing
+                                isRefreshing = mViewModel.isRefreshing
                             )
                         }
                     }

@@ -1,12 +1,12 @@
 package com.riders.thelab.vision.ui.vision
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.camera.core.CameraSelector
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -65,23 +65,26 @@ class TheLabVisionActivity : BaseComponentActivity() {
                                 // Register lifecycle events
                                 mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-                                val theme: AppTheme by mViewModel.uiRepository
-                                    .getTheme()
-                                    .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                                val isDarkTheme: Boolean by mViewModel.uiRepository
-                                    .isThemeDarkMode()
-                                    .collectAsStateWithLifecycle(initialValue = false)
+                                val theme: AppTheme by mViewModel
+                                    .theme
+                                    .collectAsStateWithLifecycle()
+                                val isDarkTheme: Boolean? by mViewModel
+                                    .isDarkMode
+                                    .collectAsStateWithLifecycle()
 
-                                TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                                TheLabTheme(
+                                    theme = theme,
+                                    darkTheme = isDarkTheme ?: isSystemInDarkTheme()
+                                ) {
                                     when (targetVision.toString()) {
                                         Constants.VISION_VIDEO -> VisionVideoScreen(
                                             theme = theme,
-                                            isDarkTheme = isDarkTheme
+                                            isDarkTheme = isDarkTheme ?: isSystemInDarkTheme()
                                         )
 
                                         else -> VisionCameraScreen(
                                             theme = theme,
-                                            isDarkTheme = isDarkTheme,
+                                            isDarkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                             cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
                                         )
                                     }

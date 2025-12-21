@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -36,22 +37,22 @@ class MainCentralActivity : BaseComponentActivity() {
             // Register lifecycle events
             mViewModel.observeLifecycleEvents(lifecycle = LocalLifecycleOwner.current.lifecycle)
 
-            val theme: AppTheme by mViewModel.uiRepository
-                .getTheme()
-                .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-            val isDarkTheme: Boolean by mViewModel.uiRepository
-                .isThemeDarkMode()
-                .collectAsStateWithLifecycle(initialValue = false)
+            val theme: AppTheme by mViewModel
+                .theme
+                .collectAsStateWithLifecycle()
+            val isDarkTheme: Boolean? by mViewModel
+                .isDarkMode
+                .collectAsStateWithLifecycle()
 
             val centralUiState: UiState<List<PackageApp>> by mViewModel.centralUiState.collectAsStateWithLifecycle()
 
             TheLabTheme(
                 theme = theme,
-                darkTheme = isDarkTheme
+                darkTheme = isDarkTheme?: isSystemInDarkTheme()
             ) {
                 CentralScreen(
                     theme = theme,
-                    darkTheme = isDarkTheme,
+                    darkTheme = isDarkTheme?: isSystemInDarkTheme(),
                     windowSize = getDeviceWindowsSizeClass(),
                     centralUiState = centralUiState,
                     searchModeEnabled = mViewModel.searchModeEnabled,

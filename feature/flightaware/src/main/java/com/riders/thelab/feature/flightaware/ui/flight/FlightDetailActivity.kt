@@ -3,6 +3,7 @@ package com.riders.thelab.feature.flightaware.ui.flight
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -39,18 +40,18 @@ class FlightDetailActivity : BaseComponentActivity() {
         mViewModel.getBundle(intent)
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-                    val theme: AppTheme by uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
                     val uiState by mViewModel.flightDetailUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -58,7 +59,7 @@ class FlightDetailActivity : BaseComponentActivity() {
                         ) {
                             FlightDetailContent(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                 uiState = uiState
                             )
                         }

@@ -2,6 +2,7 @@ package com.riders.thelab.feature.lottie
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -38,21 +39,23 @@ class LottieActivity : BaseComponentActivity() {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-
                     val theme: AppTheme by uiRepository
-                        .getTheme()
+                        .getThemeColorAsAppTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val isDarkTheme: Boolean? by uiRepository
+                        .isDarkTheme()
+                        .collectAsStateWithLifecycle(isSystemInDarkTheme())
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            LottieContent(theme = theme, darkTheme = isDarkTheme)
+                            LottieContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme()
+                            )
                         }
                     }
                 }

@@ -3,6 +3,7 @@ package com.riders.thelab.feature.mlkit.ui.chooser
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,7 +17,6 @@ import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.data.local.IUiRepository
-import com.riders.thelab.feature.mlkit.ui.compose.MLKitComposeActivity
 import com.riders.thelab.feature.mlkit.ui.compose.MLKitComposeMainActivity
 import com.riders.thelab.feature.mlkit.ui.xml.LiveBarcodeScanningActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,19 +43,22 @@ class MLKitChooserActivity : BaseComponentActivity() {
                 setContent {
 
                     val theme: AppTheme by uiRepository
-                        .getTheme()
+                        .getThemeColorAsAppTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val isDarkTheme: Boolean? by uiRepository
+                        .isDarkTheme()
+                        .collectAsStateWithLifecycle(isSystemInDarkTheme())
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            MLKitChooserContent(theme = theme, darkTheme = isDarkTheme)
+                            MLKitChooserContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme()
+                            )
                         }
                     }
                 }

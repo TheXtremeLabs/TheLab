@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -41,7 +42,7 @@ class LoginActivity : BaseGoogleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mViewModel.retrieveAppVersion(this@LoginActivity)
+        initViewModel()
 
         // Start a coroutine in the lifecycle scope
         lifecycleScope.launch {
@@ -49,19 +50,21 @@ class LoginActivity : BaseGoogleActivity() {
                 computeWindowSizeClasses()
 
                 setContent {
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
+
+                    val version by mViewModel.version.collectAsStateWithLifecycle()
 
                     val loginUiState by mViewModel.loginUiState.collectAsStateWithLifecycle()
                     val loginFieldState by mViewModel.loginFieldUiState.collectAsStateWithLifecycle()
                     val loginHasError by mViewModel.loginHasError.collectAsStateWithLifecycle()
                     val passwordFieldState by mViewModel.passwordFieldUiState.collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -70,8 +73,8 @@ class LoginActivity : BaseGoogleActivity() {
                             if (isTv) {
                                 LoginContentTV(
                                     theme = theme,
-                                    darkTheme = isDarkTheme,
-                                    version = mViewModel.version,
+                                    darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
+                                    version = version,
                                     loginUiState = loginUiState,
                                     loginFieldState = loginFieldState,
                                     login = mViewModel.login,
@@ -98,8 +101,8 @@ class LoginActivity : BaseGoogleActivity() {
                             } else {
                                 LoginContent(
                                     theme = theme,
-                                    darkTheme = isDarkTheme,
-                                    version = mViewModel.version,
+                                    darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
+                                    version = version,
                                     loginUiState = loginUiState,
                                     loginFieldState = loginFieldState,
                                     login = mViewModel.login,
@@ -173,6 +176,11 @@ class LoginActivity : BaseGoogleActivity() {
     // CLASS METHODS
     //
     /////////////////////////////////////////////////////
+    private fun initViewModel() {
+        mViewModel.initWeakReference(this@LoginActivity)
+        mViewModel.getAppVersion()
+    }
+
     private fun authenticateWithGoogle() {
         Timber.d("authenticateWithGoogle()")
 

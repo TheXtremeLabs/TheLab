@@ -3,6 +3,7 @@ package com.riders.thelab.feature.mlkit.ui.compose.barcodescanner
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
@@ -17,7 +18,6 @@ import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.data.local.IUiRepository
-import com.riders.thelab.core.ui.data.local.UiRepository
 import com.riders.thelab.feature.mlkit.data.local.model.BarcodeField
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -42,13 +42,13 @@ class BarcodeScannerResultActivity : BaseComponentActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
                     val theme: AppTheme by uiRepository
-                        .getTheme()
+                        .getThemeColorAsAppTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val isDarkTheme: Boolean? by uiRepository
+                        .isDarkTheme()
+                        .collectAsStateWithLifecycle(null)
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -56,7 +56,7 @@ class BarcodeScannerResultActivity : BaseComponentActivity() {
                         ) {
                             BarcodeScannerResultContent(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                 scanResult = mScanResult!!
                             )
                         }

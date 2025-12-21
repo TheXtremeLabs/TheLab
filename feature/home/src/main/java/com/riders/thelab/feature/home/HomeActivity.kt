@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -42,12 +43,12 @@ class HomeActivity : BaseComponentActivity() {
                     // Register lifecycle events
                     mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
                     val appList by mViewModel.appList.collectAsStateWithLifecycle()
 
@@ -60,7 +61,7 @@ class HomeActivity : BaseComponentActivity() {
                     } else {
                         HomeScreen(
                             theme = theme,
-                            darkTheme = isDarkTheme,
+                            darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                             windowSize = getDeviceWindowsSizeClass()
                         )
                     }

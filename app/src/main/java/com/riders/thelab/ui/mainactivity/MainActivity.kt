@@ -1,5 +1,7 @@
 package com.riders.thelab.ui.mainactivity
 
+/*import com.riders.thelab.core.speechtotext.SpeechRecognizerError
+import com.riders.thelab.core.speechtotext.SpeechToTextManager*/
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.IntentFilter
@@ -18,6 +20,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -43,8 +46,6 @@ import com.riders.thelab.core.location.OnGpsListener
 import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.service.TheLabVoiceAssistantService
-import com.riders.thelab.core.speechtotext.SpeechRecognizerError
-import com.riders.thelab.core.speechtotext.SpeechToTextManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -61,7 +62,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, RecognitionListener {
 
-    private val mViewModel: MainActivityViewModel by viewModels()
+    private val mViewModel: MainActivityViewModel by viewModels<MainActivityViewModel>()
 
     private var mPermissionManager: PermissionManager? = null
 
@@ -76,7 +77,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
     private var mLabNetworkManager: LabNetworkManager? = null
 
     // Speech
-    private var mSpeechToTextManager: SpeechToTextManager? = null
+    //private var mSpeechToTextManager: SpeechToTextManager? = null
 
     /*private var speech: SpeechRecognizer? = null
     private var recognizerIntent: Intent? = null*/
@@ -134,17 +135,17 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                     // Register lifecycle events
                     mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
                     val hasInternetConnection by mViewModel.hasInternetConnection.collectAsStateWithLifecycle()
                     val dynamicIslandUiState by mViewModel.dynamicIslandState.collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -152,7 +153,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                         ) {
                             MainContent(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                 hasInternetConnection = hasInternetConnection,
                                 dynamicIslandUiState = dynamicIslandUiState,
                                 isDynamicIslandVisible = mViewModel.isDynamicIslandVisible,
@@ -234,14 +235,14 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
 //        mViewModel.addDataSource(locationReceiver.getLocationStatus())
 //        registerReceiver(locationReceiver, intentFilter)
 
-        lifecycleScope.launch {
+        /*lifecycleScope.launch {
             mViewModel.speechToTextRepository.commandsFlow.collect {
                 if (it.second.contains("the lab")) {
                     // mViewModel.updateDynamicIslandState(IslandState.SearchState())
                     Navigator.callVoiceAssistantActivity(this@MainActivity)
                 }
             }
-        }
+        }*/
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -268,7 +269,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
             Timber.e("NetworkCallback was already unregistered")
         }
 
-        mSpeechToTextManager?.stopListening()
+        //mSpeechToTextManager?.stopListening()
 
         super.onDestroy()
     }
@@ -393,7 +394,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
         if (!isGPS) mGpsUtils.turnGPSOn(this)
     }
 
-    fun launchSpeechToText() {
+    /*fun launchSpeechToText() {
         // Check permission first
 
         val manager = checkNotNull(mPermissionManager) {
@@ -422,9 +423,9 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                     mSpeechToTextManager?.startListening()
                 }
             }
-    }
+    }*/
 
-    private fun initSpeechToText() {
+    /*private fun initSpeechToText() {
         Timber.i("initSpeechToText()")
 
         mSpeechToTextManager = SpeechToTextManager.Builder(this@MainActivity)
@@ -433,7 +434,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
             .build()
 
         // Init Speech To Text Variables
-        /*speech = SpeechRecognizer.createSpeechRecognizer(this).apply {
+        *//*speech = SpeechRecognizer.createSpeechRecognizer(this).apply {
             setRecognitionListener(this@MainActivity)
         }
 
@@ -445,8 +446,8 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
             )
             putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this@MainActivity.packageName)
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
-        }*/
-    }
+        }*//*
+    }*/
 
     @SuppressLint("InlinedApi")
     private fun toggleWifi() {
@@ -554,7 +555,8 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
     }
 
     override fun onError(error: Int) {
-        message = this@MainActivity.getString(SpeechRecognizerError.getIntErrorAsStringRes(error))
+        message =
+            ""//this@MainActivity.getString(SpeechRecognizerError.getIntErrorAsStringRes(error))
         Timber.e("onError() | Error message caught: $message")
 
         mViewModel.updateMicrophoneEnabled(false)

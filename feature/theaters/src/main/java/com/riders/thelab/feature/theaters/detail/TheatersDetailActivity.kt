@@ -32,11 +32,11 @@ class TheatersDetailActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
 
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
 
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
+                    val theme: AppTheme by mViewModel
+                        .theme
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
 
                     val tmdbUIState by mViewModel.tmdbItemUiState.collectAsStateWithLifecycle()

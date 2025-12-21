@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -37,11 +38,13 @@ class KatSplashscreenActivity : BaseComponentActivity() {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate()")
 
-        // Check if activities splash screens are enabled
-        if (!mViewModel.isActivitiesSplashEnabled) {
-            Timber.e("Activities' splashscreen are disabled. Call launchKatActivity()")
-            launchKatActivity()
-            return
+        lifecycleScope.launch {
+            // Check if activities splash screens are enabled
+            if (!mViewModel.isActivitiesSplashEnabled.value) {
+                Timber.e("Activities' splashscreen are disabled. Call launchKatActivity()")
+                launchKatActivity()
+                return@launch
+            }
         }
 
         // If user already authenticated launch Kat main activity
@@ -54,20 +57,23 @@ class KatSplashscreenActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            KatSplashScreenContent(theme = theme, darkTheme = isDarkTheme)
+                            KatSplashScreenContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme()
+                            )
                         }
                     }
                 }

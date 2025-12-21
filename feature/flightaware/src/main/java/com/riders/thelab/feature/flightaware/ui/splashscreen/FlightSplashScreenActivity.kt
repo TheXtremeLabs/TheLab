@@ -3,6 +3,7 @@ package com.riders.thelab.feature.flightaware.ui.splashscreen
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,7 +24,7 @@ import javax.inject.Inject
 
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
-class FlightSplashScreenActivity: BaseComponentActivity() {
+class FlightSplashScreenActivity : BaseComponentActivity() {
 
     @Inject
     lateinit var uiRepository: IUiRepository
@@ -32,29 +33,33 @@ class FlightSplashScreenActivity: BaseComponentActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
 
                     val theme: AppTheme by uiRepository
-                        .getTheme()
+                        .getThemeColorAsAppTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val isDarkTheme: Boolean? by uiRepository
+                        .isDarkTheme()
+                        .collectAsStateWithLifecycle(initialValue = isSystemInDarkTheme())
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            FlightSplashScreenContent(theme = theme, darkTheme = isDarkTheme)
+                            FlightSplashScreenContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme()
+                            )
                         }
                     }
                 }
             }
         }
     }
+
     override fun backPressed() {
         Timber.e("backPressed()")
         finish()

@@ -3,6 +3,7 @@ package com.riders.thelab.feature.mlkit.ui.compose.face
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,7 +16,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.data.local.IUiRepository
-import com.riders.thelab.core.ui.data.local.UiRepository
 import com.riders.thelab.feature.mlkit.ui.compose.base.BaseCameraActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -41,13 +41,13 @@ class FaceDetectionActivity : BaseCameraActivity() {
                 setContent {
 
                     val theme: AppTheme by uiRepository
-                        .getTheme()
+                        .getThemeColorAsAppTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val isDarkTheme: Boolean? by uiRepository
+                        .isDarkTheme()
+                        .collectAsStateWithLifecycle(initialValue = isSystemInDarkTheme())
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -55,7 +55,7 @@ class FaceDetectionActivity : BaseCameraActivity() {
                         ) {
                             FaceDetectionContent(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                 faceDetectionType = faceDetectionType
                             )
                         }

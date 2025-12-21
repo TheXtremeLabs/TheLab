@@ -8,12 +8,12 @@ import android.location.LocationListener
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -162,14 +162,14 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                                 // Register lifecycle events
                                 mWeatherViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-                                val hasInternetConnection by mWeatherViewModel.hasInternetConnection.collectAsStateWithLifecycle()
+                                val theme: AppTheme by mWeatherViewModel
+                                    .theme
+                                    .collectAsStateWithLifecycle()
+                                val isDarkTheme: Boolean? by mWeatherViewModel
+                                    .isDarkMode
+                                    .collectAsStateWithLifecycle()
 
-                                val theme: AppTheme by mWeatherViewModel.uiRepository
-                                    .getTheme()
-                                    .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                                val isDarkTheme: Boolean by mWeatherViewModel.uiRepository
-                                    .isThemeDarkMode()
-                                    .collectAsStateWithLifecycle(initialValue = false)
+                                val hasInternetConnection by mWeatherViewModel.hasInternetConnection.collectAsStateWithLifecycle()
 
                                 val weatherDataState: WeatherDataState by mWeatherViewModel.weatherDataState.collectAsStateWithLifecycle()
                                 val weatherUiState: WeatherUIState by mWeatherViewModel.weatherUiState.collectAsStateWithLifecycle()
@@ -178,14 +178,18 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                                     initialValue = emptyList()
                                 )*/
 
-                                TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                                TheLabTheme(
+                                    theme = theme,
+                                    darkTheme = isDarkTheme ?: isSystemInDarkTheme()
+                                ) {
                                     // A surface container using the 'background' color from the theme
                                     Surface(
                                         modifier = Modifier.fillMaxSize(),
                                         color = MaterialTheme.colorScheme.background
                                     ) {
                                         WeatherContent(
-                                            theme = theme, darkTheme = isDarkTheme,
+                                            theme = theme,
+                                            darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                             weatherDataState = weatherDataState,
                                             weatherUiState = weatherUiState,
                                             iconState = mWeatherViewModel.iconState,

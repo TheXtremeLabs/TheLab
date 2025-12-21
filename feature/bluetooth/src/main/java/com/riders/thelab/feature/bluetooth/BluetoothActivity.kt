@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -71,21 +72,39 @@ class BluetoothActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
-                    val theme: AppTheme by uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val isBluetoothEnabled: Boolean by mViewModel
+                        .isBluetoothEnabled
+                        .collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    val boundedDevices: Set<BluetoothDevice> by mViewModel
+                        .boundedDevices
+                        .collectAsStateWithLifecycle()
+                    val availableDevices: Set<BluetoothDevice> by mViewModel
+                        .availableDevices
+                        .collectAsStateWithLifecycle()
+
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            BluetoothContent(theme = theme, darkTheme = isDarkTheme,viewModel = mViewModel)
+                            BluetoothContent(
+                                theme = theme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
+                                isBluetoothEnabled = isBluetoothEnabled,
+                                boundedDevices = boundedDevices,
+                                availableDevices = availableDevices,
+                                isSearching = mViewModel.isSearching,
+                                uiEvent = mViewModel::onEvent
+                            )
                         }
                     }
                 }

@@ -3,6 +3,7 @@ package com.riders.thelab.feature.locationonmaps
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -42,19 +43,18 @@ class LocationOnMapsActivity : BaseComponentActivity() {
         mViewModel.initPlaces()
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
                     val location by mLocationManager.locationState.collectAsStateWithLifecycle()
 
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
-
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -64,7 +64,7 @@ class LocationOnMapsActivity : BaseComponentActivity() {
                                 LabLoader(modifier = Modifier.size(30.dp))
                             } else {
                                 LocationOnMapsContent(
-                                    theme = theme, darkTheme = isDarkTheme,
+                                    theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                     location = location!!,
                                     isSearchPlaceVisible = mViewModel.isSearchPlaceVisible,
                                     uiEvent = { event ->

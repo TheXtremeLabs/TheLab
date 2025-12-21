@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +24,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.riders.thelab.core.permissions.Permission
+import com.riders.thelab.core.permissions.PermissionManager
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -89,6 +92,9 @@ class ACRCloudActivity : BaseComponentActivity() {
         }
     }
 
+    var mPermissionManager: PermissionManager? = null
+
+
     ///////////////////////////////
     //
     // OVERRIDE
@@ -100,37 +106,41 @@ class ACRCloudActivity : BaseComponentActivity() {
 
         enableEdgeToEdge()
 
+        initViewModel()
+
+        PermissionManager
+            .from(this@ACRCloudActivity)
+            .also { manager -> mPermissionManager = manager }
+            .also { checkPermissions() }
+
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
                     // Register lifecycle events
                     mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
                     val acrUiState by mViewModel.uiState.collectAsStateWithLifecycle()
                     val hasNetworkConnection by mViewModel.hasInternetConnection.collectAsStateWithLifecycle()
-                    val items by mViewModel.repository
-                        .getAllMusicRecognitionItems()
-                        .collectAsStateWithLifecycle(
-                            lifecycle = LocalLifecycleOwner.current.lifecycle,
-                            initialValue = emptyList()
-                        )
+                    val items by mViewModel.musicRecognitionItems.collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
-                            modifier = Modifier.fillMaxSize().navigationBarsPadding(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .navigationBarsPadding(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             ACRCloudActivityContent(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                 acrUiState = acrUiState,
                                 hasNetworkConnection = hasNetworkConnection,
                                 currentPageIndex = mViewModel.currentPageIndex,
@@ -164,8 +174,6 @@ class ACRCloudActivity : BaseComponentActivity() {
             }
         }
 
-        // checkPermission()
-
         /*val builder =
             AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI)
 
@@ -196,8 +204,13 @@ class ACRCloudActivity : BaseComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (hasAudioPermission()) {
-            mViewModel.initACRCloud(this@ACRCloudActivity)
+        if (!hasAudioPermission()) {
+            launchPermissionRequest(Manifest.permission.RECORD_AUDIO)
+        } else {
+            Timber.d("Record audio permission is granted ini ACR variables")
+            if (null == mViewModel.mConfig) {
+                mViewModel.initACRCloud(this@ACRCloudActivity)
+            }
         }
     }
 
@@ -217,6 +230,27 @@ class ACRCloudActivity : BaseComponentActivity() {
     // CLASS METHODS
     //
     ///////////////////////////////
+    private fun initViewModel() {
+        mViewModel.initWeakReference(this)
+    }
+
+    private fun checkPermissions() {
+        mPermissionManager
+            ?.request(Permission.AudioRecord)
+            ?.checkPermission { granted ->
+                if (!granted) {
+                    Timber.e("checkPermissions() | Record audio permission is NOT granted")
+                } else {
+                    Timber.d("checkPermissions() | Record audio permission is granted ini ACR variables")
+
+                    if (null == mViewModel.mConfig) {
+                        mViewModel.initACRCloud(this@ACRCloudActivity)
+                    }
+                }
+            }
+            ?: run { Timber.e("checkPermissions() | mPermissionManager is null") }
+    }
+
     private fun hasAudioPermission(): Boolean {
         return if (ContextCompat.checkSelfPermission(
                 applicationContext,
@@ -224,6 +258,7 @@ class ACRCloudActivity : BaseComponentActivity() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             Timber.e("hasAudioPermission() | RECORD_AUDIO Permission NOT granted")
+            permissionLauncher?.launch(arrayOf(Manifest.permission.RECORD_AUDIO))
             false
         } else {
             Timber.d("hasAudioPermission() | RECORD_AUDIO Permission granted")

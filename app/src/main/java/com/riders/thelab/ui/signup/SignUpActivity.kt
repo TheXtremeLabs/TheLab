@@ -3,6 +3,7 @@ package com.riders.thelab.ui.signup
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -18,8 +19,8 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.kotools.types.ExperimentalKotoolsTypesApi
 import org.kotools.types.EmailAddress
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -40,18 +41,18 @@ class SignUpActivity : BaseComponentActivity() {
             Timber.d("coroutine launch with name ${this.coroutineContext}")
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
                     val userState by mViewModel.userState.collectAsStateWithLifecycle()
                     val emailHasError by mViewModel.emailHasError.collectAsStateWithLifecycle()
                     val passwordsHasError by mViewModel.passwordsHasError.collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -59,7 +60,7 @@ class SignUpActivity : BaseComponentActivity() {
                         ) {
                             SignUpContent(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                 currentDestination = mViewModel.currentDestination,
                                 onUpdateCurrentNavDestination = mViewModel::updateCurrentNavDestination,
                                 userUiState = userState,

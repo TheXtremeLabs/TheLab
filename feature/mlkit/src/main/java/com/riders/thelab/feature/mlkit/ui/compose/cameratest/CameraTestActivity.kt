@@ -3,6 +3,7 @@ package com.riders.thelab.feature.mlkit.ui.compose.cameratest
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -43,19 +44,23 @@ class CameraTestActivity : BaseCameraActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
                     val theme: AppTheme by uiRepository
-                        .getTheme()
+                        .getThemeColorAsAppTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val isDarkTheme: Boolean? by uiRepository
+                        .isDarkTheme()
+                        .collectAsStateWithLifecycle(initialValue = isSystemInDarkTheme())
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            CameraTestContent(theme, isDarkTheme, showCamera)
+                            CameraTestContent(
+                                theme,
+                                isDarkTheme ?: isSystemInDarkTheme(),
+                                showCamera
+                            )
                         }
                     }
                 }

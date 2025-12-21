@@ -9,6 +9,7 @@ import android.os.Looper
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -66,18 +67,18 @@ class NFCActivity : BaseComponentActivity(), NfcAdapter.ReaderCallback {
                     // Register lifecycle events
                     mViewModel.observeLifecycleEvents(lifecycle = LocalLifecycleOwner.current.lifecycle)
 
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
                     val nfcUiState: NFCUiState by mViewModel.mLabNFCManager?.nfcState?.collectAsStateWithLifecycle()!!
 
                     NFCScreen(
                         theme = theme,
-                        darkTheme = isDarkTheme,
+                        darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                         uiState = nfcUiState,
                         isScanning = mViewModel.isScanningNFCTag,
                         isCustomMessageVisible = mViewModel.isCustomMessageVisible,
@@ -102,7 +103,7 @@ class NFCActivity : BaseComponentActivity(), NfcAdapter.ReaderCallback {
         super.onResume()
 
         if (true == mViewModel.mLabNFCManager?.isNfcSupported() && false == mViewModel.mLabNFCManager?.isNfcEnabled()) {
-            launchNFCSettingsIntent()
+            Timber.w("onResume() | NFC is not enabled. Should launch NFC Settings")
             return
         }
 

@@ -1,7 +1,6 @@
 package com.riders.thelab.feature.splashscreen
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -35,21 +34,26 @@ class SplashScreenActivity : BaseComponentActivity() {
 
         enableEdgeToEdge()
 
-        mViewModel.retrieveAppVersion(activity = this)
-        mViewModel.getVideoPath(activity = this)
+        initViewModel()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
 
-                    val theme: AppTheme by mViewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by mViewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme()) {
+                    val version by mViewModel.version.collectAsStateWithLifecycle()
+
+
+                    TheLabTheme(
+                        theme = AppTheme.Default,
+                        darkTheme = isDarkTheme ?: isSystemInDarkTheme()
+                    ) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
@@ -57,8 +61,8 @@ class SplashScreenActivity : BaseComponentActivity() {
                         ) {
                             SplashScreenContent(
                                 theme = theme,
-                                darkTheme = isDarkTheme,
-                                version = mViewModel.version,
+                                darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
+                                version = version,
                                 videoPath = mViewModel.videoPath,
                                 switchContent = mViewModel.switchContent,
                                 startCountDown = mViewModel.startCountDown,
@@ -90,5 +94,13 @@ class SplashScreenActivity : BaseComponentActivity() {
 
     override fun backPressed() {
         return
+    }
+
+
+    fun initViewModel() {
+        Timber.d("initViewModel()")
+        mViewModel.initWeakReference(activity = this)
+        mViewModel.getAppVersion()
+        mViewModel.getVideoPath(activity = this)
     }
 }

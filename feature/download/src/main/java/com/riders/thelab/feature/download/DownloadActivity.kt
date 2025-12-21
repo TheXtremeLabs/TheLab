@@ -8,6 +8,7 @@ import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,7 +33,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class DownloadActivity : BaseComponentActivity() {
 
-    private val viewModel: DownloadViewModel by viewModels<DownloadViewModel>()
+    private val mViewModel: DownloadViewModel by viewModels<DownloadViewModel>()
 
     // The receiver only will be triggered if was registered from your application using
     private var mDownloadReceiver: DownloadReceiver? = null
@@ -60,31 +61,31 @@ class DownloadActivity : BaseComponentActivity() {
                 Timber.d("repeatOnLifecycle(Lifecycle.State.CREATED)")
 
                 setContent {
-                    val theme: AppTheme by viewModel.uiRepository
-                        .getTheme()
-                        .collectAsStateWithLifecycle(initialValue = AppTheme.Default)
-                    val isDarkTheme: Boolean by viewModel.uiRepository
-                        .isThemeDarkMode()
-                        .collectAsStateWithLifecycle(initialValue = false)
+                    val theme: AppTheme by mViewModel
+                        .theme
+                        .collectAsStateWithLifecycle()
+                    val isDarkTheme: Boolean? by mViewModel
+                        .isDarkMode
+                        .collectAsStateWithLifecycle()
 
-                    TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
+                    TheLabTheme(theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme()) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             DownloaderContent(
-                                theme = theme, darkTheme = isDarkTheme,
-                                downloadListState = viewModel.downloadList,
-                                buttonText = if (!viewModel.isDownloadStarted) "Launch Download" else "Stop download",
-                                isButtonEnabled = viewModel.canDownload,
+                                theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
+                                downloadListState = mViewModel.downloadList,
+                                buttonText = if (!mViewModel.isDownloadStarted) "Launch Download" else "Stop download",
+                                isButtonEnabled = mViewModel.canDownload,
                                 onButtonClicked = {
-                                    if (!viewModel.isDownloadStarted) {
-                                        viewModel.updateIsDownloadStarted(true)
-                                        viewModel.getSpeedTest()
+                                    if (!mViewModel.isDownloadStarted) {
+                                        mViewModel.updateIsDownloadStarted(true)
+                                        mViewModel.getSpeedTest()
                                     } else {
-                                        viewModel.updateIsDownloadStarted(false)
-                                        viewModel.cancelDownloads()
+                                        mViewModel.updateIsDownloadStarted(false)
+                                        mViewModel.cancelDownloads()
                                     }
                                 }
                             )
@@ -196,17 +197,17 @@ class DownloadActivity : BaseComponentActivity() {
         .checkPermission {
             if (!it) {
                 Timber.e("checkPermissions() | not granted")
-                viewModel.updateCanDownload(false)
+                mViewModel.updateCanDownload(false)
             } else {
                 Timber.d("checkPermissions() | granted")
-                viewModel.updateCanDownload(true)
+                mViewModel.updateCanDownload(true)
             }
         }
 
 
     fun downloadFinishedForId(downloadId: Long) {
         Timber.d("downloadFinishedForId() | downloadId: $downloadId")
-        viewModel.updateFinishedDownloadItem(downloadId)
+        mViewModel.updateFinishedDownloadItem(downloadId)
         once = true
     }
 
