@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "dark_theme.proto";
+import "theme_color.proto";
+
+option java_package = "com.riders.thelab.core.ui.data.local.preferences.proto";
+option java_multiple_files = true;
+
+message UserPreferences {
+
+  bool is_first_time_launched = 1;
+
+  bool use_dynamic_color = 2;
+  ThemeColorConfigProto theme_config = 3;
+  DarkThemeConfigProto dark_theme_config = 4;
+
+  bool is_user_logged_in = 5;
+
+  bool should_hide_onboarding = 6;
+  bool is_vibration_enabled = 7;
+  bool is_activities_splash_enabled = 8;
+}

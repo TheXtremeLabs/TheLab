@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_package = "com.riders.thelab.core.ui.data.local.preferences.proto";
+option java_multiple_files = true;
+
+enum ThemeColorConfigProto {
+  THEME_COLOR_DEFAULT = 0;
+  THEME_COLOR_BLUE = 1;
+  THEME_COLOR_GREEN = 2;
+  THEME_COLOR_RED = 3;
+  THEME_COLOR_BLUE_ORANGE = 4;
+}
