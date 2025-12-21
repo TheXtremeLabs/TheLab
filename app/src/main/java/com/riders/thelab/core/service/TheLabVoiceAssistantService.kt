@@ -12,7 +12,7 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabNotificationManager
-import com.riders.thelab.core.speechtotext.SpeechToTextRepository
+//import com.riders.thelab.core.speechtotext.SpeechToTextRepository
 import com.riders.thelab.navigator.Navigator
 import com.riders.thelab.ui.mainactivity.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -96,8 +96,8 @@ class TheLabVoiceAssistantService : Service(), RecognitionListener {
         override fun onEvent(eventType: Int, params: Bundle?) {}
     }
 
-    @Inject
-    lateinit var mSpeechToTextRepository: SpeechToTextRepository
+    //@Inject
+    //lateinit var mSpeechToTextRepository: SpeechToTextRepository
 
 
     inner class SpeechBinder : Binder() {

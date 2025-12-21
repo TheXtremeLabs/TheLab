@@ -13,7 +13,7 @@ import com.google.cloud.speech.v1.StreamingRecognitionConfig
 import com.google.cloud.speech.v1.StreamingRecognizeRequest
 import com.google.cloud.speech.v1.StreamingRecognizeResponse
 import com.google.protobuf.ByteString
-import kotlinx.coroutines.CoroutineScope
+import com.riders.thelab.core.common.utils.ioCoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,8 +24,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class SpeechToTextRepository @Inject constructor(
-    private val _speechClient: SpeechClient,
-    private val _externalScope: CoroutineScope,
+    private val _speechClient: SpeechClient
 ) : ISpeechToTextRepository {
 
     private var _clientStream: ClientStream<StreamingRecognizeRequest>? = null
@@ -78,7 +77,7 @@ class SpeechToTextRepository @Inject constructor(
             _voiceRecorder = null
             _clientStream = null
         }
-    }.shareIn(_externalScope, SharingStarted.Lazily, replay = 0)
+    }.shareIn(ioCoroutineScope, SharingStarted.Lazily, replay = 0)
 
 
     override fun startRecognition() {
@@ -87,7 +86,7 @@ class SpeechToTextRepository @Inject constructor(
 
     private fun startRecording() {
         if (_voiceRecorder != null) return
-        _externalScope.launch {
+        ioCoroutineScope.launch {
             var minBufferSize = Constants.BUFFER_SIZE
             try {
                 val buffer = ByteArray(minBufferSize)
