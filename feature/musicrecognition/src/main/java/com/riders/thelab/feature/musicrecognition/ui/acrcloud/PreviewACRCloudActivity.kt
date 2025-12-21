@@ -12,17 +12,23 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FabPosition
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,23 +44,23 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.data.local.model.music.MusicRecognitionModel
 import com.riders.thelab.core.data.local.model.music.toModel
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.color.md_theme_light_onPrimaryContainer
 import com.riders.thelab.core.ui.compose.component.LabHorizontalViewPagerGeneric
 import com.riders.thelab.core.ui.compose.component.network.NoNetworkConnection
 import com.riders.thelab.core.ui.compose.component.tab.LabTabRow
-import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
-import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.core.ui.compose.utils.findActivity
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -116,6 +122,61 @@ fun SpotifyIcon(darkTheme: Boolean, modifier: Modifier = Modifier) {
 }
 
 @Composable
+fun ACRCloudToolbar(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    tabItems: List<String>,
+    currentPageIndex: Int,
+    onTabItemClicked: (index: Int) -> Unit
+) {
+    val context = LocalContext.current
+    TheLabTheme(theme = theme, darkTheme = darkTheme) {
+        Row(
+            modifier = Modifier
+                .heightIn(min = 56.dp, max = 96.dp)
+                .fillMaxWidth()
+                .background(Color.Transparent),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .background(Color.Transparent), contentAlignment = Alignment.Center
+            ) {
+                IconButton(onClick = { (context.findActivity() as ACRCloudActivity).backPressed() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                        contentDescription = "back_button"
+                    )
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .weight(5f)
+                    .background(Color.Transparent)
+                    .zIndex(10f),
+                contentAlignment = Alignment.Center
+            ) {
+                LabTabRow(
+                    theme = theme,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    items = tabItems,
+                    selectedItemIndex = currentPageIndex,
+                    indicatorColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedTextColor = if (!darkTheme) Color.DarkGray else MaterialTheme.colorScheme.inversePrimary,
+                    backgroundColor = Color.Transparent,
+                    onClick = onTabItemClicked
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun ACRCloudActivityContent(
     theme: AppTheme,
     darkTheme: Boolean,
@@ -160,32 +221,6 @@ fun ACRCloudActivityContent(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
-            topBar = {
-                TheLabTopAppBar(
-                    theme = theme,
-                    darkTheme = darkTheme,
-                    toolbarSize = ToolbarSize.MEDIUM,
-                    title = null,
-                    toolbarHeight = 64.dp,
-                    mainCustomContent = {
-                        Box(
-                            modifier = Modifier.fillMaxHeight(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            LabTabRow(
-                                theme = theme,
-                                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                                items = tabItems,
-                                selectedItemIndex = currentPageIndex,
-                                selectedTextColor = if (darkTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.inverseOnSurface
-                            ) { index ->
-                                scrollPagerToIndex(index)
-                            }
-                        }
-                    },
-                    backgroundColor = MaterialTheme.colorScheme.surface
-                )
-            },
             floatingActionButton = {
                 AnimatedVisibility(visible = hasNetworkConnection) {
                     AnimatedContent(
@@ -243,95 +278,62 @@ fun ACRCloudActivityContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
-                contentAlignment = Alignment.BottomCenter
+                contentAlignment = Alignment.Center
             ) {
-                if (!hasNetworkConnection) {
-                    NoNetworkConnection()
-                } else {
-                    LabHorizontalViewPagerGeneric(
-                        modifier = Modifier.background(MaterialTheme.colorScheme.background),
-                        theme = theme,
-                        pagerState = pagerState,
-                        items = tabItems,
-                        autoScroll = false,
-                        userScrollEnabled = false,
-                        onCurrentPageChanged = {}
-                    ) { page: Int, _: Float ->
-                        when (page) {
-                            0 -> ACRCloudMainContent(
+                AnimatedContent(targetState = hasNetworkConnection) { targetState ->
+                    if (!targetState) {
+                        NoNetworkConnection()
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.background),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            // ACR Cloud Toolbar
+                            ACRCloudToolbar(
                                 theme = theme,
                                 darkTheme = darkTheme,
-                                contentPadding = contentPadding,
-                                acrUiState = acrUiState,
-                                result,
-                                canLaunchAudioRecognition,
-                                onStartRecognition,
-                                isRecognizing,
-                                uiEvent = uiEvent
+                                tabItems = tabItems,
+                                currentPageIndex = currentPageIndex,
+                                onTabItemClicked = { index -> scrollPagerToIndex(index) }
                             )
 
-                            1 -> ACRCloudLibraryContent(
+                            LabHorizontalViewPagerGeneric(
+                                modifier = Modifier.background(MaterialTheme.colorScheme.background),
                                 theme = theme,
-                                darkTheme = darkTheme,
-                                hasInternetConnection = hasNetworkConnection,
-                                songs = items,
-                                uiEvent = uiEvent
-                            )
+                                pagerState = pagerState,
+                                items = tabItems,
+                                autoScroll = false,
+                                userScrollEnabled = false,
+                                onCurrentPageChanged = {}
+                            ) { page: Int, _: Float ->
+                                when (page) {
+                                    0 -> ACRCloudMainContent(
+                                        theme = theme,
+                                        darkTheme = darkTheme,
+                                        contentPadding = contentPadding,
+                                        acrUiState = acrUiState,
+                                        result,
+                                        canLaunchAudioRecognition,
+                                        onStartRecognition,
+                                        isRecognizing,
+                                        uiEvent = uiEvent
+                                    )
+
+                                    1 -> ACRCloudLibraryContent(
+                                        theme = theme,
+                                        darkTheme = darkTheme,
+                                        hasInternetConnection = hasNetworkConnection,
+                                        songs = items,
+                                        uiEvent = uiEvent
+                                    )
+                                }
+                            }
                         }
                     }
                 }
-
-                // TODO : Refactor this part
-                /*AnimatedContent(
-                    targetState = hasNetworkConnection,
-                    label = "Toast animation content"
-                ) { targetState ->
-                    when (targetState) {
-                        is NetworkState.Available -> {
-                            Toast(
-                                theme = theme,
-                                message = "You are connected to the internet",
-                                imageVector = Icons.Filled.Check,
-                                containerColor = success
-                            )
-                            currentCapabilityChangedCount = 0
-                        }
-
-                        *//*is NetworkConnectionState.OnCapabilitiesChanged -> {
-                            currentCapabilityChangedCount += 1
-
-                            if (currentCapabilityChangedCount < maxCapabilitiesCountTaken) {
-                                Toast(
-                                    message = "Connection capabilities changes",
-                                    imageVector = Icons.Filled.SyncAlt,
-                                    containerColor = Orange
-                                )
-                            }
-                        }*//*
-
-                        is NetworkState.Losing -> {
-                            Toast(
-                                theme = theme,
-                                message = "Losing Internet connection !",
-                                imageVector = Icons.Filled.SignalWifiConnectedNoInternet4,
-                                containerColor = md_theme_dark_onError
-                            )
-                        }
-
-                        is NetworkState.Lost,
-                        is NetworkState.Unavailable -> {
-                            Toast(
-                                theme = theme,
-                                message = "Internet is unavailable",
-                                imageVector = Icons.Filled.AirplanemodeActive,
-                                containerColor = md_theme_dark_onError
-                            )
-                            currentCapabilityChangedCount = 0
-                        }
-
-                        else -> {}
-                    }
-                }*/
             }
         }
     }

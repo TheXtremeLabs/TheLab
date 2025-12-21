@@ -55,7 +55,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
@@ -103,10 +102,14 @@ fun AirportSearchContent(
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                //.safeContentPadding()
+                .fillMaxSize(),
             topBar = {
                 TopAppBar(
-                    modifier = Modifier.fillMaxWidth().heightIn(max = 72.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 72.dp),
                     title = {
                         BasicTextField(
                             modifier = Modifier

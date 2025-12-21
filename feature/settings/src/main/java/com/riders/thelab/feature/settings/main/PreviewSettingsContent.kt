@@ -41,6 +41,7 @@ fun SettingsContent(
     userUiState: UserUiState,
     themeOptions: List<String>,
     version: String,
+    preselectedDarkModeOption: String,
     showModeInfo: Boolean,
     isVibration: Boolean,
     isActivitiesSplashEnabled: Boolean,
@@ -76,6 +77,7 @@ fun SettingsContent(
                         darkTheme = darkTheme,
                         themeOptions = themeOptions,
                         version = version,
+                        preselectedDarkModeOption = preselectedDarkModeOption,
                         isVibration = isVibration,
                         isActivitiesSplashEnabled = isActivitiesSplashEnabled,
                         uiEvent = uiEvent
@@ -119,6 +121,7 @@ private fun PreviewSettingsContent(@PreviewParameter(AppThemePreviewProvider::cl
             userUiState = UserUiState.Loading,
             themeOptions = listOf("Light", "Dark"),
             version = "12.14.11",
+            preselectedDarkModeOption = "Light",
             showModeInfo = true,
             isVibration = true,
             isActivitiesSplashEnabled = false

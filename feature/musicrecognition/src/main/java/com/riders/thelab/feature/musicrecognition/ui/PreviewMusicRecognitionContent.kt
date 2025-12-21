@@ -8,7 +8,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
@@ -41,7 +45,14 @@ fun MusicRecognitionContent(theme: AppTheme, darkTheme: Boolean) {
             topBar = {
                 TheLabTopAppBar(
                     theme = theme,
-                    navigationIcon = {}
+                    navigationIcon = {
+                        IconButton(onClick = { (context.findActivity() as MusicRecognitionChooserActivity).backPressed() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                                contentDescription = null
+                            )
+                        }
+                    }
                 )
             }
         ) { contentPadding ->
@@ -103,7 +114,7 @@ fun MusicRecognitionContent(theme: AppTheme, darkTheme: Boolean) {
 // PREVIEWS
 //
 ///////////////////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun PreviewMusicRecognitionContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {

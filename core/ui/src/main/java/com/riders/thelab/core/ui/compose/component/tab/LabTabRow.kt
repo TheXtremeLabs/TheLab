@@ -102,7 +102,7 @@ fun LabTabRow(
                         isSelected = isSelected,
                         onClick = {
                             Timber.d("LabTabRow | clicked index: $index")
-                            onClick(index)
+                            onClick.invoke(index)
                         },
                         tabWidth = tabWidth,
                         text = text,

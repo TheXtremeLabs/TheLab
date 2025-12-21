@@ -30,10 +30,8 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 //
 ///////////////////////////////////////
 @Composable
-fun BluetoothDisabledContent(theme: AppTheme, darkTheme: Boolean, viewModel: BluetoothViewModel) {
-    val bluetoothEnabled by viewModel.isBluetoothEnabled.collectAsStateWithLifecycle()
-
-    TheLabTheme(theme = theme, darkTheme = darkTheme) {
+fun BluetoothDisabledContent(theme: AppTheme, darkTheme: Boolean, isBluetoothEnabled:Boolean, uiEvent: (UiEvent)-> Unit) {
+     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -58,10 +56,8 @@ fun BluetoothDisabledContent(theme: AppTheme, darkTheme: Boolean, viewModel: Blu
                             modifier = Modifier
                                 .size(30.dp)
                                 .padding(end = 16.dp),
-                            checked = bluetoothEnabled,
-                            onCheckedChange = {
-                                viewModel.setBluetooth(it)
-                            }
+                            checked = isBluetoothEnabled,
+                            onCheckedChange = { uiEvent.invoke(UiEvent.OnEnabledBluetooth(it)) }
                         )
                     }
                 }
@@ -89,7 +85,7 @@ private fun PreviewBluetoothDisabled(@PreviewParameter(AppThemePreviewProvider::
         BluetoothDisabledContent(
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
-            viewModel = BluetoothViewModel()
-        )
+            isBluetoothEnabled = false,
+        ){}
     }
 }

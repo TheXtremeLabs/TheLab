@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.bluetooth
 
+import android.bluetooth.BluetoothDevice
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import kotlinx.coroutines.flow.StateFlow
 
 ///////////////////////////////////////
 //
@@ -35,10 +37,15 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 //
 ///////////////////////////////////////
 @Composable
-fun BluetoothEnabledContent(theme: AppTheme, darkTheme: Boolean, viewModel: BluetoothViewModel) {
+fun BluetoothEnabledContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    boundedDevices: Set<BluetoothDevice>,
+    availableDevices: Set<BluetoothDevice>,
+    isSearching: Boolean,
+    uiEvent: (UiEvent) -> Unit,
+) {
     val listState: LazyListState = rememberLazyListState()
-    val boundedDevices by viewModel.boundedDevices.collectAsStateWithLifecycle()
-    val availableDevices by viewModel.availableDevices.collectAsStateWithLifecycle()
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         LazyColumn(
@@ -65,10 +72,10 @@ fun BluetoothEnabledContent(theme: AppTheme, darkTheme: Boolean, viewModel: Blue
                             Text(text = "Bluetooth enabled")
 
                             Button(
-                                onClick = { viewModel.startDiscovery() },
-                                enabled = !viewModel.isSearching
+                                onClick = { uiEvent.invoke(UiEvent.OnStartDiscovery) },
+                                enabled = !isSearching
                             ) {
-                                Text(text = if (viewModel.isSearching) "Searching ..." else "Search")
+                                Text(text = if (isSearching) "Searching ..." else "Search")
 
                             }
                         }
@@ -87,7 +94,7 @@ fun BluetoothEnabledContent(theme: AppTheme, darkTheme: Boolean, viewModel: Blue
                 )
             }
 
-            if (viewModel.isSearching || availableDevices.isNotEmpty()) {
+            if (isSearching || availableDevices.isNotEmpty()) {
                 item {
                     Row(
                         modifier = Modifier
@@ -97,11 +104,11 @@ fun BluetoothEnabledContent(theme: AppTheme, darkTheme: Boolean, viewModel: Blue
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
-                        Text(text = if (viewModel.isSearching) "Searching ..." else "Available devices")
+                        Text(text = if (isSearching) "Searching ..." else "Available devices")
 
                         AnimatedVisibility(
                             modifier = Modifier.size(24.dp),
-                            visible = viewModel.isSearching
+                            visible = isSearching
                         ) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp))
                         }
@@ -129,12 +136,14 @@ fun BluetoothEnabledContent(theme: AppTheme, darkTheme: Boolean, viewModel: Blue
 @DevicePreviews
 @Composable
 private fun PreviewPreviewBluetoothEnabled(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
-    val viewModel = BluetoothViewModel()
     TheLabTheme(theme = appTheme) {
         BluetoothEnabledContent(
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
-            viewModel = viewModel
+            boundedDevices = emptySet(),
+            availableDevices = emptySet(),
+            isSearching = false,
+            uiEvent = {}
         )
     }
 }

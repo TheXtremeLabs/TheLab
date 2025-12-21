@@ -178,7 +178,7 @@ fun Color(
                             )
                         }
                     },
-                    colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Black)
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black)
                 )
             }
         ) { contentPadding ->

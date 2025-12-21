@@ -135,7 +135,7 @@ fun Search(
                             IconButton(
                                 onClick = {
                                     onUpdateMicrophoneEnabled(!isMicrophoneEnabled)
-                                    (context.findActivity() as MainActivity).launchSpeechToText()
+                                    //(context.findActivity() as MainActivity).launchSpeechToText()
                                 }
                             ) {
                                 Icon(

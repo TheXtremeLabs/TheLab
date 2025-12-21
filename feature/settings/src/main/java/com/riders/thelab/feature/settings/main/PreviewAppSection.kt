@@ -368,6 +368,7 @@ fun AppSettingsSection(
     darkTheme: Boolean,
     version: String,
     themeOptions: List<String>,
+    preselectedDarkModeOption:String,
     isVibration: Boolean,
     isActivitiesSplashEnabled: Boolean,
     uiEvent: (UiEvent) -> Unit
@@ -394,12 +395,7 @@ fun AppSettingsSection(
                 ThemeSelectorCardRowItem(selectedTheme = theme, uiEvent = uiEvent)
 
                 AppThemeCardRowItem(
-                    preselectedThemeOptions = if (darkTheme) themeOptions.first {
-                        it.contains(
-                            "Dark",
-                            true
-                        )
-                    } else themeOptions[1],
+                    preselectedThemeOptions = preselectedDarkModeOption,
                     themeOptions = themeOptions,
                     uiEvent = uiEvent
                 )
@@ -451,9 +447,11 @@ private fun PreviewVibrationCardRowItem(@PreviewParameter(AppThemePreviewProvide
 private fun PreviewAppSettingsSection(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
         AppSettingsSection(
-            theme = appTheme, darkTheme = isSystemInDarkTheme(),
+            theme = appTheme,
+            darkTheme = isSystemInDarkTheme(),
             version = "12.14.11",
             themeOptions = listOf("Light", "Dark", "Use System"),
+            preselectedDarkModeOption = "Light",
             isVibration = true,
             isActivitiesSplashEnabled = false
         ) {}

@@ -58,13 +58,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.palette.graphics.Palette
 import coil3.compose.AsyncImagePainter
 import com.riders.thelab.core.common.utils.LabPackageManager
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.local.model.compose.ACRUiState
 import com.riders.thelab.core.data.local.model.music.toModel
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.color.success
 import com.riders.thelab.core.ui.compose.component.Lottie
@@ -202,11 +200,13 @@ fun Searching(theme: AppTheme, darkTheme: Boolean, result: String) {
 fun RecognitionError(theme: AppTheme, darkTheme: Boolean) {
     TheLabTheme(theme = theme) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "An error occurred while processing audio data. Please retry.")
+            Text(text = "An error occurred while processing audio data.\nPlease retry.")
         }
     }
 }
@@ -258,7 +258,8 @@ fun RecognitionResult(
 
                                     LaunchedEffect(painterState) {
                                         scope.launch {
-                                            val image: Bitmap = painterState.loadImage() ?: return@launch
+                                            val image: Bitmap =
+                                                painterState.loadImage() ?: return@launch
 
                                             uiEvent.invoke(
                                                 UiEvent.UpdateMusicModelImageBase64(

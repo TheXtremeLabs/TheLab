@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
@@ -100,14 +100,14 @@ fun LabTabItemTV(
     )
 
     LaunchedEffect(isSelected) {
-        if(isSelected) {
+        if (isSelected) {
             focusRequester.requestFocus()
         }
     }
 
     androidx.tv.material3.Text(
         modifier = Modifier
-            .focusable(true, interactionSource )
+            .focusable(true, interactionSource)
             .clip(shape)
             .clickable(enabled = true, onClick = onClick)
             .width(tabWidth)
@@ -129,7 +129,7 @@ fun LabTabItemTV(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewLabTabItem(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {

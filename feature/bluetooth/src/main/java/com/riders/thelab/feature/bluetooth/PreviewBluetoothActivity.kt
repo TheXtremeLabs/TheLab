@@ -1,5 +1,6 @@
 package com.riders.thelab.feature.bluetooth
 
+import android.bluetooth.BluetoothDevice
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,9 +30,15 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 //
 ///////////////////////////////////////
 @Composable
-fun BluetoothContent(theme: AppTheme, darkTheme: Boolean, viewModel: BluetoothViewModel) {
-    val bluetoothState by viewModel.isBluetoothEnabled.collectAsStateWithLifecycle()
-
+fun BluetoothContent(
+    theme: AppTheme,
+    darkTheme: Boolean,
+    isBluetoothEnabled: Boolean,
+    boundedDevices: Set<BluetoothDevice>,
+    availableDevices: Set<BluetoothDevice>,
+    isSearching: Boolean,
+    uiEvent: (UiEvent) -> Unit
+) {
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             topBar = {
@@ -45,14 +52,26 @@ fun BluetoothContent(theme: AppTheme, darkTheme: Boolean, viewModel: BluetoothVi
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
-                targetState = bluetoothState,
+                targetState = isBluetoothEnabled,
                 transitionSpec = { fadeIn() + slideInVertically() togetherWith slideOutHorizontally() + fadeOut() },
                 label = ""
             ) { bluetoothTargetState ->
                 if (!bluetoothTargetState) {
-                    BluetoothDisabledContent(theme = theme, darkTheme = darkTheme, viewModel)
+                    BluetoothDisabledContent(
+                        theme = theme,
+                        darkTheme = darkTheme,
+                        isBluetoothEnabled = isBluetoothEnabled,
+                        uiEvent = uiEvent
+                    )
                 } else {
-                    BluetoothEnabledContent(theme = theme, darkTheme = darkTheme, viewModel)
+                    BluetoothEnabledContent(
+                        theme = theme,
+                        darkTheme = darkTheme,
+                        boundedDevices = boundedDevices,
+                        availableDevices = availableDevices,
+                        isSearching = isSearching,
+                        uiEvent = uiEvent
+                    )
                 }
             }
         }
@@ -71,7 +90,10 @@ private fun PreviewBluetoothContent(@PreviewParameter(AppThemePreviewProvider::c
         BluetoothContent(
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
-            viewModel = BluetoothViewModel()
-        )
+            isBluetoothEnabled = true,
+            boundedDevices = emptySet(),
+            availableDevices = emptySet(),
+            isSearching = false,
+        ) {}
     }
 }

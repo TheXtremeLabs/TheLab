@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
-class PermissionManager {
+class PermissionManager private constructor() {
 
     private var mActivity: WeakReference<ComponentActivity>? = null
     private var mFragment: WeakReference<Fragment>? = null
@@ -25,7 +25,7 @@ class PermissionManager {
     private var detailedCallback: (Map<Permission, Boolean>) -> Unit = {}
     private var permissionCheck: ActivityResultLauncher<Array<String>>? = null
 
-    constructor(activity: ComponentActivity) {
+    private constructor(activity: ComponentActivity) : this() {
         this.mActivity = WeakReference<ComponentActivity>(activity)
         this.permissionCheck = mActivity?.get()
             ?.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grantResults ->
@@ -33,7 +33,7 @@ class PermissionManager {
             }
     }
 
-    constructor(fragment: Fragment) {
+    private constructor(fragment: Fragment) : this() {
         this.mFragment = WeakReference<Fragment>(fragment)
         permissionCheck = mFragment?.get()
             ?.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grantResults ->

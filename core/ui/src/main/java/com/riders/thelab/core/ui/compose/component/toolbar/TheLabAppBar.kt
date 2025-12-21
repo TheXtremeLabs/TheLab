@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -47,6 +48,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
@@ -123,8 +125,9 @@ fun TheLabTopAppBar(
 @Composable
 fun TheLabTopAppBar(theme: AppTheme, viewModel: BaseViewModel, title: String) {
     val context = LocalContext.current
+    val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
 
-    TheLabTheme(theme = theme, darkTheme = viewModel.isDarkMode) {
+    TheLabTheme(theme = theme, darkTheme = isDarkMode ?: isSystemInDarkTheme()) {
         TopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -220,7 +223,7 @@ fun TheLabTopAppBar(
 
     TheLabTheme(
         theme = theme,
-        darkTheme = viewModel?.isDarkMode ?: darkTheme
+        darkTheme = viewModel?.isDarkMode?.value ?: darkTheme
     ) {
         TopAppBar(
             modifier = Modifier
@@ -296,6 +299,7 @@ fun TheLabTopAppBar(
     actions: @Composable (RowScope.() -> Unit)? = null
 ) {
     val context: Context = LocalContext.current
+    val isDarkMode: Boolean = viewModel?.isDarkMode?.value ?: darkTheme
 
     val gradientBrush: Brush = Brush.verticalGradient(
         listOf(
@@ -304,7 +308,7 @@ fun TheLabTopAppBar(
         )
     )
 
-    TheLabTheme(theme = theme, darkTheme = viewModel?.isDarkMode ?: darkTheme) {
+    TheLabTheme(theme = theme, darkTheme = isDarkMode) {
         when (toolbarSize) {
             ToolbarSize.SMALL -> {
                 TopAppBar(
@@ -313,20 +317,24 @@ fun TheLabTopAppBar(
                         .height(toolbarHeight)
                         .background(gradientBrush),
                     title = {
-                        if (null != title && null == mainCustomContent) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(start = 8.dp, top = 8.dp),
-                                horizontalAlignment = Alignment.Start,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(text = title, color = titleColor)
+                        when {
+                            null != title && null == mainCustomContent -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(start = 8.dp, top = 8.dp),
+                                    horizontalAlignment = Alignment.Start,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(text = title, color = titleColor)
+                                }
                             }
-                        } else if (null != mainCustomContent && null == title) {
-                            mainCustomContent()
-                        } else {
-                            Timber.e("Both title and mainCustomContent cannot be null or Not null. You have to define one them only")
+
+                            null != mainCustomContent && null == title -> {
+                                mainCustomContent.invoke()
+                            }
+
+                            else -> Timber.e("Both title and mainCustomContent cannot be null or Not null. You have to define one them only")
                         }
                     },
                     navigationIcon = {
@@ -342,7 +350,7 @@ fun TheLabTopAppBar(
                                 )
                             }
                         } else {
-                            navigationIcon()
+                            navigationIcon.invoke()
                         }
                     },
                     actions = {
@@ -376,7 +384,7 @@ fun TheLabTopAppBar(
                                 )
                             }
                         } else if (null != mainCustomContent && null == title) {
-                            mainCustomContent()
+                            mainCustomContent.invoke()
                         } else {
                             Timber.e("Both title and mainCustomContent cannot be null or Not null. You have to define one them only")
                         }
@@ -391,7 +399,7 @@ fun TheLabTopAppBar(
                                 )
                             }
                         } else {
-                            navigationIcon()
+                            navigationIcon.invoke()
                         }
                     },
                     actions = {
@@ -414,7 +422,7 @@ fun TheLabTopAppBar(
                             Column(
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .padding(start = 16.dp , top = 16.dp, bottom = 16.dp),
+                                    .padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
                                 verticalArrangement = Arrangement.Bottom
                             ) {
                                 Text(text = title, color = titleColor)
