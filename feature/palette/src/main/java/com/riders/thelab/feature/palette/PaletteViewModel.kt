@@ -36,8 +36,8 @@ import kotlin.random.Random
 class PaletteViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : BaseViewModel(), CoroutineScope, DefaultLifecycleObserver {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), CoroutineScope, DefaultLifecycleObserver {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()
@@ -102,7 +102,7 @@ class PaletteViewModel @Inject constructor(
         viewModelScope.launch {
             repository.isNightMode().collect {
                 Timber.d("init | isNightMode() | dark mode value: $it")
-                updateDarkMode(it)
+                //updateDarkMode(it)
             }
         }
     }

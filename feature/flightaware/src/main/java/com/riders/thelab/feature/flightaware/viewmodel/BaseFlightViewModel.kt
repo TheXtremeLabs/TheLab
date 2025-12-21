@@ -3,6 +3,7 @@ package com.riders.thelab.feature.flightaware.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,8 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 open class BaseFlightViewModel @Inject constructor(
-    labNetworkManager: LabNetworkManager
-) : BaseViewModel() {
+    labNetworkManager: LabNetworkManager,
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     //////////////////////////////////////////
     // Composable states

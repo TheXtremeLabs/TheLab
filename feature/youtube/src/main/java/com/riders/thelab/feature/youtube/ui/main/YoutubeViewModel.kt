@@ -38,8 +38,8 @@ import kotlin.coroutines.CoroutineContext
 class YoutubeViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : BaseViewModel(), CoroutineScope, DefaultLifecycleObserver {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), CoroutineScope, DefaultLifecycleObserver {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()

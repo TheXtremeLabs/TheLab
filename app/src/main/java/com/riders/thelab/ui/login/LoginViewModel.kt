@@ -41,8 +41,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : BaseViewModel() {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     val list = listOf("test", "mike", "chronopost", "john")
 

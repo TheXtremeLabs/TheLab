@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
@@ -12,6 +11,7 @@ import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.toAirportModel
 import com.riders.thelab.core.data.local.model.flight.toAirportSearchModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -30,8 +30,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AirportSearchViewModel @Inject constructor(
     private val repository: IRepository,
-    val  uiRepository: IUiRepository
-) : ViewModel() {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     //////////////////////////////////////////
     // Composable states

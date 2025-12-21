@@ -7,15 +7,20 @@ import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.compose.flight.FlightDetailUiState
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.flightaware.ui.main.UiEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.kotools.types.ExperimentalKotoolsTypesApi
-import kotools.types.text.NotBlankString
 import kotools.types.text.toNotBlankString
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import timber.log.Timber
+import javax.inject.Inject
 
-class FlightDetailViewModel : BaseViewModel() {
+@HiltViewModel
+class FlightDetailViewModel @Inject constructor(
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     //////////////////////////////////////////
     // Compose states
@@ -52,11 +57,19 @@ class FlightDetailViewModel : BaseViewModel() {
                 updateUiState(FlightDetailUiState.Success(item))
             } ?: run {
                 Timber.e("Extra recycler view item object is null")
-                updateUiState(FlightDetailUiState.Error("Error occurred while getting value".toNotBlankString().getOrThrow()))
+                updateUiState(
+                    FlightDetailUiState.Error(
+                        "Error occurred while getting value".toNotBlankString().getOrThrow()
+                    )
+                )
             }
         } ?: run {
             Timber.e("Intent extras are null")
-            updateUiState(FlightDetailUiState.Error("Error occurred while getting value".toNotBlankString().getOrThrow()))
+            updateUiState(
+                FlightDetailUiState.Error(
+                    "Error occurred while getting value".toNotBlankString().getOrThrow()
+                )
+            )
         }
     }
 

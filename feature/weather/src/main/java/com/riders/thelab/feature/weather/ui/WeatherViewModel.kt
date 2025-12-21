@@ -58,18 +58,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.lang.ref.WeakReference
 import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : BaseViewModel(), DefaultLifecycleObserver {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), DefaultLifecycleObserver {
 
     //////////////////////////////////////////
     // Compose states

@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.storage.LabFileManager
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.bean.MovieCategoryEnum
@@ -43,8 +42,8 @@ import kotlin.coroutines.CoroutineContext
 class TheatersViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : BaseViewModel(), CoroutineScope{
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()
@@ -180,7 +179,7 @@ class TheatersViewModel @Inject constructor(
             repository.isActivitiesSplashScreenEnabled().first()
         }.also {
             Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
-            updateActivitiesSplashEnabled(it)
+            //updateActivitiesSplashEnabled(it)
         }
     }
 
@@ -208,7 +207,7 @@ class TheatersViewModel @Inject constructor(
         }
     }
 
-     fun fetchTMDBData() {
+    fun fetchTMDBData() {
         Timber.d("fetchTMDBData()")
 
         // Trending Movie

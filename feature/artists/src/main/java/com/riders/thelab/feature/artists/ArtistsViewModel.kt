@@ -40,8 +40,8 @@ import kotlin.time.toDuration
 @HiltViewModel
 class ArtistsViewModel @Inject constructor(
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : BaseViewModel(), CoroutineScope, DefaultLifecycleObserver {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), CoroutineScope, DefaultLifecycleObserver {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + SupervisorJob()
@@ -121,10 +121,18 @@ class ArtistsViewModel @Inject constructor(
             getFirebaseJSONURL()
         } else {
             viewModelScope.launch(coroutineContext) {
-                updateArtistUiState(ArtistsUiState.Loading("Artists records found....".toNotBlankString().getOrThrow()))
+                updateArtistUiState(
+                    ArtistsUiState.Loading(
+                        "Artists records found....".toNotBlankString().getOrThrow()
+                    )
+                )
                 delay(2.toDuration(DurationUnit.SECONDS))
 
-                updateArtistUiState(ArtistsUiState.Loading("Loading. Please wait....".toNotBlankString().getOrThrow()))
+                updateArtistUiState(
+                    ArtistsUiState.Loading(
+                        "Loading. Please wait....".toNotBlankString().getOrThrow()
+                    )
+                )
                 delay(2.toDuration(DurationUnit.SECONDS))
 
                 repository.getArtists().collect { artistModels ->
@@ -246,7 +254,7 @@ class ArtistsViewModel @Inject constructor(
     @OptIn(ExperimentalKotoolsTypesApi::class)
     fun getFirebaseFiles() {
 
-        (mWeakReference?.get() as?  ArtistsActivity)?.let { activity ->
+        (mWeakReference?.get() as? ArtistsActivity)?.let { activity ->
             Timber.d("getFirebaseFiles()")
 
             fetchArtistsThumbJob =

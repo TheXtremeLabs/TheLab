@@ -1,6 +1,7 @@
 package com.riders.thelab.feature.musicrecognition.ui.acrcloud
 
 import android.content.Context
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -42,8 +43,8 @@ import javax.inject.Inject
 class ACRCloudViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
     val repository: IRepository,
-    val uiRepository: IUiRepository
-) : BaseViewModel(), DefaultLifecycleObserver, IACRCloudListener {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), DefaultLifecycleObserver, IACRCloudListener {
 
     // Network State
     var hasInternetConnection: StateFlow<Boolean> = labNetworkManager.isConnectedFlow.stateIn(
@@ -53,7 +54,9 @@ class ACRCloudViewModel @Inject constructor(
     )
 
     private var mClient: ACRCloudClient? = null
-    private var mConfig: ACRCloudConfig? = null
+        private set
+    var mConfig: ACRCloudConfig? = null
+        private set
 
     private var _uiState: MutableStateFlow<ACRUiState> = MutableStateFlow(ACRUiState.Idle)
     val uiState: StateFlow<ACRUiState> = _uiState
@@ -72,6 +75,13 @@ class ACRCloudViewModel @Inject constructor(
 
     private var spotifyToken: String? by mutableStateOf(null)
     private var showToastWithMessage: Pair<Boolean, String> by mutableStateOf(Pair(false, ""))
+
+    @Stable
+    val musicRecognitionItems: StateFlow<List<MusicRecognitionModel>> by lazy {
+        repository
+            .getAllMusicRecognitionItems()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), emptyList())
+    }
 
     private fun updateUiState(newState: ACRUiState) {
         this._uiState.value = newState

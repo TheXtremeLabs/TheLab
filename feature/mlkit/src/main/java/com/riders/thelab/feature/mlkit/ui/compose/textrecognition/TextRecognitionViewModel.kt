@@ -17,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TextRecognitionViewModel @Inject constructor(
-    val uiRepository: IUiRepository
-) : BaseViewModel() {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
     ////////////////////////////////////////////
     // Variables
     ////////////////////////////////////////////

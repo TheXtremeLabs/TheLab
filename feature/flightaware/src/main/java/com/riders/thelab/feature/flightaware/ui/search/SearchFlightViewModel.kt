@@ -1,18 +1,24 @@
 package com.riders.thelab.feature.flightaware.ui.search
 
 import android.content.Intent
-import androidx.lifecycle.ViewModel
 import com.riders.thelab.core.data.local.model.compose.SearchFlightsUiState
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.flightaware.utils.Constants
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
 import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import timber.log.Timber
+import javax.inject.Inject
 
-class SearchFlightViewModel : ViewModel() {
+@HiltViewModel
+class SearchFlightViewModel @Inject constructor(
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     //////////////////////////////////////////
     // Compose states

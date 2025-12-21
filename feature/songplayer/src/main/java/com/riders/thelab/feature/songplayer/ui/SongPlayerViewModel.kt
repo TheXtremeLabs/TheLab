@@ -41,8 +41,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SongPlayerViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context,
-    val uiRepository: IUiRepository
-) : BaseViewModel(), DefaultLifecycleObserver,
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), DefaultLifecycleObserver,
     MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     //////////////////////////////////////////

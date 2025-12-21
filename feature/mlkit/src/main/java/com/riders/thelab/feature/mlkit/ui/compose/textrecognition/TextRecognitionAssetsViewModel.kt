@@ -2,9 +2,9 @@ package com.riders.thelab.feature.mlkit.ui.compose.textrecognition
 
 import android.graphics.Bitmap
 import androidx.lifecycle.viewModelScope
-import com.riders.thelab.feature.mlkit.data.local.compose.textrecognition.TextRecognitionState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
+import com.riders.thelab.feature.mlkit.data.local.compose.textrecognition.TextRecognitionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,8 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TextRecognitionAssetsViewModel @Inject constructor(
-    val uiRepository: IUiRepository
-) : BaseViewModel() {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
     ////////////////////////////////////////////
     // Variables
     ////////////////////////////////////////////

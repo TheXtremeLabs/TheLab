@@ -11,7 +11,9 @@ import javax.inject.Inject
 
 @Suppress("EmptyMethod")
 @HiltViewModel
-class ColorViewModel @Inject constructor(val uiRepository: IUiRepository) : BaseViewModel() {
+class ColorViewModel @Inject constructor(
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     var randomColor: Int by mutableIntStateOf(LabColorsManager.getRandomColor())
         private set

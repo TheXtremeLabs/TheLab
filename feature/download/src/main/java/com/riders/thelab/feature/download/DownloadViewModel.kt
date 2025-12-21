@@ -36,8 +36,8 @@ import javax.inject.Inject
 class DownloadViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : BaseViewModel() {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     private var errorCount: Int = 0
 

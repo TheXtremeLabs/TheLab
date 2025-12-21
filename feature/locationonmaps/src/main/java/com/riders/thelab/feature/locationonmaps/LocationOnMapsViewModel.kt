@@ -15,9 +15,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationOnMapsViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
-    val uiRepository: IUiRepository
-) : BaseViewModel() {
+    @param:ApplicationContext private val context: Context,
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
+
     // Define a Place ID.
     private var placeId by mutableStateOf("")
 

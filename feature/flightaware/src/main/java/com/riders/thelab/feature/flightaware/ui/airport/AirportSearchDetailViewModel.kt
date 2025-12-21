@@ -28,8 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AirportSearchDetailViewModel @Inject constructor(
     private val repository: IRepository,
-    val  uiRepository: IUiRepository
-) : BaseViewModel(), DefaultLifecycleObserver {
+     uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), DefaultLifecycleObserver {
 
     var airportID: NotBlankString? by mutableStateOf(null)
     var airportModel: AirportModel? by mutableStateOf(null)

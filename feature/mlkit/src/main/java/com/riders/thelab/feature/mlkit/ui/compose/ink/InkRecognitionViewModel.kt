@@ -17,8 +17,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class InkRecognitionViewModel @Inject constructor(val uiRepository: IUiRepository) :
-    BaseViewModel() {
+class InkRecognitionViewModel @Inject constructor(
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
     ////////////////////////////////////////////
     // Variables
     ////////////////////////////////////////////

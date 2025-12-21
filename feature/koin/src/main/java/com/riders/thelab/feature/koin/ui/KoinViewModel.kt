@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.utils.Resource
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.koin.data.RepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,8 +17,9 @@ import timber.log.Timber
 
 @KoinViewModel
 class KoinViewModel(
-    private val repository: RepositoryImpl
-) : BaseViewModel(), DefaultLifecycleObserver {
+    private val repository: RepositoryImpl,
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), DefaultLifecycleObserver {
 
     var htmlContent: String by mutableStateOf("")
 

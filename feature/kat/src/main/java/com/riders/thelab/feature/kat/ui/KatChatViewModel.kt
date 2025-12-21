@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.DocumentReference
 import com.riders.thelab.core.data.local.model.kat.KatModel
@@ -14,24 +13,26 @@ import com.riders.thelab.core.data.remote.dto.kat.KatChatRoom
 import com.riders.thelab.core.data.remote.dto.kat.NotificationData
 import com.riders.thelab.core.data.remote.dto.kat.PushNotification
 import com.riders.thelab.core.data.remote.rest.KatRestClient
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
-import com.riders.thelab.core.ui.data.local.UiRepository
 import com.riders.thelab.feature.kat.utils.FirebaseUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import kotools.types.text.toNotBlankString
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import timber.log.Timber
 import javax.inject.Inject
 
 
 @Suppress("EmptyMethod")
 @HiltViewModel
-class KatChatViewModel @Inject constructor(val uiRepository: IUiRepository) : ViewModel() {
+class KatChatViewModel @Inject constructor(
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     /////////////////////////
     // variables

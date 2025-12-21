@@ -1,5 +1,7 @@
 package com.riders.thelab.ui.mainactivity
 
+/*import com.riders.thelab.core.speechtotext.SpeechToTextRepository
+import com.riders.thelab.core.speechtotext.VoiceManagedViewModel*/
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -19,7 +21,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabAppManager.getPackageList
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
@@ -30,8 +31,7 @@ import com.riders.thelab.core.data.local.model.app.PackageApp
 import com.riders.thelab.core.data.local.model.compose.IslandState
 import com.riders.thelab.core.data.local.model.weather.ProcessedWeather
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
-import com.riders.thelab.core.speechtotext.SpeechToTextRepository
-import com.riders.thelab.core.speechtotext.VoiceManagedViewModel
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.core.ui.utils.toBitmap
 import com.riders.thelab.navigator.Navigator
@@ -58,9 +58,10 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context,
     labNetworkManager: LabNetworkManager,
-    val uiRepository: IUiRepository,
-    val speechToTextRepository: SpeechToTextRepository
-) : VoiceManagedViewModel(speechToTextRepository), DefaultLifecycleObserver {
+    uiRepository: IUiRepository,
+    //val speechToTextRepository: SpeechToTextRepository
+) : BaseViewModel(uiRepository), /*VoiceManagedViewModel(speechToTextRepository),*/
+    DefaultLifecycleObserver {
 
     //////////////////////////////////////////
     // Variables
@@ -181,7 +182,7 @@ class MainActivityViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         Timber.e("onCleared()")
-        speechToTextRepository.release()
+        //speechToTextRepository.release()
     }
 
 
@@ -356,7 +357,7 @@ class MainActivityViewModel @Inject constructor(
                     }
 
                     is VectorDrawable -> {
-                       (it.appDrawableIcon as VectorDrawable).toBitmap()
+                        (it.appDrawableIcon as VectorDrawable).toBitmap()
                     }
 
                     else -> {

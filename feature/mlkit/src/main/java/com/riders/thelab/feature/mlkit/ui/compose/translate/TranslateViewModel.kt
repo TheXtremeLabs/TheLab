@@ -6,10 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.viewModelScope
-import com.riders.thelab.feature.mlkit.data.local.compose.translate.TranslateDownloadModelState
-import com.riders.thelab.feature.mlkit.data.local.compose.translate.TranslateResultState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
+import com.riders.thelab.feature.mlkit.data.local.compose.translate.TranslateDownloadModelState
+import com.riders.thelab.feature.mlkit.data.local.compose.translate.TranslateResultState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,8 +28,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TranslateViewModel @Inject constructor(
-    val uiRepository: IUiRepository
-) : BaseViewModel(), DefaultLifecycleObserver {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), DefaultLifecycleObserver {
 
     ////////////////////////////////////////////
     // Variables

@@ -27,7 +27,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -40,8 +39,8 @@ import javax.inject.Inject
 class SignUpViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : BaseViewModel() {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
     /////////////////////////////////////
     // Composable states
     /////////////////////////////////////
@@ -152,9 +151,6 @@ class SignUpViewModel @Inject constructor(
     }
 
     init {
-        viewModelScope.launch {
-            updateDarkMode(repository.isNightMode().first())
-        }
 
         if (BuildConfig.DEBUG) {
             mockFields()

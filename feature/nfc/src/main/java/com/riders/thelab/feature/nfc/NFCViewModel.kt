@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.nfc.LabNFCManager
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.compose.utils.findActivity
-import com.riders.thelab.core.ui.data.local.UiRepository
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NFCViewModel @Inject constructor(
-    val uiRepository: UiRepository
-) : BaseViewModel(), DefaultLifecycleObserver {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), DefaultLifecycleObserver {
 
     val mLabNFCManager: LabNFCManager? by lazy {
         mWeakReference
@@ -33,7 +33,6 @@ class NFCViewModel @Inject constructor(
                     )
             }
     }
-
 
     var isCustomMessageVisible: Boolean by mutableStateOf(false)
         private set

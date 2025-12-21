@@ -5,10 +5,10 @@ import android.content.res.Resources
 import androidx.annotation.StringRes
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.CryptoObject
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.local.model.compose.getResult
 import com.riders.thelab.core.data.local.model.compose.switch
+import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.biometric.R
 import com.riders.thelab.feature.biometric.core.exception.InvalidCryptoLayerException
@@ -37,8 +37,8 @@ import javax.inject.Inject
 class BiometricViewModel @Inject constructor(
     private val userRepository: IUser,
     private val biometricRepository: IBiometric,
-    val uiRepository: IUiRepository
-) : ViewModel() {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     //////////////////////////////////////////
     // Variables

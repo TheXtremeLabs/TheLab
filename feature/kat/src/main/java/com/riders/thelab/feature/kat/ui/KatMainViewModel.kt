@@ -29,9 +29,9 @@ import javax.inject.Inject
 @HiltViewModel
 @SuppressLint("StaticFieldLeak")
 class KatMainViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
-    val uiRepository: IUiRepository
-) : BaseViewModel() {
+    @param:ApplicationContext private val context: Context,
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     /////////////////////////
     // Variables

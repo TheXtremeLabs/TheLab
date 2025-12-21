@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
@@ -28,8 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class UserProfileViewModel @Inject constructor(
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : BaseViewModel() {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     //////////////////////////////////////////
     // Compose states
@@ -118,16 +117,6 @@ class UserProfileViewModel @Inject constructor(
         }
 
     init {
-        viewModelScope.launch {
-            repository.isNightMode().collect {
-                updateDarkMode(it)
-            }
-
-            repository.isVibration().collect {
-                updateVibration(it)
-            }
-        }
-
         getLoggedUser()
     }
 

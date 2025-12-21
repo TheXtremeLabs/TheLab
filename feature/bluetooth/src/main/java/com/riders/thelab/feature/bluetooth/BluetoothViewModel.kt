@@ -8,16 +8,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
+import javax.inject.Inject
 
 
 @SuppressLint("MissingPermission")
 @Suppress("EmptyMethod")
-class BluetoothViewModel : BaseViewModel() {
+@HiltViewModel
+class BluetoothViewModel @Inject constructor(
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     //////////////////////////////////////////
     // Variables
@@ -115,6 +121,21 @@ class BluetoothViewModel : BaseViewModel() {
         mBluetoothManager?.let {
             updateBluetoothEnabled(it.adapter.isEnabled)
         } ?: run { Timber.e("Bluetooth Manager is null") }
+    }
+
+    fun onEvent(event: UiEvent) {
+        Timber.d("onEvent() | $event")
+
+        when (event) {
+            is UiEvent.OnStartDiscovery -> startDiscovery()
+            is UiEvent.OnStopDiscovery -> stopDiscovery()
+            is UiEvent.OnEnabledBluetooth -> {
+                setBluetooth(event.enabled)
+                updateBluetoothEnabled(event.enabled)
+            }
+
+            else -> Unit
+        }
     }
 
     @Suppress("DEPRECATION")

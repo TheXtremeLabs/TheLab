@@ -17,8 +17,8 @@ import kotlin.coroutines.CoroutineContext
 @HiltViewModel
 class YoutubeSplashScreenViewModel @Inject constructor(
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : BaseViewModel(), CoroutineScope {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()
@@ -42,7 +42,7 @@ class YoutubeSplashScreenViewModel @Inject constructor(
             repository.isActivitiesSplashScreenEnabled().first()
         }.also {
             Timber.d("init | isActivitiesSplashScreenEnabled() | is enabled value: $it")
-            updateActivitiesSplashEnabled(it)
+            //updateActivitiesSplashEnabled(it)
         }
     }
 

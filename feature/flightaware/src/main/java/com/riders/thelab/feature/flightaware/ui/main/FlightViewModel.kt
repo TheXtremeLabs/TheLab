@@ -32,8 +32,12 @@ import javax.inject.Inject
 class FlightViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
-    val uiRepository: IUiRepository
-) : FlightSearchViewModel(labNetworkManager = labNetworkManager, repository = repository) {
+    uiRepository: IUiRepository
+) : FlightSearchViewModel(
+    labNetworkManager = labNetworkManager,
+    repository = repository,
+    uiRepository = uiRepository
+) {
 
     //////////////////////////////////////////
     // Composable states

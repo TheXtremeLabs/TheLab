@@ -1,16 +1,17 @@
 package com.riders.thelab.core.data.local.model.music
 
+import androidx.compose.runtime.Stable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.riders.thelab.core.data.local.model.Song
 import com.riders.thelab.core.data.remote.dto.acrcloud.ACRCloudResponse
 import kotlinx.serialization.json.Json
-import kotools.types.text.NotBlankString
 import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
 import timber.log.Timber
 
+@Stable
 @Entity(tableName = "music_recognition")
 data class MusicRecognitionModel(
     @PrimaryKey(autoGenerate = true)

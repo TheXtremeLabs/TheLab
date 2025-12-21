@@ -9,8 +9,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BarcodeScannerViewModel @Inject constructor(
-    val uiRepository: IUiRepository
-) : BaseViewModel() {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
 
     /*var showCamera: Boolean by mutableStateOf(false)
     private set*/

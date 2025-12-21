@@ -1,13 +1,10 @@
 package com.riders.thelab.feature.googledrive.ui
 
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
 import com.google.api.services.drive.model.File
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.common.network.NetworkState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.googledrive.core.google.GoogleSignInManager
@@ -31,8 +28,8 @@ import kotlin.coroutines.CoroutineContext
 @HiltViewModel
 class GoogleDriveViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
-    val uiRepository: IUiRepository
-) : BaseViewModel(), CoroutineScope {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()

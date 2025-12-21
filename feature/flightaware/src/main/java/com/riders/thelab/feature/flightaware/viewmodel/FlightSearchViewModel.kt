@@ -22,6 +22,7 @@ import com.riders.thelab.core.data.local.model.flight.toAirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.toSearchFlightModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
 import com.riders.thelab.core.data.remote.dto.flight.Segment
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.flightaware.ui.main.FlightMainActivity
 import com.riders.thelab.feature.flightaware.ui.main.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,17 +37,18 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.kotools.types.ExperimentalKotoolsTypesApi
 import kotools.types.text.NotBlankString
 import kotools.types.text.toNotBlankString
+import org.kotools.types.ExperimentalKotoolsTypesApi
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 open class FlightSearchViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
-    private val repository: IRepository
-) : BaseFlightViewModel(labNetworkManager) {
+    private val repository: IRepository,
+    uiRepository: IUiRepository
+) : BaseFlightViewModel(labNetworkManager = labNetworkManager, uiRepository = uiRepository) {
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////

@@ -19,6 +19,7 @@ import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.local.model.compose.ScheduleJobAlarmUiState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
+import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.schedule.core.ScheduleAlarmReceiver
 import com.riders.thelab.feature.schedule.core.ScheduleAlarmService
@@ -26,8 +27,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.ref.WeakReference
+import javax.inject.Inject
 
-class ScheduleViewModel : BaseViewModel() {
+class ScheduleViewModel @Inject constructor(
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository) {
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
