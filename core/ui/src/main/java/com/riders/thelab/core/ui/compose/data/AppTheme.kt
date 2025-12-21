@@ -14,6 +14,7 @@ import com.riders.thelab.core.ui.compose.color.md_red_theme_light_surfaceVariant
 import com.riders.thelab.core.ui.compose.color.md_theme_light_primary
 import com.riders.thelab.core.ui.compose.color.md_theme_light_secondary
 import com.riders.thelab.core.ui.compose.color.md_theme_light_surfaceVariant
+import com.riders.thelab.core.ui.data.local.preferences.proto.ThemeColorConfigProto
 import kotlin.reflect.full.isSubclassOf
 
 /**
@@ -54,6 +55,14 @@ sealed class AppTheme(
         md_red_theme_light_secondary
     )
 }
+
+fun AppTheme.toThemeColorConfigProto(): ThemeColorConfigProto = when (this) {
+    AppTheme.Default-> ThemeColorConfigProto.THEME_COLOR_DEFAULT
+    AppTheme.Blue-> ThemeColorConfigProto.THEME_COLOR_BLUE
+    AppTheme.Red -> ThemeColorConfigProto.THEME_COLOR_RED
+    AppTheme.Green -> ThemeColorConfigProto.THEME_COLOR_GREEN
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////
