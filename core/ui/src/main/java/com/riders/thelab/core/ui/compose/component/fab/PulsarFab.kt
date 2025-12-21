@@ -1,5 +1,6 @@
 package com.riders.thelab.core.ui.compose.component.fab
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.InfiniteRepeatableSpec
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.StartOffset
@@ -9,11 +10,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
@@ -33,32 +32,52 @@ import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 
+///////////////////////////////////////////////////////////
+//
+// COMPOSE
+//
+///////////////////////////////////////////////////////////
 @Composable
-fun PulsarFab(content: @Composable () -> Unit) {
+fun PulsarFab(
+    containerColor: Color = MaterialTheme.colorScheme.primary,
+    content: @Composable () -> Unit
+) {
     MultiplePulsarEffect { modifier ->
         FloatingActionButton(
             modifier = modifier,
             shape = FloatingActionButtonDefaults.largeShape,
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = containerColor,
             onClick = { },
         ) { content() }
     }
 }
 
 @Composable
-fun PulsarFabWithClick(onClick: () -> Unit) {
-    MultiplePulsarEffect { modifier ->
+fun PulsarFabWithClick(
+    isPulsing: Boolean = true,
+    containerColor: Color = MaterialTheme.colorScheme.primary,
+    elevation: Dp? = null,
+    onClick: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    MultiplePulsarEffect(isPulsing = isPulsing) { modifier ->
         FloatingActionButton(
             modifier = modifier,
             shape = FloatingActionButtonDefaults.largeShape,
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = containerColor,
+            elevation = elevation?.let {
+                FloatingActionButtonDefaults.bottomAppBarFabElevation(
+                    defaultElevation = it
+                )
+            } ?: FloatingActionButtonDefaults.bottomAppBarFabElevation(),
             onClick = onClick,
-        ) { Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "") }
+        ) { content.invoke() }
     }
 }
 
 @Composable
 fun MultiplePulsarEffect(
+    isPulsing: Boolean = true,
     nbPulsar: Int = 2,
     pulsarRadius: Float = 25f,
     pulsarColor: Color = MaterialTheme.colorScheme.primary,
@@ -74,14 +93,18 @@ fun MultiplePulsarEffect(
         Modifier,
         contentAlignment = Alignment.Center
     ) {
-        Canvas(
-            Modifier,
-            onDraw = {
-                for (i in 0 until nbPulsar) {
-                    val (radius, alpha) = effects[i]
-                    drawCircle(color = pulsarColor, radius = radius, alpha = alpha)
+        AnimatedVisibility(visible = isPulsing) {
+            Canvas(
+                Modifier,
+                onDraw = {
+                    for (i in 0 until nbPulsar) {
+                        val (radius, alpha) = effects[i]
+                        drawCircle(color = pulsarColor, radius = radius, alpha = alpha)
+                    }
                 }
-            })
+            )
+        }
+
         fab(
             Modifier
                 .padding((pulsarRadius * 2).dp)
@@ -121,11 +144,25 @@ fun pulsarBuilder(pulsarRadius: Float, size: Int, delay: Int): Pair<Float, Float
 }
 
 
+///////////////////////////////////////////////////////////
+//
+// PREVIEWS
+//
+///////////////////////////////////////////////////////////
+@DevicePreviews
+@Composable
+fun PreviewPulsarFabWithClick(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        PulsarFabWithClick(
+            containerColor = MaterialTheme.colorScheme.primary,
+            onClick = {}) {}
+    }
+}
+
 @DevicePreviews
 @Composable
 fun PreviewPulsarFab(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
-        PulsarFab {
-        }
+        PulsarFab(containerColor = MaterialTheme.colorScheme.primary) {}
     }
 }
