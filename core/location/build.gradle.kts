@@ -4,11 +4,8 @@ plugins {
 
 android {
     namespace = "com.riders.thelab.core.location"
-    compileSdk = 36
 
     defaultConfig {
-        minSdk = AndroidConfiguration.Sdk.MIN
-
         testApplicationId = "com.riders.thelab.core.location.test"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

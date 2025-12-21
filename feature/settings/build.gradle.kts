@@ -13,6 +13,11 @@ android {
         resources {
             excludes += "META-INF/DEPENDENCIES"
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "google/type/color.proto"
+            excludes += "src/google/protobuf/duration.proto"
+            excludes += "src/google/protobuf/empty.proto"
+            excludes += "src/google/protobuf/type.proto"
+            excludes += "src/google/protobuf/timestamp.proto"
         }
     }
 
@@ -56,6 +61,11 @@ dependencies {
     implementation(platform(libs.okhttp.bom))
     // define any required OkHttp artifacts without version
     implementation(libs.okhttp)
+
+    // Protobuf
+    implementation(platform(libs.protobuf.bom))
+    implementation(libs.protobuf.javalite)
+    implementation(libs.protobuf.kotlin)
 
     implementation(libs.zxing.core)
     implementation(libs.zxing.parent)

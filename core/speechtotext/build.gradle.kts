@@ -41,6 +41,10 @@ android {
     namespace = "com.riders.thelab.core.speechtotext"
 }
 
+configurations.all {
+    exclude(group = "com.google.protobuf", module = "protobuf-javalite")
+}
+
 dependencies {
     ///////////////////////////////////
     // Project
@@ -58,9 +62,7 @@ dependencies {
     api(platform(libs.google.cloud.bom))
     //api(libs.google.cloud.texttospeech)
     api(libs.google.cloud.speech)
-    api(platform(libs.grpc.bom))
-    api(libs.grpc.okhttp)
-    api(libs.grpc.stub)
+
     api(libs.jflac.codec)
 
     /////////////////////////////

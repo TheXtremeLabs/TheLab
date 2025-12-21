@@ -75,10 +75,19 @@ dependencies {
     implementation(libs.google.api.client)
     implementation(libs.google.api.client.android)
     // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty
-    implementation(libs.google.api.client.jetty)
+    implementation(libs.google.api.client.jetty) {
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+        exclude(group = "com.google.protobuf", module = "protobuf-kotlin")
+    }
     // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-java6
-    implementation(libs.google.api.client.oauth.java6)
-    implementation(libs.google.api.client.oauth.jackson2)
+    implementation(libs.google.api.client.oauth.java6) {
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+        exclude(group = "com.google.protobuf", module = "protobuf-kotlin")
+    }
+    implementation(libs.google.api.client.oauth.jackson2) {
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+        exclude(group = "com.google.protobuf", module = "protobuf-kotlin")
+    }
 
     // Google Http
     implementation(platform(libs.google.http.client.bom))

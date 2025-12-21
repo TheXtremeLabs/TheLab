@@ -5,13 +5,55 @@ plugins {
     alias(libs.plugins.thelab.library.compose)
     alias(libs.plugins.thelab.hilt)
     alias(libs.plugins.thelab.library.jacoco)
+    alias(libs.plugins.protobuf)
 }
 
 android {
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    packaging {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "google/protobuf/*.proto"
+            excludes += "google/type/color.proto"
+            excludes += "src/google/protobuf/duration.proto"
+            excludes += "src/google/protobuf/empty.proto"
+            excludes += "src/google/protobuf/type.proto"
+            excludes += "src/google/protobuf/timestamp.proto"
+        }
+    }
+
     namespace = "com.riders.thelab.core.ui"
+}
+
+configurations.all {
+    exclude(group = "com.google.protobuf", module = "protobuf-lite")
+}
+
+
+protobuf {
+    protoc {
+        //artifact = "com.google.protobuf:protoc:4.33.0"
+        artifact = "${libs.protobuf.protoc.get()}"
+    }
+
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+
+                create("kotlin"){
+                    option("lite")
+                }
+            }
+        }
+    }
 }
 
 composeCompiler {
@@ -106,6 +148,11 @@ dependencies {
     // Lottie
     api(libs.lottie)
     api(libs.lottie.compose)
+
+    // Protobuf
+    implementation(platform(libs.protobuf.bom))
+    implementation(libs.protobuf.javalite)
+    implementation(libs.protobuf.kotlin.lite)
 
 
     api(libs.kotools.types)

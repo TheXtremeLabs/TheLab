@@ -14,8 +14,7 @@ android {
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar","*.aar"))))
 
     implementation(files("libs/acrcloud-universal-sdk-1.3.22.jar"))
 //    implementation(project(":shazam-kit", configuration = "default"))

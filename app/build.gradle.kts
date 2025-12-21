@@ -161,6 +161,16 @@ android {
             excludes += "META-INF/INDEX.LIST"
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "google/protobuf/*.proto"
+            excludes += "google/type/color.proto"
+            excludes += "src/google/protobuf/any.proto"
+            excludes += "src/google/protobuf/descriptor.proto"
+            excludes += "src/google/protobuf/duration.proto"
+            excludes += "src/google/protobuf/empty.proto"
+            excludes += "src/google/protobuf/field_mask.proto"
+            excludes += "src/google/protobuf/source_context.proto"
+            excludes += "src/google/protobuf/type.proto"
+            excludes += "src/google/protobuf/timestamp.proto"
+            excludes += "src/google/protobuf/wrappers.proto"
         }
 
         jniLibs.pickFirsts.add("protobuf.meta")
@@ -197,14 +207,23 @@ configurations.all {
         cacheDynamicVersionsFor(4, "hours")
         cacheChangingModulesFor(10, "minutes")
 
+        // In configurations.all -> resolutionStrategy
+        force("${libs.protobuf.javalite.get()}:${libs.versions.protobuf.get()}")
+        force("${libs.protobuf.kotlin.lite.get()}:${libs.versions.protobuf.get()}")
+
+        /*force("com.google.protobuf:protobuf-java:4.33.0")
         force("com.google.protobuf:protobuf-javalite:4.33.0")
-        force("com.jakewharton.threetenabp:threetenabp:1.4.9") // Force a specific version
+        force("com.google.protobuf:protobuf-kotlin:4.33.0")
+        force("com.google.protobuf:protobuf-kotlin-lite:4.33.0")*/
+
+        //force("com.jakewharton.threetenabp:threetenabp:1.4.9") // Force a specific version
     }
 
-    /*exclude(module = "protobuf-javalite")
+    exclude(module = "protobuf-java")
+    exclude(module = "protobuf-kotlin")
     exclude(module = "protobuf-lite")
-    exclude(module = "protolite-well-known-types")
-    exclude(group = "org.threeten", module = "threetenbp")*/
+    // exclude(module = "protolite-well-known-types")
+    // exclude(group = "org.threeten", module = "threetenbp")
 }
 
 
@@ -222,7 +241,7 @@ dependencies {
     implementation(project(":core:google"))
     implementation(project(":core:permissions"))
     implementation(project(":core:player"))
-    implementation(project(":core:speechtotext"))
+    //implementation(project(":core:speechtotext"))
     implementation(project(":core:ui"))
     implementation(project(":core:testing"))
 
@@ -305,16 +324,36 @@ dependencies {
     // Google API
     implementation(libs.google.play.services.base)
     implementation(libs.google.play.services.auth)
-    implementation(libs.google.api.drive)
+    implementation(libs.google.api.drive) {
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+        exclude(group = "com.google.protobuf", module = "protobuf-kotlin")
+    }
     implementation(platform(libs.google.http.client.bom))
     implementation(libs.google.http.client)
     implementation(libs.google.api.client)
     implementation(libs.google.api.client.android)
     // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty
-    implementation(libs.google.api.client.jetty)
+    implementation(libs.google.api.client.jetty) {
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+        exclude(group = "com.google.protobuf", module = "protobuf-kotlin")
+    }
     // https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-java6
-    implementation(libs.google.api.client.oauth.java6)
-    implementation(libs.google.api.client.oauth.jackson2)
+    implementation(libs.google.api.client.oauth.java6) {
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+        exclude(group = "com.google.protobuf", module = "protobuf-kotlin")
+    }
+    implementation(libs.google.api.client.oauth.jackson2) {
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+        exclude(group = "com.google.protobuf", module = "protobuf-kotlin")
+    }
+
+    // Google Cloud Speech API
+    /*compileOnly(platform(libs.google.cloud.bom))
+    runtimeOnly(libs.google.cloud.speech)
+    // Protobuf
+    compileOnly(platform(libs.protobuf.bom))
+    runtimeOnly(libs.protobuf.javalite)
+    runtimeOnly(libs.protobuf.kotlin.lite)*/
 
     // Google ML Kit
     implementation(libs.google.mlkit.barcode.scanning)
@@ -322,7 +361,7 @@ dependencies {
     implementation(libs.google.mlkit.objectdetection.custom)
 
     // Firebase BOM and Dependencies: provided by analytics module
-    implementation(platform (libs.firebase.bom))
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.appcheck)
     implementation(libs.firebase.appcheck.debug)
     implementation(libs.firebase.appcheck.playintegrity)

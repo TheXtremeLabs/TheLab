@@ -50,12 +50,6 @@ android {
     namespace = "com.riders.thelab.core.data"
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("com.google.protobuf:protobuf-javalite:4.32.0")
-    }
-}
-
 dependencies {
 
     ///////////////////////////////////

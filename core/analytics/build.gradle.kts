@@ -38,23 +38,23 @@ android {
         jniLibs.pickFirsts.add("protobuf.meta")
     }
 
-    /*configurations.all {
-        exclude(module = "protobuf-javalite")
-        exclude(module = "protobuf-java")
-        exclude(module = "proto-google-common-protos")
-        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
-    }*/
-
     namespace = "com.riders.thelab.core.analytics"
 }
 
-/*configurations.forEach { configuration ->
-    configuration.exclude(module = "protolite-well-known-types")
-    configuration.exclude(module = "protobuf-javalite")
-    configuration.exclude(module = "protobuf-java")
-    configuration.exclude(module = "protobuf-java-util")
-    configuration.exclude(group = "com.google.firebase", module = "protolite-well-known-types")
-}*/
+configurations.all {
+    resolutionStrategy {
+        // In configurations.all -> resolutionStrategy
+        force("${libs.protobuf.javalite.get()}:${libs.versions.protobuf.get()}")
+        force("${libs.protobuf.kotlin.lite.get()}:${libs.versions.protobuf.get()}")
+    }
+
+    exclude(module = "protobuf-java")
+    exclude(module = "protobuf-kotlin")
+    exclude(module = "protobuf-lite")
+    exclude(module = "proto-google-common-protos")
+    exclude(module = "protolite-well-known-types")
+    exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+}
 
 dependencies {
     /////////////////////////////

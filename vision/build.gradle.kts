@@ -139,8 +139,10 @@ configurations.all {
         cacheDynamicVersionsFor(4, "hours")
         cacheChangingModulesFor(10, "minutes")
 
-        force("com.google.protobuf:protobuf-javalite:4.32.0")
-    }
+        // In configurations.all -> resolutionStrategy
+        force("${libs.protobuf.javalite.get()}:${libs.versions.protobuf.get()}")
+        force("${libs.protobuf.kotlin.lite.get()}:${libs.versions.protobuf.get()}")
+ }
 
     exclude(module = "protobuf-lite")
     exclude(module = "protolite-well-known-types")

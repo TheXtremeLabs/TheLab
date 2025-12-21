@@ -10,12 +10,12 @@ crashlyticsGradlePlugin = "3.0.6"
 # Performance Monitoring plugin
 performancesGradlePlugin = "2.0.2"
 # Protobuf
-protobufPlugin = "0.9.5"
+protobufPlugin = "0.9.6"
 
 # Dependencies version
 accompanist = "0.37.3"
 androidDesugarJdkLibs = "2.1.5"
-androidxActivity = "1.12.1"
+androidxActivity = "1.12.2"
 androidxAnnotation = "1.9.1"
 androidxAppCompat = "1.7.1"
 androidxAppSearch = "1.1.0"
@@ -27,7 +27,7 @@ androidxBrowser = "1.9.0"
 androidxCamera = "1.5.2"
 androidxCameraViewFinder = "1.4.0-alpha07"
 # Compose
-androidxComposeBom = "2025.12.00"
+androidxComposeBom = "2025.12.01"
 androidxComposeCompiler = "1.5.15"
 androidxComposeFoundation = "1.9.3"
 androidxComposeMaterial3 = "1.4.0"
@@ -89,7 +89,7 @@ googleApiClientOAuth = "1.39.0"
 googleApiDriveV3 = "v3-rev20221219-2.0.0"
 googleApiClientJackson2 = "2.8.1"
 googleAuthLibraryOauth2Http = "1.41.0"
-googleCloudBom = "26.72.0"
+googleCloudBom = "26.73.0"
 googleCloudTextToSpeech = "2.76.0"
 googleCloudSpeech = "4.70.0"
 googleHttpClientBom = "2.0.2"
@@ -143,30 +143,30 @@ koin = "4.1.1"
 koinAnnotationsBom = "2.3.1"
 koinKspCompiler = "2.3.1"
 # Kotlin (for gradle plugin version and dependency)
-kotlin = "2.3.0"
+kotlin = "2.2.21"
 kotlinxCoroutines = "1.10.2"
 kotlinxDatetime = "0.7.1"
 kotlinPlayServices = "1.10.2"
 kotlinxMetadataJvm = "0.9.0"
 kotlinxSerializationJson = "1.9.0"
 # Kotzilla
-kotzilla = "1.4.1"
+kotzilla = "1.4.2"
 ktor = "3.3.3"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
-ksp = "2.3.3"
-landscapist = "2.6.1"
+ksp = "2.2.21-2.0.4"
+landscapist = "2.6.2"
 lint = "31.13.2"
 location = "21.3.0"
-logback = "1.5.21"
+logback = "1.5.22"
 lottie = "6.7.1"
 maps = "19.2.0"
 mapsCompose = "6.12.2"
 material = "1.13.0"
-mapsUtils = "3.20.0"
+mapsUtils = "3.20.1"
 # Media Exo Player
 media = "1.7.1"
 mediaRouter = "1.8.1"
-media3 = "1.8.0"
+media3 = "1.9.0"
 mockito = "5.21.0"
 # Moshi - Deprecated change by kotlin serialization json
 # moshi = "1.15.1"
@@ -496,7 +496,8 @@ okhttp-mock-web-server = { group = "com.squareup.okhttp3", name = "mockwebserver
 places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
 protobuf-bom = { group = "com.google.protobuf", name = "protobuf-bom", version.ref = "protobuf" }
 protobuf-java = { group = "com.google.protobuf", name = "protobuf-java" }
-protobuf-java-lite = { group = "com.google.protobuf", name = "protobuf-java-lite" }
+protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite" }
+protobuf-lite = { group = "com.google.protobuf", name = "protobuf-lite", version.ref="protobuf" }
 protobuf-kotlin = { group = "com.google.protobuf", name = "protobuf-kotlin", version.ref = "protobuf" }
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
 protobuf-protoc = { group = "com.google.protobuf", name = "protoc" , version.ref = "protobuf"}
