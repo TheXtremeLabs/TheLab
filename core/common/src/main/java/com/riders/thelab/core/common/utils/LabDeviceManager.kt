@@ -18,7 +18,7 @@ object LabDeviceManager {
 
     const val MODEL_NAME_GALAXY_NOTE_4 = "SM-N910F"
     const val MODEL_NAME_GALAXY_NOTE_8 = "SM-N950F"
-    const val MODEL_NAME_GALAXY_NOTE_20_ULTRA = "SM-N980B"
+    const val MODEL_NAME_GALAXY_NOTE_20_ULTRA = "SM-N986B"
 
     // TODO : GoldFinger deprecated
 
