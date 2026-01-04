@@ -17,12 +17,25 @@ android {
         testApplicationId = "com.riders.thelab.feature.palette.test"
     }
 
-    sourceSets {
-        getByName("androidTest") {
-            java.srcDirs("$projectDir/core/testing/src/androidTest/java/")
+    namespace = "com.riders.thelab.feature.palette"
+}
+
+configurations.all {
+    resolutionStrategy {
+        cacheDynamicVersionsFor(4, "hours")
+        cacheChangingModulesFor(10, "minutes")
+
+        eachDependency {
+            if ("com.google.protobuf" == requested.group && "protobuf-javalite" == requested.name) {
+                useTarget("com.google.protobuf:protobuf-javalite:${libs.versions.protobuf.get()}")
+                //because("")
+            }
         }
     }
-    namespace = "com.riders.thelab.feature.palette"
+
+    exclude(module = "protobuf-java")
+    exclude(module = "protobuf-kotlin")
+    exclude(module = "protobuf-lite")
 }
 
 dependencies {
@@ -32,15 +45,20 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
-    implementation(project(":core:testing"))
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.storage)
+
+
+    // Required for Hilt testing
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
 
     ///////////////////////////////////
     // General Dependencies
     ///////////////////////////////////
     testImplementation(project(":core:testing"))
+    // Add the core:testing module to provide the Runner and other test utilities
     androidTestImplementation(project(":core:testing"))
 
     androidTestImplementation(libs.androidx.test.runner)

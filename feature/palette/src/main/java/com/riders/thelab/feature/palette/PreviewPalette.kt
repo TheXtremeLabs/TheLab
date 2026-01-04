@@ -55,6 +55,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -112,7 +115,7 @@ fun PaletteSuccess(
     )
     val painterState: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
 
-    BoxWithConstraints (modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(
             modifier = Modifier
                 .size(this.maxWidth, this.maxHeight)
@@ -121,6 +124,10 @@ fun PaletteSuccess(
             // Image Container
             Card(
                 modifier = Modifier
+                    .semantics {
+                        contentDescription = "palette image card container "
+                        testTag = "palette_image_card"
+                    }
                     .fillMaxWidth()
                     .height(dimensionResource(id = com.riders.thelab.core.ui.R.dimen.card_image_custom_max_height)),
                 shape = imageShape
@@ -175,7 +182,9 @@ fun PaletteSuccess(
                     LabLoader(modifier = Modifier.size(56.dp))
                 } else {
                     LazyVerticalGrid(
-                        modifier = Modifier.fillMaxWidth().heightIn(max=500.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 500.dp),
                         state = lazyState,
                         horizontalArrangement = Arrangement.Center,
                         verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -240,6 +249,10 @@ fun PaletteContent(
             topBar = {
                 TheLabTopAppBar(
                     theme = theme,
+                    modifier = Modifier.semantics {
+                        contentDescription = "palette top app bar"
+                        testTag = "palette_top_app_bar"
+                    },
                     toolbarSize = ToolbarSize.SMALL,
                     title = stringResource(id = R.string.activity_title_palette),
                     toolbarHeight = 72.dp,
@@ -263,7 +276,12 @@ fun PaletteContent(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         IconButton(
-                                            modifier = Modifier.fillMaxSize(),
+                                            modifier = Modifier
+                                                .semantics {
+                                                    contentDescription = "refresh button"
+                                                    testTag = "refresh_button"
+                                                }
+                                                .fillMaxSize(),
                                             onClick = onRefreshedClicked,
                                             enabled = hasInternetConnection
                                         ) {
@@ -284,6 +302,12 @@ fun PaletteContent(
                                     ) {
                                         CircularProgressIndicator(
                                             modifier = Modifier
+                                                .semantics {
+                                                    contentDescription =
+                                                        "refresh circular progress indicator"
+                                                    testTag = "refresh_circular_progress"
+                                                }
+
                                                 .fillMaxSize()
                                                 .padding(8.dp)
                                         )
@@ -309,6 +333,10 @@ fun PaletteContent(
                         theme = theme,
                         darkTheme = darkTheme,
                         modifier = Modifier
+                            .semantics {
+                                contentDescription = "no internet connection screen content"
+                                testTag = "no_internet_connection_screen"
+                            }
                             .fillMaxSize()
                             .padding(contentPadding),
                         message = "${stringResource(R.string.network_status_disconnected)}\n${
@@ -321,7 +349,14 @@ fun PaletteContent(
                     )
                 } else {
                     when (paletteUiState) {
-                        is PaletteUiState.Loading -> LabLoader(modifier = Modifier.size(56.dp))
+                        is PaletteUiState.Loading -> LabLoader(
+                            modifier = Modifier
+                                .semantics {
+                                    contentDescription = "lab loading animation content"
+                                    testTag = "lab_loader_animation"
+                                }
+                                .size(56.dp))
+
                         is PaletteUiState.Success -> PaletteSuccess(fetchedImageUrl = paletteUiState.fetchedImage) { palette ->
                             Timber.d("Recomposition | generated palette $palette")
                             navigationColor = palette["Light Vibrant"]?.toColor() ?: Color.White
