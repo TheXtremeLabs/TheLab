@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.capitalize
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -40,13 +41,14 @@ import com.riders.thelab.feature.videocall.ui.video.VideoCallUiEvent
 import io.getstream.video.android.core.StreamVideoBuilder
 import io.getstream.video.android.model.User
 import io.getstream.video.android.model.UserType
-import kotools.types.text.toNotBlankString
+import timber.log.Timber
+import java.util.Locale
+
 
 @Composable
 fun StreamActivityContent(
     theme: AppTheme,
     darkTheme: Boolean,
-    username: String,
     uiState: ConnectState,
     videoCallState: VideoCallState,
     uiEvent: (UiEvent) -> Unit,
@@ -56,14 +58,17 @@ fun StreamActivityContent(
     val navHostController: NavHostController = rememberNavController()
     val currentDestination = navHostController.currentDestination
 
-    var currentScreen: Screen by remember { mutableStateOf(ConnectRoute) }
+    var currentScreen: Screen? by remember { mutableStateOf(null) }
 
     navHostController.addOnDestinationChangedListener { controller, destination, arguments ->
-        currentScreen = when (destination.route) {
-            ConnectRoute.route -> ConnectRoute
-            VideoCallRoute.route -> VideoCallRoute
-            else -> ConnectRoute
+        Timber.d("addOnDestinationChangedListener() | destination: ${destination.toString()}, arguments: $arguments")
+        if (ConnectRoute.route == destination.route) {
+            currentScreen = ConnectRoute
         }
+        if (VideoCallRoute.route == destination.route) {
+            currentScreen = VideoCallRoute
+        }
+        Timber.d("addOnDestinationChangedListener() | currentScreen: $currentScreen")
     }
 
     BackHandler {
@@ -90,7 +95,9 @@ fun StreamActivityContent(
                     darkTheme = darkTheme,
                     modifier = Modifier.fillMaxWidth(),
                     toolbarSize = ToolbarSize.SMALL,
-                    title = currentScreen.route,
+                    title = currentScreen?.route?.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                    },
                     titleColor = if (!darkTheme) Color.Black else Color.White,
                     mainCustomContent = null,
                     navigationIcon = {
@@ -126,7 +133,6 @@ fun StreamActivityContent(
                     ConnectScreen(
                         theme = theme,
                         darkTheme = darkTheme,
-                        username = username,
                         connectState = uiState,
                         uiEvent = uiEvent
                     )
@@ -176,9 +182,8 @@ private fun PreviewStreamActivityContent() {
     StreamActivityContent(
         theme = AppTheme.Default,
         darkTheme = isSystemInDarkTheme(),
-        username = "Mike",
         uiState = ConnectState(
-            name = "Mike".toNotBlankString().getOrThrow(),
+            name = "Mike",
             isConnected = false,
             errorMessage = null
         ),
@@ -187,7 +192,6 @@ private fun PreviewStreamActivityContent() {
             state = null,
             error = null
         ),
-        uiEvent = {},
-        onVideoCallUiEvent = {}
-    )
+        uiEvent = {}
+    ) {}
 }

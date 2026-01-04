@@ -1,9 +1,25 @@
 package com.riders.thelab.feature.videocall.data
 
-import kotools.types.text.NotBlankString
+import android.os.Build
+import androidx.compose.runtime.Stable
+import com.riders.thelab.core.common.utils.LabDeviceManager
+import com.riders.thelab.feature.videocall.BuildConfig
 
+@Stable
 data class ConnectState(
-    val name: NotBlankString,
+    val name: String = when {
+        BuildConfig.DEBUG && Build.MODEL.contains(
+            LabDeviceManager.MODEL_NAME_GALAXY_NOTE_8,
+            ignoreCase = true
+        ) -> "note8"
+
+        BuildConfig.DEBUG && Build.MODEL.contains(
+            LabDeviceManager.MODEL_NAME_GALAXY_NOTE_20_ULTRA,
+            ignoreCase = true
+        ) -> "note20"
+
+        else -> ""
+    },
     val isConnected: Boolean = false,
     val errorMessage: String? = null
 ) {

@@ -113,7 +113,12 @@ configurations.all {
         cacheDynamicVersionsFor(4, "hours")
         cacheChangingModulesFor(10, "minutes")
 
-        force("com.google.protobuf:protobuf-javalite:4.33.0")
+        eachDependency {
+            if ("com.google.protobuf" == requested.group && "protobuf-javalite" == requested.name) {
+                useTarget("com.google.protobuf:protobuf-javalite:${libs.versions.protobuf.get()}")
+                //because("")
+            }
+        }
     }
 
     exclude(module = "protobuf-lite")

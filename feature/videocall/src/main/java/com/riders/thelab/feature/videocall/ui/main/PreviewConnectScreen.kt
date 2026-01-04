@@ -18,7 +18,6 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.data.local.model.compose.Screen
 import com.riders.thelab.feature.videocall.data.ConnectState
 import kotlinx.serialization.Serializable
-import kotools.types.text.toNotBlankString
 
 @Serializable
 data object ConnectRoute : Screen(route = "connect")
@@ -27,7 +26,6 @@ data object ConnectRoute : Screen(route = "connect")
 fun ConnectScreen(
     theme: AppTheme,
     darkTheme: Boolean = isSystemInDarkTheme(),
-    username: String,
     connectState: ConnectState,
     uiEvent: (UiEvent) -> Unit
 ) {
@@ -45,7 +43,7 @@ fun ConnectScreen(
             Text(text = "Connect Screen")
 
             TextField(
-                value = username,
+                value = connectState.name,
                 onValueChange = { uiEvent(UiEvent.OnNameChanged(it)) },
                 label = { Text("Name") },
                 placeholder = { Text("Name") },
@@ -71,9 +69,8 @@ private fun PreviewConnectScreen() {
     ) {
         ConnectScreen(
             theme = AppTheme.Default,
-            username = "Mike",
             connectState = ConnectState(
-                name = "Mike".toNotBlankString().getOrThrow(),
+                name = "Mike",
                 isConnected = false,
                 errorMessage = null
             )

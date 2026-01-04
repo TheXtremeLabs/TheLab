@@ -44,7 +44,6 @@ class StreamActivity : BaseComponentActivity() {
                     StreamActivityContent(
                         theme = theme,
                         darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
-                        username = mViewModel.username,
                         uiState = uiState,
                         videoCallState = videoCallState,
                         uiEvent = mViewModel::onEvent,

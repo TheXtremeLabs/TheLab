@@ -44,6 +44,7 @@ dependencies {
     api(project(":feature:tabs"))
     api(project(":feature:theaters"))
     api(project(":feature:transitions"))
+    api(project(":feature:videocall"))
     api(project(":feature:weather"))
     api(project(":feature:youtube"))
 

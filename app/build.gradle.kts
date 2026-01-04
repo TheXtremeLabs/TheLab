@@ -207,9 +207,16 @@ configurations.all {
         cacheDynamicVersionsFor(4, "hours")
         cacheChangingModulesFor(10, "minutes")
 
+        eachDependency {
+            if ("com.google.protobuf" == requested.group && "protobuf-javalite" == requested.name) {
+                useTarget("com.google.protobuf:protobuf-javalite:${libs.versions.protobuf.get()}")
+                //because("")
+            }
+        }
+
         // In configurations.all -> resolutionStrategy
-        force("${libs.protobuf.javalite.get()}:${libs.versions.protobuf.get()}")
-        force("${libs.protobuf.kotlin.lite.get()}:${libs.versions.protobuf.get()}")
+        //force("${libs.protobuf.javalite.get()}:${libs.versions.protobuf.get()}")
+        //force("${libs.protobuf.kotlin.lite.get()}:${libs.versions.protobuf.get()}")
 
         /*force("com.google.protobuf:protobuf-java:4.33.0")
         force("com.google.protobuf:protobuf-javalite:4.33.0")
