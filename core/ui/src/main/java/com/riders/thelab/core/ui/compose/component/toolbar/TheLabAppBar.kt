@@ -284,6 +284,7 @@ fun TheLabTopAppBar(
 fun TheLabTopAppBar(
     theme: AppTheme,
     toolbarSize: ToolbarSize,
+    modifier: Modifier = Modifier,
     darkTheme: Boolean = isSystemInDarkTheme(),
     title: String? = null,
     titleColor: Color = Color.White,
@@ -315,7 +316,8 @@ fun TheLabTopAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(toolbarHeight)
-                        .background(gradientBrush),
+                        .background(gradientBrush)
+                        .then(modifier),
                     title = {
                         when {
                             null != title && null == mainCustomContent -> {
@@ -367,7 +369,8 @@ fun TheLabTopAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .requiredHeightIn(56.dp, toolbarMaxHeight)
-                        .background(gradientBrush),
+                        .background(gradientBrush)
+                        .then(modifier),
                     title = {
                         if (null != title && null == mainCustomContent) {
                             Column(
@@ -416,7 +419,8 @@ fun TheLabTopAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .requiredHeight(toolbarMaxHeight)
-                        .background(gradientBrush),
+                        .background(gradientBrush)
+                        .then(modifier),
                     title = {
                         if (null != title && null == mainCustomContent) {
                             Column(

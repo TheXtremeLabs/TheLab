@@ -23,6 +23,7 @@ import com.riders.thelab.feature.songplayer.ui.SongPlayerActivity
 import com.riders.thelab.feature.streaming.StreamingActivity
 import com.riders.thelab.feature.tabs.WorkingTabsActivity
 import com.riders.thelab.feature.theaters.main.TheatersActivity
+import com.riders.thelab.feature.videocall.ui.main.StreamActivity
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import com.riders.thelab.feature.youtube.ui.splashscreen.YoutubeSplashScreenActivity
 import com.riders.thelab.ui.builtin.BuiltInWebViewActivity
@@ -605,10 +606,26 @@ object AppBuilderUtils {
                         .build()
                 this.add(nfc)
 
+                // VideoCall Stream SDK
+                val videoCallStreamSDK =
+                    AppBuilder
+                        .withId(39)
+                        .withActivityTitle("VideoCall Stream SDK")
+                        .withActivityDescription("VideoCall Stream SDK")
+                        .withActivityIcon(
+                            context.getDrawableFromIntResource(
+                                com.riders.thelab.core.ui.R.drawable.ic_warning
+                            )
+                        )
+                        .withActivityClass(StreamActivity::class.java)
+                        .withActivityDate("2026/01/03")
+                        .build()
+                this.add(videoCallStreamSDK)
+
                 // Wip
                 val wip =
                     AppBuilder
-                        .withId(40)
+                        .withId(50)
                         .withActivityTitle("WIP")
                         .withActivityDescription("Coming soon...")
                         .withActivityIcon(
