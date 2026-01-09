@@ -10,7 +10,7 @@
         tools:ignore="ProtectedPermissions" />
 
 
-    <application>
+    <application tools:node="merge">
 
         <!-- Receivers -->
         <!--<receiver

@@ -667,6 +667,10 @@
                 android:resource="@xml/nfc_tech_list" />
 
             <intent-filter>
+                <data
+                    android:host="ext"
+                    android:pathPrefix="/thelab.riders.com:nfcapp"
+                    android:scheme="vnd.android.nfc" />
 
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
