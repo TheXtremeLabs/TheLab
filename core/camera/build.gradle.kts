@@ -57,9 +57,9 @@ dependencies {
 
     // Google
     api(libs.google.guava)
-    implementation(libs.google.mlkit.vision.common)
-    implementation(libs.google.play.services.vision)
-    implementation(libs.google.play.services.vision.common)
+    api(libs.google.mlkit.vision.common)
+    api(libs.google.play.services.vision)
+    api(libs.google.play.services.vision.common)
 
     ////////////////////////////////////////////
     // Tests dependencies

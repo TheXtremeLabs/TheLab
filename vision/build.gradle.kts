@@ -164,6 +164,8 @@ dependencies {
     // AndroidX
     implementation(libs.androidx.multidex)
 
+    // Google ML Kit
+    implementation(libs.google.mlkit.barcode.scanning)
 
     androidTestImplementation(libs.androidx.test.ext)
     androidTestImplementation(libs.androidx.test.espresso.core)

@@ -78,21 +78,23 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.datetime)
 
+    // Accompanist
+    api(libs.accompanist.adaptive)
+    api(libs.accompanist.drawablepainter)
+    api(libs.accompanist.permissions)
+
     // AndroidX
     implementation(libs.androidx.core.ktx)
     api(libs.androidx.activity.ktx)
     api(libs.androidx.fragment)
     api(libs.androidx.appcompat)
+    api(libs.androidx.navigation3.core)
+    api(libs.androidx.navigation3.ui)
     api(libs.androidx.palette)
     api(libs.material)
     api(libs.androidx.browser)
     api(libs.androidx.glance.appwidget)
     api(libs.androidx.glance.material3)
-
-    // Accompanist
-    api(libs.accompanist.adaptive)
-    api(libs.accompanist.drawablepainter)
-    api(libs.accompanist.permissions)
 
     // Compose
     api(libs.androidx.compose.compiler)
