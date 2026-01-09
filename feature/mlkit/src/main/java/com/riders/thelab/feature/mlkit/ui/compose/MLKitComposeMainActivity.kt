@@ -90,7 +90,8 @@ class MLKitComposeMainActivity : BaseComponentActivity() {
                                         .callIntentForPackageActivity(
                                             activityResultLauncher = cameraLauncher,
                                             intentPackageName = Constants.PACKAGE_NAME_THE_LAB_VISION,
-                                            Constants.EXTRA_TARGET_VISION to Constants.VISION_CAMERA
+//                                            Constants.EXTRA_TARGET_VISION to Constants.VISION_CAMERA
+                                            Constants.EXTRA_TARGET_VISION to Constants.ML_KIT_VISION_BARCODE
                                         )
 
                                     else -> mViewModel.onEvent(event)

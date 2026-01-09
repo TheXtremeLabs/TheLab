@@ -1,13 +1,21 @@
 package com.riders.thelab.vision.ui.vision
 
+import android.Manifest.permission.CAMERA
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.camera.core.CameraSelector
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,7 +39,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class TheLabVisionActivity : BaseComponentActivity() {
 
-    private val cameraViewModel: CameraWorkflowModel by viewModels<CameraWorkflowModel>()
+    private val mCameraViewModel: CameraWorkflowModel by viewModels<CameraWorkflowModel>()
     private val mViewModel: VisionViewModel by viewModels<VisionViewModel>()
 
     private var mPermissionManager: PermissionManager? = null
@@ -77,6 +85,27 @@ class TheLabVisionActivity : BaseComponentActivity() {
                                     darkTheme = isDarkTheme ?: isSystemInDarkTheme()
                                 ) {
                                     when (targetVision.toString()) {
+                                        Constants.ML_KIT_VISION_BARCODE -> {
+                                            BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                                MLKitVisionScreen(
+                                                    theme = theme,
+                                                    isDarkTheme = isDarkTheme,
+                                                    // Select back camera as a default
+                                                    cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA,
+                                                    imageAnalyzer = BarcodeScannerAnalyzer(
+                                                        previewViewWidth = this.maxWidth.value,
+                                                        previewViewHeight = this.maxHeight.value,
+                                                        onBarcodeInfo = { barcodeInfo ->
+                                                            Timber.e("onBarcodeInfo() | barcodeInfo : $barcodeInfo")
+                                                        },
+                                                        onBarcode = { barcodeField ->
+                                                            Timber.e("onBarcode() | barcodeField : $barcodeField")
+                                                        }
+                                                    )
+                                                )
+                                            }
+                                        }
+
                                         Constants.VISION_VIDEO -> VisionVideoScreen(
                                             theme = theme,
                                             isDarkTheme = isDarkTheme ?: isSystemInDarkTheme()
@@ -85,6 +114,7 @@ class TheLabVisionActivity : BaseComponentActivity() {
                                         else -> VisionCameraScreen(
                                             theme = theme,
                                             isDarkTheme = isDarkTheme ?: isSystemInDarkTheme(),
+                                            // Select back camera as a default
                                             cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
                                         )
                                     }
@@ -117,6 +147,12 @@ class TheLabVisionActivity : BaseComponentActivity() {
             Timber.e("getBundle() | Bundle is null")
             UIManager.showToast(this, "Bundle is null")
         }
+    }
+
+    fun hasCameraPermission(): Boolean = run {
+        PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this, CAMERA)
+    }.also {
+        Timber.d("hasCameraPermission() | result : $it")
     }
 
     private fun finishWithIntent(

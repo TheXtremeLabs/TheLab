@@ -1,6 +1,7 @@
 package com.riders.thelab.vision.ui.vision
 
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +16,6 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
-
 ///////////////////////////////////////
 //
 // COMPOSE
@@ -25,7 +25,8 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 fun VisionCameraScreen(
     theme: AppTheme,
     isDarkTheme: Boolean = isSystemInDarkTheme(),
-    cameraSelector: CameraSelector
+    cameraSelector: CameraSelector,
+    imageAnalyzer: ImageAnalysis.Analyzer? = null
 ) {
     TheLabTheme(theme = theme, darkTheme = isDarkTheme) {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -41,7 +42,7 @@ fun VisionCameraScreen(
                     modifier = Modifier.size(this.maxWidth, this.maxHeight),
                     onViewReferenced = { },
                     cameraSelector = cameraSelector,
-                    imageAnalyzer = null,
+                    imageAnalyzer = imageAnalyzer,
                     galleryContent = null
                 )
             }

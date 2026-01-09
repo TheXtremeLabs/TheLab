@@ -12,9 +12,9 @@ import com.riders.thelab.feature.mlkit.data.local.bean.MLKitItemBean
 @Immutable
 data class MLKitItem(
     val type: MLKitItemBean,
-    @StringRes val title: Int,
-    @StringRes val description: Int,
-    @DrawableRes val banner: Int
+    @param:StringRes val title: Int,
+    @param:StringRes val description: Int,
+    @param:DrawableRes val banner: Int
 ) {
     companion object {
 

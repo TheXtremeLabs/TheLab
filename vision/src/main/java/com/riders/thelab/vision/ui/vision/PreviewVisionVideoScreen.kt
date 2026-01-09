@@ -13,7 +13,10 @@ import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 //
 ///////////////////////////////////////
 @Composable
-fun VisionVideoScreen(theme: AppTheme, isDarkTheme: Boolean = isSystemInDarkTheme()) {
+fun VisionVideoScreen(
+    theme: AppTheme,
+    isDarkTheme: Boolean = isSystemInDarkTheme()
+) {
     TheLabTheme(theme = theme, darkTheme = isDarkTheme) { }
 }
 
