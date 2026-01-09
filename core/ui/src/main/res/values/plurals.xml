@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="countdown_seconds_remaining">
+        <!-- Case for one second (quantity="one") -->
+        <item quantity="one">%d second remaining…</item>
+        <!-- Case for other values (0, 2, 3, etc.) -->
+        <item quantity="other">%d seconds remaining…</item>
+    </plurals>
+</resources>
