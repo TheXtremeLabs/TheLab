@@ -1,7 +1,6 @@
-package com.riders.thelab.feature.flightaware.viewmodel
+package com.riders.thelab.feature.flightaware.base
 
 import android.app.Activity
-import android.content.Context
 import android.location.Location
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -9,9 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
@@ -21,9 +20,9 @@ import com.riders.thelab.core.data.local.model.flight.toAirportModel
 import com.riders.thelab.core.data.local.model.flight.toAirportSearchModel
 import com.riders.thelab.core.data.local.model.flight.toSearchFlightModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
+import com.riders.thelab.core.data.remote.dto.flight.Flight
 import com.riders.thelab.core.data.remote.dto.flight.Segment
 import com.riders.thelab.core.ui.data.local.IUiRepository
-import com.riders.thelab.feature.flightaware.ui.main.FlightMainActivity
 import com.riders.thelab.feature.flightaware.ui.main.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -48,12 +47,13 @@ open class FlightSearchViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
     uiRepository: IUiRepository
-) : BaseFlightViewModel(labNetworkManager = labNetworkManager, uiRepository = uiRepository) {
+) : BaseFlightViewModel(labNetworkManager = labNetworkManager, uiRepository = uiRepository),
+    DefaultLifecycleObserver {
+
     //////////////////////////////////////////
     // Variables
     //////////////////////////////////////////
     var isResumed: Boolean = false
-    private var mLabLocationManager: LabLocationManager? = null
     var isOptionSelectedByUser: Boolean = false
 
     //////////////////////////////////////////
@@ -99,7 +99,7 @@ open class FlightSearchViewModel @Inject constructor(
             }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.Companion.WhileSubscribed(5_000),
                 initialValue = emptyList()
             )
 
@@ -141,7 +141,7 @@ open class FlightSearchViewModel @Inject constructor(
             }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.Companion.WhileSubscribed(5_000),
                 initialValue = emptyList()
             )
 
@@ -190,22 +190,6 @@ open class FlightSearchViewModel @Inject constructor(
     // CLASS METHODS
     //
     ///////////////////////////////
-    fun initLocationManager(activity: Activity) {
-        if (null == mLabLocationManager) {
-            mLabLocationManager = runCatching {
-                LabLocationManager.getInstance(activity = activity)
-            }
-                .onFailure {
-                    it.printStackTrace()
-                    Timber.e("initLocationManager() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
-                }
-                .onSuccess {
-                    Timber.d("initLocationManager() | onSuccess | is success: $it")
-                }
-                .getOrNull()
-        }
-    }
-
     @OptIn(ExperimentalKotoolsTypesApi::class)
     open fun onEvent(uiEvent: UiEvent, activity: Activity? = null) {
         if (!hasInternetConnection.value) {
@@ -216,16 +200,6 @@ open class FlightSearchViewModel @Inject constructor(
         when (uiEvent) {
             is UiEvent.OnUpdateDepartureQuery -> updateDepartureAirportQuery(uiEvent.departureAirportQuery)
             is UiEvent.OnUpdateArrivalQuery -> updateArrivalAirportQuery(uiEvent.arrivalAirportQuery)
-
-            is UiEvent.OnSearchFlightByID -> searchFlightByFlightNumber(
-                context = uiEvent.context,
-                flightNumber = uiEvent.id
-            )
-
-            /*is UiEvent.OnSearchFlightByRoute -> searchFlightByRoute(
-                uiEvent.departureAirportIcaoCode,
-                uiEvent.arrivalAirportIcaoCode
-            )*/
 
             is UiEvent.OnFetchAirportNearBy -> {
                 if (null == activity) {
@@ -240,89 +214,70 @@ open class FlightSearchViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalKotoolsTypesApi::class)
-    fun searchFlightByFlightNumber(context: Context, flightNumber: NotBlankString) {
-        Timber.d("searchFlightByFlightNumber()")
-
-        if (flightNumber.toString().isEmpty()) {
+    suspend fun searchFlightByFlightNumber(flightNumber: NotBlankString): List<Flight>? {
+        return if (flightNumber.toString().isEmpty()) {
             Timber.e("FLight number is null. Cannot perform REST call")
-            return
-        }
-
-        val query =
-            if (BuildConfig.DEBUG) "AAL306".toNotBlankString().getOrThrow() else flightNumber
-
-        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            val flights = repository.searchFlightByID(query).flights
-
-            runCatching {
-                val flightsModel: List<SearchFlightModel> = flights.map { it.toSearchFlightModel() }
-                (context as FlightMainActivity).launchSearchFlights(
-                    flights = flightsModel,
-                    searchType = FlightMainActivity.SEARCH_TYPE_FLIGHT_NUMBER
-                )
+            null
+        } else {
+            val query = if (BuildConfig.DEBUG) {
+                "AAL306".toNotBlankString().getOrThrow()
+            } else {
+                flightNumber
             }
-                .onFailure {
-                    it.printStackTrace()
-                    Timber.e("searchFlightByFlightNumber() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
-                }
+            Timber.d("searchFlightByFlightNumber() | flightNumber: $query")
+            repository.searchFlightByID(query).flights
         }
     }
 
-    fun searchFlightByRoute(
-        context: Context,
+    suspend fun searchFlightByRoute(
         departureAirportCode: NotBlankString,
         arrivalAirportCode: NotBlankString
-    ) {
+    ): List<SearchFlightModel>? {
         Timber.d("searchFlightByRoute() | departureAirportCode: $departureAirportCode, arrivalAirportCode: $arrivalAirportCode")
 
         if (departureAirportCode.toString().isEmpty()) {
             Timber.e("Departure Airport query is null. Cannot perform REST call")
-            return
+            return null
         }
         if (arrivalAirportCode.toString().isEmpty()) {
             Timber.e("Arrival Airport query is null. Cannot perform REST call")
-            return
+            return null
         }
 
-        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            val flights =
-                repository.searchFlightByRoute(
-                    departureAirportCode,
-                    arrivalAirportCode,
-                    maxPages = 5
-                ).flights.also {
-                    Timber.d("flights total : ${it.size}")
-                }
+        val flights = repository.searchFlightByRoute(
+                departureAirportCode,
+                arrivalAirportCode,
+                maxPages = 5
+            )
+            .flights
+            .also { Timber.d("flights total : ${it.size}") }
 
-            runCatching {
-                if (flights.isEmpty()) {
-                    Timber.e("No results found for search query $departureAirportCode to $arrivalAirportCode")
-                    return@launch
-                }
-
-                val segments: List<Segment>? = flights[0].segments.also {
-                    Timber.d("segments total: ${it?.size}")
-                }
-
-                if (segments.isNullOrEmpty()) {
-                    Timber.e("No results found for segments")
-                    return@launch
-                } else {
-                    val flightModels: List<SearchFlightModel> =
-                        flights.map { it.segments?.get(0)?.toSearchFlightModel()!! }.also {
-                            Timber.d("Search flight model Result : ${it.take(3)}")
-                        }
-                    (context as FlightMainActivity).launchSearchFlights(
-                        flights = flightModels,
-                        searchType = FlightMainActivity.SEARCH_TYPE_FLIGHT_ROUTE
-                    )
-                }
+        return runCatching {
+            if (flights.isEmpty()) {
+                Timber.e("No results found for search query $departureAirportCode to $arrivalAirportCode")
+                return@runCatching null
             }
-                .onFailure {
-                    it.printStackTrace()
-                    Timber.e("searchFlightByFlightNumber() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
-                }
+
+            val segments: List<Segment>? = flights[0].segments.also {
+                Timber.d("segments total: ${it?.size}")
+            }
+
+            if (segments.isNullOrEmpty()) {
+                Timber.e("No results found for segments")
+                return@runCatching null
+            } else {
+                flights
+                    .map { it.segments?.get(0)?.toSearchFlightModel()!! }
+                    .also {
+                        Timber.d("Search flight model Result : ${it.take(3)}")
+                    }
+            }
         }
+            .onFailure {
+                it.printStackTrace()
+                Timber.e("searchFlightByFlightNumber() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
+            }
+            .getOrNull()
     }
 
     private fun searchFlight(query: NotBlankString) {
@@ -369,24 +324,8 @@ open class FlightSearchViewModel @Inject constructor(
 
         updateIsAirportNearByLoading(true)
 
-        val location: Location? =
-            runCatching {
-                mLabLocationManager?.getCurrentLocation() ?: run {
-                    Timber.e("location manager object is null")
-                    null
-                }
-            }
-                .onFailure {
-                    it.printStackTrace()
-                    Timber.e("getAirportNearBy() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
-                }
-                .onSuccess {
-                    Timber.d("getAirportNearBy() | onSuccess | is success: $it")
-                }
-                .getOrNull()
-
-        if (null == location) {
-            Timber.d("getAirportNearBy() | location is null")
+        val location: Location = mLabLocationManager?.getCurrentLocation() ?: run {
+            Timber.e("getAirportNearBy() | location is null")
             updateIsAirportNearByLoading(false)
             return
         }

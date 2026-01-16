@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.component.ProvidedBy
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -77,6 +78,7 @@ import kotlinx.coroutines.launch
 fun FlightMainContent(
     theme: AppTheme, darkTheme: Boolean,
     hasConnection: Boolean,
+    isLocationEnabled: Boolean,
     uiEvent: (UiEvent) -> Unit,
     searchPageIndex: Int,
     airportsNearBy: List<AirportModel>,
@@ -211,7 +213,7 @@ fun FlightMainContent(
 
                                 Button(
                                     modifier = Modifier.fillMaxWidth(),
-                                    onClick = { (context as FlightMainActivity).launchAirportSearchActivity() },
+                                    onClick = { (context as FlightMainActivity).mFlightNavigator?.launchAirportSearchActivity() },
                                     colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
                                 ) {
                                     Text(
@@ -255,7 +257,7 @@ fun FlightMainContent(
 // PREVIEWS
 //
 ///////////////////////////////////////
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 fun Footer(@PreviewParameter(AppThemePreviewProvider::class) theme: AppTheme) {
     TheLabTheme(theme = theme) {
@@ -271,13 +273,14 @@ fun Footer(@PreviewParameter(AppThemePreviewProvider::class) theme: AppTheme) {
     }
 }
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewFlightMainContent(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = appTheme) {
         FlightMainContent(
             theme = appTheme, darkTheme = isSystemInDarkTheme(),
             hasConnection = true,
+            isLocationEnabled = true,
             uiEvent = {},
             searchPageIndex = 0,
             airportsNearBy = emptyList(),
@@ -291,13 +294,14 @@ private fun PreviewFlightMainContent(@PreviewParameter(AppThemePreviewProvider::
 }
 
 
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewFlightMainContentNoConnection(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = AppTheme.Default) {
         FlightMainContent(
             theme = appTheme, darkTheme = isSystemInDarkTheme(),
             hasConnection = false,
+            isLocationEnabled = true,
             uiEvent = {},
             searchPageIndex = 1,
             airportsNearBy = emptyList(),

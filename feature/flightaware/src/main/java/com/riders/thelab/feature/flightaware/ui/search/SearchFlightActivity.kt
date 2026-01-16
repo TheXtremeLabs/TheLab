@@ -1,6 +1,5 @@
 package com.riders.thelab.feature.flightaware.ui.search
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -11,16 +10,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
+import com.riders.thelab.core.ui.compose.base.observeLifecycleEvents
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
-import com.riders.thelab.core.ui.data.local.IUiRepository
-import com.riders.thelab.feature.flightaware.ui.flight.FlightDetailActivity
 import com.riders.thelab.feature.flightaware.utils.Constants
+import com.riders.thelab.feature.flightaware.utils.FlightNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotools.types.text.NotBlankString
@@ -30,16 +29,13 @@ import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchFlightActivity : BaseComponentActivity() {
 
     private val mViewModel: SearchFlightViewModel by viewModels<SearchFlightViewModel>()
 
-    @Inject
-    lateinit var uiRepository: IUiRepository
-
+    private var mFlightNavigator: FlightNavigator? = null
     private val locale = Locale.getDefault()
     private var currentDate: NotBlankString? = null
 
@@ -51,14 +47,13 @@ class SearchFlightActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setupCurrentDate()
-
-        mViewModel.getBundle(intent)
+        initVariables()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
 
                 setContent {
+                    mViewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
                     val theme: AppTheme by mViewModel
                         .theme
@@ -82,9 +77,9 @@ class SearchFlightActivity : BaseComponentActivity() {
                                 uiState = uiState
                             ) { event ->
                                 when (event) {
-                                    is UiEvent.OnFlightClicked -> {
-                                        launchFlightDetail(event.flightItem)
-                                    }
+                                    is UiEvent.OnFlightClicked -> mFlightNavigator?.launchFlightDetailActivity(
+                                        event.flightItem
+                                    )
                                 }
                             }
                         }
@@ -114,22 +109,27 @@ class SearchFlightActivity : BaseComponentActivity() {
     // CLASS METHODS
     //
     ///////////////////////////////
+    fun initVariables() {
+        Timber.d("initVariables()")
+
+        mFlightNavigator = FlightNavigator(this)
+        setupCurrentDate()
+        initViewModels()
+    }
     @OptIn(ExperimentalKotoolsTypesApi::class)
     fun setupCurrentDate() {
         Timber.d("setupCurrentDate()")
         val now = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN, locale)
+        val formatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT_PATTERN, locale)
         val formattedDate = now.format(formatter)
 
         currentDate = formattedDate.toNotBlankString().getOrThrow()
     }
 
-    private fun launchFlightDetail(flight: SearchFlightModel) =
-        Intent(this@SearchFlightActivity, FlightDetailActivity::class.java)
-            .apply { this.putExtra(Constants.EXTRA_FLIGHT, flight) }
-            .run { startActivity(this) }
-
-    companion object {
-        const val DATE_FORMAT_PATTERN = "d MMM uuuu"
+    private fun initViewModels() {
+        Timber.d("initViewModels()")
+        mViewModel.initWeakReference(this@SearchFlightActivity)
+        mViewModel.getBundle(intent)
     }
+
 }

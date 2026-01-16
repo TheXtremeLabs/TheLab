@@ -35,7 +35,6 @@ class FlightSplashScreenActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-
                     val theme: AppTheme by uiRepository
                         .getThemeColorAsAppTheme()
                         .collectAsStateWithLifecycle(initialValue = AppTheme.Default)

@@ -12,5 +12,5 @@ sealed interface SearchFlightsUiState {
         val throwable: Throwable? = null
     ) : SearchFlightsUiState
 
-    data object Loading : SearchFlightsUiState
+    data class Loading(val message: NotBlankString? = null) : SearchFlightsUiState
 }

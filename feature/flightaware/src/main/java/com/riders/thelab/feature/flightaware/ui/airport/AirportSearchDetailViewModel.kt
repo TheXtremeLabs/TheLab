@@ -8,50 +8,69 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.IRepository
-import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.toAirportModel
 import com.riders.thelab.core.data.remote.dto.flight.Airport
-import com.riders.thelab.core.data.remote.dto.flight.Arrivals
-import com.riders.thelab.core.data.remote.dto.flight.Departures
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
+import com.riders.thelab.feature.flightaware.data.local.model.compose.AirportDetailUiState
+import com.riders.thelab.feature.flightaware.data.local.model.compose.ArrivalsUiState
+import com.riders.thelab.feature.flightaware.data.local.model.compose.DeparturesUiState
+import com.riders.thelab.feature.flightaware.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotools.types.text.NotBlankString
 import kotools.types.text.toNotBlankString
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class AirportSearchDetailViewModel @Inject constructor(
     private val repository: IRepository,
-     uiRepository: IUiRepository
-) : BaseViewModel(uiRepository), DefaultLifecycleObserver {
+    uiRepository: IUiRepository
+) : BaseViewModel(uiRepository), CoroutineScope, DefaultLifecycleObserver {
 
-    var airportID: NotBlankString? by mutableStateOf(null)
-    var airportModel: AirportModel? by mutableStateOf(null)
-    var departureFlights: List<Departures>? by mutableStateOf(null)
-    var arrivalFlights: List<Arrivals>? by mutableStateOf(null)
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO
+
+    // --- Variables
+    private var airportID: NotBlankString? = null
+
+
+    // --- Compose states
+    private var _airportDetailUiState: MutableStateFlow<AirportDetailUiState> =
+        MutableStateFlow(AirportDetailUiState.Loading)
+    val airportDetailUiState: StateFlow<AirportDetailUiState> = _airportDetailUiState
+
+    private var _departureFlights: MutableStateFlow<DeparturesUiState> =
+        MutableStateFlow(DeparturesUiState.Loading)
+    val departureFlights: StateFlow<DeparturesUiState> = _departureFlights
+
+    private var _arrivalFlights: MutableStateFlow<ArrivalsUiState> =
+        MutableStateFlow(ArrivalsUiState.Loading)
+    val arrivalFlights: StateFlow<ArrivalsUiState> = _arrivalFlights
+
     var isFlightsFetched: Boolean by mutableStateOf(false)
 
-    private fun updateAirportID(newAirportId: NotBlankString) {
-        this.airportID = newAirportId
+    private fun updateAirportDetailUiState(newState: AirportDetailUiState) {
+        _airportDetailUiState.update { newState }
     }
 
-    private fun updateAirportModel(newAirportModel: AirportModel) {
-        this.airportModel = newAirportModel
+    private fun updateAirportDeparturesFlights(newState: DeparturesUiState) {
+        _departureFlights.update { newState }
     }
 
-    private fun updateAirportDeparturesFlights(departures: List<Departures>) {
-        this.departureFlights = departures
+    private fun updateAirportArrivalFlights(newState: ArrivalsUiState) {
+        _arrivalFlights.update { newState }
     }
 
-    private fun updateAirportArrivalFlights(arrivalFlights: List<Arrivals>) {
-        this.arrivalFlights = arrivalFlights
-    }
 
     private fun updateIsFlightsFetched(fetched: Boolean) {
         this.isFlightsFetched = fetched
@@ -77,12 +96,7 @@ class AirportSearchDetailViewModel @Inject constructor(
 
         airportID?.let {
             if (it.toString() != "N/A") {
-                viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-                    val airportResponse: Airport = repository.getAirportById(it.toString())
-
-                    Timber.d("getAirportById() | result: $airportResponse")
-                    updateAirportModel(airportResponse.toAirportModel())
-                }
+                getAirportById()
             }
         } ?: run {
             Timber.e("airportID object is null")
@@ -97,34 +111,49 @@ class AirportSearchDetailViewModel @Inject constructor(
     fun getBundle(intent: Intent) {
         Timber.d("getBundle()")
         runCatching {
-            airportID = intent.getStringExtra(AirportSearchDetailActivity.EXTRA_AIRPORT_ID)
-                ?.toNotBlankString()?.getOrThrow() ?: "N/A".toNotBlankString().getOrThrow()
-            Timber.d("airportID: $airportID")
-            airportID?.let { updateAirportID(it) }
-        }.onFailure {
-            it.printStackTrace()
-            Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
+            intent
+                .getStringExtra(Constants.EXTRA_AIRPORT_ID)
+                ?.toNotBlankString()
+                ?.getOrThrow()
+                ?.also {
+                    Timber.d("airportID: $it")
+                    airportID = it
+                }
+                ?: "N/A".toNotBlankString().getOrThrow()
+        }
+            .onFailure {
+                it.printStackTrace()
+                Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
+            }
+    }
+
+    fun getAirportById() {
+        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
+            repository
+                .getAirportById(airportID.toString())
+                .also { airportResponse: Airport ->
+                    Timber.d("getAirportById() | airportResponse: $airportResponse")
+                    updateAirportDetailUiState(AirportDetailUiState.Success(airportResponse.toAirportModel()))
+                }
         }
     }
 
     fun fetchFlights() {
         Timber.d("fetchFlights()")
 
-        airportID?.let {
-            if (it.toString() != "N/A") {
-                viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-                    val airportFlightsResponse = repository.getAirportFlightsById(it.toString())
-
-                    Timber.d("getAirportFlightsById() | result: $airportFlightsResponse")
-                    updateAirportDeparturesFlights(airportFlightsResponse.departures)
-                    updateAirportArrivalFlights(airportFlightsResponse.arrivals)
-
-                    updateIsFlightsFetched(true)
-                }
-            }
-        } ?: run {
-            Timber.e("airportID object is null")
+        if (airportID.toString().trim().isBlank() || "N/A".equals(airportID.toString(), true)) {
+            Timber.e("airportID is null or empty")
+            return
         }
 
+        viewModelScope.launch(coroutineContext + SupervisorJob() + coroutineExceptionHandler) {
+            val airportFlightsResponse = repository.getAirportFlightsById(airportID.toString())
+
+            Timber.d("getAirportFlightsById() | result: $airportFlightsResponse")
+            updateAirportDeparturesFlights(newState = DeparturesUiState.Success(departures = airportFlightsResponse.departures))
+            updateAirportArrivalFlights(newState = ArrivalsUiState.Success(arrivals = airportFlightsResponse.arrivals))
+
+            updateIsFlightsFetched(true)
+        }
     }
 }

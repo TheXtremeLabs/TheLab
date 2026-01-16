@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.flightaware.utils.FlightNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -50,6 +51,10 @@ class AirportSearchActivity : BaseComponentActivity() {
 
     private val mViewModel: AirportSearchViewModel by viewModels<AirportSearchViewModel>()
 
+    var mFlightNavigator: FlightNavigator? = null
+        private set
+
+
     /////////////////////////////////////
     //
     // OVERRIDE
@@ -57,6 +62,8 @@ class AirportSearchActivity : BaseComponentActivity() {
     /////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mFlightNavigator = FlightNavigator(this)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -94,15 +101,4 @@ class AirportSearchActivity : BaseComponentActivity() {
         Timber.e("backPressed()")
         finish()
     }
-
-
-    /////////////////////////////////////
-    //
-    // CLASS METHODS
-    //
-    /////////////////////////////////////
-    fun launchAirportDetail(airportID: String) =
-        Intent(this, AirportSearchDetailActivity::class.java)
-            .apply { this.putExtra(AirportSearchDetailActivity.EXTRA_AIRPORT_ID, airportID) }
-            .run { startActivity(this) }
 }

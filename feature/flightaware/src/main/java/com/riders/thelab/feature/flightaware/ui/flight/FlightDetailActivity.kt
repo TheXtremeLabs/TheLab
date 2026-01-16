@@ -26,8 +26,7 @@ class FlightDetailActivity : BaseComponentActivity() {
 
     private val mViewModel: FlightDetailViewModel by viewModels<FlightDetailViewModel>()
 
-    @Inject
-    lateinit var uiRepository: IUiRepository
+
 
     ///////////////////////////////
     //
@@ -37,7 +36,7 @@ class FlightDetailActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mViewModel.getBundle(intent)
+        initViewModels()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -73,7 +72,9 @@ class FlightDetailActivity : BaseComponentActivity() {
         finish()
     }
 
-    companion object {
-        const val EXTRA_FLIGHT: String = "EXTRA_FLIGHT"
+
+    fun initViewModels(){
+        mViewModel.initWeakReference(this@FlightDetailActivity)
+        mViewModel.getBundle(this.intent)
     }
 }

@@ -302,6 +302,7 @@ class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configu
     }
 
     companion object {
+        @Volatile
         private var mInstance: TheLabApplication? = null
 
         @Synchronized

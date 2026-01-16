@@ -19,7 +19,7 @@ import com.riders.thelab.core.data.remote.dto.flight.AirportsResponse
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.flightaware.BuildConfig
 import com.riders.thelab.feature.flightaware.ui.airport.PreviewProviderAirportSearch
-import com.riders.thelab.feature.flightaware.viewmodel.FlightSearchViewModel
+import com.riders.thelab.feature.flightaware.base.FlightSearchViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +29,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class FlightViewModel @Inject constructor(
+class FlightMainViewModel @Inject constructor(
     labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
     uiRepository: IUiRepository
@@ -52,13 +52,13 @@ class FlightViewModel @Inject constructor(
     // Departures
     var departureDropdownExpanded by mutableStateOf(false)
         private set
-    private var departureAirportOptionSelected: AirportSearchModel? by mutableStateOf(null)
+     var departureAirportOptionSelected: AirportSearchModel? by mutableStateOf(null)
         private set
 
     // Arrival
     var arrivalDropdownExpanded by mutableStateOf(false)
         private set
-    private var arrivalAirportOptionSelected: AirportSearchModel? by mutableStateOf(null)
+     var arrivalAirportOptionSelected: AirportSearchModel? by mutableStateOf(null)
         private set
 
     private var currentAirport: AirportModel? by mutableStateOf(null)
@@ -154,22 +154,6 @@ class FlightViewModel @Inject constructor(
                 isOptionSelectedByUser = true
                 updateArrivalAirportOption(uiEvent.arrivalAirport)
                 super.updateArrivalAirportQuery(uiEvent.arrivalAirport.name.toString())
-            }
-
-            is UiEvent.OnSearchFlightByRoute -> {
-                departureAirportOptionSelected?.let { departure ->
-                    arrivalAirportOptionSelected?.let { arrival ->
-                        super.searchFlightByRoute(
-                            uiEvent.context,
-                            departure.icaoCode!!,
-                            arrival.icaoCode!!
-                        )
-                    } ?: run {
-                        Timber.e("onEvent() | onSearchFlightByRoute | arrivalAirportOptionSelected is null")
-                    }
-                } ?: run {
-                    Timber.e("onEvent() | onSearchFlightByRoute | departureAirportOptionSelected is null")
-                }
             }
 
             else -> {

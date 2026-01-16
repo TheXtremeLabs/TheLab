@@ -9,6 +9,7 @@ import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.flightaware.ui.main.UiEvent
+import com.riders.thelab.feature.flightaware.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,10 +44,10 @@ class FlightDetailViewModel @Inject constructor(
         // Try to get bundle values
         intent.extras?.let { bundle: Bundle ->
             val extraItem: SearchFlightModel? = if (!LabCompatibilityManager.isTiramisu()) {
-                bundle.getSerializable(FlightDetailActivity.EXTRA_FLIGHT) as SearchFlightModel?
+                bundle.getSerializable(Constants.EXTRA_FLIGHT) as SearchFlightModel?
             } else {
                 bundle.getSerializable(
-                    FlightDetailActivity.EXTRA_FLIGHT,
+                    Constants.EXTRA_FLIGHT,
                     SearchFlightModel::class.java
                 )
             }

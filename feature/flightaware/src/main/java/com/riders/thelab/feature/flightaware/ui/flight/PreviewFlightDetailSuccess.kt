@@ -47,7 +47,6 @@ import com.riders.thelab.feature.flightaware.core.component.DottedLink
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.cardBackgroundColor
 import com.riders.thelab.feature.flightaware.core.theme.textColor
-import com.riders.thelab.feature.flightaware.ui.search.SearchFlightActivity
 import com.riders.thelab.feature.flightaware.utils.Constants
 import com.riders.thelab.feature.flightaware.utils.toFormattedDate
 import com.riders.thelab.feature.flightaware.utils.toLocalDateTime
@@ -67,7 +66,8 @@ private val zoneId: ZoneId = ZoneId.systemDefault()
 ///////////////////////////////////////
 @Composable
 fun FlightStatusCard(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     flightId: NotBlankString,
     airlineIATA: NotBlankString,
     departureAirportIataCode: NotBlankString,
@@ -244,7 +244,7 @@ fun FlightInfoContainer(
     actualArrivalTime: NotBlankString,
 ) {
     val locale by remember { mutableStateOf(Locale.getDefault()) }
-    val formatter = DateTimeFormatter.ofPattern(SearchFlightActivity.DATE_FORMAT_PATTERN, locale)
+    val formatter = remember { DateTimeFormatter.ofPattern(Constants.DATE_FORMAT_PATTERN, locale) }
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Card(
@@ -338,7 +338,15 @@ fun FlightInfoContainer(
                         theme = theme,
                         darkTheme = darkTheme,
                         title = "Departure time".toNotBlankString().getOrThrow(),
-                        description = estimatedDepartureTime.toFormattedDate(formatter = formatter)
+                        description = if (estimatedDepartureTime.toString() == "N/A") {
+                            "N/A".toNotBlankString().getOrThrow()
+                        } else {
+                            estimatedDepartureTime.toLocalDateTime()
+                                .toLocalTime()
+                                .toString()
+                                .toNotBlankString()
+                                .getOrThrow()
+                        }
                     )
 
                     InfoContainerTitleDescription(
@@ -350,7 +358,10 @@ fun FlightInfoContainer(
                                 "N/A".toNotBlankString().getOrThrow()
                             } else {
                                 estimatedArrivalTime.toLocalDateTime()
-                                    .toLocalTime().toString().toNotBlankString().getOrThrow()
+                                    .toLocalTime()
+                                    .toString()
+                                    .toNotBlankString()
+                                    .getOrThrow()
                             },
                         isRightSide = true
                     )
@@ -461,7 +472,6 @@ fun FlightDetailSuccessContent(theme: AppTheme, darkTheme: Boolean, flight: Sear
                     actualArrivalTime = flight.actualIn ?: "N/A".toNotBlankString().getOrThrow(),
                 )
             }
-
         }
     }
 }

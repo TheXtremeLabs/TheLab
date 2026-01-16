@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.compose.SearchFlightsUiState
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -112,7 +113,7 @@ fun SearchFlightsContent(
 //
 ///////////////////////////////////////
 @OptIn(ExperimentalKotoolsTypesApi::class)
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewSearchFlightsContent(@PreviewParameter(PreviewProviderSearchFlightsUiState::class) uiState: SearchFlightsUiState) {
     TheLabTheme(theme = AppTheme.Default) {

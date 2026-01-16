@@ -472,7 +472,7 @@ class AppBuilderUtils(private val context: Context) {
                 )
             )
             .withActivityClass(com.riders.thelab.feature.flightaware.ui.splashscreen.FlightSplashScreenActivity::class.java)
-            .withActivityDate("2024/03/06")
+            .withActivityDate("2026/01/15")
             .build()
 
     // Koin

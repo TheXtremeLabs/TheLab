@@ -182,8 +182,8 @@ fun SearchFlightItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = if (null == departureLocalDateTime) "N/A" else departureLocalDateTime?.toLocalTime()
-                            .toString(),
+                        text = if (null == departureLocalDateTime) "N/A" else departureLocalDateTime
+                            ?.toLocalTime().toString(),
                         color = textColor
                     )
 
@@ -196,8 +196,8 @@ fun SearchFlightItem(
                     )
 
                     Text(
-                        text = if (null == arrivalLocalDateTime) "N/A" else arrivalLocalDateTime?.toLocalTime()
-                            .toString(),
+                        text = if (null == arrivalLocalDateTime) "N/A" else arrivalLocalDateTime
+                            ?.toLocalTime().toString(),
                         color = textColor
                     )
                 }
@@ -244,7 +244,9 @@ fun SearchFlightItem(
 
 @DevicePreviews
 @Composable
-private fun PreviewSearchFlightItem(@PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel) {
+private fun PreviewSearchFlightItem(
+    @PreviewParameter(PreviewProviderFlight::class) flight: SearchFlightModel
+) {
     TheLabTheme(theme = AppTheme.Default) {
         SearchFlightItem(
             theme = AppTheme.Default,

@@ -13,9 +13,11 @@ class PreviewProviderSearchFlightsUiState : PreviewParameterProvider<SearchFligh
     @OptIn(ExperimentalKotoolsTypesApi::class)
     override val values: Sequence<SearchFlightsUiState>
         get() = sequenceOf(
-            SearchFlightsUiState.Loading,
+            SearchFlightsUiState.Loading(
+                message = "Search flights for AAL306".toNotBlankString().getOrThrow()
+            ),
             SearchFlightsUiState.Error(
-                "Error occurred while getting value".toNotBlankString().getOrThrow()
+                message = "Error occurred while getting value".toNotBlankString().getOrThrow()
             ),
             SearchFlightsUiState.Success(PreviewProviderFlight().values.toList()),
         )

@@ -1,6 +1,5 @@
 package com.riders.thelab.feature.flightaware.core.component
 
-import android.location.Location
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -17,8 +16,8 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.feature.flightaware.data.local.model.LocationModel
 
 
 ///////////////////////////////////////
@@ -29,7 +28,7 @@ import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 @Composable
 fun GoogleMap(
     modifier: Modifier,
-    location: Location,
+    location: LocationModel,
     properties: MapProperties? = null,
     uiSettings: MapUiSettings? = null,
     markerTitle: String? = null,
@@ -82,7 +81,7 @@ private fun PreviewGoogleMap() {
             modifier = Modifier.matchParentSize(),
             properties = properties,
             uiSettings = uiSettings,
-            location = (1.35 to 103.87).toLocation(),
+            location = LocationModel(1.35, 103.87),
             markerTitle = "Singapore",
             markerSnippet = "Marker in Singapore",
             onMapLoaded = {}

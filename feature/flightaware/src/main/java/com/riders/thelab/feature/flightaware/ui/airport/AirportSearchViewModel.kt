@@ -1,10 +1,12 @@
 package com.riders.thelab.feature.flightaware.ui.airport
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.viewModelScope
+import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.flight.AirportModel
 import com.riders.thelab.core.data.local.model.flight.AirportSearchModel
@@ -13,7 +15,9 @@ import com.riders.thelab.core.data.local.model.flight.toAirportSearchModel
 import com.riders.thelab.core.data.remote.dto.flight.AirportSearch
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
+import com.riders.thelab.feature.flightaware.base.BaseFlightViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,9 +33,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AirportSearchViewModel @Inject constructor(
+    @param:ApplicationContext val context: Context,
+    labNetworkManager: LabNetworkManager,
     private val repository: IRepository,
     uiRepository: IUiRepository
-) : BaseViewModel(uiRepository) {
+) : BaseFlightViewModel(labNetworkManager,uiRepository) {
 
     //////////////////////////////////////////
     // Composable states

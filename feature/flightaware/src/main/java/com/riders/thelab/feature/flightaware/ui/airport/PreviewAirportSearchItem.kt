@@ -52,7 +52,9 @@ fun AirportSearchItemForSearchScreen(
                 .padding(horizontal = 16.dp),
             onClick = {
                 item.icaoCode?.let {
-                    (context as AirportSearchActivity).launchAirportDetail(it.toString())
+                    (context as AirportSearchActivity).mFlightNavigator?.launchAirportSearchDetailActivity(
+                        it.toString()
+                    )
                 }
             },
             colors = CardDefaults.cardColors(containerColor = cardBackgroundColor)

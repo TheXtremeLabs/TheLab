@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.feature.flightaware.core.theme.backgroundColor
@@ -39,7 +40,8 @@ import kotools.types.text.toNotBlankString
 ///////////////////////////////////////
 @Composable
 fun SearchFlightsSuccessContent(
-    theme: AppTheme, darkTheme: Boolean,
+    theme: AppTheme,
+    darkTheme: Boolean,
     currentDate: NotBlankString,
     flights: List<SearchFlightModel>,
     uiEvent: (UiEvent) -> Unit
@@ -110,7 +112,7 @@ fun SearchFlightsSuccessContent(
 //
 ///////////////////////////////////////
 @OptIn(ExperimentalKotoolsTypesApi::class)
-@DevicePreviews
+@DevicePreviewsPhoneOnly
 @Composable
 private fun PreviewSearchFlightsSuccess(@PreviewParameter(PreviewProviderFlights::class) flights: List<SearchFlightModel>) {
     TheLabTheme(theme = AppTheme.Default) {
