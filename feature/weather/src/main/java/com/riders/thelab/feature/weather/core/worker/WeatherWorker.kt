@@ -43,7 +43,7 @@ class WeatherWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         Timber.d("doWork()")
 
-        val labLocationManager = LabLocationManager(context)
+        val labLocationManager = LabLocationManager.getInstance(context)
         val location: Location? = labLocationManager.getCurrentLocation()
 
         if (null == location) {

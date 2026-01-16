@@ -1,5 +1,7 @@
 package com.riders.thelab.feature.locationonmaps
 
+import android.location.Location
+import android.location.LocationListener
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -37,7 +39,10 @@ class LocationOnMapsActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mLocationManager.setLocationListener()
+        mLocationManager.setLocationListener(object: LocationListener {
+            override fun onLocationChanged(location: Location) {
+            }
+        })
         getCurrentLocation()
 
         mViewModel.initPlaces()

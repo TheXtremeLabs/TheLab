@@ -378,7 +378,7 @@ class MainActivity : BaseComponentActivity(), LocationListener, OnGpsListener, R
                 // TODO : Should show alert with compose dialog
                 // labLocationManager?.showSettingsAlert()
             } else {
-                it.setLocationListener()
+                it.setLocationListener(this)
                 it.getCurrentLocation()
 
                 /*binding.includeToolbarLayout.ivLocationStatus.setBackgroundResource(

@@ -53,7 +53,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
 
         return runCatching {
             Timber.i("Attempt to get current location")
-            val location: Location? = LabLocationManager(context).getCurrentLocation()
+            val location: Location? = LabLocationManager.getInstance(context).getCurrentLocation()
 
             if (null == location) {
                 Timber.e("Unable to get user's location")

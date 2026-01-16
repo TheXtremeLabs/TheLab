@@ -259,7 +259,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                 // TODO : Should show alert with compose dialog
                 // mLabLocationManager?.showSettingsAlert()
             } else {
-                locationManager.setLocationListener()
+                locationManager.setLocationListener(this)
                 locationManager.getCurrentLocation()
             }
         } ?: run { Timber.e("Lab location object is null") }
