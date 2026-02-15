@@ -42,7 +42,6 @@ android {
             "redirectSchemeName" to "com.riders.thelab.vision",
             "redirectPathPattern" to "//com.riders.thelab.vision"
         )
-
         applicationId = "com.riders.thelab.vision"
 
         versionCode = 2000 * versionMajor + 100 * versionMinor + versionPatch

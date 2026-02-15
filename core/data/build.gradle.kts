@@ -73,29 +73,27 @@ dependencies {
     ksp(libs.androidx.appsearch.compiler)
     api(libs.androidx.appsearch.local.storage)
     api(libs.androidx.appsearch.platform.storage)
+    // Core
     api(libs.androidx.core.ktx)
-
     // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui.tooling)
-
     // AndroidX Credentials
     implementation(libs.google.identity)
-
+    // Datastore and Preferences
+    api(libs.androidx.datastore.core)
+    api(libs.androidx.datastore.preferences)
+    api(libs.androidx.preferences)
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     // Room
     api(libs.room.ktx)
     api(libs.room.runtime)
     api(libs.room.paging)
     ksp(libs.room.compiler)
     androidTestImplementation(libs.room.testing)
-
     // Worker & concurrent
     androidTestImplementation(libs.androidx.work.testing)
-
-    // Datastore and Preferences
-    api(libs.androidx.datastore.core)
-    api(libs.androidx.datastore.preferences)
-    api(libs.androidx.preferences)
 
     // Firebase
     implementation(platform(libs.firebase.bom))

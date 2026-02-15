@@ -33,7 +33,6 @@ android {
             "redirectSchemeName" to "com.riders.thelab.tv",
             "redirectPathPattern" to "//com.riders.thelab.tv"
         )
-
         applicationId = "com.riders.thelab.tv"
 
         versionCode = 2000 * versionMajor + 100 * versionMinor + versionPatch

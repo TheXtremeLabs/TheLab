@@ -97,9 +97,6 @@ dependencies {
     api(libs.androidx.glance.material3)
 
     // Compose
-    api(libs.androidx.compose.compiler)
-    api(libs.androidx.compose.runtime)
-    api(libs.androidx.compose.runtime.livedata)
     api(libs.androidx.activity.compose)
     api(libs.androidx.compose.animation)
     api(libs.androidx.compose.fonts)
@@ -114,6 +111,8 @@ dependencies {
     api(libs.androidx.compose.material3.adaptative.layout)
     api(libs.androidx.compose.material3.adaptative.navigation)
     api(libs.androidx.compose.material3.windowSizeClass)
+    api(libs.androidx.compose.runtime)
+    api(libs.androidx.compose.runtime.livedata)
     api(libs.androidx.navigation.compose)
     api(libs.androidx.compose.runtime)
     api(libs.androidx.compose.runtime.livedata)

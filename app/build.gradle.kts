@@ -44,7 +44,6 @@ android {
             "redirectSchemeName" to "com.riders.thelab",
             "redirectPathPattern" to "//com.riders.thelab"
         )
-
         applicationId = "com.riders.thelab"
 
         /**

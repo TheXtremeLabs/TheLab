@@ -28,7 +28,6 @@ android {
             "redirectSchemeName" to "com.riders.thelab.call",
             "redirectPathPattern" to "//com.riders.thelab.call"
         )
-
         applicationId = "com.riders.thelab.call"
 
         versionCode = 2000 * versionMajor + 100 * versionMinor + versionPatch
