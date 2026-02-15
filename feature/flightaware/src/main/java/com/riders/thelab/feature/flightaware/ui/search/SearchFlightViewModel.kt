@@ -1,17 +1,18 @@
 package com.riders.thelab.feature.flightaware.ui.search
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.IRepository
-import com.riders.thelab.core.data.local.model.compose.SearchFlightsUiState
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.data.local.model.flight.toSearchFlightModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.flightaware.base.FlightSearchViewModel
 import com.riders.thelab.feature.flightaware.data.local.model.SearchFlightType
+import com.riders.thelab.feature.flightaware.data.local.model.compose.SearchFlightsUiState
 import com.riders.thelab.feature.flightaware.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -48,7 +49,7 @@ class SearchFlightViewModel @Inject constructor(
     // Compose states
     //////////////////////////////////////////
     private var _searchFlightUiState: MutableStateFlow<SearchFlightsUiState> =
-        MutableStateFlow(SearchFlightsUiState.Loading())
+        MutableStateFlow(SearchFlightsUiState.Loading(searchType = SearchFlightType.UNSPECIFIED))
     var searchFlightUiState: StateFlow<SearchFlightsUiState> = _searchFlightUiState
 
     private fun updateUiState(newState: SearchFlightsUiState) {
@@ -93,6 +94,7 @@ class SearchFlightViewModel @Inject constructor(
     // CLASS METHODS
     //
     /////////////////////////////////////
+    @SuppressLint("NewApi")
     @OptIn(ExperimentalKotoolsTypesApi::class)
     fun getBundle(intent: Intent) {
         Timber.d("getBundle()")
@@ -215,6 +217,7 @@ class SearchFlightViewModel @Inject constructor(
 
         updateUiState(
             newState = SearchFlightsUiState.Loading(
+                searchType = SearchFlightType.NUMBER,
                 message = "Searching flights for $flightNumber}".toNotBlankString().getOrThrow()
             )
         )
@@ -257,6 +260,7 @@ class SearchFlightViewModel @Inject constructor(
 
         updateUiState(
             SearchFlightsUiState.Loading(
+                searchType = SearchFlightType.ROUTE,
                 message = "Searching flights for $departureAirportCode to $arrivalAirportCode"
                     .toNotBlankString()
                     .getOrThrow()

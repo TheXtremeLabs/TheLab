@@ -1,10 +1,11 @@
 package com.riders.thelab.feature.flightaware.ui.search
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.riders.thelab.core.data.local.model.compose.SearchFlightsUiState
 import com.riders.thelab.core.data.local.model.flight.OriginDestinationModel
 import com.riders.thelab.core.data.local.model.flight.SearchFlightModel
 import com.riders.thelab.core.data.remote.dto.flight.FlightType
+import com.riders.thelab.feature.flightaware.data.local.model.SearchFlightType
+import com.riders.thelab.feature.flightaware.data.local.model.compose.SearchFlightsUiState
 import com.riders.thelab.feature.flightaware.ui.flight.PreviewProviderFlight
 import kotools.types.text.toNotBlankString
 import org.kotools.types.ExperimentalKotoolsTypesApi
@@ -14,7 +15,13 @@ class PreviewProviderSearchFlightsUiState : PreviewParameterProvider<SearchFligh
     override val values: Sequence<SearchFlightsUiState>
         get() = sequenceOf(
             SearchFlightsUiState.Loading(
+                searchType = SearchFlightType.NUMBER,
                 message = "Search flights for AAL306".toNotBlankString().getOrThrow()
+            ),
+            SearchFlightsUiState.Loading(
+                searchType = SearchFlightType.ROUTE,
+                message = "Search flights for route\n\"ORY\" to \"LAX\"".toNotBlankString()
+                    .getOrThrow()
             ),
             SearchFlightsUiState.Error(
                 message = "Error occurred while getting value".toNotBlankString().getOrThrow()
