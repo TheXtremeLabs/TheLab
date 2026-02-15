@@ -19,6 +19,8 @@ import android.os.Parcelable
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -29,10 +31,9 @@ import java.io.IOException
 class LabNFCManager private constructor(
     private val activity: ComponentActivity,
     private val nfcReaderCallback: NfcAdapter.ReaderCallback? = null
-) {
-    val nfcManager: NfcManager? = activity.getSystemService(Context.NFC_SERVICE) as NfcManager?
-    var nfcAdapter: NfcAdapter? = null
-        private set
+) : DefaultLifecycleObserver {
+    val nfcManager: NfcManager? by lazy { activity.getSystemService(Context.NFC_SERVICE) as? NfcManager }
+    val nfcAdapter: NfcAdapter? by lazy { if (!isNfcSupported()) null else nfcManager?.defaultAdapter }
 
     @Stable
     val nfcState: MutableStateFlow<NFCUiState> = MutableStateFlow(NFCUiState.Idle)
@@ -47,13 +48,27 @@ class LabNFCManager private constructor(
         }
     }
 
-    fun getAdapter(): NfcAdapter? = if (null == nfcAdapter) {
-        Timber.w("nfc adapter value is null. Set the value...")
-        nfcManager?.defaultAdapter?.also { nfcAdapter = it }
-    } else {
-        nfcAdapter
+
+    ///////////////////////////////////////////////////////////////
+    //
+    // OVERRIDE METHODS
+    //
+    ///////////////////////////////////////////////////////////////
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        disableNfcForegroundDispatch()
     }
 
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        enableNfcForegroundDispatch()
+    }
+
+    ///////////////////////////////////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    ///////////////////////////////////////////////////////////////
     /**
      * Checks if the device has NFC hardware.
      *
@@ -75,7 +90,7 @@ class LabNFCManager private constructor(
      * @return `true` if NFC is supported and enabled, `false` otherwise.
      */
     fun isNfcEnabled(): Boolean = run {
-        if (!isNfcSupported()) false else true == getAdapter()?.isEnabled
+        if (!isNfcSupported()) false else true == nfcAdapter?.isEnabled
     }.also { enabled ->
         Timber.d("isNfcEnabled() | is NFC enabled : $enabled")
         nfcState.update { if (enabled) NFCUiState.Enabled else NFCUiState.Disabled }
