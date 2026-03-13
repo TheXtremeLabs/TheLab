@@ -1,7 +1,13 @@
 [versions]
+# Java
+javaVersion = "21"
+
 # Gradle version
 # Android
-androidGradlePlugin = "8.13.2"
+androidGradlePlugin = "9.1.0"
+androidxLintGradlePlugin = "1.0.0-alpha03"
+dependencyGuardGradlePlugin = "0.5.0"
+develocityGradlePlugin = "4.3.2"
 # Google Services
 playServicesGradlePlugin = "4.4.4"
 # Firebase
@@ -54,12 +60,12 @@ androidxGlance = "1.1.1"
 androidxHiltNavigationCompose = "1.3.0"
 androidxLifecycle = "2.10.0"
 androidxLifecycleExtensions = "2.2.0"
-androidxLifecycleNavigation3 =  "2.10.0"
+androidxLifecycleNavigation3 = "2.10.0"
 androidxMacroBenchmark = "1.4.1"
 androidxMetrics = "1.0.0"
 androidxMultiDex = "2.0.1"
 androidxNavigation = "2.9.7"
-androidxNavigation3Core  = "1.0.1"
+androidxNavigation3Core = "1.0.1"
 androidxPalette = "1.0.0"
 androidxProfileinstaller = "1.4.1"
 androidxRecyclerView = "1.4.0"
@@ -156,7 +162,7 @@ kotlinxSerializationJson = "1.10.0"
 kotzilla = "1.4.2"
 ktor = "3.4.0"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
-ksp = "2.2.21-2.0.4"
+ksp = "2.3.2"
 landscapist = "2.9.5"
 lint = "32.0.1"
 location = "21.3.0"
@@ -192,6 +198,7 @@ timber = "5.0.1"
 turbine = "1.2.1"
 volley = "1.2.1"
 types = "5.1.1"
+xmlUtil = "0.91.3"
 youtubePlayer = "13.0.0"
 zxing = "3.5.4"
 zxingAndroid = "3.3.0"
@@ -478,6 +485,8 @@ ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializatio
 logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
 slf4j-android = { group = "org.slf4j", name = "slf4j-android", version.ref = "slf4j" }
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "lint" }
+lint-checks = { group = "com.android.tools.lint", name = "lint-checks", version.ref = "lint" }
+lint-tests = { group = "com.android.tools.lint", name = "lint-tests", version.ref = "lint" }
 location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "location" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
@@ -525,6 +534,9 @@ threeten = { group = "com.jakewharton.threetenabp", name = "threetenabp", versio
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
+# XML
+xml-util-core = { group = "io.github.pdvrieze.xmlutil", name = "core", version.ref = "xmlUtil" }
+xml-util-serialization = { group = "io.github.pdvrieze.xmlutil", name = "serialization", version.ref = "xmlUtil" }
 youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "youtubePlayer" }
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 zxing-parent = { group = "com.google.zxing", name = "zxing-parent", version.ref = "zxing" }
@@ -533,7 +545,11 @@ zxing-android-integration = { group = "com.google.zxing", name = "android-integr
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+androidx-lint-gradlePlugin = { group = "androidx.lint", name = "lint-gradle", version.ref = "androidxLintGradlePlugin" }
+android-tools-common-gradlePlugin = { group = "com.android.tools", name = "common", version.ref = "lint" }
 androidx-navigation-gradlePlugin = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "androidxNavigation" }
+androidx-room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+compose-compiler-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotzilla-gradlePlugin = { module = "io.kotzilla:kotzilla-plugin", version.ref = "kotzilla" }
 ktor-gradlePlugin = { group = "io.ktor.plugin", name = "io.ktor.plugin.gradle.plugin", version.ref = "ktor" }
@@ -549,11 +565,15 @@ stream = ["stream-video", "stream-video-android-compose"]
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-lint = { id = "com.android.lint", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 androidx-navigation = { id = "androidx.navigation.safeargs.kotlin", version.ref = "androidxNavigation" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
 # Compose Compiler comes with Kotlin 2.0
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+dependencyGuard = { id = "com.dropbox.dependency-guard", version.ref = "dependencyGuardGradlePlugin" }
+# Develocity
+develocity = { id = "com.gradle.develocity", version.ref = "develocityGradlePlugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

@@ -4,6 +4,7 @@ import com.riders.thelab.configureFlavors
 import com.riders.thelab.configureKotlinAndroid
 import com.riders.thelab.configurePrintApksTask
 import com.riders.thelab.configureTimber
+import com.riders.thelab.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -22,18 +23,18 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             // Configure Jvm ToolChain
             with(kotlinExtension) {
-                jvmToolchain(21)
+                jvmToolchain(libs.findVersion("javaVersion").get().requiredVersion.toInt())
             }
 
             extensions.configure<ApplicationExtension> {
-                configureKotlinAndroid(this)
+                configureKotlinAndroid(applicationExtension = this)
 
                 defaultConfig.targetSdk = AndroidConfiguration.Sdk.TARGET
 
                 defaultConfig.versionCode = AndroidConfiguration.Application.CODE
                 defaultConfig.versionName = AndroidConfiguration.Application.version.toString()
 
-                configureFlavors(this)
+                configureFlavors(applicationExtension = this)
                 configureTimber()
             }
             extensions.configure<ApplicationAndroidComponentsExtension> {

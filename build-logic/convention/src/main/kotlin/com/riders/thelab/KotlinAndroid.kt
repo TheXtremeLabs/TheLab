@@ -1,7 +1,10 @@
 package com.riders.thelab
 
 import AndroidConfiguration
+import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryExtension
+import com.android.build.api.dsl.TestExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
@@ -17,49 +20,74 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 /**
  * Configure base Kotlin with Android options
  */
-internal fun Project.configureKotlinAndroid(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
-) {
+
+internal fun Project.configureKotlinAndroid(applicationExtension: ApplicationExtension) {
+    configureKotlinCommons(applicationExtension)
+    configureKotlinJvm()
+}
+
+internal fun Project.configureKotlinAndroid(libraryExtension: LibraryExtension) {
+    configureKotlinCommons(libraryExtension)
+    configureKotlinJvm()
+}
+
+internal fun Project.configureKotlinAndroid(testExtension: TestExtension) {
+    configureKotlinCommons(testExtension)
+    configureKotlinJvm()
+}
+
+internal fun Project.configureKotlinCommons(commonExtension: CommonExtension) {
+
+    logger.lifecycle("\uD83D\uDD53 Configuring kotlin commons....")
+
     commonExtension.apply {
-        compileSdk { version = release(AndroidConfiguration.Sdk.COMPILATION) }
-
-        defaultConfig {
-            minSdk = AndroidConfiguration.Sdk.MIN
+        this@apply.compileSdk {
+            version = release(AndroidConfiguration.Sdk.COMPILATION) { minorApiLevel = 1 }
         }
+        this@apply.ndkVersion = AndroidConfiguration.ndk.toString()
 
-        buildFeatures {
-            buildConfig = true
-            // Determines whether to support View Binding.
-            // Note that the viewBinding.enabled property is now deprecated.
-            viewBinding = true
-        }
+        this@apply.defaultConfig.minSdk = AndroidConfiguration.Sdk.MIN
 
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_21
-            targetCompatibility = JavaVersion.VERSION_21
-            isCoreLibraryDesugaringEnabled = true
-        }
+        this@apply.compileOptions.sourceCompatibility = this@configureKotlinCommons.javaVersion
+        this@apply.compileOptions.targetCompatibility = this@configureKotlinCommons.javaVersion
+        this@apply.compileOptions.isCoreLibraryDesugaringEnabled = true
 
-        configureKotlinJvm()
+        this@apply.buildFeatures.buildConfig = true
+        this@apply.buildFeatures.viewBinding = true
     }
 
     dependencies {
         add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
 
-        // Kotlin bom
-        add("implementation", platform(libs.findLibrary("kotlin-bom").get()))
-        add("implementation", libs.findLibrary("kotlin-stdlib").get())
+        // Kotlin
+        val kotlinBom = libs.findLibrary("kotlin-bom").get()
+        add("implementation", platform(kotlinBom))
         add("implementation", libs.findLibrary("kotlin-reflect").get())
+        add("implementation", libs.findLibrary("kotlin-stdlib").get())
+        // For Android Instrumented Tests
+        add("androidTestImplementation", platform(kotlinBom))
+        add("androidTestImplementation", libs.findLibrary("kotlin-test").get())
+        // For Unit Tests
+        add("testImplementation", platform(kotlinBom))
+        add("testImplementation", libs.findLibrary("kotlin-test").get())
 
-        // Kotlin Coroutines bom
-        add("implementation", platform(libs.findLibrary("kotlinx-coroutines-bom").get()))
+        // Kotlin Coroutines
+        val kotlinxCoroutinesBom = libs.findLibrary("kotlinx-coroutines-bom").get()
+        add("implementation", platform(kotlinxCoroutinesBom))
         add("implementation", libs.findLibrary("kotlinx-coroutines-core").get())
         add("implementation", libs.findLibrary("kotlinx-coroutines-android").get())
+        // For Android Instrumented Tests
+        add("androidTestImplementation", platform(kotlinxCoroutinesBom))
+        add("androidTestImplementation", libs.findLibrary("kotlinx-coroutines-test").get())
+        // For Unit Tests
+        add("testImplementation", platform(kotlinxCoroutinesBom))
+        add("testImplementation", libs.findLibrary("kotlinx-coroutines-test").get())
 
-        // Timber : Logging library
+        // Timber
         add("implementation", libs.findLibrary("timber").get())
     }
 }
+
 
 /**
  * Configure base Kotlin options for JVM (non-Android)

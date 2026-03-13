@@ -13,7 +13,7 @@ class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
             }
 
             val extension = extensions.getByType<LibraryExtension>()
-            configureAndroidCompose(extension)
+            configureAndroidCompose(libraryExtension = extension)
         }
     }
 }

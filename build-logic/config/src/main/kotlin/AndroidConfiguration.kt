@@ -1,5 +1,7 @@
 object AndroidConfiguration {
 
+    val ndk: Version = Version(major = 21, minor = 0, patch = 6113669)
+
     object Sdk {
         const val COMPILATION: Int = 36
         const val MIN: Int = 26

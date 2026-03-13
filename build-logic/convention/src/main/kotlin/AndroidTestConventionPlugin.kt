@@ -1,4 +1,4 @@
-import com.android.build.gradle.TestExtension
+import com.android.build.api.dsl.TestExtension
 import com.riders.thelab.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -13,7 +13,7 @@ class AndroidTestConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<TestExtension> {
-                configureKotlinAndroid(this)
+                configureKotlinAndroid(testExtension = this)
                 defaultConfig.targetSdk = AndroidConfiguration.Sdk.TARGET
             }
         }

@@ -1,6 +1,8 @@
 package com.riders.thelab
 
+import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
@@ -10,13 +12,24 @@ import java.io.File
 /**
  * Configure Compose-specific options
  */
-internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*, *, *, *, *, *>) {
+
+internal fun Project.configureAndroidCompose(applicationExtension: ApplicationExtension) {
+    applicationExtension.apply {
+        configureAndroidCompose(commonExtension = this)
+    }
+}
+
+internal fun Project.configureAndroidCompose(libraryExtension: LibraryExtension) {
+    libraryExtension.apply {
+        configureAndroidCompose(commonExtension = this)
+    }
+}
+
+internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
     commonExtension.apply {
-        buildFeatures {
-            buildConfig = true
-            // Enables Jetpack Compose for this module
-            compose = true
-        }
+        buildFeatures.buildConfig = true
+        // Enables Jetpack Compose for this module
+        buildFeatures.compose = true
 
         tasks.withType<KotlinJvmCompile>() {
             compilerOptions {

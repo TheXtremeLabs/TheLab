@@ -11,7 +11,7 @@ class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
             pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
 
             val extension = extensions.getByType<ApplicationExtension>()
-            configureAndroidCompose(extension)
+            configureAndroidCompose(applicationExtension = extension)
         }
     }
 }

@@ -3,6 +3,7 @@ package com.riders.thelab
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.ApplicationProductFlavor
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.dsl.ProductFlavor
 import org.gradle.api.Project
 
@@ -21,25 +22,48 @@ enum class TheLabFlavor(val dimension: FlavorDimension, val applicationIdSuffix:
 }
 
 fun Project.configureFlavors(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
+    applicationExtension: ApplicationExtension,
+    flavorConfigurationBlock: ProductFlavor.(flavor: TheLabFlavor) -> Unit = {}
+) {
+    applicationExtension.apply {
+        configureFlavorsCommons(
+            commonExtension = applicationExtension,
+            flavorConfigurationBlock = flavorConfigurationBlock
+        )
+    }
+}
+
+fun Project.configureFlavors(
+    libraryExtension: LibraryExtension,
+    flavorConfigurationBlock: ProductFlavor.(flavor: TheLabFlavor) -> Unit = {}
+) {
+    libraryExtension.apply {
+        configureFlavorsCommons(
+            commonExtension = libraryExtension,
+            flavorConfigurationBlock = flavorConfigurationBlock
+        )
+    }
+}
+
+fun Project.configureFlavorsCommons(
+    commonExtension: CommonExtension,
     flavorConfigurationBlock: ProductFlavor.(flavor: TheLabFlavor) -> Unit = {}
 ) {
     commonExtension.apply {
         flavorDimensions += FlavorDimension.contentType.name
-        productFlavors {
-            TheLabFlavor.entries.forEach {
-                create(it.name) {
-                    dimension = it.dimension.name
-                    flavorConfigurationBlock(this, it)
-                    if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
-                        if (it.applicationIdSuffix != null) {
-                            this.applicationIdSuffix = it.applicationIdSuffix
-                        }
 
-                        if (TheLabFlavor.demo.name == it.name) {
-                            isDefault = true
-                            androidResources.localeFilters += listOf("en"/*, "xxhdpi"*/)
-                        }
+        TheLabFlavor.entries.forEach {
+            productFlavors.create(it.name) {
+                dimension = it.dimension.name
+                flavorConfigurationBlock(this, it)
+                if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
+                    if (it.applicationIdSuffix != null) {
+                        this.applicationIdSuffix = it.applicationIdSuffix
+                    }
+
+                    if (TheLabFlavor.demo.name == it.name) {
+                        isDefault = true
+                        androidResources.localeFilters += listOf("en", "xxhdpi")
                     }
                 }
             }
