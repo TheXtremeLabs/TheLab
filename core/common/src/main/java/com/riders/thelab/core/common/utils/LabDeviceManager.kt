@@ -11,6 +11,7 @@ import android.os.VibratorManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.view.WindowMetrics
+import androidx.annotation.RequiresPermission
 import timber.log.Timber
 import java.io.File
 
@@ -25,7 +26,7 @@ object LabDeviceManager {
     @Suppress("DEPRECATION")
     fun logDeviceInfo() {
         Timber.d("logDeviceInfo()")
-        Timber.i("SERIAL: %s ", Build.SERIAL)
+        Timber.i("SERIAL: %s ", getSerial())
         Timber.i("MODEL: %s ", Build.MODEL)
         Timber.i("ID: %s ", Build.ID)
         Timber.i("Manufacture: %s ", Build.MANUFACTURER)
@@ -44,7 +45,17 @@ object LabDeviceManager {
 
     fun getDevice(): String? = Build.DEVICE
 
-    fun getSerial(): String? = try {
+    fun getSerial(): String? = getAndroidOsSerial() ?: getSerialWithReflection()
+
+    @RequiresPermission("android.permission.READ_PRIVILEGED_PHONE_STATE")
+    private fun getAndroidOsSerial(): String? = if (LabCompatibilityManager.isOreo()) {
+        Build.getSerial()
+    } else {
+        @Suppress("DEPRECATION")
+        Build.SERIAL
+    }
+
+    private fun getSerialWithReflection(): String? = try {
         /**
          * http://stackoverflow.com/questions/14161282/serial-number-from-samsung-device-running-android
          *

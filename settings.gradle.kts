@@ -1,3 +1,5 @@
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+
 pluginManagement {
 
     /**
@@ -42,6 +44,12 @@ pluginManagement {
     }
 }
 
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+    // Develocity
+    id("com.gradle.develocity") version "4.3.2"
+}
+
 dependencyResolutionManagement {
 
     /**
@@ -80,19 +88,26 @@ dependencyResolutionManagement {
     }
 }
 
+develocity {
+    // configuration
+    buildScan {
+        termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
+        termsOfUseAgree.set("yes")
+    }
+}
+
 /*
  * The built-in local build cache, DirectoryBuildCache, uses a directory to store build cache artifacts.
  * By default, this directory resides in the Gradle User Home, but its location is configurable.
  * Gradle will periodically clean-up the local cache directory by removing entries
  * that have not been used recently to conserve disk space.
  */
-/*buildCache {
+buildCache {
+    // Build cache for gradle
     local {
         directory = File(rootDir, "build-cache")
     }
-}*/
-
-enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+}
 
 rootProject.name = "TheLab"
 // Applications
