@@ -40,7 +40,8 @@ dependencies {
 gradlePlugin {
     plugins {
         register("androidApplicationCompose") {
-            id = "thelab.android.application.compose"
+            id = libs.plugins.thelab.application.compose.get().pluginId
+//            id = "thelab.android.application.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
         register("androidApplication") {

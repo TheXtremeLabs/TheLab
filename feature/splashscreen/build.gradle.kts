@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.thelab.library.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.thelab.hilt)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
