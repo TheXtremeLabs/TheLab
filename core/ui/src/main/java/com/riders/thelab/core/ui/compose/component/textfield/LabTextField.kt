@@ -37,6 +37,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +51,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -240,12 +242,17 @@ fun LabOutlinedTextField(
     onUpdateQuery: (String) -> Unit,
     placeholder: String,
     label: String,
+    isError: Boolean = false,
+    errorMessage: String? = null,
+    singleLine: Boolean = true,
+    maxLines: Int = 1,
     leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable (() -> Unit)? = null,
     focusedBorderColor: Color = Color.Unspecified,
     unfocusedBorderColor: Color = Color.Unspecified,
     focusedContainerColor: Color = Color.Transparent,
-    unfocusedContainerColor: Color = Color.Transparent
+    unfocusedContainerColor: Color = Color.Transparent,
+    shape: Shape = OutlinedTextFieldDefaults.shape
 ) {
     val context = LocalContext.current
     val view = LocalView.current
@@ -262,6 +269,7 @@ fun LabOutlinedTextField(
 
     var isFieldFocused: Boolean by remember { mutableStateOf(false) }
 
+    val isError :Boolean by remember(errorMessage) { derivedStateOf { null != errorMessage } }
 
     TheLabTheme(theme = theme) {
         OutlinedTextField(
@@ -301,7 +309,6 @@ fun LabOutlinedTextField(
             label = { Text(text = label, color = Color.LightGray) },
             interactionSource = interactionSource,
             enabled = true,
-            singleLine = true,
             leadingIcon = leadingContent,
             trailingIcon = trailingContent,
             keyboardOptions = KeyboardOptions(
@@ -316,7 +323,14 @@ fun LabOutlinedTextField(
                 unfocusedContainerColor = unfocusedContainerColor,
                 focusedBorderColor = focusedBorderColor,
                 unfocusedBorderColor = unfocusedBorderColor
-            )
+            ),
+            shape = shape,
+            isError = isError,
+            supportingText = if(!isError) null else {
+                { Text(text = errorMessage.toString(), color = Color.Red) }
+            },
+            singleLine = singleLine,
+            maxLines = if (singleLine) 1 else maxLines
         )
     }
 
