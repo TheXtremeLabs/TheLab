@@ -66,12 +66,15 @@ sealed class IslandState(
         hasLeadingContent = true
     ) {
         @Stable
+        @Immutable
         data object Available : NetworkState()
 
         @Stable
+        @Immutable
         data object Lost : NetworkState()
 
         @Stable
+        @Immutable
         data object Unavailable : NetworkState()
     }
 

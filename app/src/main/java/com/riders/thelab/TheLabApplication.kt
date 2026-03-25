@@ -49,8 +49,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltAndroidApp
-class TheLabApplication : MultiDexApplication(), LifecycleEventObserver, Configuration.Provider,
-    SingletonImageLoader.Factory {
+class TheLabApplication : MultiDexApplication(),
+    LifecycleEventObserver, Configuration.Provider, SingletonImageLoader.Factory {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
