@@ -38,7 +38,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -111,9 +110,7 @@ fun VideoView(videoPath: String, uiEvent: (UiEvent) -> Unit) {
                                     uiEvent.invoke(UiEvent.OnUpdateSwitchContent(true))
                                     delay(250L)
                                     (context.findActivity() as? SplashScreenActivity)?.let { activity ->
-                                        uiEvent.invoke(
-                                            UiEvent.OnUpdateStartCountDown(activity = activity)
-                                        )
+                                        uiEvent.invoke(UiEvent.OnUpdateStartCountDown)
                                     }
                                 }
                             }

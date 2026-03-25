@@ -1,4 +1,4 @@
-package com.riders.thelab.core.ui.compose
+package com.riders.thelab.core.ui.compose.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
-import com.riders.thelab.core.ui.compose.component.Lottie
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme

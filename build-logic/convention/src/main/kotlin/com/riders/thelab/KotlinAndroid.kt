@@ -48,12 +48,16 @@ internal fun Project.configureKotlinCommons(commonExtension: CommonExtension) {
 
         this@apply.defaultConfig.minSdk = AndroidConfiguration.Sdk.MIN
 
-        this@apply.compileOptions.sourceCompatibility = this@configureKotlinCommons.javaVersion
-        this@apply.compileOptions.targetCompatibility = this@configureKotlinCommons.javaVersion
-        this@apply.compileOptions.isCoreLibraryDesugaringEnabled = true
+        this@apply.compileOptions.apply {
+            sourceCompatibility = this@configureKotlinCommons.javaVersion
+            targetCompatibility = this@configureKotlinCommons.javaVersion
 
-        this@apply.buildFeatures.buildConfig = true
-        this@apply.buildFeatures.viewBinding = true
+            isCoreLibraryDesugaringEnabled = true
+        }
+        this@apply.buildFeatures.apply {
+            buildConfig = true
+            viewBinding = true
+        }
     }
 
     dependencies {

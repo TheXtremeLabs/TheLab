@@ -1,5 +1,6 @@
 package com.riders.thelab.ui.splashscreen
 
+import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -24,9 +25,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,6 +47,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.riders.thelab.BuildConfig
@@ -99,11 +103,10 @@ fun NoContentFound(theme: AppTheme, darkTheme: Boolean) {
     }
 }
 
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+@OptIn(UnstableApi::class)
 @Composable
-fun VideoView(videoPath: String, uiEvent: (UiEvent) -> Unit) {
+fun VideoView(videoPath: String, onVideoEnded: () -> Unit) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
 
     val exoPlayer = ExoPlayer.Builder(LocalContext.current)
         .build()
@@ -142,12 +145,7 @@ fun VideoView(videoPath: String, uiEvent: (UiEvent) -> Unit) {
 
                             Player.STATE_ENDED -> {
                                 Timber.e("State.STATE_ENDED")
-
-                                scope.launch {
-                                    uiEvent.invoke(UiEvent.OnUpdateSwitchContent(true))
-                                    delay(250L)
-                                    uiEvent.invoke(UiEvent.OnUpdateStartCountDown(true))
-                                }
+                                onVideoEnded.invoke()
                             }
                         }
                     }
@@ -165,7 +163,6 @@ fun LoadingContent(
     theme: AppTheme,
     darkTheme: Boolean, version: String
 ) {
-
     val scope = rememberCoroutineScope()
     val progressBarVisibility = remember { mutableStateOf(false) }
 
@@ -232,12 +229,12 @@ fun SplashScreenContent(
     theme: AppTheme,
     darkTheme: Boolean,
     version: String,
-    videoPath: String?,
-    switchContent: Boolean,
-    startCountDown: Boolean,
-    uiEvent: (UiEvent) -> Unit
+    videoPath: String?
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    var switchContent by remember { mutableStateOf(false) }
 
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Column(
@@ -252,21 +249,21 @@ fun SplashScreenContent(
                 AnimatedContent(
                     targetState = switchContent,
                     transitionSpec = { fadeIn() togetherWith fadeOut() },
-                    label = ""
+                    label = "video_content_animated_content"
                 ) { targetState ->
                     if (!targetState) {
-                        VideoView(videoPath = videoPath, uiEvent = uiEvent)
+                        VideoView(videoPath = videoPath) {
+                            switchContent = true
+
+                            scope.launch {
+                                delay(2500L)
+                                (context as SplashScreenActivity).goToLoginActivity()
+                            }
+                        }
                     } else {
                         LoadingContent(theme = theme, darkTheme = darkTheme, version)
                     }
                 }
-            }
-        }
-
-        if (startCountDown) {
-            LaunchedEffect(Unit) {
-                delay(2500L)
-                (context as SplashScreenActivity).goToLoginActivity()
             }
         }
     }
@@ -332,9 +329,7 @@ private fun PreviewSplashScreenContent(@PreviewParameter(AppThemePreviewProvider
             theme = appTheme,
             darkTheme = isSystemInDarkTheme(),
             version = BuildConfig.VERSION_NAME,
-            videoPath = videoPath,
-            switchContent = true,
-            startCountDown = false
-        ) {}
+            videoPath = videoPath
+        )
     }
 }

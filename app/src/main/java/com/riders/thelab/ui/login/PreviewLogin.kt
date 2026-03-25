@@ -52,7 +52,6 @@ import com.riders.thelab.core.ui.compose.theme.Shapes
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.animatePlacement
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 
@@ -258,19 +257,18 @@ fun LoginContent(
     }
 
     LaunchedEffect(Unit) {
-        scope.launch {
-            delay(200L)
-            versionVisibility.value = false
-            delay(200L)
-            formVisibility.value = true
-            registerVisibility.value = true
-            delay(150L)
-            arrangement = Arrangement.Bottom
 
-            /*if (BuildConfig.DEBUG) {
-                uiEvent.invoke(UiEvent.OnLoginClicked)
-            }*/
-        }
+        delay(200L)
+        versionVisibility.value = false
+        delay(200L)
+        formVisibility.value = true
+        registerVisibility.value = true
+        delay(150L)
+        arrangement = Arrangement.Bottom
+
+        /*if (BuildConfig.DEBUG) {
+            uiEvent.invoke(UiEvent.OnLoginClicked)
+        }*/
     }
 
     if (loginUiState is LoginUiState.UserSuccess) {

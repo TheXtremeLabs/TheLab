@@ -98,10 +98,7 @@ class SplashScreenActivity : ComponentActivity() {
                                 theme = theme,
                                 darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                 version = version,
-                                videoPath = mViewModel.videoPath,
-                                switchContent = mViewModel.switchContent,
-                                startCountDown = mViewModel.startCountDown,
-                                uiEvent = mViewModel::onEvent
+                                videoPath = mViewModel.videoPath
                             )
                         }
                     }

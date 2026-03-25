@@ -127,7 +127,7 @@ class LoginActivity : BaseGoogleActivity() {
                 googleApiAvailability = mGoogleApiAvailability
             )
         ) {
-            Timber.e("Play services are NOT available")
+            Timber.e("onResume() | Play services are NOT available")
         }
     }
 

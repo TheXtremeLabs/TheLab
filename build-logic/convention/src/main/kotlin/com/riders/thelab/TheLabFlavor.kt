@@ -63,7 +63,7 @@ fun Project.configureFlavorsCommons(
 
                     if (TheLabFlavor.demo.name == it.name) {
                         isDefault = true
-                        androidResources.localeFilters += listOf("en", "xxhdpi")
+                        androidResources.localeFilters += listOf("en", /*"xxhdpi"*/)
                     }
                 }
             }

@@ -24,6 +24,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -142,6 +143,12 @@ class LoginViewModel @Inject constructor(
     //////////////////////////////////////////
     // Coroutines
     //////////////////////////////////////////
+
+    private var checkLoggedUserJob: Job? = null
+    private var updateGoogleUserJob: Job? = null
+    private var logUserJob: Job? = null
+    private var saveUserJob: Job? = null
+
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
@@ -167,6 +174,10 @@ class LoginViewModel @Inject constructor(
             }
         }
 
+    private val saveUserCoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+        Timber.e("saveUserCoroutineExceptionHandler | ${throwable.message}")
+    }
 
     ///////////////////////////////
     //
@@ -174,7 +185,7 @@ class LoginViewModel @Inject constructor(
     //
     ///////////////////////////////
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             if (dataStoreRememberCredentials.first()) {
                 isRememberCredentials = true
                 if (dataStoreEmail.first().trim().isNotBlank()) {
@@ -190,6 +201,11 @@ class LoginViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         Timber.e("onCleared()")
+
+        clearCheckLoggedUserJob()
+        clearLogUserJob()
+        clearSaveUserJob()
+        clearUpdateGoogleUserJob()
     }
 
 
@@ -198,6 +214,32 @@ class LoginViewModel @Inject constructor(
     // CLASS METHODS
     //
     ///////////////////////////////
+    fun onEvent(event: UiEvent) {
+        Timber.d("onEvent() | $event")
+
+        when (event) {
+            is UiEvent.OnUpdateLogin -> {
+                updateLogin(event.newLogin)
+            }
+
+            is UiEvent.OnUpdatePassword -> {
+                updatePassword(event.newPassword)
+            }
+
+            is UiEvent.OnUpdateIsRememberCredentials -> {
+                updateIsRememberCredentials(event.checked)
+            }
+
+            is UiEvent.OnLoginClicked -> {
+                login()
+            }
+
+            else -> {
+                Timber.e("onEvent() | Else branch")
+            }
+        }
+    }
+
     /**
      * logging in user. Will make http post request with name, email
      * as parameters
@@ -240,7 +282,7 @@ class LoginViewModel @Inject constructor(
     private fun logUser(usernameOrEmail: String, password: String) {
         Timber.d("logUser() | username Or Email: $usernameOrEmail, password:$password")
 
-        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+        logUserJob = viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
 
             // Simulate long-time running operation
             delay(1_500)
@@ -260,47 +302,17 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun saveUserDataInDataStore(email: String, password: String) =
-        runCatching {
-            Timber.d("saveUserDataInDataStore() | runCatching")
-            viewModelScope.launch(Dispatchers.IO) {
-                repository.saveEmailPref(email)
-                repository.savePasswordPref(password)
-            }
-        }
-            .onFailure {
-                Timber.e("runCatching | onFailure | error caught with message: ${it.message}")
-            }
-
-    fun onEvent(event: UiEvent) {
-        Timber.d("onEvent() | $event")
-
-        when (event) {
-            is UiEvent.OnUpdateLogin -> {
-                updateLogin(event.newLogin)
-            }
-
-            is UiEvent.OnUpdatePassword -> {
-                updatePassword(event.newPassword)
-            }
-
-            is UiEvent.OnUpdateIsRememberCredentials -> {
-                updateIsRememberCredentials(event.checked)
-            }
-
-            is UiEvent.OnLoginClicked -> {
-                login()
-            }
-
-            else -> {
-                Timber.e("onEvent() | Else branch")
-            }
+    private fun saveUserDataInDataStore(email: String, password: String) {
+        saveUserJob = viewModelScope.launch(Dispatchers.IO + saveUserCoroutineExceptionHandler) {
+            Timber.d("saveUserDataInDataStore()")
+            repository.saveEmailPref(email)
+            repository.savePasswordPref(password)
         }
     }
 
     fun updateGoogleUser(navigator: Navigator, account: GoogleSignInAccount) {
         val user: User = account.toModel()
-        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+        updateGoogleUserJob = viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             val id = repository.insertUser(user)
 
             if (-1L != id) {
@@ -311,7 +323,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun isGoogleUserLogged(navigator: Navigator) {
-        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+        checkLoggedUserJob = viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             val email = repository.getEmailPref().first()
             val googleUser: User? = repository.getUserWithGoogle(email)
 
@@ -320,4 +332,26 @@ class LoginViewModel @Inject constructor(
             } ?: run { Timber.e("isGoogleUserLogged() | googleUser is null") }
         }
     }
+
+
+    private fun clearCheckLoggedUserJob() {
+        if (true == checkLoggedUserJob?.isActive) checkLoggedUserJob?.cancel()
+        checkLoggedUserJob = null
+    }
+
+    private fun clearLogUserJob() {
+        if (true == logUserJob?.isActive) logUserJob?.cancel()
+        logUserJob = null
+    }
+
+    private fun clearSaveUserJob() {
+        if (true == saveUserJob?.isActive) saveUserJob?.cancel()
+        saveUserJob = null
+    }
+
+    private fun clearUpdateGoogleUserJob() {
+        if (true == updateGoogleUserJob?.isActive) updateGoogleUserJob?.cancel()
+        updateGoogleUserJob = null
+    }
+
 }

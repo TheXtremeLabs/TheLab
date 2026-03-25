@@ -29,10 +29,12 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(applicationExtension = this)
 
-                defaultConfig.targetSdk = AndroidConfiguration.Sdk.TARGET
+                defaultConfig.apply {
+                    targetSdk = AndroidConfiguration.Sdk.TARGET
 
-                defaultConfig.versionCode = AndroidConfiguration.Application.CODE
-                defaultConfig.versionName = AndroidConfiguration.Application.version.toString()
+                    versionCode = AndroidConfiguration.Application.CODE
+                    versionName = AndroidConfiguration.Application.version.toString()
+                }
 
                 configureFlavors(applicationExtension = this)
                 configureTimber()

@@ -45,14 +45,20 @@ object LabDeviceManager {
 
     fun getDevice(): String? = Build.DEVICE
 
+    @SuppressLint("MissingPermission")
     fun getSerial(): String? = getAndroidOsSerial() ?: getSerialWithReflection()
 
     @RequiresPermission("android.permission.READ_PRIVILEGED_PHONE_STATE")
-    private fun getAndroidOsSerial(): String? = if (LabCompatibilityManager.isOreo()) {
-        Build.getSerial()
-    } else {
-        @Suppress("DEPRECATION")
-        Build.SERIAL
+    private fun getAndroidOsSerial(): String? = try {
+        if (LabCompatibilityManager.isOreo()) {
+            Build.getSerial()
+        } else {
+            @Suppress("DEPRECATION")
+            Build.SERIAL
+        }
+    } catch (securityException: SecurityException) {
+        Timber.e("getAndroidOsSerial() | Exception caught with message : ${securityException.message} (class : ${securityException.javaClass.canonicalName})")
+        null
     }
 
     private fun getSerialWithReflection(): String? = try {

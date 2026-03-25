@@ -147,6 +147,7 @@ class SplashScreenViewModel @Inject constructor(
         when (uiEvent) {
             is UiEvent.OnUpdateSwitchContent -> updateSwitchContent(uiEvent.isSwitchContent)
             is UiEvent.OnUpdateStartCountDown -> updateStartCountDown(uiEvent.isStarted)
+            is UiEvent.OnGoToLoginActivity -> return
         }
     }
 }

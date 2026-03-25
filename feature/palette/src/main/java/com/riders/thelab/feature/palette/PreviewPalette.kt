@@ -64,7 +64,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import com.riders.thelab.core.data.local.model.compose.palette.PaletteUiState
 import com.riders.thelab.core.ui.R
-import com.riders.thelab.core.ui.compose.NoInternetConnection
+import com.riders.thelab.core.ui.compose.component.NoInternetConnection
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
 import com.riders.thelab.core.ui.compose.component.snackbar.SnackbarVisualsCustom

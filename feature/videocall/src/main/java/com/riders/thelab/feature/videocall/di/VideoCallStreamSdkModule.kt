@@ -27,7 +27,8 @@ object VideoCallStreamSdkModule {
             id = "Mike",
             name = "Mike",
             type = UserType.Guest
-        )
+        ),
+        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
     )
         .build()
 }

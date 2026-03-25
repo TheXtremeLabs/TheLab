@@ -7,7 +7,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -25,8 +24,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.riders.thelab.core.data.local.model.compose.theaters.TMDBUiState
 import com.riders.thelab.core.data.remote.dto.tmdb.TMDBMovieResponse
-import com.riders.thelab.core.ui.compose.NoInternetConnection
-import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
+import com.riders.thelab.core.ui.compose.component.NoInternetConnection
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsTV
 import com.riders.thelab.core.ui.compose.data.AppTheme

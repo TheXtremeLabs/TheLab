@@ -104,5 +104,6 @@ class KatSplashscreenActivity : BaseComponentActivity() {
         }
         .onSuccess {
             Timber.d("launchKatActivity() | onSuccess | Activity launched successfully")
+            finish()
         }
 }

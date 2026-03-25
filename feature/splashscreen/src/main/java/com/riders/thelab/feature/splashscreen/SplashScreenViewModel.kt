@@ -140,17 +140,19 @@ class SplashScreenViewModel @Inject constructor(
     fun onEvent(event: UiEvent) {
         when (event) {
             is UiEvent.OnUpdateSwitchContent -> updateSwitchContent(event.isSwitchContent)
-            is UiEvent.OnUpdateStartCountDown -> startCountDown(activity = event.activity)
+            is UiEvent.OnUpdateStartCountDown -> startCountDown()
         }
     }
 
-    fun startCountDown(activity: SplashScreenActivity) {
+    fun startCountDown() {
         val delay = 2_500L
         Timber.w("startCountDown() | start count down for $delay ms")
         updateStartCountDown(true)
-        viewModelScope.launch(Dispatchers.IO + coroutineContext) {
-            delay(delay)
-            activity.goToMainActivity(withError = false)
+        (mWeakReference?.get() as? SplashScreenActivity)?.let { activity ->
+            viewModelScope.launch(Dispatchers.IO + coroutineContext) {
+                delay(delay)
+                activity.goToMainActivity(withError = false)
+            }
         }
     }
 }
