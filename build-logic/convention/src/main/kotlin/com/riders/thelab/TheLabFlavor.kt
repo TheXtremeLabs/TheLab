@@ -18,7 +18,7 @@ enum class FlavorDimension {
 @Suppress("EnumEntryName")
 enum class TheLabFlavor(val dimension: FlavorDimension, val applicationIdSuffix: String? = null) {
     demo(FlavorDimension.contentType),
-    prod(FlavorDimension.contentType, ".prod")
+    prod(FlavorDimension.contentType, /*".prod"*/)
 }
 
 fun Project.configureFlavors(
@@ -63,7 +63,7 @@ fun Project.configureFlavorsCommons(
 
                     if (TheLabFlavor.demo.name == it.name) {
                         isDefault = true
-                        androidResources.localeFilters += listOf("en", /*"xxhdpi"*/)
+                        androidResources.localeFilters += listOf("en",/* "xxhdpi"*/)
                     }
                 }
             }
