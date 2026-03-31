@@ -19,6 +19,10 @@ class FirebaseConventionPlugin : Plugin<Project> {
             pluginManager.findPlugin("com.google.firebase.firebase-perf").apply {
                 version = target.libs.findVersion("performancesGradlePlugin").get().toString()
             }
+
+
+            // Optional: Add a log message to confirm the plugin is applied
+            logger.lifecycle("✅ Firebase convention plugin applied to '${project.name}'")
         }
     }
 }

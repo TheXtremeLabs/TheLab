@@ -5,9 +5,12 @@ plugins {
 
 group = "com.riders.thelab.buildlogic"
 
+val javaVersion:JavaVersion = JavaVersion.toVersion(libs.versions.javaVersion.get())
+
+
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
 
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(libs.versions.javaVersion.get().toInt()))

@@ -12,6 +12,12 @@ val Project.libs
     get() : VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 
+/**
+ * Retrieves the Java version from the `libs` version catalog.
+ *
+ * This property reads the "javaVersion" from the catalog and converts it into
+ * a [JavaVersion], which is used to configure Java compatibility.
+ */
 val Project.javaVersion
     get(): JavaVersion = JavaVersion.toVersion(
         libs.findVersion("javaVersion")
@@ -20,6 +26,12 @@ val Project.javaVersion
             .toInt()
     )
 
+/**
+ * Retrieves the Java language version from the `libs` version catalog.
+ *
+ * This property reads the "javaVersion" from the catalog and converts it into
+ * a [JavaLanguageVersion], which is used to configure the Java toolchain.
+ */
 val Project.javaLanguageVersion
     get(): JavaLanguageVersion = JavaLanguageVersion.of(
         libs.findVersion("javaVersion")
@@ -28,6 +40,12 @@ val Project.javaLanguageVersion
             .toInt()
     )
 
+/**
+ * Retrieves the JVM target version from the `libs` version catalog.
+ *
+ * This property reads the "javaVersion" from the catalog and converts it into
+ * a [JvmTarget], which is used to configure the Kotlin compiler.
+ */
 val Project.jvmTarget
     get(): JvmTarget = JvmTarget.fromTarget(
         libs.findVersion("javaVersion")

@@ -13,6 +13,9 @@ class AndroidLibraryJacocoConventionPlugin : Plugin<Project> {
             }
             val extension = extensions.getByType<LibraryAndroidComponentsExtension>()
             configureJacoco(extension)
+
+            // Optional: Add a log message to confirm the plugin is applied
+            logger.lifecycle("✅ Library Jacoco convention plugin applied to '${project.name}'")
         }
     }
 

@@ -24,6 +24,9 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
                 "kspAndroidTest"(libs.findLibrary("hilt.compiler").get())
                 "kspAndroidTest"(libs.findLibrary("hilt.ext.compiler").get())
             }
+
+            // Optional: Add a log message to confirm the plugin is applied
+            logger.lifecycle("✅ Hilt convention plugin applied to '${project.name}'")
         }
     }
 }

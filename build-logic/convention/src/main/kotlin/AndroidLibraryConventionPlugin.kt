@@ -1,5 +1,5 @@
+import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
-import com.android.build.gradle.LibraryExtension
 import com.riders.thelab.configureKotlinAndroid
 import com.riders.thelab.configurePrintApksTask
 import com.riders.thelab.configureTimber
@@ -26,7 +26,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(libraryExtension = this)
-                defaultConfig.targetSdk = AndroidConfiguration.Sdk.TARGET
+
                 // configureFlavors(this)
                 configureTimber()
             }
@@ -45,6 +45,9 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 add("androidTestImplementation", kotlin("test"))
                 add("testImplementation", kotlin("test"))
             }
+
+            // Optional: Add a log message to confirm the plugin is applied
+            logger.lifecycle("✅ Library convention plugin applied to '${project.name}'")
         }
     }
 }

@@ -99,13 +99,13 @@ internal fun Project.configureKotlinCommons(commonExtension: CommonExtension) {
 internal fun Project.configureKotlinJvm() {
     extensions.configure<JavaPluginExtension> {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(21))
+            languageVersion.set(this@configureKotlinJvm.javaLanguageVersion)
         }
 
         // Up to Java 11 APIs are available through desugaring
         // https://developer.android.com/studio/write/java11-minimal-support-table
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = this@configureKotlinJvm.javaVersion
+        targetCompatibility = this@configureKotlinJvm.javaVersion
     }
 
     configureKotlin<KotlinAndroidProjectExtension>()
@@ -128,7 +128,7 @@ private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() =
 
         jvmToolchain(21)
 
-        this.jvmTarget = JvmTarget.JVM_21
+        this.jvmTarget = this@configureKotlin.jvmTarget
         this.allWarningsAsErrors = warningsAsErrors
         this.freeCompilerArgs.addAll(
             "-opt-in=kotlin.RequiresOptIn",
