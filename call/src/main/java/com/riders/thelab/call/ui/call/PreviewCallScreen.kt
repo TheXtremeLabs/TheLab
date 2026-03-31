@@ -37,12 +37,14 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.riders.thelab.call.data.local.compose.CallState
+import com.riders.thelab.core.ui.compose.annotation.DevicePreviewsPhoneOnly
 import com.riders.thelab.core.ui.compose.data.AppTheme
+import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 
 @Composable
@@ -274,26 +276,33 @@ fun CallScreen(callState: CallState, onHangup: () -> Unit) {
                     }
                 }
             }
+
+            else -> {
+                // Nothing to show
+            }
         }
     }
 }
 
 
-@Preview(showBackground = true)
+@DevicePreviewsPhoneOnly
 @Composable
-private fun PreviewCallButtonEnabled() {
-    TheLabTheme(theme = AppTheme.Default) {
-        CallButton(
-            icon = Icons.Default.MicOff,
-            backgroundColor = Color(0xFF1C1C22),
-            isEnable = true
-        ) {}
+private fun PreviewCallButtonEnabled(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        Box(modifier = Modifier.size(64.dp), contentAlignment = Alignment.Center) {
+            CallButton(
+                icon = Icons.Default.MicOff,
+//                backgroundColor = Color(0xFF1C1C22),
+                backgroundColor = appTheme.primaryColor,
+                isEnable = true
+            ) {}
+        }
     }
 }
 
-@Preview(showBackground = true)
+@DevicePreviewsPhoneOnly
 @Composable
-private fun PreviewCallScreen() {
+private fun PreviewCallScreen(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     TheLabTheme(theme = AppTheme.Default) {
         CallScreen(
             contactName = "John Doe",
@@ -304,26 +313,26 @@ private fun PreviewCallScreen() {
     }
 }
 
-@Preview(showBackground = true)
+@DevicePreviewsPhoneOnly
 @Composable
-fun IncomingCallPreview() {
-    TheLabTheme(theme = AppTheme.Default) {
+fun IncomingCallPreview(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         CallScreen(CallState.Incoming("1234567890")) {}
     }
 }
 
-@Preview(showBackground = true)
+@DevicePreviewsPhoneOnly
 @Composable
-fun OutgoingCallPreview() {
-    TheLabTheme(theme = AppTheme.Default) {
+fun OutgoingCallPreview(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         CallScreen(CallState.Outgoing("1234567890")) {}
     }
 }
 
-@Preview(showBackground = true)
+@DevicePreviewsPhoneOnly
 @Composable
-fun ActiveCallPreview() {
-    TheLabTheme(theme = AppTheme.Default) {
+fun ActiveCallPreview(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
         CallScreen(CallState.Active("1234567890", 120)) {}
     }
 }

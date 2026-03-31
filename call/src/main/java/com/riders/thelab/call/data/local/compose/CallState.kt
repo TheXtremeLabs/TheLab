@@ -19,4 +19,16 @@ sealed class CallState {
 
     @Stable
     data class Active(val number: String, val duration: Long) : CallState()
+
+    @Stable
+    @Immutable
+    object OnHold : CallState()
+
+    @Stable
+    @Immutable
+    object Disconnected : CallState()
+
+    @Stable
+    @Immutable
+    object Keypad : CallState()
 }

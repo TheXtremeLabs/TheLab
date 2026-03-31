@@ -3,6 +3,7 @@ package com.riders.thelab.call.ui.call
 import androidx.lifecycle.viewModelScope
 import com.riders.thelab.call.core.service.LabCallService
 import com.riders.thelab.call.data.LabCallRepository
+import com.riders.thelab.call.data.local.compose.CallState
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +23,13 @@ class LabCallViewModel @Inject constructor(
 ) : BaseViewModel(uiRepository) {
 
     val callState: StateFlow<Int?> = LabCallRepository.callState
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = null
+        )
+
+    val callUiState: StateFlow<CallState?> = LabCallRepository.uiState
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
@@ -51,6 +59,7 @@ class LabCallViewModel @Inject constructor(
 
             is UiEvent.OnMute -> {
                 // Handle mute event
+                LabCallRepository.toggleMute()
             }
 
             is UiEvent.OnSpeaker -> {
@@ -59,6 +68,11 @@ class LabCallViewModel @Inject constructor(
 
             is UiEvent.OnKeypad -> {
                 // Handle keypad event
+                if(callUiState.value is CallState.Active){
+                    LabCallRepository.showKeypad()
+                } else {
+                    LabCallRepository.hideKeypad()
+                }
             }
 
             is UiEvent.OnHangUp -> {
