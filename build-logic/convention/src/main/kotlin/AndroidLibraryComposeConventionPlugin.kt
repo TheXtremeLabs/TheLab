@@ -1,4 +1,4 @@
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.riders.thelab.configureAndroidCompose
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -14,6 +14,9 @@ class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
 
             val extension = extensions.getByType<LibraryExtension>()
             configureAndroidCompose(libraryExtension = extension)
+
+            // Optional: Add a log message to confirm the plugin is applied
+            logger.lifecycle("✅ Library Compose convention plugin applied to '${project.name}'")
         }
     }
 }

@@ -1,4 +1,4 @@
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.riders.thelab.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -45,6 +45,9 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 // Timber : Logging library
                 add("implementation", libs.findLibrary("timber").get())
             }
+
+            // Optional: Add a log message to confirm the plugin is applied
+            logger.lifecycle("✅ Feature convention plugin applied to '${project.name}'")
         }
     }
 }

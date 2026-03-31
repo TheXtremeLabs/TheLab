@@ -7,6 +7,7 @@ import com.riders.thelab.configureTimber
 import com.riders.thelab.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.internal.cc.base.logger
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 
@@ -42,6 +43,9 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             extensions.configure<ApplicationAndroidComponentsExtension> {
                 configurePrintApksTask(this)
             }
+
+            // Optional: Add a log message to confirm the plugin is applied
+            logger.lifecycle("✅ Android Application convention plugin applied to '${project.name}'")
         }
     }
 }

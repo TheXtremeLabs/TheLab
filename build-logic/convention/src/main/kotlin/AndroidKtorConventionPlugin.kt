@@ -19,6 +19,9 @@ class AndroidKtorConventionPlugin : Plugin<Project> {
                 add("implementation", libs.findLibrary("slf4j.android").get())
                 add("implementation", libs.findLibrary("napier").get())
             }
+
+            // Optional: Add a log message to confirm the plugin is applied
+            logger.lifecycle("✅ Ktor convention plugin applied to '${project.name}'")
         }
     }
 }

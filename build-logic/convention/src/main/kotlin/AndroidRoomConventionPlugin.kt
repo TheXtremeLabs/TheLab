@@ -14,6 +14,7 @@
  *   limitations under the License.
  */
 
+import androidx.room.gradle.RoomExtension
 import com.google.devtools.ksp.gradle.KspExtension
 import com.riders.thelab.libs
 import org.gradle.api.Plugin
@@ -25,12 +26,21 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.process.CommandLineArgumentProvider
 import java.io.File
+import kotlin.text.get
 
 class AndroidRoomConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply("com.google.devtools.ksp")
+            with(pluginManager) {
+                apply(libs.findPlugin("ksp").get().get().pluginId)
+                apply(libs.findPlugin("androidx-room").get().get().pluginId)
+            }
+
+            // Define Room Plugin content
+            extensions.configure<RoomExtension> {
+                schemaDirectory("$projectDir/schemas")
+            }
 
             extensions.configure<KspExtension> {
                 arg("room.generateKotlin", "true")
@@ -39,7 +49,7 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
                 // The schemas directory contains a schema file for each version of the Room database.
                 // This is required to enable Room auto migrations.
                 // See https://developer.android.com/reference/kotlin/androidx/room/AutoMigration.
-                arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
+                //arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
             }
 
             dependencies {
@@ -49,6 +59,9 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
                 add("androidTestImplementation", libs.findLibrary("room.testing").get())
                 add("kspAndroidTest", libs.findLibrary("room.compiler").get())
             }
+
+            // Optional: Add a log message to confirm the plugin is applied
+            logger.lifecycle("✅ Room convention plugin applied to '${project.name}'")
         }
     }
 
