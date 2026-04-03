@@ -1,24 +1,20 @@
 package com.riders.thelab.core.location
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Location
-import androidx.work.CoroutineWorker
-import androidx.work.Data
 import androidx.work.WorkerParameters
+import com.riders.thelab.core.common.worker.BaseCoroutineWorker
 import kotlinx.coroutines.flow.first
-import kotlinx.serialization.json.Json
 import timber.log.Timber
 
 class LabLocationWorker(
     val context: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
+) : BaseCoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
         Timber.d("dWork()")
 
-        this.inputData.also { data ->
+        fetchInputData().also { data ->
             Timber.d("doWork() | inout data: ${data.toString()}")
         }
 
@@ -44,15 +40,6 @@ class LabLocationWorker(
             )
         }
     }
-
-    @SuppressLint("RestrictedApi")
-    fun createOutputData(vararg elements: Pair<String, Any?>): Data = Data.Builder().apply {
-        Timber.d("createOutputData() | build output data for ${elements.size} element(s)")
-        elements.forEach { pair ->
-        this.put(pair.first, pair.second)
-        }
-    }
-        .build()
 
     companion object {
         val TAG: String = LabLocationWorker::class.java.simpleName

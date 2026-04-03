@@ -8,6 +8,7 @@ import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.riders.thelab.core.common.storage.LabFileManager
 import com.riders.thelab.core.common.utils.LabParser
+import com.riders.thelab.core.common.worker.BaseCoroutineWorker
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.weather.WeatherData
 import com.riders.thelab.core.data.remote.dto.weather.City
@@ -26,7 +27,7 @@ class WeatherDownloadWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val workerParams: WorkerParameters,
     private val mRepository: IRepository
-) : CoroutineWorker(context, workerParams) {
+) : BaseCoroutineWorker(context, workerParams) {
 
     private var taskDataString: String? = null
     private var outputData: Data? = null
@@ -124,17 +125,14 @@ class WeatherDownloadWorker @AssistedInject constructor(
                         // Step 3: Save in databases, app Search and Room
                         // Step 3 save in database
                         saveCities(dtoCities)
-
-                        outputData = createOutputData(WORK_SUCCESS)
-                        Result.success(outputData!!)
+                        Result.success(createOutputData(WORK_RESULT to WORK_SUCCESS))
                     }
                 }
             } else {
                 // In this case data already exists in database
                 // Load data then let the the user perform his request
                 Timber.d("Record found in database. Continue...")
-                outputData = createOutputData(WORK_SUCCESS)
-                Result.success(outputData!!)
+                Result.success( createOutputData(WORK_RESULT to WORK_SUCCESS))
             }
         }
             .onFailure {
@@ -144,22 +142,9 @@ class WeatherDownloadWorker @AssistedInject constructor(
             .onSuccess { }
             .getOrElse {
                 Timber.e("getOrElse | error caught with message: $WORK_DOWNLOAD_FAILED | ${it.message} (class: ${it.javaClass.canonicalName})")
-                outputData = createOutputData(WORK_DOWNLOAD_FAILED)
+                outputData = createOutputData(WORK_RESULT to WORK_DOWNLOAD_FAILED)
                 Result.failure(outputData!!)
             }
-    }
-
-    /**
-     * Creates output data to send back to the activity / presenter which is listening to it
-     *
-     * @param message
-     * @return
-     */
-    private fun createOutputData(message: String): Data {
-        Timber.d("createOutputData()")
-        return Data.Builder()
-            .put("work_result", message)
-            .build()
     }
 
 

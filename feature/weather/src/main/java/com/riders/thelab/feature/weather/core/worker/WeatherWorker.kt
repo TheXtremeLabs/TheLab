@@ -14,6 +14,7 @@ import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
+import com.riders.thelab.core.common.worker.BaseCoroutineWorker
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.weather.ForecastWeatherWidgetModel
 import com.riders.thelab.core.data.local.model.weather.TemperatureModel
@@ -35,7 +36,7 @@ class WeatherWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val workerParams: WorkerParameters,
     private val mRepository: IRepository
-) : CoroutineWorker(context, workerParams) {
+) : BaseCoroutineWorker(context, workerParams) {
 
     private var outputData: Data? = null
 

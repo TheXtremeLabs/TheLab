@@ -7,7 +7,6 @@ import android.location.Location
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.hilt.work.HiltWorker
-import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -17,6 +16,7 @@ import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
+import com.riders.thelab.core.common.worker.BaseCoroutineWorker
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.local.model.weather.ForecastWeatherWidgetModel
 import com.riders.thelab.core.data.local.model.weather.WeatherWidgetModel
@@ -40,7 +40,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val workerParams: WorkerParameters,
     private val mRepository: IRepository
-) : CoroutineWorker(context, workerParams) {
+) : BaseCoroutineWorker(context, workerParams) {
 
     private var outputData: Data? = null
 
@@ -58,7 +58,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
             if (null == location) {
                 Timber.e("Unable to get user's location")
                 // Unable to fetch user location
-                outputData = createOutputData(WORK_LOCATION_FAILED)
+                outputData = createOutputData(EXTRA_WORK_RESULT to WORK_LOCATION_FAILED)
                 setWidgetState(WeatherInfo.Unavailable("Unable to fetch user's location"))
                 Result.failure(outputData!!)
             } else {
@@ -69,7 +69,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
                 if (null == oneCallWeatherResponse) {
                     Timber.e("null == oneCallWeatherResponse | weather call failed, response value is null")
                     setWidgetState(WeatherInfo.Unavailable("weather call failed, response value is null"))
-                    outputData = createOutputData(WORK_WEATHER_CALL_FAILED)
+                    outputData = createOutputData(EXTRA_WORK_RESULT to WORK_WEATHER_CALL_FAILED)
                     Result.failure(outputData!!)
                 } else {
                     Timber.d("observer.onSuccess(responseFile)")
@@ -116,7 +116,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
                         }
 
                         // Create and send outputData
-                        outputData = createOutputData(WORK_SUCCESS)
+                        outputData = createOutputData(EXTRA_WORK_RESULT to WORK_SUCCESS)
                         Result.success(outputData!!)
 
                     } else {
@@ -153,7 +153,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
                                     ?: run { Timber.e("Failed to build weather widget object because fields may be null") }
 
                                 // Create and send outputData
-                                outputData = createOutputData(WORK_SUCCESS)
+                                outputData = createOutputData(EXTRA_WORK_RESULT to WORK_SUCCESS)
                                 Result.success(outputData!!)
                             }
                         }
@@ -161,7 +161,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
                 }
 
                 // Create and send outputData
-                outputData = createOutputData(WORK_SUCCESS)
+                outputData = createOutputData(EXTRA_WORK_RESULT to WORK_SUCCESS)
                 Result.success(outputData!!)
             }
         }
@@ -170,25 +170,10 @@ class WeatherWidgetWorker @AssistedInject constructor(
             }
             .getOrElse {
                 Timber.e("runCatching | getOrElse | error caught with message: ${it.message}")
-                outputData = createOutputData(WORK_ERROR_FAILED)
+                outputData = createOutputData(EXTRA_WORK_RESULT to WORK_ERROR_FAILED)
                 setWidgetState(WeatherInfo.Unavailable(WORK_ERROR_FAILED))
                 Result.failure(outputData!!)
             }
-    }
-
-
-    /**
-     * Creates ouput data to send back to the activity / presenter which is listening to it
-     *
-     * @param message
-     * @return
-     */
-    @SuppressLint("RestrictedApi")
-    private fun createOutputData(message: String): Data {
-        Timber.d("createOutputData() | message: $message")
-        return Data.Builder()
-            .put("work_result", message)
-            .build()
     }
 
 
@@ -228,6 +213,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
     }
 
     companion object {
+        const val EXTRA_WORK_RESULT = "EXTRA_WORK_RESULT"
         const val WORK_SUCCESS = "Loading finished"
         const val WORK_ERROR_FAILED: String =
             "Some errors occurred while processing data check log to see more details"
