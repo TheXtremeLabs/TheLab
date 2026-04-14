@@ -20,19 +20,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 /**
  * Configure base Kotlin with Android options
  */
-
-internal fun Project.configureKotlinAndroid(applicationExtension: ApplicationExtension) {
-    configureKotlinCommons(applicationExtension)
-    configureKotlinJvm()
-}
-
-internal fun Project.configureKotlinAndroid(libraryExtension: LibraryExtension) {
-    configureKotlinCommons(libraryExtension)
-    configureKotlinJvm()
-}
-
-internal fun Project.configureKotlinAndroid(testExtension: TestExtension) {
-    configureKotlinCommons(testExtension)
+internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
+    configureKotlinCommons(commonExtension)
     configureKotlinJvm()
 }
 

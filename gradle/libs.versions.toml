@@ -4,15 +4,16 @@ javaVersion = "21"
 
 # Gradle version
 # Android
-androidGradlePlugin = "9.1.0"
-androidxLintGradlePlugin = "1.0.0-alpha05"
+androidGradlePlugin = "9.1.1"
+androidxLintGradlePlugin = "1.0.0-alpha06"
 dependencyGuardGradlePlugin = "0.5.0"
 develocityGradlePlugin = "4.4.0"
+koinGradlePlugin = "1.0.0-RC1"
 # Google Services
 playServicesGradlePlugin = "4.4.4"
 # Firebase
 # Crashlytics
-crashlyticsGradlePlugin = "3.0.6"
+crashlyticsGradlePlugin = "3.0.7"
 # Performance Monitoring plugin
 performancesGradlePlugin = "2.0.2"
 # Protobuf
@@ -22,7 +23,7 @@ protobufPlugin = "0.9.6"
 accompanist = "0.37.3"
 androidDesugarJdkLibs = "2.1.5"
 androidxActivity = "1.13.0"
-androidxAnnotation = "1.9.1"
+androidxAnnotation = "1.10.0"
 androidxAppCompat = "1.7.1"
 androidxAppSearch = "1.1.0"
 androidxArch = "2.2.0"
@@ -36,7 +37,7 @@ androidxCameraViewFinder = "1.4.0-alpha07"
 androidxComposeBom = "2026.03.01"
 androidxComposeCompiler = "1.5.15"
 androidxComposeFoundation = "1.9.3"
-androidxComposeMaterial3 = "1.5.0-alpha16"
+androidxComposeMaterial3 = "1.5.0-alpha17"
 androidxComposeMaterial3Adaptative = "1.2.0"
 androidxComposeRuntime = "1.9.3"
 androidxComposeRuntimeTracing = "1.8.3"
@@ -48,7 +49,7 @@ androidxConcurrent = "1.3.0"
 androidxCore = "1.18.0"
 androidxCoreSplashscreen = "1.2.0"
 androidxCoreTelecom = "1.0.1"
-androidxCredentials = "1.5.0"
+androidxCredentials = "1.6.0"
 androidxDataStore = "1.2.1"
 androidxDataStorePreference = "1.2.1"
 androidxDynamicAnimation = "1.1.0"
@@ -65,7 +66,7 @@ androidxMacroBenchmark = "1.4.1"
 androidxMetrics = "1.0.0"
 androidxMultiDex = "2.0.1"
 androidxNavigation = "2.9.7"
-androidxNavigation3Core = "1.0.1"
+androidxNavigation3Core = "1.1.0"
 androidxPalette = "1.0.0"
 androidxProfileinstaller = "1.4.1"
 androidxRecyclerView = "1.4.0"
@@ -78,8 +79,8 @@ androidxTestRules = "1.7.0"
 androidxTestRunner = "1.5.0"
 androidxTestTruth = "1.7.0"
 androidxTracing = "1.3.0"
-androidxTvFoundation = "1.0.0-beta01"
-androidxTvMaterial = "1.1.0-beta01"
+androidxTvFoundation = "1.0.0-rc01"
+androidxTvMaterial = "1.1.0-rc01"
 androidxUiAutomator = "2.3.0"
 androidxViewPager2 = "1.1.0"
 androidxWindowManager = "1.5.1"
@@ -88,8 +89,8 @@ androidxWork = "2.11.2"
 blurry = "4.0.1"
 coil = "3.4.0"
 # Firebase
-firebaseBom = "34.11.0"
-firebaseAds = "25.1.0"
+firebaseBom = "34.12.0"
+firebaseAds = "25.2.0"
 firebaseAppCheck = "18.0.1"
 # Google Api
 googleApiClient = "2.9.0"
@@ -148,7 +149,7 @@ jflacCodec = "1.5.2"
 jtransforms = "3.2"
 junit = "1.1.5"
 junit4 = "4.13.2"
-koin = "4.2.0"
+koin = "4.2.1"
 koinAnnotationsBom = "2.3.1"
 koinKspCompiler = "2.3.1"
 # Kotlin (for gradle plugin version and dependency)
@@ -157,19 +158,19 @@ kotlinxCoroutines = "1.10.2"
 kotlinxDatetime = "0.7.1"
 kotlinPlayServices = "1.10.2"
 kotlinxMetadataJvm = "0.9.0"
-kotlinxSerializationJson = "1.10.0"
+kotlinxSerializationJson = "1.11.0"
 # Kotzilla
-kotzilla = "2.1.1"
-ktor = "3.4.1"
+kotzilla = "2.1.3"
+ktor = "3.4.2"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
-ksp = "2.3.2"
-landscapist = "2.9.5"
-lint = "32.1.0"
+ksp = "2.3.6"
+landscapist = "2.9.6"
+lint = "32.1.1"
 location = "21.3.0"
 logback = "1.5.32"
 lottie = "6.7.1"
 maps = "20.0.0"
-mapsCompose = "8.2.2"
+mapsCompose = "8.3.0"
 material = "1.13.0"
 mapsUtils = "4.1.1"
 # Media Exo Player
@@ -184,7 +185,7 @@ napier = "2.7.1"
 okhttp = "5.3.2"
 okhttpMockWebServer = "5.3.2"
 playIntegrity = "1.6.0"
-places = "5.1.1"
+places = "5.2.0"
 protobuf = "4.34.1"
 retrofit = "3.0.0"
 retrofitKotlinxSerializationJson = "1.0.0"
@@ -192,7 +193,7 @@ room = "2.8.4"
 slf4j = "1.7.36"
 spotify = "4.0.1"
 secrets = "2.0.1"
-streamSdk = "1.20.1"
+streamSdk = "1.21.0"
 threeten = "1.4.9"
 timber = "5.0.1"
 turbine = "1.2.1"
@@ -247,7 +248,7 @@ androidx-compose-fonts = { group = "androidx.compose.ui", name = "ui-text-google
 androidx-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-compose-material = { group = "androidx.compose.material", name = "material" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidxComposeMaterial3" }
 androidx-compose-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "androidxComposeMaterial3" }
 androidx-compose-material3-adaptative = { group = "androidx.compose.material3.adaptive", name = "adaptive", version.ref = "androidxComposeMaterial3Adaptative" }
 androidx-compose-material3-adaptative-layout = { group = "androidx.compose.material3.adaptive", name = "adaptive-layout", version.ref = "androidxComposeMaterial3Adaptative" }
@@ -265,6 +266,7 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 androidx-concurrent = { group = "androidx.concurrent", name = "concurrent-futures", version.ref = "androidxConcurrent" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
+androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "androidxConstraintLayout" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxCoreSplashscreen" }
 androidx-core-telecom = { group = "androidx.core", name = "core-telecom", version.ref = "androidxCoreTelecom" }
@@ -445,7 +447,7 @@ koin-compose-viewmodel-navigation = { group = "io.insert-koin", name = "koin-com
 koin-core = { group = "io.insert-koin", name = "koin-core" }
 koin-core-coroutines = { group = "io.insert-koin", name = "koin-core-coroutines" }
 koin-core-viewmodel = { group = "io.insert-koin", name = "koin-core-viewmodel" }
-koin-ksp = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koinKspCompiler" }
+koin-ksp-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koinKspCompiler" }
 koin-ktor = { group = "io.insert-koin", name = "koin-ktor" }
 koin-logger = { group = "io.insert-koin", name = "koin-logger-slf4j" }
 koin-test = { group = "io.insert-koin", name = "koin-test" }
@@ -478,9 +480,9 @@ ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-conte
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin" }
 ktor-client-ios = { group = "io.ktor", name = "ktor-client-ios" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging" }
+ktor-client-json = { group = "io.ktor", name = "ktor-client-json" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp" }
-# ktor-client-timeout = { group = "io.ktor", name = "ktor-client-timeout"}
-ktor-json = { group = "io.ktor", name = "ktor-client-json" }
+ktor-client-timeout = { group = "io.ktor", name = "ktor-client-timeout" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json" }
 logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
 slf4j-android = { group = "org.slf4j", name = "slf4j-android", version.ref = "slf4j" }
@@ -552,6 +554,7 @@ androidx-room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plug
 compose-compiler-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotzilla-gradlePlugin = { module = "io.kotzilla:kotzilla-plugin", version.ref = "kotzilla" }
+koin-gradlePlugin = { group = "io.insert-koin", name = "koin-compiler-plugin", version.ref = "koinGradlePlugin" }
 ktor-gradlePlugin = { group = "io.ktor.plugin", name = "io.ktor.plugin.gradle.plugin", version.ref = "ktor" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 play-services-gradlePlugin = { group = "com.google.gms", name = "google-services", version.ref = "playServicesGradlePlugin" }
@@ -559,7 +562,20 @@ firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "fir
 firebase-performances-gradlePlugin = { group = "com.google.firebase", name = "perf-plugin", version.ref = "performancesGradlePlugin" }
 
 [bundles]
-koin = ["koin-core", "koin-android", "koin-androidx-compose"]
+androidx-compose = ["androidx-compose-animation", "androidx-compose-foundation", "androidx-compose-foundation-layout", "androidx-compose-fonts", "androidx-compose-material-icons", "androidx-compose-material-iconsExtended", "androidx-compose-material", "androidx-compose-material3", "androidx-compose-material3-android", "androidx-compose-material3-adaptative", "androidx-compose-material3-adaptative-layout", "androidx-compose-material3-adaptative-navigation", "androidx-compose-material3-windowSizeClass", "androidx-compose-runtime", "androidx-compose-runtime-tracing", "androidx-compose-ui", "androidx-compose-ui-graphics", "androidx-compose-ui-util"]
+androidx-lifecycle = ["androidx-lifecycle-runtime-ktx", "androidx-lifecycle-process", "androidx-lifecycle-service", "androidx-lifecycle-viewModel-ktx", "androidx-lifecycle-viewModel-savedState", "androidx-lifecycle-extensions"]
+androidx-lifecycle-compose = ["androidx-lifecycle-viewModel-navigation3", "androidx-lifecycle-runtimeCompose", "androidx-lifecycle-viewModelCompose"]
+androidx-work = ["androidx-work-ktx", "androidx-work-multiprocess"]
+coil = ["coil-kt", "coil-kt-compose", "coil-kt-network-okhttp", "coil-kt-network-cache-control", "coil-kt-svg"]
+glide=["glide","glide-compose","glide-blurry", "glide-landscapist", "glide-transformation"]
+hilt = ["hilt-android", "hilt-ext-work"]
+hilt-compilers = ["hilt-compiler", "hilt-ext-compiler"]
+koin = ["koin-core", "koin-core-coroutines", "koin-core-viewmodel"]
+koin-compose = ["koin-androidx-compose", "koin-androidx-navigation", "koin-compose", "koin-compose-navigation", "koin-compose-viewmodel-navigation"]
+kotlin = ["kotlin-parcelize", "kotlin-reflect", "kotlin-stdlib"]
+kotlinx-coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android", "kotlinx-coroutines-play-services"]
+retorfit = ["retrofit-core", "retrofit-kotlin-serialization"]
+room = ["room-ktx", "room-paging"]
 stream = ["stream-video", "stream-video-android-compose"]
 
 [plugins]
@@ -575,6 +591,7 @@ dependencyGuard = { id = "com.dropbox.dependency-guard", version.ref = "dependen
 # Develocity
 develocity = { id = "com.gradle.develocity", version.ref = "develocityGradlePlugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+koin = { id = "io.insert-koin.compiler.plugin", version.ref = "koinGradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
@@ -596,6 +613,7 @@ thelab-library-jacoco = { id = "thelab.android.library.jacoco", version = "unspe
 thelab-feature = { id = "thelab.android.feature", version = "unspecified" }
 thelab-firebase = { id = "thelab.firebase", version = "unspecified" }
 thelab-hilt = { id = "thelab.android.hilt", version = "unspecified" }
+thelab-koin = { id = "thelab.android.koin", version = "unspecified" }
 thelab-ktor = { id = "thelab.android.ktor", version = "unspecified" }
 thelab-room = { id = "thelab.android.room", version = "unspecified" }
 thelab-test = { id = "thelab.android.test", version = "unspecified" }

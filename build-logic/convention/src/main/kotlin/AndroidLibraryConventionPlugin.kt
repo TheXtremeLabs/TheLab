@@ -2,7 +2,6 @@ import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.riders.thelab.configureKotlinAndroid
 import com.riders.thelab.configurePrintApksTask
-import com.riders.thelab.configureTimber
 import com.riders.thelab.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -15,8 +14,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("com.android.library")
-                apply("org.jetbrains.kotlin.android")
+                apply(libs.findPlugin("android-library").get().get().pluginId)
+                apply(libs.findPlugin("kotlin-android").get().get().pluginId)
             }
 
             // Configure Jvm ToolChain
@@ -25,11 +24,11 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<LibraryExtension> {
-                configureKotlinAndroid(libraryExtension = this)
+                configureKotlinAndroid(this)
 
                 // configureFlavors(this)
-                configureTimber()
             }
+
             extensions.configure<LibraryAndroidComponentsExtension> {
                 configurePrintApksTask(this)
             }

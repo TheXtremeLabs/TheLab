@@ -7,8 +7,8 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("dagger.hilt.android.plugin")
-                apply("com.google.devtools.ksp")
+                apply(libs.findPlugin("hilt").get().get().pluginId)
+                apply(libs.findPlugin("ksp").get().get().pluginId)
             }
 
             dependencies {
@@ -16,8 +16,8 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
                 "ksp"(libs.findLibrary("kotlinx.metadata.jvm").get())
 
                 // Hilt
-                "implementation"(libs.findLibrary("hilt.android").get())
-                "ksp"(libs.findLibrary("hilt.compiler").get())
+                "implementation"(libs.findBundle("hilt").get())
+                "ksp"(libs.findBundle("hilt.compilers").get())
 
                 // Tests
                 "androidTestImplementation"(libs.findLibrary("hilt.android.testing").get())

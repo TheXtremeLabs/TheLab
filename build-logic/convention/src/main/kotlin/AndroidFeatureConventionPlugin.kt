@@ -9,10 +9,11 @@ import org.gradle.kotlin.dsl.kotlin
 class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply {
-                apply("thelab.android.library")
-                apply("thelab.android.hilt")
+            with(pluginManager) {
+                apply(libs.findPlugin("thelab-library").get().get().pluginId)
+                apply(libs.findPlugin("thelab-hilt").get().get().pluginId)
             }
+
             extensions.configure<LibraryExtension> {
                 defaultConfig {
                     testInstrumentationRunner =
@@ -32,9 +33,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("testImplementation", project(":core:testing"))
                 add("androidTestImplementation", kotlin("test"))
                 add("androidTestImplementation", project(":core:testing"))
-
-                add("implementation", libs.findLibrary("coil.kt").get())
-                add("implementation", libs.findLibrary("coil.kt.compose").get())
 
                 add("implementation", libs.findLibrary("androidx.hilt.navigation.compose").get())
                 add("implementation", libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
