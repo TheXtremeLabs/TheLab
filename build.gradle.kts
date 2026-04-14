@@ -20,6 +20,8 @@ plugins {
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.dependencyGuard) apply false
     alias(libs.plugins.develocity) apply false
+    // Koin
+    alias(libs.plugins.koin) apply false
     // Kotlin
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.jvm) apply false

@@ -5,12 +5,9 @@ plugins {
 
 group = "com.riders.thelab.buildlogic"
 
-val javaVersion:JavaVersion = JavaVersion.toVersion(libs.versions.javaVersion.get())
-
-
 java {
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.javaVersion.get())
+    targetCompatibility = JavaVersion.toVersion(libs.versions.javaVersion.get())
 
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(libs.versions.javaVersion.get().toInt()))
@@ -34,6 +31,7 @@ dependencies {
     compileOnly(libs.firebase.crashlytics.gradlePlugin)
     compileOnly(libs.firebase.performances.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.plugins.koin.toDep())
     compileOnly(libs.plugins.kotlin.android.toDep())
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.ktor.gradlePlugin)
@@ -79,8 +77,12 @@ gradlePlugin {
             id = "thelab.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
         }
+        register("androidKoin") {
+            id = libs.plugins.thelab.koin.get().pluginId
+            implementationClass = "AndroidKoinConventionPlugin"
+        }
         register("androidKtor") {
-            id = "thelab.android.ktor"
+            id = libs.plugins.thelab.ktor.get().pluginId
             implementationClass = "AndroidKtorConventionPlugin"
         }
         register("androidRoom") {
