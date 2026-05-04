@@ -119,5 +119,9 @@ fun InputStream.asStringData(charset: Charset = Charsets.UTF_8): String =
 fun Int.toBitmap(context: Context): Bitmap? {
     require(0 != this) { "Drawable must be greater than 0" }
     return ContextCompat.getDrawable(context, this)?.toBitmap()
-
 }
+
+/////////////////////////////////////////////////////
+// Worker
+/////////////////////////////////////////////////////
+
