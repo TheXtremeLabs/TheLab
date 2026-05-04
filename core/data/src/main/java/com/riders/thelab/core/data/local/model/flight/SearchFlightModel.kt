@@ -127,7 +127,7 @@ fun Flight.toSearchFlightModel(): SearchFlightModel = SearchFlightModel(
     aircraftType = this.aircraftType,
     type = this.type?.let { flightType ->
         FlightType.entries.first { element ->
-            element.type.lowercase() == flightType.trim().lowercase()
+            element.type.equals(flightType.trim(), ignoreCase = true)
         }
     } ?: FlightType.UNKNOWN,
     gateOrigin = this.gateOrigin,

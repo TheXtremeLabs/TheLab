@@ -5,6 +5,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.location.Location
 import com.google.firebase.storage.StorageReference
+import com.riders.thelab.core.common.network.DownloadState
 import com.riders.thelab.core.data.local.model.Download
 import com.riders.thelab.core.data.local.model.SpotifyRequestToken
 import com.riders.thelab.core.data.remote.dto.ApiResponse
@@ -46,6 +47,10 @@ interface IApi {
     suspend fun getWeatherOneCallAPI(location: Location): OneCallWeatherResponse?
     fun getBulkWeatherCitiesFile(): Call<ResponseBody>
     suspend fun getBulkDownload(context: Context): Flow<Download>
+
+    suspend fun getCurrentWeather(location: Location): OneCallWeatherResponse?
+    suspend fun getBulkDownload(): Call<ResponseBody>
+    suspend fun getBulkDownloadAsFlow(context: Context, filePath: String): Flow<DownloadState>
     suspend fun getApi(): ApiResponse
 
 

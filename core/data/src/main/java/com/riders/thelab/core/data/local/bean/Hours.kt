@@ -5,5 +5,4 @@ enum class Hours(val hourValue: String) {
     DAY("12"),
     EVENING("18"),
     NIGHT("22");
-
 }

@@ -1,5 +1,6 @@
 package com.riders.thelab.core.data.di
 
+/*
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.riders.thelab.core.common.utils.decrypt
 import com.riders.thelab.core.data.BuildConfig
@@ -45,8 +46,12 @@ internal object ApiModule {
         HttpLoggingInterceptor { message: String -> Timber.tag("OkHttp").d(message) }
             .setLevel(if (isBulkDownload) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY)
 
-    /* WEATHER */
-    /* Provide OkHttp for the app */
+    */
+/* WEATHER *//*
+
+    */
+/* Provide OkHttp for the app *//*
+
     @Provides
     @Singleton
     fun provideWeatherOkHttp(isBulkDownload: Boolean = false): OkHttpClient = OkHttpClient.Builder()
@@ -195,7 +200,9 @@ internal object ApiModule {
     }
 
 
-    /* Provide OkHttp for the app */
+    */
+/* Provide OkHttp for the app *//*
+
     @Provides
     fun provideOkHttp(): OkHttpClient {
         return OkHttpClient.Builder()
@@ -234,7 +241,9 @@ internal object ApiModule {
 
     private const val CONTENT_TYPE_JSON = "application/json; charset=utf-8"
 
-    /* Provide Retrofit for the app */
+    */
+/* Provide Retrofit for the app *//*
+
     @Provides
     fun provideRetrofit(url: String): Retrofit = Retrofit.Builder()
         .baseUrl(url)
@@ -366,4 +375,4 @@ internal object ApiModule {
     @Singleton
     fun provideWikimediaAPIService(): WikimediaApiService =
         provideWikimediaRetrofit(Constants.BASE_ENDPOINT_WIKIMEDIA_API).create(WikimediaApiService::class.java)
-}
+}*/

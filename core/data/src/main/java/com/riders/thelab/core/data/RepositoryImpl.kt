@@ -8,6 +8,7 @@ import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.google.firebase.storage.StorageReference
+import com.riders.thelab.core.common.network.DownloadState
 import com.riders.thelab.core.data.local.DbImpl
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.Download
@@ -195,7 +196,7 @@ class RepositoryImpl @Inject constructor(
         return mDbImpl.getCitiesCursor(query)
     }
 
-    override fun deleteAll() = mDbImpl.deleteAll()
+    override fun deleteAllCities() = mDbImpl.deleteAllCities()
 
     /////////////////////////
     //
@@ -241,6 +242,15 @@ class RepositoryImpl @Inject constructor(
     override suspend fun getBulkDownload(context: Context): Flow<Download> {
         return mApiImpl.getBulkDownload(context)
     }
+
+    override suspend fun getCurrentWeather(
+        location: Location
+    ): OneCallWeatherResponse? = mApiImpl.getCurrentWeather(location)
+    override suspend fun getBulkDownload(): Call<ResponseBody> = mApiImpl.getBulkDownload()
+    override suspend fun getBulkDownloadAsFlow(
+        context: Context,
+        filePath: String
+    ): Flow<DownloadState> = mApiImpl.getBulkDownloadAsFlow(context, filePath)
 
     override fun getDownloadManager(context: Context): DownloadManager =
         mApiImpl.getDownloadManager(context)

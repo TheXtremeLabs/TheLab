@@ -21,6 +21,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesLabNetworkManager(@ApplicationContext context: Context) =
-        LabNetworkManager.getInstance(context = context)
+    fun providesLabNetworkManager(
+        @ApplicationContext context: Context
+    ) = LabNetworkManager.getInstance(context = context)
 }

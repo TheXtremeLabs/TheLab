@@ -9,7 +9,6 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.RoomWarnings
-import androidx.room.RoomWarnings.Companion.QUERY_MISMATCH
 import androidx.room.Transaction
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.riders.thelab.core.data.local.model.weather.CityModel
@@ -80,5 +79,5 @@ interface WeatherDao {
 
 
     @Query("DELETE FROM city")
-    fun deleteAll()
+    fun deleteAllCities()
 }

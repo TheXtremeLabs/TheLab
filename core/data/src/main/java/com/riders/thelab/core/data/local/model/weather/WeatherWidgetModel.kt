@@ -1,6 +1,7 @@
 package com.riders.thelab.core.data.local.model.weather
 
 import com.riders.thelab.core.common.utils.DateTimeUtils
+import com.riders.thelab.core.data.mapper.toModel
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import java.io.Serializable
 

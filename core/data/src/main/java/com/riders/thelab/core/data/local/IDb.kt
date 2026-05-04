@@ -1,8 +1,6 @@
 package com.riders.thelab.core.data.local
 
 import android.database.Cursor
-import androidx.paging.Pager
-import androidx.paging.PagingSource
 import com.riders.thelab.core.data.local.model.Contact
 import com.riders.thelab.core.data.local.model.User
 import com.riders.thelab.core.data.local.model.music.ArtistModel
@@ -85,5 +83,5 @@ interface IDb {
     suspend fun getWeatherData(): WeatherData?
     suspend fun getCities(): List<CityModel>
     fun getCitiesCursor(query: String): Cursor
-    fun deleteAll()
+    fun deleteAllCities()
 }

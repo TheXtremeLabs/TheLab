@@ -23,18 +23,18 @@ data class CityModel(
     @PrimaryKey
     @ColumnInfo("rowid")
     var id: Int,
-    @ColumnInfo("uuid")
-    var uuid: String,
     @ColumnInfo(name = "name")
     var name: String,
     @ColumnInfo(name = "state")
-    var state: String,
+    var state: String? = null,
     @ColumnInfo(name = "country")
     var country: String,
     @ColumnInfo(name = "longitude")
     var longitude: Double = 0.0,
     @ColumnInfo(name = "latitude")
-    var latitude: Double = 0.0
+    var latitude: Double = 0.0,
+    @ColumnInfo("uuid")
+    var uuid: String? = null
 ) {
     @Ignore
     constructor(dtoCity: City) : this(

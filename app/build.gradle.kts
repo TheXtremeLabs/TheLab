@@ -207,7 +207,7 @@ configurations.all {
         cacheChangingModulesFor(10, "minutes")
 
         eachDependency {
-            if ("com.google.protobuf" == requested.group && "protobuf-javalite" == requested.name) {
+            if ("com.google.protobuf" == requested.group && "protobuf-lite" == requested.name) {
                 useTarget("com.google.protobuf:protobuf-javalite:${libs.versions.protobuf.get()}")
                 //because("")
             }
@@ -243,6 +243,7 @@ dependencies {
     implementation(project(":core:camera"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
+    implementation(project(":core:data-di"))
     implementation(project(":core:datastore"))
     implementation(project(":core:google"))
     implementation(project(":core:permissions"))
