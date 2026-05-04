@@ -240,6 +240,8 @@ fun LabOutlinedTextField(
     onOutsideBoundariesClicked: Boolean,
     query: String,
     onUpdateQuery: (String) -> Unit,
+    textColor: Color? = null,
+    textStyle: TextStyle? = null,
     placeholder: String,
     label: String,
     isError: Boolean = false,
@@ -269,7 +271,7 @@ fun LabOutlinedTextField(
 
     var isFieldFocused: Boolean by remember { mutableStateOf(false) }
 
-    val isError :Boolean by remember(errorMessage) { derivedStateOf { null != errorMessage } }
+    val isError: Boolean by remember(errorMessage) { derivedStateOf { null != errorMessage } }
 
     TheLabTheme(theme = theme) {
         OutlinedTextField(
@@ -304,9 +306,22 @@ fun LabOutlinedTextField(
                 .then(modifier),
             value = query,
             onValueChange = onUpdateQuery,
-            textStyle = TextStyle(textAlign = TextAlign.Justify, color = Color.LightGray),
-            placeholder = { Text(text = placeholder, color = Color.LightGray) },
-            label = { Text(text = label, color = Color.LightGray) },
+            textStyle = textStyle ?: TextStyle(
+                textAlign = TextAlign.Justify,
+                color = textColor ?: MaterialTheme.colorScheme.onSurface
+            ),
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    color = textColor ?: MaterialTheme.colorScheme.onSurface
+                )
+            },
+            label = {
+                Text(
+                    text = label,
+                    color = textColor ?: MaterialTheme.colorScheme.onSurface
+                )
+            },
             interactionSource = interactionSource,
             enabled = true,
             leadingIcon = leadingContent,
@@ -326,7 +341,7 @@ fun LabOutlinedTextField(
             ),
             shape = shape,
             isError = isError,
-            supportingText = if(!isError) null else {
+            supportingText = if (!isError) null else {
                 { Text(text = errorMessage.toString(), color = Color.Red) }
             },
             singleLine = singleLine,
@@ -729,6 +744,32 @@ private fun PreviewLabTextField(@PreviewParameter(AppThemePreviewProvider::class
             contentAlignment = Alignment.Center
         ) {
             LabTextField(
+                theme = appTheme,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                query = "",
+                onUpdateQuery = {},
+                onOutsideBoundariesClicked = false,
+                placeholder = "Select an option",
+                label = "Search hint"
+            )
+        }
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PreviewLabOutlinedTextField(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
+    TheLabTheme(theme = appTheme) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            LabOutlinedTextField(
                 theme = appTheme,
                 modifier = Modifier
                     .fillMaxWidth()

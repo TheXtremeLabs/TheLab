@@ -37,9 +37,11 @@ class VideoCallViewModel @Inject constructor(
         error: Throwable? = null
     ) {
         Timber.d("updateVideoCallState() | callState: $callState, error: $error")
-        _videoCallState.update {
-            it.copy(state = callState, error = error)
+        if(CallState.CONNECTING == callState){
+            Timber.w("updateVideoCallState() | Already connecting")
+            return
         }
+        _videoCallState.update { it.copy(state = callState, error = error) }
     }
 
     fun onEvent(event: VideoCallUiEvent) {
@@ -50,7 +52,7 @@ class VideoCallViewModel @Inject constructor(
             }
 
             is VideoCallUiEvent.OnLeaveClick -> {
-                _videoCallState.value.call.leave()
+                _videoCallState.value.call.leave(reason = "User left")
                 streamVideo.logOut()
                 Timber.e("onEvent() | change state to disconnected...")
                 updateVideoCallState(callState = CallState.DISCONNECTED)
@@ -68,13 +70,6 @@ class VideoCallViewModel @Inject constructor(
             return
         }
 
-        if (CallState.CONNECTING == _videoCallState.value.state) {
-            Timber.w("joinCall() | Already connecting")
-            return
-        }
-
-        Timber.d("joinCall()")
-
         viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             updateVideoCallState(callState = CallState.CONNECTING)
 
@@ -88,18 +83,18 @@ class VideoCallViewModel @Inject constructor(
 
             Timber.d("joinCall() | shouldCreate: $shouldCreate")
 
-            _videoCallState.value.call
+            _videoCallState.value
+                .call
                 .join(create = shouldCreate)
                 .onSuccess { session ->
-                    Timber.d("joinCall() | session: $session")
+                    Timber.d("joinCall() | onSuccess | session: $session")
                     updateVideoCallState(callState = CallState.CONNECTED, error = null)
                 }
                 .onError { error ->
-                    Timber.e("joinCall() | ${error.extractCause()}")
+                    Timber.e("joinCall() | onError | $error")
                     updateVideoCallState(callState = null, error = error.extractCause())
                 }
                 .getOrNull()
-                ?.connect()
         }
     }
 

@@ -26,7 +26,7 @@ configurations.all {
         cacheChangingModulesFor(10, "minutes")
 
         eachDependency {
-            if ("com.google.protobuf" == requested.group && "protobuf-javalite" == requested.name) {
+            if ("com.google.protobuf" == requested.group && "protobuf-lite" == requested.name) {
                 useTarget("com.google.protobuf:protobuf-javalite:${libs.versions.protobuf.get()}")
                 //because("")
             }

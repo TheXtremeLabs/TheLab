@@ -34,6 +34,7 @@ dependencies {
     implementation(libs.material)
 
     // StreamSDK
+     implementation(platform(libs.stream.bom))
     implementation(libs.bundles.stream)
 
     testImplementation(libs.junit4)

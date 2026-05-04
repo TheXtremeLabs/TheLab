@@ -193,7 +193,7 @@ room = "2.8.4"
 slf4j = "1.7.36"
 spotify = "4.0.1"
 secrets = "2.0.1"
-streamSdk = "1.21.0"
+streamSdk = "1.23.0"
 threeten = "1.4.9"
 timber = "5.0.1"
 turbine = "1.2.1"
@@ -531,8 +531,12 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
 room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
 spotify-auth = { group = "com.spotify.android", name = "auth", version.ref = "spotify" }
-stream-video = { group = "io.getstream", name = "stream-video-android-core", version.ref = "streamSdk" }
-stream-video-android-compose = { group = "io.getstream", name = "stream-video-android-ui-compose", version.ref = "streamSdk" }
+stream-bom = { group = "io.getstream", name = "stream-video-android-bom", version.ref = "streamSdk" }
+stream-core = { group = "io.getstream", name = "stream-video-android-core" }
+stream-filters-video = { group = "io.getstream", name = "stream-video-android-filters-video" }
+stream-preview = { group = "io.getstream", name = "stream-video-android-previewdata" }
+stream-ui-core = { group = "io.getstream", name = "stream-video-android-ui-core" }
+stream-ui-compose = { group = "io.getstream", name = "stream-video-android-ui-compose" }
 threeten = { group = "com.jakewharton.threetenabp", name = "threetenabp", version.ref = "threeten" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
@@ -568,7 +572,7 @@ androidx-lifecycle = ["androidx-lifecycle-runtime-ktx", "androidx-lifecycle-proc
 androidx-lifecycle-compose = ["androidx-lifecycle-viewModel-navigation3", "androidx-lifecycle-runtimeCompose", "androidx-lifecycle-viewModelCompose"]
 androidx-work = ["androidx-work-ktx", "androidx-work-multiprocess"]
 coil = ["coil-kt", "coil-kt-compose", "coil-kt-network-okhttp", "coil-kt-network-cache-control", "coil-kt-svg"]
-glide=["glide","glide-compose","glide-blurry", "glide-landscapist", "glide-transformation"]
+glide = ["glide", "glide-compose", "glide-blurry", "glide-landscapist", "glide-transformation"]
 hilt = ["hilt-android", "hilt-ext-work"]
 hilt-compilers = ["hilt-compiler", "hilt-ext-compiler"]
 koin = ["koin-core", "koin-core-coroutines", "koin-core-viewmodel"]
@@ -577,7 +581,7 @@ kotlin = ["kotlin-parcelize", "kotlin-reflect", "kotlin-stdlib"]
 kotlinx-coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android", "kotlinx-coroutines-play-services"]
 retorfit = ["retrofit-core", "retrofit-kotlin-serialization"]
 room = ["room-ktx", "room-paging"]
-stream = ["stream-video", "stream-video-android-compose"]
+stream = ["stream-core", "stream-filters-video", "stream-preview", "stream-ui-core", "stream-ui-compose"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

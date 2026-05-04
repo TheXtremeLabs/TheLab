@@ -5,6 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
@@ -19,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.capitalize
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,8 +41,10 @@ import com.riders.thelab.feature.videocall.ui.video.VideoCallUiEvent
 import io.getstream.video.android.core.StreamVideoBuilder
 import io.getstream.video.android.model.User
 import io.getstream.video.android.model.UserType
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 
 @Composable
@@ -61,17 +63,18 @@ fun StreamActivityContent(
     var currentScreen: Screen? by remember { mutableStateOf(null) }
 
     navHostController.addOnDestinationChangedListener { controller, destination, arguments ->
-        Timber.d("addOnDestinationChangedListener() | destination: ${destination.toString()}, arguments: $arguments")
-        if (ConnectRoute.route == destination.route) {
+        Timber.d("addOnDestinationChangedListener() | destination: ${destination.route}")
+        if (ConnectRoute::class.java.canonicalName == destination.route) {
             currentScreen = ConnectRoute
         }
-        if (VideoCallRoute.route == destination.route) {
+        if (VideoCallRoute::class.java.canonicalName == destination.route) {
             currentScreen = VideoCallRoute
         }
         Timber.d("addOnDestinationChangedListener() | currentScreen: $currentScreen")
     }
 
     BackHandler {
+        Timber.d("BackHandler() | currentDestination: ${currentDestination?.route}")
         when (currentDestination?.route) {
             VideoCallRoute.route -> {
                 navHostController.popBackStack()
@@ -88,7 +91,9 @@ fun StreamActivityContent(
         darkTheme = darkTheme
     ) {
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding(),
             topBar = {
                 TheLabTopAppBar(
                     theme = theme,
@@ -96,7 +101,7 @@ fun StreamActivityContent(
                     modifier = Modifier.fillMaxWidth(),
                     toolbarSize = ToolbarSize.SMALL,
                     title = currentScreen?.route?.replaceFirstChar {
-                        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                        if (it.isLowerCase()) it.titlecase(LocalLocale.current.platformLocale) else it.toString()
                     },
                     titleColor = if (!darkTheme) Color.Black else Color.White,
                     mainCustomContent = null,
@@ -122,6 +127,7 @@ fun StreamActivityContent(
                 composable<ConnectRoute> {
                     LaunchedEffect(uiState.isConnected) {
                         if (uiState.isConnected) {
+                            Timber.d("Recomposition | LaunchedEffect() | uiState.isConnected: ${uiState.isConnected}")
                             navHostController.navigate(VideoCallRoute) {
                                 popUpTo(ConnectRoute) {
                                     inclusive = true
@@ -141,11 +147,11 @@ fun StreamActivityContent(
                 composable<VideoCallRoute> {
                     LaunchedEffect(videoCallState) {
                         if (CallState.DISCONNECTED == videoCallState.state) {
-                            navHostController.navigate(ConnectRoute) {
-                                popUpTo(VideoCallRoute) {
-                                    inclusive = true
-                                }
-                            }
+                            Timber.w("Recomposition | LaunchedEffect() | CallState.DISCONNECTED")
+
+                            uiEvent.invoke(UiEvent.OnDisconnectClicked)
+                            delay(150L)
+                            navHostController.navigate(ConnectRoute)
                         }
                     }
 
@@ -169,7 +175,7 @@ private fun PreviewStreamActivityContent() {
     val streamClient = remember {
         StreamVideoBuilder(
             context = context,
-            apiKey = "djmy2f7dpjk8",
+            apiKey = "",
             user = User(
                 id = "123",
                 name = "123",
@@ -188,7 +194,7 @@ private fun PreviewStreamActivityContent() {
             errorMessage = null
         ),
         videoCallState = VideoCallState(
-            call = streamClient.call("default", "123"),
+            call = streamClient.call("default", ""),
             state = null,
             error = null
         ),
