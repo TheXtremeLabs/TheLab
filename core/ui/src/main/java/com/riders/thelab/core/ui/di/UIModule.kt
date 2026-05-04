@@ -9,7 +9,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -19,11 +18,13 @@ object UIModule {
 
     @Provides
     @Singleton
-    fun provideUiPreferences(@ApplicationContext context: Context): IPreferences =
-        PreferencesImpl(context = context) as IPreferences
+    fun provideUiPreferences(
+        @ApplicationContext context: Context
+    ): IPreferences = PreferencesImpl(context = context) as IPreferences
 
     @Provides
     @Singleton
-    fun provideUiRepository(uiPreferences: IPreferences): IUiRepository =
-        UiRepository(uiPreferences) as IUiRepository
+    fun provideUiRepository(
+        uiPreferences: IPreferences
+    ): IUiRepository = UiRepository(uiPreferences) as IUiRepository
 }
