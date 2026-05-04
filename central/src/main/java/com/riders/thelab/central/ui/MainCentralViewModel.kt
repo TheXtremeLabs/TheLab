@@ -32,8 +32,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainCentralViewModel @Inject constructor(
     @param:ApplicationContext val context: Context,
-    val uiRepository: UiRepository
-) : BaseViewModel(), DefaultLifecycleObserver {
+    repository: UiRepository
+) : BaseViewModel(uiRepository = repository), DefaultLifecycleObserver {
 
     //////////////////////////////////////////
     // Variables
@@ -44,11 +44,10 @@ class MainCentralViewModel @Inject constructor(
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    private val _centralUiState: MutableStateFlow<UiState<List<PackageApp>>> =
-        MutableStateFlow(UiState.Idle)
-
     @Stable
-    val centralUiState: StateFlow<UiState<List<PackageApp>>> get() = _centralUiState
+    val centralUiState: StateFlow<UiState<List<PackageApp>>>
+        // Since Kotlin 2.3.20 : Introducing backing properties
+        field = MutableStateFlow<UiState<List<PackageApp>>>(UiState.Idle)
 
     var searchModeEnabled: Boolean by mutableStateOf(false)
         private set
@@ -60,7 +59,7 @@ class MainCentralViewModel @Inject constructor(
         private set
 
     fun updateCentralUiState(newState: UiState<List<PackageApp>>) {
-        _centralUiState.update { newState }
+        centralUiState.update { newState }
     }
 
     fun updateSearchMode(enabled: Boolean) {
@@ -139,7 +138,7 @@ class MainCentralViewModel @Inject constructor(
     }
 
     fun fetchPackages() {
-        if (_centralUiState.value is UiState.Loading) {
+        if (centralUiState.value is UiState.Loading) {
             Timber.d("fetchPackages() | Already loading")
             return
         }
