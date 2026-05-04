@@ -57,6 +57,7 @@ dependencies {
     ///////////////////////////////////
     implementation(project(":core:common"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:domain"))
     implementation(project(":core:testing"))
 
     ///////////////////////////////////
@@ -65,8 +66,7 @@ dependencies {
     // Kotlin
     implementation(platform(libs.kotlin.bom))
     api(libs.kotlin.reflect)
-    api(libs.kotlinx.coroutines.android)
-    api(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.json)
 
     // AndroidX
     api(libs.androidx.appsearch)
