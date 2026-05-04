@@ -1,3 +1,4 @@
+import com.google.devtools.ksp.gradle.KspExtension
 import com.riders.thelab.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -11,12 +12,7 @@ class AndroidKoinConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply(libs.findPlugin("koin").get().get().pluginId)
-            }
-
-            extensions.configure<KoinGradleExtension> {
-                compileSafety.set(true)
-                unsafeDslChecks.set(false)
-                userLogs.set(true)
+                apply(libs.findPlugin("ksp").get().get().pluginId)
             }
 
             dependencies {
@@ -25,10 +21,10 @@ class AndroidKoinConventionPlugin : Plugin<Project> {
                 add("implementation", libs.findLibrary("koin.core").get())
                 add("implementation", libs.findLibrary("koin.core.viewmodel").get())
                 add("implementation", libs.findLibrary("koin.core.coroutines").get())
-//                add("ksp", libs.findLibrary("koin.ksp.compiler").get())
+
                 add("implementation", libs.findLibrary("koin.android").get())
                 add("implementation", libs.findLibrary("koin.androidx.compose").get())
-                add("implementation", libs.findLibrary("koin.androidx.startup").get())
+                // add("implementation", libs.findLibrary("koin.androidx.startup").get())
                 add("implementation", libs.findLibrary("koin.androidx.workmanager").get())
 
                 val koinAnnotationsBom = libs.findLibrary("koin.annotations.bom").get()
@@ -43,6 +39,24 @@ class AndroidKoinConventionPlugin : Plugin<Project> {
                 add("androidTestImplementation", libs.findLibrary("koin.test").get())
                 add("androidTestImplementation", libs.findLibrary("koin.test.junit4").get())
                 add("androidTestImplementation", libs.findLibrary("koin.test.junit5").get())
+            }
+
+            extensions.configure<KspExtension> {
+                // Compile Time Checks
+                // Koin Annotations allows to check your Koin configuration at compile time.
+                // This is available by using the following Gradle option:
+                arg("KOIN_CONFIG_CHECK", "true")
+
+                // Remove this warning :
+                // [ksp] [Deprecation] 'defaultModule' generation is deprecated.
+                // Use KSP argument arg("KOIN_DEFAULT_MODULE","true") to activate default module generation.
+                arg("KOIN_DEFAULT_MODULE", "true")
+            }
+
+            extensions.configure<KoinGradleExtension> {
+                compileSafety.set(true)
+                unsafeDslChecks.set(false)
+                userLogs.set(true)
             }
 
             // Optional: Add a log message to confirm the plugin is applied

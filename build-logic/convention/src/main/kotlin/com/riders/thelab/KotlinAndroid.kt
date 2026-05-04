@@ -125,6 +125,8 @@ private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() =
             "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
             "-opt-in=kotlinx.coroutines.FlowPreview",
             "-opt-in=kotlin.Experimental",
+            // Since Kotlin 2.3.20 : Introducing backing properties
+            "-Xexplicit-backing-fields"
         )
         this.freeCompilerArgs.add(
             // Enable experimental coroutines APIs, including Flow
