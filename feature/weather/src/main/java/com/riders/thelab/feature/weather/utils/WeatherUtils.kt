@@ -2,8 +2,8 @@ package com.riders.thelab.feature.weather.utils
 
 import com.github.mikephil.charting.charts.LineChart
 import com.riders.thelab.core.common.utils.DateTimeUtils
-import com.riders.thelab.core.data.local.bean.Hours
-import com.riders.thelab.core.data.remote.dto.weather.CurrentWeather
+import com.riders.thelab.core.domain.bean.Hours
+import com.riders.thelab.core.domain.model.weather.Weather
 import timber.log.Timber
 
 object WeatherUtils {
@@ -44,7 +44,7 @@ object WeatherUtils {
         l.isEnabled = false
     }
 
-    fun getWeatherTemperaturesForNextHours(hourlyWeather: List<CurrentWeather>): List<Float> {
+    fun getWeatherTemperaturesForNextHours(hourlyWeather: List<Weather>): List<Float> {
         val temperatures: MutableList<Float> = ArrayList()
         for (i in hourlyWeather.indices) {
             val hour: String =
@@ -54,15 +54,15 @@ object WeatherUtils {
             if (hour == "00") {
                 break
             } else {
-                for (element in Hours.entries) if (element.hourValue == hour) temperatures.add(
-                    hourlyWeather[i].temperature.toFloat()
+                for (element in Hours.entries) if (element.value == hour) temperatures.add(
+                    hourlyWeather[i].temperature?.temperature?.toFloat()!!
                 )
             }
         }
         return temperatures
     }
 
-    fun getWeatherTemperaturesQuarters(hourlyWeather: List<CurrentWeather>): Array<String> {
+    fun getWeatherTemperaturesQuarters(hourlyWeather: List<Weather>): Array<String> {
         val temperaturesQuarters: MutableList<String> = ArrayList()
         for (i in hourlyWeather.indices) {
             val hour: String =
@@ -76,7 +76,7 @@ object WeatherUtils {
                 Timber.e("hour.equals(\"00\")")
                 break
             } else {
-                for (element in Hours.entries) if (element.hourValue == hourSplit) {
+                for (element in Hours.entries) if (element.value == hourSplit) {
                     temperaturesQuarters.add(hour)
                 }
             }

@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
 import androidx.glance.state.GlanceStateDefinition
+import com.riders.thelab.feature.weather.data.compose.WeatherInfoUiState
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -15,7 +16,7 @@ import java.io.OutputStream
 /**
  * Provides our own definition of "Glance state" using Kotlin serialization.
  */
-object WeatherGlanceStateDefinition : GlanceStateDefinition<WeatherInfo> {
+object WeatherGlanceStateDefinition : GlanceStateDefinition<WeatherInfoUiState> {
     private const val FILENAME = "widget_preference"
 
     const val WEATHER_WIDGET_DATA_KEY = "WEATHER_WIDGET_DATA_KEY"
@@ -27,7 +28,7 @@ object WeatherGlanceStateDefinition : GlanceStateDefinition<WeatherInfo> {
      */
     private val Context.datastore by dataStore(FILENAME, WeatherInfoSerializer)
 
-    override suspend fun getDataStore(context: Context, fileKey: String): DataStore<WeatherInfo> {
+    override suspend fun getDataStore(context: Context, fileKey: String): DataStore<WeatherInfoUiState> {
         return context.datastore
     }
 
@@ -39,22 +40,22 @@ object WeatherGlanceStateDefinition : GlanceStateDefinition<WeatherInfo> {
     /**
      * Custom serializer for WeatherInfo using Json.
      */
-    object WeatherInfoSerializer : Serializer<WeatherInfo> {
-        override val defaultValue = WeatherInfo.Unavailable("no place found")
+    object WeatherInfoSerializer : Serializer<WeatherInfoUiState> {
+        override val defaultValue = WeatherInfoUiState.Unavailable("no place found")
 
-        override suspend fun readFrom(input: InputStream): WeatherInfo = try {
+        override suspend fun readFrom(input: InputStream): WeatherInfoUiState = try {
             Json.decodeFromString(
-                WeatherInfo.serializer(),
+                WeatherInfoUiState.serializer(),
                 input.readBytes().decodeToString()
             )
         } catch (exception: SerializationException) {
             throw CorruptionException("Could not read weather data: ${exception.message}")
         }
 
-        override suspend fun writeTo(t: WeatherInfo, output: OutputStream) {
+        override suspend fun writeTo(t: WeatherInfoUiState, output: OutputStream) {
             output.use {
                 it.write(
-                    Json.encodeToString(WeatherInfo.serializer(), t).encodeToByteArray()
+                    Json.encodeToString(WeatherInfoUiState.serializer(), t).encodeToByteArray()
                 )
             }
         }

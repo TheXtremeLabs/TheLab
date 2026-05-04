@@ -21,9 +21,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.riders.thelab.core.data.local.model.compose.weather.WeatherDataState
-import com.riders.thelab.core.data.local.model.compose.weather.WeatherUIState
-import com.riders.thelab.core.data.local.model.weather.CityModel
+import com.riders.thelab.core.domain.model.weather.City
+import com.riders.thelab.core.domain.model.weather.Coordinates
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.Lottie
@@ -33,6 +32,9 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.feature.weather.data.compose.WeatherUiState
+import com.riders.thelab.feature.weather.ui.previewprovider.PreviewProviderCity
+import com.riders.thelab.feature.weather.ui.previewprovider.PreviewProviderWeatherUIState
 import timber.log.Timber
 import java.util.UUID
 
@@ -63,10 +65,10 @@ fun WeatherLoading(theme: AppTheme, darkTheme: Boolean, modifier: Modifier = Mod
 @Composable
 fun WeatherSuccess(
     theme: AppTheme, darkTheme: Boolean,
-    weatherUiState: WeatherUIState,
+    weatherUiState: WeatherUiState,
     searchMenuExpanded: Boolean,
     searchCityQuery: String,
-    suggestions: List<CityModel>,
+    suggestions: List<City>,
     isWeatherMoreDataVisible: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
@@ -137,13 +139,13 @@ fun WeatherError(
 
 @Composable
 fun WeatherContent(
-    theme: AppTheme, darkTheme: Boolean,
-    weatherDataState: WeatherDataState,
-    weatherUiState: WeatherUIState,
+    theme: AppTheme,
+    darkTheme: Boolean,
+    weatherUiState: WeatherUiState,
     iconState: Boolean,
     searchMenuExpanded: Boolean,
     searchCityQuery: String,
-    suggestions: List<CityModel>,
+    suggestions: List<City>,
     isWeatherMoreDataVisible: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
@@ -175,17 +177,18 @@ fun WeatherContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
-                targetState = weatherDataState
-            ) { targetState: WeatherDataState ->
+                targetState = weatherUiState
+            ) { targetState ->
                 when (targetState) {
-                    is WeatherDataState.None,
-                    is WeatherDataState.Loading -> {
+                    is WeatherUiState.None,
+                    is WeatherUiState.Loading -> {
                         // Loading State
                         LabLoader(modifier = Modifier.size(56.dp))
                         //WeatherLoading(theme = theme, darkTheme = darkTheme)
                     }
 
-                    is WeatherDataState.Error -> {
+                    is WeatherUiState.Error,
+                    is WeatherUiState.NoDataFound -> {
                         // Error State
                         WeatherError(
                             theme = theme,
@@ -195,7 +198,7 @@ fun WeatherContent(
                         )
                     }
 
-                    is WeatherDataState.SuccessWeatherData -> {
+                    is WeatherUiState.Success -> {
                         // Success State
                         WeatherSuccess(
                             theme = theme,
@@ -242,26 +245,25 @@ private fun PreviewWeatherError(@PreviewParameter(AppThemePreviewProvider::class
 
 @DevicePreviews
 @Composable
-private fun PreviewWeatherContent(@PreviewParameter(PreviewProviderWeatherDataState::class) dataState: WeatherDataState) {
-    val weatherUIState: WeatherUIState = PreviewProviderWeatherUIState().values.toList()[0]
+private fun PreviewWeatherContent(@PreviewParameter(PreviewProviderWeatherUIState::class) state: WeatherUiState) {
 
     TheLabTheme(theme = AppTheme.Default) {
         WeatherContent(
             theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
-            weatherDataState = dataState,
-            weatherUiState = weatherUIState,
+            weatherUiState = state,
             iconState = true,
             searchMenuExpanded = true,
             searchCityQuery = "Pa",
             suggestions = listOf(
-                CityModel(
-                    id = 1,
+                City(
                     uuid = UUID.randomUUID().toString(),
                     name = "Johanesburg",
                     state = "",
                     country = "South Africa",
-                    longitude = 48.3535,
-                    latitude = 3.58978
+                    coordinates = Coordinates(
+                        longitude = 48.3535,
+                        latitude = 3.58978
+                    )
                 )
             ),
             isWeatherMoreDataVisible = true,
@@ -271,28 +273,15 @@ private fun PreviewWeatherContent(@PreviewParameter(PreviewProviderWeatherDataSt
 
 @DevicePreviews
 @Composable
-private fun PreviewWeatherContentJohannesburg(@PreviewParameter(PreviewProviderWeatherDataState::class) dataState: WeatherDataState) {
-    val weatherUIState: WeatherUIState = PreviewProviderWeatherUIState().values.toList()[0]
-
+private fun PreviewWeatherContentJohannesburg(@PreviewParameter(PreviewProviderWeatherUIState::class) state: WeatherUiState) {
     TheLabTheme(theme = AppTheme.Default) {
         WeatherContent(
             theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(),
-            weatherDataState = dataState,
-            weatherUiState = weatherUIState,
+            weatherUiState = state,
             iconState = true,
             searchMenuExpanded = true,
             searchCityQuery = "Johannesbu",
-            suggestions = listOf(
-                CityModel(
-                    id = 1,
-                    uuid = UUID.randomUUID().toString(),
-                    name = "Johanesburg",
-                    state = "",
-                    country = "South Africa",
-                    longitude = 48.3535,
-                    latitude = 3.58978
-                )
-            ),
+            suggestions = listOf(PreviewProviderCity().values.last()),
             isWeatherMoreDataVisible = true,
         ) {}
     }

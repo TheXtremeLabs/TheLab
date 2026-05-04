@@ -49,8 +49,7 @@ import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.request.crossfade
 import com.riders.thelab.core.common.utils.DateTimeUtils
-import com.riders.thelab.core.data.local.model.compose.weather.WeatherUIState
-import com.riders.thelab.core.data.local.model.weather.WeatherModel
+import com.riders.thelab.core.domain.model.weather.Weather
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
@@ -58,6 +57,10 @@ import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.theme.Typography
 import com.riders.thelab.core.ui.data.local.bean.WindDirection
+import com.riders.thelab.feature.weather.data.compose.WeatherUiState
+import com.riders.thelab.feature.weather.ui.previewprovider.PreviewProviderWeather
+import com.riders.thelab.feature.weather.ui.previewprovider.PreviewProviderWeatherUIState
+import java.util.TimeZone
 import kotlin.math.roundToInt
 
 
@@ -70,7 +73,7 @@ import kotlin.math.roundToInt
 fun WeatherMoreData(
     theme: AppTheme,
     darkTheme: Boolean,
-    weather: WeatherModel,
+    weather: Weather,
     modifier: Modifier = Modifier
 ) {
     val gridState = rememberLazyGridState()
@@ -81,7 +84,7 @@ fun WeatherMoreData(
     val humidity = "${weather.humidity} ${stringResource(R.string.percent_placeholder)}"
     val pressure = "${weather.pressure} ${stringResource(R.string.pressure_unit_placeholder)}"
     // Wind
-    val wind = "${weather.windSpeed.toString()} ${stringResource(R.string.meter_unit_placeholder)}"
+    val wind = "${weather.windSpeed} ${stringResource(R.string.meter_unit_placeholder)}"
 
     val windDirection: WindDirection =
         WindDirection.getWindDirectionToTextualDescription(weather.windDegree)
@@ -90,7 +93,7 @@ fun WeatherMoreData(
     // buildChart(hourlyWeather)
 
     val sunrise: String = DateTimeUtils.formatMillisToTimeHoursMinutes(
-        weather.timezone!!,
+        weather.timezone ?: TimeZone.getDefault().id,
         weather.sunrise
     )
 
@@ -151,7 +154,7 @@ fun WeatherMoreData(
 
                         Text(
                             text = DateTimeUtils.formatMillisToTimeHoursMinutes(
-                                weather.timezone!!,
+                                weather.timezone ?: TimeZone.getDefault().id,
                                 weather.sunset
                             )
                         )
@@ -390,7 +393,7 @@ fun WeatherEnvironment(
                     content = {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(
-                                text = "${windSpeed.toString()} ${stringResource(R.string.meter_unit_placeholder)}",
+                                text = "$windSpeed ${stringResource(R.string.meter_unit_placeholder)}",
                                 style = TextStyle(fontWeight = FontWeight.W700)
                             )
 
@@ -447,7 +450,7 @@ fun BlurredWeatherIconBackground(painter: Painter) {
 @Composable
 fun WeatherMainCityContent(
     theme: AppTheme, darkTheme: Boolean,
-    weatherUIState: WeatherUIState,
+    weatherUIState: WeatherUiState,
     isWeatherMoreDataVisible: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
@@ -455,22 +458,22 @@ fun WeatherMainCityContent(
         AnimatedContent(
             modifier = Modifier.fillMaxWidth(),
             targetState = weatherUIState
-        ) { targetState: WeatherUIState ->
+        ) { targetState: WeatherUiState ->
             when (targetState) {
-                is WeatherUIState.None -> Box(modifier = Modifier)
-                is WeatherUIState.Success -> {
+                is WeatherUiState.None -> Box(modifier = Modifier)
+                is WeatherUiState.Success -> {
 
                     val mainListState = rememberLazyListState()
 
-                    val weather = targetState.weather
-                    val address: Address? = targetState.weather.address
-                    val cityName = targetState.weather.address?.locality
+                    val weather = targetState.model.weather
+                    val address: Address? = targetState.model.weather?.address
+                    val cityName = targetState.model.weather?.address?.locality
                     val country = address?.countryName
 
                     val painter = rememberAsyncImagePainter(
                         model = ImageRequest
                             .Builder(LocalContext.current)
-                            .data(weather.weatherIconUrl.toString())
+                            .data(weather?.weatherIconUrl.toString())
                             .apply {
                                 crossfade(true)
                                 allowHardware(false)
@@ -482,7 +485,7 @@ fun WeatherMainCityContent(
 
                     // Temperatures
                     val temperature =
-                        "${weather.temperature?.temperature?.roundToInt()} ${
+                        "${weather?.temperature?.temperature?.roundToInt()} ${
                             stringResource(R.string.degree_placeholder)
                         }"
 
@@ -535,7 +538,7 @@ fun WeatherMainCityContent(
                                                 ) {
                                                     Text(text = "$cityName, $country")
                                                     Text(
-                                                        text = weather.mainWeather.toString(),
+                                                        text = weather?.mainWeather.toString(),
                                                         style = Typography.titleSmall,
                                                         fontWeight = FontWeight.ExtraBold
                                                     )
@@ -564,7 +567,8 @@ fun WeatherMainCityContent(
                                                     verticalAlignment = Alignment.CenterVertically
                                                 ) {
                                                     Text(
-                                                        text = weather.temperature?.max?.toInt()
+                                                        text = weather?.temperature?.max
+                                                            ?.toInt()
                                                             .toString(),
                                                         fontWeight = FontWeight.Bold
                                                     )
@@ -572,7 +576,7 @@ fun WeatherMainCityContent(
                                                         text = "|"
                                                     )
                                                     Text(
-                                                        text = weather.temperature?.min?.toInt()
+                                                        text = weather?.temperature?.min?.toInt()
                                                             .toString()
                                                     )
                                                 }
@@ -583,13 +587,13 @@ fun WeatherMainCityContent(
                                     // Hourly weather forecast content
                                     AnimatedVisibility(
                                         modifier = Modifier.padding(top = 12.dp),
-                                        visible = !weather.hourlyWeather.isNullOrEmpty()
+                                        visible = !weather?.hourlyWeather.isNullOrEmpty()
                                     ) {
                                         WeatherHourlyForecast(
                                             modifier = Modifier.padding(horizontal = 16.dp),
                                             theme = theme,
                                             darkTheme = darkTheme,
-                                            hourlyWeatherList = weather.hourlyWeather!!
+                                            hourlyWeatherList = weather?.hourlyWeather!!
                                         )
                                     }
                                 }
@@ -597,31 +601,35 @@ fun WeatherMainCityContent(
 
                             // Daily Forecast (5 days)
                             item {
-                                AnimatedVisibility(visible = !weather.dailyWeather.isNullOrEmpty()) {
+                                AnimatedVisibility(visible = !weather?.dailyWeather.isNullOrEmpty()) {
                                     // Forecast
                                     WeatherDailyForecast(
                                         modifier = Modifier.padding(horizontal = 16.dp),
                                         theme = theme,
                                         darkTheme = darkTheme,
-                                        dailyWeatherList = weather.dailyWeather!!
+                                        dailyWeatherList = weather?.dailyWeather!!
                                     )
                                 }
                             }
 
                             // Weather sunrise/sunset
                             item {
-                                val sunrise = remember {
-                                    DateTimeUtils.formatMillisToTimeHoursMinutes(
-                                        weather.timezone!!,
-                                        weather.sunrise
-                                    )
+                                val sunrise = remember(weather) {
+                                    weather?.let {
+                                        DateTimeUtils.formatMillisToTimeHoursMinutes(
+                                            it.timezone ?: TimeZone.getDefault().id,
+                                            it.sunrise
+                                        )
+                                    } ?: ""
                                 }
 
                                 val sunset = remember {
-                                    DateTimeUtils.formatMillisToTimeHoursMinutes(
-                                        weather.timezone!!,
-                                        weather.sunset
-                                    )
+                                    weather?.let {
+                                        DateTimeUtils.formatMillisToTimeHoursMinutes(
+                                            it.timezone ?: TimeZone.getDefault().id,
+                                            it.sunset
+                                        )
+                                    } ?: ""
                                 }
 
                                 WeatherSunriseSunset(
@@ -638,11 +646,11 @@ fun WeatherMainCityContent(
                                 WeatherEnvironment(
                                     theme = theme,
                                     darkTheme = darkTheme,
-                                    cloudiness = weather.clouds,
-                                    pressure = weather.pressure,
-                                    humidity = weather.humidity,
-                                    windSpeed = weather.windSpeed,
-                                    windDegree = weather.windDegree
+                                    cloudiness = weather?.clouds ?: 0,
+                                    pressure = weather?.pressure ?: 0,
+                                    humidity = weather?.humidity ?: 0,
+                                    windSpeed = weather?.windSpeed ?: 0.0,
+                                    windDegree = weather?.windDegree ?: 0
                                 )
                             }
 
@@ -653,7 +661,9 @@ fun WeatherMainCityContent(
                     }
                 }
 
-                is WeatherUIState.Error -> Box(modifier = Modifier)
+                is WeatherUiState.Error -> Box(modifier = Modifier)
+                is WeatherUiState.Loading -> Box(modifier = Modifier)
+                is WeatherUiState.NoDataFound -> Box(modifier = Modifier)
             }
         }
     }
@@ -696,7 +706,7 @@ fun WeatherDataProvidedBy(theme: AppTheme, darkTheme: Boolean) {
 ///////////////////////////////////////////////////
 @DevicePreviews
 @Composable
-fun PreviewWeatherMoreData(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+fun PreviewWeatherMoreData(@PreviewParameter(PreviewProviderWeather::class) weather: Weather) {
     TheLabTheme(theme = AppTheme.Default) {
         WeatherMoreData(
             theme = AppTheme.Default,
@@ -708,17 +718,17 @@ fun PreviewWeatherMoreData(@PreviewParameter(PreviewProviderWeather::class) weat
 
 @DevicePreviews
 @Composable
-fun PreviewWeatherRealFeels(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+fun PreviewWeatherRealFeels(@PreviewParameter(PreviewProviderWeather::class) weather: Weather) {
     val sunrise = remember {
         DateTimeUtils.formatMillisToTimeHoursMinutes(
-            weather.timezone!!,
+            weather.timezone ?: kotlinx.datetime.TimeZone.currentSystemDefault().id,
             weather.sunrise
         )
     }
 
     val sunset = remember {
         DateTimeUtils.formatMillisToTimeHoursMinutes(
-            weather.timezone!!,
+            weather.timezone ?: kotlinx.datetime.TimeZone.currentSystemDefault().id,
             weather.sunset
         )
     }
@@ -735,7 +745,7 @@ fun PreviewWeatherRealFeels(@PreviewParameter(PreviewProviderWeather::class) wea
 
 @DevicePreviews
 @Composable
-fun PreviewWeatherEnvironmentItem(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+fun PreviewWeatherEnvironmentItem(@PreviewParameter(PreviewProviderWeather::class) weather: Weather) {
     TheLabTheme(theme = AppTheme.Default) {
         WeatherEnvironmentItem(
             theme = AppTheme.Default,
@@ -762,7 +772,7 @@ fun PreviewWeatherEnvironmentItem(@PreviewParameter(PreviewProviderWeather::clas
 
 @DevicePreviews
 @Composable
-fun PreviewWeatherEnvironment(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+fun PreviewWeatherEnvironment(@PreviewParameter(PreviewProviderWeather::class) weather: Weather) {
     TheLabTheme(theme = AppTheme.Default) {
         WeatherEnvironment(
             theme = AppTheme.Default,
@@ -778,7 +788,7 @@ fun PreviewWeatherEnvironment(@PreviewParameter(PreviewProviderWeather::class) w
 
 @DevicePreviews
 @Composable
-fun PreviewBlurredWeatherIconBackground(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+fun PreviewBlurredWeatherIconBackground(@PreviewParameter(PreviewProviderWeather::class) weather: Weather) {
     TheLabTheme(theme = AppTheme.Default) {
         BlurredWeatherIconBackground(painter = painterResource(com.riders.thelab.core.ui.R.drawable.logo_colors))
     }
@@ -787,7 +797,7 @@ fun PreviewBlurredWeatherIconBackground(@PreviewParameter(PreviewProviderWeather
 @DevicePreviews
 @Composable
 private fun PreviewWeatherMainCityContent(
-    @PreviewParameter(PreviewProviderWeatherUIState::class) weatherUiState: WeatherUIState
+    @PreviewParameter(PreviewProviderWeatherUIState::class) weatherUiState: WeatherUiState
 ) {
     TheLabTheme(theme = AppTheme.Default) {
         WeatherMainCityContent(

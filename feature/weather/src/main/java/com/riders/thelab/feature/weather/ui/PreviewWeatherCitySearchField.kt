@@ -44,14 +44,14 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.request.crossfade
-import com.riders.thelab.core.data.local.model.weather.CityModel
+import com.riders.thelab.core.domain.model.weather.City
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.weather.ui.previewprovider.PreviewProviderCity
 import com.riders.thelab.feature.weather.utils.Constants
-import java.util.UUID
 
 
 ///////////////////////////////////////////////////
@@ -63,7 +63,7 @@ import java.util.UUID
 @Composable
 fun WeatherCitySearchField(
     theme: AppTheme, darkTheme: Boolean,
-    suggestions: List<CityModel>,
+    suggestions: List<City>,
     searchCityQuery: String,
     onSearchTextChange: (String) -> Unit,
     searchMenuExpanded: Boolean,
@@ -149,7 +149,10 @@ fun WeatherCitySearchField(
                                 onSearchTextChange("${city.name}, ${city.country}")
                                 onUpdateSearchMenuExpanded(false)
                                 focusManager.clearFocus(true)
-                                onFetchWeatherRequest(city.latitude, city.longitude)
+                                onFetchWeatherRequest(
+                                    city.coordinates.latitude,
+                                    city.coordinates.longitude
+                                )
                             },
                             text = {
                                 Row(
@@ -190,17 +193,7 @@ private fun PreviewWeatherCitySearchField(@PreviewParameter(AppThemePreviewProvi
     TheLabTheme(theme = appTheme) {
         WeatherCitySearchField(
             theme = appTheme, darkTheme = isSystemInDarkTheme(),
-            suggestions = listOf(
-                CityModel(
-                    id = 1,
-                    uuid = UUID.randomUUID().toString(),
-                    name = "Johanesburg",
-                    state = "",
-                    country = "South Africa",
-                    longitude = 48.3535,
-                    latitude = 3.58978
-                )
-            ),
+            suggestions = listOf(PreviewProviderCity().values.last()),
             searchMenuExpanded = true,
             searchCityQuery = "Johannesbu",
             onSearchTextChange = {},

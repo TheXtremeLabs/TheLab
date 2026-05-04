@@ -21,8 +21,8 @@ dependencies {
     // Project
     ///////////////////////////////////
     implementation(project(":core:analytics"))
-    implementation(project(":core:data"))
     implementation(project(":core:common"))
+    implementation(project(":core:domain"))
     implementation(project(":core:location"))
     implementation(project(":core:permissions"))
     implementation(project(":core:ui"))
@@ -54,6 +54,10 @@ dependencies {
 
     // Charts
     api(libs.mpandroidchart)
+
+    implementation(platform(libs.retrofit.bom))
+    implementation(libs.retrofit.core)
+
 
     androidTestImplementation(project(":core:testing"))
 }

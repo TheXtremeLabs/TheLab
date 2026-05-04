@@ -11,6 +11,7 @@ import androidx.glance.layout.Row
 import androidx.glance.text.Text
 */
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BitmapFactory
 import androidx.compose.runtime.Composable
@@ -49,6 +50,7 @@ import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.color.md_theme_dark_background
 import com.riders.thelab.core.ui.compose.utils.appWidgetBackgroundCornerRadius
 import com.riders.thelab.feature.weather.core.worker.WeatherWidgetWorker
+import com.riders.thelab.feature.weather.data.compose.WeatherInfoUiState
 import com.riders.thelab.feature.weather.ui.WeatherActivity
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -77,13 +79,14 @@ private fun getImageProvider(path: String): ImageProvider {
 }
 
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun WeatherWidgetContent() {
     val context = LocalContext.current
     // val scope = rememberCoroutineScope()
 
     // Get the stored stated based on our custom state definition.
-    val weatherInfo = currentState<WeatherInfo>()
+    val weatherInfo = currentState<WeatherInfoUiState>()
     // It will be one of the provided ones
     // val size = LocalSize.current
 
@@ -97,11 +100,11 @@ fun WeatherWidgetContent() {
             contentAlignment = Alignment.Center
         ) {
             when (weatherInfo) {
-                is WeatherInfo.Loading -> {
+                is WeatherInfoUiState.Loading -> {
                     CircularProgressIndicator()
                 }
 
-                is WeatherInfo.Available -> {
+                is WeatherInfoUiState.Available -> {
                     val weatherWidgetModel = weatherInfo.currentData
 
                     Box(
@@ -246,7 +249,7 @@ fun WeatherWidgetContent() {
                     }
                 }
 
-                is WeatherInfo.Unavailable -> {
+                is WeatherInfoUiState.Unavailable -> {
                     Column(
                         modifier = GlanceModifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
