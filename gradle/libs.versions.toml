@@ -4,7 +4,7 @@ javaVersion = "21"
 
 # Gradle version
 # Android
-androidGradlePlugin = "9.1.1"
+androidGradlePlugin = "9.2.0"
 androidxLintGradlePlugin = "1.0.0-alpha06"
 dependencyGuardGradlePlugin = "0.5.0"
 develocityGradlePlugin = "4.4.0"
@@ -98,15 +98,15 @@ googleApiClientAndroid = "2.9.0"
 googleApiClientOAuth = "1.39.0"
 googleApiDriveV3 = "v3-rev20221219-2.0.0"
 googleApiClientJackson2 = "2.9.0"
-googleAuthLibraryOauth2Http = "1.43.0"
-googleCloudBom = "26.79.0"
+googleAuthLibraryOauth2Http = "1.46.0"
+googleCloudBom = "26.80.0"
 googleCloudTextToSpeech = "2.76.0"
 googleCloudSpeech = "4.70.0"
 googleHttpClientBom = "2.1.0"
 googleHttpClientGson = "2.0.1"
 googleIdentity = "1.2.0"
 # Google Guava
-googleGuava = "33.5.0-jre"
+googleGuava = "33.6.0-jre"
 googleGuavaListenableFuture = "9999.0-empty-to-avoid-conflict-with-guava"
 # Google ML Kit
 googleMLKitBarcodeScanning = "17.3.0"
@@ -134,8 +134,8 @@ googlePlayServicesDrive = "17.0.0"
 googlePlayServicesTasks = "18.4.1"
 googlePlayServicesVision = "20.1.3"
 googlePlayServicesVisionCommon = "19.1.3"
-glide = "5.0.5"
-glideCompose = "1.0.0-beta08"
+glide = "5.0.7"
+glideCompose = "1.0.0-beta09"
 glideTransformation = "4.3.0"
 # GRPC
 grpc = "1.80.0"
@@ -153,7 +153,7 @@ koin = "4.2.1"
 koinAnnotationsBom = "2.3.1"
 koinKspCompiler = "2.3.1"
 # Kotlin (for gradle plugin version and dependency)
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 kotlinxCoroutines = "1.10.2"
 kotlinxDatetime = "0.7.1"
 kotlinPlayServices = "1.10.2"
@@ -163,7 +163,7 @@ kotlinxSerializationJson = "1.11.0"
 kotzilla = "2.1.3"
 ktor = "3.4.2"
 # KSP - Kotlin Symbol Processing (for gradle's plugin version and dependency)
-ksp = "2.3.6"
+ksp = "2.3.7"
 landscapist = "2.9.6"
 lint = "32.1.1"
 location = "21.3.0"
@@ -509,6 +509,7 @@ mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", versio
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
+okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp-core" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 # MockWebServer
 okhttp-mock-web-server = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttpMockWebServer" }
@@ -580,6 +581,7 @@ stream = ["stream-video", "stream-video-android-compose"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-builtInKotlin = { id = "com.android.built-in-kotlin", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-lint = { id = "com.android.lint", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
