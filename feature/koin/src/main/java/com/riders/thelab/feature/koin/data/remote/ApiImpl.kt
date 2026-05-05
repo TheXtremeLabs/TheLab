@@ -25,11 +25,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
+import org.koin.core.annotation.Singleton
 import timber.log.Timber
 import java.io.IOException
 import kotlin.random.Random
 
-@Single
+@Singleton
 class ApiImpl() : IApi {
 
     // Koin
